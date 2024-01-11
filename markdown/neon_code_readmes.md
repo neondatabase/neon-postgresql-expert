@@ -1,0 +1,12538 @@
+# Content from file ../neon/CONTRIBUTING.md:
+
+# How to contribute
+
+Howdy! Usual good software engineering practices apply. Write
+tests. Write comments. Follow standard Rust coding practices where
+possible. Use `cargo fmt` and `cargo clippy` to tidy up formatting.
+
+There are soft spots in the code, which could use cleanup,
+refactoring, additional comments, and so forth. Let's try to raise the
+bar, and clean things up as we go. Try to leave code in a better shape
+than it was before.
+
+## Pre-commit hook
+
+We have a sample pre-commit hook in `pre-commit.py`.
+To set it up, run:
+
+```bash
+ln -s ../../pre-commit.py .git/hooks/pre-commit
+```
+
+This will run following checks on staged files before each commit:
+- `rustfmt`
+- checks for python files, see [obligatory checks](/docs/sourcetree.md#obligatory-checks).
+
+There is also a separate script `./run_clippy.sh` that runs `cargo clippy` on the whole project
+and `./scripts/reformat` that runs all formatting tools to ensure the project is up to date.
+
+If you want to skip the hook, run `git commit` with `--no-verify` option.
+
+## Submitting changes
+
+1. Get at least one +1 on your PR before you push.
+
+   For simple patches, it will only take a minute for someone to review
+it.
+
+2. Don't force push small changes after making the PR ready for review.
+Doing so will force readers to re-read your entire PR, which will delay
+the review process.
+
+3. Always keep the CI green.
+
+   Do not push, if the CI failed on your PR. Even if you think it's not
+your patch's fault. Help to fix the root cause if something else has
+broken the CI, before pushing.
+
+*Happy Hacking!*
+
+# How to run a CI pipeline on Pull Requests from external contributors
+_An instruction for maintainers_
+
+## TL;DR:
+- Review the PR
+- If and only if it looks **safe** (i.e. it doesn't contain any malicious code which could expose secrets or harm the CI), then:
+    - Press the "Approve and run" button in GitHub UI
+    - Add the `approved-for-ci-run` label to the PR
+
+Repeat all steps after any change to the PR.
+- When the changes are ready to get merged — merge the original PR (not the internal one)
+
+## Longer version:
+
+GitHub Actions triggered by the `pull_request` event don't share repository secrets with the forks (for security reasons).
+So, passing the CI pipeline on Pull Requests from external contributors is impossible.
+
+We're using the following approach to make it work:
+- After the review, assign the `approved-for-ci-run` label to the PR if changes look safe
+- A GitHub Action will create an internal branch and a new PR with the same changes (for example, for a PR `#1234`, it'll be a branch `ci-run/pr-1234`)
+- Because the PR is created from the internal branch, it is able to access repository secrets (that's why it's crucial to make sure that the PR doesn't contain any malicious code that could expose our secrets or intentionally harm the CI)
+- The label gets removed automatically, so to run CI again with new changes, the label should be added again (after the review)
+
+For details see [`approved-for-ci-run.yml`](.github/workflows/approved-for-ci-run.yml)
+
+## How do I add the "pinned" tag to an buildtools image?
+We use the `pinned` tag for `Dockerfile.buildtools` build images in our CI/CD setup, currently adding the `pinned` tag is a manual operation.
+
+You can call it from GitHub UI: https://github.com/neondatabase/neon/actions/workflows/update_build_tools_image.yml,
+or using GitHub CLI:
+
+```bash
+gh workflow -R neondatabase/neon run update_build_tools_image.yml \
+            -f from-tag=6254913013 \
+            -f to-tag=pinned \
+
+# Default `-f to-tag` is `pinned`, so the parameter can be omitted.
+```
+
+# Content from file ../neon/README.md:
+
+[![Neon](https://user-images.githubusercontent.com/13738772/236813940-dcfdcb5b-69d3-449b-a686-013febe834d4.png)](https://neon.tech)
+
+# Neon
+
+Neon is a serverless open-source alternative to AWS Aurora Postgres. It separates storage and compute and substitutes the PostgreSQL storage layer by redistributing data across a cluster of nodes.
+
+## Quick start
+Try the [Neon Free Tier](https://neon.tech/docs/introduction/technical-preview-free-tier/) to create a serverless Postgres instance. Then connect to it with your preferred Postgres client (psql, dbeaver, etc) or use the online [SQL Editor](https://neon.tech/docs/get-started-with-neon/query-with-neon-sql-editor/). See [Connect from any application](https://neon.tech/docs/connect/connect-from-any-app/) for connection instructions.
+
+Alternatively, compile and run the project [locally](#running-local-installation).
+
+## Architecture overview
+
+A Neon installation consists of compute nodes and the Neon storage engine. Compute nodes are stateless PostgreSQL nodes backed by the Neon storage engine.
+
+The Neon storage engine consists of two major components:
+- Pageserver. Scalable storage backend for the compute nodes.
+- Safekeepers. The safekeepers form a redundant WAL service that received WAL from the compute node, and stores it durably until it has been processed by the pageserver and uploaded to cloud storage.
+
+See developer documentation in [SUMMARY.md](/docs/SUMMARY.md) for more information.
+
+## Running local installation
+
+
+#### Installing dependencies on Linux
+1. Install build dependencies and other applicable packages
+
+* On Ubuntu or Debian, this set of packages should be sufficient to build the code:
+```bash
+apt install build-essential libtool libreadline-dev zlib1g-dev flex bison libseccomp-dev \
+libssl-dev clang pkg-config libpq-dev cmake postgresql-client protobuf-compiler \
+libcurl4-openssl-dev openssl python3-poetry lsof libicu-dev
+```
+* On Fedora, these packages are needed:
+```bash
+dnf install flex bison readline-devel zlib-devel openssl-devel \
+  libseccomp-devel perl clang cmake postgresql postgresql-contrib protobuf-compiler \
+  protobuf-devel libcurl-devel openssl poetry lsof libicu-devel libpq-devel python3-devel \
+  libffi-devel
+```
+* On Arch based systems, these packages are needed:
+```bash
+pacman -S base-devel readline zlib libseccomp openssl clang \
+postgresql-libs cmake postgresql protobuf curl lsof
+```
+
+Building Neon requires 3.15+ version of `protoc` (protobuf-compiler). If your distribution provides an older version, you can install a newer version from [here](https://github.com/protocolbuffers/protobuf/releases).
+
+2. [Install Rust](https://www.rust-lang.org/tools/install)
+```
+# recommended approach from https://www.rust-lang.org/tools/install
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+#### Installing dependencies on macOS (12.3.1)
+1. Install XCode and dependencies
+```
+xcode-select --install
+brew install protobuf openssl flex bison icu4c pkg-config
+
+# add openssl to PATH, required for ed25519 keys generation in neon_local
+echo 'export PATH="$(brew --prefix openssl)/bin:$PATH"' >> ~/.zshrc
+```
+
+2. [Install Rust](https://www.rust-lang.org/tools/install)
+```
+# recommended approach from https://www.rust-lang.org/tools/install
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
+3. Install PostgreSQL Client
+```
+# from https://stackoverflow.com/questions/44654216/correct-way-to-install-psql-without-full-postgres-on-macos
+brew install libpq
+brew link --force libpq
+```
+
+#### Rustc version
+
+The project uses [rust toolchain file](./rust-toolchain.toml) to define the version it's built with in CI for testing and local builds.
+
+This file is automatically picked up by [`rustup`](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file) that installs (if absent) and uses the toolchain version pinned in the file.
+
+rustup users who want to build with another toolchain can use [`rustup override`](https://rust-lang.github.io/rustup/overrides.html#directory-overrides) command to set a specific toolchain for the project's directory.
+
+non-rustup users most probably are not getting the same toolchain automatically from the file, so are responsible to manually verify their toolchain matches the version in the file.
+Newer rustc versions most probably will work fine, yet older ones might not be supported due to some new features used by the project or the crates.
+
+#### Building on Linux
+
+1. Build neon and patched postgres
+```
+# Note: The path to the neon sources can not contain a space.
+
+git clone --recursive https://github.com/neondatabase/neon.git
+cd neon
+
+# The preferred and default is to make a debug build. This will create a
+# demonstrably slower build than a release build. For a release build,
+# use "BUILD_TYPE=release make -j`nproc` -s"
+# Remove -s for the verbose build log
+
+make -j`nproc` -s
+```
+
+#### Building on OSX
+
+1. Build neon and patched postgres
+```
+# Note: The path to the neon sources can not contain a space.
+
+git clone --recursive https://github.com/neondatabase/neon.git
+cd neon
+
+# The preferred and default is to make a debug build. This will create a
+# demonstrably slower build than a release build. For a release build,
+# use "BUILD_TYPE=release make -j`sysctl -n hw.logicalcpu` -s"
+# Remove -s for the verbose build log
+
+make -j`sysctl -n hw.logicalcpu` -s
+```
+
+#### Dependency installation notes
+To run the `psql` client, install the `postgresql-client` package or modify `PATH` and `LD_LIBRARY_PATH` to include `pg_install/bin` and `pg_install/lib`, respectively.
+
+To run the integration tests or Python scripts (not required to use the code), install
+Python (3.9 or higher), and install python3 packages using `./scripts/pysync` (requires [poetry>=1.3](https://python-poetry.org/)) in the project directory.
+
+
+#### Running neon database
+1. Start pageserver and postgres on top of it (should be called from repo root):
+```sh
+# Create repository in .neon with proper paths to binaries and data
+# Later that would be responsibility of a package install script
+> cargo neon init
+Initializing pageserver node 1 at '127.0.0.1:64000' in ".neon"
+
+# start pageserver, safekeeper, and broker for their intercommunication
+> cargo neon start
+Starting neon broker at 127.0.0.1:50051.
+storage_broker started, pid: 2918372
+Starting pageserver node 1 at '127.0.0.1:64000' in ".neon".
+pageserver started, pid: 2918386
+Starting safekeeper at '127.0.0.1:5454' in '.neon/safekeepers/sk1'.
+safekeeper 1 started, pid: 2918437
+
+# create initial tenant and use it as a default for every future neon_local invocation
+> cargo neon tenant create --set-default
+tenant 9ef87a5bf0d92544f6fafeeb3239695c successfully created on the pageserver
+Created an initial timeline 'de200bd42b49cc1814412c7e592dd6e9' at Lsn 0/16B5A50 for tenant: 9ef87a5bf0d92544f6fafeeb3239695c
+Setting tenant 9ef87a5bf0d92544f6fafeeb3239695c as a default one
+
+# create postgres compute node
+> cargo neon endpoint create main
+
+# start postgres compute node
+> cargo neon endpoint start main
+Starting new endpoint main (PostgreSQL v14) on timeline de200bd42b49cc1814412c7e592dd6e9 ...
+Starting postgres at 'postgresql://cloud_admin@127.0.0.1:55432/postgres'
+
+# check list of running postgres instances
+> cargo neon endpoint list
+ ENDPOINT  ADDRESS          TIMELINE                          BRANCH NAME  LSN        STATUS
+ main      127.0.0.1:55432  de200bd42b49cc1814412c7e592dd6e9  main         0/16B5BA8  running
+```
+
+2. Now, it is possible to connect to postgres and run some queries:
+```text
+> psql -p55432 -h 127.0.0.1 -U cloud_admin postgres
+postgres=# CREATE TABLE t(key int primary key, value text);
+CREATE TABLE
+postgres=# insert into t values(1,1);
+INSERT 0 1
+postgres=# select * from t;
+ key | value
+-----+-------
+   1 | 1
+(1 row)
+```
+
+3. And create branches and run postgres on them:
+```sh
+# create branch named migration_check
+> cargo neon timeline branch --branch-name migration_check
+Created timeline 'b3b863fa45fa9e57e615f9f2d944e601' at Lsn 0/16F9A00 for tenant: 9ef87a5bf0d92544f6fafeeb3239695c. Ancestor timeline: 'main'
+
+# check branches tree
+> cargo neon timeline list
+(L) main [de200bd42b49cc1814412c7e592dd6e9]
+(L) ┗━ @0/16F9A00: migration_check [b3b863fa45fa9e57e615f9f2d944e601]
+
+# create postgres on that branch
+> cargo neon endpoint create migration_check --branch-name migration_check
+
+# start postgres on that branch
+> cargo neon endpoint start migration_check
+Starting new endpoint migration_check (PostgreSQL v14) on timeline b3b863fa45fa9e57e615f9f2d944e601 ...
+Starting postgres at 'postgresql://cloud_admin@127.0.0.1:55434/postgres'
+
+# check the new list of running postgres instances
+> cargo neon endpoint list
+ ENDPOINT         ADDRESS          TIMELINE                          BRANCH NAME      LSN        STATUS
+ main             127.0.0.1:55432  de200bd42b49cc1814412c7e592dd6e9  main             0/16F9A38  running
+ migration_check  127.0.0.1:55434  b3b863fa45fa9e57e615f9f2d944e601  migration_check  0/16F9A70  running
+
+# this new postgres instance will have all the data from 'main' postgres,
+# but all modifications would not affect data in original postgres
+> psql -p55434 -h 127.0.0.1 -U cloud_admin postgres
+postgres=# select * from t;
+ key | value
+-----+-------
+   1 | 1
+(1 row)
+
+postgres=# insert into t values(2,2);
+INSERT 0 1
+
+# check that the new change doesn't affect the 'main' postgres
+> psql -p55432 -h 127.0.0.1 -U cloud_admin postgres
+postgres=# select * from t;
+ key | value
+-----+-------
+   1 | 1
+(1 row)
+```
+
+4. If you want to run tests afterward (see below), you must stop all the running of the pageserver, safekeeper, and postgres instances
+   you have just started. You can terminate them all with one command:
+```sh
+> cargo neon stop
+```
+
+## Running tests
+
+Ensure your dependencies are installed as described [here](https://github.com/neondatabase/neon#dependency-installation-notes).
+
+```sh
+git clone --recursive https://github.com/neondatabase/neon.git
+
+CARGO_BUILD_FLAGS="--features=testing" make
+
+./scripts/pytest
+```
+
+By default, this runs both debug and release modes, and all supported postgres versions. When
+testing locally, it is convenient to run just run one set of permutations, like this:
+
+```sh
+DEFAULT_PG_VERSION=15 BUILD_TYPE=release ./scripts/pytest
+```
+
+## Documentation
+
+[docs](/docs) Contains a top-level overview of all available markdown documentation.
+
+- [sourcetree.md](/docs/sourcetree.md) contains overview of source tree layout.
+
+To view your `rustdoc` documentation in a browser, try running `cargo doc --no-deps --open`
+
+See also README files in some source directories, and `rustdoc` style documentation comments.
+
+Other resources:
+
+- [SELECT 'Hello, World'](https://neon.tech/blog/hello-world/): Blog post by Nikita Shamgunov on the high level architecture
+- [Architecture decisions in Neon](https://neon.tech/blog/architecture-decisions-in-neon/): Blog post by Heikki Linnakangas
+- [Neon: Serverless PostgreSQL!](https://www.youtube.com/watch?v=rES0yzeERns): Presentation on storage system by Heikki Linnakangas in the CMU Database Group seminar series
+
+### Postgres-specific terms
+
+Due to Neon's very close relation with PostgreSQL internals, numerous specific terms are used.
+The same applies to certain spelling: i.e. we use MB to denote 1024 * 1024 bytes, while MiB would be technically more correct, it's inconsistent with what PostgreSQL code and its documentation use.
+
+To get more familiar with this aspect, refer to:
+
+- [Neon glossary](/docs/glossary.md)
+- [PostgreSQL glossary](https://www.postgresql.org/docs/14/glossary.html)
+- Other PostgreSQL documentation and sources (Neon fork sources can be found [here](https://github.com/neondatabase/postgres))
+
+## Join the development
+
+- Read [CONTRIBUTING.md](/CONTRIBUTING.md) to learn about project code style and practices.
+- To get familiar with a source tree layout, use [sourcetree.md](/docs/sourcetree.md).
+- To learn more about PostgreSQL internals, check http://www.interdb.jp/pg/index.html
+
+
+# Content from file ../neon/compute_tools/README.md:
+
+# Compute node tools
+
+Postgres wrapper (`compute_ctl`) is intended to be run as a Docker entrypoint or as a `systemd`
+`ExecStart` option. It will handle all the `Neon` specifics during compute node
+initialization:
+- `compute_ctl` accepts cluster (compute node) specification as a JSON file.
+- Every start is a fresh start, so the data directory is removed and
+  initialized again on each run.
+- Next it will put configuration files into the `PGDATA` directory.
+- Sync safekeepers and get commit LSN.
+- Get `basebackup` from pageserver using the returned on the previous step LSN.
+- Try to start `postgres` and wait until it is ready to accept connections.
+- Check and alter/drop/create roles and databases.
+- Hang waiting on the `postmaster` process to exit.
+
+Also `compute_ctl` spawns two separate service threads:
+- `compute-monitor` checks the last Postgres activity timestamp and saves it
+  into the shared `ComputeNode`;
+- `http-endpoint` runs a Hyper HTTP API server, which serves readiness and the
+  last activity requests.
+
+If `AUTOSCALING` environment variable is set, `compute_ctl` will start the
+`vm-monitor` located in [`neon/libs/vm_monitor`]. For VM compute nodes,
+`vm-monitor` communicates with the VM autoscaling system. It coordinates
+downscaling and requests immediate upscaling under resource pressure.
+
+Usage example:
+```sh
+compute_ctl -D /var/db/postgres/compute \
+            -C 'postgresql://cloud_admin@localhost/postgres' \
+            -S /var/db/postgres/specs/current.json \
+            -b /usr/local/bin/postgres
+```
+
+## Tests
+
+Cargo formatter:
+```sh
+cargo fmt
+```
+
+Run tests:
+```sh
+cargo test
+```
+
+Clippy linter:
+```sh
+cargo clippy --all --all-targets -- -Dwarnings -Drust-2018-idioms
+```
+
+## Cross-platform compilation
+
+Imaging that you are on macOS (x86) and you want a Linux GNU (`x86_64-unknown-linux-gnu` platform in `rust` terminology) executable.
+
+### Using docker
+
+You can use a throw-away Docker container ([rustlang/rust](https://hub.docker.com/r/rustlang/rust/) image) for doing that:
+```sh
+docker run --rm \
+    -v $(pwd):/compute_tools \
+    -w /compute_tools \
+    -t rustlang/rust:nightly cargo build --release --target=x86_64-unknown-linux-gnu
+```
+or one-line:
+```sh
+docker run --rm -v $(pwd):/compute_tools -w /compute_tools -t rust:latest cargo build --release --target=x86_64-unknown-linux-gnu
+```
+
+### Using rust native cross-compilation
+
+Another way is to add `x86_64-unknown-linux-gnu` target on your host system:
+```sh
+rustup target add x86_64-unknown-linux-gnu
+```
+
+Install macOS cross-compiler toolchain:
+```sh
+brew tap SergioBenitez/osxct
+brew install x86_64-unknown-linux-gnu
+```
+
+And finally run `cargo build`:
+```sh
+CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-unknown-linux-gnu-gcc cargo build --target=x86_64-unknown-linux-gnu --release
+```
+
+
+# Content from file ../neon/docs/SUMMARY.md:
+
+# Summary
+
+[Introduction]()
+- [Separation of Compute and Storage](./separation-compute-storage.md)
+
+# Architecture
+
+- [Compute]()
+  - [WAL proposer]()
+  - [WAL Backpressure]()
+  - [Postgres changes](./core_changes.md)
+
+- [Pageserver](./pageserver.md)
+    - [Services](./pageserver-services.md)
+    - [Thread management](./pageserver-thread-mgmt.md)
+    - [WAL Redo](./pageserver-walredo.md)
+    - [Page cache](./pageserver-pagecache.md)
+    - [Storage](./pageserver-storage.md)
+        - [Datadir mapping]()
+        - [Layer files]()
+        - [Branching]()
+        - [Garbage collection]()
+    - [Cloud Storage]()
+    - [Processing a GetPage request](./pageserver-processing-getpage.md)
+    - [Processing WAL](./pageserver-processing-wal.md)
+	- [Management API]()
+	- [Tenant Rebalancing]()
+
+- [WAL Service](walservice.md)
+  - [Consensus protocol](safekeeper-protocol.md)
+  - [Management API]()
+  - [Rebalancing]()
+
+- [Control Plane]()
+
+- [Proxy]()
+
+- [Source view](./sourcetree.md)
+  - [docker.md](./docker.md) — Docker images and building pipeline.
+  - [Error handling and logging](./error-handling.md)
+  - [Testing]()
+    - [Unit testing]()
+    - [Integration testing]()
+    - [Benchmarks]()
+
+
+- [Glossary](./glossary.md)
+
+# Uncategorized
+
+- [authentication.md](./authentication.md)
+- [multitenancy.md](./multitenancy.md) — how multitenancy is organized in the pageserver and Zenith CLI.
+- [settings.md](./settings.md)
+#FIXME: move these under sourcetree.md
+#- [postgres_ffi/README.md](/libs/postgres_ffi/README.md)
+#- [test_runner/README.md](/test_runner/README.md)
+
+
+# RFCs
+
+- [RFCs](./rfcs/README.md)
+
+- [002-storage](rfcs/002-storage.md)
+- [003-laptop-cli](rfcs/003-laptop-cli.md)
+- [004-durability](rfcs/004-durability.md)
+- [005-zenith_local](rfcs/005-zenith_local.md)
+- [006-laptop-cli-v2-CLI](rfcs/006-laptop-cli-v2-CLI.md)
+- [006-laptop-cli-v2-repository-structure](rfcs/006-laptop-cli-v2-repository-structure.md)
+- [007-serverless-on-laptop](rfcs/007-serverless-on-laptop.md)
+- [008-push-pull](rfcs/008-push-pull.md)
+- [009-snapshot-first-storage-cli](rfcs/009-snapshot-first-storage-cli.md)
+- [009-snapshot-first-storage](rfcs/009-snapshot-first-storage.md)
+- [009-snapshot-first-storage-pitr](rfcs/009-snapshot-first-storage-pitr.md)
+- [010-storage_details](rfcs/010-storage_details.md)
+- [011-retention-policy](rfcs/011-retention-policy.md)
+- [012-background-tasks](rfcs/012-background-tasks.md)
+- [013-term-history](rfcs/013-term-history.md)
+- [014-safekeepers-gossip](rfcs/014-safekeepers-gossip.md)
+- [014-storage-lsm](rfcs/014-storage-lsm.md)
+- [015-storage-messaging](rfcs/015-storage-messaging.md)
+- [016-connection-routing](rfcs/016-connection-routing.md)
+- [017-timeline-data-management](rfcs/017-timeline-data-management.md)
+- [018-storage-messaging-2](rfcs/018-storage-messaging-2.md)
+- [019-tenant-timeline-lifecycles](rfcs/019-tenant-timeline-lifecycles.md)
+- [cluster-size-limits](rfcs/cluster-size-limits.md)
+
+
+# Content from file ../neon/docs/authentication.md:
+
+## Authentication
+
+### Overview
+We use JWT tokens in communication between almost all components (compute, pageserver, safekeeper, CLI) regardless of the protocol used (HTTP/PostgreSQL).
+storage_broker currently has no authentication.
+Authentication is optional and is disabled by default for easier debugging.
+It is used in some tests, though.
+Note that we do not cover authentication with `pg.neon.tech` here.
+
+For HTTP connections we use the Bearer authentication scheme.
+For PostgreSQL connections we expect the token to be passed as a password.
+There is a caveat for `psql`: it silently truncates passwords to 100 symbols, so to correctly pass JWT via `psql` you have to either use `PGPASSWORD` environment variable, or store password in `psql`'s config file.
+
+Current token scopes are described in `utils::auth::Scope`.
+There are no expiration or rotation schemes.
+
+_TODO_: some scopes allow both access to server management API and to the data.
+These probably should be split into multiple scopes.
+
+Tokens should not occur in logs.
+They may sometimes occur in configuration files, although this is discouraged
+because configs may be parsed and dumped into logs.
+
+#### Tokens generation and validation
+JWT tokens are signed using a private key.
+Compute/pageserver/safekeeper use the private key's public counterpart to validate JWT tokens.
+These components should not have access to the private key and may only get tokens from their configuration or external clients. 
+
+The key pair is generated once for an installation of compute/pageserver/safekeeper, e.g. by `neon_local init`.
+There is currently no way to rotate the key without bringing down all components.
+
+### Best practices
+
+See [RFC 8725: JSON Web Token Best Current Practices](https://www.rfc-editor.org/rfc/rfc8725)
+
+
+### Token format
+
+The JWT tokens in Neon use "EdDSA" as the algorithm (defined in [RFC8037](https://www.rfc-editor.org/rfc/rfc8037)).
+
+Example:
+
+Header:
+
+```
+{
+  "alg": "EdDSA",
+  "typ": "JWT"
+}
+```
+
+Payload:
+
+```
+{
+  "scope": "tenant",  # "tenant", "pageserverapi", or "safekeeperdata"
+  "tenant_id": "5204921ff44f09de8094a1390a6a50f6",
+}
+```
+
+
+Meanings of scope:
+
+"tenant": Provides access to all data for a specific tenant
+
+"pageserverapi": Provides blanket access to all tenants on the pageserver plus pageserver-wide APIs.
+Should only be used e.g. for status check/tenant creation/list.
+
+"safekeeperdata": Provides blanket access to all data on the safekeeper plus safekeeper-wide APIs.
+Should only be used e.g. for status check.
+Currently also used for connection from any pageserver to any safekeeper.
+
+
+### CLI
+CLI generates a key pair during call to `neon_local init` with the following commands:
+
+```bash
+openssl genpkey -algorithm ed25519 -out auth_private_key.pem
+openssl pkey -in auth_private_key.pem -pubout -out auth_public_key.pem
+```
+
+Configuration files for all components point to `public_key.pem` for JWT validation.
+However, authentication is disabled by default.
+There is no way to automatically enable it everywhere, you have to configure each component individually.
+
+CLI also generates signed token (full access to Pageserver) and saves it in
+the CLI's `config` file under `pageserver.auth_token`.
+Note that pageserver's config does not have any similar parameter.
+CLI is the only component which accesses that token.
+Technically it could generate it from the private key on each run,
+but it does not do that for some reason (_TODO_).
+
+### Compute
+#### Overview
+Compute is a per-timeline PostgreSQL instance, so it should not have
+any access to data of other tenants.
+All tokens used by a compute are restricted to a specific tenant.
+There is no auth isolation from other timelines of the same tenant,
+but a non-rogue client never accesses another timeline even by an accident:
+timeline IDs are random and hard to guess.
+
+#### Incoming connections
+All incoming connections are from PostgreSQL clients.
+Their authentication is just plain PostgreSQL authentication and out of scope for this document.
+
+There is no administrative API except those provided by PostgreSQL.
+
+#### Outgoing connections
+Compute connects to Pageserver for getting pages. The connection string is
+configured by the `neon.pageserver_connstring` PostgreSQL GUC,
+e.g. `postgresql://no_user@localhost:15028`. If the `$NEON_AUTH_TOKEN`
+environment variable is set, it is used as the password for the connection. (The
+pageserver uses JWT tokens for authentication, so the password is really a
+token.)
+
+Compute connects to Safekeepers to write and commit data. The list of safekeeper
+addresses is given in the `neon.safekeepers` GUC. The connections to the
+safekeepers take the password from the `$NEON_AUTH_TOKEN` environment
+variable, if set.
+
+The `compute_ctl` binary that runs before the PostgreSQL server, and launches
+PostgreSQL, also makes a connection to the pageserver. It uses it to fetch the
+initial "base backup" dump, to initialize the PostgreSQL data directory. It also
+uses `$NEON_AUTH_TOKEN` as the password for the connection.
+
+### Pageserver
+#### Overview
+Pageserver keeps track of multiple tenants, each having multiple timelines.
+For each timeline, it connects to the corresponding Safekeeper.
+Information about "corresponding Safekeeper" is published by Safekeepers
+in the storage_broker, but they do not publish access tokens, otherwise what is
+the point of authentication.
+
+Pageserver keeps a connection to some set of Safekeepers, which
+may or may not correspond to active Computes.
+Hence, we cannot obtain a per-timeline access token from a Compute.
+E.g. if the timeline's Compute terminates before all WAL is
+consumed by the Pageserver, the Pageserver continues consuming WAL.
+
+Pageserver replicas' authentication is the same as the main's.
+
+#### Incoming connections
+Pageserver listens for connections from computes.
+Each compute should present a token valid for the timeline's tenant.
+
+Pageserver also has HTTP API: some parts are per-tenant,
+some parts are server-wide, these are different scopes.
+
+Authentication can be enabled separately for the HTTP mgmt API, and
+for the libpq connections from compute. The `http_auth_type` and
+`pg_auth_type` configuration variables in Pageserver's config may
+have one of these values:
+
+* `Trust` removes all authentication.
+* `NeonJWT` enables JWT validation.
+   Tokens are validated using the public key which lies in a PEM file
+   specified in the `auth_validation_public_key_path` config.
+
+#### Outgoing connections
+Pageserver makes a connection to a Safekeeper for each active timeline.
+As Pageserver may want to access any timeline it has on the disk,
+it is given a blanket JWT token to access any data on any Safekeeper.
+This token is passed through an environment variable called `NEON_AUTH_TOKEN`
+(non-configurable as of writing this text).
+
+A better way _may be_ to store JWT token for each timeline next to it,
+but may be not.
+
+### Safekeeper
+#### Overview
+Safekeeper keeps track of multiple tenants, each having multiple timelines.
+
+#### Incoming connections
+Safekeeper accepts connections from Compute/Pageserver, each
+connection corresponds to a specific timeline and requires
+a corresponding JWT token.
+
+Safekeeper also has HTTP API: some parts are per-tenant,
+some parts are server-wide, these are different scopes.
+
+The `auth-validation-public-key-path` command line options controls
+the authentication mode:
+
+* If the option is missing, there is no authentication or JWT token validation.
+* If the option is present, it should be a path to the public key PEM file used for JWT token validation.
+
+#### Outgoing connections
+No connections are initiated by a Safekeeper.
+
+### In the source code
+Tests do not use authentication by default.
+If you need it, you can enable it by configuring the test's environment:
+
+```python
+neon_env_builder.auth_enabled = True
+```
+
+You will have to generate tokens if you want to access components inside the test directly,
+use `AuthKeys.generate_*_token` methods for that.
+If you create a new scope, please create a new method to prevent mistypes in scope's name.
+
+
+# Content from file ../neon/docs/consumption_metrics.md:
+
+### Overview
+Pageserver and proxy periodically collect consumption metrics and push them to a HTTP endpoint.
+
+This doc describes current implementation details.
+For design details see [the RFC](./rfcs/021-metering.md) and [the discussion on Github](https://github.com/neondatabase/neon/pull/2884).
+
+- The metrics are collected in a separate thread, and the collection interval and endpoint are configurable.
+
+- Metrics are cached, so that we don't send unchanged metrics on every iteration.
+
+- Metrics are sent in batches of 1000 (see CHUNK_SIZE const) metrics max with no particular grouping guarantees.
+
+batch format is
+```json
+
+{ "events" : [metric1, metric2, ...]]}
+
+```
+See metric format examples below.
+
+- All metrics values are in bytes, unless otherwise specified.
+
+- Currently no retries are implemented.
+
+### Pageserver metrics
+
+#### Configuration
+The endpoint and the collection interval are specified in the pageserver config file (or can be passed as command line arguments):
+`metric_collection_endpoint` defaults to None, which means that metric collection is disabled by default.
+`metric_collection_interval` defaults to 10min
+
+#### Metrics
+
+Currently, the following metrics are collected:
+
+- `written_size`
+
+Amount of WAL produced , by a timeline, i.e. last_record_lsn
+This is an absolute, per-timeline metric.
+
+- `resident_size`
+
+Size of all the layer files in the tenant's directory on disk on the pageserver.
+This is an absolute, per-tenant metric.
+
+- `remote_storage_size`
+
+Size of the remote storage (S3) directory.
+This is an absolute, per-tenant metric.
+
+- `timeline_logical_size`
+Logical size of the data in the timeline
+This is an absolute, per-timeline metric.
+
+- `synthetic_storage_size`
+Size of all tenant's branches including WAL
+This is the same metric that `tenant/{tenant_id}/size` endpoint returns.
+This is an absolute, per-tenant metric.
+
+Synthetic storage size is calculated in a separate thread, so it might be slightly outdated.
+
+#### Format example
+
+```json
+{
+"metric": "remote_storage_size",
+"type": "absolute",
+"time": "2022-12-28T11:07:19.317310284Z",
+"idempotency_key": "2022-12-28 11:07:19.317310324 UTC-1-4019",
+"value": 12345454,
+"tenant_id": "5d07d9ce9237c4cd845ea7918c0afa7d",
+"timeline_id": "a03ebb4f5922a1c56ff7485cc8854143",
+}
+```
+
+`idempotency_key` is a unique key for each metric, so that we can deduplicate metrics.
+It is a combination of the time, node_id and a random number.
+
+### Proxy consumption metrics
+
+#### Configuration
+The endpoint and the collection interval can be passed as command line arguments for proxy:
+`metric_collection_endpoint` no default, which means that metric collection is disabled by default.
+`metric_collection_interval` no default
+
+#### Metrics
+
+Currently, only one proxy metric is collected:
+
+- `proxy_io_bytes_per_client`
+Outbound traffic per client.
+This is an incremental, per-endpoint metric.
+
+#### Format example
+
+```json
+{
+"metric": "proxy_io_bytes_per_client",
+"type": "incremental",
+"start_time": "2022-12-28T11:07:19.317310284Z",
+"stop_time": "2022-12-28T11:07:19.317310284Z",
+"idempotency_key": "2022-12-28 11:07:19.317310324 UTC-1-4019",
+"value": 12345454,
+"endpoint_id": "5d07d9ce9237c4cd845ea7918c0afa7d",
+}
+```
+
+The metric is incremental, so the value is the difference between the current and the previous value.
+If there is no previous value, the value, the value is the current value and the `start_time` equals `stop_time`.
+
+### TODO
+
+- [ ] Handle errors better: currently if one tenant fails to gather metrics, the whole iteration fails and metrics are not sent for any tenant.
+- [ ] Add retries
+- [ ] Tune the interval
+
+# Content from file ../neon/docs/core_changes.md:
+
+# Postgres core changes
+
+This lists all the changes that have been made to the PostgreSQL
+source tree, as a somewhat logical set of patches. The long-term goal
+is to eliminate all these changes, by submitting patches to upstream
+and refactoring code into extensions, so that you can run unmodified
+PostgreSQL against Neon storage.
+
+In Neon, we run PostgreSQL in the compute nodes, but we also run a special WAL redo process in the
+page server. We currently use the same binary for both, with --wal-redo runtime flag to launch it in
+the WAL redo mode. Some PostgreSQL changes are needed in the compute node, while others are just for
+the WAL redo process.
+
+In addition to core PostgreSQL changes, there is a Neon extension in contrib/neon, to hook into the
+smgr interface. Once all the core changes have been submitted to upstream or eliminated some other
+way, the extension could live outside the postgres repository and build against vanilla PostgreSQL.
+
+Below is a list of all the PostgreSQL source code changes, categorized into changes needed for
+compute, and changes needed for the WAL redo process:
+
+# Changes for Compute node
+
+## Add t_cid to heap WAL records
+
+```
+ src/backend/access/heap/heapam.c                            |   26 +-
+ src/include/access/heapam_xlog.h                            |    6 +-
+```
+
+We have added a new t_cid field to heap WAL records. This changes the WAL record format, making Neon WAL format incompatible with vanilla PostgreSQL!
+
+### Problem we're trying to solve
+
+The problem is that the XLOG_HEAP_INSERT record does not include the command id of the inserted row. And same with deletion/update. So in the primary, a row is inserted with current xmin + cmin. But in the replica, the cmin is always set to 1. That works in PostgreSQL, because the command id is only relevant to the inserting transaction itself. After commit/abort, no one cares about it anymore. But with Neon, we rely on WAL replay to reconstruct the page, even while the original transaction is still running.
+
+### How to get rid of the patch
+
+Bite the bullet and submit the patch to PostgreSQL, to add the t_cid to the WAL records. It makes the WAL records larger, which could make this unpopular in the PostgreSQL community. However, it might simplify some logical decoding code; Andres Freund briefly mentioned in PGCon 2022 discussion on Heikki's Neon presentation that logical decoding currently needs to jump through some hoops to reconstruct the same information.
+
+
+### Alternatives
+Perhaps we could write an extra WAL record with the t_cid information, when a page is evicted that contains rows that were touched a transaction that's still running. However, that seems very complicated.
+
+## ginfast.c
+
+```
+diff --git a/src/backend/access/gin/ginfast.c b/src/backend/access/gin/ginfast.c
+index e0d9940946..2d964c02e9 100644
+--- a/src/backend/access/gin/ginfast.c
++++ b/src/backend/access/gin/ginfast.c
+@@ -285,6 +285,17 @@ ginHeapTupleFastInsert(GinState *ginstate, GinTupleCollector *collector)
+                memset(&sublist, 0, sizeof(GinMetaPageData));
+                makeSublist(index, collector->tuples, collector->ntuples, &sublist);
+ 
++               if (metadata->head != InvalidBlockNumber)
++               {
++                       /*
++                        * ZENITH: Get buffer before XLogBeginInsert() to avoid recursive call
++                        * of XLogBeginInsert(). Reading a new buffer might evict a dirty page from
++                        * the buffer cache, and if that page happens to be an FSM or VM page, zenith_write()
++                        * will try to WAL-log an image of the page.
++                        */
++                       buffer = ReadBuffer(index, metadata->tail);
++               }
++
+                if (needWal)
+                        XLogBeginInsert();
+ 
+@@ -316,7 +327,6 @@ ginHeapTupleFastInsert(GinState *ginstate, GinTupleCollector *collector)
+                        data.prevTail = metadata->tail;
+                        data.newRightlink = sublist.head;
+ 
+-                       buffer = ReadBuffer(index, metadata->tail);
+                        LockBuffer(buffer, GIN_EXCLUSIVE);
+                        page = BufferGetPage(buffer);
+```
+
+The problem is explained in the comment above
+
+### How to get rid of the patch
+
+Can we stop WAL-logging FSM or VM pages? Or delay the WAL logging until we're out of the critical
+section or something.
+
+Maybe some bigger rewrite of FSM and VM would help to avoid WAL-logging FSM and VM page images?
+
+
+## Mark index builds that use buffer manager without logging explicitly
+
+```
+ src/backend/access/gin/gininsert.c                          |    7 +
+ src/backend/access/gist/gistbuild.c                         |   15 +-
+ src/backend/access/spgist/spginsert.c                       |    8 +-
+
+also some changes in src/backend/storage/smgr/smgr.c
+```
+
+When a GIN index is built, for example, it is built by inserting the entries into the index more or
+less normally, but without WAL-logging anything. After the index has been built, we iterate through
+all pages and write them to the WAL. That doesn't work for Neon, because if a page is not WAL-logged
+and is evicted from the buffer cache, it is lost. We have an check to catch that in the Neon
+extension. To fix that, we've added a few functions to track explicitly when we're performing such
+an operation: `smgr_start_unlogged_build`, `smgr_finish_unlogged_build_phase_1` and
+`smgr_end_unlogged_build`.
+
+
+### How to get rid of the patch
+
+I think it would make sense to be more explicit about that in PostgreSQL too. So extract these
+changes to a patch and post to pgsql-hackers.
+
+
+## Track last-written page LSN
+
+```
+ src/backend/commands/dbcommands.c                           |   17 +-
+
+Also one call to SetLastWrittenPageLSN() in spginsert.c, maybe elsewhere too
+```
+
+Whenever a page is evicted from the buffer cache, we remember its LSN, so that we can use the same
+LSN in the GetPage@LSN request when reading the page back from the page server. The value is
+conservative: it would be correct to always use the last-inserted LSN, but it would be slow because
+then the page server would need to wait for the recent WAL to be streamed and processed, before
+responding to any GetPage@LSN request.
+
+The last-written page LSN is mostly tracked in the smgrwrite() function, without core code changes,
+but there are a few exceptions where we've had to add explicit calls to the Neon-specific
+SetLastWrittenPageLSN() function.
+
+There's an open PR to track the LSN in a more-fine grained fashion:
+https://github.com/neondatabase/postgres/pull/177
+
+PostgreSQL v15 introduces a new method to do CREATE DATABASE that WAL-logs the database instead of
+relying copying files and checkpoint. With that method, we probably won't need any special handling.
+The old method is still available, though.
+
+### How to get rid of the patch
+
+Wait until v15?
+
+
+## Cache relation sizes
+
+The Neon extension contains a little cache for smgrnblocks() and smgrexists() calls, to avoid going
+to the page server every time. It might be useful to cache those in PostgreSQL, maybe in the
+relcache? (I think we do cache nblocks in relcache already, check why that's not good enough for
+Neon)
+
+
+## Use buffer manager when extending VM or FSM
+
+```
+ src/backend/storage/freespace/freespace.c                   |   14 +-
+ src/backend/access/heap/visibilitymap.c                     |   15 +-
+
+diff --git a/src/backend/access/heap/visibilitymap.c b/src/backend/access/heap/visibilitymap.c
+index e198df65d8..addfe93eac 100644
+--- a/src/backend/access/heap/visibilitymap.c
++++ b/src/backend/access/heap/visibilitymap.c
+@@ -652,10 +652,19 @@ vm_extend(Relation rel, BlockNumber vm_nblocks)
+        /* Now extend the file */
+        while (vm_nblocks_now < vm_nblocks)
+        {
+-               PageSetChecksumInplace((Page) pg.data, vm_nblocks_now);
++               /*
++                * ZENITH: Initialize VM pages through buffer cache to prevent loading
++                * them from pageserver.
++                */
++               Buffer  buffer = ReadBufferExtended(rel, VISIBILITYMAP_FORKNUM, P_NEW,
++                                                                                       RBM_ZERO_AND_LOCK, NULL);
++               Page    page = BufferGetPage(buffer);
++
++               PageInit((Page) page, BLCKSZ, 0);
++               PageSetChecksumInplace(page, vm_nblocks_now);
++               MarkBufferDirty(buffer);
++               UnlockReleaseBuffer(buffer);
+ 
+-               smgrextend(rel->rd_smgr, VISIBILITYMAP_FORKNUM, vm_nblocks_now,
+-                                  pg.data, false);
+                vm_nblocks_now++;
+        }
+```
+
+### Problem we're trying to solve
+
+???
+
+### How to get rid of the patch
+
+Maybe this would be a reasonable change in PostgreSQL too?
+
+
+## Allow startup without reading checkpoint record
+
+In Neon, the compute node is stateless. So when we are launching compute node, we need to provide
+some dummy PG_DATADIR. Relation pages can be requested on demand from page server. But Postgres
+still need some non-relational data: control and configuration files, SLRUs,...  It is currently
+implemented using basebackup (do not mix with pg_basebackup) which is created by pageserver. It
+includes in this tarball config/control files, SLRUs and required directories.
+
+As pageserver does not have the original WAL segments, the basebackup tarball includes an empty WAL
+segment to bootstrap the WAL writing, but it doesn't contain the checkpoint record.  There are some
+changes in xlog.c, to allow starting the compute node without reading the last checkpoint record
+from WAL.
+
+This includes code to read the `zenith.signal` file, which tells the startup code the LSN to start
+at. When the `zenith.signal` file is present, the startup uses that LSN instead of the last
+checkpoint's LSN. The system is known to be consistent at that LSN, without any WAL redo.
+
+
+### How to get rid of the patch
+
+???
+
+
+### Alternatives
+
+Include a fake checkpoint record in the tarball. Creating fake WAL is a bit risky, though; I'm
+afraid it might accidentally get streamed to the safekeepers and overwrite or corrupt the real WAL.
+
+## Disable sequence caching
+
+```
+diff --git a/src/backend/commands/sequence.c b/src/backend/commands/sequence.c
+index 0415df9ccb..9f9db3c8bc 100644
+--- a/src/backend/commands/sequence.c
++++ b/src/backend/commands/sequence.c
+@@ -53,7 +53,9 @@
+  * so we pre-log a few fetches in advance. In the event of
+  * crash we can lose (skip over) as many values as we pre-logged.
+  */
+-#define SEQ_LOG_VALS   32
++/* Zenith XXX: to ensure sequence order of sequence in Zenith we need to WAL log each sequence update. */
++/* #define SEQ_LOG_VALS        32 */
++#define SEQ_LOG_VALS   0
+```
+
+Due to performance reasons Postgres don't want to log each fetching of a value from a sequence, so
+it pre-logs a few fetches in advance. In the event of crash we can lose (skip over) as many values
+as we pre-logged. But with Neon, because page with sequence value can be evicted from buffer cache,
+we can get a gap in sequence values even without crash.
+
+### How to get rid of the patch
+
+Maybe we can just remove it, and accept the gaps. Or add some special handling for sequence
+relations in the Neon extension, to WAL log the sequence page when it's about to be evicted. It
+would be weird if the sequence moved backwards though, think of PITR.
+
+Or add a GUC for the amount to prefix to PostgreSQL, and force it to 1 in Neon.
+
+
+## Walproposer
+
+```
+ src/Makefile                                                |    1 +
+ src/backend/replication/libpqwalproposer/Makefile           |   37 +
+ src/backend/replication/libpqwalproposer/libpqwalproposer.c |  416 ++++++++++++
+ src/backend/postmaster/bgworker.c                           |    4 +
+ src/backend/postmaster/postmaster.c                         |    6 +
+ src/backend/replication/Makefile                            |    4 +-
+ src/backend/replication/walproposer.c                       | 2350 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ src/backend/replication/walproposer_utils.c                 |  402 +++++++++++
+ src/backend/replication/walreceiver.c                       |    7 +
+ src/backend/replication/walsender.c                         |  320 ++++++---
+ src/backend/storage/ipc/ipci.c                              |    6 +
+ src/include/replication/walproposer.h                       |  565 ++++++++++++++++
+```
+
+WAL proposer is communicating with safekeeper and ensures WAL durability by quorum writes.  It is
+currently implemented as patch to standard WAL sender.
+
+### How to get rid of the patch
+
+Refactor into an extension. Submit hooks or APIs into upstream if necessary.
+
+@MMeent did some work on this already: https://github.com/neondatabase/postgres/pull/96
+
+## Ignore unexpected data beyond EOF in bufmgr.c
+
+```
+@@ -922,11 +928,14 @@ ReadBuffer_common(SMgrRelation smgr, char relpersistence, ForkNumber forkNum,
+                 */
+                bufBlock = isLocalBuf ? LocalBufHdrGetBlock(bufHdr) : BufHdrGetBlock(bufHdr);
+                if (!PageIsNew((Page) bufBlock))
+-                       ereport(ERROR,
++               {
++                        // XXX-ZENITH
++                        MemSet((char *) bufBlock, 0, BLCKSZ);
++                        ereport(DEBUG1,
+                                        (errmsg("unexpected data beyond EOF in block %u of relation %s",
+                                                        blockNum, relpath(smgr->smgr_rnode, forkNum)),
+                                         errhint("This has been seen to occur with buggy kernels; consider updating your system.")));
+-
++               }
+                /*
+                 * We *must* do smgrextend before succeeding, else the page will not
+                 * be reserved by the kernel, and the next P_NEW call will decide to
+```
+
+PostgreSQL is a bit sloppy with extending relations. Usually, the relation is extended with zeros
+first, then the page is filled, and finally the new page WAL-logged. But if multiple backends extend
+a relation at the same time, the pages can be WAL-logged in different order.
+
+I'm not sure what scenario exactly required this change in Neon, though.
+
+### How to get rid of the patch
+
+Submit patches to pgsql-hackers, to tighten up the WAL-logging around relation extension. It's a bit
+confusing even in PostgreSQL. Maybe WAL log the intention to extend first, then extend the relation,
+and finally WAL-log that the extension succeeded.
+
+## Make smgr interface available to extensions
+
+```
+ src/backend/storage/smgr/smgr.c                             |  203 +++---
+ src/include/storage/smgr.h                                  |   72 +-
+```
+
+### How to get rid of the patch
+
+Submit to upstream. This could be useful for the Disk Encryption patches too, or for compression.
+
+
+## Added relpersistence argument to smgropen()
+
+```
+ src/backend/access/heap/heapam_handler.c                    |    2 +-
+ src/backend/catalog/storage.c                               |   10 +-
+ src/backend/commands/tablecmds.c                            |    2 +-
+ src/backend/storage/smgr/md.c                               |    4 +-
+ src/include/utils/rel.h                                     |    3 +-
+```
+
+Neon needs to treat unlogged relations differently from others, so the smgrread(), smgrwrite() etc.
+implementations need to know the 'relpersistence' of the relation. To get that information where
+it's needed, we added the 'relpersistence' field to smgropen().
+
+### How to get rid of the patch
+
+Maybe 'relpersistence' would be useful in PostgreSQL for debugging purposes? Or simply for the
+benefit of extensions like Neon. Should consider this in the patch to make smgr API usable to
+extensions.
+
+## Alternatives
+
+Currently in Neon, unlogged tables live on local disk in the compute node, and are wiped away on
+compute node restart. One alternative would be to instead WAL-log even unlogged tables, essentially
+ignoring the UNLOGGED option. Or prohibit UNLOGGED tables completely. But would we still need the
+relpersistence argument to handle index builds? See item on "Mark index builds that use buffer
+manager without logging explicitly".
+
+## Use smgr and dbsize_hook for size calculations
+
+```
+ src/backend/utils/adt/dbsize.c                              |   61 +-
+```
+
+In PostgreSQL, the rel and db-size functions scan the data directory directly. That won't work in Neon.
+
+### How to get rid of the patch
+
+Send patch to PostgreSQL, to use smgr API functions for relation size calculation instead. Maybe as
+part of the general smgr API patch.
+
+
+
+# WAL redo process changes
+
+Pageserver delegates complex WAL decoding duties to Postgres, which means that the latter might fall
+victim to carefully designed malicious WAL records and start doing harmful things to the system.  To
+prevent this, the redo functions are executed in a separate process that is sandboxed with Linux
+Secure Computing mode (see seccomp(2) man page).
+
+As an alternative to having a separate WAL redo process, we could rewrite all redo handlers in Rust
+This is infeasible. However, it would take a lot of effort to rewrite them, ensure that you've done
+the rewrite correctly, and once you've done that, it would be a lot of ongoing maintenance effort to
+keep the rewritten code in sync over time, across new PostgreSQL versions. That's why we want to
+leverage PostgreSQL code.
+
+Another alternative would be to harden all the PostgreSQL WAL redo functions so that it would be
+safe to call them directly from Rust code, without needing the security sandbox. That's not feasible
+for similar reasons as rewriting them in Rust.
+
+
+## Don't replay change in XLogReadBufferForRedo that are not for the target page we're replaying
+
+```
+ src/backend/access/gin/ginxlog.c                            |   19 +-
+
+Also some changes in xlog.c and xlogutils.c
+
+Example:
+
+@@ -415,21 +416,27 @@ ginRedoSplit(XLogReaderState *record)
+        if (!isLeaf)
+                ginRedoClearIncompleteSplit(record, 3);
+ 
+-       if (XLogReadBufferForRedo(record, 0, &lbuffer) != BLK_RESTORED)
++       action = XLogReadBufferForRedo(record, 0, &lbuffer);
++       if (action != BLK_RESTORED && action != BLK_DONE)
+                elog(ERROR, "GIN split record did not contain a full-page image of left page");
+```
+
+### Problem we're trying to solve
+
+In PostgreSQL, if a WAL redo function calls XLogReadBufferForRead() for a page that has a full-page
+image, it always succeeds. However, Neon WAL redo process is only concerned about replaying changes
+to a singe page, so replaying any changes for other pages is a waste of cycles. We have modified
+XLogReadBufferForRead() to return BLK_DONE for all other pages, to avoid the overhead. That is
+unexpected by code like the above.
+
+### How to get rid of the patch
+
+Submit the changes to upstream, hope the community accepts them. There's no harm to PostgreSQL from
+these changes, although it doesn't have any benefit either.
+
+To make these changes useful to upstream PostgreSQL, we could implement a feature to look ahead the
+WAL, and detect truncated relations. Even in PostgreSQL, it is a waste of cycles to replay changes
+to pages that are later truncated away, so we could have XLogReadBufferForRedo() return BLK_DONE or
+BLK_NOTFOUND for pages that are known to be truncated away later in the WAL stream.
+
+### Alternatives
+
+Maybe we could revert this optimization, and restore pages other than the target page too.
+
+## Add predefined_sysidentifier flag to initdb
+
+```
+ src/backend/bootstrap/bootstrap.c                           |   13 +-
+ src/bin/initdb/initdb.c                                     |    4 +
+
+And some changes in xlog.c
+```
+
+This is used to help with restoring a database when you have all the WAL, all the way back to
+initdb, but no backup. You can reconstruct the missing backup by running initdb again, with the same
+sysidentifier.
+
+
+### How to get rid of the patch
+
+Ignore it. This is only needed for disaster recovery, so once we've eliminated all other Postgres
+patches, we can just keep it around as a patch or as separate branch in a repo.
+
+
+# Not currently committed but proposed
+
+## Disable ring buffer buffer manager strategies
+
+### Why?
+
+Postgres tries to avoid cache flushing by bulk operations (copy, seqscan, vacuum,...).
+Even if there are free space in buffer cache, pages may be evicted.
+Negative effect of it can be somehow compensated by file system cache, but in Neon,
+cost of requesting page from page server is much higher.
+
+### Alternatives?
+
+Instead of just prohibiting ring buffer we may try to implement more flexible eviction policy,
+for example copy evicted page from ring buffer to some other buffer if there is free space
+in buffer cache.
+
+## Disable marking page as dirty when hint bits are set.
+
+### Why?
+
+Postgres has to modify page twice: first time when some tuple is updated and second time when
+hint bits are set. Wal logging hint bits updates requires FPI which significantly increase size of WAL.
+
+### Alternatives?
+
+Add special WAL record for setting page hints.
+
+## Prefetching
+
+### Why?
+
+As far as pages in Neon are loaded on demand, to reduce node startup time
+and also speedup some massive queries we need some mechanism for bulk loading to
+reduce page request round-trip overhead.
+
+Currently Postgres is supporting prefetching only for bitmap scan.
+In Neon we should also use prefetch for sequential and index scans, because the OS is not doing it for us.
+For sequential scan we could prefetch some number of following pages. For index scan we could prefetch pages
+of heap relation addressed by TIDs.
+
+## Prewarming
+
+### Why?
+
+Short downtime (or, in other words, fast compute node restart time) is one of the key feature of Zenith.
+But overhead of request-response round-trip for loading pages on demand can make started node warm-up quite slow.
+We can capture state of compute node buffer cache and send bulk request for this pages at startup.
+
+
+# Content from file ../neon/docs/docker.md:
+
+# Docker images of Neon
+
+## Images
+
+Currently we build two main images:
+
+- [neondatabase/neon](https://hub.docker.com/repository/docker/zenithdb/zenith) — image with pre-built `pageserver`, `safekeeper` and `proxy` binaries and all the required runtime dependencies. Built from [/Dockerfile](/Dockerfile).
+- [neondatabase/compute-node](https://hub.docker.com/repository/docker/zenithdb/compute-node) — compute node image with pre-built Postgres binaries from [neondatabase/postgres](https://github.com/neondatabase/postgres).
+
+And additional intermediate image:
+
+- [neondatabase/compute-tools](https://hub.docker.com/repository/docker/neondatabase/compute-tools) — compute node configuration management tools.
+
+## Building pipeline
+
+We build all images after a successful `release` tests run and push automatically to Docker Hub with two parallel CI jobs
+
+1. `neondatabase/compute-tools` and `neondatabase/compute-node`
+
+2. `neondatabase/neon`
+
+## Docker Compose example
+
+You can see a [docker compose](https://docs.docker.com/compose/) example to create a neon cluster in [/docker-compose/docker-compose.yml](/docker-compose/docker-compose.yml). It creates the following conatainers.
+
+- pageserver x 1
+- safekeeper x 3
+- storage_broker x 1
+- compute x 1
+- MinIO x 1        # This is Amazon S3 compatible object storage
+
+### How to use
+
+1. create containers
+
+You can specify version of neon cluster using following environment values.
+- PG_VERSION: postgres version for compute (default is 14)
+- TAG: the tag version of [docker image](https://registry.hub.docker.com/r/neondatabase/neon/tags) (default is latest), which is tagged in [CI test](/.github/workflows/build_and_test.yml)
+```
+$ cd docker-compose/
+$ docker-compose down   # remove the conainers if exists
+$ PG_VERSION=15 TAG=2937 docker-compose up --build -d  # You can specify the postgres and image version
+Creating network "dockercompose_default" with the default driver
+Creating docker-compose_storage_broker_1       ... done
+(...omit...)
+```
+
+2. connect compute node
+```
+$ echo "localhost:55433:postgres:cloud_admin:cloud_admin" >> ~/.pgpass
+$ chmod 600 ~/.pgpass
+$ psql -h localhost -p 55433 -U cloud_admin
+postgres=# CREATE TABLE t(key int primary key, value text);
+CREATE TABLE
+postgres=# insert into t values(1,1);
+INSERT 0 1
+postgres=# select * from t;
+ key | value
+-----+-------
+   1 | 1
+(1 row)
+```
+
+3. If you want to see the log, you can use `docker-compose logs` command.
+```
+# check the container name you want to see
+$ docker ps
+CONTAINER ID   IMAGE                                              COMMAND                  CREATED         STATUS         PORTS                                                                                                                                  NAMES
+d6968a5ae912   dockercompose_compute                              "/shell/compute.sh"      5 minutes ago   Up 5 minutes   0.0.0.0:3080->3080/tcp, 0.0.0.0:55433->55433/tcp                                                                                       dockercompose_compute_1
+(...omit...)
+
+$ docker logs -f dockercompose_compute_1
+2022-10-21 06:15:48.757 GMT [56] LOG:  connection authorized: user=cloud_admin database=postgres application_name=psql
+2022-10-21 06:17:00.307 GMT [56] LOG:  [NEON_SMGR] libpagestore: connected to 'host=pageserver port=6400'
+(...omit...)
+```
+
+4. If you want to see durable data in MinIO which is s3 compatible storage
+
+Access http://localhost:9001 and sign in.
+
+- Username: `minio`
+- Password: `password`
+
+You can see durable pages and WAL data in `neon` bucket.
+
+# Content from file ../neon/docs/error-handling.md:
+
+# Error handling and logging
+
+## Logging errors
+
+The principle is that errors are logged when they are handled. If you
+just propagate an error to the caller in a function, you don't need to
+log it; the caller will. But if you consume an error in a function,
+you *must* log it (if it needs to be logged at all).
+
+For example:
+
+```rust
+fn read_motd_file() -> std::io::Result<String> {
+    let mut f = File::open("/etc/motd")?;
+    let mut result = String::new();
+    f.read_to_string(&mut result)?;
+    result
+}
+```
+
+Opening or reading the file could fail, but there is no need to log
+the error here. The function merely propagates the error to the
+caller, and it is up to the caller to log the error or propagate it
+further, if the failure is not expected. But if, for example, it is
+normal that the "/etc/motd" file doesn't exist, the caller can choose
+to silently ignore the error, or log it as an INFO or DEBUG level
+message:
+
+```rust
+fn get_message_of_the_day() -> String {
+    // Get the motd from /etc/motd, or return the default proverb
+    match read_motd_file() {
+        Ok(motd) => motd,
+        Err(err)  => {
+            // It's normal that /etc/motd doesn't exist, but if we fail to
+            // read it for some other reason, that's unexpected. The message
+            // of the day isn't very important though, so we just WARN and
+            // continue with the default in any case.
+            if err.kind() != std::io::ErrorKind::NotFound {
+                 tracing::warn!("could not read \"/etc/motd\": {err:?}");
+            }
+            "An old error is always more popular than a new truth. - German proverb"
+        }
+    }
+}
+```
+
+## Error types
+
+We use the `anyhow` crate widely. It contains many convenient macros
+like `bail!` and `ensure!` to construct and return errors, and to
+propagate many kinds of low-level errors, wrapped in `anyhow::Error`.
+
+A downside of `anyhow::Error` is that the caller cannot distinguish
+between different error cases. Most errors are propagated all the way
+to the mgmt API handler function, or the main loop that handles a
+connection with the compute node, and they are all handled the same
+way: the error is logged and returned to the client as an HTTP or
+libpq error.
+
+But in some cases, we need to distinguish between errors and handle
+them differently. For example, attaching a tenant to the pageserver
+could fail either because the tenant has already been attached, or
+because we could not load its metadata from cloud storage. The first
+case is more or less expected. The console sends the Attach request to
+the pageserver, and the pageserver completes the operation, but the
+network connection might be lost before the console receives the
+response. The console will retry the operation in that case, but the
+tenant has already been attached. It is important that the pagserver
+responds with the HTTP 403 Already Exists error in that case, rather
+than a generic HTTP 500 Internal Server Error.
+
+If you need to distinguish between different kinds of errors, create a
+new `Error` type. The `thiserror` crate is useful for that. But in
+most cases `anyhow::Error` is good enough.
+
+## Panics
+
+Depending on where a panic happens, it can cause the whole pageserver
+or safekeeper to restart, or just a single tenant. In either case,
+that is pretty bad and causes an outage. Avoid panics. Never use
+`unwrap()` or other calls that might panic, to verify inputs from the
+network or from disk.
+
+It is acceptable to use functions that might panic, like `unwrap()`, if
+it is obvious that it cannot panic. For example, if you have just
+checked that a variable is not None, it is OK to call `unwrap()` on it,
+but it is still preferable to use `expect("reason")` instead to explain
+why the function cannot fail.
+
+`assert!` and `panic!` are reserved for checking clear invariants and
+very obvious "can't happen" cases. When in doubt, use anyhow `ensure!`
+or `bail!` instead.
+
+## Error levels
+
+`tracing::Level` doesn't provide very clear guidelines on what the
+different levels mean, or when to use which level. Here is how we use
+them:
+
+### Error
+
+Examples:
+- could not open file "foobar"
+- invalid tenant id
+
+Errors are not expected to happen during normal operation. Incorrect
+inputs from client can cause ERRORs. For example, if a client tries to
+call a mgmt API that doesn't exist, or if a compute node sends passes
+an LSN that has already been garbage collected away.
+
+These should *not* happen during normal operations. "Normal
+operations" is not a very precise concept. But for example, disk
+errors are not expected to happen when the system is working, so those
+count as Errors. However, if a TCP connection to a compute node is
+lost, that is not considered an Error, because it doesn't affect the
+pageserver's or safekeeper's operation in any way, and happens fairly
+frequently when compute nodes are shut down, or are killed abruptly
+because of errors in the compute.
+
+**Errors are monitored, and always need human investigation to determine
+the cause.**
+
+Whether something should be logged at ERROR, WARNING or INFO level can
+depend on the callers and clients. For example, it might be unexpected
+and a sign of a serious issue if the console calls the
+"timeline_detail" mgmt API for a timeline that doesn't exist. ERROR
+would be appropriate in that case. But if the console routinely calls
+the API after deleting a timeline, to check if the deletion has
+completed, then it would be totally normal and an INFO or DEBUG level
+message would be more appropriate. If a message is logged as an ERROR,
+but it in fact happens frequently in production and never requires any
+action, it should probably be demoted to an INFO level message.
+
+### Warn
+
+Examples:
+- could not remove temporary file "foobar.temp"
+- unrecognized file "foobar" in timeline directory
+
+Warnings are similar to Errors, in that they should not happen
+when the system is operating normally. The difference between Error and
+Warning is that an Error means that the operation failed, whereas Warning
+means that something unexpected happened, but the operation continued anyway.
+For example, if deleting a file fails because the file already didn't exist,
+it should be logged as Warning.
+
+> **Note:** The python regression tests, under `test_regress`, check the
+> pageserver log after each test for any ERROR and WARN lines. If there are
+> any ERRORs or WARNs that have not been explicitly listed in the test as
+> allowed, the test is marked a failed. This is to catch unexpected errors
+> e.g. in background operations, that don't cause immediate misbehaviour in
+> the tested functionality.
+
+### Info
+
+Info level is used to log useful information when the system is
+operating normally. Info level is appropriate e.g. for logging state
+changes, background operations, and network connections.
+
+Examples:
+- "system is shutting down"
+- "tenant was created"
+- "retrying S3 upload"
+
+### Debug & Trace
+
+Debug and Trace level messages are not printed to the log in our normal
+production configuration, but could be enabled for a specific server or
+tenant, to aid debugging. (Although we don't actually have that
+capability as of this writing).
+
+## Context
+
+We use logging "spans" to hold context information about the current
+operation. Almost every operation happens on a particular tenant and
+timeline, so we enter a span with the "tenant_id" and "timeline_id"
+very early when processing an incoming API request, for example. All
+background operations should also run in a span containing at least
+those two fields, and any other parameters or information that might
+be useful when debugging an error that might happen when performing
+the operation.
+
+TODO: Spans are not captured in the Error when it is created, but when
+the error is logged. It would be more useful to capture them at Error
+creation. We should consider using `tracing_error::SpanTrace` to do
+that.
+
+## Error message style
+
+### PostgreSQL extensions
+
+PostgreSQL has a style guide for writing error messages:
+
+https://www.postgresql.org/docs/current/error-style-guide.html
+
+Follow that guide when writing error messages in the PostgreSQL
+extensions.
+
+### Neon Rust code
+
+#### Anyhow Context
+
+When adding anyhow `context()`, use form `present-tense-verb+action`.
+
+Example:
+- Bad: `file.metadata().context("could not get file metadata")?;`
+- Good: `file.metadata().context("get file metadata")?;`
+
+#### Logging Errors
+
+When logging any error `e`, use `could not {e:#}` or `failed to {e:#}`.
+
+If `e` is an `anyhow` error and you want to log the backtrace that it contains,
+use `{e:?}` instead of `{e:#}`.
+
+#### Rationale
+
+The `{:#}` ("alternate Display") of an `anyhow` error chain is concatenation fo the contexts, using `: `.
+
+For example, the following Rust code will result in output
+```
+ERROR  failed to list users: load users from server: parse response: invalid json
+```
+
+This is more concise / less noisy than what happens if you do `.context("could not ...")?` at each level, i.e.:
+
+```
+ERROR  could not list users: could not load users from server: could not parse response: invalid json
+```
+
+
+```rust
+fn main() {
+  match list_users().context("list users") else {
+    Ok(_) => ...,
+    Err(e) => tracing::error!("failed to {e:#}"),
+  }
+}
+fn list_users() {
+  http_get_users().context("load users from server")?;
+}
+fn http_get_users() {
+  let response = client....?;
+  response.parse().context("parse response")?; // fails with serde error "invalid json"
+}
+```
+
+
+# Content from file ../neon/docs/glossary.md:
+
+# Glossary
+
+### Authentication
+
+### Backpressure
+
+Backpressure is used to limit the lag between pageserver and compute node or WAL service.
+
+If compute node or WAL service run far ahead of Page Server,
+the time of serving page requests increases. This may lead to timeout errors.
+
+To tune backpressure limits use `max_replication_write_lag`, `max_replication_flush_lag` and `max_replication_apply_lag` settings.
+When lag between current LSN (pg_current_wal_flush_lsn() at compute node) and minimal write/flush/apply position of replica exceeds the limit
+backends performing writes are blocked until the replica is caught up.
+### Base image (page image)
+
+### Basebackup
+
+A tarball with files needed to bootstrap a compute node[] and a corresponding command to create it.
+NOTE:It has nothing to do with PostgreSQL pg_basebackup.
+
+### Branch
+
+We can create branch at certain LSN using `neon_local timeline branch` command.
+Each Branch lives in a corresponding timeline[] and has an ancestor[].
+
+
+### Checkpoint (PostgreSQL)
+
+NOTE: This is an overloaded term.
+
+A checkpoint record in the WAL marks a point in the WAL sequence at which it is guaranteed that all data files have been updated with all information from shared memory modified before that checkpoint;
+
+### Checkpoint (Layered repository)
+
+NOTE: This is an overloaded term.
+
+Whenever enough WAL has been accumulated in memory, the page server []
+writes out the changes from the in-memory layer into a new delta layer file. This process
+is called "checkpointing".
+
+Configuration parameter `checkpoint_distance` defines the distance
+from current LSN to perform checkpoint of in-memory layers.
+Default is `DEFAULT_CHECKPOINT_DISTANCE`.
+
+### Compaction
+
+A background operation on layer files. Compaction takes a number of L0
+layer files, each of which covers the whole key space and a range of
+LSN, and reshuffles the data in them into L1 files so that each file
+covers the whole LSN range, but only part of the key space.
+
+Compaction should also opportunistically leave obsolete page versions
+from the L1 files, and materialize other page versions for faster
+access. That hasn't been implemented as of this writing, though.
+
+
+### Compute node
+
+Stateless Postgres node that stores data in pageserver.
+
+### Garbage collection
+
+The process of removing old on-disk layers that are not needed by any timeline anymore.
+
+### Fork
+
+Each of the separate segmented file sets in which a relation is stored. The main fork is where the actual data resides. There also exist two secondary forks for metadata: the free space map and the visibility map.
+
+### Layer
+
+A layer contains data needed to reconstruct any page versions within the
+layer's Segment and range of LSNs.
+
+There are two kinds of layers, in-memory and on-disk layers. In-memory
+layers are used to ingest incoming WAL, and provide fast access
+to the recent page versions. On-disk layers are stored as files on disk, and
+are immutable. See [pageserver-storage.md](./pageserver-storage.md) for more.
+
+### Layer file (on-disk layer)
+
+Layered repository on-disk format is based on immutable files.  The
+files are called "layer files". There are two kinds of layer files:
+image files and delta files. An image file contains a "snapshot" of a
+range of keys at a particular LSN, and a delta file contains WAL
+records applicable to a range of keys, in a range of LSNs.
+
+### Layer map
+
+The layer map tracks what layers exist in a timeline.
+
+### Layered repository
+
+Neon repository implementation that keeps data in layers.
+
+### LSN
+
+The Log Sequence Number (LSN) is a unique identifier of the WAL record[] in the WAL log.
+The insert position is a byte offset into the logs, increasing monotonically with each new record.
+Internally, an LSN is a 64-bit integer, representing a byte position in the write-ahead log stream.
+It is printed as two hexadecimal numbers of up to 8 digits each, separated by a slash.
+Check also [PostgreSQL doc about pg_lsn type](https://www.postgresql.org/docs/devel/datatype-pg-lsn.html)
+Values can be compared to calculate the volume of WAL data that separates them, so they are used to measure the progress of replication and recovery.
+
+In Postgres and Neon LSNs are used to describe certain points in WAL handling.
+
+PostgreSQL LSNs and functions to monitor them:
+* `pg_current_wal_insert_lsn()` - Returns the current write-ahead log insert location.
+* `pg_current_wal_lsn()` - Returns the current write-ahead log write location.
+* `pg_current_wal_flush_lsn()` - Returns the current write-ahead log flush location.
+* `pg_last_wal_receive_lsn()` - Returns the last write-ahead log location that has been received and synced to disk by streaming replication. While streaming replication is in progress this will increase monotonically.
+* `pg_last_wal_replay_lsn ()` - Returns the last write-ahead log location that has been replayed during recovery. If recovery is still in progress this will increase monotonically.
+[source PostgreSQL documentation](https://www.postgresql.org/docs/devel/functions-admin.html):
+
+Neon safekeeper LSNs. See [safekeeper protocol section](safekeeper-protocol.md) for more information.
+* `CommitLSN`: position in WAL confirmed by quorum safekeepers.
+* `RestartLSN`: position in WAL confirmed by all safekeepers.
+* `FlushLSN`: part of WAL persisted to the disk by safekeeper.
+* `VCL`: the largest LSN for which we can guarantee availability of all prior records.
+
+Neon pageserver LSNs:
+* `last_record_lsn` - the end of last processed WAL record.
+* `disk_consistent_lsn` - data is known to be fully flushed and fsync'd to local disk on pageserver up to this LSN.
+* `remote_consistent_lsn` - The last LSN that is synced to remote storage and is guaranteed to survive pageserver crash.
+TODO: use this name consistently in remote storage code. Now `disk_consistent_lsn` is used and meaning depends on the context.
+* `ancestor_lsn` - LSN of the branch point (the LSN at which this branch was created)
+
+TODO: add table that describes mapping between PostgreSQL (compute), safekeeper and pageserver LSNs.
+
+### Logical size
+
+The pageserver tracks the "logical size" of a timeline. It is the
+total size of all relations in all Postgres databases on the
+timeline. It includes all user and system tables, including their FSM
+and VM forks. But it does not include SLRUs, twophase files or any
+other such data or metadata that lives outside relations.
+
+The logical size is calculated by the pageserver, and is sent to
+PostgreSQL via feedback messages to the safekeepers. PostgreSQL uses
+the logical size to enforce the size limit in the free tier. The
+logical size is also shown to users in the web console.
+
+The logical size is not affected by branches or the physical layout of
+layer files in the pageserver. If you have a database with 1 GB
+logical size and you create a branch of it, both branches will have 1
+GB logical size, even though the branch is copy-on-write and won't
+consume any extra physical disk space until you make changes to it.
+
+### Page (block)
+
+The basic structure used to store relation data. All pages are of the same size.
+This is the unit of data exchange between compute node and pageserver.
+
+### Pageserver
+
+Neon storage engine: repositories + wal receiver + page service + wal redo.
+
+### Page service
+
+The Page Service listens for GetPage@LSN requests from the Compute Nodes,
+and responds with pages from the repository.
+
+
+### PITR (Point-in-time-recovery)
+
+PostgreSQL's ability to restore up to a specified LSN.
+
+### Primary node
+
+
+### Proxy
+
+Postgres protocol proxy/router.
+This service listens psql port, can check auth via external service
+and create new databases and accounts (control plane API in our case).
+
+### Relation
+
+The generic term in PostgreSQL for all objects in a database that have a name and a list of attributes defined in a specific order.
+
+### Replication slot
+
+
+### Replica node
+
+
+### Repository
+
+Repository stores multiple timelines, forked off from the same initial call to 'initdb'
+and has associated WAL redo service.
+One repository corresponds to one Tenant.
+
+### Retention policy
+
+How much history do we need to keep around for PITR and read-only nodes?
+
+### Segment
+
+A physical file that stores data for a given relation. File segments are
+limited in size by a compile-time setting (1 gigabyte by default), so if a
+relation exceeds that size, it is split into multiple segments.
+
+### SLRU
+
+SLRUs include pg_clog, pg_multixact/members, and
+pg_multixact/offsets. There are other SLRUs in PostgreSQL, but
+they don't need to be stored permanently (e.g. pg_subtrans),
+or we do not support them in neon yet (pg_commit_ts).
+
+### Tenant (Multitenancy)
+Tenant represents a single customer, interacting with Neon.
+Wal redo[] activity, timelines[], layers[] are managed for each tenant independently.
+One pageserver[] can serve multiple tenants at once.
+One safekeeper
+
+See `docs/multitenancy.md` for more.
+
+### Timeline
+
+Timeline accepts page changes and serves get_page_at_lsn() and
+get_rel_size() requests. The term "timeline" is used internally
+in the system, but to users they are exposed as "branches", with
+human-friendly names.
+
+NOTE: this has nothing to do with PostgreSQL WAL timelines.
+
+### XLOG
+
+PostgreSQL alias for WAL[].
+
+### WAL (Write-ahead log)
+
+The journal that keeps track of the changes in the database cluster as user- and system-invoked operations take place. It comprises many individual WAL records[] written sequentially to WAL files[].
+
+### WAL acceptor, WAL proposer
+
+In the context of the consensus algorithm, the Postgres
+compute node is also known as the WAL proposer, and the safekeeper is also known
+as the acceptor. Those are the standard terms in the Paxos algorithm.
+
+### WAL receiver (WAL decoder)
+
+The WAL receiver connects to the external WAL safekeeping service (or
+directly to the primary) using PostgreSQL physical streaming
+replication, and continuously receives WAL. It decodes the WAL records,
+and stores them to the repository.
+
+We keep one WAL receiver active per timeline.
+
+### WAL record
+
+A low-level description of an individual data change.
+
+### WAL redo
+
+A service that runs PostgreSQL in a special wal_redo mode
+to apply given WAL records over an old page image and return new page image.
+
+### WAL safekeeper
+
+One node that participates in the quorum. All the safekeepers
+together form the WAL service.
+
+### WAL segment (WAL file)
+
+Also known as WAL segment or WAL segment file. Each of the sequentially-numbered files that provide storage space for WAL. The files are all of the same predefined size and are written in sequential order, interspersing changes as they occur in multiple simultaneous sessions.
+
+### WAL service
+
+The service as whole that ensures that WAL is stored durably.
+
+### Web console
+
+
+
+# Content from file ../neon/docs/multitenancy.md:
+
+## Multitenancy
+
+### Overview
+
+Neon supports multitenancy. One pageserver can serve multiple tenants at once. Tenants can be managed via neon_local CLI. During page server setup tenant can be created using ```neon_local init --create-tenant``` Also tenants can be added into the system on the fly without pageserver restart. This can be done using the following cli command: ```neon_local tenant create``` Tenants use random identifiers which can be represented as a 32 symbols hexadecimal string. So neon_local tenant create accepts desired tenant id as an optional argument. The concept of timelines/branches is working independently per tenant.
+
+### Tenants in other commands
+
+By default during `neon_local init` new tenant is created on the pageserver. Newly created tenant's id is saved to cli config, so other commands can use it automatically if no direct argument `--tenant_id=<tenant_id>` is provided. So generally tenant_id more frequently appears in internal pageserver interface. Its commands take tenant_id argument to distinguish to which tenant operation should be applied. CLI support creation of new tenants.
+
+Examples for cli:
+
+```sh
+neon_local tenant list
+
+neon_local tenant create // generates new id
+
+neon_local tenant create ee6016ec31116c1b7c33dfdfca38892f
+
+neon_local pg create main // default tenant from neon init
+
+neon_local pg create main --tenant_id=ee6016ec31116c1b7c33dfdfca38892f
+
+neon_local branch --tenant_id=ee6016ec31116c1b7c33dfdfca38892f
+```
+
+### Data layout
+
+On the page server tenants introduce one level of indirection, so data directory structured the following way:
+```
+<pageserver working directory>
+├── pageserver.log
+├── pageserver.pid
+├── pageserver.toml
+└── tenants
+   ├── 537cffa58a4fa557e49e19951b5a9d6b
+   ├── de182bc61fb11a5a6b390a8aed3a804a
+   └── ee6016ec31116c1b7c33dfdfca38891f
+```
+Wal redo activity and timelines are managed for each tenant independently.
+
+For local environment used for example in tests there also new level of indirection for tenants. It touches `pgdatadirs` directory. Now it contains `tenants` subdirectory so the structure looks the following way:
+
+```
+pgdatadirs
+└── tenants
+   ├── de182bc61fb11a5a6b390a8aed3a804a
+   │  └── main
+   └── ee6016ec31116c1b7c33dfdfca38892f
+      └── main
+```
+
+### Changes to postgres
+
+Tenant id is passed to postgres via GUC the same way as the timeline. Tenant id is added to commands issued to pageserver, namely: pagestream, callmemaybe. Tenant id is also exists in ServerInfo structure, this is needed to pass the value to wal receiver to be able to forward it to the pageserver.
+
+### Safety
+
+For now particular tenant can only appear on a particular pageserver. Set of safekeepers are also pinned to particular (tenant_id, timeline_id) pair so there can only be one writer for particular (tenant_id, timeline_id).
+
+
+# Content from file ../neon/docs/pageserver-page-service.md:
+
+# Page Service
+
+The Page Service listens for GetPage@LSN requests from the Compute Nodes,
+and responds with pages from the repository. On each GetPage@LSN request,
+it calls into the Repository function
+
+A separate thread is spawned for each incoming connection to the page
+service. The page service uses the libpq protocol to communicate with
+the client. The client is a Compute Postgres instance.
+
+
+# Content from file ../neon/docs/pageserver-pagecache.md:
+
+# Page cache
+
+TODO:
+
+- shared across tenants
+- store pages from layer files
+- store pages from "in-memory layer"
+- store materialized pages
+
+
+# Content from file ../neon/docs/pageserver-processing-getpage.md:
+
+# Processing a GetPage request
+
+TODO:
+- sequence diagram that shows how a GetPage@LSN request is processed
+
+
+# Content from file ../neon/docs/pageserver-processing-wal.md:
+
+# Processing WAL
+
+TODO:
+- diagram that shows how incoming WAL is processed
+- explain durability, what is fsync'd when, disk_consistent_lsn
+
+
+# Content from file ../neon/docs/pageserver-services.md:
+
+# Services
+
+The Page Server consists of multiple threads that operate on a shared
+repository of page versions:
+```
+                                           | WAL
+                                           V
+                                   +--------------+
+                                   |              |
+                                   | WAL receiver |
+                                   |              |
+                                   +--------------+
+                                                                                 ......
+                  +---------+                              +--------+            .    .
+                  |         |                              |        |            .    .
+ GetPage@LSN      |         |                              | backup |  ------->  . S3 .
+------------->    |  Page   |         repository           |        |            .    .
+                  | Service |                              +--------+            .    .
+   page           |         |                                                    ......
+<-------------    |         |
+                  +---------+     +-----------+     +--------------------+
+                                  | WAL redo  |     | Checkpointing,     |
+                  +----------+    | processes |     | Garbage collection |
+                  |          |    +-----------+     +--------------------+
+                  |   HTTP   |
+                  | mgmt API |
+                  |          |
+                  +----------+
+
+Legend:
+
++--+
+|  |   A thread or multi-threaded service
++--+
+
+--->   Data flow
+<---
+```
+
+## Page Service
+
+The Page Service listens for GetPage@LSN requests from the Compute Nodes,
+and responds with pages from the repository. On each GetPage@LSN request,
+it calls into the Repository function
+
+A separate thread is spawned for each incoming connection to the page
+service. The page service uses the libpq protocol to communicate with
+the client. The client is a Compute Postgres instance.
+
+## WAL Receiver
+
+The WAL receiver connects to the external WAL safekeeping service
+using PostgreSQL physical streaming replication, and continuously
+receives WAL. It decodes the WAL records, and stores them to the
+repository.
+
+
+## Backup service
+
+The backup service, responsible for storing pageserver recovery data externally.
+
+Currently, pageserver stores its files in a filesystem directory it's pointed to.
+That working directory could be rather ephemeral for such cases as "a pageserver pod running in k8s with no persistent volumes attached".
+Therefore, the server interacts with external, more reliable storage to back up and restore its state.
+
+The code for storage support is extensible and can support arbitrary ones as long as they implement a certain Rust trait.
+There are the following implementations present:
+* local filesystem — to use in tests mainly
+* AWS S3           - to use in production
+
+The backup service is disabled by default and can be enabled to interact with a single remote storage.
+
+CLI examples:
+* Local FS: `${PAGESERVER_BIN} -c "remote_storage={local_path='/some/local/path/'}"`
+* AWS S3  : `env AWS_ACCESS_KEY_ID='SOMEKEYAAAAASADSAH*#' AWS_SECRET_ACCESS_KEY='SOMEsEcReTsd292v' ${PAGESERVER_BIN} -c "remote_storage={bucket_name='some-sample-bucket',bucket_region='eu-north-1', prefix_in_bucket='/test_prefix/'}"`
+
+For Amazon AWS S3, a key id and secret access key could be located in `~/.aws/credentials` if awscli was ever configured to work with the desired bucket, on the AWS Settings page for a certain user. Also note, that the bucket names does not contain any protocols when used on AWS.
+For local S3 installations, refer to the their documentation for name format and credentials.
+
+Similar to other pageserver settings, toml config file can be used to configure either of the storages as backup targets.
+Required sections are:
+
+```toml
+[remote_storage]
+local_path = '/Users/someonetoignore/Downloads/tmp_dir/'
+```
+
+or
+
+```toml
+[remote_storage]
+bucket_name = 'some-sample-bucket'
+bucket_region = 'eu-north-1'
+prefix_in_bucket = '/test_prefix/'
+```
+
+`AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` env variables can be used to specify the S3 credentials if needed.
+
+or
+
+```toml
+[remote_storage]
+container_name = 'some-container-name'
+container_region = 'us-east'
+prefix_in_container = '/test-prefix/'
+```
+
+`AZURE_STORAGE_ACCOUNT` and `AZURE_STORAGE_ACCESS_KEY` env variables can be used to specify the azure credentials if needed.
+
+## Repository background tasks
+
+The Repository also has a few different background threads and tokio tasks that perform
+background duties like dumping accumulated WAL data from memory to disk, reorganizing
+files for performance (compaction), and garbage collecting old files.
+
+
+Repository
+----------
+
+The repository stores all the page versions, or WAL records needed to
+reconstruct them. Each tenant has a separate Repository, which is
+stored in the .neon/tenants/<tenant_id> directory.
+
+Repository is an abstract trait, defined in `repository.rs`. It is
+implemented by the LayeredRepository object in
+`layered_repository.rs`. There is only that one implementation of the
+Repository trait, but it's still a useful abstraction that keeps the
+interface for the low-level storage functionality clean. The layered
+storage format is described in [pageserver-storage.md](./pageserver-storage.md).
+
+Each repository consists of multiple Timelines. Timeline is a
+workhorse that accepts page changes from the WAL, and serves
+get_page_at_lsn() and get_rel_size() requests. Note: this has nothing
+to do with PostgreSQL WAL timeline. The term "timeline" is mostly
+interchangeable with "branch", there is a one-to-one mapping from
+branch to timeline. A timeline has a unique ID within the tenant,
+represented as 16-byte hex string that never changes, whereas a
+branch is a user-given name for a timeline.
+
+Each repository also has a WAL redo manager associated with it, see
+`walredo.rs`. The WAL redo manager is used to replay PostgreSQL WAL
+records, whenever we need to reconstruct a page version from WAL to
+satisfy a GetPage@LSN request, or to avoid accumulating too much WAL
+for a page. The WAL redo manager uses a Postgres process running in
+special Neon wal-redo mode to do the actual WAL redo, and
+communicates with the process using a pipe.
+
+
+Checkpointing / Garbage Collection
+----------------------------------
+
+Periodically, the checkpointer thread wakes up and performs housekeeping
+duties on the repository. It has two duties:
+
+### Checkpointing
+
+Flush WAL that has accumulated in memory to disk, so that the old WAL
+can be truncated away in the WAL safekeepers. Also, to free up memory
+for receiving new WAL. This process is called "checkpointing". It's
+similar to checkpointing in PostgreSQL or other DBMSs, but in the page
+server, checkpointing happens on a per-segment basis.
+
+### Garbage collection
+
+Remove old on-disk layer files that are no longer needed according to the
+PITR retention policy
+
+
+
+TODO: Sharding
+--------------------
+
+We should be able to run multiple Page Servers that handle sharded data.
+
+
+# Content from file ../neon/docs/pageserver-storage.md:
+
+# Pageserver storage
+
+The main responsibility of the Page Server is to process the incoming WAL, and
+reprocess it into a format that allows reasonably quick access to any page
+version. The page server slices the incoming WAL per relation and page, and
+packages the sliced WAL into suitably-sized "layer files". The layer files
+contain all the history of the database, back to some reasonable retention
+period. This system replaces the base backups and the WAL archive used in a
+traditional PostgreSQL installation. The layer files are immutable, they are not
+modified in-place after creation. New layer files are created for new incoming
+WAL, and old layer files are removed when they are no longer needed.
+
+The on-disk format is based on immutable files. The page server receives a
+stream of incoming WAL, parses the WAL records to determine which pages they
+apply to, and accumulates the incoming changes in memory. Whenever enough WAL
+has been accumulated in memory, it is written out to a new immutable file. That
+process accumulates "L0 delta files" on disk. When enough L0 files have been
+accumulated, they are merged and re-partitioned into L1 files, and old files
+that are no longer needed are removed by Garbage Collection (GC).
+
+The incoming WAL contains updates to arbitrary pages in the system. The
+distribution depends on the workload: the updates could be totally random, or
+there could be a long stream of updates to a single relation when data is bulk
+loaded, for example, or something in between.
+
+```
+Cloud Storage                   Page Server                           Safekeeper
+                        L1               L0             Memory            WAL
+
++----+               +----+----+
+|AAAA|               |AAAA|AAAA|      +---+-----+         |
++----+               +----+----+      |   |     |         |AA
+|BBBB|               |BBBB|BBBB|      |BB | AA  |         |BB
++----+----+          +----+----+      |C  | BB  |         |CC
+|CCCC|CCCC|  <----   |CCCC|CCCC| <--- |D  | CC  |  <---   |DDD     <----   ADEBAABED
++----+----+          +----+----+      |   | DDD |         |E
+|DDDD|DDDD|          |DDDD|DDDD|      |E  |     |         |
++----+----+          +----+----+      |   |     |
+|EEEE|               |EEEE|EEEE|      +---+-----+
++----+               +----+----+
+```
+
+In this illustration, WAL is received as a stream from the Safekeeper, from the
+right.  It is immediately captured by the page server and stored quickly in
+memory. The page server memory can be thought of as a quick "reorder buffer",
+used to hold the incoming WAL and reorder it so that we keep the WAL records for
+the same page and relation close to each other.
+
+From the page server memory, whenever enough WAL has been accumulated, it is flushed
+to disk into a new L0 layer file, and the memory is released.
+
+When enough L0 files have been accumulated, they are merged together and sliced
+per key-space, producing a new set of files where each file contains a more
+narrow key range, but larger LSN range.
+
+From the local disk, the layers are further copied to Cloud Storage, for
+long-term archival. After a layer has been copied to Cloud Storage, it can be
+removed from local disk, although we currently keep everything locally for fast
+access. If a layer is needed that isn't found locally, it is fetched from Cloud
+Storage and stored in local disk. L0 and L1 files are both uploaded to Cloud
+Storage.
+
+# Layer map
+
+The LayerMap tracks what layers exist in a timeline.
+
+Currently, the layer map is just a resizeable array (Vec). On a GetPage@LSN or
+other read request, the layer map scans through the array to find the right layer
+that contains the data for the requested page. The read-code in LayeredTimeline
+is aware of the ancestor, and returns data from the ancestor timeline if it's
+not found on the current timeline.
+
+# Different kinds of layers
+
+A layer can be in different states:
+
+- Open - a layer where new WAL records can be appended to.
+- Closed - a layer that is read-only, no new WAL records can be appended to it
+- Historic: synonym for closed
+- InMemory: A layer that needs to be rebuilt from WAL on pageserver start.
+To avoid OOM errors, InMemory layers can be spilled to disk into ephemeral file.
+- OnDisk: A layer that is stored on disk. If its end-LSN is older than
+  disk_consistent_lsn, it is known to be fully flushed and fsync'd to local disk.
+- Frozen layer: an in-memory layer that is Closed.
+
+TODO: Clarify the difference between Closed, Historic and Frozen.
+
+There are two kinds of OnDisk layers:
+- ImageLayer represents a snapshot of all the keys in a particular range, at one
+  particular LSN. Any keys that are not present in the ImageLayer are known not
+  to exist at that LSN.
+- DeltaLayer represents a collection of WAL records or page images in a range of
+  LSNs, for a range of keys.
+
+# Layer life cycle
+
+LSN range defined by start_lsn and end_lsn:
+- start_lsn is inclusive.
+- end_lsn is exclusive.
+
+For an open in-memory layer, the end_lsn is MAX_LSN. For a frozen in-memory
+layer or a delta layer, it is a valid end bound. An image layer represents
+snapshot at one LSN, so end_lsn is always the snapshot LSN + 1
+
+Every layer starts its life as an Open In-Memory layer. When the page server
+receives the first WAL record for a timeline, it creates a new In-Memory layer
+for it, and puts it to the layer map. Later, when the layer becomes full, its
+contents are written to disk, as an on-disk layers.
+
+Flushing a layer is a two-step process: First, the layer is marked as closed, so
+that it no longer accepts new WAL records, and a new in-memory layer is created
+to hold any WAL after that point. After this first step, the layer is a Closed
+InMemory state. This first step is called "freezing" the layer.
+
+In the second step, a new Delta layers is created, containing all the data from
+the Frozen InMemory layer. When it has been created and flushed to disk, the
+original frozen layer is replaced with the new layers in the layer map, and the
+original frozen layer is dropped, releasing the memory.
+
+# Layer files (On-disk layers)
+
+The files are called "layer files". Each layer file covers a range of keys, and
+a range of LSNs (or a single LSN, in case of image layers). You can think of it
+as a rectangle in the two-dimensional key-LSN space. The layer files for each
+timeline are stored in the timeline's subdirectory under
+`.neon/tenants/<tenant_id>/timelines`.
+
+There are two kind of layer files: images, and delta layers. An image file
+contains a snapshot of all keys at a particular LSN, whereas a delta file
+contains modifications to a segment - mostly in the form of WAL records - in a
+range of LSN.
+
+image file:
+
+```
+    000000067F000032BE0000400000000070B6-000000067F000032BE0000400000000080B6__00000000346BC568
+              start key                          end key                           LSN
+```
+
+
+The first parts define the key range that the layer covers. See
+pgdatadir_mapping.rs for how the key space is used. The last part is the LSN.
+
+delta file:
+
+Delta files are named similarly, but they cover a range of LSNs:
+
+```
+    000000067F000032BE0000400000000020B6-000000067F000032BE0000400000000030B6__000000578C6B29-0000000057A50051
+              start key                          end key                          start LSN     end LSN
+```
+
+A delta file contains all the key-values in the key-range that were updated in
+the LSN range. If a key has not been modified, there is no trace of it in the
+delta layer.
+
+
+A delta layer file can cover a part of the overall key space, as in the previous
+example, or the whole key range like this:
+
+```
+    000000000000000000000000000000000000-FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF__000000578C6B29-0000000057A50051
+```
+
+A file that covers the whole key range is called a L0 file (Level 0), while a
+file that covers only part of the key range is called a L1 file. The "level" of
+a file is not explicitly stored anywhere, you can only distinguish them by
+looking at the key range that a file covers. The read-path doesn't need to
+treat L0 and L1 files any differently.
+
+
+## Notation used in this document
+
+FIXME: This is somewhat obsolete, the layer files cover a key-range rather than
+a particular relation nowadays. However, the description on how you find a page
+version, and how branching and GC works is still valid.
+
+The full path of a delta file looks like this:
+
+```
+    .neon/tenants/941ddc8604413b88b3d208bddf90396c/timelines/4af489b06af8eed9e27a841775616962/rel_1663_13990_2609_0_10_000000000169C348_0000000001702000
+```
+
+For simplicity, the examples below use a simplified notation for the
+paths.  The tenant ID is left out, the timeline ID is replaced with
+the human-readable branch name, and spcnode+dbnode+relnode+forkum+segno
+with a human-readable table name. The LSNs are also shorter. For
+example, a base image file at LSN 100 and a delta file between 100-200
+for 'orders' table on 'main' branch is represented like this:
+
+```
+    main/orders_100
+    main/orders_100_200
+```
+
+
+# Creating layer files
+
+Let's start with a simple example with a system that contains one
+branch called 'main' and two tables, 'orders' and 'customers'. The end
+of WAL is currently at LSN 250. In this starting situation, you would
+have these files on disk:
+
+```
+	main/orders_100
+	main/orders_100_200
+	main/orders_200
+	main/customers_100
+	main/customers_100_200
+	main/customers_200
+```
+
+In addition to those files, the recent changes between LSN 200 and the
+end of WAL at 250 are kept in memory. If the page server crashes, the
+latest records between 200-250 need to be re-read from the WAL.
+
+Whenever enough WAL has been accumulated in memory, the page server
+writes out the changes in memory into new layer files. This process
+is called "checkpointing" (not to be confused with the PostgreSQL
+checkpoints, that's a different thing). The page server only creates
+layer files for relations that have been modified since the last
+checkpoint. For example, if the current end of WAL is at LSN 450, and
+the last checkpoint happened at LSN 400 but there hasn't been any
+recent changes to 'customers' table, you would have these files on
+disk:
+
+	main/orders_100
+	main/orders_100_200
+	main/orders_200
+	main/orders_200_300
+	main/orders_300
+	main/orders_300_400
+	main/orders_400
+	main/customers_100
+	main/customers_100_200
+	main/customers_200
+
+If the customers table is modified later, a new file is created for it
+at the next checkpoint. The new file will cover the "gap" from the
+last layer file, so the LSN ranges are always contiguous:
+
+```
+	main/orders_100
+	main/orders_100_200
+	main/orders_200
+	main/orders_200_300
+	main/orders_300
+	main/orders_300_400
+	main/orders_400
+	main/customers_100
+	main/customers_100_200
+	main/customers_200
+	main/customers_200_500
+	main/customers_500
+```
+
+## Reading page versions
+
+Whenever a GetPage@LSN request comes in from the compute node, the
+page server needs to reconstruct the requested page, as it was at the
+requested LSN. To do that, the page server first checks the recent
+in-memory layer; if the requested page version is found there, it can
+be returned immediately without looking at the files on
+disk. Otherwise the page server needs to locate the layer file that
+contains the requested page version.
+
+For example, if a request comes in for table 'orders' at LSN 250, the
+page server would load the 'main/orders_200_300' file into memory, and
+reconstruct and return the requested page from it, as it was at
+LSN 250. Because the layer file consists of a full image of the
+relation at the start LSN and the WAL, reconstructing the page
+involves replaying any WAL records applicable to the page between LSNs
+200-250, starting from the base image at LSN 200.
+
+# Multiple branches
+
+Imagine that a child branch is created at LSN 250:
+
+```
+            @250
+    ----main--+-------------------------->
+               \
+                +---child-------------->
+```
+
+
+Then, the 'orders' table is updated differently on the 'main' and
+'child' branches. You now have this situation on disk:
+
+```
+    main/orders_100
+    main/orders_100_200
+    main/orders_200
+    main/orders_200_300
+    main/orders_300
+    main/orders_300_400
+    main/orders_400
+    main/customers_100
+    main/customers_100_200
+    main/customers_200
+    child/orders_250_300
+    child/orders_300
+    child/orders_300_400
+    child/orders_400
+```
+
+Because the 'customers' table hasn't been modified on the child
+branch, there is no file for it there. If you request a page for it on
+the 'child' branch, the page server will not find any layer file
+for it in the 'child' directory, so it will recurse to look into the
+parent 'main' branch instead.
+
+From the 'child' branch's point of view, the history for each relation
+is linear, and the request's LSN identifies unambiguously which file
+you need to look at. For example, the history for the 'orders' table
+on the 'main' branch consists of these files:
+
+```
+    main/orders_100
+    main/orders_100_200
+    main/orders_200
+    main/orders_200_300
+    main/orders_300
+    main/orders_300_400
+    main/orders_400
+```
+
+And from the 'child' branch's point of view, it consists of these
+files:
+
+```
+    main/orders_100
+    main/orders_100_200
+    main/orders_200
+    main/orders_200_300
+    child/orders_250_300
+    child/orders_300
+    child/orders_300_400
+    child/orders_400
+```
+
+The branch metadata includes the point where the child branch was
+created, LSN 250. If a page request comes with LSN 275, we read the
+page version from the 'child/orders_250_300' file. We might also
+need to reconstruct the page version as it was at LSN 250, in order
+to replay the WAL up to LSN 275, using 'main/orders_200_300' and
+'main/orders_200'. The page versions between 250-300 in the
+'main/orders_200_300' file are ignored when operating on the child
+branch.
+
+Note: It doesn't make any difference if the child branch is created
+when the end of the main branch was at LSN 250, or later when the tip of
+the main branch had already moved on. The latter case, creating a
+branch at a historic LSN, is how we support PITR in Neon.
+
+
+# Garbage collection
+
+In this scheme, we keep creating new layer files over time. We also
+need a mechanism to remove old files that are no longer needed,
+because disk space isn't infinite.
+
+What files are still needed? Currently, the page server supports PITR
+and branching from any branch at any LSN that is "recent enough" from
+the tip of the branch.  "Recent enough" is defined as an LSN horizon,
+which by default is 64 MB.  (See DEFAULT_GC_HORIZON). For this
+example, let's assume that the LSN horizon is 150 units.
+
+Let's look at the single branch scenario again. Imagine that the end
+of the branch is LSN 525, so that the GC horizon is currently at
+525-150 = 375
+
+```
+	main/orders_100
+	main/orders_100_200
+	main/orders_200
+	main/orders_200_300
+	main/orders_300
+	main/orders_300_400
+	main/orders_400
+	main/orders_400_500
+	main/orders_500
+	main/customers_100
+	main/customers_100_200
+	main/customers_200
+```
+
+We can remove the following files because the end LSNs of those files are
+older than GC horizon 375, and there are more recent layer files for the
+table:
+
+```
+	main/orders_100       DELETE
+	main/orders_100_200   DELETE
+	main/orders_200       DELETE
+	main/orders_200_300   DELETE
+	main/orders_300       STILL NEEDED BY orders_300_400
+	main/orders_300_400   KEEP, NEWER THAN GC HORIZON
+	main/orders_400       ..
+	main/orders_400_500   ..
+	main/orders_500       ..
+	main/customers_100      DELETE
+	main/customers_100_200  DELETE
+	main/customers_200      KEEP, NO NEWER VERSION
+```
+
+'main/customers_200' is old enough, but it cannot be
+removed because there is no newer layer file for the table.
+
+Things get slightly more complicated with multiple branches. All of
+the above still holds, but in addition to recent files we must also
+retain older snapshot files that are still needed by child branches.
+For example, if child branch is created at LSN 150, and the 'customers'
+table is updated on the branch, you would have these files:
+
+```
+	main/orders_100        KEEP, NEEDED BY child BRANCH
+	main/orders_100_200    KEEP, NEEDED BY child BRANCH
+	main/orders_200        DELETE
+	main/orders_200_300    DELETE
+	main/orders_300        KEEP, NEWER THAN GC HORIZON
+	main/orders_300_400    KEEP, NEWER THAN GC HORIZON
+	main/orders_400        KEEP, NEWER THAN GC HORIZON
+	main/orders_400_500    KEEP, NEWER THAN GC HORIZON
+	main/orders_500        KEEP, NEWER THAN GC HORIZON
+	main/customers_100       DELETE
+	main/customers_100_200   DELETE
+	main/customers_200       KEEP, NO NEWER VERSION
+	child/customers_150_300  DELETE
+	child/customers_300      KEEP, NO NEWER VERSION
+```
+
+In this situation, 'main/orders_100' and 'main/orders_100_200' cannot
+be removed, even though they are older than the GC horizon, because
+they are still needed by the child branch. 'main/orders_200'
+and 'main/orders_200_300' can still be removed.
+
+If 'orders' is modified later on the 'child' branch, we will create a
+new base image and delta file for it on the child:
+
+```
+	main/orders_100
+	main/orders_100_200
+
+	main/orders_300
+	main/orders_300_400
+	main/orders_400
+	main/orders_400_500
+	main/orders_500
+	main/customers_200
+	child/customers_300
+	child/orders_150_400
+	child/orders_400
+```
+
+After this, the 'main/orders_100' and 'main/orders_100_200' file could
+be removed. It is no longer needed by the child branch, because there
+is a newer layer file there. TODO: This optimization hasn't been
+implemented! The GC algorithm will currently keep the file on the
+'main' branch anyway, for as long as the child branch exists.
+
+TODO:
+Describe GC and checkpoint interval settings.
+
+# TODO: On LSN ranges
+
+In principle, each relation can be checkpointed separately, i.e. the
+LSN ranges of the files don't need to line up. So this would be legal:
+
+```
+	main/orders_100
+	main/orders_100_200
+	main/orders_200
+	main/orders_200_300
+	main/orders_300
+	main/orders_300_400
+	main/orders_400
+	main/customers_150
+	main/customers_150_250
+	main/customers_250
+	main/customers_250_500
+	main/customers_500
+```
+
+However, the code currently always checkpoints all relations together.
+So that situation doesn't arise in practice.
+
+It would also be OK to have overlapping LSN ranges for the same relation:
+
+	main/orders_100
+	main/orders_100_200
+	main/orders_200
+	main/orders_200_300
+	main/orders_300
+	main/orders_250_350
+	main/orders_350
+	main/orders_300_400
+	main/orders_400
+
+The code that reads the layer files should cope with this, but this
+situation doesn't arise either, because the checkpointing code never
+does that.  It could be useful, however, as a transient state when
+garbage collecting around branch points, or explicit recovery
+points. For example, if we start with this:
+
+```
+	main/orders_100
+	main/orders_100_200
+	main/orders_200
+	main/orders_200_300
+	main/orders_300
+```
+
+And there is a branch or explicit recovery point at LSN 150, we could
+replace 'main/orders_100_200' with 'main/orders_150' to keep a
+layer only at that exact point that's still needed, removing the
+other page versions around it. But such compaction has not been
+implemented yet.
+
+
+# Content from file ../neon/docs/pageserver-tenant-migration.md:
+
+## Pageserver tenant migration
+
+### Overview
+
+This feature allows to migrate a timeline from one pageserver to another by utilizing remote storage capability.
+
+### Migration process
+
+Pageserver implements two new http handlers: timeline attach and timeline detach.
+Timeline migration is performed in a following way:
+1. Timeline attach is called on a target pageserver. This asks pageserver to download latest checkpoint uploaded to s3.
+2. For now it is necessary to manually initialize replication stream via callmemaybe call so target pageserver initializes replication from safekeeper (it is desired to avoid this and initialize replication directly in attach handler, but this requires some refactoring (probably [#997](https://github.com/neondatabase/neon/issues/997)/[#1049](https://github.com/neondatabase/neon/issues/1049))
+3. Replication state can be tracked via timeline detail pageserver call.
+4. Compute node should be restarted with new pageserver connection string. Issue with multiple compute nodes for one timeline is handled on the safekeeper consensus level. So this is not a problem here.Currently responsibility for rescheduling the compute with updated config lies on external coordinator (console).
+5. Timeline is detached from old pageserver. On disk data is removed.
+
+
+### Implementation details
+
+Now safekeeper needs to track which pageserver it is replicating to. This introduces complications into replication code:
+* We need to distinguish different pageservers (now this is done by connection string which is imperfect and is covered here: https://github.com/neondatabase/neon/issues/1105). Callmemaybe subscription management also needs to track that (this is already implemented).
+* We need to track which pageserver is the primary. This is needed to avoid reconnections to non primary pageservers. Because we shouldn't reconnect to them when they decide to stop their walreceiver. I e this can appear when there is a load on the compute and we are trying to detach timeline from old pageserver. In this case callmemaybe will try to reconnect to it because replication termination condition is not met (page server with active compute could never catch up to the latest lsn, so there is always some wal tail)
+
+
+# Content from file ../neon/docs/pageserver-thread-mgmt.md:
+
+## Thread management
+
+The pageserver uses Tokio for handling concurrency. Everything runs in
+Tokio tasks, although some parts are written in blocking style and use
+spawn_blocking().
+
+We currently use std blocking functions for disk I/O, however.  The
+current model is that we consider disk I/Os to be short enough that we
+perform them while running in a Tokio task. Changing all the disk I/O
+calls to async is a TODO.
+
+Each Tokio task is tracked by the `task_mgr` module. It maintains a
+registry of tasks, and which tenant or timeline they are operating
+on.
+
+### Handling shutdown
+
+When a tenant or timeline is deleted, we need to shut down all tasks
+operating on it, before deleting the data on disk. There's a function,
+`shutdown_tasks`, to request all tasks of a particular tenant or
+timeline to shutdown. It will also wait for them to finish.
+
+A task registered in the task registry can check if it has been
+requested to shut down, by calling `is_shutdown_requested()`. There's
+also a `shudown_watcher()` Future that can be used with `tokio::select!`
+or similar, to wake up on shutdown.
+
+
+### Async cancellation safety
+
+In async Rust, futures can be "cancelled" at any await point, by
+dropping the Future. For example, `tokio::select!` returns as soon as
+one of the Futures returns, and drops the others. `tokio::time::timeout`
+is another example. In the Rust ecosystem, some functions are
+cancellation-safe, meaning they can be safely dropped without
+side-effects, while others are not. See documentation of
+`tokio::select!` for examples.
+
+In the pageserver and safekeeper, async code is *not*
+cancellation-safe by default. Unless otherwise marked, any async
+function that you call cannot be assumed to be async
+cancellation-safe, and must be polled to completion.
+
+The downside of non-cancellation safe code is that you have to be very
+careful when using `tokio::select!`, `tokio::time::timeout`, and other
+such functions that can cause a Future to be dropped. They can only be
+used with functions that are explicitly documented to be cancellation-safe,
+or you need to spawn a separate task to shield from the cancellation.
+
+At the entry points to the code, we also take care to poll futures to
+completion, or shield the rest of the code from surprise cancellations
+by spawning a separate task. The code that handles incoming HTTP
+requests, for example, spawns a separate task for each request,
+because Hyper will drop the request-handling Future if the HTTP
+connection is lost.
+
+
+#### How to cancel, then?
+
+If our code is not cancellation-safe, how do you cancel long-running
+tasks? Use CancellationTokens.
+
+TODO: More details on that. And we have an ongoing discussion on what
+to do if cancellations might come from multiple sources.
+
+#### Exceptions
+Some library functions are cancellation-safe, and are explicitly marked
+as such. For example, `utils::seqwait`.
+
+#### Rationale
+
+The alternative would be to make all async code cancellation-safe,
+unless otherwise marked. That way, you could use `tokio::select!` more
+liberally. The reasons we didn't choose that are explained in this
+section.
+
+Writing code in a cancellation-safe manner is tedious, as you need to
+scrutinize every `.await` and ensure that if the `.await` call never
+returns, the system is in a safe, consistent state. In some ways, you
+need to do that with `?` and early `returns`, too, but `.await`s are
+easier to miss. It is also easier to perform cleanup tasks when a
+function returns an `Err` than when an `.await` simply never
+returns. You can use `scopeguard` and Drop guards to perform cleanup
+tasks, but it is more tedious. An `.await` that never returns is more
+similar to a panic.
+
+Note that even if you only use building blocks that themselves are
+cancellation-safe, it doesn't mean that the code as whole is
+cancellation-safe. For example, consider the following code:
+
+```
+while let Some(i) = work_inbox.recv().await {
+	if let Err(_) = results_outbox.send(i).await {
+		println!("receiver dropped");
+		return;
+		}
+	}
+}
+```
+
+It reads messages from one channel, sends them to another channel. If
+this code is cancelled at the `results_outbox.send(i).await`, the
+message read from the receiver is lost. That may or may not be OK,
+depending on the context.
+
+Another reason to not require cancellation-safety is historical: we
+already had a lot of async code that was not scrutinized for
+cancellation-safety when this issue was raised. Scrutinizing all
+existing code is no fun.
+
+
+# Content from file ../neon/docs/pageserver-walredo.md:
+
+# WAL Redo
+
+To reconstruct a particular page version from an image of the page and
+some WAL records, the pageserver needs to replay the WAL records. This
+happens on-demand, when a GetPage@LSN request comes in, or as part of
+background jobs that reorganize data for faster access.
+
+It's important that data cannot leak from one tenant to another, and
+that a corrupt WAL record on one timeline doesn't affect other tenants
+or timelines.
+
+## Multi-tenant security
+
+If you have direct access to the WAL directory, or if you have
+superuser access to a running PostgreSQL server, it's easy to
+construct a malicious or corrupt WAL record that causes the WAL redo
+functions to crash, or to execute arbitrary code. That is not a
+security problem for PostgreSQL; if you have superuser access, you
+have full access to the system anyway.
+
+The Neon pageserver, however, is multi-tenant. It needs to execute WAL
+belonging to different tenants in the same system, and malicious WAL
+in one tenant must not affect other tenants.
+
+A separate WAL redo process is launched for each tenant, and the
+process uses the seccomp(2) system call to restrict its access to the
+bare minimum needed to replay WAL records. The process does not have
+access to the filesystem or network. It can only communicate with the
+parent pageserver process through a pipe.
+
+If an attacker creates a malicious WAL record and injects it into the
+WAL stream of a timeline, he can take control of the WAL redo process
+in the pageserver. However, the WAL redo process cannot access the
+rest of the system. And because there is a separate WAL redo process
+for each tenant, the hijacked WAL redo process can only see WAL and
+data belonging to the same tenant, which the attacker would have
+access to anyway.
+
+## WAL-redo process communication
+
+The WAL redo process runs the 'postgres' executable, launched with a
+Neon-specific command-line option to put it into WAL-redo process
+mode.  The pageserver controls the lifetime of the WAL redo processes,
+launching them as needed. If a tenant is detached from the pageserver,
+any WAL redo processes for that tenant are killed.
+
+The pageserver communicates with each WAL redo process over its
+stdin/stdout/stderr. It works in request-response model with a simple
+custom protocol, described in walredo.rs. To replay a set of WAL
+records for a page, the pageserver sends the "before" image of the
+page and the WAL records over 'stdin', followed by a command to
+perform the replay. The WAL redo process responds with an "after"
+image of the page.
+
+## Special handling of some records
+
+Some WAL record types are handled directly in the pageserver, by
+bespoken Rust code, and are not sent over to the WAL redo process.
+This includes SLRU-related WAL records, like commit records. SLRUs
+don't use the standard Postgres buffer manager, so dealing with them
+in the Neon WAL redo mode would require quite a few changes to
+Postgres code and special handling in the protocol anyway.
+
+Some record types that include a full-page-image (e.g. XLOG_FPI) are
+also handled specially when incoming WAL is processed already, and are
+stored as page images rather than WAL records.
+
+
+## Records that modify multiple pages
+
+Some Postgres WAL records modify multiple pages. Such WAL records are
+duplicated, so that a copy is stored for each affected page. This is
+somewhat wasteful, but because most WAL records only affect one page,
+the overhead is acceptable.
+
+The WAL redo always happens for one particular page. If the WAL record
+coantains changes to other pages, they are ignored.
+
+
+# Content from file ../neon/docs/pageserver.md:
+
+# Page server architecture
+
+The Page Server has a few different duties:
+
+- Respond to GetPage@LSN requests from the Compute Nodes
+- Receive WAL from WAL safekeeper, and store it
+- Upload data to S3 to make it durable, download files from S3 as needed
+
+S3 is the main fault-tolerant storage of all data, as there are no Page Server
+replicas. We use a separate fault-tolerant WAL service to reduce latency. It
+keeps track of WAL records which are not synced to S3 yet.
+
+
+# Content from file ../neon/docs/rfcs/002-storage.md:
+
+# Zenith storage node — alternative
+
+## **Design considerations**
+
+Simplify storage operations for people => Gain adoption/installs on laptops and small private installation => Attract customers to DBaaS by seamless integration between our tooling and cloud.
+
+Proposed architecture addresses:
+
+- High availability -- tolerates n/2 - 1 failures
+- Multi-tenancy -- one storage for all databases
+- Elasticity -- increase storage size on the go by adding nodes
+- Snapshots / backups / PITR with S3 offload
+- Compression
+
+Minuses are:
+
+- Quite a lot of work
+- Single page access may touch few disk pages
+- Some bloat in data — may slowdown sequential scans
+
+## **Summary**
+
+Storage cluster is sharded key-value store with ordered keys. Key (****page_key****) is a tuple of `(pg_id, db_id, timeline_id, rel_id, forkno, segno, pageno, lsn)`. Value is either page or page diff/wal. Each chunk (chunk == shard) stores approx 50-100GB ~~and automatically splits in half when grows bigger then soft 100GB limit~~. by having a fixed range of pageno's it is responsible for. Chunks placement on storage nodes is stored in a separate metadata service, so chunk can be freely moved around the cluster if it is need. Chunk itself is a filesystem directory with following sub directories:
+
+```
+
+|-chunk_42/
+  |-store/ -- contains lsm with pages/pagediffs ranging from
+  |	      page_key_lo to page_key_hi
+  |-wal/
+  |  |- db_1234/ db-specific wal files with pages from page_key_lo
+  |		 to page_key_hi
+  |
+  |-chunk.meta -- small file with snapshot references
+		  (page_key_prefix+lsn+name)
+		  and PITR regions (page_key_start, page_key_end)
+```
+
+## **Chunk**
+
+Chunk is responsible for storing pages potentially from different databases and relations. Each page is addressed by a lexicographically ordered tuple (****page_key****) with following fields:
+
+- `pg_id` -- unique id of given postgres instance (or postgres cluster as it is called in postgres docs)
+- `db_id` -- database that was created by 'CREATE DATABASE' in a given postgres instance
+- `db_timeline` -- used to create Copy-on-Write instances from snapshots, described later
+- `rel_id` -- tuple of (relation_id, 0) for tables and (indexed_relation_id, rel_id) for indices. Done this way so table indices were closer to table itself on our global key space.
+- `(forkno, segno, pageno)` -- page coordinates in postgres data files
+- `lsn_timeline` -- postgres feature, increments when PITR was done.
+- `lsn` -- lsn of current page version.
+
+Chunk stores pages and page diffs ranging from page_key_lo to page_key_hi. Processing node looks at page in wal record and sends record to a chunk responsible for this page range. When wal record arrives to a chunk it is initially stored in `chunk_id/wal/db_id/wal_segno.wal`. Then background process moves records from that wal files to the lsm tree in `chunk_id/store`. Or, more precisely, wal records would be materialized into lsm memtable and when that memtable is flushed to SSTable on disk we may trim the wal. That way some not durably (in the distributed sense) committed pages may enter the tree -- here we rely on processing node behavior: page request from processing node should contain proper lsm horizons so that storage node may respond with proper page version.
+
+LSM here is a usual LSM for variable-length values: at first data is stored in memory (we hold incoming wal records to be able to regenerate it after restart) at some balanced tree. When this tree grows big enough we dump it into disk file (SSTable) sorting records by key. Then SStables are mergesorted in the background to a different files. All file operation are sequential and do not require WAL for durability.
+
+Content of SSTable can be following:
+
+```jsx
+(pg_id, db_id, ... , pageno=42, lsn=100) (full 8k page data)
+(pg_id, db_id, ... , pageno=42, lsn=150) (per-page diff)
+(pg_id, db_id, ... , pageno=42, lsn=180) (per-page diff)
+(pg_id, db_id, ... , pageno=42, lsn=200) (per-page diff)
+(pg_id, db_id, ... , pageno=42, lsn=220) (full 8k page data)
+(pg_id, db_id, ... , pageno=42, lsn=250) (per-page diff)
+(pg_id, db_id, ... , pageno=42, lsn=270) (per-page diff)
+(pg_id, db_id, ... , pageno=5000, lsn=100) (full 8k page data)
+```
+
+So query for `pageno=42 up to lsn=260` would need to find closest entry less then this key, iterate back to the latest full page and iterate forward to apply diffs. How often page is materialized in lsn-version sequence is up to us -- let's say each 5th version should be a full page.
+
+### **Page deletion**
+
+To delete old pages we insert blind deletion marker `(pg_id, db_id, #trim_lsn < 150)` into a lsm tree. During merges such marker would indicate that all pages with smaller lsn should be discarded. Delete marker will travel down the tree levels hierarchy until it reaches last level. In non-PITR scenario where old page version are not needed at all such deletion marker would (in average) prevent old page versions propagation down the tree -- so all bloat would concentrate at higher tree layers without affecting bigger bottom layers.
+
+### **Recovery**
+
+Upon storage node restart recent WAL files are applied to appropriate pages and resulting pages stored in lsm memtable. So this should be fast since we are not writing anything to disk.
+
+### **Checkpointing**
+
+No such mechanism is needed. Or we may look at the storage node as at kind of continuous checkpointer.
+
+### **Full page writes (torn page protection)**
+
+Storage node never updates individual pages, only merges SSTable, so torn pages is not an issue.
+
+### **Snapshot**
+
+That is the part that I like about this design -- snapshot creation is instant and cheap operation that can have flexible granularity level: whole instance, database, table. Snapshot creation inserts a record in `chunk.meta` file with lsn of this snapshot and key prefix `(pg_id, db_id, db_timeline, rel_id, *)` that prohibits pages deletion within this range. Storage node may not know anything about page internals, but by changing number of fields in our prefix we may change snapshot granularity.
+
+It is again useful to remap `rel_id` to `(indexed_relation_id, rel_id)` so that snapshot of relation would include it's indices. Also table snapshot would trickily interact with catalog. Probably all table snapshots should hold also a catalog snapshot. And when node is started with such snapshot it should check that only tables from snapshot are queried. I assume here that for snapshot reading one need to start a new postgres instance.
+
+Storage consumed by snapshot is proportional to the amount of data changed. We may have some heuristic (calculated based on cost of different storages) about when to offload old snapshot to s3. For example, if current database has more then 40% of changed pages with respect to previous snapshot then we may offload that snapshot to s3, and release this space.
+
+**Starting db from snapshot**
+
+When we are starting database from snapshot it can be done in two ways. First, we may create new db_id, move all the data from snapshot to a new db and start a database. Second option is to create Copy-on-Write (CoW) instance out of snapshot and read old pages from old snapshot and store new pages separately. That is why there is `db_timeline` key field near `db_id` -- CoW (🐮) database should create new `db_timeline` and remember old `db_timeline`. Such a database can have hashmap of pages that it is changed to query pages from proper snapshot on the first try. `db_timeline` is located near `db_id` so that new page versions generated by new instance would not bloat data of initial snapshot. It is not clear for whether it is possibly to effectively support "stacked" CoW snapshot, so we may disallow them. (Well, one way to support them is to move `db_timeline` close to `lsn` -- so we may scan neighboring pages and find right one. But again that way we bloat snapshot with unrelated data and may slowdown full scans that are happening in different database).
+
+**Snapshot export/import**
+
+Once we may start CoW instances it is easy to run auxiliary postgres instance on this snapshot and run `COPY FROM (...) TO stdout` or `pg_dump` and export data from the snapshot to some portable formats. Also we may start postgres on a new empty database and run `COPY FROM stdin`. This way we can initialize new non-CoW databases and transfer snapshots via network.
+
+### **PITR area**
+
+In described scheme PITR is just a prohibition to delete any versions within some key prefix, either it is a database or a table key prefix. So PITR may have different settings for different tables, databases, etc.
+
+PITR is quite bloaty, so we may aggressively offload it to s3 -- we may push same (or bigger) SSTables to s3 and maintain lsm structure there.
+
+### **Compression**
+
+Since we are storing page diffs of variable sizes there is no structural dependency on a page size and we may compress it. Again that could be enabled only on pages with some key prefixes, so we may have this with db/table granularity.
+
+### **Chunk metadata**
+
+Chunk metadata is a file lies in chunk directory that stores info about current snapshots and PITR regions. Chunk should always consult this data when merging SSTables and applying delete markers.
+
+### **Chunk splitting**
+
+*(NB: following paragraph is about how to avoid page splitting)*
+
+When chunks hits some soft storage limit (let's say 100Gb) it should be split in half and global metadata about chunk boundaries should be updated. Here i assume that chunk split is a local operation happening on single node. Process of chink splitting should look like following:
+
+1. Find separation key and spawn two new chunks with [lo, mid) [mid, hi) boundaries.
+
+2. Prohibit WAL deletion and old SSTables deletion on original chunk.
+
+3. On each lsm layer we would need to split only one SSTable, all other would fit within left or right range. Symlink/split that files to new chunks.
+
+4. Start WAL replay on new chunks.
+
+5. Update global metadata about new chunk boundaries.
+
+6. Eventually (metadata update should be pushed to processing node by metadata service) storage node will start sending WAL and page requests to the new nodes.
+
+7. New chunk may start serving read queries when following conditions are met:
+
+a) it receives at least on WAL record from processing node
+
+b) it replayed all WAL up to the new received one
+
+c) checked by downlinks that there were no WAL gaps.
+
+Chunk split as it is described here is quite fast operation when it is happening on the local disk -- vast majority of files will be just moved without copying anything. I suggest to keep split always local and not to mix it with chunk moving around cluster. So if we want to split some chunk but there is small amount of free space left on the device, we should first move some chunks away from the node and then proceed with splitting.
+
+### Fixed chunks
+
+Alternative strategy is to not to split at all and have pageno-fixed chunk boundaries. When table is created we first materialize this chunk by storing first new pages only and chunks is small. Then chunk is growing while table is filled, but it can't grow substantially bigger then allowed pageno range, so at max it would be 1GB or whatever limit we want + some bloat due to snapshots and old page versions.
+
+### **Chunk lsm internals**
+
+So how to implement chunk's lsm?
+
+- Write from scratch and use RocksDB to prototype/benchmark, then switch to own lsm implementation. RocksDB can provide some sanity check for performance of home-brewed implementation and it would be easier to prototype.
+- Use postgres as lego constructor. We may model memtable with postgres B-tree referencing some in-memory log of incoming records. SSTable merging may reuse postgres external merging algorithm, etc. One thing that would definitely not fit (or I didn't came up with idea how to fit that) -- is multi-tenancy. If we are storing pages from different databases we can't use postgres buffer pool, since there is no db_id in the page header. We can add new field there but IMO it would be no go for committing that to vanilla.
+
+Other possibility is to not to try to fit few databases in one storage node. But that way it is no go for multi-tenant cloud installation: we would need to run a lot of storage node instances on one physical storage node, all with it own local page cache. So that would be much closer to ordinary managed RDS.
+
+Multi-tenant storage makes sense even on a laptop, when you work with different databases, running tests with temp database, etc. And when installation grows bigger it start to make more and more sense, so it seems important.
+
+# Storage fleet
+
+# **Storage fleet**
+
+- When database is smaller then a chunk size we naturally can store them in one chunk (since their page_key would fit in some chunk's [hi, lo) range).
+
+<img width="937" alt="Screenshot_2021-02-22_at_16 49 17" src="https://user-images.githubusercontent.com/284219/108729836-ffcbd200-753b-11eb-9412-db802ec30021.png">
+
+Few databases are stored in one chunk, replicated three times
+
+- When database can't fit into one storage node it can occupy lots of chunks that were split while database was growing. Chunk placement on nodes is controlled by us with some automatization, but we always may manually move chunks around the cluster.
+
+<img width="940" alt="Screenshot_2021-02-22_at_16 49 10" src="https://user-images.githubusercontent.com/284219/108729815-fb071e00-753b-11eb-86e0-be6703e47d82.png">
+
+Here one big database occupies two set of nodes. Also some chunks were moved around to restore replication factor after disk failure. In this case we also have "sharded" storage for a big database and issue wal writes to different chunks in parallel.
+
+## **Chunk placement strategies**
+
+There are few scenarios where we may want to move chunks around the cluster:
+
+- disk usage on some node is big
+- some disk experienced a failure
+- some node experienced a failure or need maintenance
+
+## **Chunk replication**
+
+Chunk replication may be done by cloning page ranges with respect to some lsn from peer nodes, updating global metadata, waiting for WAL to come, replaying previous WAL and becoming online -- more or less like during chunk split.
+
+
+
+# Content from file ../neon/docs/rfcs/003-laptop-cli.md:
+
+# Command line interface (end-user)
+
+Zenith CLI as it is described here mostly resides on the same conceptual level as pg_ctl/initdb/pg_recvxlog/etc and replaces some of them in an opinionated way. I would also suggest bundling our patched postgres inside zenith distribution at least at the start.
+
+This proposal is focused on managing local installations. For cluster operations, different tooling would be needed. The point of integration between the two is storage URL: no matter how complex cluster setup is it may provide an endpoint where the user may push snapshots.
+
+The most important concept here is a snapshot, which can be created/pushed/pulled/exported. Also, we may start temporary read-only postgres instance over any local snapshot. A more complex scenario would consist of several basic operations over snapshots.
+
+# Possible usage scenarios
+
+## Install zenith, run a postgres
+
+```
+> brew install pg-zenith 
+> zenith pg create # creates pgdata with default pattern pgdata$i
+> zenith pg list
+ID            PGDATA        USED    STORAGE            ENDPOINT
+primary1      pgdata1       0G      zenith-local       localhost:5432
+```
+
+## Import standalone postgres to zenith
+
+```
+> zenith snapshot import --from=basebackup://replication@localhost:5432/ oldpg
+[====================------------] 60% | 20MB/s
+> zenith snapshot list
+ID          SIZE        PARENT
+oldpg       5G          -
+
+> zenith pg create --snapshot oldpg
+Started postgres on localhost:5432
+
+> zenith pg list
+ID            PGDATA        USED    STORAGE            ENDPOINT
+primary1      pgdata1       5G      zenith-local       localhost:5432
+
+> zenith snapshot destroy oldpg
+Ok
+```
+
+Also, we may start snapshot import implicitly by looking at snapshot schema
+
+```
+> zenith pg create --snapshot basebackup://replication@localhost:5432/
+Downloading snapshot... Done.
+Started postgres on localhost:5432
+Destroying snapshot... Done.
+```
+
+## Pull snapshot with some publicly shared database
+
+Since we may export the whole snapshot as one big file (tar of basebackup, maybe with some manifest) it may be shared over conventional means: http, ssh, [git+lfs](https://docs.github.com/en/github/managing-large-files/about-git-large-file-storage).
+
+```
+> zenith pg create --snapshot http://learn-postgres.com/movies_db.zenith movies
+```
+
+## Create snapshot and push it to the cloud
+
+```
+> zenith snapshot create pgdata1@snap1
+> zenith snapshot push --to ssh://stas@zenith.tech pgdata1@snap1
+```
+
+## Rollback database to the snapshot
+
+One way to rollback the database is just to init a new database from the snapshot and destroy the old one. But creating a new database from a snapshot would require a copy of that snapshot which is time consuming operation. Another option that would be cool to support is the ability to create the copy-on-write database from the snapshot without copying data, and store updated pages in a separate location, however that way would have performance implications. So to properly rollback the database to the older state we have `zenith pg checkout`.
+
+```
+> zenith pg list
+ID            PGDATA        USED    STORAGE            ENDPOINT
+primary1      pgdata1       5G      zenith-local       localhost:5432
+
+> zenith snapshot create pgdata1@snap1
+
+> zenith snapshot list
+ID                    SIZE        PARENT
+oldpg                 5G          -
+pgdata1@snap1         6G          -
+pgdata1@CURRENT       6G          -
+
+> zenith pg checkout pgdata1@snap1
+Stopping postgres on pgdata1.
+Rolling back pgdata1@CURRENT to pgdata1@snap1.
+Starting postgres on pgdata1.
+
+> zenith snapshot list
+ID                    SIZE        PARENT
+oldpg                 5G          -
+pgdata1@snap1         6G          -
+pgdata1@HEAD{0}       6G          -
+pgdata1@CURRENT       6G          -
+```
+
+Some notes: pgdata1@CURRENT -- implicit snapshot representing the current state of the database in the data directory. When we are checking out some snapshot CURRENT will be set to this snapshot and the old CURRENT state will be named HEAD{0} (0 is the number of postgres timeline, it would be incremented after each such checkout).
+
+## Configure PITR area (Point In Time Recovery).
+
+PITR area acts like a continuous snapshot where you can reset the database to any point in time within this area (by area I mean some TTL period or some size limit, both possibly infinite).
+
+```
+> zenith pitr create --storage s3tank --ttl 30d --name pitr_last_month
+```
+
+Resetting the database to some state in past would require creating a snapshot on some lsn / time in this pirt area.
+
+# Manual
+
+## storage
+
+Storage is either zenith pagestore or s3. Users may create a database in a pagestore and create/move *snapshots* and *pitr regions* in both pagestore and s3. Storage is a concept similar to `git remote`. After installation, I imagine one local storage is available by default.
+
+**zenith storage attach** -t [native|s3] -c key=value -n name
+
+Attaches/initializes storage. For --type=s3, user credentials and path should be provided. For --type=native we may support --path=/local/path and --url=zenith.tech/stas/mystore. Other possible term for native is 'zstore'.
+
+
+**zenith storage list**
+
+Show currently attached storages. For example:
+
+```
+> zenith storage list
+NAME            USED    TYPE                OPTIONS          PATH
+local           5.1G    zenith-local                         /opt/zenith/store/local
+local.compr     20.4G   zenith-local        compression=on    /opt/zenith/store/local.compr
+zcloud          60G     zenith-remote                        zenith.tech/stas/mystore
+s3tank          80G     S3
+```
+
+**zenith storage detach**
+
+**zenith storage show**
+
+
+
+## pg
+
+Manages postgres data directories and can start postgres instances with proper configuration. An experienced user may avoid using that (except pg create) and configure/run postgres by themselves.
+
+Pg is a term for a single postgres running on some data. I'm trying to avoid separation of datadir management and postgres instance management -- both that concepts bundled here together.
+
+**zenith pg create** [--no-start --snapshot --cow] -s storage-name -n pgdata
+
+Creates (initializes) new data directory in given storage and starts postgres. I imagine that storage for this operation may be only local and data movement to remote location happens through snapshots/pitr.
+
+--no-start: just init datadir without creating 
+
+--snapshot snap: init from the snapshot. Snap is a name or URL (zenith.tech/stas/mystore/snap1)
+
+--cow: initialize Copy-on-Write data directory on top of some snapshot (makes sense if it is a snapshot of currently running a database)
+
+**zenith pg destroy**
+
+**zenith pg start** [--replica] pgdata
+
+Start postgres with proper extensions preloaded/installed.
+
+**zenith pg checkout**
+
+Rollback data directory to some previous snapshot. 
+
+**zenith pg stop** pg_id
+
+**zenith pg list**
+
+```
+ROLE                 PGDATA        USED    STORAGE            ENDPOINT
+primary              my_pg         5.1G    local              localhost:5432
+replica-1                                                     localhost:5433
+replica-2                                                     localhost:5434
+primary              my_pg2        3.2G    local.compr        localhost:5435
+-                    my_pg3        9.2G    local.compr        -
+```
+
+**zenith pg show**
+
+```
+my_pg:
+    storage: local
+    space used on local: 5.1G
+    space used on all storages: 15.1G
+    snapshots:
+        on local:
+            snap1: 1G
+            snap2: 1G
+        on zcloud:
+            snap2: 1G
+        on s3tank:
+            snap5: 2G
+    pitr:
+        on s3tank:
+            pitr_one_month: 45G
+
+```
+
+**zenith pg start-rest/graphql** pgdata
+
+Starts REST/GraphQL proxy on top of postgres master. Not sure we should do that, just an idea.
+
+
+## snapshot
+
+Snapshot creation is cheap -- no actual data is copied, we just start retaining old pages. Snapshot size means the amount of retained data, not all data. Snapshot name looks like pgdata_name@tag_name. tag_name is set by the user during snapshot creation. There are some reserved tag names: CURRENT represents the current state of the data directory; HEAD{i} represents the data directory state that resided in the database before i-th checkout.
+
+**zenith snapshot create** pgdata_name@snap_name
+
+Creates a new snapshot in the same storage where pgdata_name exists.
+
+**zenith snapshot push** --to url pgdata_name@snap_name
+
+Produces binary stream of a given snapshot. Under the hood starts temp read-only postgres over this snapshot and sends basebackup stream. Receiving side should start `zenith snapshot recv` before push happens. If url has some special schema like zenith:// receiving side may require auth start `zenith snapshot recv` on the go.
+
+**zenith snapshot recv**
+
+Starts a port listening for a basebackup stream, prints connection info to stdout (so that user may use that in push command), and expects data on that socket.
+
+**zenith snapshot pull** --from url or path
+
+Connects to a remote zenith/s3/file and pulls snapshot. The remote site should be zenith service or files in our format.
+
+**zenith snapshot import** --from basebackup://<...>  or path
+
+Creates a new snapshot out of running postgres via basebackup protocol or basebackup files.
+
+**zenith snapshot export**
+
+Starts read-only postgres over this snapshot and exports data in some format (pg_dump, or COPY TO on some/all tables). One of the options may be zenith own format which is handy for us (but I think just tar of basebackup would be okay).
+
+**zenith snapshot diff** snap1 snap2
+
+Shows size of data changed between two snapshots. We also may provide options to diff schema/data in tables. To do that start temp read-only postgreses.
+
+**zenith snapshot destroy**
+
+## pitr
+
+Pitr represents wal stream and ttl policy for that stream
+
+XXX: any suggestions on a better name?
+
+**zenith pitr create** name
+
+--ttl = inf | period
+
+--size-limit = inf | limit
+
+--storage = storage_name
+
+**zenith pitr extract-snapshot** pitr_name --lsn xxx
+
+Creates a snapshot out of some lsn in PITR area. The obtained snapshot may be managed with snapshot routines (move/send/export)
+
+**zenith pitr gc** pitr_name
+
+Force garbage collection on some PITR area.
+
+**zenith pitr list**
+
+**zenith pitr destroy**
+
+
+## console
+
+**zenith console**
+
+Opens browser targeted at web console with the more or less same functionality as described here.
+
+
+# Content from file ../neon/docs/rfcs/004-durability.md:
+
+Durability & Consensus
+======================
+
+When a transaction commits, a commit record is generated in the WAL.
+When do we consider the WAL record as durable, so that we can
+acknowledge the commit to the client and be reasonably certain that we
+will not lose the transaction?
+
+Zenith uses a group of WAL safekeeper nodes to hold the generated WAL.
+A WAL record is considered durable, when it has been written to a
+majority of WAL safekeeper nodes. In this document, I use 5
+safekeepers, because I have five fingers. A WAL record is durable,
+when at least 3 safekeepers have written it to disk.
+
+First, assume that only one primary node can be running at a
+time. This can be achieved by Kubernetes or etcd or some
+cloud-provider specific facility, or we can implement it
+ourselves. These options are discussed in later chapters.  For now,
+assume that there is a Magic STONITH Fairy that ensures that.
+
+In addition to the WAL safekeeper nodes, the WAL is archived in
+S3. WAL that has been archived to S3 can be removed from the
+safekeepers, so the safekeepers don't need a lot of disk space.
+
+```
+                                +----------------+
+                        +-----> | WAL safekeeper |
+                        |       +----------------+
+                        |       +----------------+
+                        +-----> | WAL safekeeper |
++------------+          |       +----------------+
+|  Primary   |          |       +----------------+
+| Processing | ---------+-----> | WAL safekeeper |
+|   Node     |          |       +----------------+
++------------+          |       +----------------+
+            \           +-----> | WAL safekeeper |
+             \          |       +----------------+
+              \         |       +----------------+
+               \        +-----> | WAL safekeeper |
+                \               +----------------+
+                 \
+                  \
+                   \
+                    \
+                     \          +--------+
+                      \         |        |
+                       +------> |   S3   |
+                                |        |
+                                +--------+
+
+```
+Every WAL safekeeper holds a section of WAL, and a VCL value.
+The WAL can be divided into three portions:
+
+```
+                                    VCL                   LSN
+                                     |                     |
+                                     V                     V
+.................ccccccccccccccccccccXXXXXXXXXXXXXXXXXXXXXXX
+Archived WAL       Completed WAL          In-flight WAL
+```
+
+Note that all this WAL kept in a safekeeper is a contiguous section.
+This is different from Aurora: In Aurora, there can be holes in the
+WAL, and there is a Gossip protocol to fill the holes. That could be
+implemented in the future, but let's keep it simple for now. WAL needs
+to be written to a safekeeper in order. However, during crash
+recovery, In-flight WAL that has already been stored in a safekeeper
+can be truncated or overwritten.
+
+The Archived WAL has already been stored in S3, and can be removed from
+the safekeeper.
+
+The Completed WAL has been written to at least three safekeepers. The
+algorithm ensures that it is not lost, when at most two nodes fail at
+the same time.
+
+The In-flight WAL has been persisted in the safekeeper, but if a crash
+happens, it may still be overwritten or truncated.
+
+
+The VCL point is determined in the Primary. It is not strictly
+necessary to store it in the safekeepers, but it allows some
+optimizations and sanity checks and is probably generally useful for
+the system as whole. The VCL values stored in the safekeepers can lag
+behind the VCL computed by the primary.
+
+
+Primary node Normal operation
+-----------------------------
+
+1. Generate some WAL.
+
+2. Send the WAL to all the safekeepers that you can reach.
+
+3. As soon as a quorum of safekeepers have acknowledged that they have
+   received and durably stored the WAL up to that LSN, update local VCL
+   value in memory, and acknowledge commits to the clients.
+
+4. Send the new VCL to all the safekeepers that were part of the quorum.
+   (Optional)
+
+
+Primary Crash recovery
+----------------------
+
+When a new Primary node starts up, before it can generate any new WAL
+it needs to contact a majority of the WAL safekeepers to compute the
+VCL. Remember that there is a Magic STONITH fairy that ensures that
+only node process can be doing this at a time.
+
+1. Contact all WAL safekeepers. Find the Max((Epoch, LSN)) tuple among the ones you
+   can reach. This is the Winner safekeeper, and its LSN becomes the new VCL.
+
+2. Update the other safekeepers you can reach, by copying all the WAL
+   from the Winner, starting from each safekeeper's old VCL point. Any old
+   In-Flight WAL from previous Epoch is truncated away.
+
+3. Increment Epoch, and send the new Epoch to the quorum of
+   safekeepers.  (This ensures that if any of the safekeepers that we
+   could not reach later come back online, they will be considered as
+   older than this in any future recovery)
+
+You can now start generating new WAL, starting from the newly-computed
+VCL.
+
+Optimizations
+-------------
+
+As described, the Primary node sends all the WAL to all the WAL safekeepers. That
+can be a lot of network traffic. Instead of sending the WAL directly from Primary,
+some safekeepers can be daisy-chained off other safekeepers, or there can be a
+broadcast mechanism among them. There should still be a direct connection from the
+each safekeeper to the Primary for the acknowledgments though.
+
+Similarly, the responsibility for archiving WAL to S3 can be delegated to one of
+the safekeepers, to reduce the load on the primary.
+
+
+Magic STONITH fairy
+-------------------
+
+Now that we have a system that works as long as only one primary node is running at a time, how
+do we ensure that?
+
+1. Use etcd to grant a lease on a key. The primary node is only allowed to operate as primary
+   when it's holding a valid lease. If the primary node dies, the lease expires after a timeout
+   period, and a new node is allowed to become the primary.
+
+2. Use S3 to store the lease. S3's consistency guarantees are more lenient, so in theory you
+   cannot do this safely. In practice, it would probably be OK if you make the lease times and
+   timeouts long enough. This has the advantage that we don't need to introduce a new
+   component to the architecture.
+
+3. Use Raft or Paxos, with the WAL safekeepers acting as the Acceptors to form the quorum. The
+   next chapter describes this option.
+
+
+Built-in Paxos
+--------------
+
+The WAL safekeepers act as PAXOS Acceptors, and the Processing nodes
+as both Proposers and Learners.
+
+Each WAL safekeeper holds an Epoch value in addition to the VCL and
+the WAL. Each request by the primary to safekeep WAL is accompanied by
+an Epoch value. If a safekeeper receives a request with Epoch that
+doesn't match its current Accepted Epoch, it must ignore (NACK) it.
+(In different Paxos papers, Epochs are called "terms" or "round
+numbers")
+
+When a node wants to become the primary, it generates a new Epoch
+value that is higher than any previously observed Epoch value, and
+globally unique.
+
+
+Accepted Epoch: 555                VCL                   LSN
+                                     |                     |
+                                     V                     V
+.................ccccccccccccccccccccXXXXXXXXXXXXXXXXXXXXXXX
+Archived WAL       Completed WAL          In-flight WAL
+
+
+Primary node startup:
+
+1. Contact all WAL safekeepers that you can reach (if you cannot
+   connect to a quorum of them, you can give up immediately). Find the
+   latest Epoch among them.
+
+2. Generate a new globally unique Epoch, greater than the latest Epoch
+   found in previous step.
+
+2. Send the new Epoch in a Prepare message to a quorum of
+   safekeepers. (PAXOS Prepare message)
+
+3. Each safekeeper responds with a Promise. If a safekeeper has
+   already made a promise with a higher Epoch, it doesn't respond (or
+   responds with a NACK). After making a promise, the safekeeper stops
+   responding to any write requests with earlier Epoch.
+
+4. Once you have received a majority of promises, you know that the
+   VCL cannot advance on the old Epoch anymore. This effectively kills
+   any old primary server.
+
+5. Find the highest written LSN among the quorum of safekeepers (these
+   can be included in the Promise messages already). This is the new
+   VCL.  If a new node starts the election process after this point,
+   it will compute the same or higher VCL.
+
+6. Copy the WAL from the safekeeper with the highest LSN to the other
+   safekeepers in the quorum, using the new Epoch. (PAXOS Accept
+   phase)
+
+7. You can now start generating new WAL starting from the VCL. If
+   another process starts the election process after this point and
+   gains control of a majority of the safekeepers, we will no longer
+   be able to advance the VCL.
+
+
+
+# Content from file ../neon/docs/rfcs/005-zenith_local.md:
+
+# Zenith local
+
+Here I list some objectives to keep in mind when discussing zenith-local design and a proposal that brings all components together.  Your comments on both parts are very welcome.
+
+#### Why do we need it?
+- For distribution - this easy to use binary will help us to build adoption among developers.
+- For internal use - to test all components together.
+
+In my understanding, we consider it to be just a mock-up version of zenith-cloud.
+> Question: How much should we care about durability and security issues for a local setup?
+
+
+#### Why is it better than a simple local postgres?
+
+- Easy one-line setup. As simple as `cargo install zenith && zenith start`
+
+- Quick and cheap creation of compute nodes over the same storage.
+> Question: How can we describe a use-case for this feature?
+
+- Zenith-local can work with S3 directly. 
+
+- Push and pull images (snapshots) to remote S3 to exchange data with other users.
+
+- Quick and cheap snapshot checkouts to switch back and forth in the database history.
+> Question: Do we want it in the very first release? This feature seems quite complicated.
+
+#### Distribution:
+
+Ideally, just one binary that incorporates all elements we need.
+> Question: Let's discuss pros and cons of having a separate package with modified PostgreSQL.
+
+#### Components:
+
+- **zenith-CLI** - interface for end-users.  Turns commands to REST requests and handles responses to show them in a user-friendly way.  
+CLI proposal is here https://github.com/libzenith/rfcs/blob/003-laptop-cli.md/003-laptop-cli.md
+WIP code is here: https://github.com/libzenith/postgres/tree/main/pageserver/src/bin/cli
+
+- **zenith-console** - WEB UI with same functionality as CLI.
+>Note: not for the first release.
+
+- **zenith-local** - entrypoint. Service that starts all other components and handles REST API requests. See REST API proposal below.
+    > Idea: spawn all other components as child processes, so that we could shutdown everything by stopping zenith-local.
+
+- **zenith-pageserver** - consists of a storage and WAL-replaying service (modified PG in current implementation).
+> Question: Probably, for local setup we should be able to bypass page-storage and interact directly with S3 to avoid double caching in shared buffers and page-server?
+
+WIP code is here: https://github.com/libzenith/postgres/tree/main/pageserver/src
+
+- **zenith-S3** - stores base images of the database and WAL in S3 object storage. Import and export images from/to zenith.
+> Question: How should it operate in a local setup? Will we manage it ourselves or ask user to provide credentials for existing S3 object storage (i.e. minio)?
+> Question: Do we use it together with local page store or they are interchangeable?
+
+WIP code is ???
+
+- **zenith-safekeeper** - receives WAL from postgres, stores it durably, answers to Postgres that "sync" is succeed.
+> Question: How should it operate in a local setup? In my understanding it should push WAL directly to S3 (if we use it) or store all data locally (if we use local page storage). The latter option seems meaningless (extra overhead and no gain), but it is still good to test the system.
+
+WIP code is here: https://github.com/libzenith/postgres/tree/main/src/bin/safekeeper
+
+- **zenith-computenode** - bottomless PostgreSQL, ideally upstream, but for a start - our modified version. User can quickly create and destroy them and work with it as a regular postgres database.
+ 
+ WIP code is in main branch and here: https://github.com/libzenith/postgres/commits/compute_node
+
+#### REST API:
+
+Service endpoint: `http://localhost:3000`
+
+Resources:
+- /storages - Where data lives: zenith-pageserver or zenith-s3
+- /pgs - Postgres - zenith-computenode
+- /snapshots - snapshots **TODO**
+
+>Question: Do we want to extend this API to manage zenith components? I.e. start page-server, manage safekeepers and so on? Or they will be hardcoded to just start once and for all?
+
+Methods and their mapping to CLI:
+
+- /storages - zenith-pageserver or zenith-s3
+
+CLI  | REST API
+------------- | -------------
+storage attach -n name --type [native\s3]  --path=[datadir\URL] | PUT  -d { "name": "name", "type": "native", "path": "/tmp" } /storages
+storage detach -n name | DELETE /storages/:storage_name 
+storage list | GET /storages
+storage show -n name | GET /storages/:storage_name 
+
+
+- /pgs - zenith-computenode
+
+CLI  | REST API
+------------- | -------------
+pg create -n name --s storage_name | PUT  -d { "name": "name", "storage_name": "storage_name" } /pgs
+pg destroy -n name | DELETE /pgs/:pg_name 
+pg start -n name --replica | POST -d {"action": "start", "is_replica":"replica"}  /pgs/:pg_name /actions
+pg stop -n name | POST  -d {"action": "stop"}  /pgs/:pg_name /actions
+pg promote -n name | POST  -d {"action": "promote"}  /pgs/:pg_name /actions
+pg list | GET /pgs
+pg show -n name | GET /pgs/:pg_name 
+
+- /snapshots **TODO**
+
+CLI  | REST API
+------------- | -------------
+
+
+
+# Content from file ../neon/docs/rfcs/006-laptop-cli-v2-CLI.md:
+
+Zenith CLI allows you to operate database clusters (catalog clusters) and their commit history locally and in the cloud. Since ANSI calls them catalog clusters and cluster is a loaded term in the modern infrastructure we will call it "catalog".
+
+# CLI v2 (after chatting with Carl)
+
+Zenith introduces the notion of a repository.
+
+```bash
+zenith init
+zenith clone zenith://zenith.tech/piedpiper/northwind -- clones a repo to the northwind directory
+```
+
+Once you have a cluster catalog you can explore it
+
+```bash
+zenith log -- returns a list of commits
+zenith status -- returns if there are changes in the catalog that can be committed
+zenith commit -- commits the changes and generates a new commit hash
+zenith branch experimental <hash> -- creates a branch called testdb based on a given commit hash
+```
+
+To make changes in the catalog you need to run compute nodes
+
+```bash
+-- here is how you a compute node
+zenith start /home/pipedpiper/northwind:main -- starts a compute instance
+zenith start zenith://zenith.tech/northwind:main -- starts a compute instance in the cloud
+-- you can start a compute node against any hash or branch
+zenith start /home/pipedpiper/northwind:experimental --port 8008 -- start another compute instance (on different port)
+-- you can start a compute node against any hash or branch
+zenith start /home/pipedpiper/northwind:<hash> --port 8009 -- start another compute instance (on different port)
+
+-- After running some DML you can run 
+-- zenith status and see how there are two WAL streams one on top of 
+-- the main branch
+zenith status 
+-- and another on top of the experimental branch
+zenith status -b experimental
+
+-- you can commit each branch separately
+zenith commit main
+-- or
+zenith commit -c /home/pipedpiper/northwind:experimental
+```
+
+Starting compute instances against cloud environments
+
+```bash
+-- you can start a compute instance against the cloud environment
+-- in this case all of the changes will be streamed into the cloud
+zenith start https://zenith:tech/pipedpiper/northwind:main
+zenith start https://zenith:tech/pipedpiper/northwind:main
+zenith status -c https://zenith:tech/pipedpiper/northwind:main
+zenith commit -c https://zenith:tech/pipedpiper/northwind:main
+zenith branch -c https://zenith:tech/pipedpiper/northwind:<hash> experimental
+```
+
+Pushing data into the cloud
+
+```bash
+-- pull all the commits from the cloud
+zenith pull
+-- push all the commits to the cloud
+zenith push
+```
+
+
+# Content from file ../neon/docs/rfcs/006-laptop-cli-v2-repository-structure.md:
+
+# Repository format
+
+A Zenith repository is similar to a traditional PostgreSQL backup
+archive, like a WAL-G bucket or pgbarman backup catalogue. It holds
+multiple versions of a PostgreSQL database cluster.
+
+The distinguishing feature is that you can launch a Zenith Postgres
+server directly against a branch in the repository, without having to
+"restore" it first. Also, Zenith manages the storage automatically,
+there is no separation between full and incremental backups nor WAL
+archive. Zenith relies heavily on the WAL, and uses concepts similar
+to incremental backups and WAL archiving internally, but it is hidden
+from the user.
+
+## Directory structure, version 1
+
+This first version is pretty straightforward but not very
+efficient. Just something to get us started.
+
+The repository directory looks like this:
+
+    .zenith/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/wal/
+    .zenith/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/snapshots/<lsn>/
+    .zenith/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/history
+    
+    .zenith/refs/branches/mybranch
+    .zenith/refs/tags/foo
+    .zenith/refs/tags/bar
+    
+    .zenith/datadirs/<timeline uuid>
+
+### Timelines
+
+A timeline is similar to PostgeSQL's timeline, but is identified by a
+UUID instead of a 32-bit timeline Id.  For user convenience, it can be
+given a name that refers to the UUID (called a branch).
+
+All WAL is generated on a timeline. You can launch a read-only node
+against a tag or arbitrary LSN on a timeline, but in order to write,
+you need to create a timeline.
+
+Each timeline is stored in a directory under .zenith/timelines. It
+consists of a WAL archive, containing all the WAL in the standard
+PostgreSQL format, under the wal/ subdirectory.
+
+The 'snapshots/' subdirectory, contains "base backups" of the data
+directory at a different LSNs. Each snapshot is simply a copy of the
+Postgres data directory.
+
+When a new timeline is forked from a previous timeline, the ancestor
+timeline's UUID is stored in the 'history' file.
+
+### Refs
+
+There are two kinds of named objects in the repository: branches and
+tags.  A branch is a human-friendly name for a timeline UUID, and a
+tag is a human-friendly name for a specific LSN on a timeline
+(timeline UUID + LSN).  Like in git, these are just for user
+convenience; you can also use timeline UUIDs and LSNs directly.
+
+Refs do have one additional purpose though: naming a timeline or LSN
+prevents it from being automatically garbage collected.
+
+The refs directory contains a small text file for each tag/branch. It
+contains the UUID of the timeline (and LSN, for tags).
+
+### Datadirs
+
+.zenith/datadirs contains PostgreSQL data directories. You can launch
+a Postgres instance on one of them with:
+
+```
+  postgres -D .zenith/datadirs/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c
+```
+
+All the actual data is kept in the timeline directories, under
+.zenith/timelines. The data directories are only needed for active
+PostgreQSL instances. After an instance is stopped, the data directory
+can be safely removed. "zenith start" will recreate it quickly from
+the data in .zenith/timelines, if it's missing.
+
+## Version 2
+
+The format described above isn't very different from a traditional
+daily base backup + WAL archive configuration. The main difference is
+the nicer naming of branches and tags.
+
+That's not very efficient. For performance, we need something like
+incremental backups that don't require making a full copy of all
+data. So only store modified files or pages. And instead of having to
+replay all WAL from the last snapshot, "slice" the WAL into
+per-relation WAL files and only recover what's needed when a table is
+accessed.
+
+In version 2, the file format in the "snapshots" subdirectory gets
+more advanced. The exact format is TODO. But it should support:
+- storing WAL records of individual relations/pages
+- storing a delta from an older snapshot
+- compression
+
+
+## Operations
+
+### Garbage collection
+
+When you run "zenith gc", old timelines that are no longer needed are
+removed. That involves collecting the list of "unreachable" objects,
+starting from the named branches and tags.
+
+Also, if enough WAL has been generated on a timeline since last
+snapshot, a new snapshot or delta is created.
+
+### zenith push/pull
+
+Compare the tags and branches on both servers, and copy missing ones.
+For each branch, compare the timeline it points to in both servers. If
+one is behind the other, copy the missing parts.
+
+FIXME: how do you prevent confusion if you have to clones of the same
+repository, launch an instance on the same branch in both clones, and
+later try to push/pull between them? Perhaps create a new timeline
+every time you start up an instance? Then you would detect that the
+timelines have diverged. That would match with the "epoch" concept
+that we have in the WAL safekeeper
+
+### zenith checkout/commit
+
+In this format, there is no concept of a "working tree", and hence no
+concept of checking out or committing. All modifications are done on
+a branch or a timeline. As soon as you launch a server, the changes are
+appended to the timeline.
+
+You can easily fork off a temporary timeline to emulate a "working tree".
+You can later remove it and have it garbage collected, or to "commit",
+re-point the branch to the new timeline.
+
+If we want to have a worktree and "zenith checkout/commit" concept, we can
+emulate that with a temporary timeline. Create the temporary timeline at
+"zenith checkout", and have "zenith commit" modify the branch to point to
+the new timeline.
+
+
+# Content from file ../neon/docs/rfcs/007-serverless-on-laptop.md:
+
+How it works now
+----------------
+
+1. Create repository, start page server on it
+
+```
+$ zenith init
+...
+created main branch
+new zenith repository was created in .zenith
+
+$ zenith pageserver start
+Starting pageserver at '127.0.0.1:64000' in .zenith
+Page server started
+```
+
+2. Create a branch, and start a Postgres instance on it
+
+```
+$ zenith branch heikki main
+branching at end of WAL: 0/15ECF68
+
+$ zenith pg create heikki
+Initializing Postgres on timeline 76cf9279915be7797095241638e64644...
+Extracting base backup to create postgres instance: path=.zenith/pgdatadirs/pg1 port=55432
+
+$ zenith pg start pg1
+Starting postgres node at 'host=127.0.0.1 port=55432 user=heikki'
+waiting for server to start.... done
+server started
+```
+
+
+3. Connect to it and run queries
+
+```
+$ psql "dbname=postgres port=55432"
+psql (14devel)
+Type "help" for help.
+
+postgres=# 
+```
+
+
+Proposal: Serverless on your Laptop
+-----------------------------------
+
+We've been talking about doing the "pg create" step automatically at
+"pg start", to eliminate that step. What if we go further, go
+serverless on your laptop, so that the workflow becomes just:
+
+1. Create repository, start page server on it (same as before)
+
+```
+$ zenith init
+...
+created main branch
+new zenith repository was created in .zenith
+
+$ zenith pageserver start
+Starting pageserver at '127.0.0.1:64000' in .zenith
+Page server started
+```
+
+2. Create branch
+
+```
+$ zenith branch heikki main
+branching at end of WAL: 0/15ECF68
+```
+
+3. Connect to it:
+
+```
+$ psql "dbname=postgres port=5432 branch=heikki"
+psql (14devel)
+Type "help" for help.
+
+postgres=# 
+```
+
+
+The trick behind the scenes is that when you launch the page server,
+it starts to listen on port 5432. When you connect to it with psql, it
+looks at the 'branch' parameter that you passed in the connection
+string. It automatically performs the "pg create" and "pg start" steps
+for that branch, and then forwards the connection to the Postgres
+instance that it launched. After you disconnect, if there are no more
+active connections to the server running on the branch, it can
+automatically shut it down again.
+
+This is how serverless would work in the cloud. We can do it on your
+laptop, too.
+
+
+# Content from file ../neon/docs/rfcs/008-push-pull.md:
+
+# Push and pull between pageservers
+
+Here is a proposal about implementing push/pull mechanics between pageservers. We also want to be able to push/pull to S3 but that would depend on the exact storage format so we don't touch that in this proposal.
+
+## Origin management
+
+The origin represents connection info for some remote pageserver. Let's use here same commands as git uses except using explicit list subcommand (git uses `origin -v` for that).
+
+```
+zenith origin add <name> <connection_uri>
+zenith origin list
+zenith origin remove <name>
+```
+
+Connection URI a string of form `postgresql://user:pass@hostname:port` (https://www.postgresql.org/docs/13/libpq-connect.html#id-1.7.3.8.3.6). We can start with libpq password auth and later add support for client certs or require ssh as transport or invent some other kind of transport.
+
+Behind the scenes, this commands may update toml file inside .zenith directory.
+
+## Push
+
+### Pushing branch
+
+```
+zenith push mybranch cloudserver # push to eponymous branch in cloudserver
+zenith push mybranch cloudserver:otherbranch # push to a different branch in cloudserver
+```
+
+Exact mechanics would be slightly different in the following situations:
+
+1) Destination branch does not exist.
+
+    That is the simplest scenario. We can just create an empty branch (or timeline in internal terminology) and transfer all the pages/records that we have in our timeline. Right now each timeline is quite independent of other timelines so I suggest skipping any checks that there is a common ancestor and just fill it with data. Later when CoW timelines will land to the pageserver we may add that check and decide whether this timeline belongs to this pageserver repository or not [*].
+
+    The exact mechanics may be the following:
+
+    * CLI asks local pageserver to perform push and hands over connection uri: `perform_push <branch_name> <uri>`.
+    * local pageserver connects to the remote pageserver and runs `branch_push <branch_name> <timetine_id>`
+        Handler for branch_create would create destination timeline and switch connection to copyboth mode.
+    * Sending pageserver may start iterator on that timeline and send all the records as copy messages.
+
+2) Destination branch exists and latest_valid_lsn is less than ours.
+
+    In this case, we need to send missing records. To do that we need to find all pages that were changed since that remote LSN. Right now we don't have any tracking mechanism for that, so let's just iterate over all records and send ones that are newer than remote LSN. Later we probably should add a sparse bitmap that would track changed pages to avoid full scan.
+
+3) Destination branch exists and latest_valid_lsn is bigger than ours.
+
+    In this case, we can't push to that branch. We can only pull.
+
+### Pulling branch
+
+Here we need to handle the same three cases, but also keep in mind that local pageserver can be behind NAT and we can't trivially re-use pushing by asking remote to 'perform_push' to our address. So we would need a new set of commands:
+
+* CLI calls `perform_pull <branch_name> <uri>` on local pageserver.
+* local pageserver calls `branch_pull <branch_name> <timetine_id>` on remote pageserver.
+* remote pageserver sends records in our direction
+
+But despite the different set of commands code that performs iteration over records and receiving code that inserts that records can be the same for both pull and push.
+
+
+
+[*] It looks to me that there are two different possible approaches to handling unrelated timelines:
+
+1) Allow storing unrelated timelines in one repo. Some timelines may have parents and some may not.
+2) Transparently create and manage several repositories in one pageserver.
+
+But that is the topic for a separate RFC/discussion.
+
+
+# Content from file ../neon/docs/rfcs/009-snapshot-first-storage-cli.md:
+
+While working on export/import commands, I understood that they fit really well into "snapshot-first design".
+
+We may think about backups as snapshots in a different format (i.e plain pgdata format, basebackup tar format, WAL-G format (if they want to support it) and so on). They use same storage API, the only difference is the code that packs/unpacks files.
+
+Even if zenith aims to maintains durability using it's own snapshots, backups will be useful for uploading data from postgres to zenith.
+
+So here is an attempt to design consistent CLI for different usage scenarios:
+
+#### 1. Start empty pageserver.
+That is what we have now.
+Init empty pageserver using `initdb` in temporary directory.
+
+`--storage_dest=FILE_PREFIX | S3_PREFIX |...` option defines object storage type, all other parameters are passed via env variables. Inspired by WAL-G style naming : https://wal-g.readthedocs.io/STORAGES/.
+
+Save`storage_dest` and other parameters in config.
+Push snapshots to `storage_dest` in background.
+
+```
+zenith init --storage_dest=S3_PREFIX
+zenith start
+```
+
+#### 2. Restart pageserver (manually or crash-recovery).
+Take `storage_dest` from pageserver config, start pageserver from latest snapshot in `storage_dest`.
+Push snapshots to `storage_dest` in background.
+
+```
+zenith start
+```
+
+#### 3. Import.
+Start pageserver from existing snapshot.
+Path to snapshot provided via `--snapshot_path=FILE_PREFIX | S3_PREFIX | ...`
+Do not save `snapshot_path` and `snapshot_format` in config, as it is a one-time operation.
+Save`storage_dest` parameters in config.
+Push snapshots to `storage_dest` in background.
+```
+//I.e. we want to start zenith on top of existing $PGDATA and use s3 as a persistent storage.
+zenith init --snapshot_path=FILE_PREFIX --snapshot_format=pgdata --storage_dest=S3_PREFIX
+zenith start
+```
+How to pass credentials needed for `snapshot_path`?
+
+#### 4. Export.
+Manually push snapshot to `snapshot_path` which differs from `storage_dest`
+Optionally set `snapshot_format`, which can be plain pgdata format or zenith format.
+```
+zenith export --snapshot_path=FILE_PREFIX --snapshot_format=pgdata
+```
+
+#### Notes and questions
+- safekeeper s3_offload should use same (similar) syntax for storage. How to set it in UI?
+- Why do we need `zenith init` as a separate command? Can't we init everything at first start?
+- We can think of better names for all options.
+- Export to plain postgres format will be useless, if we are not 100% compatible on page level.
+I can recall at least one such difference - PD_WAL_LOGGED flag in pages.
+
+
+# Content from file ../neon/docs/rfcs/009-snapshot-first-storage-pitr.md:
+
+# Preface
+
+GetPage@LSN can be called with older LSNs, and the page server needs
+to be able to reconstruct older page versions. That's needed for
+having read-only replicas that lag behind the primary, or that are
+"anchored" at an older LSN, and internally in the page server when you
+branch at an older point in time. How do you do that?
+
+For now, I'm not considering incremental snapshots at all. I don't
+think that changes things. So whenever you create a snapshot or a
+snapshot file, it contains an image of all the pages, there is no need
+to look at an older snapshot file.
+
+Also, I'm imagining that this works on a per-relation basis, so that
+each snapshot file contains data for one relation. A "relation" is a
+fuzzy concept - it could actually be one 1 GB relation segment. Or it
+could include all the different "forks" of a relation, or you could
+treat each fork as a separate relation for storage purpose. And once
+we have the "non-relational" work is finished, a "relation" could
+actually mean some other versioned object kept in the PostgreSQL data
+directory. Let's ignore that for now.
+
+# Eric's RFC:
+
+Every now and then, you create a "snapshot". It means that you create
+a new snapshot file for each relation that was modified after the last
+snapshot, and write out the contents the relation as it is/was at the
+snapshot LSN. Write-ahead log is stored separately in S3 by the WAL
+safekeeping service, in the original PostgreSQL WAL file format.
+
+    SNAPSHOT @100       WAL
+       .                 |
+       .                 |
+       .                 |
+       .                 |
+    SNAPSHOT @200        |
+       .                 |
+       .                 |
+       .                 |
+       .                 |
+    SNAPSHOT @300        |
+       .                 |
+       .                 V
+    IN-MEMORY @400
+
+If a GetPage@LSN request comes from the primary, you return the latest
+page from the in-memory layer. If there is no trace of the page in
+memory, it means that it hasn't been modified since the last snapshot,
+so you return the page from the latest snapshot, at LSN 300 in the
+above example.
+
+PITR is implemented using the original WAL files:
+
+If a GetPage@LSN request comes from a read replica with LSN 250, you
+read the image of the page from the snapshot at LSN 200, and you also
+scan the WAL between 200 and 250, and apply all WAL records for the
+requested page, to reconstruct it at LSN 250.
+
+Scanning the WAL naively for every GetPage@LSN request would be
+expensive, so in practice you'd construct an in-memory data structure
+of all the WAL between 200 and 250 once that allows quickly looking up
+records for a given page.
+
+## Problems/questions
+
+I think you'll need to store the list of snapshot LSNs on each
+timeline somewhere.
+
+If the latest snapshot of a relation is at LSN 100, and you request a
+page at LSN 1000000, how do you know if there are some modifications
+to it between 100 and 1000000 that you need to replay? You can scan
+all the WAL between 100 and 1000000, but that would be expensive.
+
+You can skip that, if you know that a snapshot was taken e.g. at LSN
+999900. Then you know that the fact that there is no snapshot file at
+999900 means that the relation hasn't been modified between
+100-999900.  Then you only need to scan the WAL between 999900 and
+1000000. However, there is no trace of a snapshot happening at LSN
+999900 in the snapshot file for this relation, so you need to get
+that information from somewhere else.
+
+Where do you get that information from? Perhaps you can scan all the
+other relations, and if you see a snapshot file for *any* relation at
+LSN 999900, you know that if there were modifications to this
+relation, there would be a newer snapshot file for it, too. In other
+words, the list of snapshots that have been taken can be constructed
+by scanning all relations and computing the union of all snapshot LSNs
+that you see for any relation. But that's expensive so at least you
+should keep that in memory, after computing it once. Also, if you rely
+on that, it's not possible to have snapshots at different intervals
+for different files. That seems limiting.
+
+Another option is to explicitly store a list of snapshot LSNs in a
+separate metadata file.
+
+
+# Current implementation in the 'layered_repo' branch:
+
+We store snapshot files like in the RFC, but each snapshot file also
+contains all the WAL in the range of LSNs, so that you don't need to
+fetch the WAL separately from S3. So you have "layers" like this:
+
+    SNAPSHOT+WAL 100-200
+          |
+          |
+          |
+          |
+    SNAPSHOT+WAL 200-300
+          |
+          |
+          |
+          |
+    IN-MEMORY 300-
+
+Each "snapshot+WAL" is a file that contains a snapshot - i.e. full
+copy of each page in the relation, at the *start* LSN. In addition to
+that, it contains all the WAL applicable to the relation from the
+start LSN to the end LSN. With that, you can reconstruct any page
+version in the range that the file covers.
+
+
+## Problems/questions
+
+I can see one potential performance issue here, compared to the RFC.
+Let's focus on a single relation for now. Imagine that you start from
+an empty relation, and you receive WAL from 100 to 200, containing
+a bunch of inserts and updates to the relation. You now have all that
+WAL in memory:
+
+    memory:  WAL from 100-200
+
+We decide that it's time to materialize that to a snapshot file on
+disk.  We materialize full image of the relation as it was at LSN 100
+to the snapshot file, and include all of the WAL. Since the relation
+was initially empty, the "image" at the beginning of th range is empty
+too.
+
+So now you have one file on on disk:
+
+    SNAPSHOT+WAL 100-200
+
+It contains a full image of the relation at LSN 100 and all WAL
+between 100-200. (It's actually stored as a serialized BTreeMap of
+page versions, with the page images and WAL records all stored
+together in the same BtreeMap. But for this story, that's not
+important.)
+
+We now receive more WAL updating the relation, up to LSN 300. We
+decide it's time to materialize a new snapshot file, and we now have
+two files:
+
+    SNAPSHOT+WAL 100-200
+    SNAPSHOT+WAL 200-300
+
+Note that the latest "full snapshot" that we store on disk always lags
+behind by one snapshot cycle. The first file contains a full image of
+the relation at LSN 100, the second at LSN 200. When we have received
+WAL up to LSN 300, we write a materialized image at LSN 200. That
+seems a bit silly. In the design per your RFC, you would write a
+snapshots at LSNs 200 and 300, instead. That seems better.
+
+
+
+# Third option (not implemented yet)
+
+Store snapshot files like in the RFC, but also store per-relation
+WAL files that contain WAL in a range of LSNs for that relation.
+
+    SNAPSHOT @100   WAL 100-200
+       .                 |
+       .                 |
+       .                 |
+       .                 |
+    SNAPSHOT @200   WAL 200-300
+       .                 |
+       .                 |
+       .                 |
+       .                 |
+    SNAPSHOT @300
+       .
+       .
+    IN-MEMORY 300-
+
+
+This could be the best of both worlds. The snapshot files would be
+independent of the PostgreSQL WAL format. When it's time to write
+snapshot file @300, you write a full image of the relation at LSN 300,
+and you write the WAL that you had accumulated between 200 and 300 to
+a separate file. That way, you don't "lag behind" for one snapshot
+cycle like in the current implementation. But you still have the WAL
+for a particular relation readily available alongside the snapshot
+files, and you don't need to track what snapshot LSNs exist
+separately.
+
+(If we wanted to minimize the number of files, you could include the
+snapshot @300 and the WAL between 200 and 300 in the same file, but I
+feel it's probably better to keep them separate)
+
+
+
+# Further thoughts
+
+There's no fundamental reason why the LSNs of the snapshot files and the
+ranges of the WAL files would need to line up. So this would be possible
+too:
+
+    SNAPSHOT @100   WAL 100-150
+       .                 |
+       .                 |
+       .            WAL 150-250
+       .                 |
+    SNAPSHOT @200        |
+       .                 |
+       .            WAL 250-400
+       .                 |
+       .                 |
+    SNAPSHOT @300        |
+       .                 |
+       .                 |
+    IN-MEMORY 300-
+
+I'm not sure what the benefit of this would be. You could materialize
+additional snapshot files in the middle of a range covered by a WAL
+file, maybe? Might be useful to speed up access when you create a new
+branch in the middle of an LSN range or if there's some other reason
+to believe that a particular LSN is "interesting" and there will be
+a lot of requests using it.
+
+
+# Content from file ../neon/docs/rfcs/009-snapshot-first-storage.md:
+
+# Snapshot-first storage architecture
+
+Goals:
+- Long-term storage of database pages.
+- Easy snapshots; simple snapshot and branch management.
+- Allow cloud-based snapshot/branch management.
+- Allow cloud-centric branching; decouple branch state from running pageserver.
+- Allow customer ownership of data via s3 permissions.
+- Provide same or better performance for typical workloads, vs plain postgres.
+
+Non-goals:
+- Service database reads from s3 (reads should be serviced from the pageserver cache).
+- Keep every version of every page / Implement point-in-time recovery (possibly a future paid feature, based on WAL replay from an existing snapshot).
+
+## Principle of operation
+
+The database “lives in s3”. This means that all of the long term page storage is in s3, and the “live database”-- the version that lives in the pageserver-- is a set of “dirty pages” that haven’t yet been written back to s3.
+
+In practice, this is mostly similar to storing frequent snapshots to s3 of a database that lives primarily elsewhere.
+
+The main difference is that s3 is authoritative about which branches exist; pageservers consume branches, snapshots, and related metadata by reading them from s3. This allows cloud-based management of branches and snapshots, regardless of whether a pageserver is running or not.
+
+It’s expected that a pageserver should keep a copy of all pages, to shield users from s3 latency. A cheap/slow pageserver that falls back to s3 for some reads would be possible, but doesn’t seem very useful right now.
+
+Because s3 keeps all history, and the safekeeper(s) preserve any WAL records needed to reconstruct the most recent changes, the pageserver can store dirty pages in RAM or using non-durable local storage; this should allow very good write performance, since there is no need for fsync or journaling.
+
+Objects in s3 are immutable snapshots, never to be modified once written (only deleted).
+
+Objects in s3 are files, each containing a set of pages for some branch/relation/segment as of a specific time (LSN). A snapshot could be complete (meaning it has a copy of every page), or it could be incremental (containing only the pages that were modified since the previous snapshot). It’s expected that most snapshots are incremental to keep storage costs low.
+
+It’s expected that the pageserver would upload new snapshot objects frequently, e.g. somewhere between 30 seconds and 15 minutes, depending on cost/performance balance.
+
+No-longer needed snapshots can be “squashed”-- meaning snapshot N and snapshot N+1 can be read by some cloud agent software, which writes out a new object containing the combined set of pages (keeping only the newest version of each page) and then deletes the original snapshots.
+
+A pageserver only needs to store the set of pages needed to satisfy operations in flight: if a snapshot is still being written, the pageserver needs to hold historical pages so that snapshot captures a consistent moment in time (similar to what is needed to satisfy a slow replica).
+
+WAL records can be discarded once a snapshot has been stored to s3. (Unless we want to keep them longer as part of a point-in-time recovery feature.)
+
+## Pageserver operation
+
+To start a pageserver from a stored snapshot, the pageserver downloads a set of snapshots sufficient to start handling requests. We assume this includes the latest copy of every page, though it might be possible to start handling requests early, and retrieve pages for the first time only when needed.
+
+To halt a pageserver, one final snapshot should be written containing all pending WAL updates; then the pageserver and safekeepers can shut down.
+
+It’s assumed there is some cloud management service that ensures only one pageserver is active and servicing writes to a given branch.
+
+The pageserver needs to be able to track whether a given page has been modified since the last snapshot, and should be able to produce the set of dirty pages efficiently to create a new snapshot.
+
+The pageserver need only store pages that are “reachable” from a particular LSN. For example, a page may be written four times, at LSN 100, 200, 300, and 400. If no snapshot is being created when LSN 200 is written, the page at LSN 100 can be discarded. If a snapshot is triggered when the pageserver is at LSN 299, the pageserver must preserve the page from LSN 200 until that snapshot is complete. As before, the page at LSN 300 can be discarded when the LSN 400 pages is written (regardless of whether the LSN 200 snapshot has completed.)
+
+If the pageserver is servicing multiple branches, those branches may contain common history. While it would be possible to serve branches with zero knowledge of their common history, a pageserver could save a lot of space using an awareness of branch history to share the common set of pages. Computing the “liveness” of a historical page may be tricky in the face of multiple branches.
+
+The pageserver may store dirty pages to memory or to local block storage; any local block storage format is only temporary “overflow” storage, and is not expected to be readable by future software versions.
+
+The pageserver may store clean pages (those that are captured in a snapshot) any way it likes: in memory, in a local filesystem (possibly keeping a local copy of the snapshot file), or using some custom storage format. Reading pages from s3 would be functional, but is expected to be prohibitively slow.
+
+The mechanism for recovery after a pageserver failure is WAL redo. If we find that too slow in some situations (e.g. write-heavy workload causes long startup), we can write more frequent snapshots to keep the number of outstanding WAL records low. If that’s still not good enough, we could look at other options (e.g. redundant pageserver or an EBS page journal).
+
+A read-only pageserver is possible; such a pageserver could be a read-only cache of a specific snapshot, or could auto-update to the latest snapshot on some branch. Either way, no safekeeper is required. Multiple read-only pageservers could exist for a single branch or snapshot.
+
+## Cloud snapshot manager operation
+
+Cloud software may wish to do the following operations (commanded by a user, or based on some pre-programmed policy or other cloud agent):
+Create/delete/clone/rename a database
+Create a new branch (possibly from a historical snapshot)
+Start/stop the pageserver/safekeeper on a branch
+List databases/branches/snapshots that are visible to this user account
+
+Some metadata operations (e.g. list branches/snapshots of a particular db) could be performed by scanning the contents of a bucket and inspecting the file headers of each snapshot object. This might not be fast enough; it might be necessary to build a metadata service that can respond more quickly to some queries.
+
+This is especially true if there are public databases: there may be many thousands of buckets that are public, and scanning all of them is not a practical strategy for answering metadata queries.
+
+## Snapshot names, deletion and concurrency
+
+There may be race conditions between operations-- in particular, a “squash” operation may replace two snapshot objects (A, B) with some combined object (C). Since C is logically equivalent to B, anything that attempts to access B should be able to seamlessly switch over to C. It’s assumed that concurrent delete won’t disrupt a read in flight, but it may be possible for some process to read B’s header, and then discover on the next operation that B is gone.
+
+For this reason, any attempted read should attempt a fallback procedure (list objects; search list for an equivalent object) if an attempted read fails.  This requires a predictable naming scheme, e.g. `XXXX_YYYY_ZZZZ_DDDD`, where `XXXX` is the branch unique id, and `YYYY` and `ZZZZ` are the starting/ending LSN values.  `DDDD` is a timestamp indicating when the object was created; this is used to disambiguate a series of empty snapshots, or to help a snapshot policy engine understand which snapshots should be kept or discarded.
+
+## Branching
+
+A user may request a new branch from the cloud user interface. There is a sequence of things that needs to happen:
+- If the branch is supposed to be based on the latest contents, the pageserver should perform an immediate snapshot. This is the parent snapshot for the new branch.
+- Cloud software should create the new branch, by generating a new (random) unique branch identifier, and creating a placeholder snapshot object.
+    - The placeholder object is an empty snapshot containing only metadata (which anchors it to the right parent history) and no pages.
+    - The placeholder can be discarded when the first snapshot (containing data) is completed. Discarding is equivalent to squashing, when the snapshot contains no data.
+- If the branch needs to be started immediately, a pageserver should be notified that it needs to start servicing the branch. This may not be the same pageserver that services the parent branch, though the common history may make it the best choice.
+
+Some of these steps could be combined into the pageserver, but that process would not be possible under all cases (e.g. if no pageserver is currently running, or if the branch is based on an older snapshot, or if a different pageserver will be serving the new branch). Regardless of which software drives the process, the result should look the same.
+
+## Long-term file format
+
+Snapshot files (and any other object stored in s3) must be readable by future software versions.
+
+It should be possible to build multiple tools (in addition to the pageserver) that can read and write this file format-- for example, to allow cloud snapshot management.
+
+Files should contain the following metadata, in addition to the set of pages:
+- The version of the file format.
+- A unique identifier for this branch (should be worldwide-unique and unchanging).
+- Optionally, any human-readable names assigned to this branch (for management UI/debugging/logging).
+- For incremental snapshots, the identifier of the predecessor snapshot. For new branches, this will be the parent snapshot (the point at which history diverges).
+- The location of the predecessor branch snapshot, if different from this branch’s location.
+- The LSN range `(parent, latest]` for this snapshot. For complete snapshots, the parent LSN can be 0.
+- The UTC timestamp of the snapshot creation (which may be different from the time of its highest LSN, if the database is idle).
+- A SHA2 checksum over the entire file (excluding the checksum itself), to preserve file integrity.
+
+A file may contain no pages, and an empty LSN range (probably `(latest, latest]`?), which serves as a placeholder for either a newly-created branch, or a snapshot of an idle database.
+
+Any human-readable names stored in the file may fall out of date if database/branch renames are allowed; there may need to be a cloud metadata service to query (current name -> unique identifier). We may choose instead to not store human-readable names in the database, or treat them as debugging information only.
+
+## S3 semantics, and other kinds of storage
+
+For development and testing, it may be easier to use other kinds of storage in place of s3. For example, a directory full of files can substitute for an s3 bucket with multiple objects. This mode is expected to match the s3 semantics (e.g. don’t edit existing files or use symlinks). Unit tests may omit files entirely and use an in-memory mock bucket.
+
+Some users may want to use a local or network filesystem in place of s3. This isn’t prohibited but it’s not a priority, either.
+
+Alternate implementations of s3 should be supported, including Google Cloud Storage.
+
+Azure Blob Storage should be supported. We assume (without evidence) that it’s semantically equivalent to s3 for this purpose.
+
+The properties of s3 that we depend on are:
+list objects
+streaming read of entire object
+read byte range from object
+streaming write new object (may use multipart upload for better reliability)
+delete object (that should not disrupt an already-started read).
+
+Uploaded files, restored backups, or s3 buckets controlled by users could contain malicious content. We should always validate that objects contain the content they’re supposed to. Incorrect, Corrupt or malicious-looking contents should cause software (cloud tools, pageserver) to fail gracefully.
+
+## Notes
+
+Possible simplifications, for a first draft implementation:
+- Assume that dirty pages fit in pageserver RAM. Can use kernel virtual memory to page out to disk if needed. Can improve this later.
+- Don’t worry about the details of the squashing process yet.
+- Don’t implement cloud metadata service; try to make everything work using basic s3 list-objects and reads.
+- Don’t implement rename, delete at first.
+- Don’t implement public/private, just use s3 permissions.
+- Don’t worry about sharing history yet-- each user has their own bucket and a full copy of all data.
+- Don’t worry about history that spans multiple buckets.
+- Don’t worry about s3 regions.
+- Don’t support user-writeable s3 buckets; users get only read-only access at most.
+
+Open questions:
+- How important is point-in-time recovery? When should we add this? How should it work?
+- Should snapshot files use compression?
+- Should we use snapshots for async replication? A spare pageserver could stay mostly warmed up by consuming snapshots as they’re created.
+- Should manual snapshots, or snapshots triggered by branch creation, be named differently from snapshots that are triggered by a snapshot policy?
+- When a new branch is created, should it always be served by the same pageserver that owns its parent branch? When should we start a new pageserver?
+- How can pageserver software upgrade be done with minimal downtime?
+
+
+# Content from file ../neon/docs/rfcs/010-storage_details.md:
+
+# Storage details
+
+Here I tried to describe the current state of thinking about our storage subsystem as I understand it. Feel free to correct me. Also, I tried to address items from Heikki's TODO and be specific on some of the details.
+
+## Overview
+
+![storage](images/storage.jpeg)
+
+### MemStore
+
+MemStore holds the data between `latest_snapshot_lsn` and `latest_lsn`. It consists of PageIndex that holds references to WAL records or pages, PageStore that stores recently materialized pages, and WalStore that stores recently received WAL.
+
+### PageIndex
+
+PageIndex is an ordered collection that maps `(BufferTag, LSN)` to one of the following references (by reference I mean some information that is needed to access that data, e.g. file_id and offset):
+
+* PageStoreRef -- page offset in the PageStore
+* LocalStoreRef -- snapshot_id and page offset inside of that snapshot
+* WalStoreRef -- offset (and size optionally) of WalRecord in WalStore
+
+PageIndex holds information about all the pages in all incremental snapshots and in the latest full snapshot. If we aren't using page compression inside snapshots we actually can avoid storing references to the full snapshot and calculate page offsets based on relation sizes metadata in the full snapshot (assuming that full snapshot stores pages sorted by page number). However, I would suggest embracing page compression from the beginning and treat all pages as variable-sized.
+
+We assume that PageIndex is few orders of magnitude smaller than addressed data hence it should fit memory. We also don't care about crash tolerance as we can rebuild it from snapshots metadata and WAL records from WalStore or/and Safekeeper.
+
+### WalStore
+
+WalStore is a queue of recent WalRecords. I imagine that we can store recent WAL the same way as Postgres does -- as 16MB files on disk. On top of that, we can add some fixed-size cache that would keep some amount of segments in memory.
+
+For now, we may rely on the Safekeeper to safely store that recent WAL. But generally, I think we can pack all S3 operations into the page server so that it would be also responsible for the recent WAL pushdown to S3 (and Safekeeper may just delete WAL that was confirmed as S3-durable by the page server).
+
+### PageStore
+
+PageStore is storage for recently materialized pages (or in other words cache of getPage results). It is also can be implemented as a file-based queue with some memory cache on top of it.
+
+There are few possible options for PageStore:
+
+a) we just add all recently materialized pages there (so several versions of the same page can be stored there) -- that is more or less how it happens now with the current RocksDB implementation.
+
+b) overwrite older pages with the newer pages -- if there is no replica we probably don't need older pages. During page overwrite, we would also need to change PageStoreRef back to WalStoreRef in PageIndex.
+
+I imagine that newly created pages would just be added to the back of PageStore (again in queue-like fashion) and this way there wouldn't be any meaningful ordering inside of that queue. When we are forming a new incremental snapshot we may prohibit any updates to the current set of pages in PageStore (giving up on single page version rule) and cut off that whole set when snapshot creation is complete.
+
+With option b) we can also treat PageStor as an uncompleted incremental snapshot.
+
+### LocalStore
+
+LocalStore keeps the latest full snapshot and set of incremental snapshots on top of it. We add new snapshots when the number of changed pages grows bigger than a certain threshold.
+
+## Granularity
+
+By granularity, I mean a set of pages that goes into a certain full snapshot. Following things should be taken into account:
+
+* can we shard big databases between page servers?
+* how much time will we spend applying WAL to access certain pages with older LSN's?
+* how many files do we create for a single database?
+
+I can think of the following options here:
+
+1. whole database goes to one full snapshot.
+    * +: we never create a lot of files for one database
+    * +: the approach is quite straightforward, moving data around is simple
+    * -: can not be sharded
+    * -: long recovery -- we always need to recover the whole database
+2. table segment is the unit of snapshotting
+    * +: straightforward for sharding
+    * +: individual segment can be quickly recovered with sliced WAL
+    * -: full snapshot can be really small (e.g. when the corresponding segment consists of a single page) and we can blow amount of files. Then we would spend eternity in directory scans and the amount of metadata for sharding can be also quite big.
+3. range-partitioned snapshots -- snapshot includes all pages between [BuffTagLo, BuffTagHi] mixing different relations, databases, and potentially clusters (albeit from one tenant only). When full snapshot outgrows a certain limit (could be also a few gigabytes) we split the snapshot in two during the next full snapshot write. That approach would also require pages sorted by BuffTag inside our snapshots.
+    * +: addresses all mentioned issues
+    * -: harder to implement
+
+I think it is okay to start with table segments granularity and just check how we will perform in cases of lots of small tables and check is there any way besides c) to deal with it.
+
+Both PageStore and WalStore should be "sharded" by this granularity level.
+
+## Security
+
+We can generate different IAM keys for each tenant and potentially share them with users (in read-only mode?) or even allow users to provide their S3 buckets credentials.
+
+Also, S3 backups are usually encrypted by per-tenant privates keys. I'm not sure in what threat model such encryption would improve something (taking into account per-tenant IAM keys), but it seems that everybody is doing that (both AMZN and YNDX). Most likely that comes as a requirement about "cold backups" by some certification procedure.
+
+## Dynamics
+
+### WAL stream handling
+
+When a new WAL record is received we need to parse BufferTags in that record and insert them in PageIndex with WalStoreRef as a value.
+
+### getPage queries
+
+Look up the page in PageIndex. If the value is a page reference then just respond with that page. If the referenced value is WAL record then find the most recent page with the same BuffTag (that is why we need ordering in PageIndex); recover it by applying WAL records; save it in PageStore; respond with that page.
+
+### Starting page server without local data
+
+* build set of latest full snapshots and incremental snapshots on top of them
+* load all their metadata into PageIndex
+* Safekeeper should connect soon and we can ask for a WAL stream starting from the latest incremental snapshot
+* for databases that are connected to us through the Safekeeper we can start loading the set of the latest snapshots or we can do that lazily based on getPage request (I'd better avoid doing that lazily for now without some access stats from the previous run and just transfer all data for active database from S3 to LocalStore).
+
+### Starting page server with local data (aka restart or reboot)
+
+* check that local snapshot files are consistent with S3
+
+### Snapshot creation
+
+Track size of future snapshots based on info in MemStore and when it exceeds some threshold (taking into account our granularity level) create a new incremental snapshot. Always emit incremental snapshots from MemStore.
+
+To create a new snapshot we need to walk through WalStore to get the list of all changed pages, sort it, and get the latest versions of that pages from PageStore or by WAL replay. It makes sense to maintain that set in memory while we are receiving the WAL stream to avoid parsing WAL during snapshot creation.
+
+Full snapshot creation can be done by GC (or we can call that entity differently -- e.g. merger?) by merging the previous full snapshot with several incremental snapshots.
+
+### S3 pushdown
+
+When we have several full snapshots GC can push the old one with its increments to S3.
+
+### Branch creation
+
+Create a new timeline and replay sliced WAL up to a requested point. When the page is not in PageIndex ask the parent timeline about a page. Relation sizes are tricky.
+
+## File formats
+
+As far as I understand Bookfile/Aversion addresses versioning and serialization parts.
+
+As for exact data that should go to snapshots I think it is the following for each snapshot:
+
+* format version number
+* set of key/values to interpret content (e.g. is page compression enabled, is that a full or incremental snapshot, previous snapshot id, is there WAL at the end on file, etc) -- it is up to a reader to decide what to do if some keys are missing or some unknown key are present. If we add something backward compatible to the file we can keep the version number.
+* array of [BuffTag, corresponding offset in file] for pages -- IIUC that is analogous to ToC in Bookfile
+* array of [(BuffTag, LSN), corresponding offset in file] for the WAL records
+* pages, one by one
+* WAL records, one by one
+
+It is also important to be able to load metadata quickly since it would be one of the main factors impacting the time of page server start. E.g. if would store/cache about 10TB of data per page server, the size of uncompressed page references would be about 30GB (10TB / ( 8192 bytes page size / ( ~18 bytes per ObjectTag + 8 bytes offset in the file))).
+
+1) Since our ToC/array of entries can be sorted by ObjectTag we can store the whole BufferTag only when relation_id is changed and store only delta-encoded offsets for a given relation. That would reduce the average per-page metadata size to something less than 4 bytes instead of 26 (assuming that pages would follow the same order and offset deltas would be small).
+2) It makes sense to keep ToC at the beginning of the file to avoid extra seeks to locate it. Doesn't matter too much with the local files but matters on S3 -- if we are accessing a lot of ~1Gb files with the size of metadata ~ 1Mb then the time to transfer this metadata would be comparable with access latency itself (which is about a half of a second). So by slurping metadata with one read of file header instead of N reads we can improve the speed of page server start by this N factor.
+
+I think both of that optimizations can be done later, but that is something to keep in mind when we are designing our storage serialization routines.
+
+Also, there were some discussions about how to embed WAL in incremental snapshots. So far following ideas were mentioned:
+1. snapshot lsn=200, includes WAL in range 200-300
+2. snapshot lsn=200, includes WAL in range 100-200
+3. data snapshots are separated from WAL snapshots
+
+Both options 2 and 3 look good. I'm inclined towards option 3 as it would allow us to apply different S3 pushdown strategies for data and WAL files (e.g. we may keep data snapshot until the next full snapshot, but we may push WAL snapshot to S3 just when they appeared if there are no replicas).
+
+
+# Content from file ../neon/docs/rfcs/011-retention-policy.md:
+
+# User-visible timeline history
+
+The user can specify a retention policy. The retention policy is
+presented to the user as a PITR period and snapshots. The PITR period
+is the amount of recent history that needs to be retained, as minutes,
+hours, or days. Within that period, you can create a branch or
+snapshot at any point in time, open a compute node, and start running
+queries. Internally, a PITR period is represented as a range of LSNs
+
+The user can also create snapshots. A snapshot is a point in time,
+internally represented by an LSN. The user gives the snapshot a name.
+
+The user can also specify an interval, at which the system creates
+snapshots automatically. For example, create a snapshot every night at
+2 AM. After some user-specified time, old automatically created
+snapshots are removed.
+
+                     Snapshot       Snapshot
+         PITR        "Monday"       "Tuesday"        PITR
+    ----######----------+-------------+-------------######>
+
+If there are multiple branches, you can specify different policies or
+different branches.
+
+The PITR period and user-visible snapshots together define the
+retention policy.
+
+NOTE: As presented here, this is probably overly flexible. In reality,
+we want to keep the user interface simple. Only allow a PITR period at
+the tip of a branch, for example. But that doesn't make much
+difference to the internals.
+
+
+# Retention policy behind the scenes
+
+The retention policy consists of points (for snapshots) and ranges
+(for PITR periods).
+
+The system must be able to reconstruct any page within the retention
+policy. Other page versions can be garbage collected away. We have a
+lot of flexibility on when to perform the garbage collection and how
+aggressive it is.
+
+
+# Base images and WAL slices
+
+The page versions are stored in two kinds of files: base images and
+WAL slices. A base image contains a dump of all the pages of one
+relation at a specific LSN. A WAL slice contains all the WAL in an LSN
+range.
+
+
+    |
+    |
+    |
+    | --Base img @100   +
+    |                   |
+    |                   | WAL slice
+    |                   | 100-200
+    |                   |
+    | --Base img @200   +
+    |                   |
+    |                   | WAL slice
+    |                   | 200-300
+    |                   |
+    |                   +
+    |
+    V
+
+
+To recover a page e.g. at LSN 150, you need the base image at LSN 100,
+and the WAL slice 100-200.
+
+All of this works at a per-relation or per-relation-segment basis. If
+a relation is updated very frequently, we create base images and WAL
+slices for it more quickly. For a relation that's updated
+infrequently, we hold the recent WAL for that relation longer, and
+only write it out when we need to release the disk space occupied by
+the original WAL. (We need a backstop like that, because until all the
+WAL/base images have been been durably copied to S3, we must keep the
+original WAL for that period somewhere, in the WAL service or in S3.)
+
+
+# Branching
+
+Internally, branch points are also "retention points", in addition to
+the user-visible snapshots. If a branch has been forked off at LSN
+100, we need to be able to reconstruct any page on the parent branch
+at that LSN, because it is needed by the child branch. If a page is
+modified in the child, we don't need to keep that in the parent
+anymore, though.
+
+
+# Content from file ../neon/docs/rfcs/012-background-tasks.md:
+
+# Eviction
+
+ Write out in-memory layer to disk, into a delta layer.
+
+- To release memory
+- To make it possible to advance disk_consistent_lsn and allow the WAL
+  service to release some WAL.
+
+- Triggered if we are short on memory
+- Or if the oldest in-memory layer is so old that it's holding back
+  the WAL service from removing old WAL
+
+# Materialization
+
+Create a new image layer of a segment, by performing WAL redo
+
+- To reduce the amount of WAL that needs to be replayed on a GetPage request.
+- To allow garbage collection of old layers
+
+- Triggered by distance to last full image of a page
+
+# Coalescing
+
+Replace N consecutive layers of a segment with one larger layer.
+
+- To reduce the number of small files that needs to be uploaded to S3
+
+
+# Bundling
+
+Zip together multiple small files belonging to different segments.
+
+- To reduce the number of small files that needs to be uploaded to S3
+
+
+# Garbage collection
+
+Remove a layer that's older than the GC horizon, and isn't needed anymore.
+
+
+# Content from file ../neon/docs/rfcs/013-term-history.md:
+
+# What
+
+Currently, apart from WAL safekeeper persistently stores only two logical clock
+counter (aka term) values, sourced from the same sequence. The first is bumped
+whenever safekeeper gives vote to proposer (or acknowledges already elected one)
+and e.g. prevents electing two proposers with the same term -- it is actually
+called `term` in the code. The second, called `epoch`, reflects progress of log
+receival and this might lag behind `term`; safekeeper switches to epoch `n` when
+it has received all committed log records from all `< n` terms. This roughly
+corresponds to proposed in
+
+https://github.com/zenithdb/rfcs/pull/3/files
+
+
+This makes our biggest our difference from Raft. In Raft, every log record is
+stamped with term in which it was generated; while we essentially store in
+`epoch` only the term of the highest record on this safekeeper -- when we know
+it -- because during recovery generally we don't, and `epoch` is bumped directly
+to the term of the proposer who performs the recovery when it is finished. It is
+not immediately obvious that this simplification is safe. I thought and I still
+think it is; model checking confirmed that. However, some details now make me
+believe it is better to keep full term switching history (which is equivalent to
+knowing term of each record).
+
+# Why
+
+Without knowing full history (list of <term, LSN> pairs) of terms it is hard to
+determine the exact divergence point, and if we don't perform truncation at that
+point safety becomes questionable. Consider the following history, with
+safekeepers A, B, C, D, E. n_m means record created by proposer in term n with
+LSN m; (t=x, e=y) means safekeeper currently has term x and epoch y.
+
+1) P1 in term 1 writes 1.1 everywhere, which is committed, and some more only
+on A.
+
+<pre>
+A(t=1, e=1) 1.1 1.2 1.3 1.4
+B(t=1, e=1) 1.1
+C(t=1, e=1) 1.1
+D(t=1, e=1) 1.1
+E(t=1, e=1) 1.1
+</pre>
+
+2) P2 is elected by CDE in term 2, epochStartLsn is 2, and writes 2.2, 2.3 on CD:
+
+<pre>
+A(t=1, e=1) 1.1 1.2 1.3 1.4
+B(t=1, e=1) 1.1
+C(t=2, e=2) 1.1 2.2 2.3
+D(t=2, e=2) 1.1 2.2 2.3
+E(t=2, e=1) 1.1
+</pre>
+
+
+3) P3 is elected by CDE in term 3, epochStartLsn is 4, and writes 3.4 on D:
+
+<pre>
+A(t=1, e=1) 1.1 1.2 1.3 1.4
+B(t=1, e=1) 1.1
+C(t=3, e=2) 1.1 2.2 2.3
+D(t=3, e=3) 1.1 2.2 2.3 3.4
+E(t=3, e=1) 1.1
+</pre>
+
+
+Now, A gets back and P3 starts recovering it. How it should proceed? There are
+two options.
+
+## Don't try to find divergence point at all
+
+...start sending WAL conservatively since the horizon (1.1), and truncate
+obsolete part of WAL only when recovery is finished, i.e. epochStartLsn (4) is
+reached, i.e. 2.3 transferred -- that's what https://github.com/neondatabase/neon/pull/505 proposes.
+
+Then the following is possible:
+
+4) P3 moves one record 2.2 to A.
+
+<pre>
+A(t=1, e=1) 1.1 <b>2.2</b> 1.3 1.4
+B(t=1, e=1) 1.1 1.2
+C(t=3, e=2) 1.1 2.2 2.3
+D(t=3, e=3) 1.1 2.2 2.3 3.4
+E(t=3, e=1) 1.1
+</pre>
+
+Now log of A is basically corrupted. Moreover, since ABE are all in epoch 1 and
+A's log is the longest one, they can elect P4 who will commit such log.
+
+Note that this particular history couldn't happen if we forbid to *create* new
+records in term n until majority of safekeepers switch to it. It would force CDE
+to switch to 2 before 2.2 is created, and A could never become donor while his
+log is corrupted. Generally with this additional barrier I believe the algorithm
+becomes safe, but
+ - I don't like this kind of artificial barrier;
+ - I also feel somewhat discomfortable about even temporary having intentionally
+   corrupted WAL;
+ - I'd still model check the idea.
+
+## Find divergence point and truncate at it
+
+Then step 4 would delete 1.3 1.4 on A, and we are ok. The question is, how do we
+do that? Without term switching history we have to resort to sending again since
+the horizon and memcmp'ing records, which is inefficient and ugly. Or we can
+maintain full history and determine truncation point by comparing 'wrong' and
+'right' histories -- much like pg_rewind does -- and perform truncation + start
+streaming right there.
+
+# Proposal
+
+- Add term history as array of <term, LSN> pairs to safekeeper controlfile.
+- Return it to proposer with VoteResponse so 1) proposer can tell it to other
+  nodes and 2) determine personal streaming starting point. However, since we
+  don't append WAL and update controlfile atomically, let's first always update
+  controlfile but send only the history of what we really have (up to highest
+  term in history where begin_lsn >= end of wal; this highest term replaces
+  current `epoch`). We also send end of wal as we do now to determine the donor.
+- Create ProposerAnnouncement message which proposer sends before starting
+  streaming. It announces proposer as elected and
+  1) Truncates wrong part of WAL on safekeeper
+     (divergence point is already calculated at proposer, but can be
+     cross-verified here).
+  2) Communicates the 'right' history of its term (taken from donor). Seems
+     better to immediately put the history in the controlfile,
+	 though safekeeper might not have full WAL for previous terms in it --
+	 this way is simpler, and we can't update WAL and controlfile atomically anyway.
+
+	 This also constitutes analogue of current epoch bump for those safekeepers
+     which don't need recovery, which is important for sync-safekeepers (bump
+     epoch without waiting records from new term).
+- After ProposerAnnouncement proposer streams WAL since calculated starting
+  point -- only what is missing.
+
+
+pros/cons:
++ (more) clear safety of WAL truncation -- we get very close to Raft
++ no unnecessary data sending (faster recovery for not-oldest-safekeepers, matters
+   only for 5+ nodes)
++ adds some observability at safekeepers
+
+- complexity, but not that much
+
+
+# Misc
+
+- During model checking I did truncation on first locally non existent or
+  different record -- analogue of 'memcmp' variant described above.
+
+
+# Content from file ../neon/docs/rfcs/014-safekeepers-gossip.md:
+
+# Safekeeper gossip
+
+Extracted from this [PR](https://github.com/zenithdb/rfcs/pull/13)
+
+## Motivation
+
+In some situations, safekeeper (SK) needs coordination with other SK's that serve the same tenant:
+
+1. WAL deletion. SK needs to know what WAL was already safely replicated to delete it. Now we keep WAL indefinitely.
+2. Deciding on who is sending WAL to the pageserver. Now sending SK crash may lead to a livelock where nobody sends WAL to the pageserver.
+3. To enable SK to SK direct recovery without involving the compute
+
+## Summary
+
+Compute node has connection strings to each safekeeper. During each compute->safekeeper connection establishment, the compute node should pass down all that connection strings to each safekeeper. With that info, safekeepers may establish Postgres connections to each other and periodically send ping messages with LSN payload.
+
+## Components
+
+safekeeper, compute, compute<->safekeeper protocol, possibly console (group SK addresses)
+
+## Proposed implementation
+
+Each safekeeper can periodically ping all its peers and share connectivity and liveness info. If the ping was not receiver for, let's say, four ping periods, we may consider sending safekeeper as dead. That would mean some of the alive safekeepers should connect to the pageserver. One way to decide which one exactly: `make_connection = my_node_id == min(alive_nodes)`
+
+Since safekeepers are multi-tenant, we may establish either per-tenant physical connections or per-safekeeper ones. So it makes sense to group "logical" connections between corresponding tenants on different nodes into a single physical connection. That means that we should implement an interconnect thread that maintains physical connections and periodically broadcasts info about all tenants.
+
+Right now console may assign any 3 SK addresses to a given compute node. That may lead to a high number of gossip connections between SK's. Instead, we can assign safekeeper triples to the compute node. But if we want to "break"/" change" group by an ad-hoc action, we can do it.
+
+### Corner cases
+
+- Current safekeeper may be alive but may not have connectivity to the pageserver
+
+  To address that, we need to gossip visibility info. Based on that info, we may define SK as alive only when it can connect to the pageserver.
+
+- Current safekeeper may be alive but may not have connectivity with the compute node.
+
+  We may broadcast last_received_lsn and presence of compute connection and decide who is alive based on that.
+
+- It is tricky to decide when to shut down gossip connections because we need to be sure that pageserver got all the committed (in the distributed sense, so local SK info is not enough) records, and it may never lose them. It is not a strict requirement since `--sync-safekeepers` that happen before the compute start will allow the pageserver to consume missing WAL, but it is better to do that in the background. So the condition may look like that: `majority_max(flush_lsn) == pageserver_s3_lsn` Here we rely on the two facts:
+    - that `--sync-safekeepers` happened after the compute shutdown, and it advanced local commit_lsn's allowing pageserver to consume that WAL.
+
+    - we wait for the `pageserver_s3_lsn` advancement to avoid pageserver's last_received_lsn/disk_consistent_lsn going backward due to the disk/hardware failure and subsequent S3 recovery
+
+    If those conditions are not met, we will have some gossip activity (but that may be okay).
+
+## Pros/cons
+
+Pros:
+
+- distributed, does not introduce new services (like etcd), does not add console as a storage dependency
+- lays the foundation for gossip-based recovery
+
+Cons:
+
+- Only compute knows a set of safekeepers, but they should communicate even without compute node. In case of safekeepers restart, we will lose that info and can't gossip anymore. Hence we can't trim some WAL tail until the compute node start. Also, it is ugly.
+
+- If the console assigns a random set of safekeepers to each Postgres, we may end up in a situation where each safekeeper needs to have a connection with all other safekeepers. We can group safekeepers into isolated triples in the console to avoid that. Then "mixing" would happen only if we do rebalancing.
+
+## Alternative implementation
+
+We can have a selected node (e.g., console) with everybody reporting to it.
+
+## Security implications
+
+We don't increase the attack surface here. Communication can happen in a private network that is not exposed to users.
+
+## Scalability implications
+
+The only thing that may grow as we grow the number of computes is the number of gossip connections. But if we group safekeepers and assign a compute node to the random SK triple, the number of connections would be constant.
+
+
+# Content from file ../neon/docs/rfcs/014-storage-lsm.md:
+
+# Why LSM trees?
+
+In general, an LSM tree has the nice property that random updates are
+fast, but the disk writes are sequential. When a new file is created,
+it is immutable. New files are created and old ones are deleted, but
+existing files are never modified. That fits well with storing the
+files on S3.
+
+Currently, we create a lot of small files. That is mostly a problem
+with S3, because each GET/PUT operation is expensive, and LIST
+operation only returns 1000 objects at a time, and isn't free
+either. Currently, the files are "archived" together into larger
+checkpoint files before they're uploaded to S3 to alleviate that
+problem, but garbage collecting data from the archive files would be
+difficult and we have not implemented it. This proposal addresses that
+problem.
+
+
+# Overview
+
+
+```
+^ LSN
+|
+|      Memtable:     +-----------------------------+
+|                    |                             |
+|                    +-----------------------------+
+|
+|
+|            L0:     +-----------------------------+
+|                    |                             |
+|                    +-----------------------------+
+|
+|                    +-----------------------------+
+|                    |                             |
+|                    +-----------------------------+
+|
+|                    +-----------------------------+
+|                    |                             |
+|                    +-----------------------------+
+|
+|                    +-----------------------------+
+|                    |                             |
+|                    +-----------------------------+
+|
+|
+|           L1:      +-------+ +-----+ +--+  +-+
+|                    |       | |     | |  |  | |
+|                    |       | |     | |  |  | |
+|                    +-------+ +-----+ +--+  +-+
+|
+|                       +----+ +-----+ +--+  +----+
+|                       |    | |     | |  |  |    |
+|                       |    | |     | |  |  |    |
+|                       +----+ +-----+ +--+  +----+
+|
++--------------------------------------------------------------> Page ID
+
+
++---+
+|   |   Layer file
++---+
+```
+
+
+# Memtable
+
+When new WAL arrives, it is first put into the Memtable. Despite the
+name, the Memtable is not a purely in-memory data structure. It can
+spill to a temporary file on disk if the system is low on memory, and
+is accessed through a buffer cache.
+
+If the page server crashes, the Memtable is lost. It is rebuilt by
+processing again the WAL that's newer than the latest layer in L0.
+
+The size of the Memtable is configured by the "checkpoint distance"
+setting. Because anything that hasn't been flushed to disk and
+uploaded to S3 yet needs to be kept in the safekeeper, the "checkpoint
+distance" also determines the amount of WAL that needs to kept in the
+safekeeper.
+
+# L0
+
+When the Memtable fills up, it is written out to a new file in L0. The
+files are immutable; when a file is created, it is never
+modified. Each file in L0 is roughly 1 GB in size (*). Like the
+Memtable, each file in L0 covers the whole key range.
+
+When enough files have been accumulated in L0, compaction
+starts. Compaction processes all the files in L0 and reshuffles the
+data to create a new set of files in L1.
+
+
+(*) except in corner cases like if we want to shut down the page
+server and want to flush out the memtable to disk even though it's not
+full yet.
+
+
+# L1
+
+L1 consists of ~ 1 GB files like L0. But each file covers only part of
+the overall key space, and a larger range of LSNs. This speeds up
+searches. When you're looking for a given page, you need to check all
+the files in L0, to see if they contain a page version for the requested
+page. But in L1, you only need to check the files whose key range covers
+the requested page. This is particularly important at cold start, when
+checking a file means downloading it from S3.
+
+Partitioning by key range also helps with garbage collection. If only a
+part of the database is updated, we will accumulate more files for
+the hot part in L1, and old files can be removed without affecting the
+cold part.
+
+
+# Image layers
+
+So far, we've only talked about delta layers. In addition to the delta
+layers, we create image layers, when "enough" WAL has been accumulated
+for some part of the database. Each image layer covers a 1 GB range of
+key space. It contains images of the pages at a single LSN, a snapshot
+if you will.
+
+The exact heuristic for what "enough" means is not clear yet. Maybe
+create a new image layer when 10 GB of WAL has been accumulated for a
+1 GB segment.
+
+The image layers limit the number of layers that a search needs to
+check. That put a cap on read latency, and it also allows garbage
+collecting layers that are older than the GC horizon.
+
+
+# Partitioning scheme
+
+When compaction happens and creates a new set of files in L1, how do
+we partition the data into the files?
+
+- Goal is that each file is ~ 1 GB in size
+- Try to match partition boundaries at relation boundaries. (See [1]
+  for how PebblesDB does this, and for why that's important)
+- Greedy algorithm
+
+# Additional Reading
+
+[1] Paper on PebblesDB and how it does partitioning.
+https://www.cs.utexas.edu/~rak/papers/sosp17-pebblesdb.pdf
+
+
+# Content from file ../neon/docs/rfcs/015-storage-messaging.md:
+
+# Storage messaging
+
+Created on 19.01.22
+
+Initially created [here](https://github.com/zenithdb/rfcs/pull/16) by @kelvich.
+
+That it is an alternative to (014-safekeeper-gossip)[]
+
+## Motivation
+
+As in 014-safekeeper-gossip we need to solve the following problems:
+
+* Trim WAL on safekeepers
+* Decide on which SK should push WAL to the S3
+* Decide on which SK should forward WAL to the pageserver
+* Decide on when to shut down SK<->pageserver connection
+
+This RFC suggests a more generic and hopefully more manageable way to address those problems. However, unlike 014-safekeeper-gossip, it does not bring us any closer to safekeeper-to-safekeeper recovery but rather unties two sets of different issues we previously wanted to solve with gossip.
+
+Also, with this approach, we would not need "call me maybe" anymore, and the pageserver will have all the data required to understand that it needs to reconnect to another safekeeper.
+
+## Summary
+
+Instead of p2p gossip, let's have a centralized broker where all the storage nodes report per-timeline state. Each storage node should have a `--broker-url=1.2.3.4` CLI param.
+
+Here I propose two ways to do that. After a lot of arguing with myself, I'm leaning towards the etcd approach. My arguments for it are in the pros/cons section. Both options require adding a Grpc client in our codebase either directly or as an etcd dependency.
+
+## Non-goals
+
+That RFC does *not* suggest moving the compute to pageserver and compute to safekeeper mappings out of the console. The console is still the only place in the cluster responsible for the persistency of that info. So I'm implying that each pageserver and safekeeper exactly knows what timelines he serves, as it currently is. We need some mechanism for a new pageserver to discover mapping info, but that is out of the scope of this RFC.
+
+## Impacted components
+
+pageserver, safekeeper
+adds either etcd or console as a storage dependency
+
+## Possible implementation: custom message broker in the console
+
+We've decided to go with an etcd approach instead of the message broker.
+
+<details closed>
+<summary>Original suggestion</summary>
+<br>
+We can add a Grpc service in the console that acts as a message broker since the console knows the addresses of all the components. The broker can ignore the payload and only redirect messages. So, for example, each safekeeper may send a message to the peering safekeepers or to the pageserver responsible for a given timeline.
+
+Message format could be `{sender, destination, payload}`.
+
+The destination is either:
+1. `sk_#{tenant}_#{timeline}` -- to be broadcasted on all safekeepers, responsible for that timeline, or
+2. `pserver_#{tenant}_#{timeline}` -- to be broadcasted on all pageservers, responsible for that timeline
+
+Sender is either:
+1. `sk_#{sk_id}`, or
+2. `pserver_#{pserver_id}`
+
+I can think of the following behavior to address our original problems:
+
+* WAL trimming
+  Each safekeeper periodically broadcasts `(write_lsn, commit_lsn)` to all peering (peering == responsible for that timeline) safekeepers
+
+* Decide on which SK should push WAL to the S3
+
+  Each safekeeper periodically broadcasts `i_am_alive_#{current_timestamp}` message to all peering safekeepers. That way, safekeepers may maintain the vector of alive peers (loose one, with false negatives). Alive safekeeper with the minimal id pushes data to S3.
+
+* Decide on which SK should forward WAL to the pageserver
+
+  Each safekeeper periodically sends (write_lsn, commit_lsn, compute_connected) to the relevant pageservers. With that info, pageserver can maintain a view of the safekeepers state, connect to a random one, and detect the moments (e.g., one the safekeepers is not making progress or down) when it needs to reconnect to another safekeeper. Pageserver should resolve exact IP addresses through the console, e.g., exchange `#sk_#{sk_id}` to `4.5.6.7:6400`.
+
+  Pageserver connection to the safekeeper triggered by the state change `compute_connected: false -> true`. With that, we don't need "call me maybe" anymore.
+
+  Also, we don't have a "peer address amnesia" problem as in the gossip approach (with gossip, after a simultaneous reboot, safekeepers wouldn't know each other addresses until the next compute connection).
+
+* Decide on when to shutdown sk<->pageserver connection
+
+  Again, pageserver would have all the info to understand when to shut down the safekeeper connection.
+
+### Scalability
+
+One node is enough (c) No, seriously, it is enough.
+
+### High Availability
+
+Broker lives in the console, so we can rely on k8s maintaining the console app alive.
+
+If the console is down, we won't trim WAL and reconnect the pageserver to another safekeeper. But, at the same, if the console is down, we already can't accept new compute connections and start stopped computes, so we are making things a bit worse, but not dramatically.
+
+### Interactions
+
+```
+         .________________.
+sk_1 <-> |                | <-> pserver_1
+...      | Console broker |     ...
+sk_n <-> |________________| <-> pserver_m
+```
+</details>
+
+
+## Implementation: etcd state store
+
+Alternatively, we can set up `etcd` and maintain the following data structure in it:
+
+```ruby
+"compute_#{tenant}_#{timeline}" => {
+    safekeepers => {
+        "sk_#{sk_id}" => {
+            write_lsn: "0/AEDF130",
+            commit_lsn: "0/AEDF100",
+            compute_connected: true,
+            last_updated: 1642621138,
+        },
+    }
+}
+```
+
+As etcd doesn't support field updates in the nested objects that translates to the following set of keys:
+
+```ruby
+"compute_#{tenant}_#{timeline}/safekeepers/sk_#{sk_id}/write_lsn",
+"compute_#{tenant}_#{timeline}/safekeepers/sk_#{sk_id}/commit_lsn",
+...
+```
+
+Each storage node can subscribe to the relevant sets of keys and maintain a local view of that structure. So in terms of the data flow, everything is the same as in the previous approach. Still, we can avoid implementing the message broker and prevent runtime storage dependency on a console.
+
+### Safekeeper address discovery
+
+During the startup safekeeper should publish the address he is listening on as the part of `{"sk_#{sk_id}" => ip_address}`. Then the pageserver can resolve `sk_#{sk_id}` to the actual address. This way it would work both locally and in the cloud setup. Safekeeper should have `--advertised-address` CLI option so that we can listen on e.g. 0.0.0.0 but advertise something more useful.
+
+### Safekeeper behavior
+
+For each timeline safekeeper periodically broadcasts `compute_#{tenant}_#{timeline}/safekeepers/sk_#{sk_id}/*` fields. It subscribes to changes of `compute_#{tenant}_#{timeline}` -- that way safekeeper will have an information about peering safekeepers.
+That amount of information is enough to properly trim WAL. To decide on who is pushing the data to S3 safekeeper may use etcd leases or broadcast a timestamp and hence track who is alive.
+
+### Pageserver behavior
+
+Pageserver subscribes to `compute_#{tenant}_#{timeline}` for each tenant it owns. With that info, pageserver can maintain a view of the safekeepers state, connect to a random one, and detect the moments (e.g., one the safekeepers is not making progress or down) when it needs to reconnect to another safekeeper. Pageserver should resolve exact IP addresses through the console, e.g., exchange `#sk_#{sk_id}` to `4.5.6.7:6400`.
+
+Pageserver connection to the safekeeper can be triggered by the state change `compute_connected: false -> true`. With that, we don't need "call me maybe" anymore.
+
+As an alternative to compute_connected, we can track timestamp of the latest message arrived to safekeeper from compute. Usually compute broadcasts KeepAlive to all safekeepers every second, so it'll be updated every second when connection is ok. Then the connection can be considered down when this timestamp isn't updated for a several seconds.
+
+This will help to faster detect issues with safekeeper (and switch to another) in the following cases:
+
+      when compute failed but TCP connection stays alive until timeout (usually about a minute)
+      when safekeeper failed and didn't set compute_connected to false
+
+Another way to deal with [2] is to process (write_lsn, commit_lsn, compute_connected) as a KeepAlive on the pageserver side and detect issues when sk_id don't send anything for some time. This way is fully compliant to this RFC.
+
+Also, we don't have a "peer address amnesia" problem as in the gossip approach (with gossip, after a simultaneous reboot, safekeepers wouldn't know each other addresses until the next compute connection).
+
+### Interactions
+
+```
+         .________________.
+sk_1 <-> |                | <-> pserver_1
+...      |      etcd      |     ...
+sk_n <-> |________________| <-> pserver_m
+```
+
+### Sequence diagrams for different workflows
+
+#### Cluster startup
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Compute
+    participant SK1
+    participant SK2
+    participant SK3
+    participant PS1
+    participant PS2
+    participant O as Orchestrator
+    participant M as Metadata Service
+
+    PS1->>M: subscribe to updates to state of timeline N
+    C->>+SK1: WAL push
+    loop constantly update current lsns
+        SK1->>-M: I'm at lsn A
+    end
+    C->>+SK2: WAL push
+    loop constantly update current lsns
+        SK2->>-M: I'm at lsn B
+    end
+    C->>+SK3: WAL push
+    loop constantly update current lsns
+        SK3->>-M: I'm at lsn C
+    end
+    loop request pages
+        C->>+PS1: get_page@lsn
+        PS1->>-C: page image
+    end
+    M->>PS1: New compute appeared for timeline N. SK1 at A, SK2 at B, SK3 at C
+    note over PS1: Say SK1 at A=200, SK2 at B=150 SK3 at C=100 <br> so connect to SK1 because it is the most up to date one
+    PS1->>SK1: start replication
+```
+
+#### Behaviour of services during typical operations
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Compute
+    participant SK1
+    participant SK2
+    participant SK3
+    participant PS1
+    participant PS2
+    participant O as Orchestrator
+    participant M as Metadata Service
+
+    note over C,M: Scenario 1: Pageserver checkpoint
+    note over PS1: Upload data to S3
+    PS1->>M: Update remote consistent lsn
+    M->>SK1: propagate remote consistent lsn update
+    note over SK1: truncate WAL up to remote consistent lsn
+    M->>SK2: propagate remote consistent lsn update
+    note over SK2: truncate WAL up to remote consistent lsn
+    M->>SK3: propagate remote consistent lsn update
+    note over SK3: truncate WAL up to remote consistent lsn
+    note over C,M: Scenario 2: SK1 finds itself lagging behind MAX(150 (SK2), 200 (SK2)) - 100 (SK1) > THRESHOLD
+    SK1->>SK2: Fetch WAL delta between 100 (SK1) and 200 (SK2)
+    note over C,M: Scenario 3: PS1 detects that SK1 is lagging behind: Connection from SK1 is broken or there is no messages from it in 30 seconds.
+    note over PS1: e.g. SK2 is at 150, SK3 is at 100, chose SK2 as a new replication source
+    PS1->>SK2: start replication
+```
+
+#### Behaviour during timeline relocation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant C as Compute
+    participant SK1
+    participant SK2
+    participant SK3
+    participant PS1
+    participant PS2
+    participant O as Orchestrator
+    participant M as Metadata Service
+
+    note over C,M: Timeline is being relocated from PS1 to PS2
+    O->>+PS2: Attach timeline
+    PS2->>-O: 202 Accepted if timeline exists in S3
+    note over PS2: Download timeline from S3
+     note over O: Poll for timeline download (or subscribe to metadata service)
+    loop wait for attach to complete
+        O->>PS2: timeline detail should answer that timeline is ready
+    end
+    PS2->>M: Register downloaded timeline
+    PS2->>M: Get safekeepers for timeline, subscribe to changes
+    PS2->>SK1: Start replication to catch up
+    note over O: PS2 caught up, time to switch compute
+    O->>C: Restart compute with new pageserver url in config
+    note over C: Wal push is restarted
+    loop request pages
+        C->>+PS2: get_page@lsn
+        PS2->>-C: page image
+    end
+    O->>PS1: detach timeline
+    note over C,M: Scenario 1: Attach call failed
+    O--xPS2: Attach timeline
+    note over O: The operation can be safely retried, <br> if we hit some threshold we can try another pageserver
+    note over C,M: Scenario 2: Attach succeeded but pageserver failed to download the data or start replication
+    loop wait for attach to complete
+        O--xPS2: timeline detail should answer that timeline is ready
+    end
+    note over O: Can wait for a timeout, and then try another pageserver <br> there should be a limit on number of different pageservers to try
+    note over C,M: Scenario 3: Detach fails
+    O--xPS1: Detach timeline
+    note over O: can be retried, if continues to fail might lead to data duplication in s3
+```
+
+# Pros/cons
+
+## Console broker/etcd vs gossip:
+
+Gossip pros:
+* gossip allows running storage without the console or etcd
+
+Console broker/etcd pros:
+* simpler
+* solves "call me maybe" as well
+* avoid possible N-to-N connection issues with gossip without grouping safekeepers in pre-defined triples
+
+## Console broker vs. etcd:
+
+Initially, I wanted to avoid etcd as a dependency mostly because I've seen how painful for Clickhouse was their ZooKeeper dependency: in each chat, at each conference, people were complaining about configuration and maintenance barriers with ZooKeeper. It was that bad that ClickHouse re-implemented ZooKeeper to embed it: https://clickhouse.com/docs/en/operations/clickhouse-keeper/.
+
+But with an etcd we are in a bit different situation:
+
+1. We don't need persistency and strong consistency guarantees for the data we store in the etcd
+2. etcd uses Grpc as a protocol, and messages are pretty simple
+
+So it looks like implementing in-mem store with etcd interface is straightforward thing _if we will want that in future_. At the same time, we can avoid implementing it right now, and we will be able to run local zenith installation with etcd running somewhere in the background (as opposed to building and running console, which in turn requires Postgres).
+
+
+# Content from file ../neon/docs/rfcs/016-connection-routing.md:
+
+# Dispatching a connection
+
+For each client connection, Neon service needs to authenticate the
+connection, and route it to the right PostgreSQL instance.
+
+## Authentication
+
+There are three different ways to authenticate:
+
+- anonymous; no authentication needed
+- PostgreSQL authentication
+- github single sign-on using browser
+
+In anonymous access, the user doesn't need to perform any
+authentication at all. This can be used e.g. in interactive PostgreSQL
+documentation, allowing you to run the examples very quickly. Similar
+to sqlfiddle.com.
+
+PostgreSQL authentication works the same as always. All the different
+PostgreSQL authentication options like SCRAM, kerberos, etc. are
+available. [1]
+
+The third option is to authenticate with github single sign-on. When
+you open the connection in psql, you get a link that you open with
+your browser. Opening the link redirects you to github authentication,
+and lets the connection to proceed. This is also known as "Link auth" [2].
+
+
+## Routing the connection
+
+When a client starts a connection, it needs to be routed to the
+correct PostgreSQL instance. Routing can be done by the proxy, acting
+as a man-in-the-middle, or the connection can be routed at the network
+level based on the hostname or IP address.
+
+Either way, Neon needs to identify which PostgreSQL instance the
+connection should be routed to. If the instance is not already
+running, it needs to be started. Some connections always require a new
+PostgreSQL instance to be created, e.g. if you want to run a one-off
+query against a particular point-in-time.
+
+The PostgreSQL instance is identified by:
+- Neon account (possibly anonymous)
+- cluster (known as tenant in the storage?)
+- branch or snapshot name
+- timestamp (PITR)
+- primary or read-replica
+- one-off read replica
+- one-off writeable branch
+
+When you are using regular PostgreSQL authentication or anonymous
+access, the connection URL needs to contain all the information needed
+for the routing. With github single sign-on, the browser is involved
+and some details - the Neon account in particular - can be deduced
+from the authentication exchange.
+
+There are three methods for identifying the PostgreSQL instance:
+
+- Browser interaction (link auth)
+- Options in the connection URL and the domain name
+- A pre-defined endpoint, identified by domain name or IP address
+
+### Link Auth
+
+    postgres://<username>@start.neon.tech/<dbname>
+
+This gives you a link that you open in browser. Clicking the link
+performs github authentication, and the Neon account name is
+provided to the proxy behind the scenes. The proxy routes the
+connection to the primary PostgreSQL instance in cluster called
+"main", branch "main".
+
+Further ideas:
+- You could pre-define a different target for link auth
+  connections in the UI.
+- You could have a drop-down in the browser, allowing you to connect
+  to any cluster you want. Link Auth can be like Teleport.
+
+### Connection URL
+
+The connection URL looks like this:
+
+    postgres://<username>@<cluster-id>.db.neon.tech/<dbname>
+
+By default, this connects you to the primary PostgreSQL instance
+running on the "main" branch in the named cluster [3]. However, you can
+change that by specifying options in the connection URL. The following
+options are supported:
+
+| option name  | Description                                                                                       | Examples                                            |
+| ---          | ---                                                                                               | ---                                                 |
+| cluster      | Cluster name                                                                                      | cluster:myproject                                   |
+| branch       | Branch name                                                                                       | branch:main                                         |
+| timestamp    | Connect to an instance at given point-in-time.                                                    | timestamp:2022-04-08 timestamp:2022-04-08T11:42:16Z |
+| lsn          | Connect to an instance at given LSN                                                               | lsn:0/12FF0420                                      |
+| read-replica | Connect to a read-replica. If the parameter is 'new', a new instance is created for this session. | read-replica read-replica:new                       |
+
+For example, to read branch 'testing' as it was on Mar 31, 2022, you could
+specify a timestamp in the connection URL [4]:
+
+    postgres://alice@cluster-1234.db.neon.tech/postgres?options=branch:testing,timestamp:2022-03-31
+
+Connecting with cluster name and options can be disabled in the UI. If
+disabled, you can only connect using a pre-defined endpoint.
+
+### Pre-defined Endpoint
+
+Instead of providing the cluster name, branch, and all those options
+in the connection URL, you can define a named endpoint with the same
+options.
+
+In the UI, click "create endpoint". Fill in the details:
+
+- Cluster name
+- Branch
+- timestamp or LSN
+- is this for the primary or for a read replica
+- etc.
+
+When you click Finish, a named endpoint is created. You can now use the endpoint ID to connect:
+
+    postgres://<username>@<endpoint-id>.endpoint.neon.tech/<dbname>
+
+
+An endpoint can be assigned a static or dynamic IP address, so that
+you can connect to it with clients that don't support TLS SNI. Maybe
+bypass the proxy altogether, but that ought to be invisible to the
+user.
+
+You can limit the range of source IP addresses that are allowed to
+connect to an endpoint. An endpoint can also be exposed in an Amazon
+VPC, allowing direct connections from applications.
+
+
+# Footnotes
+
+[1] I'm not sure how feasible it is to set up configure like Kerberos
+or LDAP in a cloud environment. But in principle I think we should
+allow customers to have the full power of PostgreSQL, including all
+authentication options. However, it's up to the customer to configure
+it correctly.
+
+[2] Link is a way to both authenticate and to route the connection
+
+[3] This assumes that cluster-ids are globally unique, across all
+Neon accounts.
+
+[4] The syntax accepted in the connection URL is limited by libpq. The
+only way to pass arbitrary options to the server (or our proxy) is
+with the "options" keyword, and the options must be percent-encoded. I
+think the above would work but i haven't tested it
+
+
+# Content from file ../neon/docs/rfcs/017-timeline-data-management.md:
+
+# Name
+
+Tenant and timeline data management in pageserver
+
+## Summary
+
+This RFC attempts to describe timeline-related data management as it's done now in pageserver, highlight current complexities caused by this and propose a set of changes to mitigate them.
+
+The main goal is to prepare for future [on-demand layer downloads](https://github.com/neondatabase/neon/issues/2029), yet timeline data is one of the core primitive of pageserver, so a number of other RFCs are affected either.
+Due to that, this document won't have a single implementation, rather requiring a set of code changes to achieve the final state.
+
+RFC considers the repository at the `main` branch, commit [`28243d68e60ffc7e69f158522f589f7d2e09186d`](https://github.com/neondatabase/neon/tree/28243d68e60ffc7e69f158522f589f7d2e09186d) on the time of writing.
+
+## Motivation
+
+In recent discussions, it became more clear that timeline-related code becomes harder to change: it consists of multiple disjoint modules, each requiring a synchronization to access.
+The lower the code is, the complex the sync gets since many concurrent processes are involved and require orchestration to keep the data consistent.
+As the number of modules and isolated data grows per timeline, more questions and corner cases arise:
+
+- https://github.com/neondatabase/neon/issues/1559
+  right now it's not straightened out what to do when the synchronization task fails for too many times: every separate module's data has to be treated differently.
+
+- https://github.com/neondatabase/neon/issues/1751
+  GC and compaction file activities are not well known outside their tasks code, causing race bugs
+
+- https://github.com/neondatabase/neon/issues/2003
+  Even the tenant management gets affected: we have to alter its state based on timeline state, yet the data for making the decision is separated and the synchronisation logic has bugs
+
+- more issues were brought in discussions, but apparently they were too specific to the code to mention them in the issues.
+  For instance, `tenant_mgr` itself is a static object that we can not mock anyhow, which reduces our capabilities to test the data synchronization logic.
+  In fact, we have zero Rust tests that cover the case of synchronizing more than one module's data.
+
+On demand layer downloads would require us to dynamically manage the layer files, which we almost not doing at all on the module level, resulting in the most of their APIs dealing with timelines, rather than the layer files.
+The disjoint data that would require data synchronization with possibly a chain of lock acquisitions, some async and some sync, and it would be hard to unit test it with the current code state.
+
+Neither this helps to easy start the on-demand download epic, nor it's easy to add more timeline-related code on top, whatever the task is.
+We have to develop a vision on a number of topics before progressing safely:
+
+- timeline and tenant data structure and how should we access it
+- sync and async worlds and in what way that should evolve
+- unit tests for the complex logic
+
+This RFC aims to provide a general overview of the existing situation and propose ways to improve it.
+The changes proposed are quite big and no single PR is expected to do the adjustments, they should gradually be done during the on-demand download work later.
+
+## What is a timeline and its data
+
+First, we need to define what data we want to manage per timeline.
+Currently, the data every timeline operates is:
+
+- a set of layer files, on the FS
+
+  Never updated files, created after pageserver's checkpoints and compaction runs, can be removed from the local FS due to compaction, gc or timeline deletion.
+
+- a set of layer files, on the remote storage
+
+  Identically named and placed in tenant subdirectories files on the remote storage (S3), copied by a special background sync thread
+
+- a `metadata` file, on the FS
+
+  Updated after every checkpoint with the never `disk_consistent_lsn` and `latest_gc_cutoff_lsn` values. Used to quickly restore timeline's basic metadata on pageserver restart.
+  Also contains data about the ancestor, if the timeline was branched off another timeline.
+
+- an `index_part.json` file, on the remote storage
+
+  Contains `metadata` file contents and a list of layer files, available in the current S3 "directory" for the timeline.
+  Used to avoid potentially slow and expensive `S3 list` command, updated by the remotes storage sync thread after every operation with the remote layer files.
+
+- LayerMap and PageCache, in memory
+
+  Dynamic, used to store and retrieve the page data to users.
+
+- timeline info, in memory
+
+  LSNs, walreceiver data, `RemoteTimelineIndex` and other data to share via HTTP API and internal processes.
+
+- metrics data, in memory
+
+  Data to push or provide to Prometheus, Opentelemetry, etc.
+
+Besides the data, every timeline currently needs an etcd connection to receive WAL events and connect to safekeepers.
+
+Timeline could be an ancestor to another one, forming a dependency tree, which is implicit right now: every time relations are looked up in place, based on the corresponding `TimelineMetadata` struct contents.
+Yet, there's knowledge on a tenant as a group of timelines, belonging to a single user which is used in GC and compaction tasks, run on every tenant.
+`tenant_mgr` manages tenant creation and its task startup, along with the remote storage sync for timeline layers.
+
+Last file being managed per-tenant is the tenant config file, created and updated on the local FS to hold tenant-specific configuration between restarts.
+It's not yet anyhow synchronized with the remote storage, so only exists on the local FS.
+
+### How the data is stored
+
+We have multiple places where timeline data is stored:
+
+- `tenant_mgr` [holds](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/tenant_mgr.rs#L43) a static `static ref TENANTS: RwLock<HashMap<ZTenantId, Tenant>>` with the `Tenant` having the `local_timelines: HashMap<ZTimelineId, Arc<DatadirTimelineImpl>>` inside
+
+- same `Tenant` above has actually two references to timelines: another via its `repo: Arc<RepositoryImpl>` with `pub type RepositoryImpl = LayeredRepository;` that [holds](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/layered_repository.rs#L178) `Mutex<HashMap<ZTimelineId, LayeredTimelineEntry>>`
+
+- `RemoteTimelineIndex` [contains](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/storage_sync/index.rs#L84) the metadata about timelines on the remote storage (S3) for sync reasons and possible HTTP API queries
+
+- `walreceiver` [stores](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/walreceiver.rs#L60) the metadata for possible HTTP API queries and its [internal state](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/walreceiver/connection_manager.rs#L245) with a reference to the timeline, its current connections and etcd subscription (if any)
+
+- `PageCache` contains timeline-related data, and is created globally for the whole pageserver
+
+- implicitly, we also have files on local FS, that contain timeline state. We operate on those files and for some operations (GC, compaction) yet we don't anyhow synchronize the access to the files per se: there are more high-level locks, ensuring only one of a group of operations is running at a time.
+
+  On practice though, `LayerMap` and layer files are tightly coupled together: current low-level code requires a timeline to be loaded into the memory to work with it, and the code removes the layer files after removing the entry from the `LayerMap` first.
+
+Based on this, a high-level pageserver's module diagram with data and entities could be:
+
+![timeline tenant state diagram](./images/017-timeline-data-management/timeline_tenant_state.svg)
+
+A few comments on the diagram:
+
+- the diagram does not show all the data and replaces a few newtypes and type aliases (for example, completely ignores "unloaded" timelines due to reasons described below)
+
+  It aims to show main data and means of synchronizing it.
+
+- modules tend to isolate their data inside and provide access to it via API
+
+Due to multitenancy, that results in a common pattern for storing both tenant and timeline data: `RwLock` or `Mutex` around the `HashMap<Id, Data>`, gc and compaction tasks also use the same lock pattern to ensure no concurrent runs are happening.
+
+- part of the modules is asynchronous, while the other is not, that complicates the data access
+
+Currently, anything that's not related to tasks (walreceiver, storage sync, GC, compaction) is blocking.
+
+Async tasks that try to access the data in the sync world, have to call `std::sync::Mutex::lock` method, which blocks the thread the callee async task runs on, also blocking other async tasks running in the same thread. Methods of `std::sync::RwLock` have the same issues, forcing async tasks either to block or spawn another, "blocking" task on a separate thread.
+
+Sync tasks that try to access the data in the async world, cannot use `.await` hence have to have some `Runtime` doing those calls for them. [`tokio::sync::Mutex`](https://docs.rs/tokio/1.19.2/tokio/sync/struct.Mutex.html#method.blocking_lock) and [`tokio::sync::RwLock`](https://docs.rs/tokio/1.19.2/tokio/sync/struct.RwLock.html#method.blocking_read) provide an API to simplify such calls. Similarly, both `std::sync` and `tokio::sync` have channels that are able to communicate into one direction without blocking and requiring `.await` calls, hence can be used to connect both worlds without locking.
+
+Some modules are in transition, started as async "blocking" tasks and being fully synchronous in their entire code below the start. Current idea is to transfer them to the async further, but it's not yet done.
+
+- locks are used in two different ways:
+
+  - `RwLock<HashMap<..>>` ones to hold the shared data and ensure its atomic updates
+  - `Mutex<()>` for synchronizing the tasks, used to implicitly order the data access
+
+  The "shared data" locks of the first kind are mainly accessed briefly to either look up or alter the data, yet there are a few notable exceptions, such as
+  `latest_gc_cutoff_lsn: RwLock<Lsn>` that is explicitly held in a few places to prevent GC thread from progressing. Those are covered later in the data access diagrams.
+
+- some synchronizations are not yet implemented
+
+E.g. asynchronous storage sync module does not synchronize with almost synchronous GC and compaction tasks when the layer files are uploaded to the remote storage.
+That occasionally results in the files being deleted before the storage upload task is run for this layer, but due to the incremental nature of the layer files, we can handle such situations without issues.
+
+- `LayeredRepository` covers lots of responsibilities: GC and compaction task synchronisation, timeline access (`local_timelines` in `Tenant` is not used directly before the timeline from the repository is accessed), layer flushing to FS, layer sync to remote storage scheduling, etc.
+
+### How is this data accessed?
+
+There are multiple ways the data is accessed, from different sources:
+
+1. [HTTP requests](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/http/routes.rs)
+
+High-level CRUD API for managing tenants, timelines and getting data about them.
+Current API list (modified for readability):
+
+```rust
+.get("/v1/status", status_handler) // pageserver status
+.get("/v1/tenant", tenant_list_handler)
+.post("/v1/tenant", tenant_create_handler) // can create "empty" timelines or branch off the existing ones
+.get("/v1/tenant/:tenant_id", tenant_status) // the only tenant public metadata
+.put("/v1/tenant/config", tenant_config_handler) // tenant config data and local file manager
+.get("/v1/tenant/:tenant_id/timeline", timeline_list_handler)
+.post("/v1/tenant/:tenant_id/timeline", timeline_create_handler)
+.post("/v1/tenant/:tenant_id/attach", tenant_attach_handler) // download entire tenant from the remote storage and load its timelines memory
+.post("/v1/tenant/:tenant_id/detach", tenant_detach_handler) // delete all tenant timelines from memory, remote corresponding storage and local FS files
+.get("/v1/tenant/:tenant_id/timeline/:timeline_id", timeline_detail_handler)
+.delete("/v1/tenant/:tenant_id/timeline/:timeline_id", timeline_delete_handler)
+.get("/v1/tenant/:tenant_id/timeline/:timeline_id/wal_receiver", wal_receiver_get_handler) // get walreceiver stats metadata
+```
+
+Overall, neither HTTP operation goes below `LayeredRepository` level and does not interact with layers: instead, they manage tenant and timeline entities, their configuration and metadata.
+
+`GET` data is small (relative to layer files contents), updated via brief `.write()/.lock()` calls and read via copying/cloning the data to release the lock soon.
+It does not mean that the operations themselves are short, e.g. `tenant_attach_handler` downloads multiple files from the remote storage which might take time, yet the final data is inserted in memory via one brief write under the lock.
+
+Non-`GET` operations mostly follow the same rule, with two differences:
+
+- `tenant_detach_handler` has to wait for its background tasks to stop before shutting down, which requires more work with locks
+- `timeline_create_handler` currently requires GC to be paused before branching the timeline, which requires orchestrating too.
+  This is the only HTTP operation, able to load the timeline into memory: rest of the operations are reading the metadata or, as in `tenant_attach_handler`, schedule a deferred task to download timeline and load it into memory.
+
+"Timeline data synchronization" section below describes both complex cases in more details.
+
+2. [libpq requests](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/page_service.rs)
+
+Is the main interface of pageserver, intended to handle libpq (and similar) requests.
+Operates on `LayeredTimeline` and, lower, `LayerMap` modules; all timelines accessed during the operation are loaded into memory immediately (if not loaded already), operations bail on timeline load errors.
+
+- `pagestream`
+
+  Page requests: `get_rel_exists`, `get_rel_size`, `get_page_at_lsn`, `get_db_size`
+
+  Main API points, intended to be used by `compute` to show the data to the user. All require requests to be made at certain Lsn, if this Lsn is not available in the memory, request processing is paused until that happens or bails after a timeout.
+
+- `basebackup` and `fullbackup`
+
+  Options to generate postgres-compatible backup archives.
+
+- `import basebackup`
+
+- `import wal`
+
+  Import the `pg_wal` section of the basebackup archive.
+
+- `get_last_record_rlsn`, `get_lsn_by_timestamp`
+
+"Metadata" retrieval methods, that still requires internal knowledge about layers.
+
+- `set`, `fallpoints`, `show`
+
+Utility methods to support various edge cases or help with debugging/testing.
+
+- `do_gc`, `compact`, `checkpoint`
+
+Manual triggers for corresponding tenant tasks (GC, compaction) and inmemory layer flushing on disk (checkpointing), with upload task scheduling as a follow-up.
+
+Apart from loading into memory, every timeline layer has to be accessed using specific set of locking primitives, especially if a write operations happens: otherwise, GC or compaction might spoil the data. User API is implicitly affected by this synchronization during branching, when a GC has to be orchestrated properly before the new timeline could be branched off the existing one.
+See "Timeline data synchronization" section for the united synchronization diagram on the topic.
+
+3. internal access
+
+Entities within pageserver that update files on local FS and remote storage, metadata in memory; has to use internal data for those operations.
+Places that access internal, lower data are also required to have the corresponding timeline successfully loaded into memory and accessed with corresponding synchronization.
+
+If ancestors' data is accessed via its child branch, it means more than one timeline has to be loaded into memory entirely and more locking primitives usage involved.
+Right now, all ancestors are resolved in-place: every place that has to check timeline's ancestor has to lock the timelines map, check if one is loaded into the memory, load it there or bail if it's not present, and get the information required and so on.
+
+- periodic GC and compaction tasks
+
+Alter metadata (GC info), in-memory data (layer relations, page caches, etc.) and layer files on disk.
+Same as its libpq counterparts, needs full synchronization with the low level layer management code.
+
+- storage sync task
+
+Alters metadata (`RemoteTimelineIndex`), layer files on remote storage (upload, delete) and local FS (download) and in-memory data (registers downloaded timelines in the repository).
+Currently, does not know anything about layer files contents, rather focusing on the file structure and metadata file updates: due to the fact that the layer files cannot be updated (only created or deleted), storage sync is able to back up the files to the remote storage without further low-level synchronizations: only when the timeline is downloaded, a load operation is needed to run, possibly pausing GC and compaction tasks.
+
+- walreceiver and walingest task
+
+Per timeline, subscribes for etcd events from safekeeper and eventually spawns a walreceiver connection task to receive WAL from a safekeeper node.
+Fills memory with data, eventually triggering a checkpoint task that creates a new layer file in the local FS and schedules a remote storage sync upload task.
+During WAL receiving, also updates a separate in-memory data structure with the walreceiver stats, used later via HTTP API.
+
+Layer updates require low-level set of sync primitives used to preserve the data consistency.
+
+- checkpoint (layer freeze) task
+
+Periodic, short-lived tasks to generate a new layer file in the FS. Requires low level synchronization in the end, when the layer is being registered after creating and has additional mode to ensure only one concurrent compaction happens at a time.
+
+### Timeline data synchronization
+
+Here's a high-level timeline data access diagram, considering the synchronization locks, based on the state diagram above.
+
+For brevity, diagrams do not show `RwLock<HashMap<..>>` data accesses, considering them almost instant to happen.
+`RwLock<LayerMap>` is close to be an exception to the previous rule, since it's taken in a multiple places to ensure all layers are inserted correctly.
+Yet the only long operation in the current code is a `.write()` lock on the map during its creation, while all other lock usages tend to be short in the current code.
+Note though, that due to current "working with loaded timeline only", prevailing amount of the locks taken on the struct are `.write()` locks, not the `.read()` ones.
+To simplify the diagrams, these accesses are now considered "fast" data access, not the synchronization attempts.
+
+`write_lock` synchronization diagram:
+
+![timeline data access synchronization(1)](./images/017-timeline-data-management/timeline_data_access_sync_1.svg)
+
+Comments:
+
+- `write_lock: Mutex<()>` ensures that all timeline data being written into **in-memory layers** is done without races, one concurrent write at a time
+- `layer_flush_lock: Mutex<()>` and layer flushing seems to be slightly bloated with various ways to create a layer on disk and write it in memory
+  The lock itself seem to repeat `write_lock` purpose when it touches in-memory layers, and also to limit the on-disk layer creations.
+  Yet the latter is not really done consistently, since remote storage sync manages to download and register the new layers without touching the locks
+- `freeze_inmem_layer(true)` that touches both `write_lock` and `layer_flush_lock` seems not very aligned with the rest of the locks to those primitives; it also now restricts the layer creation concurrency even more, yet there are various `freeze_inmem_layer(false)` that are ignoring those restrictions at the same time
+
+![timeline data access synchronization(2)](./images/017-timeline-data-management/timeline_data_access_sync_2.svg)
+
+Comments:
+
+- `partitioning: Mutex<(KeyPartitioning, Lsn)>` lock is a data sync lock that's not used to synchronize the tasks (all other such kinds were considered "almost instant" and omitted on the diagram), yet is very similar to what `write_lock` and `layer_flush_lock` do: it ensures the timeline in-memory data is up-to-date with the layer files state on disk, which is what `LayerMap` is for.
+
+- there are multiple locks that do similar task management operations:
+  - `gc_cs: Mutex<()>` and `latest_gc_cutoff_lsn: RwLock<Lsn>` ensures that branching and gc are not run concurrently
+  - `layer_removal_cs: Mutex<()>` lock ensure gc, compaction and timeline deletion via HTTP API do not run concurrently
+  - `file_lock: RwLock<()>` is used as a semaphore, to ensure "all" gc and compaction tasks are shut down and do not start
+    Yet that lock does take only gc and compaction from internal loops: libpq call is not cancelled and waited upon.
+
+Those operations do not seem to belong to a timeline. Moreover, some of those could be eliminated entirely due to duplication of their tasks.
+
+## Proposed implementation
+
+### How to structure timeline data access better
+
+- adjust tenant state handling
+
+Current [`TenantState`](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/tenant_mgr.rs#L108) [changes](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/tenant_mgr.rs#L317) mainly indicates whether GC and compaction tasks are running or not; another state, `Broken` shows only in case any timeline does not load during startup.
+
+We could start both GC and compaction tasks at the time the tenant is created and adjust the tasks to throttle/sleep on timeline absence and wake up when the first one is added.
+The latter becomes more important on download on demand, since we won't have the entire timeline in reach to verify its correctness. Moreover, if any network connection happens, the timeline could fail temporarily and entire tenant should be marked as broken due to that.
+
+Since nothing verifies the `TenantState` via HTTP API currently, it makes sense to remove the whole state entirely and don't write the code to synchronize its changes.
+Instead, we could indicate internal issues for every timeline and have a better API to "stop" timeline processing without deleting its data, making our API less restrictive.
+
+- remove the "unloaded" status for the timeline
+
+Current approach to timeline management [assumes](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/layered_repository.rs#L486-L493)
+
+```rust
+#[derive(Clone)]
+enum LayeredTimelineEntry {
+    Loaded(Arc<LayeredTimeline>),
+    Unloaded {
+        id: ZTimelineId,
+        metadata: TimelineMetadata,
+    },
+}
+```
+
+supposes that timelines have to be in `Unloaded` state.
+
+The difference between both variants is whether its layer map was loaded from disk and kept in memory (Loaded) or not (Unloaded).
+The idea behind such separation was to lazy load timelines in memory with all their layers only after its first access and potentially unload them later.
+
+Yet now there's no public API methods, that deal with unloaded timelines' layers: all of them either bail when such timeline is worked on, or load it into memory and continue working.
+Moreover, every timeline in the local FS is loaded on pageserver startup now, so only two places where `Unloaded` variant is used are branching and timeline attach, with both loading the timeline into memory before the end of the operation.
+Even if that loading into memory bails for some reason, next GC or compaction task periodic run would load such timeline into memory.
+There are a few timeline methods that return timeline metadata without loading its layers, but such metadata also comes from the `metadata` FS file, not the layer files (so no page info could be retrieved without loading the entire layer map first).
+
+With the layer on-demand download, it's not feasible anymore to wait for the entire layer map to be loaded into the memory, since it might not even be available on the local FS when requested: `LayerMap` needs to be changed to contain metadata to retrieve the missing layers and handle partially present on the local FS timeline state.
+
+To accommodate to that and move away from the redundant status, a timeline should always be "loaded" with its metadata read from the disk and its layer map prepared to be downloaded when requested, per layer.
+
+Layers in the layer map, on the other hand, could be in various state: loaded, unloaded, downloading, downloading failed, etc. and their state has to be handled instead, if we want to support on-demand download in the future.
+
+This way, tenants and timelines could always try to serve requests and do their internal tasks periodically, trying to recover.
+
+- scale down the remote storage sync to per layer file, not per timeline as now
+
+Due to the reasons from the previous bullet, current remote storage model needs its timeline download approach to be changed.
+Right now, a timeline is marked as "ready" only after all its layers on the remote storage are downloaded on the local storage.
+With the on-demand download approach, only remote storage timeline metadata should be downloaded from S3, leaving the rest of the layers ready for download if/when it's requested.
+
+Note: while the remote storage sync should operate per layer, it should stay global for all tenants, to better manage S3 limits and sync queue priorities.
+Yet the only place using remote storage should be the layer map.
+
+- encapsulate `tenant_mgr` logic into a regular Rust struct, unite with part of the `Repository` and anything else needed to manage the timeline data in a single place and to test it independently
+
+[`Repository`](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/repository.rs#L187) trait gets closer to `tenant_mgr` in terms of functionality: there are two background task-related functions, that are run on all timelines of a tenant: `gc_iteration` (it does allow running on a single timeline, but GC task runs it on all timelines) and `compaction_iteration` that are related to service tasks, not the data storage; and the metadata management functions, also not really related to the timeline contents.
+
+`tenant_mgr` proxies some of the `Repository` calls, yet both service tasks use `tenant_mgr` to access the data they need, creating a circular dependency between their APIs.
+To avoid excessive synchronization between components, taking multiple locks for that and static state, we can organize the data access and updates in one place.
+One potential benefit Rust gets from this is the ability to track and manage timeline resources, if all the related data is located in one place.
+
+- move `RemoteStorage` usage from `LayeredRepository` into `LayerMap`, as the rest of the layer-based entities (layer files, etc.)
+
+Layer == file in our model, since pageserver always either tries to load the LayerMap from disk for the timeline not in memory, or assumes the file contents matches its memory.
+`LayeredRepository` is one of the most loaded objects currently and not everything from it deserves unification with the `tenant_mgr`.
+In particular, layer files need to be better prepared for future download on demand functionality, where every layer could be dynamically loaded and unloaded from memory and local FS.
+Current amount of locks and sync-async separation would make it hard to implement truly dynamic (un)loading; moreover, we would need retries with backoffs, since the unloaded layer files are most probably not available on the local FS either and network is not always reliable.
+
+One of the solutions to the issue is already being developed for the remote storage sync: [SyncQueue](https://github.com/neondatabase/neon/blob/28243d68e60ffc7e69f158522f589f7d2e09186d/pageserver/src/storage_sync.rs#L463)
+The queue is able to batch CRUD layer operations (both for local and remote FS contexts) and reorder them to increase the sync speed.
+Similar approach could be generalized for all layer modifications, including in-memory ones such as GC or compaction: this way, we could manage all layer modifications and reads in one place with lesser locks and tests that are closer to unit tests.
+
+- change the approach to locking synchronization
+
+A number of locks in the timeline seem to be used to coordinate gc, compaction tasks and related processes.
+It should be done in a task manager or other place, external to the timeline.
+
+Timeline contents still needs to be synchronized, considering the task work, so fields like `latest_gc_cutoff_lsn: RwLock<Lsn>` are expected to stay for that purpose, but general amount of locks should be reduced.
+
+### Putting it all together
+
+If the proposal bullets applied to the diagrams above, the state could be represented as:
+
+![timeline timeline tenant state](./images/017-timeline-data-management/proposed_timeline_tenant_state.svg)
+
+The reorders aim to put all tasks into separated modules, with strictly defined interfaces and as less knowledge about other components, as possible.
+This way, all timeline data is now in the `data_storage`, including the GC, walreceiver, `RemoteTimelineIndex`, `LayerMap`, etc. with some API to get the data in the way,
+more convenient for the data sync system inside.
+So far, it seems that a few maps with `Arc<RwLock<SeparateData>>` with actual data operations added inside each `SeparateData` struct, if needed.
+
+`page_cache` is proposed to placed into the same `data_storage` since it contains tenant timelines' data: this way, all metadata and data is in the same struct, simplifying things with Rust's borrow checker and allowing us to share internals between data modules and later might simplify timeline in-memory size tracking.
+
+`task_manager` is related to data storage and manages all tenant and timeline tasks, manages shared resources (runtimes, thread pools, etcd connection, etc.) and synchronizes tasks.
+All locks such as `gc_cs` belong to this module tree, as primitives inherently related to the task synchronization.
+Tasks have to access timelines and their metadata, but should do that through `data_storage` API and similar.
+
+`task_manager` should (re)start, stop and track all tasks that are run in it, selecting an appropriate runtime depending on a task kind (we have async/sync task separation, CPU and IO bound tasks separation, ...)
+Some locks such as `layer_removal_cs` one are not needed, if the only component that starts the tasks ensures they don't run concurrently.
+
+`LayeredTimeline` is still split into two parts, more high-level with whatever primitives needed to sync its state, and the actual state storage with `LayerMap` and other low level entities.
+Only `LayerMap` knows what storage it's layer files are taken from (inmem, local FS, etc.), and it's responsible for synchronizing the layers when needed, as also reacting to sync events, successful or not.
+
+Last but not least, `tenant config file` has to be backed into a remote storage, as tenant-specific information for all timelines.
+Tenant and timelines have volatile information that's now partially mixed with constant information (e.g. fields in `metadata` file), that model should be better split and handled, in case we want to properly support its backups and synchronization.
+
+![proposed timeline data access synchronization(1)](./images/017-timeline-data-management/proposed_timeline_data_access_sync_1.svg)
+
+There's still a need to keep inmemory layer buffer synchronized during layer freezing, yet that could happen on a layer level, not on a timeline level, as `write_lock` used to be, so we could lower the sync primitives one layer deeper, preparing us for download on demand feature, where multiple layers could be concurrently streamed and written from various data sources.
+
+Flushing the frozen layer requires creating a new layer on disk and further remote storage upload, so `LayerMap` has to get those flushed bytes and queue them later: no need to block in the timeline itself for anything again, rather locking on the layer level, if needed.
+
+![proposed timeline data access synchronization(2)](./images/017-timeline-data-management/proposed_timeline_data_access_sync_2.svg)
+
+Lock diagrams legend:
+
+![lock diagrams legend](./images/017-timeline-data-management/lock_legend.svg)
+
+After the frozen layers are flushed, something has to ensure that the layer structure is intact, so a repartitioning lock is needed still, and could also guard the layer map structure changes, since both are needed either way.
+This locking belongs to the `LowLevelLayeredTimeline` from the proposed data structure diagram, as the place with all such data being held.
+
+Similarly, branching is still required to be done after certain Lsn in our current model, but this needs only one lock to synchronize and that could be the `gc_cs: Mutex<()>` lock.
+It raises the question of where this lock has to be placed, it's the only place that requires pausing a GC task during external, HTTP request handling.
+The right place for the lock seems to be the `task_manager` that could manage GC in more fine-grained way to accommodate the incoming branching request.
+
+There's no explicit lock sync between GC, compaction or other mutually exclusive tasks: it is a job of the `task_manager` to ensure those are not run concurrently.
+
+
+# Content from file ../neon/docs/rfcs/018-storage-messaging-2.md:
+
+# Storage messaging
+
+Safekeepers need to communicate to each other to
+* Trim WAL on safekeepers;
+* Decide on which SK should push WAL to the S3;
+* Decide on when to shut down SK<->pageserver connection;
+* Understand state of each other to perform peer recovery;
+
+Pageservers need to communicate to safekeepers to decide which SK should provide
+WAL to the pageserver.
+
+This is an iteration on [015-storage-messaging](https://github.com/neondatabase/neon/blob/main/docs/rfcs/015-storage-messaging.md) describing current situation,
+potential performance issue and ways to address it.
+
+## Background
+
+What we have currently is very close to etcd variant described in
+015-storage-messaging. Basically, we have single `SkTimelineInfo` message
+periodically sent by all safekeepers to etcd for each timeline.
+* Safekeepers subscribe to it to learn status of peers (currently they subscribe to
+  'everything', but they can and should fetch data only for timelines they hold).
+* Pageserver subscribes to it (separate watch per timeline) to learn safekeepers
+  positions; based on that, it decides from which safekeepers to pull WAL.
+
+Also, safekeepers use etcd elections API to make sure only single safekeeper
+offloads WAL.
+
+It works, and callmemaybe is gone. However, this has a performance
+hazard. Currently deployed etcd can do about 6k puts per second (using its own
+`benchmark` tool); on my 6 core laptop, while running on tmpfs, this gets to
+35k. Making benchmark closer to our usage [etcd watch bench](https://github.com/arssher/etcd-client/blob/watch-bench/examples/watch_bench.rs),
+I get ~10k received messages per second with various number of publisher-subscribers
+(laptop, tmpfs). Diving this by 12 (3 sks generate msg, 1 ps + 3 sk consume them) we
+get about 800 active timelines, if message is sent each second. Not extremely
+low, but quite reachable.
+
+A lot of idle watches seem to be ok though -- which is good, as pageserver
+subscribes to all its timelines regardless of their activity.
+
+Also, running etcd with fsyncs disabled is messy -- data dir must be wiped on
+each restart or there is a risk of corruption errors.
+
+The reason is etcd making much more than what we need; it is a fault tolerant
+store with strong consistency, but I claim all we need here is just simplest pub
+sub with best effort delivery, because
+* We already have centralized source of truth for long running data, like which
+  tlis are on which nodes  -- the console.
+* Momentary data (safekeeper/pageserver progress) doesn't make sense to persist.
+  Instead of putting each change to broker, expecting it to reliably deliver it
+  is better to just have constant flow of data for active timelines: 1) they
+  serve as natural heartbeats -- if node can't send, we shouldn't pull WAL from
+  it 2) it is simpler -- no need to track delivery to/from the broker.
+  Moreover, latency here is important: the faster we obtain fresh data, the
+  faster we can switch to proper safekeeper after failure.
+* As for WAL offloading leader election, it is trivial to achieve through these
+  heartbeats -- just take suitable node through deterministic rule (min node
+  id).  Once network is stable, this is a converging process (well, except
+  complicated failure topology, but even then making it converge is not
+  hard). Such elections bear some risk of several offloaders running
+  concurrently for a short period of time, but that's harmless.
+
+  Generally, if one needs strong consistency, electing leader per se is not
+  enough; it must be accompanied with number (logical clock ts), checked at
+  every action to track causality. s3 doesn't provide CAS, so it can't
+  differentiate old/new leader, this must be solved differently.
+
+  We could use etcd CAS (its most powerful/useful primitive actually) to issue
+  these leader numbers (and e.g. prefix files in s3), but currently I don't see
+  need for that.
+
+
+Obviously best effort pub sub is much more simpler and performant; the one proposed is
+
+## gRPC broker
+
+I took tonic and [prototyped](https://github.com/neondatabase/neon/blob/asher/neon-broker/broker/src/broker.rs) the replacement of functionality we currently use
+with grpc streams and tokio mpsc channels. The implementation description is at the file header.
+
+It is just 500 lines of code and core functionality is complete. 1-1 pub sub
+gives about 120k received messages per second; having multiple subscribers in
+different connecitons quickly scales to 1 million received messages per second.
+I had concerns about many concurrent streams in singe connection, but 2^20
+subscribers still work (though eat memory, with 10 publishers 20GB are consumed;
+in this implementation each publisher holds full copy of all subscribers). There
+is `bench.rs` nearby which I used for testing.
+
+`SkTimelineInfo` is wired here, but another message can be added (e.g. if
+pageservers want to communicate with each other) with templating.
+
+### Fault tolerance
+
+Since such broker is stateless, we can run it under k8s. Or add proxying to
+other members, with best-effort this is simple.
+
+### Security implications
+
+Communication happens in a private network that is not exposed to users;
+additionaly we can add auth to the broker.
+
+## Alternative: get existing pub-sub
+
+We could take some existing pub sub solution, e.g. RabbitMQ, Redis. But in this
+case IMV simplicity of our own outweights external dependency costs (RabbitMQ is
+much more complicated and needs VM; Redis Rust client maintenance is not
+ideal...). Also note that projects like CockroachDB and TiDB are based on gRPC
+as well.
+
+## Alternative: direct communication
+
+Apart from being transport, broker solves one more task: discovery, i.e. letting
+safekeepers and pageservers find each other. We can let safekeepers know, for
+each timeline, both other safekeepers for this timeline and pageservers serving
+it. In this case direct communication is possible:
+ - each safekeeper pushes to each other safekeeper status of timelines residing
+   on both of them, letting remove WAL, decide who offloads, decide on peer
+   recovery;
+ - each safekeeper pushes to each pageserver status of timelines residing on
+   both of them, letting pageserver choose from which sk to pull WAL;
+
+It was mostly described in [014-safekeeper-gossip](https://github.com/neondatabase/neon/blob/main/docs/rfcs/014-safekeepers-gossip.md), but I want to recap on that.
+
+The main pro is less one dependency: less moving parts, easier to run Neon
+locally/manually, less places to monitor. Fault tolerance for broker disappears,
+no kuber or something. To me this is a big thing.
+
+Also (though not a big thing) idle watches for inactive timelines disappear:
+naturally safekeepers learn about compute connection first and start pushing
+status to pageserver(s), notifying it should pull.
+
+Importantly, I think that eventually knowing and persisting peers and
+pageservers on safekeepers is inevitable:
+- Knowing peer safekeepers for the timeline is required for correct
+  automatic membership change -- new member set must be hardened on old
+  majority before proceeding. It is required to get rid of sync-safekeepers
+  as well (peer recovery up to flush_lsn).
+- Knowing pageservers where the timeline is attached is needed to
+  1. Understand when to shut down activity on the timeline, i.e. push data to
+     the broker. We can have a lot of timelines sleeping quietly which
+	 shouldn't occupy resources.
+  2. Preserve WAL for these (currently we offload to s3 and take it from there,
+     but serving locally is better, and we get one less condition on which WAL
+     can be removed from s3).
+
+I suppose this membership data should be passed to safekeepers directly from the
+console because
+1. Console is the original source of this data, conceptually this is the
+   simplest way (rather than passing it through compute or something).
+2. We already have similar code for deleting timeline on safekeepers
+   (and attaching/detaching timeline on pageserver), this is a typical
+   action -- queue operation against storage node and execute it until it
+   completes (or timeline is dropped).
+
+Cons of direct communication are
+- It is more complicated: each safekeeper should maintain set of peers it talks
+  to, and set of timelines for each such peer -- they ought to be multiplexed
+  into single connection.
+- Totally, we have O(n^2) connections instead of O(n) with broker schema
+  (still O(n) on each node). However, these are relatively stable, async and
+  thus not very expensive, I don't think this is a big problem. Up to 10k
+  storage nodes I doubt connection overhead would be noticeable.
+
+I'd use gRPC for direct communication, and in this sense gRPC based broker is a
+step towards it.
+
+
+# Content from file ../neon/docs/rfcs/019-tenant-timeline-lifecycles.md:
+
+# Managing Tenant and Timeline lifecycles
+
+## Summary
+
+The pageserver has a Tenant object in memory for each tenant it manages, and a
+Timeline for each timeline. There are a lot of tasks that operate on the tenants
+and timelines with references to those objects. We have some mechanisms to track
+which tasks are operating on each Tenant and Timeline, and to request them to
+shutdown when a tenant or timeline is deleted, but it does not cover all uses,
+and as a result we have many race conditions around tenant/timeline shutdown.
+
+## Motivation
+
+We have a bunch of race conditions that can produce weird errors and can be hard
+to track down.
+
+## Non Goals
+
+This RFC only covers the problem of ensuring that a task/thread isn't operating
+on a Tenant or Timeline. It does not cover what states, aside from Active and
+non-Active, each Tenant and Timeline should have, or when exactly the transitions
+should happen.
+
+## Impacted components (e.g. pageserver, safekeeper, console, etc)
+
+Pageserver. Although I wonder if the safekeeper should have a similar mechanism.
+
+## Current situation
+
+Most pageserver tasks of are managed by task_mgr.rs:
+
+- LibpqEndpointListener
+- HttpEndPointListener
+- WalReceiverManager and -Connection
+- GarbageCollector and Compaction
+- InitialLogicalSizeCalculation
+
+In addition to those tasks, the walreceiver performs some direct tokio::spawn
+calls to spawn tasks that are not registered with 'task_mgr'. And all of these
+tasks can spawn extra operations with tokio spawn_blocking.
+
+Whenever a tenant or timeline is removed from the system, by pageserver
+shutdown, delete_timeline or tenant-detach operation, we rely on the task
+registry in 'task_mgr.rs' to wait until there are no tasks operating on the
+tenant or timeline, before its Tenant/Timeline object is removed. That relies on
+each task to register itself with the tenant/timeline ID in
+'task_mgr.rs'. However, there are many gaps in that. For example,
+GarbageCollection and Compaction tasks are registered with the tenant, but when
+they proceed to operate on a particular timeline of the tenant, they don't
+register with timeline ID. Because of that, the timeline can be deleted while GC
+or compaction is running on it, causing failures in the GC or compaction (see
+https://github.com/neondatabase/neon/issues/2442).
+
+Another problem is that the task registry only works for tokio Tasks. There is
+no way to register a piece of code that runs inside spawn_blocking(), for
+example.
+
+## Proposed implementation
+
+This "voluntary" registration of tasks is fragile. Let's use Rust language features
+to enforce that a tenant/timeline cannot be removed from the system when there is
+still some code operating on it.
+
+Let's introduce new Guard objects for Tenant and Timeline, and do all actions through
+the Guard object. Something like:
+
+TenantActiveGuard: Guard object over Arc<Tenant>. When you acquire the guard,
+the code checks that the tenant is in Active state. If it's not, you get an
+error. You can change the state of the tenant to Stopping while there are
+ActiveTenantGuard objects still on it, to prevent new ActiveTenantGuards from
+being acquired, but the Tenant cannot be removed until all the guards are gone.
+
+TenantMaintenanceGuard: Like ActiveTenantGuard, but can be held even when the
+tenant is not in Active state. Used for operations like attach/detach. Perhaps
+allow only one such guard on a Tenant at a time.
+
+Similarly for Timelines. We don't currentl have a "state" on Timeline, but I think
+we need at least two states: Active and Stopping. The Stopping state is used at
+deletion, to prevent new TimelineActiveGuards from appearing, while you wait for
+existing TimelineActiveGuards to die out.
+
+The shutdown-signaling, using shutdown_watcher() and is_shutdown_requested(),
+probably also needs changes to deal with the new Guards. The rule is that if you
+have a TenantActiveGuard, and the tenant's state changes from Active to
+Stopping, the is_shutdown_requested() function should return true, and
+shutdown_watcher() future should return.
+
+This signaling doesn't neessarily need to cover all cases. For example, if you
+have a block of code in spawn_blocking(), it might be acceptable if
+is_shutdown_requested() doesn't return true even though the tenant is in
+Stopping state, as long as the code finishes reasonably fast.
+
+
+# Content from file ../neon/docs/rfcs/020-pageserver-s3-coordination.md:
+
+# Coordinating access of multiple pageservers to the same s3 data
+
+## Motivation
+
+There are some blind spots around coordinating access of multiple pageservers
+to the same s3 data. Currently this is applicable only to tenant relocation
+case, but in the future we'll need to solve similar problems for
+replica/standby pageservers.
+
+## Impacted components (e.g. pageserver, safekeeper, console, etc)
+
+Pageserver
+
+## The problem
+
+### Relocation
+
+During relocation both pageservers can write to s3. This should be ok for all
+data except the `index_part.json`. For index part it causes problems during
+compaction/gc because they remove files from index/s3.
+
+Imagine this case:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant PS1
+    participant S3
+    participant PS2
+
+    PS1->>S3: Uploads L1, L2 <br/> Index contains L1 L2
+    PS2->>S3: Attach called, sees L1, L2
+    PS1->>S3: Compaction comes <br/> Removes L1, adds L3
+    note over S3: Index now L2, L3
+    PS2->>S3: Uploads new layer L4 <br/> (added to previous view of the index)
+    note over S3: Index now L1, L2, L4
+```
+
+At this point it is not possible to restore from index, it contains L2 which
+is no longer available in s3 and doesnt contain L3 added by compaction by the
+first pageserver. So if any of the pageservers restart initial sync will fail
+(or in on-demand world it will fail a bit later during page request from
+missing layer)
+
+### Standby pageserver
+
+Another related case is standby pageserver. In this case second pageserver can
+be used as a replica to scale reads and serve as a failover target in case
+first one fails.
+
+In this mode second pageserver needs to have the same picture of s3 files to
+be able to load layers on-demand. To accomplish that second pageserver
+cannot run gc/compaction jobs. Instead it needs to receive updates for index
+contents. (There is no need to run walreceiver on the second pageserver then).
+
+## Observations
+
+- If both pageservers ingest wal then their layer set diverges, because layer
+  file generation is not deterministic
+- If one of the pageservers does not ingest wal (and just picks up layer
+  updates) then it lags behind and cannot really answer queries in the same
+  pace as the primary one
+- Can compaction help make layers deterministic? E g we do not upload level
+  zero layers and construction of higher levels should be deterministic.
+  This way we can guarantee that layer creation by timeout wont mess things up.
+  This way one pageserver uploads data and second one can just ingest it.
+  But we still need some form of election
+
+## Solutions
+
+### Manual orchestration
+
+One possible solution for relocation case is to orchestrate background jobs
+from outside. The oracle who runs migration can turn off background jobs on
+PS1 before migration and then run migration -> enable them on PS2. The problem
+comes if migration fails. In this case in order to resume background jobs
+oracle needs to guarantee that PS2 doesnt run background jobs and if it doesnt
+respond then PS1 is stuck unable to run compaction/gc. This cannot be solved
+without human ensuring that no upload from PS2 can happen. In order to be able
+to resolve this automatically CAS is required on S3 side so pageserver can
+avoid overwriting index part if it is no longer the leading one
+
+Note that flag that disables background jobs needs to be persistent, because
+otherwise pageserver restart will clean it
+
+### Avoid index_part.json
+
+Index part consists of two parts, list of layers and metadata. List of layers
+can be easily obtained by `ListObjects` S3 API method. But what to do with
+metadata? Create metadata instance for each checkpoint and add some counter
+to the file name?
+
+Back to potentially long s3 ls.
+
+### Coordination based approach
+
+Do it like safekeepers chose leader for WAL upload. Ping each other and decide
+based on some heuristics e g smallest node id. During relocation PS1 sends
+"resign" ping message so others can start election without waiting for a timeout.
+
+This still leaves metadata question open and non deterministic layers are a
+problem as well
+
+### Avoid metadata file
+
+One way to eliminate metadata file is to store it in layer files under some
+special key. This may resonate with intention to keep all relation sizes in
+some special segment to avoid initial download during size calculation.
+Maybe with that we can even store pre calculated value.
+
+As a downside each checkpoint gets 512 bytes larger.
+
+If we entirely avoid metadata file this opens up many approaches
+
+* * *
+
+During discussion it seems that we converged on the approach consisting of:
+
+- index files stored per pageserver in the same timeline directory. With that
+  index file name starts to look like: `<pageserver_node_id>_index_part.json`.
+  In such set up there are no concurrent overwrites of index file by different
+  pageservers.
+- For replica pageservers the solution would be for primary to broadcast index
+  changes to any followers with an ability to check index files in s3 and
+  restore the full state. To properly merge changes with index files we can use
+  a counter that is persisted in an index file, is incremented on every change
+  to it and passed along with broadcasted change. This way we can determine
+  whether we need to apply change to the index state or not.
+- Responsibility for running background jobs is assigned externally. Pageserver
+  keeps locally persistent flag for each tenant that indicates whether this
+  pageserver is considered as primary one or not. TODO what happends if we
+  crash and cannot start for some extended period of time? Control plane can
+  assign ownership to some other pageserver. Pageserver needs some way to check
+  if its still the blessed one. Maybe by explicit request to control plane on
+  start.
+
+Requirement for deterministic layer generation was considered overly strict
+because of two reasons:
+
+- It can limit possible optimizations e g when pageserver wants to reshuffle
+  some data locally and doesnt want to coordinate this
+- The deterministic algorithm itself can change so during deployments for some
+  time there will be two different version running at the same time which can
+  cause non determinism
+
+### External elections
+
+The above case with lost state in this schema with externally managed
+leadership is represented like this:
+
+Note that here we keep objects list in the index file.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant PS1
+    participant CP as Control Plane
+    participant S3
+    participant PS2
+
+    note over PS1,PS2: PS1 starts up and still a leader
+    PS1->>CP: Am I still the leader for Tenant X?
+    activate CP
+    CP->>PS1: Yes
+    deactivate CP
+    PS1->>S3: Fetch PS1 index.
+    note over PS1: Continue operations, start backround jobs
+    note over PS1,PS2: PS1 starts up and still and is not a leader anymore
+    PS1->>CP: Am I still the leader for Tenant X?
+    CP->>PS1: No
+    PS1->>PS2: Subscribe to index changes
+    PS1->>S3: Fetch PS1 and PS2 indexes
+    note over PS1: Combine index file to include layers <br> from both indexes to be able <br> to see newer files from leader (PS2)
+    note over PS1: Continue operations, do not start background jobs
+```
+
+### Internal elections
+
+To manage leadership internally we can use broker to exchange pings so nodes
+can decide on the leader roles. In case multiple pageservers are active leader
+is the one with lowest node id.
+
+Operations with internally managed elections:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant PS1
+    participant S3
+
+    note over PS1: Starts up
+    note over PS1: Subscribes to changes, waits for two ping <br> timeouts to see if there is a leader
+    PS1->>S3: Fetch indexes from s3
+    alt there is a leader
+        note over PS1: do not start background jobs, <br> continue applying index updates
+    else there is no leader
+        note over PS1: start background jobs, <br> broadcast index changes
+    end
+
+    note over PS1,S3: Then the picture is similar to external elections <br> the difference is that follower can become a leader <br> if there are no pings after some timeout new leader gets elected
+```
+
+### Eviction
+
+When two pageservers operate on a tenant for extended period of time follower
+doesnt perform write operations in s3. When layer is evicted follower relies
+on updates from primary to get info about layers it needs to cover range for
+evicted layer.
+
+Note that it wont match evicted layer exactly, so layers will overlap and
+lookup code needs to correctly handle that.
+
+### Relocation flow
+
+Actions become:
+
+- Attach tenant to new pageserver
+- New pageserver becomes follower since previous one is still leading
+- New pageserver starts replicating from safekeepers but does not upload layers
+- Detach is called on the old one
+- New pageserver becomes leader after it realizes that old one disappeared
+
+### Index File
+
+Using `s3 ls` on startup simplifies things, but we still need metadata, so we
+need to fetch index files anyway. If they contain list of files we can combine
+them and avoid costly `s3 ls`
+
+### Remaining issues
+
+- More than one remote consistent lsn for safekeepers to know
+
+Anything else?
+
+### Proposed solution
+
+To recap. On meeting we converged on approach with external elections but I
+think it will be overall harder to manage and will introduce a dependency on
+control plane for pageserver. Using separate index files for each pageserver
+consisting of log of operations and a metadata snapshot should be enough.
+
+### What we need to get there?
+
+- Change index file structure to contain log of changes instead of just the
+  file list
+- Implement pinging/elections for pageservers
+
+
+# Content from file ../neon/docs/rfcs/021-metering.md:
+
+# Consumption tracking
+
+
+# Goals
+
+This proposal is made with two mostly but not entirely overlapping goals:
+
+* Collect info that is needed for consumption-based billing
+* Cross-check AWS bills
+
+
+# Metrics
+
+There are six metrics to collect:
+
+* CPU time. Wall clock seconds * the current number of cores. We have a fixed ratio of memory to cores, so the current memory size is the function of the number of cores. Measured per each `endpoint`.
+
+* Traffic. In/out traffic on the proxy. Measured per each `endpoint`.
+
+* Written size. Amount of data we write. That is different from both traffic and storage size, as only during the writing we
+
+  a) occupy some disk bandwidth on safekeepers
+
+  b) necessarily cross AZ boundaries delivering WAL to all safekeepers
+
+  Each timeline/branch has at most one writer, so the data is collected per branch.
+
+* Synthetic storage size. That is what is exposed now with pageserver's `/v1/tenant/{}/size`. Looks like now it is per-tenant. (Side note: can we make it per branch to show as branch physical size in UI?)
+
+* Real storage size. That is the size of the tenant directory on the pageservers disk. Per-tenant.
+
+* S3 storage size. That is the size of the tenant data on S3. Per-tenant.
+
+That info should be enough to build an internal model that predicts AWS price (hence tracking `written data` and `real storage size`). As for the billing model we probably can get away with mentioning only `CPU time`, `synthetic storage size`, and `traffic` consumption.
+
+# Services participating in metrics collection
+
+## Proxy
+
+For actual implementation details check `/docs/consumption_metrics.md`
+
+Proxy is the only place that knows about traffic flow, so it tracks it and reports it with quite a small interval, let's say 1 minute. A small interval is needed here since the proxy is stateless, and any restart will reset accumulated consumption. Also proxy should report deltas since the last report, not an absolute value of the counter. Such kind of events is easier to integrate over a period of time to get the amount of traffic during some time interval.
+
+Example event:
+
+```json
+{
+"metric": "proxy_io_bytes_per_client",
+"type": "incremental",
+"start_time": "2022-12-28T11:07:19.317310284Z",
+"stop_time": "2022-12-28T11:07:19.317310284Z",
+"idempotency_key": "2022-12-28 11:07:19.317310324 UTC-1-4019",
+"value": 12345454,
+"endpoint_id": "5d07d9ce9237c4cd845ea7918c0afa7d",
+}
+```
+
+Since we report deltas over some period of time, it makes sense to include `event_start_time`/`event_stop_time` where `event_start_time` is the time of the previous report. That will allow us to identify metering gaps better (e.g., failed send/delivery).
+
+When there is no active connection proxy can avoid reporting anything. Also, deltas are additive, so several console instances serving the same user and endpoint can report traffic without coordination.
+
+## Console
+
+The console knows about start/stop events, so it knows the amount of CPU time allocated to each endpoint. It also knows about operation successes and failures and can avoid billing clients after unsuccessful 'suspend' events. The console doesn't know the current compute size within the allowed limits on the endpoint. So with CPU time, we do the following:
+
+* While we don't yet have the autoscaling console can report `cpu time` as the number of seconds since the last `start_compute` event.
+
+* When we have autoscaling, `autoscaler-agent` can report `cpu time`*`compute_units_count` in the same increments as the proxy reports traffic.
+
+Example event:
+
+```json
+{
+    "metric": "effective_compute_seconds",
+    "type": "increment",
+    "endpoint_id": "blazing-warrior-34",
+    "event_start_time": ...,
+    "event_stop_time": ...,
+    "value": 12345454,
+}
+```
+
+I'd also suggest reporting one value, `cpu time`*`compute_units_count`, instead of two separate fields as it makes event schema simpler (it is possible to treat it the same way as traffic) and preserves additivity.
+
+## Pageserver
+
+For actual implementation details check `/docs/consumption_metrics.md`
+
+Pageserver knows / has access to / can calculate the rest of the metrics:
+
+* Written size -- that is basically `last_received_lsn`,
+* Synthetic storage size -- there is a way to calculate it, albeit a costly one,
+* Real storage size -- there is a way to calculate it using a layer map or filesystem,
+* S3 storage size -- can calculate it by S3 API calls
+
+Some of those metrics are expensive to calculate, so the reporting period here is driven mainly by implementation details. We can set it to, for example, once per hour. Not a big deal since the pageserver is stateful, and all metrics can be reported as an absolute value, not increments. At the same time, a smaller reporting period improves UX, so it would be good to have something more real-time.
+
+`written size` is primarily a safekeeper-related metric, but since it is available on both pageserver and safekeeper, we can avoid reporting anything from the safekeeper.
+
+Example event:
+
+```json
+{
+"metric": "remote_storage_size",
+"type": "absolute",
+"time": "2022-12-28T11:07:19.317310284Z",
+"idempotency_key": "2022-12-28 11:07:19.317310324 UTC-1-4019",
+"value": 12345454,
+"tenant_id": "5d07d9ce9237c4cd845ea7918c0afa7d",
+"timeline_id": "a03ebb4f5922a1c56ff7485cc8854143",
+}
+```
+
+# Data collection
+
+## Push vs. pull
+
+We already have pull-based Prometheus metrics, so it is tempting to use them here too. However, in our setup, it is hard to tell when some metric changes. For example, garbage collection will constantly free some disk space over a week, even if the project is down for that week. We could also iterate through all existing tenants/branches/endpoints, but that means some amount of code to do that properly and most likely we will end up with some per-metric hacks in the collector to cut out some of the tenants that are surely not changing that metric.
+
+With the push model, it is easier to publish data only about actively changing metrics -- pageserver knows when it performs s3 offloads, garbage collection and starts/stops consuming data from the safekeeper; proxy knows about connected clients; console / autoscaler-agent knows about active cpu time.
+
+Hence, let's go with a push-based model.
+
+## Common bus vs. proxying through the console
+
+We can implement such push systems in a few ways:
+
+a. Each component pushes its metrics to the "common bus", namely segment, Kafka, or something similar. That approach scales well, but it would be harder to test it locally, will introduce new dependencies, we will have to distribute secrets for that connection to all of the components, etc. We would also have to loop back some of the events and their aggregates to the console, as we want to show some that metrics to the user in real-time.
+
+b. Each component can call HTTP `POST` with its events to the console, and the console can forward it to the segment for later integration with metronome / orb / onebill / etc. With that approach, only the console has to speak with segment. Also since that data passes through the console, the console can save the latest metrics values, so there is no need for constant feedback of that events back from the segment.
+
+# Implementation
+
+Each (proxy|pageserver|autoscaler-agent) sends consumption events to the single endpoint in the console:
+
+```json
+POST /usage_events HTTP/1.1
+Content-Type: application/json
+
+[
+{
+"metric": "remote_storage_size",
+"type": "absolute",
+"time": "2022-12-28T11:07:19.317310284Z",
+"idempotency_key": "2022-12-28 11:07:19.317310324 UTC-1-4019",
+"value": 12345454,
+"tenant_id": "5d07d9ce9237c4cd845ea7918c0afa7d",
+"timeline_id": "a03ebb4f5922a1c56ff7485cc8854143",
+},
+...
+]
+```
+
+![data flow](./images/metering.jpg)
+
+Events could be either:
+* `incremental` -- change in consumption since the previous event or service restart. That is `effective_cpu_seconds`, `traffic_in_bytes`, and `traffic_out_bytes`.
+* `absolute` -- that is the current value of a metric. All of the size-related metrics are absolute.
+
+Each service can post events at its own pace and bundle together data from different tenants/endpoints.
+
+The console algorithm upon receive of events could be the following:
+
+1. Create and send a segment event with the same content (possibly enriching it with tenant/timeline data for endpoint-based events).
+2. Update the latest state of per-tenant and per-endpoint metrics in the database.
+3. Check whether any of that metrics is above the allowed threshold and stop the project if necessary.
+
+Since all the data comes in batches, we can do the batch update to reduce the number of queries in the database. Proxy traffic is probably the most frequent metric, so with batching, we will have extra `number_of_proxies` requests to the database each minute. This is most likely fine for now but will generate many dead tuples in the console database. If that is the case, we can change step 2 to the following:
+
+2.1. Check if there $tenant_$metric / $endpoint_$metric key in Redis
+
+2.2. If no stored value is found and the metric is incremental, then fetch the current value from DWH (which keeps aggregated value for all the events) and publish it.
+
+2.3. Publish a new value (absolute metric) or add an increment to the stored value (incremental metric)
+
+## Consumption watchdog
+
+Since all the data goes through the console, we don't have to run any background thread/coroutines to check whether consumption is within the allowed limits. We only change consumption with `POST /usage_events`, so limit checks could be applied in the same handler.
+
+## Extensibility
+
+If we need to add a new metric (e.g. s3 traffic or something else), the console code should, by default, process it and publish segment event, even if the metric name is unknown to the console.
+
+## Naming & schema
+
+Each metric name should end up with units -- now `_seconds` and `_bytes`, and segment event should always have `tenant_id` and `timeline_id`/`endpoint_id` where applicable.
+
+
+# Content from file ../neon/docs/rfcs/022-pageserver-delete-from-s3.md:
+
+# Deleting pageserver part of tenants data from s3
+
+Created on 08.03.23
+
+## Motivation
+
+Currently we dont delete pageserver part of the data from s3 when project is deleted. (The same is true for safekeepers, but this outside of the scope of this RFC).
+
+This RFC aims to spin a discussion to come to a robust deletion solution that wont put us in into a corner for features like postponed deletion (when we keep data for user to be able to restore a project if it was deleted by accident)
+
+## Summary
+
+TLDR; There are two options, one based on control plane issuing actual delete requests to s3 and the other one that keeps s3 stuff bound to pageserver. Each one has its pros and cons.
+
+The decision is to stick with pageserver centric approach. For motivation see [Decision](#decision).
+
+## Components
+
+pageserver, control-plane
+
+## Requirements
+
+Deletion should successfully finish (eventually) without leaving dangling files in presense of:
+
+- component restarts
+- component outage
+- pageserver loss
+
+## Proposed implementation
+
+Before the options are discussed, note that deletion can be quite long process. For deletion from s3 the obvious choice is [DeleteObjects](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObjects.html) API call. It allows to batch deletion of up to 1k objects in one API call. So deletion operation linearly depends on number of layer files.
+
+Another design limitation is that there is no cheap `mv` operation available for s3. `mv` from `aws s3 mv` uses `copy(src, dst) + delete(src)`. So `mv`-like operation is not feasible as a building block because it actually amplifies the problem with both duration and resulting cost of the operation.
+
+The case when there are multiple pageservers handling the same tenants is largely out of scope of the RFC. We still consider case with migration from one PS to another, but do not consider case when tenant exists on multiple pageservers for extended period of time. The case with multiple pageservers can be reduced to case with one pageservers by calling detach on all pageservers except the last one, for it actual delete needs to be called.
+
+For simplicity lets look into deleting tenants. Differences in deletion process between tenants and timelines are mentioned in paragraph ["Differences between tenants and timelines"](#differences-between-tenants-and-timelines)
+
+### 1. Pageserver owns deletion machinery
+
+#### The sequence
+
+TLDR; With this approach control plane needs to call delete on a tenant and poll for progress. As much as possible is handled on pageserver. Lets see the sequence.
+
+Happy path:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS as Pageserver
+    participant S3
+
+    CP->>PS: Delete tenant
+    PS->>S3: Create deleted mark file at <br> /tenant/meta/deleted
+    PS->>PS: Create deleted mark file locally
+    PS->>CP: Accepted
+    PS->>PS: delete local files other than deleted mark
+    loop Delete layers for each timeline
+        PS->>S3: delete(..)
+        CP->>PS: Finished?
+        PS->>CP: False
+    end
+    PS->>S3: Delete mark file
+    PS->>PS: Delete local mark file
+
+    loop Poll for status
+        CP->>PS: Finished?
+        PS->>CP: True or False
+    end
+```
+
+Why two mark files?
+Remote one is needed for cases when pageserver is lost during deletion so other pageserver can learn the deletion from s3 during attach.
+
+Why local mark file is needed?
+
+If we dont have one, we have two choices, delete local data before deleting the remote part or do that after.
+
+If we delete local data before remote then during restart pageserver wont pick up remote tenant at all because nothing is available locally (pageserver looks for remote conuterparts of locally available tenants).
+
+If we delete local data after remote then at the end of the sequence when remote mark file is deleted if pageserver restart happens then the state is the same to situation when pageserver just missing data on remote without knowing the fact that this data is intended to be deleted. In this case the current behavior is upload everything local-only to remote.
+
+Thus we need local record of tenant being deleted as well.
+
+##### Handle pageserver crashes
+
+Lets explore sequences with various crash points.
+
+Pageserver crashes before `deleted` mark file is persisted in s3:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS as Pageserver
+    participant S3
+
+    CP->>PS: Delete tenant
+    note over PS: Crash point 1.
+    CP->>PS: Retry delete request
+
+    PS->>S3: Create deleted mark file at <br> /tenant/meta/deleted
+    PS->>PS: Create deleted mark file locally
+
+    PS->>CP: Accepted
+
+    PS->>PS: delete local files other than deleted mark
+
+    loop Delete layers for each timeline
+        PS->>S3: delete(..)
+        CP->>PS: Finished?
+        PS->>CP: False
+    end
+    PS->>S3: Delete mark file
+    PS->>PS: Delete local mark file
+
+    CP->>PS: Finished?
+    PS->>CP: True
+```
+
+Pageserver crashed when deleted mark was about to be persisted in s3, before Control Plane gets a response:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS as Pageserver
+    participant S3
+
+    CP->>PS: Delete tenant
+    PS->>S3: Create deleted mark file at <br> /tenant/meta/deleted
+
+    note over PS: Crash point 2.
+    note over PS: During startup we reconcile <br> with remote and see <br> whether the remote mark exists
+    alt Remote mark exists
+        PS->>PS: create local mark if its missing
+        PS->>PS: delete local files other than deleted mark
+        loop Delete layers for each timeline
+            PS->>S3: delete(..)
+        end
+
+        note over CP: Eventually console should <br> retry delete request
+
+        CP->>PS: Retry delete tenant
+        PS->>CP: Not modified
+    else Mark is missing
+        note over PS: Continue to operate the tenant as if deletion didnt happen
+
+        note over CP: Eventually console should <br> retry delete request
+
+        CP->>PS: Retry delete tenant
+        PS->>S3: Create deleted mark file at <br> /tenant/meta/deleted
+        PS->>CP: Delete tenant
+    end
+
+    PS->>PS: Continue with layer file deletions
+    loop Delete layers for each timeline
+        PS->>S3: delete(..)
+        CP->>PS: Finished?
+        PS->>CP: False
+    end
+
+    PS->>S3: Delete mark file
+    PS->>PS: Delete local mark file
+
+    CP->>PS: Finished?
+    PS->>CP: True
+```
+
+Similar sequence applies when both local and remote marks were persisted but Control Plane still didnt receive a response.
+
+If pageserver crashes after both mark files were deleted then it will reply to control plane status poll request with 404 which should be treated by control plane as success.
+
+The same applies if pageserver crashes in the end, when remote mark is deleted but before local one gets deleted. In this case on restart pageserver moves forward with deletion of local mark and Control Plane will receive 404.
+
+##### Differences between tenants and timelines
+
+For timeline the sequence is the same with the following differences:
+
+- remote delete mark file can be replaced with a boolean "deleted" flag in index_part.json
+- local deletion mark is not needed, because whole tenant is kept locally so situation described in motivation for local mark is impossible
+
+##### Handle pageserver loss
+
+If pageseserver is lost then the deleted tenant should be attached to different pageserver and delete request needs to be retried against new pageserver. Then attach logic is shared with one described for pageserver restarts (local deletion mark wont be available so needs to be created).
+
+##### Restrictions for tenant that is in progress of being deleted
+
+I propose to add another state to tenant/timeline - PendingDelete. This state shouldnt allow executing any operations aside from polling the deletion status.
+
+#### Summary
+
+Pros:
+
+- Storage is not dependent on control plane. Storage can be restarted even if control plane is not working.
+- Allows for easier dogfooding, console can use Neon backed database as primary operational data store. If storage depends on control plane and control plane depends on storage we're stuck.
+- No need to share inner s3 workings with control plane. Pageserver presents api contract and S3 paths are not part of this contract.
+- No need to pass list of alive timelines to attach call. This will be solved by pageserver observing deleted flag. See
+
+Cons:
+
+- Logic is a tricky, needs good testing
+- Anything else?
+
+### 2. Control plane owns deletion machinery
+
+In this case the only action performed on pageserver is removal of local files.
+
+Everything else is done by control plane. The steps are as follows:
+
+1. Control plane marks tenant as "delete pending" in its database
+2. It lists the s3 for all the files and repeatedly calls delete until nothing is left behind
+3. When no files are left marks deletion as completed
+
+In case of restart it selects all tenants marked as "delete pending" and continues the deletion.
+
+For tenants it is simple. For timelines there are caveats.
+
+Assume that the same workflow is used for timelines.
+
+If a tenant gets relocated during timeline deletion the attach call with its current logic will pick up deleted timeline in its half deleted state.
+
+Available options:
+
+- require list of alive timelines to be passed to attach call
+- use the same schema with flag in index_part.json (again part of the caveats around pageserver restart applies). In this case nothing stops pageserver from implementing deletion inside if we already have these deletion marks.
+
+With first option the following problem becomes apparent:
+
+Who is the source of truth regarding timeline liveness?
+
+Imagine:
+PS1 fails.
+PS2 gets assigned the tenant.
+New branch gets created
+PS1 starts up (is it possible or we just recycle it?)
+PS1 is unaware of the new branch. It can either fall back to s3 ls, or ask control plane.
+
+So here comes the dependency of storage on control plane. During restart storage needs to know which timelines are valid for operation. If there is nothing on s3 that can answer that question storage neeeds to ask control plane.
+
+### Summary
+
+Cons:
+
+- Potential thundering herd-like problem during storage restart (requests to control plane)
+- Potential increase in storage startup time (additional request to control plane)
+- Storage startup starts to depend on console
+- Erroneous attach call can attach tenant in half deleted state
+
+Pros:
+
+- Easier to reason about if you dont have to account for pageserver restarts
+
+### Extra notes
+
+There was a concern that having deletion code in pageserver is a littlebit scary, but we need to have this code somewhere. So to me it is equally scary to have that in whatever place it ends up at.
+
+Delayed deletion can be done with both approaches. As discussed with Anna (@stepashka) this is only relevant for tenants (projects) not for timelines. For first approach detach can be called immediately and deletion can be done later with attach + delete. With second approach control plane needs to start the deletion whenever necessary.
+
+## Decision
+
+After discussion in comments I see that we settled on two options (though a bit different from ones described in rfc). First one is the same - pageserver owns as much as possible. The second option is that pageserver owns markers thing, but actual deletion happens in control plane by repeatedly calling ls + delete.
+
+To my mind the only benefit of the latter approach is possible code reuse between safekeepers and pageservers. Otherwise poking around integrating s3 library into control plane, configuring shared knowledge abouth paths in s3 - are the downsides. Another downside of relying on control plane is the testing process. Control plane resides in different repository so it is quite hard to test pageserver related changes there. e2e test suite there doesnt support shutting down pageservers, which are separate docker containers there instead of just processes.
+
+With pageserver owning everything we still give the retry logic to control plane but its easier to duplicate if needed compared to sharing inner s3 workings. We will have needed tests for retry logic in neon repo.
+
+So the decision is to proceed with pageserver centric approach.
+
+
+# Content from file ../neon/docs/rfcs/023-the-state-of-pageserver-tenant-relocation.md:
+
+# The state of pageserver tenant relocation
+
+Created on 17.03.23
+
+## Motivation
+
+There were previous write ups on the subject. The design of tenant relocation was planned at the time when we had quite different landscape. I e there was no on-demand download/eviction. They were on the horizon but we still planned for cases when they were not available. Some other things have changed. Now safekeepers offload wal to s3 so we're not risking overflowing their disks. Having all of the above, it makes sense to recap and take a look at the options we have now, which adjustments we'd like to make to original process, etc.
+
+Related (in chronological order):
+
+- Tracking issue with initial discussion: [#886](https://github.com/neondatabase/neon/issues/886)
+- [015. Storage Messaging](015-storage-messaging.md)
+- [020. Pageserver S3 Coordination](020-pageserver-s3-coordination.md)
+
+## Summary
+
+The RFC consists of a walkthrough of prior art on tenant relocation and corresponding problems. It describes 3 approaches.
+
+1. Simplistic approach that uses ignore and is the fastest to implement. The main downside is a requirement of short downtime.
+2. More complicated approach that avoids even short downtime.
+3. Even more complicated approach that will allow multiple pageservers to operate concurrently on the same tenant possibly allowing for HA cluster topologies and horizontal scaling of reads (i e compute talks to multiple pageservers).
+
+The order in which solutions are described is a bit different. We start from 2, then move to possible compromises (aka simplistic approach) and then move to discussing directions for solving HA/Pageserver replica case with 3.
+
+## Components
+
+pageserver, control-plane, safekeepers (a bit)
+
+## Requirements
+
+Relocation procedure should move tenant from one pageserver to another without downtime introduced by storage side. For now restarting compute for applying new configuration is fine.
+
+- component restarts
+- component outage
+- pageserver loss
+
+## The original proposed implementation
+
+The starting point is this sequence:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS1 as Pageserver 1
+    participant PS2 as Pageserver 2
+    participant S3
+
+    CP->>PS2: Attach tenant X
+    PS2->>S3: Fetch timelines, indexes for them
+    PS2->>CP: Accepted
+    CP->>CP: Change pageserver id in project
+    CP->>PS1: Detach
+```
+
+Which problems do we have with naive approach?
+
+### Concurrent GC and Compaction
+
+The problem is that they can run on both, PS1 and PS2. Consider this example from [Pageserver S3 Coordination RFC](020-pageserver-s3-coordination.md)
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant PS1
+    participant S3
+    participant PS2
+
+    PS1->>S3: Uploads L1, L2 <br/> Index contains L1 L2
+    PS2->>S3: Attach called, sees L1, L2
+    PS1->>S3: Compaction comes <br/> Removes L1, adds L3
+    note over S3: Index now L2, L3
+    PS2->>S3: Uploads new layer L4 <br/> (added to previous view of the index)
+    note over S3: Index now L1, L2, L4
+```
+
+At this point it is not possible to restore the state from index, it contains L2 which
+is no longer available in s3 and doesnt contain L3 added by compaction by the
+first pageserver. So if any of the pageservers restart, initial sync will fail
+(or in on-demand world it will fail a bit later during page request from
+missing layer)
+
+The problem lies in shared index_part.json. Having intersecting layers from append only edits is expected to work, though this is an uncharted territory without tests.
+
+#### Options
+
+There are several options on how to restrict concurrent access to index file.
+
+First and the simplest one is external orchestration. Control plane which runs migration can use special api call on pageserver to stop background processes (gc, compaction), and even possibly all uploads.
+
+So the sequence becomes:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS1 as Pageserver 1
+    participant PS2 as Pageserver 2
+    participant S3
+
+    CP->>PS1: Pause background jobs, pause uploading new layers.
+    CP->>PS2: Attach tenant X.
+    PS2->>S3: Fetch timelines, index, start background operations
+    PS2->>CP: Accepted
+    CP->>CP: Monitor PS2 last record lsn, ensure OK lag
+    CP->>CP: Change pageserver id in project
+    CP->>PS1: Detach
+```
+
+The downside of this sequence is the potential rollback process. What if something goes wrong on new pageserver? Can we safely roll back to source pageserver?
+
+There are two questions:
+
+#### How can we detect that something went wrong?
+
+We can run usual availability check (consists of compute startup and an update of one row).
+Note that we cant run separate compute for that before touching compute that client runs actual workload on, because we cant have two simultaneous computes running in read-write mode on the same timeline (enforced by safekeepers consensus algorithm). So we can either run some readonly check first (basebackup) and then change pageserver id and run availability check. If it failed we can roll it back to the old one.
+
+#### What can go wrong? And how we can safely roll-back?
+
+In the sequence above during attach we start background processes/uploads. They change state in remote storage so it is possible that after rollback remote state will be different from one that was observed by source pageserver. So if target pageserver goes wild then source pageserver may fail to start with changed remote state.
+
+Proposed option would be to implement a barrier (read-only) mode when pageserver does not update remote state.
+
+So the sequence for happy path becomes this one:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS1 as Pageserver 1
+    participant PS2 as Pageserver 2
+    participant S3
+
+    CP->>PS1: Pause background jobs, pause uploading new layers.
+    CP->>PS2: Attach tenant X in remote readonly mode.
+    PS2->>S3: Fetch timelines, index
+    PS2->>CP: Accepted
+    CP->>CP: Monitor PS2 last record lsn, ensure OK lag
+    CP->>CP: Change pageserver id in project
+    CP->>CP: Run successful availability check
+    CP->>PS2: Start uploads, background tasks
+    CP->>PS1: Detach
+```
+
+With this sequence we restrict any changes to remote storage to one pageserver. So there is no concurrent access at all, not only for index_part.json, but for everything else too. This approach makes it possible to roll back after failure on new pageserver.
+
+The sequence with roll back process:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS1 as Pageserver 1
+    participant PS2 as Pageserver 2
+    participant S3
+
+    CP->>PS1: Pause background jobs, pause uploading new layers.
+    CP->>PS2: Attach tenant X in remote readonly mode.
+    PS2->>S3: Fetch timelines, index
+    PS2->>CP: Accepted
+    CP->>CP: Monitor PS2 last record lsn, ensure OK lag
+    CP->>CP: Change pageserver id in project
+    CP->>CP: Availability check Failed
+    CP->>CP: Change pageserver id back
+    CP->>PS1: Resume remote operations
+    CP->>PS2: Ignore (instead of detach for investigation purposes)
+```
+
+## Concurrent branch creation
+
+Another problem is a possibility of concurrent branch creation calls.
+
+I e during migration create_branch can be called on old pageserver and newly created branch wont be seen on new pageserver. Prior art includes prototyping an approach of trying to mirror such branches, but currently it lost its importance, because now attach is fast because we dont need to download all data, and additionally to the best of my knowledge of control plane internals (cc @ololobus to confirm) operations on one project are executed sequentially, so it is not possible to have such case. So branch create operation will be executed only when relocation is completed. As a safety measure we can forbid branch creation for tenants that are in readonly remote state.
+
+## Simplistic approach
+
+The difference of simplistic approach from one described above is that it calls ignore on source tenant first and then calls attach on target pageserver. Approach above does it in opposite order thus opening a possibility for race conditions we strive to avoid.
+
+The approach largely follows this guide: <https://www.notion.so/neondatabase/Cloud-Ad-hoc-tenant-relocation-f687474f7bfc42269e6214e3acba25c7>
+
+The happy path sequence:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant CP as Control Plane
+    participant PS1 as Pageserver 1
+    participant PS2 as Pageserver 2
+    participant SK as Safekeeper
+    participant S3
+
+    CP->>CP: Enable maintenance mode
+    CP->>PS1: Ignore
+    CP->>PS2: Attach
+    PS2->>CP: Accepted
+    loop Delete layers for each timeline
+        CP->>PS2: Get last record lsn
+        CP->>SK: Get commit lsn
+        CP->>CP: OK? Timed out?
+    end
+    CP->>CP: Change pageserver id in project
+    CP->>CP: Run successful availability check
+    CP->>CP: Disable maintenance mode
+    CP->>PS1: Detach ignored
+```
+
+The sequence contains exactly the same rollback problems as in previous approach described above. They can be resolved the same way.
+
+Most probably we'd like to move forward without this safety measure and implement it on top of this approach to make progress towards the downtime-less one.
+
+## Lease based approach
+
+In order to allow for concurrent operation on the same data on remote storage for multiple pageservers we need to go further than external orchestration.
+
+NOTE: [020. Pageserver S3 Coordination](020-pageserver-s3-coordination.md) discusses one more approach that relies on duplication of index_part.json for each pageserver operating on the timeline. This approach still requires external coordination which makes certain things easier but requires additional bookkeeping to account for multiple index_part.json files. Discussion/comparison with proposed lease based approach
+
+The problems are outlined in [020. Pageserver S3 Coordination](020-pageserver-s3-coordination.md) and suggested solution includes [Coordination based approach](020-pageserver-s3-coordination.md#coordination-based-approach). This way it will allow to do basic leader election for pageservers so they can decide which node will be responsible for running GC and compaction. The process is based on extensive communication via storage broker and consists of a lease that is taken by one of the pageservers that extends it to continue serving a leader role.
+
+There are two options for ingesting new data into pageserver in follower role. One option is to avoid WAL ingestion at all and rely on notifications from leader to discover new layers on s3. Main downside of this approach is that follower will always lag behind the primary node because it wont have the last layer until it is uploaded to remote storage. In case of a primary failure follower will be required to reingest last segment (up to 256Mb of WAL currently) which slows down recovery. Additionally if compute is connected to follower pageserver it will observe latest data with a delay. Queries from compute will likely experience bigger delays when recent lsn is required.
+
+The second option is to consume WAL stream on both pageservers. In this case the only problem is non deterministic layer generation. Additional bookkeeping will be required to deduplicate layers from primary with local ones. Some process needs to somehow merge them to remove duplicated data. Additionally we need to have good testing coverage to ensure that our implementation of `get_page@lsn` properly handles intersecting layers.
+
+There is another tradeoff. Approaches may be different in amount of traffic between system components. With first approach there can be increased traffic between follower and remote storage. But only in case follower has some activity that actually requests pages (!). With other approach traffic increase will be permanent and will be caused by two WAL streams instead of one.
+
+## Summary
+
+Proposed implementation strategy:
+
+Go with the simplest approach for now. Then work on tech debt, increase test coverage. Then gradually move forward to second approach by implementing safety measures first, finishing with switch of order between ignore and attach operation.
+
+And only then go to lease based approach to solve HA/Pageserver replica use cases.
+
+
+# Content from file ../neon/docs/rfcs/024-extension-loading.md:
+
+# Supporting custom user Extensions (Dynamic Extension Loading)
+Created 2023-05-03
+
+## Motivation
+
+There are many extensions in the PostgreSQL ecosystem, and not all extensions
+are of a quality that we can confidently support them. Additionally, our
+current extension inclusion mechanism has several problems because we build all
+extensions into the primary Compute image: We build the extensions every time
+we build the compute image regardless of whether we actually need to rebuild
+the image, and the inclusion of these extensions in the image adds a hard
+dependency on all supported extensions - thus increasing the image size, and
+with it the time it takes to download that image - increasing first start
+latency.
+
+This RFC proposes a dynamic loading mechanism that solves most of these
+problems.
+
+## Summary
+
+`compute_ctl` is made responsible for loading extensions on-demand into
+the container's file system for dynamically loaded extensions, and will also
+make sure that the extensions in `shared_preload_libraries` are downloaded
+before the compute node starts.
+
+## Components
+
+compute_ctl, PostgreSQL, neon (extension), Compute Host Node, Extension Store
+
+## Requirements
+
+Compute nodes with no extra extensions should not be negatively impacted by
+the existence of support for many extensions.
+
+Installing an extension into PostgreSQL should be easy.
+
+Non-preloaded extensions shouldn't impact startup latency.
+
+Uninstalled extensions shouldn't impact query latency.
+
+A small latency penalty for dynamically loaded extensions is acceptable in
+the first seconds of compute startup, but not in steady-state operations.
+
+## Proposed implementation
+
+### On-demand, JIT-loading of extensions
+
+Before postgres starts we download 
+- control files for all extensions available to that compute node;
+- all `shared_preload_libraries`;
+
+After postgres is running, `compute_ctl` listens for requests to load files.
+When PostgreSQL requests a file, `compute_ctl` downloads it.
+
+PostgreSQL requests files in the following cases:
+- When loading a preload library set in `local_preload_libraries`
+- When explicitly loading a library with `LOAD`
+- Wnen creating extension with `CREATE EXTENSION` (download sql scripts, (optional) extension data files and (optional) library files)))
+
+
+#### Summary
+
+Pros:
+ - Startup is only as slow as it takes to load all (shared_)preload_libraries
+ - Supports BYO Extension
+
+Cons:
+ - O(sizeof(extensions)) IO requirement for loading all extensions.
+
+### Alternative solutions
+
+1. Allow users to add their extensions to the base image
+   
+   Pros:
+    - Easy to deploy
+
+   Cons:
+    - Doesn't scale - first start size is dependent on image size;
+    - All extensions are shared across all users: It doesn't allow users to
+      bring their own restrictive-licensed extensions
+
+2. Bring Your Own compute image
+   
+   Pros:
+    - Still easy to deploy
+    - User can bring own patched version of PostgreSQL
+
+   Cons:
+    - First start latency is O(sizeof(extensions image))
+    - Warm instance pool for skipping pod schedule latency is not feasible with
+      O(n) custom images
+    - Support channels are difficult to manage
+
+3. Download all user extensions in bulk on compute start
+   
+   Pros:
+    - Easy to deploy
+    - No startup latency issues for "clean" users.
+    - Warm instance pool for skipping pod schedule latency is possible
+
+   Cons:
+    - Downloading all extensions in advance takes a lot of time, thus startup
+      latency issues
+
+4. Store user's extensions in persistent storage
+   
+   Pros:
+    - Easy to deploy
+    - No startup latency issues
+    - Warm instance pool for skipping pod schedule latency is possible
+
+   Cons:
+    - EC2 instances have only limited number of attachments shared between EBS
+      volumes, direct-attached NVMe drives, and ENIs.
+    - Compute instance migration isn't trivially solved for EBS mounts (e.g.
+      the device is unavailable whilst moving the mount between instances).
+    - EBS can only mount on one instance at a time (except the expensive IO2
+      device type).
+
+5. Store user's extensions in network drive
+   
+   Pros:
+    - Easy to deploy
+    - Few startup latency issues
+    - Warm instance pool for skipping pod schedule latency is possible
+
+   Cons:
+    - We'd need networked drives, and a lot of them, which would store many
+      duplicate extensions.
+    - **UNCHECKED:** Compute instance migration may not work nicely with
+      networked IOs
+
+
+### Idea extensions
+
+The extension store does not have to be S3 directly, but could be a Node-local
+caching service on top of S3. This would reduce the load on the network for
+popular extensions.
+
+## Extension Storage implementation
+
+The layout of the S3 bucket is as follows:
+```
+5615610098 // this is an extension build number
+├── v14
+│   ├── extensions
+│   │   ├── anon.tar.zst
+│   │   └── embedding.tar.zst
+│   └── ext_index.json
+└── v15
+    ├── extensions
+    │   ├── anon.tar.zst
+    │   └── embedding.tar.zst
+    └── ext_index.json
+5615261079
+├── v14
+│   ├── extensions
+│   │   └── anon.tar.zst
+│   └── ext_index.json
+└── v15
+    ├── extensions
+    │   └── anon.tar.zst
+    └── ext_index.json
+5623261088
+├── v14
+│   ├── extensions
+│   │   └── embedding.tar.zst
+│   └── ext_index.json
+└── v15
+    ├── extensions
+    │   └── embedding.tar.zst
+    └── ext_index.json
+```
+
+Note that build number cannot be part of prefix because we might need extensions
+from other build numbers.
+
+`ext_index.json` stores the control files and location of extension archives. 
+It also stores a list of public extensions and a library_index
+
+We don't need to duplicate `extension.tar.zst`` files.
+We only need to upload a new one if it is updated.
+(Although currently we just upload every time anyways, hopefully will change
+this sometime)
+
+*access* is controlled by spec
+
+More specifically, here is an example ext_index.json
+```
+{
+    "public_extensions": [
+        "anon",
+        "pg_buffercache"
+    ],
+    "library_index": {
+        "anon": "anon",
+        "pg_buffercache": "pg_buffercache"
+        // for more complex extensions like postgis
+        // we might have something like:
+        // address_standardizer: postgis
+        // postgis_tiger: postgis
+    },
+    "extension_data": {
+        "pg_buffercache": {
+            "control_data": {
+                "pg_buffercache.control": "# pg_buffercache extension \ncomment = 'examine the shared buffer cache' \ndefault_version = '1.3' \nmodule_pathname = '$libdir/pg_buffercache' \nrelocatable = true \ntrusted=true"
+            },
+            "archive_path": "5670669815/v14/extensions/pg_buffercache.tar.zst"
+        },
+        "anon": {
+            "control_data": {
+                "anon.control": "# PostgreSQL Anonymizer (anon) extension \ncomment = 'Data anonymization tools' \ndefault_version = '1.1.0' \ndirectory='extension/anon' \nrelocatable = false \nrequires = 'pgcrypto' \nsuperuser = false \nmodule_pathname = '$libdir/anon' \ntrusted = true \n"
+            },
+            "archive_path": "5670669815/v14/extensions/anon.tar.zst"
+        }
+    }
+}
+```
+
+### How to add new extension to the Extension Storage?
+
+Simply upload build artifacts to the S3 bucket.
+Implement a CI step for that. Splitting it from compute-node-image build.
+
+### How do we deal with extension versions and updates?
+
+Currently, we rebuild extensions on every compute-node-image build and store them in the <build-version> prefix.
+This is needed to ensure that `/share` and `/lib` files are in sync.
+
+For extension updates, we rely on the PostgreSQL extension versioning mechanism (sql update scripts) and extension authors to not break backwards compatibility within one major version of PostgreSQL.
+
+### Alternatives
+
+For extensions written on trusted languages we can also adopt
+`dbdev` PostgreSQL Package Manager based on `pg_tle` by Supabase.
+This will increase the amount supported extensions and decrease the amount of work required to support them.
+
+
+# Content from file ../neon/docs/rfcs/024-user-mgmt.md:
+
+# Postgres user and database management
+
+(This supersedes the previous proposal that looked too complicated and desynchronization-prone)
+
+We've accumulated a bunch of problems with our approach to role and database management, namely:
+
+1. we don't allow role and database creation from Postgres, and users are complaining about that
+2. fine-grained role management is not possible both from Postgres and console
+
+Right now, we do store users and databases both in console and Postgres, and there are two main reasons for
+that:
+
+* we want to be able to authenticate users in proxy against the console without Postgres' involvement. Otherwise,
+malicious brute force attempts will wake up Postgres (expensive) and may exhaust the Postgres connections limit (deny of service).
+* it is handy when we can render console UI without waking up compute (e.g., show database list)
+
+This RFC doesn't talk about giving root access to the database, which is blocked by a secure runtime setup.
+
+## Overview
+
+* Add Postgres extension that sends an HTTP request each time transaction that modifies users/databases is about to commit.
+* Add user management API to internal console API. Also, the console should put a JWT token into the compute so that it can access management API.
+
+## Postgres behavior
+
+The default user role (@username) should have `CREATE ROLE`, `CREATE DB`, and `BYPASSRLS` privileges. We expose the Postgres port
+to the open internet, so we need to check password strength. Now console generates strong passwords, so there is no risk of having dumb passwords. With user-provided passwords, such risks exist.
+
+Since we store passwords in the console we should also send unencrypted password when role is created/changed. Hence communication with the console must be encrypted. Postgres also supports creating roles using hashes, in that case, we will not be able to get a raw password. So I can see the following options here:
+  * roles created via SQL will *not* have raw passwords in the console
+  * roles created via SQL will have raw passwords in the console, except ones that were created using hashes
+
+I'm leaning towards the second option here as it is a bit more consistent one -- if raw password storage is enabled then we store passwords in all cases where we can store them.
+
+To send data about roles and databases from Postgres to the console we can create the following Postgres extension:
+
+  * Intercept role/database changes in `ProcessUtility_hook`. Here we have access to the query statement with the raw password. The hook handler itself should not dial the console immediately and rather stash info in some hashmap for later use.
+  * When the transaction is about to commit we execute collected role modifications (all as one -- console should either accept all or reject all, and hence API shouldn't be REST-like). If the console request fails we can roll back the transaction. This way if the transaction is committed we know for sure that console has this information. We can use `XACT_EVENT_PRE_COMMIT` and `XACT_EVENT_PARALLEL_PRE_COMMIT` for that.
+  * Extension should be mindful of the fact that it is possible to create and delete roles within the transaction.
+  * We also need to track who is database owner, some coding around may be needed to get the current user when the database is created.
+
+## Console user management API
+
+The current public API has REST API for role management. We need to have some analog for the internal API (called mgmt API in the console code). But unlike public API here we want to have an atomic way to create several roles/databases (in cases when several roles were created in the same transaction). So something like that may work:
+
+```
+curl -X PATCH /api/v1/roles_and_databases -d '
+[
+    {"op":"create", "type":"role", "name": "kurt", "password":"lYgT3BlbkFJ2vBZrqv"},
+    {"op":"drop", "type":"role", "name": "trout"},
+    {"op":"alter", "type":"role", "name": "kilgore", "password":"3BlbkFJ2vB"},
+    {"op":"create", "type":"database", "name": "db2", "owner": "eliot"},
+]
+'
+```
+
+Makes sense not to error out on duplicated create/delete operations (see failure modes)
+
+## Managing users from the console
+
+Now console puts a spec file with the list of databases/roles and delta operations in all the compute pods. `compute_ctl` then picks up that file and stubbornly executes deltas and checks data in the spec file is the same as in the Postgres. This way if the user creates a role in the UI we restart compute with a new spec file and during the start databases/roles are created. So if Postgres send an HTTP call each time role is created we need to break recursion in that case. We can do that based on application_name or some GUC or user (local == no HTTP hook).
+
+Generally, we have several options when we are creating users via console:
+
+1. restart compute with a new spec file, execute local SQL command; cut recursion in the extension
+2. "push" spec files into running compute, execute local SQL command; cut recursion in the extension
+3. "push" spec files into running compute, execute local SQL command; let extension create those roles in the console
+4. avoid managing roles via spec files, send SQL commands to compute; let extension create those roles in the console
+
+The last option is the most straightforward one, but with the raw password storage opt-out, we will not have the password to establish an SQL connection. Also, we need a spec for provisioning purposes and to address potential desync (but that is quite unlikely). So I think the easiest approach would be:
+
+1. keep role management like it is now and cut the recursion in the extension when SQL is executed by compute_ctl
+2. add "push" endpoint to the compute_ctl to avoid compute restart during the `apply_config` operation -- that can be done as a follow up to avoid increasing scope too much
+
+## Failure modes
+
+* during role creation via SQL role was created in the console but the connection was dropped before Postgres got acknowledgment or some error happened after acknowledgment (out of disk space, deadlock, etc):
+
+  in that case, Postgres won't have a role that exists in the console. Compute restart will heal it (due to the spec file). Also if the console allows repeated creation/deletion user can repeat the transaction.
+
+
+# Scalability
+
+On my laptop, I can create 4200 roles per second. That corresponds to 363 million roles per day. Since each role creation ends up in the console database we can add some limit to the number of roles (could be reasonably big to not run into it often -- like 1k or 10k).
+
+
+# Content from file ../neon/docs/rfcs/025-generation-numbers.md:
+
+# Pageserver: split-brain safety for remote storage through generation numbers
+
+## Summary
+
+A scheme of logical "generation numbers" for tenant attachment to pageservers is proposed, along with
+changes to the remote storage format to include these generation numbers in S3 keys.
+
+Using the control plane as the issuer of these generation numbers enables strong anti-split-brain
+properties in the pageserver cluster without implementing a consensus mechanism directly
+in the pageservers.
+
+## Motivation
+
+Currently, the pageserver's remote storage format does not provide a mechanism for addressing
+split brain conditions that may happen when replacing a node or when migrating
+a tenant from one pageserver to another.
+
+From a remote storage perspective, a split brain condition occurs whenever two nodes both think
+they have the same tenant attached, and both can write to S3. This can happen in the case of a
+network partition, pathologically long delays (e.g. suspended VM), or software bugs.
+
+In the current deployment model, control plane guarantees that a tenant is attached to one
+pageserver at a time, thereby ruling out split-brain conditions resulting from dual
+attachment (however, there is always the risk of a control plane bug). This control
+plane guarantee prevents robust response to failures, as if a pageserver is unresponsive
+we may not detach from it. The mechanism in this RFC fixes this, by making it safe to
+attach to a new, different pageserver even if an unresponsive pageserver may be running.
+
+Futher, lack of safety during split-brain conditions blocks two important features where occasional
+split-brain conditions are part of the design assumptions:
+
+- seamless tenant migration ([RFC PR](https://github.com/neondatabase/neon/pull/5029))
+- automatic pageserver instance failure handling (aka "failover") (RFC TBD)
+
+### Prior art
+
+- 020-pageserver-s3-coordination.md
+- 023-the-state-of-pageserver-tenant-relocation.md
+- 026-pageserver-s3-mvcc.md
+
+This RFC has broad similarities to the proposal to implement a MVCC scheme in
+S3 object names, but this RFC avoids a general purpose transaction scheme in
+favour of more specialized "generations" that work like a transaction ID that
+always has the same lifetime as a pageserver process or tenant attachment, whichever
+is shorter.
+
+## Requirements
+
+- Accommodate storage backends with no atomic or fencing capability (i.e. work within
+  S3's limitation that there are no atomics and clients can't be fenced)
+- Don't depend on any STONITH or node fencing in the compute layer (i.e. we will not
+  assume that we can reliably kill and EC2 instance and have it die)
+- Scoped per-tenant, not per-pageserver; for _seamless tenant migration_, we need
+  per-tenant granularity, and for _failover_, we likely want to spread the workload
+  of the failed pageserver instance to a number of peers, rather than monolithically
+  moving the entire workload to another machine.
+  We do not rule out the latter case, but should not constrain ourselves to it.
+
+## Design Tenets
+
+These are not requirements, but are ideas that guide the following design:
+
+- Avoid implementing another consensus system: we already have a strongly consistent
+  database in the control plane that can do atomic operations where needed, and we also
+  have a Paxos implementation in the safekeeper.
+- Avoiding locking in to specific models of how failover will work (e.g. do not assume that
+  all the tenants on a pageserver will fail over as a unit).
+- Be strictly correct when it comes to data integrity. Occasional failures of availability
+  are tolerable, occasional data loss is not.
+
+## Non Goals
+
+The changes in this RFC intentionally isolate the design decision of how to define
+logical generations numbers and object storage format in a way that is somewhat flexible with
+respect to how actual orchestration of failover works.
+
+This RFC intentionally does not cover:
+
+- Failure detection
+- Orchestration of failover
+- Standby modes to keep data ready for fast migration
+- Intentional multi-writer operation on tenants (multi-writer scenarios are assumed to be transient split-brain situations).
+- Sharding.
+
+The interaction between this RFC and those features is discussed in [Appendix B](#appendix-b-interoperability-with-other-features)
+
+## Impacted Components
+
+pageserver, control plane, safekeeper (optional)
+
+## Implementation Part 1: Correctness
+
+### Summary
+
+- A per-tenant **generation number** is introduced to uniquely identifying tenant attachments to pageserver processes.
+
+  - This generation number increments each time the control plane modifies a tenant (`Project`)'s assigned pageserver, or when the assigned pageserver restarts.
+  - the control plane is the authority for generation numbers: only it may
+    increment a generation number.
+
+- **Object keys are suffixed** with the generation number
+- **Safety for multiply-attached tenants** is provided by the
+  generation number in the object key: the competing pageservers will not
+  try to write to the same keys.
+- **Safety in split brain for multiple nodes running with
+  the same node ID** is provided by the pageserver calling out to the control plane
+  on startup, to re-attach and thereby increment the generations of any attached tenants
+- **Safety for deletions** is achieved by deferring the DELETE from S3 to a point in time where the deleting node has validated with control plane that no attachment with a higher generation has a reference to the to-be-DELETEd key.
+- **The control plane is used to issue generation numbers** to avoid the need for
+  a built-in consensus system in the pageserver, although this could in principle
+  be changed without changing the storage format.
+
+### Generation numbers
+
+A generation number is associated with each tenant in the control plane,
+and each time the attachment status of the tenant changes, this is incremented.
+Changes in attachment status include:
+
+- Attaching the tenant to a different pageserver
+- A pageserver restarting, and "re-attaching" its tenants on startup
+
+These increments of attachment generation provide invariants we need to avoid
+split-brain issues in storage:
+
+- If two pageservers have the same tenant attached, the attachments are guaranteed to have different generation numbers, because the generation would increment
+  while attaching the second one.
+- If there are multiple pageservers running with the same node ID, all the attachments on all pageservers are guaranteed to have different generation numbers, because the generation would increment
+  when the second node started and re-attached its tenants.
+
+As long as the infrastructure does not transparently replace an underlying
+physical machine, we are totally safe. See the later [unsafe case](#unsafe-case-on-badly-behaved-infrastructure) section for details.
+
+### Object Key Changes
+
+#### Generation suffix
+
+All object keys (layer objects and index objects) will contain the attachment
+generation as a [suffix](#why-a-generation-suffix-rather-than-prefix).
+This suffix is the primary mechanism for protecting against split-brain situations, and
+enabling safe multi-attachment of tenants:
+
+- Two pageservers running with the same node ID (e.g. after a failure, where there is
+  some rogue pageserver still running) will not try to write to the same objects, because at startup they will have re-attached tenants and thereby incremented
+  generation numbers.
+- Multiple attachments (to different pageservers) of the same tenant will not try to write to the same objects, as each attachment would have a distinct generation.
+
+The generation is appended in hex format (8 byte string representing
+u32), to all our existing key names. A u32's range limit would permit
+27 restarts _per second_ over a 5 year system lifetime: orders of magnitude more than
+is realistic.
+
+The exact meaning of the generation suffix can evolve over time if necessary, for
+example if we chose to implement a failover mechanism internally to the pageservers
+rather than going via the control plane. The storage format just sees it as a number,
+with the only semantic property being that the highest numbered index is the latest.
+
+#### Index changes
+
+Since object keys now include a generation suffix, the index of these keys must also be updated. IndexPart currently stores keys and LSNs sufficient to reconstruct key names: this would be extended to store the generation as well.
+
+This will increase the size of the file, but only modestly: layers are already encoded as
+their string-ized form, so the overhead is about 10 bytes per layer. This will be less if/when
+the index storage format is migrated to a binary format from JSON.
+
+#### Visibility
+
+_This section doesn't describe code changes, but extends on the consequences of the
+object key changes given above_
+
+##### Visibility of objects to pageservers
+
+Pageservers can of course list objects in S3 at any time, but in practice their
+visible set is based on the contents of their LayerMap, which is initialized
+from the `index_part.json.???` that they load.
+
+Starting with the `index_part` from the most recent previous generation
+(see [loading index_part](#finding-the-remote-indices-for-timelines)), a pageserver
+initially has visibility of all the objects that were referenced in the loaded index.
+These objects are guaranteed to remain visible until the current generation is
+superseded, via pageservers in older generations avoiding deletions (see [deletion](#deletion)).
+
+The "most recent previous generation" is _not_ necessarily the most recent
+in terms of walltime, it is the one that is readable at the time a new generation
+starts. Consider the following sequence of a tenant being re-attached to different
+pageserver nodes:
+
+- Create + attach on PS1 in generation 1
+- PS1 Do some work, write out index_part.json-0001
+- Attach to PS2 in generation 2
+- Read index_part.json-0001
+- PS2 starts doing some work...
+- Attach to PS3 in generation 3
+- Read index_part.json-0001
+- **...PS2 finishes its work: now it writes index_part.json-0002**
+- PS3 writes out index_part.json-0003
+
+In the above sequence, the ancestry of indices is:
+
+```
+0001 -> 0002
+     |
+     -> 0003
+```
+
+This is not an issue for safety: if the 0002 references some object that is
+not in 0001, then 0003 simply does not see it, and will re-do whatever
+work was required (e.g. ingesting WAL or doing compaction). Objects referenced
+by only the 0002 index will never be read by future attachment generations, and
+will eventually be cleaned up by a scrub (see [scrubbing](#cleaning-up-orphan-objects-scrubbing)).
+
+##### Visibility of LSNs to clients
+
+Because index_part.json is now written with a generation suffix, which data
+is visible depends on which generation the reader is operating in:
+
+- If one was passively reading from S3 from outside of a pageserver, the
+  visibility of data would depend on which index_part.json-<generation> file
+  one had chosen to read from.
+- If two pageservers have the same tenant attached, they may have different
+  data visible as they're independently replaying the WAL, and maintaining
+  independent LayerMaps that are written to independent index_part.json files.
+  Data does not have to be remotely committed to be visible.
+- For a pageserver writing with a stale generation, historic LSNs
+  remain readable until another pageserver (with a higher generation suffix)
+  decides to execute GC deletions. At this point, we may think of the stale
+  attachment's generation as having logically ended: during its existence
+  the generation had a consistent view of the world.
+- For a newly attached pageserver, its highest visible LSN may appears to
+  go backwards with respect to an earlier attachment, if that earlier
+  attachment had not uploaded all data to S3 before the new attachment.
+
+### Deletion
+
+#### Generation number validation
+
+While writes are de-conflicted by writers always using their own generation number in the key,
+deletions are slightly more challenging: if a pageserver A is isolated, and the true active node is
+pageserver B, then it is dangerous for A to do any object deletions, even of objects that it wrote
+itself, because pageserver's B metadata might reference those objects.
+
+We solve this by inserting a "generation validation" step between the write of a remote index
+that un-links a particular object from the index, and the actual deletion of the object, such
+that deletions strictly obey the following ordering:
+
+1. Write out index_part.json: this guarantees that any subsequent reader of the metadata will
+   not try and read the object we unlinked.
+2. Call out to control plane to validate that the generation which we use for our attachment is still the latest.
+3. If step 2 passes, it is safe to delete the object. Why? The check-in with control plane
+   together with our visibility rules guarantees that any later generation
+   will use either the exact `index_part.json` that we uploaded in step 1, or a successor
+   of it; not an earlier one. In both cases, the `index_part.json` doesn't reference the
+   key we are deleting anymore, so, the key is invisible to any later attachment generation.
+   Hence it's safe to delete it.
+
+Note that at step 2 we are only confirming that deletions of objects _no longer referenced
+by the specific `index_part.json` written in step 1_ are safe. If we were attempting other deletions concurrently,
+these would need their own generation validation step.
+
+If step 2 fails, we may leak the object. This is safe, but has a cost: see [scrubbing](#cleaning-up-orphan-objects-scrubbing). We may avoid this entirely outside of node
+failures, if we do proper flushing of deletions on clean shutdown and clean migration.
+
+To avoid doing a huge number of control plane requests to perform generation validation,
+validation of many tenants will be done in a single request, and deletions will be queued up
+prior to validation: see [Persistent deletion queue](#persistent-deletion-queue) for more.
+
+#### `remote_consistent_lsn` updates
+
+Remote objects are not the only kind of deletion the pageserver does: it also indirectly deletes
+WAL data, by feeding back remote_consistent_lsn to safekeepers, as a signal to the safekeepers that
+they may drop data below this LSN.
+
+For the same reasons that deletion of objects must be guarded by an attachment generation number
+validation step, updates to `remote_consistent_lsn` are subject to the same rules, using
+an ordering as follows:
+
+1. upload the index_part that covers data up to LSN `L0` to S3
+2. Call out to control plane to validate that the generation which we use for our attachment is still the latest.
+3. advance the `remote_consistent_lsn` that we advertise to the safekeepers to `L0`
+
+If step 2 fails, then the `remote_consistent_lsn` advertised
+to safekeepers will not advance again until a pageserver
+with the latest generation is ready to do so.
+
+**Note:** at step 3 we are not advertising the _latest_ remote_consistent_lsn, we are
+advertising the value in the index_part that we uploaded in step 1. This provides
+a strong ordering guarantee.
+
+Internally to the pageserver, each timeline will have two remote_consistent_lsn values: the one that
+reflects its latest write to remote storage, and the one that reflects the most
+recent validation of generation number. It is only the latter value that may
+be advertised to the outside world (i.e. to the safekeeper).
+
+The control plane remains unaware of `remote_consistent_lsn`: it only has to validate
+the freshness of generation numbers, thereby granting the pageserver permission to
+share the information with the safekeeper.
+
+For convenience, in subsequent sections and RFCs we will use "deletion" to mean both deletion
+of objects in S3, and updates to the `remote_consistent_lsn`, as updates to the remote consistent
+LSN are de-facto deletions done via the safekeeper, and both kinds of deletion are subject to
+the same generation validation requirement.
+
+### Pageserver attach/startup changes
+
+#### Attachment
+
+Calls to `/v1/tenant/{tenant_id}/attach` are augmented with an additional
+`generation` field in the body.
+
+The pageserver does not persist this: a generation is only good for the lifetime
+of a process.
+
+#### Finding the remote indices for timelines
+
+Because index files are now suffixed with generation numbers, the pageserver
+cannot always GET the remote index in one request, because it can't always
+know a-priori what the latest remote index is.
+
+Typically, the most recent generation to write an index would be our own
+generation minus 1. However, this might not be the case: the previous
+node might have started and acquired a generation number, and then crashed
+before writing out a remote index.
+
+In the general case and as a fallback, the pageserver may list all the `index_part.json`
+files for a timeline, sort them by generation, and pick the highest that is `<=`
+its current generation for this attachment. The tenant should never load an index
+with an attachment generation _newer_ than its own.
+These two rules combined ensure that objects written by later generations are never visible to earlier generations.
+
+Note that if a given attachment picks an index part from an earlier generation (say n-2), but crashes & restarts before it writes its own generation's index part, next time it tries to pick an index part there may be an index part from generation n-1.
+It would pick the n-1 index part in that case, because it's sorted higher than the previous one from generation n-2.
+So, above rules guarantee no determinism in selecting the index part.
+are allowed to be attached with stale attachment generations during a multiply-attached
+phase in a migration, and in this instance if the old location's pageserver restarts,
+it should not try and load the newer generation's index.
+
+To summarize, on starting a timeline, the pageserver will:
+
+1. Issue a GET for index_part.json-<my generation - 1>
+2. If 1 failed, issue a ListObjectsv2 request for index_part.json\* and
+   pick the newest.
+
+One could optimize this further by using the control plane to record specifically
+which generation most recently wrote an index_part.json, if necessary, to increase
+the probability of finding the index_part.json in one GET. One could also improve
+the chances by having pageservers proactively write out index_part.json after they
+get a new generation ID.
+
+#### Re-attachment on startup
+
+On startup, the pageserver will call out to an new control plane `/re-attach`
+API (see [Generation API](#generation-api)). This returns a list of
+tenants that should be attached to the pageserver, and their generation numbers, which
+the control plane will increment before returning.
+
+The pageserver should still scan its local disk on startup, but should _delete_
+any local content for tenants not indicated in the `/re-attach` response: their
+absence is an implicit detach operation.
+
+**Note** if a tenant is omitted from the re-attach response, its local disk content
+will be deleted. This will change in subsequent work, when the control plane gains
+the concept of a secondary/standby location: a node with local content may revert
+to this status and retain some local content.
+
+#### Cleaning up previous generations' remote indices
+
+Deletion of old indices is not necessary for correctness, although it is necessary
+to avoid the ListObjects fallback in the previous section becoming ever more expensive.
+
+Once the new attachment has written out its index_part.json, it may asynchronously clean up historic index_part.json
+objects that were found.
+
+We may choose to implement this deletion either as an explicit step after we
+write out index_part for the first time in a pageserver's lifetime, or for
+simplicity just do it periodically as part of the background scrub (see [scrubbing](#cleaning-up-orphan-objects-scrubbing));
+
+### Control Plane Changes
+
+#### Store generations for attaching tenants
+
+- The `Project` table must store the generation number for use when
+  attaching the tenant to a new pageserver.
+- The `/v1/tenant/:tenant_id/attach` pageserver API will require the generation number,
+  which the control plane can supply by simply incrementing the `Project`'s
+  generation number each time the tenant is attached to a different server: the same database
+  transaction that changes the assigned pageserver should also change the generation number.
+
+#### Generation API
+
+This section describes an API that could be provided directly by the control plane,
+or built as a separate microservice. In earlier parts of the RFC, when we
+discuss the control plane providing generation numbers, we are referring to this API.
+
+The API endpoints used by the pageserver to acquire and validate generation
+numbers are quite simple, and only require access to some persistent and
+linerizable storage (such as a database).
+
+Building this into the control plane is proposed as a least-effort option to exploit existing infrastructure and implement generation number issuance in the same transaction that mandates it (i.e., the transaction that updates the `Project` assignment to another pageserver).
+However, this is not mandatory: this "Generation Number Issuer" could
+be built as a microservice. In practice, we will write such a miniature service
+anyway, to enable E2E pageserver/compute testing without control plane.
+
+The endpoints required by pageservers are:
+
+##### `/re-attach`
+
+- Request: `{node_id: <u32>}`
+- Response:
+  - 200 `{tenants: [{id: <TenantId>, gen: <u32>}]}`
+  - 404: unknown node_id
+  - (Future: 429: flapping detected, perhaps nodes are fighting for the same node ID,
+    or perhaps this node was in a retry loop)
+  - (On unknown tenants, omit tenant from `tenants` array)
+- Server behavior: query database for which tenants should be attached to this pageserver.
+  - for each tenant that should be attached, increment the attachment generation and
+    include the new generation in the response
+- Client behavior:
+  - for all tenants in the response, activate with the new generation number
+  - for any local disk content _not_ referenced in the response, act as if we
+    had been asked to detach it (i.e. delete local files)
+
+**Note** the `node_id` in this request will change in future if we move to ephemeral
+node IDs, to be replaced with some correlation ID that helps the control plane realize
+if a process is running with the same storage as a previous pageserver process (e.g.
+we might use EC instance ID, or we might just write some UUID to the disk the first
+time we use it)
+
+##### `/validate`
+
+- Request: `{'tenants': [{tenant: <tenant id>, attach_gen: <gen>}, ...]}'`
+- Response:
+  - 200 `{'tenants': [{tenant: <tenant id>, status: <bool>}...]}`
+  - (On unknown tenants, omit tenant from `tenants` array)
+- Purpose: enable the pageserver to discover for the given attachments whether they are still the latest.
+- Server behavior: this is a read-only operation: simply compare the generations in the request with
+  the generations known to the server, and set status to `true` if they match.
+- Client behavior: clients must not do deletions within a tenant's remote data until they have
+  received a response indicating the generation they hold for the attachment is current.
+
+#### Use of `/load` and `/ignore` APIs
+
+Because the pageserver will be changed to only attach tenants on startup
+based on the control plane's response to a `/re-attach` request, the load/ignore
+APIs no longer make sense in their current form.
+
+The `/load` API becomes functionally equivalent to attach, and will be removed:
+any location that used `/load` before should just attach instead.
+
+The `/ignore` API is equivalent to detaching, but without deleting local files.
+
+### Timeline/Branch creation & deletion
+
+All of the previous arguments for safety have described operations within
+a timeline, where we may describe a sequence that includes updates to
+index_part.json, and where reads and writes are coming from a postgres
+endpoint (writes via the safekeeper).
+
+Creating or destroying timeline is a bit different, because writes
+are coming from the control plane.
+
+We must be safe against scenarios such as:
+
+- A tenant is attached to pageserver B while pageserver A is
+  in the middle of servicing an RPC from the control plane to
+  create or delete a tenant.
+- A pageserver A has been sent a timeline creation request
+  but becomes unresponsive. The tenant is attached to a
+  different pageserver B, and the timeline creation request
+  is sent there too.
+
+#### Timeline Creation
+
+If some very slow node tries to do a timeline creation _after_
+a more recent generation node has already created the timeline
+and written some data into it, that must not cause harm. This
+is provided in timeline creations by the way all the objects
+within the timeline's remote path include a generation suffix:
+a slow node in an old generation that attempts to "create" a timeline
+that already exists will just emit an index_part.json with
+an old generation suffix.
+
+Timeline IDs are never reused, so we don't have
+to worry about the case of create/delete/create cycles. If they
+were re-used during a disaster recovery "un-delete" of a timeline,
+that special case can be handled by calling out to all available pageservers
+to check that they return 404 for the timeline, and to flush their
+deletion queues in case they had any deletions pending from the
+timeline.
+
+The above makes it safe for control plane to change the assignment of
+tenant to pageserver in control plane while a timeline creation is ongoing.
+The reason is that the creation request against the new assigned pageserver
+uses a new generation number. However, care must be taken by control plane
+to ensure that a "timeline creation successul" response from some pageserver
+is checked for the pageserver's generation for that timeline's tenant still being the latest.
+If it is not the latest, the response does not constitute a successful timeline creation.
+It is acceptable to discard such responses, the scrubber will clean up the S3 state.
+It is better to issue a timelien deletion request to the stale attachment.
+
+#### Timeline Deletion
+
+Tenant/timeline deletion operations are exempt from generation validation
+on deletes, and therefore don't have to go through the same deletion
+queue as GC/compaction layer deletions. This is because once a
+delete is issued by the control plane, it is a promise that the
+control plane will keep trying until the deletion is done, so even stale
+pageservers are permitted to go ahead and delete the objects.
+
+The implications of this for control plane are:
+
+- During timeline/tenant deletion, the control plane must wait for the deletion to
+  be truly complete (status 404) and also handle the case where the pageserver
+  becomes unavailable, either by waiting for a replacement with the same node_id,
+  or by *re-attaching the tenant elsewhere.
+
+- The control plane must persist its intent to delete
+  a timeline/tenant before issuing any RPCs, and then once it starts, it must
+  keep retrying until the tenant/timeline is gone. This is already handled
+  by using a persistent `Operation` record that is retried indefinitely.
+
+Timeline deletion may result in a special kind of object leak, where
+the latest generation attachment completes a deletion (including erasing
+all objects in the timeline path), but some slow/partitioned node is
+writing into the timeline path with a stale generation number. This would
+not be caught by any per-timeline scrubbing (see [scrubbing](#cleaning-up-orphan-objects-scrubbing)), since scrubbing happens on the
+attached pageserver, and once the timeline is deleted it isn't attached anywhere.
+This scenario should be pretty rare, and the control plane can make it even
+rarer by ensuring that if a tenant is in a multi-attached state (e.g. during
+migration), we wait for that to complete before processing the deletion. Beyond
+that, we may implement some other top-level scrub of timelines in
+an external tool, to identify any tenant/timeline paths that are not found
+in the control plane database.
+
+#### Examples
+
+- Deletion, node restarts partway through:
+  - By the time we returned 202, we have written a remote delete marker
+  - Any subsequent incarnation of the same node_id will see the remote
+    delete marker and continue to process the deletion
+  - If the original pageserver is lost permanently and no replacement
+    with the same node_id is available, then the control plane must recover
+    by re-attaching the tenant to a different node.
+- Creation, node becomes unresponsive partway through.
+  - Control plane will see HTTP request timeout, keep re-issuing
+    request to whoever is the latest attachment point for the tenant
+    until it succeeds.
+  - Stale nodes may be trying to execute timeline creation: they will
+    write out index_part.json files with
+    stale attachment generation: these will be eventually cleaned up
+    by the same mechanism as other old indices.
+
+### Unsafe case on badly behaved infrastructure
+
+This section is only relevant if running on a different environment
+than EC2 machines with ephemeral disks.
+
+If we ever run pageservers on infrastructure that might transparently restart
+a pageserver while leaving an old process running (e.g. a VM gets rescheduled
+without the old one being fenced), then there is a risk of corruption, when
+the control plane attaches the tenant, as follows:
+
+- If the control plane sends an `/attach` request to node A, then node A dies
+  and is replaced, and the control plane's retries the request without
+  incrementing that attachment ID, then it could end up with two physical nodes
+  both using the same generation number.
+- This is not an issue when using EC2 instances with ephemeral storage, as long
+  as the control plane never re-uses a node ID, but it would need re-examining
+  if running on different infrastructure.
+- To robustly protect against this class of issue, we would either:
+  - add a "node generation" to distinguish between different processes holding the
+    same node_id.
+  - or, dispense with static node_id entirely and issue an ephemeral ID to each
+    pageserver process when it starts.
+
+## Implementation Part 2: Optimizations
+
+### Persistent deletion queue
+
+Between writing our a new index_part.json that doesn't reference an object,
+and executing the deletion, an object passes through a window where it is
+only referenced in memory, and could be leaked if the pageserver is stopped
+uncleanly. That introduces conflicting incentives: on the one hand, we would
+like to delay and batch deletions to
+1. minimize the cost of the mandatory validations calls to control plane, and
+2. minimize cost for DeleteObjects requests.
+On the other hand we would also like to minimize leakage by executing
+deletions promptly.
+
+To resolve this, we may make the deletion queue persistent
+and then executing these in the background at a later time.
+
+_Note: The deletion queue's reason for existence is optimization rather than correctness,
+so there is a lot of flexibility in exactly how the it should work,
+as long as it obeys the rule to validate generations before executing deletions,
+so the following details are not essential to the overall RFC._
+
+#### Scope
+
+The deletion queue will be global per pageserver, not per-tenant. There
+are several reasons for this choice:
+
+- Use the queue as a central point to coalesce validation requests to the
+  control plane: this avoids individual `Timeline` objects ever touching
+  the control plane API, and avoids them having to know the rules about
+  validating deletions. This separation of concerns will avoid burdening
+  the already many-LoC `Timeline` type with even more responsibility.
+- Decouple the deletion queue from Tenant attachment lifetime: we may
+  "hibernate" an inactive tenant by tearing down its `Tenant`/`Timeline`
+  objects in the pageserver, without having to wait for deletions to be done.
+- Amortize the cost of I/O for the persistent queue, instead of having many
+  tiny queues.
+- Coalesce deletions into a smaller number of larger DeleteObjects calls
+
+Because of the cost of doing I/O for persistence, and the desire to coalesce
+generation validation requests across tenants, and coalesce deletions into
+larger DeleteObjects requests, there will be one deletion queue per pageserver
+rather than one per tenant. This has the added benefit that when deactivating
+a tenant, we do not have to drain their deletion queue: deletions can proceed
+for a tenant whose main `Tenant` object has been torn down.
+
+#### Flow of deletion
+
+The flow of a deletion is becomes:
+
+1. Need for deletion of an object (=> layer file) is identified.
+2. Unlink the object from all the places that reference it (=> `index_part.json`).
+3. Enqueue the deletion to a persistent queue.
+   Each entry is `tenant_id, attachment_generation, S3 key`.
+4. Validate & execute in batches:
+  4.1 For a batch of entries, call into control plane.
+  4.2 For the subset of entries that passed validation, execute a `DeleteObjects` S3 DELETE request for their S3 keys.
+
+As outlined in the Part 1 on correctness, it is critical that deletions are only
+executed once the key is not referenced anywhere in S3.
+This property is obviously upheld by the scheme above.
+
+#### We Accept Object Leakage In Acceptable Circumcstances
+
+If we crash in the flow above between (2) and (3), we lose track of unreferenced object.
+Further, enqueuing a single to the persistent queue may not be durable immediately to amortize cost of flush to disk.
+This is acceptable for now, it can be caught by [the scrubber](#cleaning-up-orphan-objects-scrubbing).
+
+There are various measures we can take to improve this in the future.
+1. Cap amount of time until enqueued entry becomes durable (timeout for flush-to-tisk)
+2. Proactively flush:
+    - On graceful shutdown, as we anticipate that some or
+      all of our attachments may be re-assigned while we are offline.
+    - On tenant detach.
+3. For each entry, keep track of whether it has passed (2).
+   Only admit entries to (4) one they have passed (2).
+   This requires re-writing / two queue entries (intent, commit) per deletion.
+
+The important take-away with any of the above is that it's not
+disastrous to leak objects in exceptional circumstances.
+
+#### Operations that may skip the queue
+
+Deletions of an entire timeline are [exempt](#Timeline-Deletion) from generation number validation. Once the
+control plane sends the deletion request, there is no requirement to retain the readability
+of any data within the timeline, and all objects within the timeline path may be deleted
+at any time from the control plane's deletion request onwards.
+
+Since deletions of smaller timelines won't have enough objects to compose a full sized
+DeleteObjects request, it is still useful to send these through the last part of the
+deletion pipeline to coalesce with other executing deletions: to enable this, the
+deletion queue should expose two input channels: one for deletions that must be
+processed in a generation-aware way, and a fast path for timeline deletions, where
+that fast path may skip validation and the persistent queue.
+
+### Cleaning up orphan objects (scrubbing)
+
+An orphan object is any object which is no longer referenced by a running node or by metadata.
+
+Examples of how orphan objects arise:
+
+- A node PUTs a layer object, then crashes before it writes the
+  index_part.json that references that layer.
+- A stale node carries on running for some time, and writes out an unbounded number of
+  objects while it believes itself to be the rightful writer for a tenant.
+- A pageserver crashes between un-linking an object from the index, and persisting
+  the object to its deletion queue.
+
+Orphan objects are functionally harmless, but have a small cost due to S3 capacity consumed. We
+may clean them up at some time in the future, but doing a ListObjectsv2 operation and cross
+referencing with the latest metadata to identify objects which are not referenced.
+
+Scrubbing will be done only by an attached pageserver (not some third party process), and deletions requested during scrub will go through the same
+validation as all other deletions: the attachment generation must be
+fresh. This avoids the possibility of a stale pageserver incorrectly
+thinking than an object written by a newer generation is stale, and deleting
+it.
+
+It is not strictly necessary that scrubbing be done by an attached
+pageserver: it could also be done externally. However, an external
+scrubber would still require the same validation procedure that
+a pageserver's deletion queue performs, before actually erasing
+objects.
+
+## Operational impact
+
+### Availability
+
+Coordination of generation numbers via the control plane introduce a dependency for certain
+operations:
+
+1. Starting new pageservers (or activating pageservers after a restart)
+2. Executing enqueued deletions
+3. Advertising updated `remote_consistent_lsn` to enable WAL trimming
+
+Item 1. would mean that some in-place restarts that previously would have resumed service even if the control plane were
+unavailable, will now not resume service to users until the control plane is available. We could
+avoid this by having a timeout on communication with the control plane, and after some timeout,
+resume service with the previous generation numbers (assuming this was persisted to disk). However,
+this is unlikely to be needed as the control plane is already an essential & highly available component. Also, having a node re-use an old generation number would complicate
+reasoning about the system, as it would break the invariant that a generation number uniquely identifies
+a tenant's attachment to a given pageserver _process_: it would merely identify the tenant's attachment
+to the pageserver _machine_ or its _on-disk-state_.
+
+Item 2. is a non-issue operationally: it's harmless to delay deletions, the only impact of objects pending deletion is
+the S3 capacity cost.
+
+Item 3. could be an issue if safekeepers are low on disk space and the control plane is unavailable for a long time. If this became an issue,
+we could adjust the safekeeper to delete segments from local disk sooner, as soon as they're uploaded to S3, rather than waiting for
+remote_consistent_lsn to advance.
+
+For a managed service, the general approach should be to make sure we are monitoring & respond fast enough
+that control plane outages are bounded in time.
+
+There is also the fact that control plane runs in a single region.
+The latency for distant regions is not a big concern for us because all request types added by this RFC are either infrequent or not in the way of the data path.
+However, we lose region isolation for the operations listed above.
+The ongoing work to split console and control will give us per-region control plane, and all operations in this RFC can be handled by these per-region control planes.
+With that in mind, we accept the trade-offs outlined in this paragraph.
+
+We will also implement an "escape hatch" config generation numbers, where in a major disaster outage,
+we may manually run pageservers with a hand-selected generation number, so that we can bring them online
+independently of a control plane.
+
+### Rollout
+
+Although there is coupling between components, we may deploy most of the new data plane components
+independently of the control plane: initially they can just use a static generation number.
+
+#### Phase 1
+
+The pageserver is deployed with some special config to:
+
+- Always act like everything is generation 1 and do not wait for a control plane issued generation on attach
+- Skip the places in deletion and remote_consistent_lsn updates where we would call into control plane
+
+#### Phase 2
+
+The control plane changes are deployed: control plane will now track and increment generation numbers.
+
+#### Phase 3
+
+The pageserver is deployed with its control-plane-dependent changes enabled: it will now require
+the control plane to service re-attach requests on startup, and handle generation
+validation requests.
+
+### On-disk backward compatibility
+
+Backward compatibility with existing data is straightforward:
+
+- When reading the index, we may assume that any layer whose metadata doesn't include
+  generations will have a path without generation suffix.
+- When locating the index file on attachment, we may use the "fallback" listing path
+  and if there is only an index without generation suffix, that is the one we load.
+
+It is not necessary to re-write existing layers: even new index files will be able
+to represent generation-less layers.
+
+### On-disk forward compatibility
+
+We will do a two phase rollout, probably over multiple releases because we will naturally
+have some of the read-side code ready before the overall functionality is ready:
+
+1. Deploy pageservers which understand the new index format and generation suffixes
+   in keys, but do not write objects with generation numbers in the keys.
+2. Deploy pageservers that write objects with generation numbers in the keys.
+
+Old pageservers will be oblivious to generation numbers. That means that they can't
+read objects with generation numbers in the name. This is why we must
+first step must deploy the ability to read, before the second step
+starts writing them.
+
+# Frequently Asked Questions
+
+## Why a generation _suffix_ rather than _prefix_?
+
+The choice is motivated by object listing, since one can list by prefix but not
+suffix.
+
+In [finding remote indices](#finding-the-remote-indices-for-timelines), we rely
+on being able to do a prefix listing for `<tenant>/<timeline>/index_part.json*`.
+That relies on the prefix listing.
+
+The converse case of using a generation prefix and listing by generation is
+not needed: one could imagine listing by generation while scrubbing (so that
+a particular generation's layers could be scrubbed), but this is not part
+of normal operations, and the [scrubber](#cleaning-up-orphan-objects-scrubbing) probably won't work that way anyway.
+
+## Wouldn't it be simpler to have a separate deletion queue per timeline?
+
+Functionally speaking, we could. That's how RemoteTimelineClient currently works,
+but this approach does not map well to a long-lived persistent queue with
+generation validation.
+
+Anything we do per-timeline generates tiny random I/O, on a pageserver with
+tens of thousands of timelines operating: to be ready for high scale, we should:
+
+- A) Amortize costs where we can (e.g. a shared deletion queue)
+- B) Expect to put tenants into a quiescent state while they're not
+  busy: i.e. we shouldn't keep a tenant alive to service its deletion queue.
+
+This was discussed in the [scope](#scope) part of the deletion queue section.
+
+# Appendix A: Examples of use in high availability/failover
+
+The generation numbers proposed in this RFC are adaptable to a variety of different
+failover scenarios and models. The sections below sketch how they would work in practice.
+
+### In-place restart of a pageserver
+
+"In-place" here means that the restart is done before any other element in the system
+has taken action in response to the node being down.
+
+- After restart, the node issues a re-attach request to the control plane, and
+  receives new generation numbers for all its attached tenants.
+- Tenants may be activated with the generation number in the re-attach response.
+- If any of its attachments were in fact stale (i.e. had be reassigned to another
+  node while this node was offline), then
+  - the re-attach response will inform the tenant about this by not including
+    the tenant of this by _not_ incrementing the generation for that attachment.
+  - This will implicitly block deletions in the tenant, but as an optimization
+    the pageserver should also proactively stop doing S3 uploads when it notices this stale-generation state.
+  - The control plane is expected to eventually detach this tenant from the
+    pageserver.
+
+If the control plane does not include a tenant in the re-attach response,
+but there is still local state for the tenant in the filesystem, the pageserver
+deletes the local state in response and does not load/active the tenant.
+See the [earlier section on pageserver startup](#pageserver-attachstartup-changes) for details.
+Control plane can use this mechanism to clean up a pageserver that has been
+down for so long that all its tenants were migrated away before it came back
+up again and asked for re-attach.
+
+### Failure of a pageserver
+
+In this context, read "failure" as the most ambiguous possible case, where
+a pageserver is unavailable to clients and control plane, but may still be executing and talking
+to S3.
+
+#### Case A: re-attachment to other nodes
+
+1. Let's say node 0 becomes unresponsive in a cluster of three nodes 0, 1, 2.
+2. Some external mechanism notices that the node is unavailable and initiates
+   movement of all tenants attached to that node to a different node according
+   to some distribution rule.
+   In this example, it would mean incrementing the generation
+   of all tenants that were attached to node 0, as each tenant's assigned pageserver changes.
+3. A tenant which is now attached to node 1 will _also_ still be attached to node
+   0, from the perspective of node 0. Node 0 will still be using its old generation,
+   node 1 will be using a newer generation.
+4. S3 writes will continue from nodes 0 and 1: there will be an index_part.json-00000001
+   \_and\* an index_part.json-00000002. Objects written under the old suffix
+   after the new attachment was created do not matter from the rest of the system's
+   perspective: the endpoints are reading from the new attachment location. Objects
+   written by node 0 are just garbage that can be cleaned up at leisure. Node 0 will
+   not do any deletions because it can't synchronize with control plane, or if it could,
+   its deletion queue processing would get errors for the validation requests.
+
+#### Case B: direct node replacement with same node_id and drive
+
+This is the scenario we would experience if running pageservers in some dynamic
+VM/container environment that would auto-replace a given node_id when it became
+unresponsive, with the node's storage supplied by some network block device
+that is attached to the replacement VM/container.
+
+1. Let's say node 0 fails, and there may be some other peers but they aren't relevant.
+2. Some external mechanism notices that the node is unavailable, and creates
+   a "new node 0" (Node 0b) which is a physically separate server. The original node 0
+   (Node 0a) may still be running, because we do not assume the environment fences nodes.
+3. On startup, node 0b re-attaches and gets higher generation numbers for
+   all tenants.
+4. S3 writes continue from nodes 0a and 0b, but the writes do not collide due to different
+   generation in the suffix, and the writes from node 0a are not visible to the rest
+   of the system because endpoints are reading only from node 0b.
+
+# Appendix B: interoperability with other features
+
+## Sharded Keyspace
+
+The design in this RFC maps neatly to a sharded keyspace design where subsets of the key space
+for a tenant are assigned to different pageservers:
+
+- the "unit of work" for attachments becomes something like a TenantShard rather than a Tenant
+- TenantShards get generation numbers just as Tenants do.
+- Write workload (ingest, compaction) for a tenant is spread out across pageservers via
+  TenantShards, but each TenantShard still has exactly one valid writer at a time.
+
+## Read replicas
+
+_This section is about a passive reader of S3 pageserver state, not a postgres
+read replica_
+
+For historical reads to LSNs below the remote persistent LSN, any node may act as a reader at any
+time: remote data is logically immutable data, and the use of deferred deletion in this RFC helps
+mitigate the fact that remote data is not _physically_ immutable (i.e. the actual data for a given
+page moves around as compaction happens).
+
+A read replica needs to be aware of generations in remote data in order to read the latest
+metadata (find the index_part.json with the latest suffix). It may either query this
+from the control plane, or find it with ListObjectsv2 request
+
+## Seamless migration
+
+To make tenant migration totally seamless, we will probably want to intentionally double-attach
+a tenant briefly, serving reads from the old node while waiting for the new node to be ready.
+
+This RFC enables that double-attachment: two nodes may be attached at the same time, with the migration destination
+having a higher generation number. The old node will be able to ingest and serve reads, but not
+do any deletes. The new node's attachment must also avoid deleting layers that the old node may
+still use. A new piece of state
+will be needed for this in the control plane's definition of an attachment.
+
+## Warm secondary locations
+
+To enable faster tenant movement after a pageserver is lost, we will probably want to spend some
+disk capacity on keeping standby locations populated with local disk data.
+
+There's no conflict between this RFC and that: implementing warm secondary locations on a per-tenant basis
+would be a separate change to the control plane to store standby location(s) for a tenant. Because
+the standbys do not write to S3, they do not need to be assigned generation numbers. When a tenant is
+re-attached to a standby location, that would increment the tenant attachment generation and this
+would work the same as any other attachment change, but with a warm cache.
+
+## Ephemeral node IDs
+
+This RFC intentionally avoids changing anything fundamental about how pageservers are identified
+and registered with the control plane, to avoid coupling the implementation of pageserver split
+brain protection with more fundamental changes in the management of the pageservers.
+
+Moving to ephemeral node IDs would provide an extra layer of
+resilience in the system, as it would prevent the control plane
+accidentally attaching to two physical nodes with the same
+generation, if somehow there were two physical nodes with
+the same node IDs (currently we rely on EC2 guarantees to
+eliminate this scenario). With ephemeral node IDs, there would be
+no possibility of that happening, no matter the behavior of
+underlying infrastructure.
+
+Nothing fundamental in the pageserver's handling of generations needs to change to handle ephemeral node IDs, since we hardly use the
+`node_id` anywhere. The `/re-attach` API would be extended
+to enable the pageserver to obtain its ephemeral ID, and provide
+some correlation identifier (e.g. EC instance ID), to help the
+control plane re-attach tenants to the same physical server that
+previously had them attached.
+
+
+# Content from file ../neon/docs/rfcs/026-pageserver-s3-mvcc.md:
+
+This is a copy from the [original Notion page](https://www.notion.so/neondatabase/Proposal-Pageserver-MVCC-S3-Storage-8a424c0c7ec5459e89d3e3f00e87657c?pvs=4), taken on 2023-08-16.
+
+This is for archival mostly.
+The RFC that we're likely to go with is https://github.com/neondatabase/neon/pull/4919.
+
+---
+
+# Proposal: Pageserver MVCC S3 Storage
+
+tl;dr: this proposal enables Control Plane to attach a tenant to a new pageserver without being 100% certain that it has been detached from the old pageserver. This enables us to automate failover if a pageserver dies (no human in the loop).
+
+# Problem Statement
+
+The current Neon architecture requires the Control Plane to guarantee that a tenant is only attached to one pageserver at a time. If a tenant is attached to multiple pageservers simultaneously, the pageservers will overwrite each other’s changes in S3 for that tenant, resulting in data loss for that tenant.
+
+The above imposes limitations on tenant relocation and future designs for high availability. For instance, Control Plane cannot relocate a tenant to another pageserver before it is 100% certain that the tenant is detached from the source pageserver. If the source pageserver is unresponsive, the tenant detach procedure cannot proceed, and Control Plane has no choice but to wait for either the source to become responsive again, or rely on a node failure detection mechanism to detect that the source pageserver is dead, and give permission to skip the detachment step. Either way, the tenant is unavailable for an extended period, and we have no means to improve it in the current architecture.
+
+Note that there is no 100% correct node failure detection mechanism, and even techniques to accelerate failure detection, such as ********************************shoot-the-other-node-in-the-head,******************************** have their limits. So, we currently rely on humans as node failure detectors: they get alerted via PagerDuty, assess the situation under high stress, and make the decision. If they make the wrong call, or the apparent dead pageserver somehow resurrects later, we’ll have data loss.
+
+Also, by relying on humans, we’re [incurring needless unscalable toil](https://sre.google/sre-book/eliminating-toil/): as Neon grows, pageserver failures will become more and more frequent because our fleet grows. Each instance will need quick response time to minimize downtime for the affected tenants, which implies higher toil, higher resulting attrition, and/or higher personnel cost.
+
+Lastly, there are foreseeable needs by operation and product such as zero-downtime relocation and automatic failover/HA. For such features, the ability to have a tenant purposefully or accidentally attached to more than one pageserver will greatly reduce risk of data loss, and improve availability.
+
+# High-Level Idea
+
+The core idea is to evolve the per-Tenant S3 state to an MVCC-like scheme, allowing multiple pageservers to operate on the same tenant S3 state without interference. To make changes to S3, pageservers acquire long-running transactions from Control Plane. After opening a transaction, Pageservers make PUTs directly against S3, but they keys include the transaction ID,  so overwrites never happen. Periodically, pageservers talk back to Control Plane to commit their transaction. This is where Control Plane enforces strict linearizability, favoring availability over work-conservation: commit is only granted if no transaction started after the one that’s requesting commit. Garbage collection is done through deadlists, and it’s simplified tremendously by above commit grant/reject policy.
+
+Minimal changes are required for safekeepers to allow WAL for a single timeline be consumed by more than one pageserver without premature truncation.
+
+**Above scheme makes it safe to attach tenants without a 100% correct node failure detection mechanism. Further, it makes it safe to interleave tenant-attachment to pageservers, unlocking new capabilities for (internal) product features:**
+
+- **Fast, Zero-Toil Failover on Network Partitions or Instance Failure**: if a pageserver is not reachable (network partition, hardware failure, overload) we want to spread its attached tenants to new pageservers to restore availability, within the range of *seconds*. We cannot afford gracious timeouts to maximize the probability that the unreachable pageserver has ceased writing to S3. This proposal enables us to attach the tenants to the replacement pageservers,  and redirect their computes, without having to wait for confirmation that the unreachable pageserver has ceased writing to S3.
+- **************************************Zero-Downtime Relocation:************************************** we want to be able to relocate tenants to different pageservers with minimized availability or a latency impact. This proposal enables us to attach the relocating Tenant to the destination Pageserver before detaching it from the source Pageserver. This can help minimize downtime because we can wait for the destination to catch up on WAL processing before redirecting Computes.
+
+# Design
+
+The core idea is to evolve the per-Tenant S3 state to a per-tenant MVCC-like scheme.
+
+To make S3 changes for a given tenant, Pageserver requests a transaction ID from control plane for that tenant. Without a transaction ID, Pageserver does not write to S3.
+
+Once Pageserver received a transaction ID it is allowed to produce new objects and overwrite objects created in this transaction. Pageserver is not allowed to delete any objects; instead, it marks the object as deleted by appending the key to the transaction’s deadlist for later deletion. Commits of transactions are serialized through Control Plane: when Pageserver wants to commit a transaction, it sends an RPC to Control Plane. Control Plane responds with a commit grant or commit reject message. Commit grant means that the transaction’s changes are now visible to subsequent transactions. Commit reject means that the transaction’s changes are not and never will be visible to another Pageserver instance, and the rejected Pageserver is to cease further activity on that tenant.
+
+## ****************************************************Commit grant/reject policy****************************************************
+
+For the purposes of Pageserver, we want **linearizability** of a tenant’s S3 state. Since our transactions are scoped per tenant, it is sufficient for linearizability to grant commit if and only if no other transaction has been started since the commit-requesting transaction started.
+
+For example, consider the case of a single tenant, attached to Pageserver A. Pageserver A has an open transaction but becomes unresponsive. Control Plane decides to relocate the tenant to another Pageserver B. It need *not* wait for A to be 100%-certainly down before B can start uploading to S3 for that tenant. Instead, B can start a new transaction right away, make progress, and get commit grants;  What about A? The transaction is RejectPending in Control Plane until A eventually becomes responsive again, tries to commit, gets a rejection, acknowledges it, and thus its transaction becomes RejectAcknowledge. If A is definitively dead, operator can also force-transition from state RejectPending to RejectAcknowledged. But critically, Control Plane doesn’t have for A’s transaction to become RejectAcknowledge before attaching the tenant to B.
+
+```mermaid
+sequenceDiagram
+
+   participant CP
+   participant A
+   participant S3
+   participant B
+
+	 CP -->> A: attach tenant
+   activate A
+	 A -->> CP: start txn
+	 CP -->> A: txn=23, last_committed_txn=22
+
+
+	 Note over CP,A: network partition
+	 CP --x A: heartbeat
+	 CP --x A: heartbeat
+
+	 Note over CP: relocate tenant to avoid downtime
+	 CP -->> B: attach tenant
+   activate B
+	 B -->> CP: start txn
+   Note over CP: mark A's txn 23 as RejectPending
+	 CP -->> B: txn=24, last-committed txn is 22
+	 B -->> S3: PUT X.layer.24<br>PUT index_part.json.24 referencing X.layer.24
+	 B -->> CP: request commit
+	 CP -->> B: granted
+   B -->> CP: start txn
+  CP -->> B: txn=25, last_committed_txn=22
+
+   A -->> S3: PUT Y.layer.23 <br> PUT index_part.json.23 referencing Y.layer.23
+  A --x CP: request commit
+	 A --x CP: request commit
+
+   Note over CP,A: partition is over
+
+   A -->> CP: request commit
+
+   Note over CP: most recently started txn is 25, not 23, reject
+
+   CP -->> A: reject
+   A -->> CP: acknowledge reject
+
+   Note over CP: mark A's txn 23 as RejectAcknowledged
+
+  deactivate A
+
+  B -->> S3: PUT 000-FFF_X-Y.layer.**************25**************<br>...
+
+  deactivate B
+
+
+```
+
+If a Pageserver gets a rejection to a commit request, it acknowledges rejection and cedes further S3 uploads for the tenant, until it receives a `/detach` request for the tenant (control plane has most likely attached the tenant to another pageserver in the meantime).
+
+In practice, Control Plane will probably extend the commit grant/reject schema above, taking into account the pageserver to which it last attached the tenant. In the above example, Control Plane could remember that the pageserver that is supposed to host the tenant is pageserver B, and reject start-txn and commit requests from pageserver A. It would also use such requests from A as a signal that A is reachable again, and retry the `/detach` .
+
+<aside>
+💡 A commit failure causes the tenant to become effectively `Broken`. Pageserver should persist this locally so it doesn’t bother ControlPlane for a new txn when Pageserver is restarted.
+
+</aside>
+
+## ********************Visibility********************
+
+We mentioned earlier that once a transaction commits, its changes are visible to subsequent transactions. But how does a given transaction know where to look for the data? There is no longer a single `index_part.json` per timeline, or a single `timelines/:timeline_id` prefix to look for; they’re all multi-versioned, suffixed by the txn number.
+The solution is: at transaction start, Pageserver receives the last-committed transaction ID from Control Plane (`last_committed_txn` in the diagram). last_commited_txn is the upper bound for what is visible for the current transaction. Control Plane keeps track of each open transaction’s last_committed_txn for purposes of garbage collection (see later paragraph).
+Equipped with last_committed_txn, Pageserver then discovers
+
+- the current index part of a timeline at `tenants/:tenant_id/timelines/:timeline_id/index_part.json.$last_committed_txn`. The `index_part.json.$last_committed_txn` has the exact same contents as the current architecture’s index_part.json, i.e. full list of layers.
+- the list of existent timelines as part of the `attach` RPC from CP;
+
+There is no other S3 state per tenant, so, that’s all the visibility required.
+An alternative to receiving the list of existent timelines from CP is to introduce a proper **********SetOfTimelines********** object in S3, and multi-version it just like above. For example, we could have a `tenants/:tenant_id/timelines.json.$txn` file that references `index_part.json.$last_committed_txn` . It can be added later if more separation between CP and PS is desired.
+
+So, the only MVCC’ed object types in this proposal are LayerFile and IndexPart (=individual timeline), but not the SetOfTimelines in a given tenant. Is this a problem? For example, the Pageserver’s garbage collection code needs to know the full set of timelines of a tenant. Otherwise it’ll make incorrect decisions. What if Pageserver A knows about timelines {R,S}, but another Pageserver B created an additional branch T, so, its set of timelines is {R,S,T}. Both pageservers will run GC code, and so, PS A may decide to delete a layer that’s still needed for branch T. Not a problem with this propsoal, because the effect of GC (i.e., layer deletion) is properly MVCC’ed.
+
+## Longevity Of Transactions & Availability
+
+Pageserver depends on Control Plane to start a new transaction. If ControlPlane is down, no new transactions can be started.
+
+Pageservers commit transactions based on a maximum amount of uncommitted changes that have accumulated in S3. A lower maximum increases dependence and load on ControlPlane which decreases availability. A higher maximum risks losing more work in the event of failover; the work will have to be re-done in a new transaction on the new node.
+
+Pageservers are persist the open txn id in local storage, so that they can resume the transaction after restart, without dependence on Control Plane.
+
+## **Operations**
+
+********PUTs:********
+
+- **layer files**
+    - current architecture: layer files are supposed to be write-once, but actually, there are edge-cases where we PUT the same layer file name twice; namely if we PUT the file to S3 but crash before uploading the index part that references it; then detach + attach, and re-run compaction, which is non-deterministic.
+    - this proposal: with transactions, we can now upload layers and index_part.json concurrently, just need to make sure layer file upload is done before we request txn commit.
+- **index part** upload: `index_part.json.$txn` may be created and subsequently overwritten multiple times in a transaction; it is an availability/work-loss trade-off how often to request a commit from CP.
+
+**************DELETEs**************: for deletion, we maintain a deadlist per transaction. It is located at `tenants/:tenant_id/deadlist/deadlist.json.$txn`. It is PUT once before the pageserver requests requests commit, and not changed after sending request to commit. An object created in the current txn need not (but can) be on the deadlist — it can be DELETEd immediately because it’s not visible to other transactions. An example use case would be an L0 layer that gets compacted within one transaction; or, if we ever start MVCC’ing the set of timelines of a tenant, a short-lived branch that is created & destroyed within one transaction.
+
+<aside>
+☝ **Deadlist Invariant:** if a an object is on a deadlist of transaction T, it is not referenced from anywhere else in the full state visible to T or any later started transaction > T.
+
+</aside>
+
+### Rationale For Deadlist.json
+
+Given that this proposal only MVCC’s layers and indexparts, one may ask why the deadlist isn’t part of indexpart. The reason is to not lose generality: the deadlist is just a list of keys; it is not necessary to understand the data format of the versioned object to process the deadlist. This is important for garbage collection / vacuuming, which we’ll come to in the next section.
+
+## Garbage Collection / Vacuuming
+
+After a transaction has reached reject-acknowledged state,  Control Plane initiates a garbage collection procedure for the aborted transaction.
+
+Control Plane is in the unique position about transaction states. Here is a sketch of the exact transaction states and what Control Plane keeps track of.
+
+```
+struct Tenant {
+  ...
+
+  txns: HashMap<TxnId, Transaction>,
+  // the most recently started txn's id; only most recently sarted can win
+  next_winner_txn: Option<TxnId>,
+}
+struct Transaction {
+  id: TxnId, // immutable
+  last_committed_txn: TxnId, // immutable; the most recent txn in state `Committed`
+                             // when self was started
+  pageserver_id: PageserverId,
+  state: enum {
+    Open,
+    Committed,
+    RejectPending,
+    RejectAcknowledged, // invariant: we know all S3 activity has ceded
+    GarbageCollected,
+  }
+}
+```
+
+Object creations & deletions by a rejected transaction have never been visible to other transactions. That is true for both RejectPending and RejectAcknowledged states. The difference is that, in RejectPending, the pageserver may still be uploading to S3, whereas in RejectAcknowledged, Control Plane can be certain that all S3 activity in the name of that transaction has ceded. So, once a transaction reaches state RejectAcknowledged state, it is safe to DELETE all objects created by that transaction, and discard the transaction’s deadlists.
+
+A transaction T in state Committed has subsequent transactions that may or may not reference the objects it created. None of the subsequent transaction can reference the objects on T’s deadlist, though, as per the Deadlist Invariant (see previous section).
+
+So, for garbage collection, we need to assess transactions in state Committed and RejectAcknowledged:
+
+- Commited: delete objects on the deadlist.
+    - We don’t need a LIST request here, the deadlist is sufficient. So, it’s really cheap.
+    - This is **not true MVCC garbage collection**; by deleting the objects on Committed transaction T ’s deadlist, we might delete data referenced by other transactions that were concurrent with T, i.e., they started while T was still open. However, the fact that T is committed means that the other transactions are RejectPending or RejectAcknowledged, so, they don’t matter. Pageservers executing these doomed RejectPending transactions must handle 404 for GETs gracefully, e.g., by trying to commit txn so they observe the rejection they’re destined to get anyways. 404’s for RejectAcknowledged is handled below.
+- RejectAcknowledged: delete all objects created in that txn, and discard deadlists.
+    - 404s / object-already-deleted type messages must be expected because of Committed garbage collection (see above)
+    - How to get this list of objects created in a txn? Open but solvable design question; Ideas:
+        - **Brute force**: within tenant prefix, search for all keys ending in `.$txn` and delete them.
+        - **WAL for PUTs**: before a txn PUTs an object, it logs to S3, or some other equivalently durable storage, that it’s going to do it. If we log to S3, this means we have to do an additional WAL PUT per “readl” PUT.
+        - ******************************LIST with reorg’ed S3 layout (preferred one right now):****************************** layout S3 key space such that `$txn` comes first, i.e., `tenants/:tenant_id/$txn/timelines/:timeline_id/*.json.$txn` . That way, when we need to GC a RejectAcknowledged txn, we just LIST the entire `tenants/:tenant_id/$txn` prefix and delete it. The cost of GC for RejectAcknowledged transactions is thus proportional to the number of objects created in that transaction.
+
+## Branches
+
+This proposal only MVCC’s layer files and and index_part.json, but leaves the tenant object not-MVCCed. We argued earlier that it’s fine to ignore this for now, because
+
+1. Control Plane can act as source-of-truth for the set of timelines, and
+2. The only operation that makes decision based on “set of timelines” is GC, which in turn only does layer deletions, and layer deletions ***are*** properly MVCC’ed.
+
+Now that we’ve introduced garbage collection, let’s elaborate a little more on (2). Recall our example from earlier: Pageserver A knows about timelines {R,S}, but another Pageserver B created an additional branch T, so, its set of timelines is {R,S,T}. Both pageservers will run GC code, and so, PS A may decide to delete a layer that’s still needed for branch T.
+
+How does the MVCC’ing of layer files protect us here? If A decides to delete that layer, it’s just on A’s transaction’s deadlist, but still present in S3 and usable by B. If A commits first, B won’t be able to commit and the layers in timeline T will be vacuumed. If B commits first, A’s deadlist is discarded and the layer continues to exist.
+
+## Safekeeper Changes
+
+We need to teach the safekeepers that there can be multiple pageservers requesting WAL for the same timeline, in order to prevent premature WAL truncation.
+
+In the current architecture, the Safekeeper service currently assumes only one Pageserver and is allowed to prune WAL older than that Pageserver’s `remote_consistent_lsn`. Safekeeper currently learns the `remote_consistent_lsn` through the walreceiver protocol.
+
+So, if we have a tenant attached to two pageservers at the same time, they will both try to stream WAL and the Safekeeper will get confused about which connection’s `remote_consistent_lsn` to use as a basis for WAL pruning.
+
+What do we need to change to make it work? We need to make sure that the Safekeepers only prune WAL up to the `remote_consistent_lsn` of the last-committed transaction.
+
+The straight-forward way to get it is to re-design WAL pruning as follows:
+
+1. Pageserver reports remote_consistent_lsn as part of transaction commit to Control Plane.
+2. Control Plane makes sure transaction state update is persisted.
+3. Control Plane (asynchronous to transaction commit) reconciles with Safekeepers to ensure WAL pruning happens.
+
+The above requires non-trivial changes, but, in the light of other planned projects such as restore-tenant-from-safekeeper-wal-backups, I think Control Plane will need to get involved in WAL pruning anyways.
+
+# How This Proposal Unlocks Future Features
+
+Let us revisit the example from the introduction where we were thinking about handling network partitions. Network partitions need to be solved first, because they’re unavoidable in distributed systems. We did that. Now let’s see how we can solve actual product problems:
+
+## **Fast, Zero-Toil Failover on Network Partitions or Instance Failure**
+
+The “Problem Statement” section outlined the current architecture’s problems with regards to network partitions or instance failure: it requires a 100% correct node-dead detector to make decisions, which doesn’t exist in reality. We rely instead on human toil: an oncall engineer has to inspect the situation and make a decision, which may be incorrect and in any case take time in the order of minutes, which means equivalent downtime for users.
+
+With this proposal, automatic failover for pageservers is trivial:
+
+If a pageserver is unresponsive from Control Plane’s / Compute’s perspective, Control Plane does the following:
+
+- attach all tenants of the unresponsive pageserver to new pageservers
+- switch over these tenants’ computes immediately;
+
+At this point, availability is restored and user pain relieved.
+
+What’s left is to somehow close the doomed transaction of the unresponsive pageserver, so that it beomes RejectAcknowledged, and GC can make progress. Since S3 is cheap, we can afford to wait a really long time here, especially if we put a soft bound on the amount of data a transaction may produce before it must commit. Procedure:
+
+1. Ensure the unresponsive pageserver is taken out of rotation for new attachments. That probably should happen as part of the routine above.
+2. Make a human operator investigate decide what to do (next morning, NO ONCALL ALERT):
+    1. Inspect the instance, investigate logs, understand root cause.
+    2. Try to re-establish connectivity between pageserver and Control Plane so that pageserver can retry commits, get rejected, ack rejection ⇒ enable GC.
+    3. Use below procedure to decomission pageserver.
+
+### Decomissioning A Pageserver (Dead or Alive-but-Unrespsonive)
+
+The solution, enabled by this proposal:
+
+1. Ensure that pageserver’s S3 credentials are revoked so that it cannot make new uploads, which wouldn’t be tracked anywhere.
+2. Let enough time pass for the S3 credential revocation to propagate. Amazon doesn’t give a guarantee here. As stated earlier, we can easily afford to wait here.
+3. Mark all Open and RejectPending transactions of that pageserver as RejectAcknowledge.
+
+Revocation of the S3 credentials is required so that, once we transition all the transactions of that pageserver to RejectAcknowledge, once garbage-collection pass is guaranteed to delete all objects that will ever exist for that pageserver. That way, we need not check *****GarbageCollected***** transactions every again.
+
+## Workflow: Zero-Downtime Relocation
+
+With zero-downtime relocation, the goal is to have the target pageserver warmed up, i.e., at the same `last_record_lsn` as the source pageserver, before switching over Computes from source to target pageserver.
+
+With this proposal, it works like so:
+
+1. Grant source pageserver its last open transaction. This one is doomed to be rejected later, unless the relocation fails.
+2. Grant target pageserver its first open transaction.
+3. Have target pageserver catch up on WAL, streaming from last-committed-txn’s remote_consistent_lsn onwards.
+4. Once target pageserver reports `last_record_lsn` close enough to source pageserver, target pageserver requests commit.
+5. Drain compute traffic from source to target pageserver. (Source can still answer requests until it tries to commit and gets reject, so, this will be quite smooth).
+
+Note that as soon as we complete step (4), the source pageserver’s transaction is doomed to be rejected later. Conversely, if the target can’t catch up fast enough, the source will make a transaction commit earlier. This will generally happen if there is a lot of write traffic coming in. The design space to make thing smooth here is large, but well explored in other areas of computing, e.g., VM live migration. We have all the important policy levers at hand, e.g.,
+
+- delaying source commits if we see target making progress
+- slowing down source consumption (need some signalling mechanism for it)
+- slowing down compute wal generation
+- …
+
+It doesn’t really matter, what’s important is that two pageservers can overlap.
+
+# Additional Trade-Offs / Remarks Brought Up During Peer Review
+
+This proposal was read by and discussed @Stas and @Dmitry Rodionov prior to publishing it with the broader team. (This does not mean they endorse this proposal!).
+
+Issues that we discussed:
+
+1. **Frequency of transactions:** If even idle tenants commit every 10min or so, that’s quite a lot of load on Control Plane. Can we minimize it by Equating Transaction Commit Period to Attachment Period? I.e. start txn on attach, commit on detach?
+    1. Would be nice, but, if a tenant is attached for 1 month, then PS dies, we lose 1 month of work.
+    2. ⇒ my solution to this problem: Adjusted this proposal to make transaction commit frequency proportional to amount of uncommitted data.
+        1. It’s ok to spend resources on active users, they pay us money to do it!
+        2. The amount of work per transaction is minimal.
+            1. In current Control Plane, it’s a small database transaction that is super unlikely to conflict with other transactions.
+            2. I have very little concerns about scalability of the commit workload on CP side because it's trivially horizontally scalable by sharding by tenant.
+        3. There's no super stringent availability requirement on control plane; if a txn can't commit because it can't reach the CP, PS can continue & retry in the background, speculating that it's CP downtime and not PS-partitioned-off scenario.
+        4. Without stringent availability requirement, there's flexibility for future changes to CP-side-implementation.
+2. ************************************************Does this proposal address mirroring / no-performance-degradation failover ?************************************************
+    1. No it doesn’t. It only provides the building block for attaching a tenant to a new pageserver without having to worry that the tenant is detached on the old pageserver.
+    2. A simple scheme to build no-performance-degradation failover on top of this proposal is to have an asynchronous read-only replica of a tenant on another pageserver in the same region.
+    3. Another more ambitious scheme to get no-performance-degradation would be [One-Pager: Layer File Spreading (Christian)](https://www.notion.so/One-Pager-Layer-File-Spreading-Christian-eb6b64182a214e11b3fceceee688d843?pvs=21); this proposal would be used in layer file spreading for risk-free automation of TenantLeader failover, which hasn’t been addressed Ithere.
+    4. In any way, failover would restart from an older S3 state, and need to re-ingest WAL before being able to server recently written pages.
+        1. Is that a show-stopper? I think not.
+        2. Is it suboptimal? Absolutely: if a pageserver instance fails, all its tenants will be distributed among the remaining pageservers (OK), and all these tenants will ask the safekeepers for WAL at the same time (BAD). So, pageserver instance failure will cause a load spike in safekeepers.
+            1. Personally I think that’s an OK trade-off to make.
+            2. There are countless options to avoid / mitigate the load spike. E.g., pro-actively streaming WAL to the standby read-only replica.
+
+3. ********************************************Does this proposal allow multiple writers for a tenant?********************************************
+    1. In abstract terms, this proposal provides a linearized history for a given S3 prefix.
+    2. In concrete terms, this proposal provides a linearized history per tenant.
+    3. There can be multiple writers at a given time, but only one of them will win to become part of the linearized history.
+4. ************************************************************************************Alternative ideas mentioned during meetings that should be turned into a written prospoal like this one:************************************************************************************
+    1. @Dmitry Rodionov : having linearized storage of index_part.json in some database that allows serializable transactions / atomic compare-and-swap PUT
+    2. @Dmitry Rodionov :
+    3. @Stas : something like this scheme, but somehow find a way to equate attachment duration with transaction duration, without losing work if pageserver dies months after attachment.
+
+
+# Content from file ../neon/docs/rfcs/027-crash-consistent-layer-map-through-index-part.md:
+
+
+# Crash-Consistent Layer Map Updates By Leveraging `index_part.json`
+
+* Created on: Aug 23, 2023
+* Author: Christian Schwarz
+
+## Summary
+
+This RFC describes a simple scheme to make layer map updates crash consistent by leveraging the `index_part.json` in remote storage.
+Without such a mechanism, crashes can induce certain edge cases in which broadly held assumptions about system invariants don't hold.
+
+## Motivation
+
+### Background
+
+We can currently easily make complex, atomic updates to the layer map by means of an RwLock.
+If we crash or restart pageserver, we reconstruct the layer map from:
+1. local timeline directory contents
+2. remote `index_part.json` contents.
+
+The function that is responsible for this is called `Timeline::load_layer_map()`.
+The reconciliation process's behavior is the following:
+* local-only files will become part of the layer map as local-only layers and rescheduled for upload
+* For a file name that, by its name, is present locally and in the remote `index_part.json`, but where the local file has a different size (future: checksum) than the remote file, we will delete the local file and leave the remote file as a `RemoteLayer` in the layer map.
+
+### The Problem
+
+There are are cases where we need to make an atomic update to the layer map that involves **more than one layer**.
+The best example is compaction, where we need to insert the L1 layers generated from the L0 layers, and remove the L0 layers.
+As stated above, making the update to the layer map in atomic way is trivial.
+But, there is no system call API to make an atomic update to a directory that involves more than one file rename and deletion.
+Currently, we issue the system calls one by one and hope we don't crash.
+
+What happens if we crash and restart in the middle of that system call sequence?
+We will reconstruct the layer map according to the reconciliation process, taking as input whatever transitory state the timeline directory ended up in.
+
+We cannot roll back or complete the timeline directory update during which we crashed, because we keep no record of the changes we plan to make.
+
+### Problem's Implications For Compaction
+
+The implications of the above are primarily problematic for compaction.
+Specifically, the part of it that compacts L0 layers into L1 layers.
+
+Remember that compaction takes a set of L0 layers and reshuffles the delta records in them into L1 layer files.
+Once the L1 layer files are written to disk, it atomically removes the L0 layers from the layer map and adds the L1 layers to the layer map.
+It then deletes the L0 layers locally, and schedules an upload of the L1 layers and and updated index part.
+
+If we crash before deleting L0s, but after writing out L1s, the next compaction after restart will re-digest the L0s and produce new L1s.
+This means the compaction after restart will **overwrite** the previously written L1s.
+Currently we also schedule an S3 upload of the overwritten L1.
+
+If the compaction algorithm doesn't change between the two compaction runs, is deterministic, and uses the same set of L0s as input, then the second run will produce identical L1s and the overwrites will go unnoticed.
+
+*However*:
+1. the file size of the overwritten L1s may not be identical, and
+2. the bit pattern of the overwritten L1s may not be identical, and,
+3. in the future, we may want to make the compaction code non-determinstic, influenced by past access patterns, or otherwise change it, resulting in L1 overwrites with a different set of delta records than before the overwrite
+
+The items above are a problem for the [split-brain protection RFC](https://github.com/neondatabase/neon/pull/4919) because it assumes that layer files in S3 are only ever deleted, but never replaced (overPUTted).
+
+For example, if an unresponsive node A becomes active again after control plane has relocated the tenant to a new node B, the node A may overwrite some L1s.
+But node B based its world view on the version of node A's `index_part.json` from _before_ the overwrite.
+That earlier `index_part.json`` contained the file size of the pre-overwrite L1.
+If the overwritten L1 has a different file size, node B will refuse to read data from the overwritten L1.
+Effectively, the data in the L1 has become inaccessible to node B.
+If node B already uploaded an index part itself, all subsequent attachments will use node B's index part, and run into the same probem.
+
+If we ever introduce checksums instead of checking just the file size, then a mismatching bit pattern (2) will cause similar problems.
+
+In case of (1) and (2), where we know that the logical content of the layers is still the same, we can recover by manually patching the `index_part.json` of the new node to the overwritten L1's file size / checksum.
+
+But if (3) ever happens, the logical content may be different, and, we could have truly lost data.
+
+Given the above considerations, we should avoid making correctness of split-brain protection dependent on overwrites preserving _logical_ layer file contents.
+**It is a much cleaner separation of concerns to require that layer files are truly immutable in S3, i.e., PUT once and then only DELETEd, never overwritten (overPUTted).**
+
+## Design
+
+Instead of reconciling a layer map from local timeline directory contents and remote index part, this RFC proposes to view the remote index part as authoritative during timeline load.
+Local layer files will be recognized if they match what's listed in remote index part, and removed otherwise.
+
+During **timeline load**, the only thing that matters is the remote index part content.
+Essentially, timeline load becomes much like attach, except we don't need to prefix-list the remote timelines.
+The local timeline dir's `metadata` file does not matter.
+The layer files in the local timeline dir are seen as a nice-to-have cache of layer files that are in the remote index part.
+Any layer files in the local timeline dir that aren't in the remote index part are removed during startup.
+The `Timeline::load_layer_map()` no longer "merges" local timeline dir contents with the remote index part.
+Instead, it treats the remote index part as the authoritative layer map.
+If the local timeline dir contains a layer that is in the remote index part, that's nice, and we'll re-use it if file size (and in the future, check sum) match what's stated in the index part.
+If it doesn't match, we remove the file from the local timeline dir.
+
+After load, **at runtime**, nothing changes compared to what we did before this RFC.
+The procedure for single- and multi-object changes is reproduced here for reference:
+* For any new layers that the change adds:
+  * Write them to a temporary location.
+  * While holding layer map lock:
+    * Move them to the final location.
+    * Insert into layer map.
+* Make the S3 changes.
+  We won't reproduce the remote timeline client method calls here because these are subject to change.
+  Instead we reproduce the sequence of s3 changes that must result for a given single-/multi-object change:
+    * PUT layer files inserted by the change.
+    * PUT an index part that has insertions and deletions of the change.
+    * DELETE the layer files that are deleted by the change.
+
+Note that it is safe for the DELETE to be deferred arbitrarily.
+* If it never happens, we leak the object, but, that's not a correctness concern.
+* As of #4938, we don't schedule the remote timeline client operation for deletion immediately, but, only when we drop the `LayerInner`.
+* With the [split-brain protection RFC](https://github.com/neondatabase/neon/pull/4919), the deletions will be written to deletion queue for processing when it's safe to do so (see the RFC for details).
+
+## How This Solves The Problem
+
+If we crash before we've finished the S3 changes, then timeline load will reset layer map to the state that's in the S3 index part.
+The S3 change sequence above is obviously crash-consistent.
+If we crash before the index part PUT, then we leak the inserted layer files to S3.
+If we crash after the index part PUT, we leak the to-be-DELETEd layer files to S3.
+Leaking is fine, it's a pre-existing condition and not addressed in this RFC.
+
+Multi-object changes that previously created and removed files in timeline dir are now atomic because the layer map updates are atomic and crash consistent:
+* atomic layer map update at runtime, currently by using an RwLock in write mode
+* atomic `index_part.json` update in S3, as per guarantee that S3 PUT is atomic
+* local timeline dir state:
+  * irrelevant for layer map content => irrelevant for atomic updates / crash consistency
+  * if we crash after index part PUT, local layer files will be used, so, no on-demand downloads neede for them
+  * if we crash before index part PUT, local layer files will be deleted
+
+## Trade-Offs
+
+### Fundamental
+
+If we crash before finishing the index part PUT, we lose all the work that hasn't reached the S3 `index_part.json`:
+* wal ingest: we lose not-yet-uploaded L0s; load on the **safekeepers** + work for pageserver
+* compaction: we lose the entire compaction iteration work; need to re-do it again
+* gc: no change to what we have today
+
+If the work is still deemed necessary after restart, the restarted restarted pageserver will re-do this work.
+The amount of work to be re-do is capped to the lag of S3 changes to the local changes.
+Assuming upload queue allows for unlimited queue depth (that's what it does today), this means:
+* on-demand downloads that were needed to do the work: are likely still present, not lost
+* wal ingest: currently unbounded
+* L0 => L1 compaction: CPU time proportional to `O(sum(L0 size))` and upload work proportional to `O()`
+  * Compaction threshold is 10 L0s and each L0 can be up to 256M in size. Target size for L1 is 128M.
+  * In practive, most L0s are tiny due to 10minute `DEFAULT_CHECKPOINT_TIMEOUT`.
+* image layer generation: CPU time `O(sum(input data))` + upload work `O(sum(new image layer size))`
+  * I have no intuition how expensive / long-running it is in reality.
+* gc: `update_gc_info`` work (not substantial, AFAIK)
+
+To limit the amount of lost upload work, and ingest work, we can limit the upload queue depth (see suggestions in the next sub-section).
+However, to limit the amount of lost CPU work, we would need a way to make make the compaction/image-layer-generation algorithms interruptible & resumable.
+We aren't there yet, the need for it is tracked by ([#4580](https://github.com/neondatabase/neon/issues/4580)).
+However, this RFC is not constraining the design space either.
+
+### Practical
+
+#### Pageserver Restarts
+
+Pageserver crashes are very rare ; it would likely be acceptable to re-do the lost work in that case.
+However, regular pageserver restart happen frequently, e.g., during weekly deploys.
+
+In general, pageserver restart faces the problem of tenants that "take too long" to shut down.
+They are a problem because other tenants that shut down quickly are unavailble while we wait for the slow tenants to shut down.
+We currently allot 10 seconds for graceful shutdown until we SIGKILL the pageserver process (as per `pageserver.service` unit file).
+A longer budget would expose tenants that are done early to a longer downtime.
+A short budget would risk throwing away more work that'd have to be re-done after restart.
+
+In the context of this RFC, killing the process would mean losing the work that hasn't made it to S3.
+We can mitigate this problem as follows:
+0. initially, by accepting that we need to do the work again
+1. short-term, introducing measures to cap the amount of in-flight work:
+
+   - cap upload queue length, use backpressure to slow down compaction
+   - disabling compaction/image-layer-generation X minutes before `systemctl restart pageserver`
+   - introducing a read-only shutdown state for tenants that are fast to shut down;
+     that state would be equivalent to the state of a tenant in hot standby / readonly mode.
+
+2. mid term, by not restarting pageserver in place, but using [*seamless tenant migration*](https://github.com/neondatabase/neon/pull/5029) to drain a pageserver's tenants before we restart it.
+
+#### `disk_consistent_lsn` can go backwards
+
+`disk_consistent_lsn` can go backwards across restarts if we crash before we've finished the index part PUT.
+Nobody should care about it, because the only thing that matters is `remote_consistent_lsn`.
+Compute certainly doesn't care about `disk_consistent_lsn`.
+
+
+## Side-Effects Of This Design
+
+* local `metadata` is basically reduced to a cache of which timelines exist for this tenant; i.e., we can avoid a `ListObjects` requests for a tenant's timelines during tenant load.
+
+## Limitations
+
+Multi-object changes that span multiple timelines aren't covered by this RFC.
+That's fine because we currently don't need them, as evidenced by the absence
+of a Pageserver operation that holds multiple timelines' layer map lock at a time.
+
+## Impacted components
+
+Primarily pageservers.
+
+Safekeepers will experience more load when we need to re-ingest WAL because we've thrown away work.
+No changes to safekeepers are needed.
+
+## Alternatives considered
+
+### Alternative 1: WAL
+
+We could have a local WAL for timeline dir changes, as proposed here https://github.com/neondatabase/neon/issues/4418 and partially implemented here https://github.com/neondatabase/neon/pull/4422 .
+The WAL would be used to
+1. make multi-object changes atomic
+2. replace `reconcile_with_remote()` reconciliation: scheduling of layer upload would be part of WAL replay.
+
+The WAL is appealing in a local-first world, but, it's much more complex than the design described above:
+* New on-disk state to get right.
+* Forward- and backward-compatibility development costs in the future.
+
+### Alternative 2: Flow Everything Through `index_part.json`
+
+We could have gone to the other extreme and **only** update the layer map whenever we've PUT `index_part.json`.
+I.e., layer map would always be the last-persisted S3 state.
+That's axiomatically beautiful, not least because it fully separates the layer file production and consumption path (=> [layer file spreading proposal](https://www.notion.so/neondatabase/One-Pager-Layer-File-Spreading-Christian-eb6b64182a214e11b3fceceee688d843?pvs=4)).
+And it might make hot standbys / read-only pageservers less of a special case in the future.
+
+But, I have some uncertainties with regard to WAL ingestion, because it needs to be able to do some reads for the logical size feedback to safekeepers.
+
+And it's silly that we wouldn't be able to use the results of compaction or image layer generation before we're done with the upload.
+
+Lastly, a temporarily clogged-up upload queue (e.g. S3 is down) shouldn't immediately render ingestion unavailable.
+
+### Alternative 3: Sequence Numbers For Layers
+
+Instead of what's proposed in this RFC, we could use unique numbers to identify layer files:
+
+```
+# before
+tenants/$tenant/timelines/$timeline/$key_and_lsn_range
+# after
+tenants/$tenant/timelines/$timeline/$layer_file_id-$key_and_lsn_range
+```
+
+To guarantee uniqueness, the unqiue number is a sequence number, stored in `index_part.json`.
+
+This alternative does not solve atomic layer map updates.
+In our crash-during-compaction scenario above, the compaction run after the crash will not overwrite the L1s, but write/PUT new files with new sequence numbers.
+In fact, this alternative makes it worse because the data is now duplicated in the not-overwritten and overwritten L1 layer files.
+We'd need to write a deduplication pass that checks if perfectly overlapping layers have identical contents.
+
+However, this alternative is appealing because it systematically prevents overwrites at a lower level than this RFC.
+
+So, this alternative is sufficient for the needs of the split-brain safety RFC (immutable layer files locally and in S3).
+But it doesn't solve the problems with crash-during-compaction outlined earlier in this RFC, and in fact, makes it much more accute.
+The proposed design in this RFC addresses both.
+
+So, if this alternative sounds appealing, we should implement the proposal in this RFC first, then implement this alternative on top.
+That way, we avoid a phase where the crash-during-compaction problem is accute.
+
+## Related issues
+
+- https://github.com/neondatabase/neon/issues/4749
+- https://github.com/neondatabase/neon/issues/4418
+  - https://github.com/neondatabase/neon/pull/4422
+- https://github.com/neondatabase/neon/issues/5077
+- https://github.com/neondatabase/neon/issues/4088
+  - (re)resolutions:
+    - https://github.com/neondatabase/neon/pull/4696
+    - https://github.com/neondatabase/neon/pull/4094
+      - https://neondb.slack.com/archives/C033QLM5P7D/p1682519017949719
+
+Note that the test case introduced in https://github.com/neondatabase/neon/pull/4696/files#diff-13114949d1deb49ae394405d4c49558adad91150ba8a34004133653a8a5aeb76 will produce L1s with the same logical content, but, as outlined in the last paragraph of the _Problem Statement_ section above, we don't want to make that  assumption in order to fix the problem.
+
+
+## Implementation Plan
+
+1. Remove support for `remote_storage=None`, because we now rely on the existence of an index part.
+
+    - The nasty part here is to fix all the tests that fiddle with the local timeline directory.
+      Possibly they are just irrelevant with this change, but, each case will require inspection.
+
+2. Implement the design above.
+
+    - Initially, ship without the mitigations for restart and accept we will do some work twice.
+    - Measure the impact and implement one of the mitigations.
+
+
+
+# Content from file ../neon/docs/rfcs/028-pageserver-migration.md:
+
+# Seamless tenant migration
+
+- Author: john@neon.tech
+- Created on 2023-08-11
+- Implemented on ..
+
+## Summary
+
+The preceding [generation numbers RFC](025-generation-numbers.md) may be thought of as "making tenant
+migration safe". Following that,
+this RFC is about how those migrations are to be done:
+
+1. Seamlessly (without interruption to client availability)
+2. Quickly (enabling faster operations)
+3. Efficiently (minimizing I/O and $ cost)
+
+These points are in priority order: if we have to sacrifice
+efficiency to make a migration seamless for clients, we will
+do so, etc.
+
+This is accomplished by introducing two high level changes:
+
+- A dual-attached state for tenants, used in a control-plane-orchestrated
+  migration procedure that preserves availability during a migration.
+- Warm secondary locations for tenants, where on-disk content is primed
+  for a fast migration of the tenant from its current attachment to this
+  secondary location.
+
+## Motivation
+
+Migrating tenants between pageservers is essential to operating a service
+at scale, in several contexts:
+
+1. Responding to a pageserver node failure by migrating tenants to other pageservers
+2. Balancing load and capacity across pageservers, for example when a user expands their
+   database and they need to migrate to a pageserver with more capacity.
+3. Restarting pageservers for upgrades and maintenance
+
+The current situation steps for migration are:
+
+- detach from old node; skip if old node is dead; (the [skip part is still WIP](https://github.com/neondatabase/cloud/issues/5426)).
+- attach to new node
+- re-configure endpoints to use the new node
+
+Once [generation numbers](025-generation-numbers.md) are implemented,
+the detach step is no longer critical for correctness. So, we can
+
+- attach to a new node,
+- re-configure endpoints to use the new node, and then
+- detach from the old node.
+
+However, this still does not meet our seamless/fast/efficient goals:
+
+- Not fast: The new node will have to download potentially large amounts
+  of data from S3, which may take many minutes.
+- Not seamless: If we attach to a new pageserver before detaching an old one,
+  the new one might delete some objects that interrupt availability of reads on the old one.
+- Not efficient: the old pageserver will continue uploading
+  S3 content during the migration that will never be read.
+
+The user expectations for availability are:
+
+- For planned maintenance, there should be zero availability
+  gap. This expectation is fulfilled by this RFC.
+- For unplanned changes (e.g. node failures), there should be
+  minimal availability gap. This RFC provides the _mechanism_
+  to fail over quickly, but does not provide the failure _detection_
+  nor failover _policy_.
+
+## Non Goals
+
+- Defining service tiers with different storage strategies: the same
+  level of HA & overhead will apply to all tenants. This doesn't rule out
+  adding such tiers in future.
+- Enabling pageserver failover in the absence of a control plane: the control
+  plane will remain the source of truth for what should be attached where.
+- Totally avoiding availability gaps on unplanned migrations during
+  a failure (we expect a small, bounded window of
+  read unavailability of very recent LSNs)
+- Workload balancing: this RFC defines the mechanism for moving tenants
+  around, not the higher level logic for deciding who goes where.
+- Defining all possible configuration flows for tenants: the migration process
+  defined in this RFC demonstrates the sufficiency of the pageserver API, but
+  is not the only kind of configuration change the control plane will ever do.
+  The APIs defined here should let the control plane move tenants around in
+  whatever way is needed while preserving data safety and read availability.
+
+## Impacted components
+
+Pageserver, control plane
+
+## Terminology
+
+- **Attachment**: a tenant is _attached_ to a pageserver if it has
+  been issued a generation number, and is running an instance of
+  the `Tenant` type, ingesting the WAL, and available to serve
+  page reads.
+- **Location**: locations are a superset of attachments. A location
+  is a combination of a tenant and a pageserver. We may _attach_ at a _location_.
+
+- **Secondary location**: a location which is not currently attached.
+- **Warm secondary location**: a location which is not currently attached, but is endeavoring to maintain a warm local cache of layers. We avoid calling this a _warm standby_ to avoid confusion with similar postgres features.
+
+## Implementation (high level)
+
+### Warm secondary locations
+
+To enable faster migrations, we will identify at least one _secondary location_
+for each tenant. This secondary location will keep a warm cache of layers
+for the tenant, so that if it is later attached, it can catch up with the
+latest LSN quickly: rather than downloading everything, it only has to replay
+the recent part of the WAL to advance from the remote_consistent_offset to the
+most recent LSN in the WAL.
+
+The control plane is responsible for selecting secondary locations, and
+calling into pageservers to configure tenants into a secondary mode at this
+new location, as well as attaching the tenant in its existing primary location.
+
+The attached pageserver for a tenant will publish a [layer heatmap](#layer-heatmap)
+to advise secondaries of which layers should be downloaded.
+
+### Location modes
+
+Currently, we consider a tenant to be in one of two states on a pageserver:
+
+- Attached: active `Tenant` object, and layers on local disk
+- Detached: no layers on local disk, no runtime state.
+
+We will extend this with finer-grained modes, whose purpose will become
+clear in later sections:
+
+- **AttachedSingle**: equivalent the existing attached state.
+- **AttachedMulti**: like AttachedSingle, holds an up to date generation, but
+  does not do deletions.
+- **AttachedStale**: like AttachedSingle, holds a stale generation,
+  do not do any remote storage operations.
+- **Secondary**: keep local state on disk, periodically update from S3.
+- **Detached**: equivalent to existing detached state.
+
+To control these finer grained states, a new pageserver API endpoint will be added.
+
+### Cutover procedure
+
+Define old location and new location as "Node A" and "Node B". Consider
+the case where both nodes are available, and Node B was previously configured
+as a secondary location for the tenant we are migrating.
+
+The cutover procedure is orchestrated by the control plane, calling into
+the pageservers' APIs:
+
+1. Call to Node A requesting it to flush to S3 and enter AttachedStale state
+2. Increment generation, and call to Node B requesting it to enter AttachedMulti
+   state with the new generation.
+3. Call to Node B, requesting it to download the latest hot layers from remote storage,
+   according to the latest heatmap flushed by Node A.
+4. Wait for Node B's WAL ingestion to catch up with node A's
+5. Update endpoints to use node B instead of node A
+6. Call to node B requesting it to enter state AttachedSingle.
+7. Call to node A requesting it to enter state Secondary
+
+The following table summarizes how the state of the system advances:
+
+|     Step      |     Node A     |     Node B     | Node used by endpoints |
+| :-----------: | :------------: | :------------: | :--------------------: |
+| 1 (_initial_) | AttachedSingle |   Secondary    |           A            |
+|       2       | AttachedStale  | AttachedMulti  |           A            |
+|       3       | AttachedStale  | AttachedMulti  |           A            |
+|       4       | AttachedStale  | AttachedMulti  |           A            |
+| 5 (_cutover_) | AttachedStale  | AttachedMulti  |           B            |
+|       6       | AttachedStale  | AttachedSingle |           B            |
+|  7 (_final_)  |   Secondary    | AttachedSingle |           B            |
+
+The procedure described for a clean handover from a live node to a secondary
+is also used for failure cases and for migrations to a location that is not
+configured as a secondary, by simply skipping irrelevant steps, as described in
+the following sections.
+
+#### Migration from an unresponsive node
+
+If node A is unavailable, then all calls into
+node A are skipped and we don't wait for B to catch up before
+switching updating the endpoints to use B.
+
+#### Migration to a location that is not a secondary
+
+If node B is initially in Detached state, the procedure is identical. Since Node B
+is coming from a Detached state rather than Secondary, the download of layers and
+catch up with WAL will take much longer.
+
+We might do this if:
+
+- Attached and secondary locations are both critically low on disk, and we need
+  to migrate to a third node with more resources available.
+- We are migrating a tenant which does not use secondary locations to save on cost.
+
+#### Permanent migration away from a node
+
+In the final step of the migration, we generally request the original node to enter a Secondary
+state. This is typical if we are doing a planned migration during maintenance, or to
+balance CPU/network load away from a node.
+
+One might also want to permanently migrate away: this can be done by simply removing the secondary
+location after the migration is complete, or as an optimization by substituting the Detached state
+for the Secondary state in the final step.
+
+#### Cutover diagram
+
+```mermaid
+sequenceDiagram
+participant CP as Control plane
+participant A as Node A
+participant B as Node B
+participant E as Endpoint
+
+CP->>A: PUT Flush & go to AttachedStale
+note right of A: A continues to ingest WAL
+CP->>B: PUT AttachedMulti
+CP->>B: PUT Download layers from latest heatmap
+note right of B: B downloads from S3
+loop Poll until download complete
+CP->>B: GET download status
+end
+activate B
+note right of B: B ingests WAL
+loop Poll until catch up
+CP->>B: GET visible WAL
+CP->>A: GET visible WAL
+end
+deactivate B
+CP->>E: Configure to use Node B
+E->>B: Connect for reads
+CP->>B: PUT AttachedSingle
+CP->>A: PUT Secondary
+```
+
+#### Cutover from an unavailable pageserver
+
+This case is far simpler: we may skip straight to our intended
+end state.
+
+```mermaid
+sequenceDiagram
+participant A as Node A
+participant CP as Control plane
+participant B as Node B
+participant E as Endpoint
+
+note right of A: Node A offline
+activate A
+CP->>B: PUT AttachedSingle
+CP->>E: Configure to use Node B
+E->>B: Connect for reads
+deactivate A
+```
+
+## Implementation (detail)
+
+### Purpose of AttachedMulti, AttachedStale
+
+#### AttachedMulti
+
+Ordinarily, an attached pageserver whose generation is the latest may delete
+layers at will (e.g. during compaction). If a previous generation pageserver
+is also still attached, and in use by endpoints, then this layer deletion could
+lead to a loss of availability for the endpoint when reading from the previous
+generation pageserver.
+
+The _AttachedMulti_ state simply disables deletions. These will be enqueued
+in `RemoteTimelineClient` until the control plane transitions the
+node into AttachedSingle, which unblocks deletions.  Other remote storage operations
+such as uploads are not blocked.
+
+AttachedMulti is not required for data safety, only to preserve availability
+on pageservers running with stale generations.
+
+A node enters AttachedMulti only when explicitly asked to by the control plane. It should
+only remain in this state for the duration of a migration.
+
+If a control plane bug leaves
+the node in AttachedMulti for a long time, then we must avoid unbounded memory use from enqueued
+deletions. This may be accomplished simply, by dropping enqueued deletions when some modest
+threshold of delayed deletions (e.g. 10k layers per tenant) is reached. As with all deletions,
+it is safe to skip them, and the leaked objects will be eventually cleaned up by scrub or
+by timeline deletion.
+
+During AttachedMulti, the Tenant is free to drop layers from local disk in response to
+disk pressure: only the deletion of remote layers is blocked.
+
+#### AttachedStale
+
+Currently, a pageserver with a stale generation number will continue to
+upload layers, but be prevented from completing deletions. This is safe, but inefficient: layers uploaded by this stale generation
+will not be read back by future generations of pageservers.
+
+The _AttachedStale_ state disables S3 uploads. The stale pageserver
+will continue to ingest the WAL and write layers to local disk, but not to
+do any uploads to S3.
+
+A node may enter AttachedStale in two ways:
+
+- Explicitly, when control plane calls into the node at the start of a migration.
+- Implicitly, when the node tries to validate some deletions and discovers
+  that its generation is stale.
+
+The AttachedStale state also disables sending consumption metrics from
+that location: it is interpreted as an indication that some other pageserver
+is already attached or is about to be attached, and that new pageserver will
+be responsible for sending consumption metrics.
+
+#### Disk Pressure & AttachedStale
+
+Over long periods of time, a tenant location in AttachedStale will accumulate data
+on local disk, as it cannot evict any layers written since it entered the
+AttachStale state. We rely on the control plane to revert the location to
+Secondary or Detached at the end of a migration.
+
+This scenario is particularly noteworthy when evacuating all tenants on a pageserver:
+since _all_ the attached tenants will go into AttachedStale, we will be doing no
+uploads at all, therefore ingested data will cause disk usage to increase continuously.
+Under nominal conditions, the available disk space on pageservers should be sufficient
+to complete the evacuation before this becomes a problem, but we must also handle
+the case where we hit a low disk situation while in this state.
+
+The concept of disk pressure already exists in the pageserver: the `disk_usage_eviction_task`
+touches each Tenant when it determines that a low-disk condition requires
+some layer eviction. Having selected layers for eviction, the eviction
+task calls `Timeline::evict_layers`.
+
+**Safety**: If evict_layers is called while in AttachedStale state, and some of the to-be-evicted
+layers are not yet uploaded to S3, then the block on uploads will be lifted. This
+will result in leaking some objects once a migration is complete, but will enable
+the node to manage its disk space properly: if a node is left with some tenants
+in AttachedStale indefinitely due to a network partition or control plane bug,
+these tenants will not cause a full disk condition.
+
+### Warm secondary updates
+
+#### Layer heatmap
+
+The secondary location's job is to serve reads **with the same quality of service as the original location
+was serving them around the time of a migration**. This does not mean the secondary
+location needs the whole set of layers: inactive layers that might soon
+be evicted on the attached pageserver need not be downloaded by the
+secondary. A totally idle tenant only needs to maintain enough on-disk
+state to enable a fast cold start (i.e. the most recent image layers are
+typically sufficient).
+
+To enable this, we introduce the concept of a _layer heatmap_, which
+acts as an advisory input to secondary locations to decide which
+layers to download from S3.
+
+#### Attached pageserver
+
+The attached pageserver, if in state AttachedSingle, periodically
+uploads a serialized heat map to S3. It may skip this if there
+is no change since the last time it uploaded (e.g. if the tenant
+is totally idle).
+
+Additionally, when the tenant is flushed to remote storage prior to a migration
+(the first step in [cutover procedure](#cutover-procedure)), 
+the heatmap is written out. This enables a future attached pageserver
+to get an up to date view when deciding which layers to download.
+
+#### Secondary location behavior
+
+Secondary warm locations run a simple loop, implemented separately from
+the main `Tenant` type, which represents attached tenants:
+
+- Download the layer heatmap
+- Select any "hot enough" layers to download, if there is sufficient
+  free disk space.
+- Download layers, if they were not previously evicted (see below)
+- Download the latest index_part.json
+- Check if any layers currently on disk are no longer referenced by
+  IndexPart & delete them
+
+Note that the heatmap is only advisory: if a secondary location has plenty
+of disk space, it may choose to retain layers that aren't referenced
+by the heatmap, as long as they are still referenced by the IndexPart. Conversely,
+if a node is very low on disk space, it might opt to raise the heat threshold required
+to both downloading a layer, until more disk space is available.
+
+#### Secondary locations & disk pressure
+
+Secondary locations are subject to eviction on disk pressure, just as
+attached locations are.  For eviction purposes, the access time of a
+layer in a secondary location will be the access time given in the heatmap,
+rather than the literal time at which the local layer file was accessed.
+
+The heatmap will indicate which layers are in local storage on the attached
+location.  The secondary will always attempt to get back to having that
+set of layers on disk, but to avoid flapping, it will remember the access
+time of the layer it was most recently asked to evict, and layers whose
+access time is below that will not be re-downloaded.
+
+The resulting behavior is that after a layer is evicted from a secondary
+location, it is only re-downloaded once the attached pageserver accesses
+the layer and uploads a heatmap reflecting that access time.  On a pageserver
+restart, the secondary location will attempt to download all layers in
+the heatmap again, if they are not on local disk.
+
+This behavior will be slightly different when secondary locations are
+used for "low energy tenants", but that is beyond the scope of this RFC.
+
+### Location configuration API
+
+Currently, the `/tenant/<tenant_id>/config` API defines various
+tunables like compaction settings, which apply to the tenant irrespective
+of which pageserver it is running on.
+
+A new "location config" structure will be introduced, which defines
+configuration which is per-tenant, but local to a particular pageserver,
+such as the attachment mode and whether it is a secondary.
+
+The pageserver will expose a new per-tenant API for setting
+the state: `/tenant/<tenant_id>/location/config`.
+
+Body content:
+
+```
+{
+  state: 'enum{Detached, Secondary, AttachedSingle, AttachedMulti, AttachedStale}',
+  generation: Option<u32>,
+  configuration: `Option<TenantConfig>`
+  flush: bool
+}
+```
+
+Existing `/attach` and `/detach` endpoint will have the same
+behavior as calling `/location/config` with `AttachedSingle` and `Detached`
+states respectively. These endpoints will be deprecated and later
+removed.
+
+The generation attribute is mandatory for entering `AttachedSingle` or
+`AttachedMulti`.
+
+The configuration attribute is mandatory when entering any state other
+than `Detached`. This configuration is the same as the body for
+the existing `/tenant/<tenant_id>/config` endpoint.
+
+The `flush` argument indicates whether the pageservers should flush
+to S3 before proceeding: this only has any effect if the node is
+currently in AttachedSingle or AttachedMulti. This is used
+during the first phase of migration, when transitioning the
+old pageserver to AttachedSingle.
+
+The `/re-attach` API response will be extended to include a `state` as
+well as a `generation`, enabling the pageserver to enter the
+correct state for each tenant on startup.
+
+### Database schema for locations
+
+A new table `ProjectLocation`:
+
+- pageserver_id: int
+- tenant_id: TenantId
+- generation: Option<int>
+- state: `enum(Secondary, AttachedSingle, AttachedMulti)`
+
+Notes:
+
+- It is legacy for a Project to have zero `ProjectLocation`s
+- The `pageserver` column in `Project` now means "to which pageserver should
+  endpoints connect", rather than simply which pageserver is attached.
+- The `generation` column in `Project` remains, and is incremented and used
+  to set the generation of `ProjectLocation` rows when they are set into
+  an attached state.
+- The `Detached` state is implicitly represented as the absence of
+  a `ProjectLocation`.
+
+### Executing migrations
+
+Migrations will be implemented as Go functions, within the
+existing `Operation` framework in the control plane. These
+operations are persistent, such that they will always keep
+trying until completion: this property is important to avoid
+leaving garbage behind on pageservers, such as AttachedStale
+locations.
+
+### Recovery from failures during migration
+
+During migration, the control plane may encounter failures of either
+the original or new pageserver, or both:
+
+- If the original fails, skip past waiting for the new pageserver
+  to catch up, and put it into AttachedSingle immediately.
+- If the new node fails, put the old pageserver into Secondary
+  and then back into AttachedSingle (this has the effect of
+  retaining on-disk state and granting it a fresh generation number).
+- If both nodes fail, keep trying until one of them is available
+  again.
+
+### Control plane -> Pageserver reconciliation
+
+A migration may be done while the old node is unavailable,
+in which case the old node may still be running in an AttachedStale
+state.
+
+In this case, it is undesirable to have the migration `Operation`
+stay alive until the old node eventually comes back online
+and can be cleaned up. To handle this, the control plane
+should run a background reconciliation process to compare
+a pageserver's attachments with the database, and clean up
+any that shouldn't be there any more.
+
+Note that there will be no work to do if the old node was really
+offline, as during startup it will call into `/re-attach` and
+be updated that way. The reconciliation will only be needed
+if the node was unavailable but still running.
+
+## Alternatives considered
+
+### Only enabling secondary locations for tenants on a higher service tier
+
+This will make sense in future, especially for tiny databases that may be
+downloaded from S3 in milliseconds when needed.
+
+However, it is not wise to do it immediately, because pageservers contain
+a mixture of higher and lower tier workloads. If we had 1 tenant with
+a secondary location and 9 without, then those other 9 tenants will do
+a lot of I/O as they try to recover from S3, which may degrade the
+service of the tenant which had a secondary location.
+
+Until we segregate tenant on different service tiers on different pageserver
+nodes, or implement & test QoS to ensure that tenants with secondaries are
+not harmed by tenants without, we should use the same failover approach
+for all the tenants.
+
+### Hot secondary locations (continuous WAL replay)
+
+Instead of secondary locations populating their caches from S3, we could
+have them consume the WAL from safekeepers. The downsides of this would be:
+
+- Double load on safekeepers, which are a less scalable service than S3
+- Secondary locations' on-disk state would end up subtly different to
+  the remote state, which would make synchronizing with S3 more complex/expensive
+  when going into attached state.
+
+The downside of only updating secondary locations from S3 is that we will
+have a delay during migration from replaying the LSN range between what's
+in S3 and what's in the pageserver. This range will be very small on
+planned migrations, as we have the old pageserver flush to S3 immediately
+before attaching the new pageserver. On unplanned migrations (old pageserver
+is unavailable), the range of LSNs to replay is bounded by the flush frequency
+on the old pageserver. However, the migration doesn't have to wait for the
+replay: it's just that not-yet-replayed LSNs will be unavailable for read
+until the new pageserver catches up.
+
+We expect that pageserver reads of the most recent LSNs will be relatively
+rare, as for an active endpoint those pages will usually still be in the postgres
+page cache: this leads us to prefer synchronizing from S3 on secondary
+locations, rather than consuming the WAL from safekeepers.
+
+### Cold secondary locations
+
+It is not functionally necessary to keep warm caches on secondary locations at all. However, if we do not, then
+we would experience a de-facto availability loss in unplanned migrations, as reads to the new node would take an extremely long time (many seconds, perhaps minutes).
+
+Warm caches on secondary locations are necessary to meet
+our availability goals.
+
+### Pageserver-granularity failover
+
+Instead of migrating tenants individually, we could have entire spare nodes,
+and on a node death, move all its work to one of these spares.
+
+This approach is avoided for several reasons:
+
+- we would still need fine-grained tenant migration for other
+  purposes such as balancing load
+- by sharing the spare capacity over many peers rather than one spare node,
+  these peers may use the capacity for other purposes, until it is needed
+  to handle migrated tenants. e.g. for keeping a deeper cache of their
+  attached tenants.
+
+### Readonly during migration
+
+We could simplify migrations by making both previous and new nodes go into a
+readonly state, then flush remote content from the previous node, then activate
+attachment on the secondary node.
+
+The downside to this approach is a potentially large gap in readability of
+recent LSNs while loading data onto the new node. To avoid this, it is worthwhile
+to incur the extra cost of double-replaying the WAL onto old and new nodes' local
+storage during a migration.
+
+### Peer-to-peer pageserver communication
+
+Rather than uploading the heatmap to S3, attached pageservers could make it
+available to peers.
+
+Currently, pageservers have no peer to peer communication, so adding this
+for heatmaps would incur significant overhead in deployment and configuration
+of the service, and ensuring that when a new pageserver is deployed, other
+pageservers are updated to be aware of it.
+
+As well as simplifying implementation, putting heatmaps in S3 will be useful
+for future analytics purposes -- gathering aggregated statistics on activity
+pattersn across many tenants may be done directly from data in S3.
+
+
+# Content from file ../neon/docs/rfcs/029-getpage-throttling.md:
+
+# Per-Tenant GetPage@LSN Throttling
+
+Author: Christian Schwarz
+Date: Oct 24, 2023
+
+## Summary
+
+This RFC proposes per-tenant throttling of GetPage@LSN requests inside Pageserver
+and the interactions with its client, i.e., the neon_smgr component in Compute.
+
+The result of implementing & executing this RFC will be a fleet-wide upper limit for
+**"the highest GetPage/second that Pageserver can support for a single tenant/shard"**.
+
+## Background
+
+### GetPage@LSN Request Flow
+
+Pageserver exposes its `page_service.rs` as a libpq listener.
+The Computes' `neon_smgr` module connects to that libpq listener.
+Once a connection is established, the protocol allows Compute to request page images at a given LSN.
+We call these requests GetPage@LSN requests, or GetPage requests for short.
+Other request types can be sent, but these are low traffic compared to GetPage requests
+and are not the concern of this RFC.
+
+Pageserver associates one libpq connection with one tokio task.
+
+Per connection/task, the pq protocol is handled by the common `postgres_backend` crate.
+Its `run_message_loop` function invokes the `page_service` specific `impl<IO> postgres_backend::Handler<IO> for PageServerHandler`.
+Requests are processed in the order in which they arrive via the TCP-based pq protocol.
+So, there is no concurrent request processing within one connection/task.
+
+There is a degree of natural pipelining:
+Compute can "fill the pipe" by sending more than one GetPage request into the libpq TCP stream.
+And Pageserver can fill the pipe with responses in the other direction.
+Both directions are subject to the limit of tx/rx buffers, nodelay, TCP flow control, etc.
+
+### GetPage@LSN Access Pattern
+
+The Compute has its own hierarchy of caches, specifically `shared_buffers` and the `local file cache` (LFC).
+Compute only issues GetPage requests to Pageserver if it encounters a miss in these caches.
+
+If the working set stops fitting into Compute's caches, requests to Pageserver increase sharply -- the Compute starts *thrashing*.
+
+## Motivation
+
+In INC-69, a tenant issued 155k GetPage/second for a period of 10 minutes and 60k GetPage/second for a period of 3h,
+then dropping to ca 18k GetPage/second for a period of 9h.
+
+We noticed this because of an internal GetPage latency SLO burn rate alert, i.e.,
+the request latency profile during this period significantly exceeded what was acceptable according to the internal SLO.
+
+Sadly, we do not have the observability data to determine the impact of this tenant on other tenants on the same tenants.
+
+However, here are some illustrative data points for the 155k period:
+The tenant was responsible for >= 99% of the GetPage traffic and, frankly, the overall activity on this Pageserver instance.
+We were serving pages at 10 Gb/s (`155k x 8 kbyte (PAGE_SZ) per second is 1.12GiB/s = 9.4Gb/s.`)
+The CPU utilization of the instance was 75% user+system.
+Pageserver page cache served 1.75M accesses/second at a hit rate of ca 90%.
+The hit rate for materialized pages was ca. 40%.
+Curiously, IOPS to the Instance Store NVMe were very low, rarely exceeding 100.
+
+The fact that the IOPS were so low / the materialized page cache hit rate was so high suggests that **this tenant's compute's caches were thrashing**.
+The compute was of type `k8s-pod`; hence, auto-scaling could/would not have helped remediate the thrashing by provisioning more RAM.
+The consequence was that the **thrashing translated into excessive GetPage requests against Pageserver**.
+
+My claim is that it was **unhealthy to serve this workload at the pace we did**:
+* it is likely that other tenants were/would have experienced high latencies (again, we sadly don't have per-tenant latency data to confirm this)
+* more importantly, it was **unsustainable** to serve traffic at this pace for multiple reasons:
+    * **predictability of performance**: when the working set grows, the pageserver materialized page cache hit rate drops.
+      At some point, we're bound by the EC2 Instance Store NVMe drive's IOPS limit.
+      The result is an **uneven** performance profile from the Compute perspective.
+
+    * **economics**: Neon currently does not charge for IOPS, only capacity.
+      **We cannot afford to undercut the market in IOPS/$ this drastically; it leads to adverse selection and perverse incentives.**
+      For example, the 155k IOPS, which we served for 10min, would cost ca. 6.5k$/month when provisioned as an io2 EBS volume.
+      Even the 18k IOPS, which we served for 9h, would cost ca. 1.1k$/month when provisioned as an io2 EBS volume.
+      We charge 0$.
+      It could be economically advantageous to keep using a low-DRAM compute because Pageserver IOPS are fast enough and free.
+
+
+Note: It is helpful to think of Pageserver as a disk, because it's precisely where `neon_smgr` sits:
+vanilla Postgres gets its pages from disk, Neon Postgres gets them from Pageserver.
+So, regarding the above performance & economic arguments, it is fair to say that we currently provide an "as-fast-as-possible-IOPS" disk that we charge for only by capacity.
+
+## Solution: Throttling GetPage Requests
+
+**The consequence of the above analysis must be that Pageserver throttles GetPage@LSN requests**.
+That is, unless we want to start charging for provisioned GetPage@LSN/second.
+Throttling sets the correct incentive for a thrashing Compute to scale up its DRAM to the working set size.
+Neon Autoscaling will make this easy, [eventually](https://github.com/neondatabase/neon/pull/3913).
+
+## The Design Space
+
+What that remains is the question about *policy* and *mechanism*:
+
+**Policy** concerns itself with the question of what limit applies to a given connection|timeline|tenant.
+Candidates are:
+
+* hard limit, same limit value per connection|timeline|tenant
+    * Per-tenant will provide an upper bound for the impact of a tenant on a given Pageserver instance.
+      This is a major operational pain point / risk right now.
+* hard limit, configurable per connection|timeline|tenant
+    * This outsources policy to console/control plane, with obvious advantages for flexible structuring of what service we offer to customers.
+    * Note that this is not a mechanism to guarantee a minium provisioned rate, i.e., this is not a mechanism to guarantee a certain QoS for a tenant.
+* fair share among active connections|timelines|tenants per instance
+    * example: each connection|timeline|tenant gets a fair fraction of the machine's GetPage/second capacity
+    * NB: needs definition of "active", and knowledge of available GetPage/second capacity in advance
+* ...
+
+
+Regarding **mechanism**, it's clear that **backpressure** is the way to go.
+However, we must choose between
+* **implicit** backpressure through pq/TCP and
+* **explicit** rejection of requests + retries with exponential backoff
+
+Further, there is the question of how throttling GetPage@LSN will affect the **internal GetPage latency SLO**:
+where do we measure the SLI for Pageserver's internal getpage latency SLO? Before or after the throttling?
+
+And when we eventually move the measurement point into the Computes (to avoid coordinated omission),
+how do we avoid counting throttling-induced latency toward the internal getpage latency SLI/SLO?
+
+## Scope Of This RFC
+
+**This RFC proposes introducing a hard GetPage@LSN/second limit per tenant, with the same value applying to each tenant on a Pageserver**.
+
+This proposal is easy to implement and significantly de-risks operating large Pageservers,
+based on the assumption that extremely-high-GetPage-rate-episodes like the one from the "Motivation" section are uncorrelated between tenants.
+
+For example, suppose we pick a limit that allows up to 10 tenants to go at limit rate.
+Suppose our Pageserver can serve 100k GetPage/second total at a 100% page cache miss rate.
+If each tenant gets a hard limit of 10k GetPage/second, we can serve up to 10 tenants at limit speed without latency degradation.
+
+The mechanism for backpressure will be TCP-based implicit backpressure.
+The compute team isn't concerned about prefetch queue depth.
+Pageserver will implement it by delaying the reading of requests from the libpq connection(s).
+
+The rate limit will be implemented using a per-tenant token bucket.
+The bucket will be be shared among all connections to the tenant.
+The bucket implementation supports starvation-preventing `await`ing.
+The current candidate for the implementation is [`leaky_bucket`](https://docs.rs/leaky-bucket/).
+The getpage@lsn benchmark that's being added in https://github.com/neondatabase/neon/issues/5771
+can be used to evaluate the overhead of sharing the bucket among connections of a tenant.
+A possible technique to mitigate the impact of sharing the bucket would be to maintain a buffer of a few tokens per connection handler.
+
+Regarding metrics / the internal GetPage latency SLO:
+we will measure the GetPage latency SLO _after_ the throttler and introduce a new metric to measure the amount of throttling, quantified by:
+- histogram that records the tenants' observations of queue depth before they start waiting (one such histogram per pageserver)
+- histogram that records the tenants' observations of time spent waiting (one such histogram per pageserver)
+
+Further observability measures:
+- an INFO log message at frequency 1/min if the tenant/timeline/connection was throttled in that last minute.
+  The message will identify the tenant/timeline/connection to allow correlation with compute logs/stats.
+
+Rollout will happen as follows:
+- deploy 1: implementation + config: disabled by default, ability to enable it per tenant through tenant_conf
+- experimentation in staging and later production to study impact & interaction with auto-scaling
+- determination of a sensible global default value
+  - the value will be chosen as high as possible ...
+  - ... but low enough to work towards this RFC's goal that one tenant should not be able to dominate a pageserver instance.
+- deploy 2: implementation fixes if any + config: enabled by default with the aforementioned global default
+- reset of the experimental per-tenant overrides
+- gain experience & lower the limit over time
+  - we stop lowering the limit as soon as this RFC's goal is achieved, i.e.,
+    once we decide that in practice the chosen value sufficiently de-risks operating large pageservers
+
+The per-tenant override will remain for emergencies and testing.
+But since Console doesn't preserve it during tenant migrations, it isn't durably configurable for the tenant.
+
+Toward the upper layers of the Neon stack, the resulting limit will be
+**"the highest GetPage/second that Pageserver can support for a single tenant"**.
+
+### Rationale
+
+We decided against error + retry because of worries about starvation.
+
+## Future Work
+
+Enable per-tenant emergency override of the limit via Console.
+Should be part of a more general framework to specify tenant config overrides.
+**NB:** this is **not** the right mechanism to _sell_ different max GetPage/second levels to users,
+or _auto-scale_ the GetPage/second levels. Such functionality will require a separate RFC that
+concerns itself with GetPage/second capacity planning.
+
+Compute-side metrics for GetPage latency.
+
+Back-channel to inform Compute/Autoscaling/ControlPlane that the project is being throttled.
+
+Compute-side neon_smgr improvements to avoid sending the same GetPage request multiple times if multiple backends experience a cache miss.
+
+Dealing with read-only endpoints: users use read-only endpoints to scale reads for a single tenant.
+Possibly there are also assumptions around read-only endpoints not affecting the primary read-write endpoint's performance.
+With per-tenant rate limiting, we will not meet that expectation.
+However, we can currently only scale per tenant.
+Soon, we will have sharding (#5505), which will apply the throttling on a per-shard basis.
+But, that's orthogonal to scaling reads: if many endpoints hit one shard, they share the same throttling limit.
+To solve this properly, I think we'll need replicas for tenants / shard.
+To performance-isolate a tenant's endpoints from each other, we'd then route them to different replicas.
+
+
+# Content from file ../neon/docs/rfcs/029-pageserver-wal-disaster-recovery.md:
+
+# Name
+
+Created on: 2023-09-08
+Author: Arpad Müller
+
+## Summary
+
+Enable the pageserver to recover from data corruption events by implementing
+a feature to re-apply historic WAL records in parallel to the already occurring
+WAL replay.
+
+The feature is outside of the user-visible backup and history story, and only
+serves as a second-level backup for the case that there is a bug in the
+pageservers that corrupted the served pages.
+
+The RFC proposes the addition of two new features:
+* recover a broken branch from WAL (downtime is allowed)
+* a test recovery system to recover random branches to make sure recovery works
+
+## Motivation
+
+The historic WAL is currently stored in S3 even after it has been replayed by
+the pageserver and thus been integrated into the pageserver's storage system.
+This is done to defend from data corruption failures inside the pageservers.
+
+However, application of this WAL in the disaster recovery setting is currently
+very manual and we want to automate this to make it easier.
+
+### Use cases
+
+There are various use cases for this feature, like:
+
+* The main motivation is replaying in the instance of pageservers corrupting
+  data.
+* We might want to, beyond the user-visible history features, through our
+  support channels and upon customer request, in select instances, recover
+  historic versions beyond the range of history that we officially support.
+* Running the recovery process in the background for random tenant timelines
+  to figure out if there was a corruption of data (we would compare with what
+  the pageserver stores for the "official" timeline).
+* Using the WAL to arrive at historic pages we can then back up to S3 so that
+  WAL itself can be discarded, or at least not used for future replays.
+  Again, this sounds a lot like what the pageserver is already doing, but the
+  point is to provide a fallback to the service provided by the pageserver.
+
+## Design
+
+### Design constraints
+
+The main design constraint is that the feature needs to be *simple* enough that
+the number of bugs are as low, and reliability as high as possible: the main
+goal of this endeavour is to achieve higher correctness than the pageserver.
+
+For the background process, we cannot afford a downtime of the timeline that is
+being cloned, as we don't want to restrict ourselves to offline tenants only.
+In the scenario where we want to recover from disasters or roll back to a
+historic lsn through support staff, downtimes are more affordable, and
+inevitable if the original had been subject to the corruption. Ideally, the
+two code paths would share code, so the solution would be designed for not
+requiring downtimes.
+
+### API endpoint changes
+
+This RFC proposes two API endpoint changes in the safekeeper and the
+pageserver.
+
+Remember, the pageserver timeline API creation endpoint is to this URL:
+
+```
+/v1/tenant/{tenant_id}/timeline/
+```
+
+Where `{tenant_id}` is the ID of the tenant the timeline is created for,
+and specified as part of the URL. The timeline ID is passed via the POST
+request body as the only required parameter `new_timeline_id`.
+
+This proposal adds one optional parameter called
+`existing_initdb_timeline_id` to the request's json body. If the parameter
+is not specified, behaviour should be as existing, so the pageserver runs
+initdb.
+If the parameter is specified, it is expected to point to a timeline ID.
+In fact that ID might match `new_timeline_id`, what's important is that
+S3 storage contains a matching initdb under the URL matching the given
+tenant and timeline.
+
+Having both `ancestor_timeline_id` and `existing_initdb_timeline_id`
+specified is illegal and will yield in an HTTP error. This feature is
+only meant for the "main" branch that doesn't have any ancestors
+of its own, as only here initdb is relevant.
+
+For the safekeeper, we propose the addition of the following copy endpoint:
+
+```
+/v1/tenant/{tenant_id}/timeline/{source_timeline_id}/copy
+```
+it is meant for POST requests with json, and the two URL parameters
+`tenant_id` and `source_timeline_id`. The json request body contains
+the two required parameters `target_timeline_id` and `until_lsn`.
+
+After invoking, the copy endpoint starts a copy process of the WAL from
+the source ID to the target ID. The lsn is updated according to the
+progress of the API call.
+
+### Higher level features
+
+We want the API changes to support the following higher level features:
+
+* recovery-after-corruption DR of the main timeline of a tenant. This
+  feature allows for downtime.
+* test DR of the main timeline into a special copy timeline. this feature
+  is meant to run against selected production tenants in the background,
+  without the user noticing, so it does not allow for downtime.
+
+The recovery-after-corruption DR only needs the pageserver changes.
+It works as follows:
+
+* delete the timeline from the pageservers via timeline deletion API
+* re-create it via timeline creation API (same ID as before) and set
+  `existing_initdb_timeline_id` to the same timeline ID
+
+The test DR requires also the copy primitive and works as follows:
+
+* copy the WAL of the timeline to a new place
+* create a new timeline for the tenant
+
+## Non Goals
+
+At the danger of being repetitive, the main goal of this feature is to be a
+backup method, so reliability is very important. This implies that other
+aspects like performance or space reduction are less important.
+
+### Corrupt WAL
+
+The process suggested by this RFC assumes that the WAL is free of corruption.
+In some instances, corruption can make it into WAL, like for example when
+higher level components like postgres or the application first read corrupt
+data, and then execute a write with data derived from that earlier read. That
+written data might then contain the corruption.
+
+Common use cases can hit this quite easily. For example, an application reads
+some counter, increments it, and then writes the new counter value to the
+database.
+On a lower level, the compute might put FPIs (Full Page Images) into the WAL,
+which have corrupt data for rows unrelated to the write operation at hand.
+
+Separating corrupt writes from non-corrupt ones is a hard problem in general,
+and if the application was involved in making the corrupt write, a recovery
+would also involve the application. Therefore, corruption that has made it into
+the WAL is outside of the scope of this feature. However, the WAL replay can be
+issued to right before the point in time where the corruption occured. Then the
+data loss is isolated to post-corruption writes only.
+
+## Impacted components (e.g. pageserver, safekeeper, console, etc)
+
+Most changes would happen to the pageservers.
+For the higher level features, maybe other components like the console would
+be involved.
+
+We need to make sure that the shadow timelines are not subject to the usual
+limits and billing we apply to existing timelines.
+
+## Proposed implementation
+
+The first problem to keep in mind is the reproducability of `initdb`.
+So an initial step would be to upload `initdb` snapshots to S3.
+
+After that, we'd have the endpoint spawn a background process which
+performs the replay of the WAL to that new timeline. This process should
+follow the existing workflows as closely as possible, just using the
+WAL records of a different timeline.
+
+The timeline created will be in a special state that solely looks for WAL
+entries of the timeline it is trying to copy. Once the target LSN is reached,
+it turns into a normal timeline that also accepts writes to its own
+timeline ID.
+
+### Scalability
+
+For now we want to run this entire process on a single node, and as
+it is by nature linear, it's hard to parallelize. However, for the
+verification workloads, we can easily start the WAL replay in parallel
+for different points in time. This is valuable especially for tenants
+with large WAL records.
+
+Compare this with the tricks to make addition circuits execute with
+lower latency by making them perform the addition for both possible
+values of the carry bit, and then, in a second step, taking the
+result for the carry bit that was actually obtained.
+
+The other scalability dimension to consider is the WAL length, which
+is a growing question as tenants accumulate changes. There are
+possible approaches to this, including creating snapshots of the
+page files and uploading them to S3, but if we do this for every single
+branch, we lose the cheap branching property.
+
+### Implementation by component
+
+The proposed changes for the various components of the neon architecture
+are written up in this notion page:
+
+https://www.notion.so/neondatabase/Pageserver-disaster-recovery-one-pager-4ecfb5df16ce4f6bbfc3817ed1a6cbb2
+
+### Unresolved questions
+
+none known (outside of the mentioned ones).
+
+
+# Content from file ../neon/docs/rfcs/README.md:
+
+This directory contains Request for Comments documents, or RFCs, for
+features or concepts that have been proposed. Alternative names:
+technical design doc, ERD, one-pager
+
+To make a new proposal, create a new text file in this directory and
+open a Pull Request with it. That gives others a chance and a forum
+to comment and discuss the design.
+
+When a feature is implemented and the code changes are committed, also
+include the corresponding RFC in this directory.
+
+Some of the RFCs in this directory have been implemented in some form
+or another, while others are on the roadmap, while still others are
+just obsolete and forgotten about. So read them with a grain of salt,
+but hopefully even the ones that don't reflect reality give useful
+context information.
+
+## What
+
+We use Tech Design RFC’s to summarize what we are planning to
+implement in our system. These RFCs should be created for large or not
+obvious technical tasks, e.g. changes of the architecture or bigger
+tasks that could take over a week, changes that touch multiple
+components or their interaction. RFCs should fit into a couple of
+pages, but could be longer on occasion.
+
+## Why
+
+We’re using RFCs to enable early review and collaboration, reduce
+uncertainties, risk and save time during the implementation phase that
+follows the Tech Design RFC.
+
+Tech Design RFCs also aim to avoid bus factor and are an additional
+measure to keep more peers up to date & familiar with our design and
+architecture.
+
+This is a crucial part for ensuring collaboration across timezones and
+setting up for success a distributed team that works on complex
+topics.
+
+## Prior art
+
+- Rust: [https://github.com/rust-lang/rfcs/blob/master/0000-template.md](https://github.com/rust-lang/rfcs/blob/master/0000-template.md)
+- React.js: [https://github.com/reactjs/rfcs/blob/main/0000-template.md](https://github.com/reactjs/rfcs/blob/main/0000-template.md)
+- Google fuchsia: [https://fuchsia.dev/fuchsia-src/contribute/governance/rfcs/TEMPLATE](https://fuchsia.dev/fuchsia-src/contribute/governance/rfcs/TEMPLATE)
+- Apache: [https://cwiki.apache.org/confluence/display/GEODE/RFC+Template](https://cwiki.apache.org/confluence/display/GEODE/RFC+Template) / [https://cwiki.apache.org/confluence/display/GEODE/Lightweight+RFC+Process](https://cwiki.apache.org/confluence/display/GEODE/Lightweight+RFC+Process)
+
+## How
+
+RFC lifecycle:
+
+- Should be submitted in a pull request with and full RFC text in a committed markdown file and copy of the Summary and Motivation sections also included in the PR body.
+- RFC should be published for review before most of the actual code is written. This isn’t a strict rule, don’t hesitate to experiment and build a POC in parallel with writing an RFC.
+- Add labels to the PR in the same manner as you do Issues. Example TBD
+- Request the review from your peers. Reviewing the RFCs from your peers is a priority, same as reviewing the actual code.
+- The Tech Design RFC should evolve based on the feedback received and further during the development phase if problems are discovered with the taken approach
+- RFCs stop evolving once the consensus is found or the proposal is implemented and merged.
+- RFCs are not intended as a documentation that’s kept up to date **after** the implementation is finished. Do not update the Tech Design RFC when merged functionality evolves later on. In such situation a new RFC may be appropriate.
+
+### RFC template
+
+Note, a lot of the sections are marked as ‘if relevant’. They are included into the template as a reminder and to help inspiration.
+
+```
+# Name
+Created on ..
+Implemented on ..
+
+## Summary
+
+## Motivation
+
+## Non Goals (if relevant)
+
+## Impacted components (e.g. pageserver, safekeeper, console, etc)
+
+## Proposed implementation
+
+### Reliability, failure modes and corner cases (if relevant)
+
+### Interaction/Sequence diagram (if relevant)
+
+### Scalability (if relevant)
+
+### Security implications (if relevant)
+
+### Unresolved questions (if relevant)
+
+## Alternative implementation (if relevant)
+
+## Pros/cons of proposed approaches (if relevant)
+
+## Definition of Done (if relevant)
+
+```
+
+
+# Content from file ../neon/docs/rfcs/cluster-size-limits.md:
+
+Cluster size limits
+==================
+
+## Summary
+
+One of the resource consumption limits for free-tier users is a cluster size limit.
+
+To enforce it, we need to calculate the timeline size and check if the limit is reached before relation create/extend operations.
+If the limit is reached, the query must fail with some meaningful error/warning.
+We may want to exempt some operations from the quota to allow users free space to fit back into the limit.
+
+The stateless compute node that performs validation is separate from the storage that calculates the usage, so we need to exchange cluster size information between those components.
+
+## Motivation
+
+Limit the maximum size of a PostgreSQL instance to limit free tier users (and other tiers in the future).
+First of all, this is needed to control our free tier production costs.
+Another reason to limit resources is risk management — we haven't (fully) tested and optimized neon for big clusters,
+so we don't want to give users access to the functionality that we don't think is ready.
+
+## Components
+
+* pageserver - calculate the size consumed by a timeline and add it to the feedback message.
+* safekeeper - pass feedback message from pageserver to compute.
+* compute - receive feedback message, enforce size limit based on GUC `neon.max_cluster_size`.
+* console - set and update `neon.max_cluster_size` setting
+
+## Proposed implementation
+
+First of all, it's necessary to define timeline size.
+
+The current approach is to count all data, including SLRUs. (not including WAL)
+Here we think of it as a physical disk underneath the Postgres cluster.
+This is how the `LOGICAL_TIMELINE_SIZE` metric is implemented in the pageserver.
+
+Alternatively, we could count only relation data. As in pg_database_size().
+This approach is somewhat more user-friendly because it is the data that is really affected by the user.
+On the other hand, it puts us in a weaker position than other services, i.e., RDS.
+We will need to refactor the timeline_size counter or add another counter to implement it.
+
+Timeline size is updated during wal digestion. It is not versioned and is valid at the last_received_lsn moment.
+Then this size should be reported to compute node.
+
+`current_timeline_size` value is included in the walreceiver's custom feedback message: `ReplicationFeedback.`
+
+(PR about protocol changes https://github.com/neondatabase/neon/pull/1037).
+
+This message is received by the safekeeper and propagated to compute node as a part of `AppendResponse`.
+
+Finally, when compute node receives the `current_timeline_size` from safekeeper (or from pageserver directly), it updates the global variable.
+
+And then every neon_extend() operation checks if limit is reached `(current_timeline_size > neon.max_cluster_size)` and throws `ERRCODE_DISK_FULL` error if so.
+(see Postgres error codes [https://www.postgresql.org/docs/devel/errcodes-appendix.html](https://www.postgresql.org/docs/devel/errcodes-appendix.html))
+
+TODO:
+We can allow autovacuum processes to bypass this check, simply checking `IsAutoVacuumWorkerProcess()`.
+It would be nice to allow manual VACUUM and VACUUM FULL to bypass the check, but it's uneasy to distinguish these operations at the low level.
+See issues https://github.com/neondatabase/neon/issues/1245
+https://github.com/neondatabase/neon/issues/1445
+
+TODO:
+We should warn users if the limit is soon to be reached.
+
+### **Reliability, failure modes and corner cases**
+
+1. `current_timeline_size` is valid at the last received and digested by pageserver lsn.
+
+    If pageserver lags behind compute node, `current_timeline_size` will lag too. This lag can be tuned using backpressure, but it is not expected to be 0 all the time.
+
+    So transactions that happen in this lsn range may cause limit overflow. Especially operations that generate (i.e., CREATE DATABASE) or free (i.e., TRUNCATE) a lot of data pages while generating a small amount of WAL. Are there other operations like this?
+
+    Currently, CREATE DATABASE operations are restricted in the console. So this is not an issue.
+
+
+### **Security implications**
+
+We treat compute as an untrusted component. That's why we try to isolate it with secure container runtime or a VM.
+Malicious users may change the `neon.max_cluster_size`, so we need an extra size limit check.
+To cover this case, we also monitor the compute node size in the console.
+
+
+# Content from file ../neon/docs/safekeeper-protocol.md:
+
+# WAL proposer-safekeeper communication consensus protocol.
+
+## General requirements and architecture
+
+There is single stateless master and several safekeepers. Number of safekeepers is determined by redundancy level.
+To minimize number of changes in Postgres core, we are using standard streaming replication from master (through WAL sender).
+This replication stream is initiated by the WAL proposer process that runs in the PostgreSQL server, which broadcasts the WAL generated by PostgreSQL to safekeepers.
+To provide durability we use synchronous replication at master (response to the commit statement is sent to the client
+only when acknowledged by WAL receiver). WAL proposer sends this acknowledgment only when LSN of commit record is confirmed by quorum of safekeepers.
+
+WAL proposer tries to establish connections with safekeepers.
+At any moment of time each safekeeper can serve exactly once proposer, but it can accept new connections.
+
+Any of safekeepers can be used as WAL server, producing replication stream. So both `Pagers` and `Replicas`
+(read-only computation nodes) can connect to safekeeper to receive WAL stream. Safekeepers is streaming WAL until
+it reaches min(`commitLSN`,`flushLSN`). Then replication is suspended until new data arrives from master.
+
+
+## Handshake
+The goal of handshake is to collect quorum (to be able to perform recovery)
+and avoid split-brains caused by simultaneous presence of old and new master.
+Procedure of handshake consists of the following steps:
+
+1. Broadcast information about server to all safekeepers (wal segment size, system_id,...)
+2. Receive responses with information about safekeepers.
+3. Once quorum of handshake responses are received, propose new `NodeId(max(term)+1, server.uuid)`
+to all of them.
+4. On receiving proposed nodeId, safekeeper compares it with locally stored nodeId and if it is greater or equals
+then accepts proposed nodeId and persists this choice in the local control file.
+5. If quorum of safekeepers approve proposed nodeId, then server assumes that handshake is successfully completed and switch to recovery stage.
+
+## Recovery
+Proposer computes max(`restartLSN`) and max(`flushLSN`) from quorum of attached safekeepers.
+`RestartLSN` - is position in WAL which is known to be delivered to all safekeepers.
+In other words: `restartLSN` can be also considered as cut-off horizon (all preceding WAL segments can be removed).
+`FlushLSN` is position flushed by safekeeper to the local persistent storage.
+
+If max(`restartLSN`) != max(`flushLSN`), then recovery has to be performed.
+Proposer creates replication channel with most advanced safekeeper (safekeeper with the largest `flushLSN`).
+Then it downloads all WAL messages between max(`restartLSN`)..max(`flushLSN`).
+Messages are inserted in L1-list (ordered by LSN). Then we locate position of each safekeeper in this list according
+to their `flushLSN`s. Safekeepers that are not yet connected (out of quorum) should start from the beginning of the list
+(corresponding to `restartLSN`).
+
+We need to choose max(`flushLSN`) because voting quorum may be different from quorum committed the last message.
+So we do not know whether records with max(`flushLSN`) was committed by quorum or not. So we have to consider it committed
+to avoid loose of committed data.
+
+Calculated max(`flushLSN`) is called `VCL` (Volume Complete LSN). As far as it is chosen among quorum, there may be some other offline safekeeper with larger
+`VCL`. Once it becomes online, we need to overwrite its WAL beyond `VCL`. To support it, each safekeeper maintains
+`epoch` number. `Epoch` plays almost the same role as `term`, but algorithm of `epoch` bumping is different.
+`VCL` and new epoch are received by safekeeper from proposer during voting.
+But safekeeper doesn't switch to new epoch immediately after voting.
+Instead of it, safekeepers waits record with LSN > Max(`flushLSN`,`VCL`) is received.
+It means that we restore all records from old generation and switch to new generation.
+When proposer calculates max(`FlushLSN`), it first compares `Epoch`. So actually we compare (`Epoch`,`FlushLSN`) pairs.
+
+Let's looks at the examples. Consider that we have three safekeepers: S1, S2, S3. Si(N) means that i-th safekeeper has epoch=N.
+Ri(x) - WAL record for resource X with LSN=i. Assume that we have the following state:
+
+```
+S1(1): R1(a)
+S2(1): R1(a),R2(b)
+S3(1): R1(a),R2(b),R3(c),R4(d)  - offline
+```
+
+Proposer choose quorum (S1,S2). VCL for them is 2. We download S2 to proposer and schedule its write to S1.
+After receiving record R5 the picture can be:
+
+```
+S1(2): R1(a),R2(b),R3(e)
+S2(2): R1(a),R2(b),R3(e)
+S3(1): R1(a),R2(b),R3(c),R4(d)  - offline
+```
+
+Now if server is crashed or restarted, we perform new voting and
+doesn't matter which quorum we choose: (S1,S2), (S2,S3)...
+in any case VCL=3, because S3 has smaller epoch.
+R3(c) will be overwritten with R3(e):
+
+```
+S1(3): R1(a),R2(b),R3(e)
+S2(3): R1(a),R2(b),R3(e)
+S3(1): R1(a),R2(b),R3(e),R4(d)
+```
+
+Epoch of S3 will be adjusted once it overwrites R4:
+
+```
+S1(3): R1(a),R2(b),R3(e),R4(f)
+S2(3): R1(a),R2(b),R3(e),R4(f)
+S3(3): R1(a),R2(b),R3(e),R4(f)
+```
+
+Crash can happen before epoch was bumped. Let's return back to the initial position:
+
+```
+S1(1): R1(a)
+S2(1): R1(a),R2(b)
+S3(1): R1(a),R2(b),R3(c),R4(d)  - offline
+```
+
+Assume that we start recovery:
+
+```
+S1(1): R1(a),R2(b)
+S2(1): R1(a),R2(b)
+S3(1): R1(a),R2(b),R3(c),R4(d)  - offline
+```
+
+and then crash happens. During voting we choose quorum (S3,S3).
+Now them belong to the same epoch and S3 is most advanced among them.
+So VCL is set to 4 and we recover S1 and S2 from S3:
+
+```
+S1(1): R1(a),R2(b),R3(c),R4(d)
+S2(1): R1(a),R2(b),R3(c),R4(d)
+S3(1): R1(a),R2(b),R3(c),R4(d)
+```
+
+## Main loop
+Once recovery is completed, proposer switches to normal processing loop: it receives WAL stream from Postgres and appends WAL
+messages to the list. At the same time it tries to push messages to safekeepers. Each safekeeper is associated
+with some element in message list and once it acknowledged receiving of the message, position is moved forward.
+Each queue element contains acknowledgment mask, which bits corresponds to safekeepers.
+Once all safekeepers acknowledged receiving of this message (by setting correspondent bit),
+then element can be removed from queue and `restartLSN` is advanced forward.
+
+Proposer maintains `restartLSN` and `commitLSN` based on the responses received by safekeepers.
+`RestartLSN` equals to the LSN of head message in the list. `CommitLSN` is `flushLSN[nSafekeepers-Quorum]` element
+in ordered array with `flushLSN`s of safekeepers. `CommitLSN` and `RestartLSN` are included in requests
+sent from proposer to safekeepers and stored in safekeepers control file.
+To avoid overhead of extra fsync, this control file is not fsynced on each request. Flushing this file is performed
+periodically, which means that `restartLSN`/`commitLSN` stored by safekeeper may be slightly deteriorated.
+It is not critical because may only cause redundant processing of some WAL record.
+And `FlushLSN` is recalculated after node restart by scanning local WAL files.
+
+## Fault tolerance
+If the WAL proposer process looses connection to safekeeper it tries to reestablish this connection using the same nodeId.
+
+Restart of PostgreSQL initiates new round of voting and switching new epoch.
+
+## Limitations
+Right now message queue is maintained in main memory and is not spilled to the disk.
+It can cause memory overflow in case of presence of lagging safekeepers.
+It is assumed that in case of losing local data by some safekeepers, it should be recovered using some external mechanism.
+
+
+## Glossary
+* `CommitLSN`: position in WAL confirmed by quorum safekeepers.
+* `RestartLSN`: position in WAL confirmed by all safekeepers.
+* `FlushLSN`: part of WAL persisted to the disk by safekeeper.
+* `NodeID`: pair (term,UUID)
+* `Pager`: Neon component restoring pages from WAL stream
+* `Replica`: read-only computation node
+* `VCL`: the largest LSN for which we can guarantee availability of all prior records.
+
+## Algorithm
+
+```python
+process WalProposer(safekeepers,server,curr_epoch,restart_lsn=0,message_queue={},feedbacks={})
+    function do_recovery(epoch,restart_lsn,VCL)
+        leader = i:safekeepers[i].state.epoch=epoch and safekeepers[i].state.flushLsn=VCL
+        wal_stream = safekeepers[leader].start_replication(restart_lsn,VCL)
+        do
+            message = wal_stream.read()
+            message_queue.append(message)
+        while message.startPos < VCL
+
+        for i in 1..safekeepers.size()
+            for message in message_queue
+                if message.endLsn < safekeepers[i].state.flushLsn
+                    message.delivered += i
+                else
+                    send_message(i, message)
+                    break
+    end function
+
+    function send_message(i,msg)
+        msg.restartLsn = restart_lsn
+        msg.commitLsn = get_commit_lsn()
+        safekeepers[i].send(msg, response_handler)
+    end function
+
+    function do_broadcast(message)
+        for i in 1..safekeepers.size()
+            if not safekeepers[i].sending()
+                send_message(i, message)
+    end function
+
+    function get_commit_lsn()
+        sorted_feedbacks = feedbacks.sort()
+        return sorted_feedbacks[safekeepers.size() - quorum]
+    end function
+
+    function response_handler(i,message,response)
+        feedbacks[i] = if response.epoch=curr_epoch then response.flushLsn else VCL
+        server.write(get_commit_lsn())
+
+        message.delivered += i
+        next_message = message_queue.next(message)
+        if next_message
+            send_message(i, next_message)
+
+        while message_queue.head.delivered.size() = safekeepers.size()
+            if restart_lsn < message_queue.head.beginLsn
+                restart_lsn = message_queue.head.endLsn
+            message_queue.pop_head()
+    end function
+
+    server_info = server.read()
+
+    safekeepers.write(server_info)
+    safekeepers.state = safekeepers.read()
+    next_term = max(safekeepers.state.nodeId.term)+1
+    restart_lsn = max(safekeepers.state.restartLsn)
+    epoch,VCL = max(safekeepers.state.epoch,safekeepers.state.flushLsn)
+    curr_epoch = epoch + 1
+
+    proposal = Proposal(NodeId(next_term,server.id),curr_epoch,VCL)
+    safekeepers.send(proposal)
+    responses = safekeepers.read()
+    if any responses.is_rejected()
+        exit()
+
+    for i in 1..safekeepers.size()
+        feedbacks[i].flushLsn = if epoch=safekeepers[i].state.epoch then safekeepers[i].state.flushLsn else restart_lsn
+
+    if restart_lsn != VCL
+        do_recovery(epoch,restart_lsn,VCL)
+
+    wal_stream = server.start_replication(VCL)
+    for ever
+        message = wal_stream.read()
+        message_queue.append(message)
+        do_broadcast(message)
+end process
+
+process safekeeper(gateway,state)
+    function handshake()
+        proposer = gateway.accept()
+        server_info = proposer.read()
+        proposer.write(state)
+        proposal = proposer.read()
+        if proposal.nodeId < state.nodeId
+            proposer.write(rejected)
+            return null
+        else
+            state.nodeId = proposal.nodeId
+            state.proposed_epoch = proposal.epoch
+            state.VCL = proposal.VCL
+            write_control_file(state)
+            proposer.write(accepted)
+            return proposer
+    end function
+
+    state = read_control_file()
+    state.flushLsn = locate_end_of_wal()
+
+    for ever
+        proposer = handshake()
+        if not proposer
+            continue
+        for ever
+            req = proposer.read()
+            if req.nodeId != state.nodeId
+                break
+            save_wal_file(req.data)
+            state.restartLsn = req.restartLsn
+            if state.epoch < state.proposed_epoch and req.endPos > max(state.flushLsn,state.VCL)
+                state.epoch = state.proposed_epoch
+            if req.endPos > state.flushLsn
+                state.flushLsn = req.endPos
+            save_control_file(state)
+            resp = Response(state.epoch,req.endPos)
+            proposer.write(resp)
+            notify_wal_sender(Min(req.commitLsn,req.endPos))
+end process
+```
+
+
+# Content from file ../neon/docs/separation-compute-storage.md:
+
+# Separation of Compute and Storage
+
+TODO:
+
+- Read path
+- Write path
+- Durability model
+- API auth
+
+
+# Content from file ../neon/docs/settings.md:
+
+## Pageserver
+
+Pageserver is mainly configured via a `pageserver.toml` config file.
+If there's no such file during `init` phase of the server, it creates the file itself. Without 'init', the file is read.
+
+There's a possibility to pass an arbitrary config value to the pageserver binary as an argument: such values override
+the values in the config file, if any are specified for the same key and get into the final config during init phase.
+
+### Config example
+
+```toml
+# Initial configuration file created by 'pageserver --init'
+listen_pg_addr = '127.0.0.1:64000'
+listen_http_addr = '127.0.0.1:9898'
+
+checkpoint_distance = '268435456' # in bytes
+checkpoint_timeout = '10m'
+
+gc_period = '1 hour'
+gc_horizon = '67108864'
+
+max_file_descriptors = '100'
+
+# initial superuser role name to use when creating a new tenant
+initial_superuser_name = 'cloud_admin'
+
+broker_endpoint = 'http://127.0.0.1:50051'
+
+# [remote_storage]
+```
+
+The config above shows default values for all basic pageserver settings, besides `broker_endpoint`: that one has to be set by the user,
+see the corresponding section below.
+Pageserver uses default values for all files that are missing in the config, so it's not a hard error to leave the config blank.
+Yet, it validates the config values it can (e.g. postgres install dir) and errors if the validation fails, refusing to start.
+
+Note the `[remote_storage]` section: it's a [table](https://toml.io/en/v1.0.0#table) in TOML specification and
+
+- either has to be placed in the config after the table-less values such as `initial_superuser_name = 'cloud_admin'`
+
+- or can be placed anywhere if rewritten in identical form as [inline table](https://toml.io/en/v1.0.0#inline-table): `remote_storage = {foo = 2}`
+
+### Config values
+
+All values can be passed as an argument to the pageserver binary, using the `-c` parameter and specified as a valid TOML string. All tables should be passed in the inline form.
+
+Example: `${PAGESERVER_BIN} -c "checkpoint_timeout = '10 m'" -c "remote_storage={local_path='/some/local/path/'}"`
+
+Note that TOML distinguishes between strings and integers, the former require single or double quotes around them.
+
+#### broker_endpoint
+
+A storage broker endpoint to connect and pull the information from. Default is
+`'http://127.0.0.1:50051'`. 
+
+#### checkpoint_distance
+
+`checkpoint_distance` is the amount of incoming WAL that is held in
+the open layer, before it's flushed to local disk. It puts an upper
+bound on how much WAL needs to be re-processed after a pageserver
+crash. It is a soft limit, the pageserver can momentarily go above it,
+but it will trigger a checkpoint operation to get it back below the
+limit.
+
+`checkpoint_distance` also determines how much WAL needs to be kept
+durable in the safekeeper. The safekeeper must have capacity to hold
+this much WAL, with some headroom, otherwise you can get stuck in a
+situation where the safekeeper is full and stops accepting new WAL,
+but the pageserver is not flushing out and releasing the space in the
+safekeeper because it hasn't reached checkpoint_distance yet.
+
+`checkpoint_distance` also controls how often the WAL is uploaded to
+S3.
+
+The unit is # of bytes.
+
+#### checkpoint_timeout
+
+Apart from `checkpoint_distance`, open layer flushing is also triggered
+`checkpoint_timeout` after the last flush. This makes WAL eventually uploaded to
+s3 when activity is stopped.
+
+The default is 10m.
+
+#### compaction_period
+
+Every `compaction_period` seconds, the page server checks if
+maintenance operations, like compaction, are needed on the layer
+files. Default is 1 s, which should be fine.
+
+#### compaction_target_size
+
+File sizes for L0 delta and L1 image layers. Default is 128MB.
+
+#### gc_horizon
+
+`gz_horizon` determines how much history is retained, to allow
+branching and read replicas at an older point in time. The unit is #
+of bytes of WAL. Page versions older than this are garbage collected
+away.
+
+#### gc_period
+
+Interval at which garbage collection is triggered. Default is 1 hour.
+
+#### image_creation_threshold
+
+L0 delta layer threshold for L1 image layer creation. Default is 3.
+
+#### pitr_interval
+
+WAL retention duration for PITR branching. Default is 7 days.
+
+#### walreceiver_connect_timeout
+
+Time to wait to establish the wal receiver connection before failing
+
+#### lagging_wal_timeout
+
+Time the pageserver did not get any WAL updates from safekeeper (if any).
+Avoids lagging pageserver preemptively by forcing to switch it from stalled connections.
+
+#### max_lsn_wal_lag
+
+Difference between Lsn values of the latest available WAL on safekeepers: if currently connected safekeeper starts to lag too long and too much,
+it gets swapped to the different one.
+
+#### initial_superuser_name
+
+Name of the initial superuser role, passed to initdb when a new tenant
+is initialized. It doesn't affect anything after initialization. The
+default is Note: The default is 'cloud_admin', and the console
+depends on that, so if you change it, bad things will happen.
+
+#### page_cache_size
+
+Size of the page cache, to hold materialized page versions. Unit is
+number of 8 kB blocks. The default is 8192, which means 64 MB.
+
+#### max_file_descriptors
+
+Max number of file descriptors to hold open concurrently for accessing
+layer files. This should be kept well below the process/container/OS
+limit (see `ulimit -n`), as the pageserver also needs file descriptors
+for other files and for sockets for incoming connections.
+
+#### pg_distrib_dir
+
+A directory with Postgres installation to use during pageserver activities.
+Since pageserver supports several postgres versions, `pg_distrib_dir` contains
+a subdirectory for each version with naming convention `v{PG_MAJOR_VERSION}/`.
+Inside that dir, a `bin/postgres` binary should be present.
+
+The default distrib dir is `./pg_install/`.
+
+#### workdir (-D)
+
+A directory in the file system, where pageserver will store its files.
+The default is `./.neon/`.
+
+This parameter has a special CLI alias (`-D`) and can not be overridden with regular `-c` way.
+
+##### Remote storage
+
+There's a way to automatically back up and restore some of the pageserver's data from working dir to the remote storage.
+The backup system is disabled by default and can be enabled for either of the currently available storages:
+
+###### Local FS storage
+
+Pageserver can back up and restore some of its workdir contents to another directory.
+For that, only a path to that directory needs to be specified as a parameter:
+
+```toml
+[remote_storage]
+local_path = '/some/local/path/'
+```
+
+###### S3 storage
+
+Pageserver can back up and restore some of its workdir contents to S3.
+Full set of S3 credentials is needed for that as parameters.
+Configuration example:
+
+```toml
+[remote_storage]
+# Name of the bucket to connect to
+bucket_name = 'some-sample-bucket'
+
+# Name of the region where the bucket is located at
+bucket_region = 'eu-north-1'
+
+# A "subfolder" in the bucket, to use the same bucket separately by multiple pageservers at once.
+# Optional, pageserver uses entire bucket if the prefix is not specified.
+prefix_in_bucket = '/some/prefix/'
+
+# S3 API query limit to avoid getting errors/throttling from AWS.
+concurrency_limit = 100
+```
+
+If no IAM bucket access is used during the remote storage usage, use the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables to set the access credentials.
+
+###### General remote storage configuration
+
+Pageserver allows only one remote storage configured concurrently and errors if parameters from multiple different remote configurations are used.
+No default values are used for the remote storage configuration parameters.
+
+Besides, there are parameters common for all types of remote storage that can be configured, those have defaults:
+
+```toml
+[remote_storage]
+# Max number of concurrent timeline synchronized (layers uploaded or downloaded) with the remote storage at the same time.
+max_concurrent_syncs = 50
+
+# Max number of errors a single task can have before it's considered failed and not attempted to run anymore.
+max_sync_errors = 10
+```
+
+## safekeeper
+
+TODO
+
+
+# Content from file ../neon/docs/sourcetree.md:
+
+## Source tree layout
+
+Below you will find a brief overview of each subdir in the source tree in alphabetical order.
+
+`storage_broker`:
+
+Neon storage broker, providing messaging between safekeepers and pageservers.
+[storage_broker.md](./storage_broker.md)
+
+`/control_plane`:
+
+Local control plane.
+Functions to start, configure and stop pageserver and postgres instances running as a local processes.
+Intended to be used in integration tests and in CLI tools for local installations.
+
+`/docs`:
+
+Documentation of the Neon features and concepts.
+Now it is mostly dev documentation.
+
+`/pageserver`:
+
+Neon storage service.
+The pageserver has a few different duties:
+
+- Store and manage the data.
+- Generate a tarball with files needed to bootstrap ComputeNode.
+- Respond to GetPage@LSN requests from the Compute Nodes.
+- Receive WAL from the WAL service and decode it.
+- Replay WAL that's applicable to the chunks that the Page Server maintains
+
+For more detailed info, see [pageserver-services.md](./pageserver-services.md)
+
+`/proxy`:
+
+Postgres protocol proxy/router.
+This service listens psql port, can check auth via external service
+and create new databases and accounts (control plane API in our case).
+
+`/test_runner`:
+
+Integration tests, written in Python using the `pytest` framework.
+
+`/vendor/postgres-v14` and `/vendor/postgres-v15`:
+
+PostgreSQL source tree per version, with the modifications needed for Neon.
+
+`/pgxn/neon`:
+
+PostgreSQL extension that implements storage manager API and network communications with remote page server.
+
+`/pgxn/neon_test_utils`:
+
+PostgreSQL extension that contains functions needed for testing and debugging.
+
+`/pgxn/neon_walredo`:
+
+Library to run Postgres as a "WAL redo process" in the pageserver.
+
+`/safekeeper`:
+
+The neon WAL service that receives WAL from a primary compute nodes and streams it to the pageserver.
+It acts as a holding area and redistribution center for recently generated WAL.
+
+For more detailed info, see [walservice.md](./walservice.md)
+
+`/workspace_hack`:
+The workspace_hack crate exists only to pin down some dependencies.
+
+We use [cargo-hakari](https://crates.io/crates/cargo-hakari) for automation.
+
+`/libs`:
+Unites granular neon helper crates under the hood.
+
+`/libs/postgres_ffi`:
+
+Utility functions for interacting with PostgreSQL file formats.
+Misc constants, copied from PostgreSQL headers.
+
+`/libs/utils`:
+Generic helpers that are shared between other crates in this repository.
+A subject for future modularization.
+
+`/libs/metrics`:
+Helpers for exposing Prometheus metrics from the server.
+
+### Adding dependencies
+When you add a Cargo dependency, you should update hakari manifest by running commands below and committing the updated `Cargo.lock` and `workspace_hack/`. There may be no changes, that's fine.
+
+```bash
+cargo hakari generate
+cargo hakari manage-deps
+```
+
+If you don't have hakari installed (`error: no such subcommand: hakari`), install it by running `cargo install cargo-hakari`.
+
+### Checking Rust 3rd-parties
+[Cargo deny](https://embarkstudios.github.io/cargo-deny/index.html) is a cargo plugin that lets us lint project's dependency graph to ensure all dependencies conform to requirements. It detects security issues, matches licenses, and ensures crates only come from trusted sources.
+
+```bash
+cargo deny check
+```
+
+## Using Python
+Note that Debian/Ubuntu Python packages are stale, as it commonly happens,
+so manual installation of dependencies is not recommended.
+
+A single virtual environment with all dependencies is described in the single `Pipfile`.
+
+### Prerequisites
+- Install Python 3.9 (the minimal supported version) or greater.
+    - Our setup with poetry should work with newer python versions too. So feel free to open an issue with a `c/test-runner` label if something doesn't work as expected.
+    - If you have some trouble with other version you can resolve it by installing Python 3.9 separately, via [pyenv](https://github.com/pyenv/pyenv) or via system package manager e.g.:
+      ```bash
+      # In Ubuntu
+      sudo add-apt-repository ppa:deadsnakes/ppa
+      sudo apt update
+      sudo apt install python3.9
+      ```
+- Install `poetry`
+    - Exact version of `poetry` is not important, see installation instructions available at poetry's [website](https://python-poetry.org/docs/#installation).
+- Install dependencies via `./scripts/pysync`.
+    - Note that CI uses specific Python version (look for `PYTHON_VERSION` [here](https://github.com/neondatabase/docker-images/blob/main/rust/Dockerfile))
+      so if you have different version some linting tools can yield different result locally vs in the CI.
+    - You can explicitly specify which Python to use by running `poetry env use /path/to/python`, e.g. `poetry env use python3.9`.
+      This may also disable the `The currently activated Python version X.Y.Z is not supported by the project` warning.
+
+Run `poetry shell` to activate the virtual environment.
+Alternatively, use `poetry run` to run a single command in the venv, e.g. `poetry run pytest`.
+
+### Obligatory checks
+We force code formatting via `ruff`, and type hints via `mypy`.
+Run the following commands in the repository's root (next to `pyproject.toml`):
+
+```bash
+poetry run ruff format . # All code is reformatted
+poetry run ruff check .  # Python linter
+poetry run mypy .        # Ensure there are no typing errors
+```
+
+**WARNING**: do not run `mypy` from a directory other than the root of the repository.
+Otherwise it will not find its configuration.
+
+Also consider:
+
+* Running `pycodestyle` (or a linter of your choice) and fixing possible defects, if any.
+* Adding more type hints to your code to avoid `Any`.
+
+### Changing dependencies
+To add new package or change an existing one you can use `poetry add` or `poetry update` or edit `pyproject.toml` manually. Do not forget to run `poetry lock` in the latter case.
+
+More details are available in poetry's [documentation](https://python-poetry.org/docs/).
+
+## Configuring IDEs
+Neon consists of three projects in different languages which use different project models.
+
+* A bunch of Rust crates, all available from the root `Cargo.toml`.
+* Integration tests in Python in the `test_runner` directory. Some stand-alone Python scripts exist as well.
+* Postgres and our Postgres extensions in C built with Makefiles under `vendor/postgres` and `pgxn`.
+
+### CLion
+You can use CLion with the [Rust plugin](https://plugins.jetbrains.com/plugin/8182-rust) to develop Neon. It should pick up Rust and Python projects whenever you open Neon's repository as a project. We have not tried setting up a debugger, though.
+
+C code requires some extra care, as it's built via Make, not CMake. Some of our developers have successfully used [compilation database](https://www.jetbrains.com/help/clion/compilation-database.html#compdb_generate) for CLion. It is a JSON file which lists all C source files and corresponding compilation keys. CLion can use it instead of `CMakeLists.txt`. To set up a project with a compilation database:
+
+1. Clone the Neon repository and install all dependencies, including Python. Do not open it with CLion just yet.
+2. Run the following commands in the repository's root:
+   ```bash
+   # Install a `compiledb` tool which can parse make's output and generate the compilation database.
+   poetry add -D compiledb
+   # Clean the build tree so we can rebuild from scratch.
+   # Unfortunately, our and Postgres Makefiles do not work well with either --dry-run or --assume-new,
+   # so we don't know a way to generate the compilation database without recompiling everything,
+   # see https://github.com/neondatabase/neon/issues/2378#issuecomment-1241421325
+   make distclean
+   # Rebuild the Postgres parts from scratch and save the compilation commands to the compilation database.
+   # You can alter the -j parameter to your liking.
+   # Note that we only build for a specific version of Postgres. The extension code is shared, but headers are
+   # different, so we set up CLion to only use a specific version of the headers.
+   make -j$(nproc) --print-directory postgres-v15 neon-pg-ext-v15 | poetry run compiledb --verbose --no-build
+   # Uninstall the tool
+   poetry remove -D compiledb
+   # Make sure the compile_commands.json file is not committed.
+   echo /compile_commands.json >>.git/info/exclude
+   ```
+3. Open CLion, click "Open File or Project" and choose the generated `compile_commands.json` file to be opened "as a project". You cannot add a compilation database into an existing CLion project, you have to create a new one. _Do not_ open the directory as a project, open the file.
+4. The newly created project should start indexing Postgres source code in C, as well as the C standard library. You may have to [configure the C compiler for the compilation database](https://www.jetbrains.com/help/clion/compilation-database.html#compdb_toolchain).
+5. Open the `Cargo.toml` file in an editor in the same project. CLion should pick up the hint and start indexing Rust code.
+6. Now you have a CLion project which knows about C files, Rust files. It should pick up Python files automatically as well.
+7. Set up correct code indentation in CLion's settings: Editor > Code Style > C/C++, choose the "Project" scheme on the top, and tick the "Use tab character" on the "Tabs and Indents" tab. Ensure that "Tab size" is 4.
+
+You can also enable Cargo Clippy diagnostics and enable Rustfmt instead of built-in code formatter.
+
+Whenever you change layout of C files, you may need to regenerate the compilation database. No need to re-create the CLion project, changes should be picked up automatically.
+
+Known issues (fixes and suggestions are welcome):
+
+* Test results may be hard to read in CLion, both for unit tests in Rust and integration tests in Python. Use command line to run them instead.
+* CLion does not support non-local Python interpreters, unlike PyCharm. E.g. if you use WSL, CLion does not see `poetry` and installed dependencies. Python support is limited.
+* Cargo Clippy diagnostics in CLion may take a lot of resources.
+* `poetry add -D` updates some packages and changes `poetry.lock` drastically even when followed by `poetry remove -D`. Feel free to `git checkout poetry.lock` and `./scripts/pysync` to revert these changes.
+
+
+# Content from file ../neon/docs/storage_broker.md:
+
+# Storage broker
+
+Storage broker targets two issues:
+- Allowing safekeepers and pageservers learn which nodes also hold their
+  timelines, and timeline statuses there.
+- Avoiding O(n^2) connections between storage nodes while doing so.
+
+This is used
+- By pageservers to determine the most advanced and alive safekeeper to pull WAL from.
+- By safekeepers to synchronize on the timeline: advance
+  `remote_consistent_lsn`, `backup_lsn`, choose who offloads WAL to s3.
+
+Technically, it is a simple stateless pub-sub message broker based on tonic
+(grpc) making multiplexing easy. Since it is stateless, fault tolerance can be
+provided by k8s; there is no built in replication support, though it is not hard
+to add.
+
+Currently, the only message is `SafekeeperTimelineInfo`. Each safekeeper, for
+each active timeline, once in a while pushes timeline status to the broker.
+Other nodes subscribe and receive this info, using it per above.
+
+Broker serves /metrics on the same port as grpc service. 
+
+grpcurl can be used to check which values are currently being pushed:
+```
+grpcurl -proto broker/proto/broker.proto -d '{"all":{}}' -plaintext localhost:50051 storage_broker.BrokerService/SubscribeSafekeeperInfo
+```
+
+
+# Content from file ../neon/docs/synthetic-size.md:
+
+# Synthetic size
+
+Neon storage has copy-on-write branching, which makes it difficult to
+answer the question "how large is my database"? To give one reasonable
+answer, we calculate _synthetic size_ for a project.
+
+The calculation is called "synthetic", because it is based purely on
+the user-visible logical size, which is the size that you would see on
+a standalone PostgreSQL installation, and the amount of WAL, which is
+also the same as what you'd see on a standalone PostgreSQL, for the
+same set of updates.
+
+The synthetic size does *not* depend on the actual physical size
+consumed in the storage, or implementation details of the Neon storage
+like garbage collection, compaction and compression.  There is a
+strong *correlation* between the physical size and the synthetic size,
+but the synthetic size is designed to be independent of the
+implementation details, so that any improvements we make in the
+storage system simply reduce our COGS. And vice versa: any bugs or bad
+implementation where we keep more data than we would need to, do not
+change the synthetic size or incur any costs to the user.
+
+The synthetic size is calculated for the whole project. It is not
+straighforward to attribute size to individual branches. See "What is
+the size of an individual branch?" for discussion on those
+difficulties.
+
+The synthetic size is designed to:
+
+- Take into account the copy-on-write nature of the storage. For
+  example, if you create a branch, it doesn't immediately add anything
+  to the synthetic size. It starts to affect the synthetic size only
+  as it diverges from the parent branch.
+
+- Be independent of any implementation details of the storage, like
+  garbage collection, remote storage, or compression.
+
+## Terms & assumptions
+
+- logical size is the size of a branch *at a given point in
+  time*. It's the total size of all tables in all databases, as you
+  see with "\l+" in psql for example, plus the Postgres SLRUs and some
+  small amount of metadata. NOTE that currently, Neon does not include
+  the SLRUs and metadata in the logical size. See comment to `get_current_logical_size_non_incremental()`.
+
+- a "point in time" is defined as an LSN value. You can convert a
+  timestamp to an LSN, but the storage internally works with LSNs.
+
+- PITR horizon can be set per-branch.
+
+- PITR horizon can be set as a time interval, e.g. 5 days or hours, or
+  as amount of WAL, in bytes.  If it's given as a time interval, it's
+  converted to an LSN for the calculation.
+
+- PITR horizon can be set to 0, if you don't want to retain any history.
+
+## Calculation
+
+Inputs to the calculation are:
+- logical size of the database at different points in time,
+- amount of WAL generated, and
+- the PITR horizon settings
+
+The synthetic size is based on an idealistic model of the storage
+system, where we pretend that the storage consists of two things:
+- snapshots, containing a full snapshot of the database, at a given
+  point in time, and
+- WAL.
+
+In the simple case that the project contains just one branch (main),
+and a fixed PITR horizon, the synthetic size is the sum of:
+
+- the logical size of the branch *at the beginning of the PITR
+  horizon*, i.e. at the oldest point that you can still recover to, and
+- the size of the WAL covering the PITR horizon.
+
+The snapshot allows you to recover to the beginning of the PITR
+horizon, and the WAL allows you to recover from that point to any
+point within the horizon.
+
+```
+                             WAL
+   -----------------------#########>
+                          ^
+                       snapshot
+
+Legend:
+  ##### PITR horizon. This is the region that you can still access
+        with Point-in-time query and you can still create branches
+        from.
+  ----- history that has fallen out of the PITR horizon, and can no
+        longer be accessed
+```
+
+NOTE: This is not how the storage system actually works! The actual
+implementation is also based on snapshots and WAL, but the snapshots
+are taken for individual database pages and ranges of pages rather
+than the whole database, and it is much more complicated. This model
+is a reasonable approximation, however, to make the synthetic size a
+useful proxy for the actual storage consumption.
+
+
+## Example: Data is INSERTed
+
+For example, let's assume that your database contained 10 GB of data
+at the beginning of the PITR horizon, and you have since then inserted
+5 GB of additional data into it. The additional insertions of 5 GB of
+data consume roughly 5 GB of WAL. In that case, the synthetic size is:
+
+> 10 GB (snapshot) +  5 GB (WAL) = 15 GB
+
+If you now set the PITR horizon on the project to 0, so that no
+historical data is retained, then the beginning PITR horizon would be
+at the end of the branch, so the size of the snapshot would be
+calculated at the end of the branch, after the insertions. Then the
+synthetic size is:
+
+> 15 GB (snapshot) + 0 GB (WAL) = 15 GB.
+
+In this case, the synthetic size is the same, regardless of the PITR horizon,
+because all the history consists of inserts. The newly inserted data takes
+up the same amount of space, whether it's stored as part of the logical
+snapshot, or as WAL. (*)
+
+(*) This is a rough approximation. In reality, the WAL contains
+headers and other overhead, and on the other hand, the logical
+snapshot includes empty space on pages, so the size of insertions in
+WAL can be smaller or greater than the size of the final table after
+the insertions. But in most cases, it's in the same ballpark.
+
+## Example: Data is DELETEd
+
+Let's look at another example:
+
+Let's start again with a database that contains 10 GB of data. Then,
+you DELETE 5 GB of the data, and run VACUUM to free up the space, so
+that the logical size of the database is now only 5 GB.
+
+Let's assume that the WAL for the deletions and the vacuum take up
+100 MB of space. In that case, the synthetic size of the project is:
+
+> 10 GB (snapshot) + 100 MB (WAL) = 10.1 GB
+
+This is much larger than the logical size of the database after the
+deletions (5 GB). That's because the system still needs to retain the
+deleted data, because it's still accessible to queries and branching
+in the PITR window.
+
+If you now set the PITR horizon to 0 or just wait for time to pass so
+that the data falls out of the PITR horizon, making the deleted data
+inaccessible, the synthetic size shrinks:
+
+> 5 GB (snapshot) + 0 GB (WAL) = 5 GB
+
+
+# Branching
+
+Things get more complicated with branching. Branches in Neon are
+copy-on-write, which is also reflected in the synthetic size.
+
+When you create a branch, it doesn't immediately change the synthetic
+size at all. The branch point is within the PITR horizon, and all the
+data needed to recover to that point in time needs to be retained
+anyway.
+
+However, if you make modifications on the branch, the system needs to
+keep the WAL of those modifications. The WAL is included in the
+synthetic size.
+
+## Example: branch and INSERT
+
+Let's assume that you again start with a 10 GB database.
+On the main branch, you insert 2 GB of data. Then you create
+a branch at that point, and insert another 3 GB of data on the
+main branch, and 1 GB of data on the child branch
+
+```
+  child                 +#####>
+                        |
+                        |    WAL
+  main    ---------###############>
+                   ^
+                snapshot
+```
+
+In this case, the synthetic size consists of:
+- the snapshot at the beginning of the PITR horizon (10 GB)
+- the WAL on the main branch (2 GB + 3 GB = 5 GB)
+- the WAL on the child branch (1 GB)
+
+Total: 16 GB
+
+# Diverging branches
+
+If there is only a small amount of changes in the database on the
+different branches, as in the previous example, the synthetic size
+consists of a snapshot before the branch point, containing all the
+shared data, and the WAL on both branches. However, if the branches
+diverge a lot, it is more efficient to store a separate snapshot of
+branches.
+
+## Example: diverging branches
+
+You start with a 10 GB database. You insert 5 GB of data on the main
+branch. Then you create a branch, and immediately delete all the data
+on the child branch and insert 5 GB of new data to it. Then you do the
+same on the main branch. Let's assume
+that the PITR horizon requires keeping the last 1 GB of WAL on the
+both branches.
+
+```
+                              snapshot
+                                  v     WAL
+  child                 +---------##############>
+                        |
+                        |
+  main     -------------+---------##############>
+                                  ^     WAL
+                              snapshot
+```
+
+In this case, the synthetic size consists of:
+- snapshot at the beginning of the PITR horizon on the main branch (4 GB)
+- WAL on the main branch (1 GB)
+- snapshot at the beginning of the PITR horizon on the child branch (4 GB)
+- last 1 GB of WAL on the child branch (1 GB)
+
+Total: 10 GB
+
+The alternative way to store this would be to take only one snapshot
+at the beginning of branch point, and keep all the WAL on both
+branches.  However, the size with that method would be larger, as it
+would require one 10 GB snapshot, and 5 GB + 5 GB of WAL. It depends
+on the amount of changes (WAL) on both branches, and the logical size
+at the branch point, which method would result in a smaller synthetic
+size. On each branch point, the system performs the calculation with
+both methods, and uses the method that is cheaper, i.e. the one that
+results in a smaller synthetic size.
+
+One way to think about this is that when you create a branch, it
+starts out as a thin branch that only stores the WAL since the branch
+point.  As you modify it, and the amount of WAL grows, at some point
+it becomes cheaper to store a completely new snapshot of the branch
+and truncate the WAL.
+
+
+# What is the size of an individual branch?
+
+Synthetic size is calculated for the whole project, and includes all
+branches. There is no such thing as the size of a branch, because it
+is not straighforward to attribute the parts of size to individual
+branches.
+
+## Example: attributing size to branches
+
+(copied from https://github.com/neondatabase/neon/pull/2884#discussion_r1029365278)
+
+Imagine that you create two branches, A and B, at the same point from
+main branch, and do a couple of small updates on both branches. Then
+six months pass, and during those six months the data on the main
+branch churns over completely multiple times. The retention period is,
+say 1 month.
+
+```
+                      +------> A
+                     /
+--------------------*-------------------------------> main
+                     \
+                      +--------> B
+```
+
+In that situation, the synthetic tenant size would be calculated based
+on a "logical snapshot" at the branch point, that is, the logical size
+of the database at that point. Plus the WAL on branches A and B. Let's
+say that the snapshot size is 10 GB, and the WAL is 1 MB on both
+branches A and B. So the total synthetic storage size is 10002
+MB. (Let's ignore the main branch for now, that would be just added to
+the sum)
+
+How would you break that down per branch? I can think of three
+different ways to do it, and all of them have their own problems:
+
+### Subtraction method
+
+For each branch, calculate how much smaller the total synthetic size
+would be, if that branch didn't exist. In other words, how much would
+you save if you dropped the branch. With this method, the size of
+branches A and B is 1 MB.
+
+With this method, the 10 GB shared logical snapshot is not included
+for A nor B. So the size of all branches is not equal to the total
+synthetic size of the tenant. If you drop branch A, you save 1 MB as
+you'd expect, but also the size of B suddenly jumps from 1 MB to 10001
+MB, which might feel surprising.
+
+### Division method
+
+Divide the common parts evenly across all branches that need
+them. With this method, the size of branches A and B would be 5001 MB.
+
+With this method, the sum of all branches adds up to the total
+synthetic size. But it's surprising in other ways: if you drop branch
+A, you might think that you save 5001 MB, but in reality you only save
+1 MB, and the size of branch B suddenly grows from 5001 to 10001 MB.
+
+### Addition method
+
+For each branch, include all the snapshots and WAL that it depends on,
+even if some of them are shared by other branches. With this method,
+the size of branches A and B would be 10001 MB.
+
+The surprise with this method is that the sum of all the branches is
+larger than the total synthetic size. And if you drop branch A, the
+total synthetic size doesn't fall by 10001 MB as you might think.
+
+# Alternatives
+
+A sort of cop-out method would be to show the whole tree of branches
+graphically, and for each section of WAL or logical snapshot, display
+the size of that section. You can then see which branches depend on
+which sections, which sections are shared etc. That would be good to
+have in the UI anyway.
+
+Or perhaps calculate per-branch numbers using the subtraction method,
+and in addition to that, one more number for "shared size" that
+includes all the data that is needed by more than one branch.
+
+## Which is the right method?
+
+The bottom line is that it's not straightforward to attribute the
+synthetic size to individual branches. There are things we can do, and
+all of those methods are pretty straightforward to implement, but they
+all have their own problems. What makes sense depends a lot on what
+you want to do with the number, what question you are trying to
+answer.
+
+
+# Content from file ../neon/docs/tools.md:
+
+# Useful development tools
+
+This readme contains some hints on how to set up some optional development tools.
+
+## ccls
+
+[ccls](https://github.com/MaskRay/ccls) is a c/c++ language server. It requires some setup
+to work well. There are different ways to do it but here's what works for me:
+1. Make a common parent directory for all your common neon projects. (for example, `~/src/neondatabase/`)
+2. Go to `vendor/postgres-v15`
+3. Run `make clean && ./configure`
+4. Install [bear](https://github.com/rizsotto/Bear), and run `bear -- make -j4`
+5. Copy the generated `compile_commands.json` to `~/src/neondatabase` (or equivalent)
+6. Run `touch ~/src/neondatabase/.ccls-root` this will make the `compile_commands.json` file discoverable in all subdirectories
+
+With this setup you will get decent lsp mileage inside the postgres repo, and also any postgres extensions that you put in `~/src/neondatabase/`, like `pg_embedding`, or inside `~/src/neondatabase/neon/pgxn` as well.
+
+Some additional tips for various IDEs:
+
+### Emacs
+
+To improve performance: `(setq lsp-lens-enable nil)`
+
+
+# Content from file ../neon/docs/updating-postgres.md:
+
+# Updating Postgres
+
+## Minor Versions
+
+When upgrading to a new minor version of Postgres, please follow these steps:
+
+_Example: 15.4 is the new minor version to upgrade to from 15.3._
+
+1. Clone the Neon Postgres repository if you have not done so already.
+
+    ```shell
+    git clone git@github.com:neondatabase/postgres.git
+    ```
+
+1. Add the Postgres upstream remote.
+
+    ```shell
+    git remote add upstream https://git.postgresql.org/git/postgresql.git
+    ```
+
+1. Create a new branch based on the stable branch you are updating.
+
+    ```shell
+    git checkout -b my-branch REL_15_STABLE_neon
+    ```
+
+1. Tag the last commit on the stable branch you are updating.
+
+    ```shell
+    git tag REL_15_3_neon
+    ```
+
+1. Push the new tag to the Neon Postgres repository.
+
+    ```shell
+    git push origin REL_15_3_neon
+    ```
+
+1. Find the release tags you're looking for. They are of the form `REL_X_Y`.
+
+1. Rebase the branch you created on the tag and resolve any conflicts.
+
+    ```shell
+    git fetch upstream REL_15_4
+    git rebase REL_15_4
+    ```
+
+1. Run the Postgres test suite to make sure our commits have not affected
+Postgres in a negative way.
+
+    ```shell
+    make check
+    # OR
+    meson test -C builddir
+    ```
+
+1. Push your branch to the Neon Postgres repository.
+
+    ```shell
+    git push origin my-branch
+    ```
+
+1. Clone the Neon repository if you have not done so already.
+
+    ```shell
+    git clone git@github.com:neondatabase/neon.git
+    ```
+
+1. Create a new branch.
+
+1. Change the `revisions.json` file to point at the HEAD of your Postgres
+branch.
+
+1. Update the Git submodule.
+
+    ```shell
+    git submodule set-branch --branch my-branch vendor/postgres-v15
+    git submodule update --remote vendor/postgres-v15
+    ```
+
+1. Run the Neon test suite to make sure that Neon is still good to go on this
+minor Postgres release.
+
+    ```shell
+    ./scripts/poetry -k pg15
+    ```
+
+1. Commit your changes.
+
+1. Create a pull request, and wait for CI to go green.
+
+1. Force push the rebased Postgres branches into the Neon Postgres repository.
+
+    ```shell
+    git push --force origin my-branch:REL_15_STABLE_neon
+    ```
+
+    It may require disabling various branch protections.
+
+1. Update your Neon PR to point at the branches.
+
+    ```shell
+    git submodule set-branch --branch REL_15_STABLE_neon vendor/postgres-v15
+    git commit --amend --no-edit
+    git push --force origin
+    ```
+
+1. Merge the pull request after getting approval(s) and CI completion.
+
+
+# Content from file ../neon/docs/walservice.md:
+
+# WAL service
+
+The neon WAL service acts as a holding area and redistribution
+center for recently generated WAL. The primary Postgres server streams
+the WAL to the WAL safekeeper, and treats it like a (synchronous)
+replica. A replication slot is used in the primary to prevent the
+primary from discarding WAL that hasn't been streamed to the WAL
+service yet.
+
+```
++--------------+              +------------------+
+|              |     WAL      |                  |
+| Compute node |  ----------> |   WAL Service    |
+|              |              |                  |
++--------------+              +------------------+
+                                     |
+                                     |
+                                     | WAL
+                                     |
+                                     |
+                                     V
+                              +--------------+
+                              |              |
+                              | Pageservers  |
+                              |              |
+                              +--------------+
+```
+
+
+The WAL service consists of multiple WAL safekeepers that all store a
+copy of the WAL. A WAL record is considered durable when the majority
+of safekeepers have received and stored the WAL to local disk. A
+consensus algorithm based on Paxos is used to manage the quorum.
+
+```
+  +-------------------------------------------+
+  | WAL Service                               |
+  |                                           |
+  |                                           |
+  |  +------------+                           |
+  |  | safekeeper |                           |
+  |  +------------+                           |
+  |                                           |
+  |  +------------+                           |
+  |  | safekeeper |                           |
+  |  +------------+                           |
+  |                                           |
+  |  +------------+                           |
+  |  | safekeeper |                           |
+  |  +------------+                           |
+  |                                           |
+  +-------------------------------------------+
+```
+
+The primary connects to the WAL safekeepers, so it works in a "push"
+fashion.  That's different from how streaming replication usually
+works, where the replica initiates the connection. To do that, there
+is a component called the "WAL proposer". The WAL proposer is a
+background worker that runs in the primary Postgres server. It
+connects to the WAL safekeeper, and sends all the WAL. (PostgreSQL's
+archive_commands works in the "push" style, but it operates on a WAL
+segment granularity. If PostgreSQL had a push style API for streaming,
+WAL propose could be implemented using it.)
+
+The Page Server connects to the WAL safekeeper, using the same
+streaming replication protocol that's used between Postgres primary
+and standby. You can also connect the Page Server directly to a
+primary PostgreSQL node for testing.
+
+In a production installation, there are multiple WAL safekeepers
+running on different nodes, and there is a quorum mechanism using the
+Paxos algorithm to ensure that a piece of WAL is considered as durable
+only after it has been flushed to disk on more than half of the WAL
+safekeepers. The Paxos and crash recovery algorithm ensures that only
+one primary node can be actively streaming WAL to the quorum of
+safekeepers.
+
+See [this section](safekeeper-protocol.md) for a more detailed description of
+the consensus protocol. spec/ contains TLA+ specification of it.
+
+# Q&A
+
+Q: Why have a separate service instead of connecting Page Server directly to a
+   primary PostgreSQL node?
+A: Page Server is a single server which can be lost. As our primary
+   fault-tolerant storage is S3, we do not want to wait for it before
+   committing a transaction. The WAL service acts as a temporary fault-tolerant
+   storage for recent data before it gets to the Page Server and then finally
+   to S3. Whenever WALs and pages are committed to S3, WAL's storage can be
+   trimmed.
+
+Q: What if the compute node evicts a page, needs it back, but the page is yet
+   to reach the Page Server?
+A: If the compute node has evicted a page, changes to it have been WAL-logged
+   (that's why it is called Write Ahead logging; there are some exceptions like
+   index builds, but these are exceptions). These WAL records will eventually
+   reach the Page Server. The Page Server notes that the compute node requests
+   pages with a very recent LSN and will not respond to the compute node until a
+   corresponding WAL is received from WAL safekeepers.
+
+Q: How long may Page Server wait for?
+A: Not too long, hopefully. If a page is evicted, it probably was not used for
+   a while, so the WAL service have had enough time to push changes to the Page
+   Server. To limit the lag, tune backpressure using `max_replication_*_lag` settings.
+
+Q: How do WAL safekeepers communicate with each other?
+A: They may only send each other messages via the compute node, they never
+   communicate directly with each other.
+
+Q: Why have a consensus algorithm if there is only a single compute node?
+A: Actually there may be moments with multiple PostgreSQL nodes running at the
+   same time. E.g. we are bringing one up and one down. We would like to avoid
+   simultaneous writes from different nodes, so there should be a consensus on
+   who is the primary node.
+
+# Terminology
+
+WAL service - The service as whole that ensures that WAL is stored durably.
+
+WAL safekeeper - One node that participates in the quorum. All the safekeepers
+together form the WAL service.
+
+WAL acceptor, WAL proposer - In the context of the consensus algorithm, the Postgres
+compute node is also known as the WAL proposer, and the safekeeper is also known
+as the acceptor. Those are the standard terms in the Paxos algorithm.
+
+
+# Content from file ../neon/libs/postgres_ffi/README.md:
+
+This module contains utilities for working with PostgreSQL file
+formats. It's a collection of structs that are auto-generated from the
+PostgreSQL header files using bindgen, and Rust functions to read and
+manipulate them.
+
+There are also a bunch of constants in `pg_constants.rs` that are copied
+from various PostgreSQL headers, rather than auto-generated. They mostly
+should be auto-generated too, but that's a TODO.
+
+The PostgreSQL on-disk file format is not portable across different
+CPU architectures and operating systems. It is also subject to change
+in each major PostgreSQL version. Currently, this module supports
+PostgreSQL v14, v15 and v16: bindings and code that depends on them are
+version-specific.
+This code is organized in modules `postgres_ffi::v14`, `postgres_ffi::v15` and
+`postgres_ffi::v16`. Version independent code is explicitly exported into
+shared `postgres_ffi`.
+
+
+TODO: Currently, there is also some code that deals with WAL records
+in pageserver/src/waldecoder.rs.  That should be moved into this
+module. The rest of the codebase should not have intimate knowledge of
+PostgreSQL file formats or WAL layout, that knowledge should be
+encapsulated in this module.
+
+
+# Content from file ../neon/libs/tenant_size_model/README.md:
+
+# Logical size + WAL pricing
+
+This is a simulator to calculate the tenant size in different scenarios,
+using the "Logical size + WAL" method. Makefile produces diagrams used in a
+private presentation:
+
+https://docs.google.com/presentation/d/1OapE4k11xmcwMh7I7YvNWGC63yCRLh6udO9bXZ-fZmo/edit?usp=sharing
+
+
+# Content from file ../neon/libs/vm_monitor/README.md:
+
+# `vm-monitor`
+
+The `vm-monitor` (or just monitor) is a core component of the autoscaling system,
+along with the `autoscale-scheduler` and the `autoscaler-agent`s. The monitor has
+two primary roles: 1) notifying agents when immediate upscaling is necessary due
+to memory conditions and 2) managing Postgres' file cache and a cgroup to carry
+out upscaling and downscaling decisions.
+
+## More on scaling
+
+We scale CPU and memory using NeonVM, our in-house QEMU tool for use with Kubernetes.
+To control thresholds for receiving memory usage notifications, we start Postgres
+in the `neon-postgres` cgroup and set its `memory.{max,high}`.
+
+* See also: [`neondatabase/autoscaling`](https://github.com/neondatabase/autoscaling/)
+* See also: [`neondatabase/vm-monitor`](https://github.com/neondatabase/vm-monitor/),
+where initial development of the monitor happened. The repository is no longer
+maintained but the commit history may be useful for debugging.
+
+## Structure
+
+The `vm-monitor` is loosely comprised of a few systems. These are:
+* the server: this is just a simple `axum` server that accepts requests and
+upgrades them to websocket connections. The server only allows one connection at
+a time. This means that upon receiving a new connection, the server will terminate
+and old one if it exists.
+* the filecache: a struct that allows communication with the Postgres file cache.
+On startup, we connect to the filecache and hold on to the connection for the
+entire monitor lifetime.
+* the cgroup watcher: the `CgroupWatcher` polls the `neon-postgres` cgroup's memory
+usage and sends rolling aggregates to the runner.
+* the runner: the runner marries the filecache and cgroup watcher together,
+communicating with the agent throught the `Dispatcher`, and then calling filecache
+and cgroup watcher functions as needed to upscale and downscale
+
+
+# Content from file ../neon/pageserver/benches/README.md:
+
+## Pageserver Benchmarks
+
+# How to run
+
+To run all benchmarks:
+`cargo bench`
+
+To run a specific file:
+`cargo bench --bench bench_layer_map`
+
+To run a specific function:
+`cargo bench --bench bench_layer_map -- real_map_uniform_queries`
+
+
+# Content from file ../neon/pgxn/hnsw/README.md:
+
+# Revisiting the Inverted Indices for Billion-Scale Approximate Nearest Neighbors
+
+This ANN extension of Postgres is based
+on [ivf-hnsw](https://github.com/dbaranchuk/ivf-hnsw.git) implementation of [HNSW](https://www.pinecone.io/learn/hnsw),
+the code for the current state-of-the-art billion-scale nearest neighbor search system presented in the paper:
+
+[Revisiting the Inverted Indices for Billion-Scale Approximate Nearest Neighbors](http://openaccess.thecvf.com/content_ECCV_2018/html/Dmitry_Baranchuk_Revisiting_the_Inverted_ECCV_2018_paper.html),
+<br>
+Dmitry Baranchuk, Artem Babenko, Yury Malkov
+
+# Postgres extension
+
+HNSW index is hold in memory (built on demand) and it's maxial size is limited
+by `maxelements` index parameter. Another required parameter is nubmer of dimensions (if it is not specified in column type).
+Optional parameter `ef` specifies number of neighbors which are considered during index construction and search (corresponds `efConstruction` and `efSearch` parameters
+described in the article).
+
+# Example of usage:
+
+```
+create extension hnsw;
+create table embeddings(id integer primary key, payload real[]);
+create index on embeddings using hnsw(payload) with (maxelements=1000000, dims=100, m=32);
+select id from embeddings order by payload <-> array[1.0, 2.0,...] limit 100;
+```
+
+# Content from file ../neon/pgxn/neon/README.md:
+
+neon extension consists of several parts:
+
+### shared preload library `neon.so`
+
+- implements storage manager API and network communications with remote page server.
+
+- walproposer: implements broadcast protocol between postgres and WAL safekeepers.
+
+- control plane connector:  Captures updates to roles/databases using ProcessUtility_hook and sends them to the control ProcessUtility_hook.
+
+- remote extension server: Request compute_ctl to download extension files.
+
+- file_cache: Local file cache is used to temporary store relations pages in local file system for better performance.
+
+- relsize_cache: Relation size cache for better neon performance.
+
+### SQL functions in `neon--*.sql`
+
+Utility functions to expose neon specific information to user and metrics collection.
+This extension is created in all databases in the cluster by default.
+
+
+# Content from file ../neon/proxy/README.md:
+
+# Proxy
+
+Proxy binary accepts `--auth-backend` CLI option, which determines auth scheme and cluster routing method. Following routing backends are currently implemented:
+
+* console
+  new SCRAM-based console API; uses SNI info to select the destination project (endpoint soon)
+* postgres
+  uses postgres to select auth secrets of existing roles. Useful for local testing
+* link
+  sends login link for all usernames
+
+Also proxy can expose following services to the external world:
+
+* postgres protocol over TCP -- usual postgres endpoint compatible with usual
+  postgres drivers
+* postgres protocol over WebSockets -- same protocol tunneled over websockets
+  for environments where TCP connection is not available. We have our own
+  implementation of a client that uses node-postgres and tunnels traffic through
+  websockets: https://github.com/neondatabase/serverless
+* SQL over HTTP -- service that accepts POST requests with SQL text over HTTP
+  and responds with JSON-serialised results.
+
+
+## SQL over HTTP
+
+Contrary to the usual postgres proto over TCP and WebSockets using plain
+one-shot HTTP request achieves smaller amortized latencies in edge setups due to
+fewer round trips and an enhanced open connection reuse by the v8 engine. Also
+such endpoint could be used directly without any driver.
+
+To play with it locally one may start proxy over a local postgres installation
+(see end of this page on how to generate certs with openssl):
+
+```
+./target/debug/proxy -c server.crt -k server.key --auth-backend=postgres --auth-endpoint=postgres://stas@127.0.0.1:5432/stas --wss 0.0.0.0:4444
+```
+
+If both postgres and proxy are running you may send a SQL query:
+```json
+curl -k -X POST 'https://proxy.localtest.me:4444/sql' \
+  -H 'Neon-Connection-String: postgres://stas:pass@proxy.localtest.me:4444/postgres' \
+  -H 'Content-Type: application/json' \
+  --data '{
+    "query":"SELECT $1::int[] as arr, $2::jsonb as obj, 42 as num",
+    "params":[ "{{1,2},{\"3\",4}}", {"key":"val", "ikey":4242}]
+  }' | jq
+
+{
+  "command": "SELECT",
+  "fields": [
+    { "dataTypeID": 1007, "name": "arr" },
+    { "dataTypeID": 3802, "name": "obj" },
+    { "dataTypeID": 23, "name": "num" }
+  ],
+  "rowCount": 1,
+  "rows": [
+    {
+      "arr": [[1,2],[3,4]],
+      "num": 42,
+      "obj": {
+        "ikey": 4242,
+        "key": "val"
+      }
+    }
+  ]
+}
+```
+
+
+With the current approach we made the following design decisions:
+
+1. SQL injection protection: We employed the extended query protocol, modifying
+   the rust-postgres driver to send queries in one roundtrip using a text
+   protocol rather than binary, bypassing potential issues like those identified
+   in sfackler/rust-postgres#1030.
+
+2. Postgres type compatibility: As not all postgres types have binary
+   representations (e.g., acl's in pg_class), we adjusted rust-postgres to
+   respond with text protocol, simplifying serialization and fixing queries with
+   text-only types in response.
+
+3. Data type conversion: Considering JSON supports fewer data types than
+   Postgres, we perform conversions where possible, passing all other types as
+   strings. Key conversions include:
+   - postgres int2, int4, float4, float8 -> json number (NaN and Inf remain
+     text)
+   - postgres bool, null, text -> json bool, null, string
+   - postgres array -> json array
+   - postgres json and jsonb -> json object
+
+4. Alignment with node-postgres: To facilitate integration with js libraries,
+   we've matched the response structure of node-postgres, returning command tags
+   and column oids. Command tag capturing was added to the rust-postgres
+   functionality as part of this change.
+
+### Output options
+
+User can pass several optional headers that will affect resulting json.
+
+1. `Neon-Raw-Text-Output: true`. Return postgres values as text, without parsing them. So numbers, objects, booleans, nulls and arrays will be returned as text. That can be useful in cases when client code wants to implement it's own parsing or reuse parsing libraries from e.g. node-postgres.
+2. `Neon-Array-Mode: true`. Return postgres rows as arrays instead of objects. That is more compact representation and also helps in some edge
+cases where it is hard to use rows represented as objects (e.g. when several fields have the same name).
+
+
+## Using SNI-based routing on localhost
+
+Now proxy determines project name from the subdomain, request to the `round-rice-566201.somedomain.tld` will be routed to the project named `round-rice-566201`. Unfortunately, `/etc/hosts` does not support domain wildcards, so I usually use `*.localtest.me` which resolves to `127.0.0.1`. Now we can create self-signed certificate and play with proxy:
+
+```sh
+openssl req -new -x509 -days 365 -nodes -text -out server.crt -keyout server.key -subj "/CN=*.localtest.me"
+```
+
+start proxy
+
+```sh
+./target/debug/proxy -c server.crt -k server.key
+```
+
+and connect to it
+
+```sh
+PGSSLROOTCERT=./server.crt psql 'postgres://my-cluster-42.localtest.me:1234?sslmode=verify-full'
+```
+
+
+# Content from file ../neon/s3_scrubber/README.md:
+
+# Neon S3 scrubber
+
+This tool directly accesses the S3 buckets used by the Neon `pageserver`
+and `safekeeper`, and does housekeeping such as cleaning up objects for tenants & timelines that no longer exist.
+
+## Usage
+
+### Generic Parameters
+
+#### S3
+
+Do `aws sso login --profile dev` to get the SSO access to the bucket to clean, get the SSO_ACCOUNT_ID for your profile (`cat ~/.aws/config` may help).
+
+- `SSO_ACCOUNT_ID`: Credentials id to use for accessing S3 buckets
+- `REGION`: A region where the bucket is located at.
+- `BUCKET`: Bucket name
+
+#### Console API
+
+_This section is only relevant if using a command that requires access to Neon's internal control plane_
+
+- `CLOUD_ADMIN_API_URL`: The URL base to use for checking tenant/timeline for existence via the Cloud API.  e.g. `https://<admin host>/admin`
+
+- `CLOUD_ADMIN_API_TOKEN`: The token to provide when querying the admin API. Get one on the corresponding console page, e.g. `https://<admin host>/app/settings/api-keys`
+
+### Commands
+
+#### `find-garbage`
+
+Walk an S3 bucket and cross-reference the contents with the Console API to identify data for
+tenants or timelines that should no longer exist.
+
+- `--node-kind`: whether to inspect safekeeper or pageserver bucket prefix
+- `--depth`: whether to only search for deletable tenants, or also search for
+  deletable timelines within active tenants. Default: `tenant`
+- `--output-path`: filename to write garbage list to.  Default `garbage.json`
+
+This command outputs a JSON file describing tenants and timelines to remove, for subsequent
+processing by the `purge-garbage` subcommand.
+
+**Note that the garbage list format is not stable.  The output of `find-garbage` is only
+  intended for use by the exact same version of the tool running `purge-garbage`**
+
+Example:
+
+`env SSO_ACCOUNT_ID=123456 REGION=eu-west-1 BUCKET=my-dev-bucket CLOUD_ADMIN_API_TOKEN=${NEON_CLOUD_ADMIN_API_STAGING_KEY} CLOUD_ADMIN_API_URL=[url] cargo run --release -- find-garbage --node-kind=pageserver --depth=tenant --output-path=eu-west-1-garbage.json`
+
+#### `purge-garbage`
+
+Consume a garbage list from `find-garbage`, and delete the related objects in the S3 bucket.
+
+- `--input-path`: filename to read garbage list from.  Default `garbage.json`.
+- `--mode`: controls whether to purge only garbage that was specifically marked
+            deleted in the control plane (`deletedonly`), or also to purge tenants/timelines
+            that were not present in the control plane at all (`deletedandmissing`)
+
+This command learns region/bucket details from the garbage file, so it is not necessary
+to pass them on the command line
+
+Example:
+
+`env SSO_ACCOUNT_ID=123456 cargo run --release -- purge-garbage --node-kind=pageserver --depth=tenant --input-path=eu-west-1-garbage.json`
+
+Add the `--delete` argument before `purge-garbage` to enable deletion.  This is intentionally
+not provided inline in the example above to avoid accidents.  Without the `--delete` flag
+the purge command will log all the keys that it would have deleted.
+
+#### `scan-metadata`
+
+Walk objects in a pageserver S3 bucket, and report statistics on the contents.
+
+```
+env SSO_ACCOUNT_ID=123456 REGION=eu-west-1 BUCKET=my-dev-bucket CLOUD_ADMIN_API_TOKEN=${NEON_CLOUD_ADMIN_API_STAGING_KEY} CLOUD_ADMIN_API_URL=[url] cargo run --release -- scan-metadata
+
+Timelines: 31106
+With errors: 3
+With warnings: 13942
+With garbage: 0
+Index versions: 2: 13942, 4: 17162
+Timeline size bytes: min 22413312, 1% 52133887, 10% 56459263, 50% 101711871, 90% 191561727, 99% 280887295, max 167535558656
+Layer size bytes: min 24576, 1% 36879, 10% 36879, 50% 61471, 90% 44695551, 99% 201457663, max 275324928
+Timeline layer count: min 1, 1% 3, 10% 6, 50% 16, 90% 25, 99% 39, max 1053
+```
+
+## Cleaning up running pageservers
+
+If S3 state is altered first manually, pageserver in-memory state will contain wrong data about S3 state, and tenants/timelines may get recreated on S3 (due to any layer upload due to compaction, pageserver restart, etc.). So before proceeding, for tenants/timelines which are already deleted in the console, we must remove these from pageservers.
+
+First, we need to group pageservers by buckets, `https://<admin host>/admin/pageservers`` can be used for all env nodes, then `cat /storage/pageserver/data/pageserver.toml` on every node will show the bucket names and regions needed.
+
+Per bucket, for every pageserver id related, find deleted tenants:
+
+`curl -X POST "https://<admin_host>/admin/check_pageserver/{id}" -H "Accept: application/json" -H "Authorization: Bearer ${NEON_CLOUD_ADMIN_API_STAGING_KEY}" | jq`
+
+use `?check_timelines=true` to find deleted timelines, but the check runs a separate query on every alive tenant, so that could be long and time out for big pageservers.
+
+Note that some tenants/timelines could be marked as deleted in console, but console might continue querying the node later to fully remove the tenant/timeline: wait for some time before ensuring that the "extra" tenant/timeline is not going away by itself.
+
+When all IDs are collected, manually go to every pageserver and detach/delete the tenant/timeline.
+In future, the cleanup tool may access pageservers directly, but now it's only console and S3 it has access to.
+
+
+# Content from file ../neon/scripts/sk_cleanup_tenants/readme.md:
+
+# Cleanup script for safekeeper
+
+This script can be used to remove tenant directories on safekeepers for projects which do not longer exist (deleted in console).
+
+To run this script you need to upload it to safekeeper (i.e. with SSH), and run it with python3. Ansible can be used to run this script on multiple safekeepers.
+
+NOTE: Console queries to check that project is deleted are slow and inefficient.
+If you want to run this script on safekeeper with many tenants, consider
+making PR to console repo to make projects search by tenant_id faster.
+
+## How to run on a single node
+
+```
+zsh nsh safekeeper-0.us-east-2.aws.neon.build
+
+ls /storage/safekeeper/data/ | grep -v safekeeper > tenants.txt
+
+mkdir -p /storage/neon-trash/2023-01-01--cleanup
+
+ export CONSOLE_API_TOKEN=
+python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME --dry-run
+
+cat tenants.txt | python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME --dry-run
+
+cat tenants.txt | python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME |& tee logs.txt
+```
+
+## How to use ansible (staging)
+
+```
+cd ~/neon/.github/ansible
+
+export AWS_DEFAULT_PROFILE=dev
+
+ansible-playbook -i staging.us-east-2.hosts.yaml -e @ssm_config ../../scripts/sk_cleanup_tenants/remote.yaml
+
+# add --extra-vars "api_token=" to set console api token
+```
+
+## How to use ansible (prod)
+
+- Change `endpoint` in `script.py` to "https://console.neon.tech/api"
+
+```
+cd ~/neon/.github/ansible
+
+export AWS_DEFAULT_PROFILE=prod
+
+ansible-playbook -i prod.us-east-2.hosts.yaml -e @ssm_config ../../scripts/sk_cleanup_tenants/remote.yaml
+
+# add --extra-vars "api_token=" to set console api token
+```
+
+
+> Heavily inspired with script for pageserver cleanup: https://gist.github.com/problame/bafb6ca6334f0145757238e61380c3f1/9bef1845a8291ebfa1f3a51eb79c01d12498b2b5
+
+# Content from file ../neon/scripts/sk_collect_dumps/readme.md:
+
+# Collect /v1/debug_dump from all safekeeper nodes
+
+3. Issue admin token (add/remove .stage from url for staging/prod and setting proper API key):
+```
+# staging:
+AUTH_TOKEN=$(curl https://console.stage.neon.tech/regions/console/api/v1/admin/issue_token -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer $NEON_STAGING_KEY" -X POST -d '{"ttl_seconds": 43200, "scope": "safekeeperdata"}' 2>/dev/null | jq --raw-output '.jwt')
+# prod:
+AUTH_TOKEN=$(curl https://console.neon.tech/regions/console/api/v1/admin/issue_token -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer $NEON_PROD_KEY" -X POST -d '{"ttl_seconds": 43200, "scope": "safekeeperdata"}' 2>/dev/null | jq --raw-output '.jwt')
+# check
+echo $AUTH_TOKEN
+```
+2. Run ansible playbooks to collect .json dumps from all safekeepers and store them in `./result` directory.
+
+There are two ways to do that, with ssm or tsh. ssm:
+```
+# in aws repo, cd .github/ansible and run e.g. (adjusting profile and region in vars and limit):
+AWS_DEFAULT_PROFILE=dev ansible-playbook -i inventory_aws_ec2.yaml -i staging.us-east-2.vars.yaml -e @ssm_config -l 'safekeeper:&us_east_2' -e "auth_token=${AUTH_TOKEN}" ~/neon/neon/scripts/sk_collect_dumps/remote.yaml
+```
+It will put the results to .results directory *near the playbook*.
+
+tsh:
+
+Update the inventory, if needed, selecting .build/.tech and optionally region:
+```
+rm -f hosts && echo '[safekeeper]' >> hosts
+# staging:
+tsh ls | awk '{print $1}' | grep safekeeper | grep "neon.build" | grep us-east-2 >> hosts
+# prod:
+tsh ls | awk '{print $1}' | grep safekeeper | grep "neon.tech" | grep us-east-2 >> hosts
+```
+
+Test ansible connection:
+```
+ansible all -m ping -v
+```
+
+Download the dumps:
+```
+mkdir -p result && rm -f result/*
+ansible-playbook -e "auth_token=${AUTH_TOKEN}" remote.yaml
+```
+
+3. Run `DB_CONNSTR=... ./upload.sh prod_feb30` to upload dumps to `prod_feb30` table in specified postgres database.
+
+
+# Content from file ../neon/test_runner/README.md:
+
+## Neon test runner
+
+This directory contains integration tests.
+
+Prerequisites:
+- Correctly configured Python, see [`/docs/sourcetree.md`](/docs/sourcetree.md#using-python)
+- Neon and Postgres binaries
+    - See the root [README.md](/README.md) for build directions
+      If you want to test tests with test-only APIs, you would need to add `--features testing` to Rust code build commands.
+      For convenience, repository cargo config contains `build_testing` alias, that serves as a subcommand, adding the required feature flags.
+      Usage example: `cargo build_testing --release` is equivalent to `cargo build --features testing --release`
+    - Tests can be run from the git tree; or see the environment variables
+      below to run from other directories.
+- The neon git repo, including the postgres submodule
+  (for some tests, e.g. `pg_regress`)
+
+### Test Organization
+
+Regression tests are in the 'regress' directory. They can be run in
+parallel to minimize total runtime. Most regression test sets up their
+environment with its own pageservers and safekeepers (but see
+`TEST_SHARED_FIXTURES`).
+
+'pg_clients' contains tests for connecting with various client
+libraries. Each client test uses a Dockerfile that pulls an image that
+contains the client, and connects to PostgreSQL with it. The client
+tests can be run against an existing PostgreSQL or Neon installation.
+
+'performance' contains performance regression tests. Each test
+exercises a particular scenario or workload, and outputs
+measurements. They should be run serially, to avoid the tests
+interfering with the performance of each other. Some performance tests
+set up their own Neon environment, while others can be run against an
+existing PostgreSQL or Neon environment.
+
+### Running the tests
+
+There is a wrapper script to invoke pytest: `./scripts/pytest`.
+It accepts all the arguments that are accepted by pytest.
+Depending on your installation options pytest might be invoked directly.
+
+Test state (postgres data, pageserver state, and log files) will
+be stored under a directory `test_output`.
+
+You can run all the tests with:
+
+`./scripts/pytest`
+
+If you want to run all the tests in a particular file:
+
+`./scripts/pytest test_pgbench.py`
+
+If you want to run all tests that have the string "bench" in their names:
+
+`./scripts/pytest -k bench`
+
+To run tests in parellel we utilize `pytest-xdist` plugin. By default everything runs single threaded. Number of workers can be specified with `-n` argument:
+
+`./scripts/pytest -n4`
+
+By default performance tests are excluded. To run them explicitly pass performance tests selection to the script:
+
+`./scripts/pytest test_runner/performance`
+
+Useful environment variables:
+
+`NEON_BIN`: The directory where neon binaries can be found.
+`POSTGRES_DISTRIB_DIR`: The directory where postgres distribution can be found.
+Since pageserver supports several postgres versions, `POSTGRES_DISTRIB_DIR` must contain
+a subdirectory for each version with naming convention `v{PG_VERSION}/`.
+Inside that dir, a `bin/postgres` binary should be present.
+`DEFAULT_PG_VERSION`: The version of Postgres to use,
+This is used to construct full path to the postgres binaries.
+Format is 2-digit major version nubmer, i.e. `DEFAULT_PG_VERSION="14"`. Alternatively,
+you can use `--pg-version` argument.
+`TEST_OUTPUT`: Set the directory where test state and test output files
+should go.
+`TEST_SHARED_FIXTURES`: Try to re-use a single pageserver for all the tests.
+`NEON_PAGESERVER_OVERRIDES`: add a `;`-separated set of configs that will be passed as
+`RUST_LOG`: logging configuration to pass into Neon CLI
+
+Useful parameters and commands:
+
+`--pageserver-config-override=${value}` `-c` values to pass into pageserver through neon_local cli
+
+`--preserve-database-files` to preserve pageserver (layer) and safekeer (segment) timeline files on disk
+after running a test suite. Such files might be large, so removed by default; but might be useful for debugging or creation of svg images with layer file contents.
+
+Let stdout, stderr and `INFO` log messages go to the terminal instead of capturing them:
+`./scripts/pytest -s --log-cli-level=INFO ...`
+(Note many tests capture subprocess outputs separately, so this may not
+show much.)
+
+Exit after the first test failure:
+`./scripts/pytest -x ...`
+(there are many more pytest options; run `pytest -h` to see them.)
+
+### Writing a test
+
+Every test needs a Neon Environment, or NeonEnv to operate in. A Neon Environment
+is like a little cloud-in-a-box, and consists of a Pageserver, 0-N Safekeepers, and
+compute Postgres nodes. The connections between them can be configured to use JWT
+authentication tokens, and some other configuration options can be tweaked too.
+
+The easiest way to get access to a Neon Environment is by using the `neon_simple_env`
+fixture. The 'simple' env may be shared across multiple tests, so don't shut down the nodes
+or make other destructive changes in that environment. Also don't assume that
+there are no tenants or branches or data in the cluster. For convenience, there is a
+branch called `empty`, though. The convention is to create a test-specific branch of
+that and load any test data there, instead of the 'main' branch.
+
+For more complicated cases, you can build a custom Neon Environment, with the `neon_env`
+fixture:
+
+```python
+def test_foobar(neon_env_builder: NeonEnvBuilder):
+    # Prescribe the environment.
+    # We want to have 3 safekeeper nodes, and use JWT authentication in the
+    # connections to the page server
+    neon_env_builder.num_safekeepers = 3
+    neon_env_builder.set_pageserver_auth(True)
+
+    # Now create the environment. This initializes the repository, and starts
+    # up the page server and the safekeepers
+    env = neon_env_builder.init_start()
+
+    # Run the test
+    ...
+```
+
+For more information about pytest fixtures, see https://docs.pytest.org/en/stable/fixture.html
+
+At the end of a test, all the nodes in the environment are automatically stopped, so you
+don't need to worry about cleaning up. Logs and test data are preserved for the analysis,
+in a directory under `../test_output/<testname>`
+
+### Before submitting a patch
+Ensure that you pass all [obligatory checks](/docs/sourcetree.md#obligatory-checks).
+
+Also consider:
+
+* Writing a couple of docstrings to clarify the reasoning behind a new test.
+* Adding more type hints to your code to avoid `Any`, especially:
+  * For fixture parameters, they are not automatically deduced.
+  * For function arguments and return values.
+
+
+# Content from file ../neon/test_runner/performance/README.md:
+
+# Running locally
+
+First make a release build. The `-s` flag silences a lot of output, and makes it
+easier to see if you have compile errors without scrolling up.
+`BUILD_TYPE=release CARGO_BUILD_FLAGS="--features=testing" make -s -j8`
+
+You may also need to run `./scripts/pysync`.
+
+Then run the tests
+`DEFAULT_PG_VERSION=15 NEON_BIN=./target/release poetry run pytest test_runner/performance`
+
+Some handy pytest flags for local development:
+- `-x` tells pytest to stop on first error
+- `-s` shows test output
+- `-k` selects a test to run
+- `--timeout=0` disables our default timeout of 300s (see `setup.cfg`)
+- `--preserve-database-files` to skip cleanup
+
+# What performance tests do we have and how we run them
+
+Performance tests are built using the same infrastructure as our usual python integration tests. There are some extra fixtures that help to collect performance metrics, and to run tests against both vanilla PostgreSQL and Neon for comparison.
+
+## Tests that are run against local installation
+
+Most of the performance tests run against a local installation. This is not very representative of a production environment. Firstly, Postgres, safekeeper(s) and the pageserver have to share CPU and I/O resources, which can add noise to the results. Secondly, network overhead is eliminated.
+
+In the CI, the performance tests are run in the same environment as the other integration tests. We don't have control over the host that the CI runs on, so the environment may vary widely from one run to another, which makes the results across different runs noisy to compare.
+
+## Remote tests
+
+There are a few tests that marked with `pytest.mark.remote_cluster`. These tests do not set up a local environment, and instead require a libpq connection string to connect to. So they can be run on any Postgres compatible database. Currently, the CI runs these tests on our staging and captest environments daily. Those are not an isolated environments, so there can be noise in the results due to activity of other clusters.
+
+## Noise
+
+All tests run only once. Usually to obtain more consistent performance numbers, a test should be repeated multiple times and the results be aggregated, for example by taking min, max, avg, or median.
+
+## Results collection
+
+Local test results for main branch, and results of daily performance tests, are stored in a neon project deployed in production environment. There is a Grafana dashboard that visualizes the results. Here is the [dashboard](https://observer.zenith.tech/d/DGKBm9Jnz/perf-test-results?orgId=1). The main problem with it is the unavailability to point at particular commit, though the data for that is available in the database. Needs some tweaking from someone who knows Grafana tricks.
+
+There is also an inconsistency in test naming. Test name should be the same across platforms, and results can be differentiated by the platform field. But currently, platform is sometimes included in test name because of the way how parametrization works in pytest. I.e. there is a platform switch in the dashboard with neon-local-ci and neon-staging variants. I.e. some tests under neon-local-ci value for a platform switch are displayed as `Test test_runner/performance/test_bulk_insert.py::test_bulk_insert[vanilla]` and `Test test_runner/performance/test_bulk_insert.py::test_bulk_insert[neon]` which is highly confusing.
+
+
+# Content from file ../neon/test_runner/pg_clients/README.md:
+
+# pg_clients
+
+To run a single test locally:
+
+```bash
+export BENCHMARK_CONNSTR=postgres://user:pass@ep-abc-xyz-123.us-east-2.aws.neon.build/neondb
+
+# will filter only tests with "serverless" in the name
+./scripts/pytest -m remote_cluster -k serverless
+```
+
+
+# Content from file ../neon/test_runner/sql_regress/README.md:
+
+Simple tests that only need a PostgreSQL connection to run.
+These are run by the regress/test_pg_regress.py test, which uses
+the PostgreSQL pg_regress utility.
+
+To add a new SQL test:
+
+- add sql script to run to neon_regress/sql/testname.sql
+- add expected output to neon_regress/expected/testname.out
+- add testname to parallel_schedule
+
+That's it.
+For more complex tests see PostgreSQL regression tests in src/test/regress.
+These work basically the same.
+
+
