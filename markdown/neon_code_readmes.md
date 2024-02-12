@@ -22,7 +22,7 @@ ln -s ../../pre-commit.py .git/hooks/pre-commit
 
 This will run following checks on staged files before each commit:
 - `rustfmt`
-- checks for python files, see [obligatory checks](/docs/sourcetree.md#obligatory-checks).
+- checks for Python files, see [obligatory checks](/docs/sourcetree.md#obligatory-checks).
 
 There is also a separate script `./run_clippy.sh` that runs `cargo clippy` on the whole project
 and `./scripts/reformat` that runs all formatting tools to ensure the project is up to date.
@@ -56,6 +56,9 @@ _An instruction for maintainers_
 - If and only if it looks **safe** (i.e. it doesn't contain any malicious code which could expose secrets or harm the CI), then:
     - Press the "Approve and run" button in GitHub UI
     - Add the `approved-for-ci-run` label to the PR
+    - Currently draft PR will skip e2e test (only for internal contributors). After turning the PR 'Ready to Review' CI will trigger e2e test
+      - Add `run-e2e-tests-in-draft` label to run e2e test in draft PR (override above behaviour)
+      - The `approved-for-ci-run` workflow will add `run-e2e-tests-in-draft` automatically to run e2e test for external contributors
 
 Repeat all steps after any change to the PR.
 - When the changes are ready to get merged — merge the original PR (not the internal one)
@@ -105,8 +108,8 @@ Alternatively, compile and run the project [locally](#running-local-installation
 A Neon installation consists of compute nodes and the Neon storage engine. Compute nodes are stateless PostgreSQL nodes backed by the Neon storage engine.
 
 The Neon storage engine consists of two major components:
-- Pageserver. Scalable storage backend for the compute nodes.
-- Safekeepers. The safekeepers form a redundant WAL service that received WAL from the compute node, and stores it durably until it has been processed by the pageserver and uploaded to cloud storage.
+- Pageserver: Scalable storage backend for the compute nodes.
+- Safekeepers: The safekeepers form a redundant WAL service that received WAL from the compute node, and stores it durably until it has been processed by the pageserver and uploaded to cloud storage.
 
 See developer documentation in [SUMMARY.md](/docs/SUMMARY.md) for more information.
 
@@ -172,9 +175,9 @@ The project uses [rust toolchain file](./rust-toolchain.toml) to define the vers
 
 This file is automatically picked up by [`rustup`](https://rust-lang.github.io/rustup/overrides.html#the-toolchain-file) that installs (if absent) and uses the toolchain version pinned in the file.
 
-rustup users who want to build with another toolchain can use [`rustup override`](https://rust-lang.github.io/rustup/overrides.html#directory-overrides) command to set a specific toolchain for the project's directory.
+rustup users who want to build with another toolchain can use the [`rustup override`](https://rust-lang.github.io/rustup/overrides.html#directory-overrides) command to set a specific toolchain for the project's directory.
 
-non-rustup users most probably are not getting the same toolchain automatically from the file, so are responsible to manually verify their toolchain matches the version in the file.
+non-rustup users most probably are not getting the same toolchain automatically from the file, so are responsible to manually verify that their toolchain matches the version in the file.
 Newer rustc versions most probably will work fine, yet older ones might not be supported due to some new features used by the project or the crates.
 
 #### Building on Linux
@@ -215,7 +218,7 @@ make -j`sysctl -n hw.logicalcpu` -s
 To run the `psql` client, install the `postgresql-client` package or modify `PATH` and `LD_LIBRARY_PATH` to include `pg_install/bin` and `pg_install/lib`, respectively.
 
 To run the integration tests or Python scripts (not required to use the code), install
-Python (3.9 or higher), and install python3 packages using `./scripts/pysync` (requires [poetry>=1.3](https://python-poetry.org/)) in the project directory.
+Python (3.9 or higher), and install the python3 packages using `./scripts/pysync` (requires [poetry>=1.3](https://python-poetry.org/)) in the project directory.
 
 
 #### Running neon database
@@ -257,7 +260,7 @@ Starting postgres at 'postgresql://cloud_admin@127.0.0.1:55432/postgres'
 
 2. Now, it is possible to connect to postgres and run some queries:
 ```text
-> psql -p55432 -h 127.0.0.1 -U cloud_admin postgres
+> psql -p 55432 -h 127.0.0.1 -U cloud_admin postgres
 postgres=# CREATE TABLE t(key int primary key, value text);
 CREATE TABLE
 postgres=# insert into t values(1,1);
@@ -296,7 +299,7 @@ Starting postgres at 'postgresql://cloud_admin@127.0.0.1:55434/postgres'
 
 # this new postgres instance will have all the data from 'main' postgres,
 # but all modifications would not affect data in original postgres
-> psql -p55434 -h 127.0.0.1 -U cloud_admin postgres
+> psql -p 55434 -h 127.0.0.1 -U cloud_admin postgres
 postgres=# select * from t;
  key | value
 -----+-------
@@ -307,7 +310,7 @@ postgres=# insert into t values(2,2);
 INSERT 0 1
 
 # check that the new change doesn't affect the 'main' postgres
-> psql -p55432 -h 127.0.0.1 -U cloud_admin postgres
+> psql -p 55432 -h 127.0.0.1 -U cloud_admin postgres
 postgres=# select * from t;
  key | value
 -----+-------
@@ -315,7 +318,7 @@ postgres=# select * from t;
 (1 row)
 ```
 
-4. If you want to run tests afterward (see below), you must stop all the running of the pageserver, safekeeper, and postgres instances
+4. If you want to run tests afterwards (see below), you must stop all the running pageserver, safekeeper, and postgres instances
    you have just started. You can terminate them all with one command:
 ```sh
 > cargo neon stop
@@ -334,7 +337,7 @@ CARGO_BUILD_FLAGS="--features=testing" make
 ```
 
 By default, this runs both debug and release modes, and all supported postgres versions. When
-testing locally, it is convenient to run just run one set of permutations, like this:
+testing locally, it is convenient to run just one set of permutations, like this:
 
 ```sh
 DEFAULT_PG_VERSION=15 BUILD_TYPE=release ./scripts/pytest
@@ -1398,7 +1401,7 @@ We build all images after a successful `release` tests run and push automaticall
 
 ## Docker Compose example
 
-You can see a [docker compose](https://docs.docker.com/compose/) example to create a neon cluster in [/docker-compose/docker-compose.yml](/docker-compose/docker-compose.yml). It creates the following conatainers.
+You can see a [docker compose](https://docs.docker.com/compose/) example to create a neon cluster in [/docker-compose/docker-compose.yml](/docker-compose/docker-compose.yml). It creates the following containers.
 
 - pageserver x 1
 - safekeeper x 3
@@ -1415,7 +1418,7 @@ You can specify version of neon cluster using following environment values.
 - TAG: the tag version of [docker image](https://registry.hub.docker.com/r/neondatabase/neon/tags) (default is latest), which is tagged in [CI test](/.github/workflows/build_and_test.yml)
 ```
 $ cd docker-compose/
-$ docker-compose down   # remove the conainers if exists
+$ docker-compose down   # remove the containers if exists
 $ PG_VERSION=15 TAG=2937 docker-compose up --build -d  # You can specify the postgres and image version
 Creating network "dockercompose_default" with the default driver
 Creating docker-compose_storage_broker_1       ... done
@@ -2339,7 +2342,7 @@ Storage.
 
 The LayerMap tracks what layers exist in a timeline.
 
-Currently, the layer map is just a resizeable array (Vec). On a GetPage@LSN or
+Currently, the layer map is just a resizable array (Vec). On a GetPage@LSN or
 other read request, the layer map scans through the array to find the right layer
 that contains the data for the requested page. The read-code in LayeredTimeline
 is aware of the ancestor, and returns data from the ancestor timeline if it's
@@ -2845,7 +2848,7 @@ timeline to shutdown. It will also wait for them to finish.
 
 A task registered in the task registry can check if it has been
 requested to shut down, by calling `is_shutdown_requested()`. There's
-also a `shudown_watcher()` Future that can be used with `tokio::select!`
+also a `shutdown_watcher()` Future that can be used with `tokio::select!`
 or similar, to wake up on shutdown.
 
 
@@ -3010,7 +3013,7 @@ somewhat wasteful, but because most WAL records only affect one page,
 the overhead is acceptable.
 
 The WAL redo always happens for one particular page. If the WAL record
-coantains changes to other pages, they are ignored.
+contains changes to other pages, they are ignored.
 
 
 # Content from file ../neon/docs/pageserver.md:
@@ -5752,6 +5755,429 @@ with the "options" keyword, and the options must be percent-encoded. I
 think the above would work but i haven't tested it
 
 
+# Content from file ../neon/docs/rfcs/017-console-split.md:
+
+# Splitting cloud console
+
+Created on 17.06.2022
+
+## Summary
+
+Currently we have `cloud` repository that contains code implementing public API for our clients as well as code for managing storage and internal infrastructure services. We can split everything user-related from everything storage-related to make it easier to test and maintain.
+
+This RFC proposes to introduce a new control-plane service with HTTP API. The overall architecture will look like this:
+
+```markup
+.                    x
+       external area x internal area
+       (our clients) x (our services)
+                     x
+                     x                                                      ┌───────────────────────┐
+                     x ┌───────────────┐   >    ┌─────────────────────┐     │      Storage (EC2)    │
+                     x │  console db   │   >    │  control-plane db   │     │                       │
+                     x └───────────────┘   >    └─────────────────────┘     │ - safekeepers         │
+                     x         ▲           >               ▲                │ - pageservers         │
+                     x         │           >               │                │                       │
+┌──────────────────┐ x ┌───────┴───────┐   >               │                │     Dependencies      │
+│    browser UI    ├──►│               │   >    ┌──────────┴──────────┐     │                       │
+└──────────────────┘ x │               │   >    │                     │     │ - etcd                │
+                     x │    console    ├───────►│    control-plane    ├────►│ - S3                  │
+┌──────────────────┐ x │               │   >    │  (deployed in k8s)  │     │ - more?               │
+│public API clients├──►│               │   >    │                     │     │                       │
+└──────────────────┘ x └───────┬───────┘   >    └──────────┬──────────┘     └───────────────────────┘
+                     x         │           >          ▲    │                            ▲
+                     x         │           >          │    │                            │
+                     x ┌───────┴───────┐   >          │    │                ┌───────────┴───────────┐
+                     x │ dependencies  │   >          │    │                │                       │
+                     x │- analytics    │   >          │    └───────────────►│       computes        │
+                     x │- auth         │   >          │                     │   (deployed in k8s)   │
+                     x │- billing      │   >          │                     │                       │
+                     x └───────────────┘   >          │                     └───────────────────────┘
+                     x                     >          │                                 ▲
+                     x                     >    ┌─────┴───────────────┐                 │
+┌──────────────────┐ x                     >    │                     │                 │
+│                  │ x                     >    │        proxy        ├─────────────────┘
+│     postgres     ├───────────────────────────►│  (deployed in k8s)  │
+│      users       │ x                     >    │                     │
+│                  │ x                     >    └─────────────────────┘
+└──────────────────┘ x                     >
+                                           >
+                                           >
+                             closed-source > open-source
+                                           >
+                                           >
+```
+
+Notes:
+
+- diagram is simplified in the less-important places
+- directed arrows are strict and mean that connections in the reverse direction are forbidden
+
+This split is quite complex and this RFC proposes several smaller steps to achieve the larger goal: 
+
+1. Start by refactoring the console code, the goal is to have console and control-plane code in the different directories without dependencies on each other.
+2. Do similar refactoring for tables in the console database, remove queries selecting data from both console and control-plane; move control-plane tables to a separate database.
+3. Implement control-plane HTTP API serving on a separate TCP port; make all console→control-plane calls to go through that HTTP API.
+4. Move control-plane source code to the neon repo; start control-plane as a separate service.
+
+## Motivation
+
+These are the two most important problems we want to solve:
+
+- Publish open-source implementation of all our cloud/storage features
+- Make a unified control-plane that is used in all cloud (serverless) and local (tests) setups
+
+Right now we have some closed-source code in the cloud repo. That code contains implementation for running Neon computes in k8s and without that code it’s impossible to automatically scale PostgreSQL computes. That means that we don’t have an open-source serverless PostgreSQL at the moment.
+
+After splitting and open-sourcing control-plane service we will have source code and Docker images for all storage services. That control-plane service should have HTTP API for creating and managing tenants (including all our storage features), while proxy will listen for incoming connections and create computes on-demand.
+
+Improving our test suite is an important task, but requires a lot of prerequisites and may require a separate RFC. Possible implementation of that is described in the section [Next steps](#next-steps).
+
+Another piece of motivation can be a better involvement of storage development team into a control-plane. By splitting control-plane from the console, it can be more convenient to test and develop control-plane with paying less attention to “business” features, such as user management, billing and analytics.
+
+For example, console currently requires authentication providers such as GitHub OAuth to work at all, as well as nodejs to be able to build it locally. It will be more convenient to build and run it locally without these requirements.
+
+## Proposed implementation
+
+### Current state of things
+
+Let’s start with defining the current state of things at the moment of this proposal. We have three repositories containing source code:
+
+- open-source `postgres` — our fork of postgres
+- open-source `neon` — our main repository for storage source code
+- closed-source `cloud` — mostly console backend and UI frontend
+
+This proposal aims not to change anything at the existing code in `neon` and `postgres` repositories, but to create control-plane service and move it’s source code from `cloud` to the `neon` repository. That means that we need to split code in `cloud` repo only, and will consider only this repository for exploring its source code.
+
+Let’s look at the miscellaneous things in the `cloud` repo which are NOT part of the console application, i.e. NOT the Go source code that is compiled to the `./console` binary. There we have:
+
+- command-line tools, such as cloudbench, neonadmin
+- markdown documentation
+- cloud operations scripts (helm, terraform, ansible)
+- configs and other things
+- e2e python tests
+- incidents playbooks
+- UI frontend
+- Make build scripts, code generation scripts
+- database migrations
+- swagger definitions
+
+And also let’s take a look at what we have in the console source code, which is the service we’d like to split:
+
+- API Servers
+    - Public API v2
+    - Management API v2
+    - Public API v1
+    - Admin API v1 (same port as Public API v1)
+    - Management API v1
+- Workers
+    - Monitor Compute Activity
+    - Watch Failed Operations
+    - Availability Checker
+    - Business Metrics Collector
+- Internal Services
+    - Auth Middleware, UserIsAdmin, Cookies
+    - Cable Websocket Server
+    - Admin Services
+        - Global Settings, Operations, Pageservers, Platforms, Projects, Safekeepers, Users
+    - Authenticate Proxy
+    - API Keys
+    - App Controller, serving UI HTML
+    - Auth Controller
+    - Branches
+    - Projects
+    - Psql Connect + Passwordless login
+    - Users
+    - Cloud Metrics
+    - User Metrics
+    - Invites
+    - Pageserver/Safekeeper management
+    - Operations, k8s/docker/common logic
+    - Platforms, Regions
+    - Project State
+    - Projects Roles, SCRAM
+    - Global Settings
+- Other things
+    - segment analytics integration
+    - sentry integration
+    - other common utilities packages
+
+### Drawing the splitting line
+
+The most challenging and the most important thing is to define the line that will split new control-plane service from the existing cloud service. If we don’t get it right, then we can end up with having a lot more issues without many benefits.
+
+We propose to define that line as follows:
+
+- everything user-related stays in the console service
+- everything storage-related should be in the control-plane service
+- something that falls in between should be decided where to go, but most likely should stay in the console service
+- some similar parts should be in both services, such as admin/management/db_migrations
+
+We call user-related all requests that can be connected to some user. The general idea is don’t have any user_id in the control-plane service and operate exclusively on tenant_id+timeline_id, the same way as existing storage services work now (compute, safekeeper, pageserver).
+
+Storage-related things can be defined as doing any of the following:
+
+- using k8s API
+- doing requests to any of the storage services (proxy, compute, safekeeper, pageserver, etc..)
+- tracking current status of tenants/timelines, managing lifetime of computes
+
+Based on that idea, we can say that new control-plane service should have the following components:
+
+- single HTTP API for everything
+    - Create and manage tenants and timelines
+    - Manage global settings and storage configuration (regions, platforms, safekeepers, pageservers)
+    - Admin API for storage health inspection and debugging
+- Workers
+    - Monitor Compute Activity
+    - Watch Failed Operations
+    - Availability Checker
+- Internal Services
+    - Admin Services
+        - Global Settings, Operations, Pageservers, Platforms, Tenants, Safekeepers
+    - Authenticate Proxy
+    - Branches
+    - Psql Connect
+    - Cloud Metrics
+    - Pageserver/Safekeeper management
+    - Operations, k8s/docker/common logic
+    - Platforms, Regions
+    - Tenant State
+    - Compute Roles, SCRAM
+    - Global Settings
+
+---
+
+And other components should probably stay in the console service:
+
+- API Servers (no changes here)
+    - Public API v2
+    - Management API v2
+    - Public API v1
+    - Admin API v1 (same port as Public API v1)
+    - Management API v1
+- Workers
+    - Business Metrics Collector
+- Internal Services
+    - Auth Middleware, UserIsAdmin, Cookies
+    - Cable Websocket Server
+    - Admin Services
+        - Users admin stays the same
+        - Other admin services can redirect requests to the control-plane
+    - API Keys
+    - App Controller, serving UI HTML
+    - Auth Controller
+    - Projects
+    - User Metrics
+    - Invites
+    - Users
+    - Passwordless login
+- Other things
+    - segment analytics integration
+    - sentry integration
+    - other common utilities packages
+
+There are also miscellaneous things that are useful for all kinds of services. So we can say that these things can be in both services:
+
+- markdown documentation
+- e2e python tests
+- make build scripts, code generation scripts
+- database migrations
+- swagger definitions
+
+The single entrypoint to the storage should be control-plane API. After we define that API, we can have code-generated implementation for the client and for the server. The general idea is to move code implementing storage components from the console to the API implementation inside the new control-plane service.
+
+After the code is moved to the new service, we can fill the created void by making API calls to the new service:
+
+- authorization of the client
+- mapping user_id + project_id to the tenant_id
+- calling the control-plane API
+
+### control-plane API
+
+Currently we have the following projects API in the console:
+
+```
+GET /projects/{project_id}
+PATCH /projects/{project_id}
+POST /projects/{project_id}/branches
+GET /projects/{project_id}/databases
+POST /projects/{project_id}/databases
+GET /projects/{project_id}/databases/{database_id}
+PUT /projects/{project_id}/databases/{database_id}
+DELETE /projects/{project_id}/databases/{database_id}
+POST /projects/{project_id}/delete
+GET /projects/{project_id}/issue_token
+GET /projects/{project_id}/operations
+GET /projects/{project_id}/operations/{operation_id}
+POST /projects/{project_id}/query
+GET /projects/{project_id}/roles
+POST /projects/{project_id}/roles
+GET /projects/{project_id}/roles/{role_name}
+DELETE /projects/{project_id}/roles/{role_name}
+POST /projects/{project_id}/roles/{role_name}/reset_password
+POST /projects/{project_id}/start
+POST /projects/{project_id}/stop
+POST /psql_session/{psql_session_id}
+```
+
+It looks fine and we probably already have clients relying on it. So we should not change it, at least for now. But most of these endpoints (if not all) are related to storage, and it can suggest us what control-plane API should look like:
+
+```
+GET /tenants/{tenant_id}
+PATCH /tenants/{tenant_id}
+POST /tenants/{tenant_id}/branches
+GET /tenants/{tenant_id}/databases
+POST /tenants/{tenant_id}/databases
+GET /tenants/{tenant_id}/databases/{database_id}
+PUT /tenants/{tenant_id}/databases/{database_id}
+DELETE /tenants/{tenant_id}/databases/{database_id}
+POST /tenants/{tenant_id}/delete
+GET /tenants/{tenant_id}/issue_token
+GET /tenants/{tenant_id}/operations
+GET /tenants/{tenant_id}/operations/{operation_id}
+POST /tenants/{tenant_id}/query
+GET /tenants/{tenant_id}/roles
+POST /tenants/{tenant_id}/roles
+GET /tenants/{tenant_id}/roles/{role_name}
+DELETE /tenants/{tenant_id}/roles/{role_name}
+POST /tenants/{tenant_id}/roles/{role_name}/reset_password
+POST /tenants/{tenant_id}/start
+POST /tenants/{tenant_id}/stop
+POST /psql_session/{psql_session_id}
+```
+
+One of the options here is to use gRPC instead of the HTTP, which has some useful features, but there are some strong points towards using plain HTTP:
+
+- HTTP API is easier to use for the clients
+- we already have HTTP API in pageserver/safekeeper/console
+- we probably want control-plane API to be similar to the console API, available in the cloud
+
+### Getting updates from the storage
+
+There can be some valid cases, when we would like to know what is changed in the storage. For example, console might want to know when user has queried and started compute and when compute was scaled to zero after that, to know how much user should pay for the service. Another example is to get info about reaching the disk space limits. Yet another example is to do analytics, such as how many users had at least one active project in a month.
+
+All of the above cases can happen without using the console, just by accessing compute through the proxy.
+
+To solve this, we can have a log of events occurring in the storage (event logs). That is very similar to operations table we have right now, the only difference is that events are immutable and we cannot change them after saving to the database. For example, we might want to have events for the following activities:
+
+- We finished processing some HTTP API query, such as resetting the password
+- We changed some state, such as started or stopped a compute
+- Operation is created
+- Operation is started for the first time
+- Operation is failed for the first time
+- Operation is finished
+
+Once we save these events to the database, we can create HTTP API to subscribe to these events. That API can look like this:
+
+```
+GET /events/<cursor>
+
+{
+  "events": [...],
+  "next_cursor": 123
+}
+```
+
+It should be possible to replay event logs from some point of time, to get a state of almost anything from the storage services. That means that if we maintain some state in the control-plane database and we have a reason to have the same state in the console database, it is possible by polling events from the control-plane API and changing the state in the console database according to the events.
+
+### Next steps
+
+After implementing control-plane HTTP API and starting control-plane as a separate service, we might want to think of exploiting benefits of the new architecture, such as reorganizing test infrastructure. Possible options are listed in the  [Next steps](#next-steps-1).
+
+## Non Goals
+
+RFC doesn’t cover the actual cloud deployment scripts and schemas, such as terraform, ansible, k8s yaml’s and so on.
+
+## Impacted components
+
+Mostly console, but can also affect some storage service.
+
+## Scalability
+
+We should support starting several instances of the new control-plane service at the same time.
+
+At the same time, it should be possible to use only single instance of control-plane, which can be useful for local tests.
+
+## Security implications
+
+New control-plane service is an internal service, so no external requests can reach it. But at the same time, it contains API to do absolutely anything with any of the tenants. That means that bad internal actor can potentially read and write all of the tenants. To make this safer, we can have one of these:
+
+- Simple option is to protect all requests with a single private key, so that no one can make requests without having that one key.
+- Another option is to have a separate token for every tenant and store these tokens in another secure place. This way it’s harder to access all tenants at once, because they have the different tokens.
+
+## Alternative implementation
+
+There was an idea to create a k8s operator for managing storage services and computes, but author of this RFC is not really familiar with it.
+
+Regarding less alternative ideas, there are another options for the name of the new control-plane service:
+
+- storage-ctl
+- cloud
+- cloud-ctl
+
+## Pros/cons of proposed approaches (TODO)
+
+Pros:
+
+- All storage features are completely open-source
+- Better tests coverage, less difference between cloud and local setups
+- Easier to develop storage and cloud features, because there is no need to setup console for that
+- Easier to deploy storage-only services to the any cloud
+
+Cons:
+
+- All storage features are completely open-source
+- Distributed services mean more code to connect different services and potential network issues
+- Console needs to have a dependency on storage API, there can be complications with developing new feature in a branch
+- More code to JOIN data from different services (console and control-plane)
+
+## Definition of Done
+
+We have a new control-plane service running in the k8s. Source code for that control-plane service is located in the open-source neon repo.
+
+## Next steps
+
+After we’ve reached DoD, we can make further improvements.
+
+First thing that can benefit from the split is local testing. The same control-plane service can implement starting computes as a local processes instead of k8s deployments. If it will also support starting pageservers/safekeepers/proxy for the local setup, then it can completely replace `./neon_local` binary, which is currently used for testing. The local testing environment can look like this:
+
+```
+┌─────────────────────┐     ┌───────────────────────┐
+│                     │     │      Storage (local)  │
+│  control-plane db   │     │                       │
+│   (local process)   │     │ - safekeepers         │
+│                     │     │ - pageservers         │
+└──────────▲──────────┘     │                       │
+           │                │     Dependencies      │
+┌──────────┴──────────┐     │                       │
+│                     │     │ - etcd                │
+│    control-plane    ├────►│ - S3                  │
+│   (local process)   │     │ - more?               │
+│                     │     │                       │
+└──────────┬──────────┘     └───────────────────────┘
+       ▲   │                            ▲
+       │   │                            │
+       │   │                ┌───────────┴───────────┐
+       │   │                │                       │
+       │   └───────────────►│       computes        │
+       │                    │   (local processes)   │
+       │                    │                       │
+┌──────┴──────────────┐     └───────────────────────┘
+│                     │                 ▲
+│        proxy        │                 │
+│   (local process)   ├─────────────────┘
+│                     │
+└─────────────────────┘
+```
+
+The key thing here is that control-plane local service have the same API and almost the same implementation as the one deployed in the k8s. This allows to run the same e2e tests against both cloud and local setups.
+
+For the python test_runner tests everything can stay mostly the same. To do that, we just need to replace `./neon_local` cli commands with API calls to the control-plane.
+
+The benefit here will be in having fast local tests that are really close to our cloud setup. Bugs in k8s queries are still cannot be found when running computes as a local processes, but it should be really easy to start k8s locally (for example in k3s) and run the same tests with control-plane connected to the local k8s.
+
+Talking about console and UI tests, after the split there should be a way to test these without spinning up all the storage locally. New control-plane service has a well-defined API, allowing us to mock it. This way we can create UI tests to verify the right calls are issued after specific UI interactions and verify that we render correct messages when API returns errors.
+
 # Content from file ../neon/docs/rfcs/017-timeline-data-management.md:
 
 # Name
@@ -6251,7 +6677,7 @@ with grpc streams and tokio mpsc channels. The implementation description is at 
 
 It is just 500 lines of code and core functionality is complete. 1-1 pub sub
 gives about 120k received messages per second; having multiple subscribers in
-different connecitons quickly scales to 1 million received messages per second.
+different connections quickly scales to 1 million received messages per second.
 I had concerns about many concurrent streams in singe connection, but 2^20
 subscribers still work (though eat memory, with 10 publishers 20GB are consumed;
 in this implementation each publisher holds full copy of all subscribers). There
@@ -6268,12 +6694,12 @@ other members, with best-effort this is simple.
 ### Security implications
 
 Communication happens in a private network that is not exposed to users;
-additionaly we can add auth to the broker.
+additionally we can add auth to the broker.
 
 ## Alternative: get existing pub-sub
 
 We could take some existing pub sub solution, e.g. RabbitMQ, Redis. But in this
-case IMV simplicity of our own outweights external dependency costs (RabbitMQ is
+case IMV simplicity of our own outweighs external dependency costs (RabbitMQ is
 much more complicated and needs VM; Redis Rust client maintenance is not
 ideal...). Also note that projects like CockroachDB and TiDB are based on gRPC
 as well.
@@ -6414,7 +6840,7 @@ TenantMaintenanceGuard: Like ActiveTenantGuard, but can be held even when the
 tenant is not in Active state. Used for operations like attach/detach. Perhaps
 allow only one such guard on a Tenant at a time.
 
-Similarly for Timelines. We don't currentl have a "state" on Timeline, but I think
+Similarly for Timelines. We don't currently have a "state" on Timeline, but I think
 we need at least two states: Active and Stopping. The Stopping state is used at
 deletion, to prevent new TimelineActiveGuards from appearing, while you wait for
 existing TimelineActiveGuards to die out.
@@ -6425,7 +6851,7 @@ have a TenantActiveGuard, and the tenant's state changes from Active to
 Stopping, the is_shutdown_requested() function should return true, and
 shutdown_watcher() future should return.
 
-This signaling doesn't neessarily need to cover all cases. For example, if you
+This signaling doesn't necessarily need to cover all cases. For example, if you
 have a block of code in spawn_blocking(), it might be acceptable if
 is_shutdown_requested() doesn't return true even though the tenant is in
 Stopping state, as long as the code finishes reasonably fast.
@@ -6472,7 +6898,7 @@ sequenceDiagram
 ```
 
 At this point it is not possible to restore from index, it contains L2 which
-is no longer available in s3 and doesnt contain L3 added by compaction by the
+is no longer available in s3 and doesn't contain L3 added by compaction by the
 first pageserver. So if any of the pageservers restart initial sync will fail
 (or in on-demand world it will fail a bit later during page request from
 missing layer)
@@ -6509,7 +6935,7 @@ One possible solution for relocation case is to orchestrate background jobs
 from outside. The oracle who runs migration can turn off background jobs on
 PS1 before migration and then run migration -> enable them on PS2. The problem
 comes if migration fails. In this case in order to resume background jobs
-oracle needs to guarantee that PS2 doesnt run background jobs and if it doesnt
+oracle needs to guarantee that PS2 doesn't run background jobs and if it doesn't
 respond then PS1 is stuck unable to run compaction/gc. This cannot be solved
 without human ensuring that no upload from PS2 can happen. In order to be able
 to resolve this automatically CAS is required on S3 side so pageserver can
@@ -6563,7 +6989,7 @@ During discussion it seems that we converged on the approach consisting of:
   whether we need to apply change to the index state or not.
 - Responsibility for running background jobs is assigned externally. Pageserver
   keeps locally persistent flag for each tenant that indicates whether this
-  pageserver is considered as primary one or not. TODO what happends if we
+  pageserver is considered as primary one or not. TODO what happens if we
   crash and cannot start for some extended period of time? Control plane can
   assign ownership to some other pageserver. Pageserver needs some way to check
   if its still the blessed one. Maybe by explicit request to control plane on
@@ -6573,7 +6999,7 @@ Requirement for deterministic layer generation was considered overly strict
 because of two reasons:
 
 - It can limit possible optimizations e g when pageserver wants to reshuffle
-  some data locally and doesnt want to coordinate this
+  some data locally and doesn't want to coordinate this
 - The deterministic algorithm itself can change so during deployments for some
   time there will be two different version running at the same time which can
   cause non determinism
@@ -6599,7 +7025,7 @@ sequenceDiagram
     CP->>PS1: Yes
     deactivate CP
     PS1->>S3: Fetch PS1 index.
-    note over PS1: Continue operations, start backround jobs
+    note over PS1: Continue operations, start background jobs
     note over PS1,PS2: PS1 starts up and still and is not a leader anymore
     PS1->>CP: Am I still the leader for Tenant X?
     CP->>PS1: No
@@ -6638,7 +7064,7 @@ sequenceDiagram
 ### Eviction
 
 When two pageservers operate on a tenant for extended period of time follower
-doesnt perform write operations in s3. When layer is evicted follower relies
+doesn't perform write operations in s3. When layer is evicted follower relies
 on updates from primary to get info about layers it needs to cover range for
 evicted layer.
 
@@ -6879,7 +7305,7 @@ Created on 08.03.23
 
 ## Motivation
 
-Currently we dont delete pageserver part of the data from s3 when project is deleted. (The same is true for safekeepers, but this outside of the scope of this RFC).
+Currently we don't delete pageserver part of the data from s3 when project is deleted. (The same is true for safekeepers, but this outside of the scope of this RFC).
 
 This RFC aims to spin a discussion to come to a robust deletion solution that wont put us in into a corner for features like postponed deletion (when we keep data for user to be able to restore a project if it was deleted by accident)
 
@@ -6950,9 +7376,9 @@ Remote one is needed for cases when pageserver is lost during deletion so other 
 
 Why local mark file is needed?
 
-If we dont have one, we have two choices, delete local data before deleting the remote part or do that after.
+If we don't have one, we have two choices, delete local data before deleting the remote part or do that after.
 
-If we delete local data before remote then during restart pageserver wont pick up remote tenant at all because nothing is available locally (pageserver looks for remote conuterparts of locally available tenants).
+If we delete local data before remote then during restart pageserver wont pick up remote tenant at all because nothing is available locally (pageserver looks for remote counterparts of locally available tenants).
 
 If we delete local data after remote then at the end of the sequence when remote mark file is deleted if pageserver restart happens then the state is the same to situation when pageserver just missing data on remote without knowing the fact that this data is intended to be deleted. In this case the current behavior is upload everything local-only to remote.
 
@@ -7020,7 +7446,7 @@ sequenceDiagram
         CP->>PS: Retry delete tenant
         PS->>CP: Not modified
     else Mark is missing
-        note over PS: Continue to operate the tenant as if deletion didnt happen
+        note over PS: Continue to operate the tenant as if deletion didn't happen
 
         note over CP: Eventually console should <br> retry delete request
 
@@ -7043,7 +7469,7 @@ sequenceDiagram
     PS->>CP: True
 ```
 
-Similar sequence applies when both local and remote marks were persisted but Control Plane still didnt receive a response.
+Similar sequence applies when both local and remote marks were persisted but Control Plane still didn't receive a response.
 
 If pageserver crashes after both mark files were deleted then it will reply to control plane status poll request with 404 which should be treated by control plane as success.
 
@@ -7062,7 +7488,7 @@ If pageseserver is lost then the deleted tenant should be attached to different 
 
 ##### Restrictions for tenant that is in progress of being deleted
 
-I propose to add another state to tenant/timeline - PendingDelete. This state shouldnt allow executing any operations aside from polling the deletion status.
+I propose to add another state to tenant/timeline - PendingDelete. This state shouldn't allow executing any operations aside from polling the deletion status.
 
 #### Summary
 
@@ -7112,7 +7538,7 @@ New branch gets created
 PS1 starts up (is it possible or we just recycle it?)
 PS1 is unaware of the new branch. It can either fall back to s3 ls, or ask control plane.
 
-So here comes the dependency of storage on control plane. During restart storage needs to know which timelines are valid for operation. If there is nothing on s3 that can answer that question storage neeeds to ask control plane.
+So here comes the dependency of storage on control plane. During restart storage needs to know which timelines are valid for operation. If there is nothing on s3 that can answer that question storage needs to ask control plane.
 
 ### Summary
 
@@ -7125,7 +7551,7 @@ Cons:
 
 Pros:
 
-- Easier to reason about if you dont have to account for pageserver restarts
+- Easier to reason about if you don't have to account for pageserver restarts
 
 ### Extra notes
 
@@ -7137,7 +7563,7 @@ Delayed deletion can be done with both approaches. As discussed with Anna (@step
 
 After discussion in comments I see that we settled on two options (though a bit different from ones described in rfc). First one is the same - pageserver owns as much as possible. The second option is that pageserver owns markers thing, but actual deletion happens in control plane by repeatedly calling ls + delete.
 
-To my mind the only benefit of the latter approach is possible code reuse between safekeepers and pageservers. Otherwise poking around integrating s3 library into control plane, configuring shared knowledge abouth paths in s3 - are the downsides. Another downside of relying on control plane is the testing process. Control plane resides in different repository so it is quite hard to test pageserver related changes there. e2e test suite there doesnt support shutting down pageservers, which are separate docker containers there instead of just processes.
+To my mind the only benefit of the latter approach is possible code reuse between safekeepers and pageservers. Otherwise poking around integrating s3 library into control plane, configuring shared knowledge about paths in s3 - are the downsides. Another downside of relying on control plane is the testing process. Control plane resides in different repository so it is quite hard to test pageserver related changes there. e2e test suite there doesn't support shutting down pageservers, which are separate docker containers there instead of just processes.
 
 With pageserver owning everything we still give the retry logic to control plane but its easier to duplicate if needed compared to sharing inner s3 workings. We will have needed tests for retry logic in neon repo.
 
@@ -7223,7 +7649,7 @@ sequenceDiagram
 ```
 
 At this point it is not possible to restore the state from index, it contains L2 which
-is no longer available in s3 and doesnt contain L3 added by compaction by the
+is no longer available in s3 and doesn't contain L3 added by compaction by the
 first pageserver. So if any of the pageservers restart, initial sync will fail
 (or in on-demand world it will fail a bit later during page request from
 missing layer)
@@ -7319,7 +7745,7 @@ sequenceDiagram
 
 Another problem is a possibility of concurrent branch creation calls.
 
-I e during migration create_branch can be called on old pageserver and newly created branch wont be seen on new pageserver. Prior art includes prototyping an approach of trying to mirror such branches, but currently it lost its importance, because now attach is fast because we dont need to download all data, and additionally to the best of my knowledge of control plane internals (cc @ololobus to confirm) operations on one project are executed sequentially, so it is not possible to have such case. So branch create operation will be executed only when relocation is completed. As a safety measure we can forbid branch creation for tenants that are in readonly remote state.
+I e during migration create_branch can be called on old pageserver and newly created branch wont be seen on new pageserver. Prior art includes prototyping an approach of trying to mirror such branches, but currently it lost its importance, because now attach is fast because we don't need to download all data, and additionally to the best of my knowledge of control plane internals (cc @ololobus to confirm) operations on one project are executed sequentially, so it is not possible to have such case. So branch create operation will be executed only when relocation is completed. As a safety measure we can forbid branch creation for tenants that are in readonly remote state.
 
 ## Simplistic approach
 
@@ -7439,7 +7865,7 @@ When PostgreSQL requests a file, `compute_ctl` downloads it.
 PostgreSQL requests files in the following cases:
 - When loading a preload library set in `local_preload_libraries`
 - When explicitly loading a library with `LOAD`
-- Wnen creating extension with `CREATE EXTENSION` (download sql scripts, (optional) extension data files and (optional) library files)))
+- When creating extension with `CREATE EXTENSION` (download sql scripts, (optional) extension data files and (optional) library files)))
 
 
 #### Summary
@@ -7738,7 +8164,7 @@ plane guarantee prevents robust response to failures, as if a pageserver is unre
 we may not detach from it. The mechanism in this RFC fixes this, by making it safe to
 attach to a new, different pageserver even if an unresponsive pageserver may be running.
 
-Futher, lack of safety during split-brain conditions blocks two important features where occasional
+Further lack of safety during split-brain conditions blocks two important features where occasional
 split-brain conditions are part of the design assumptions:
 
 - seamless tenant migration ([RFC PR](https://github.com/neondatabase/neon/pull/5029))
@@ -8202,11 +8628,11 @@ The above makes it safe for control plane to change the assignment of
 tenant to pageserver in control plane while a timeline creation is ongoing.
 The reason is that the creation request against the new assigned pageserver
 uses a new generation number. However, care must be taken by control plane
-to ensure that a "timeline creation successul" response from some pageserver
+to ensure that a "timeline creation successful" response from some pageserver
 is checked for the pageserver's generation for that timeline's tenant still being the latest.
 If it is not the latest, the response does not constitute a successful timeline creation.
 It is acceptable to discard such responses, the scrubber will clean up the S3 state.
-It is better to issue a timelien deletion request to the stale attachment.
+It is better to issue a timeline deletion request to the stale attachment.
 
 #### Timeline Deletion
 
@@ -8345,7 +8771,7 @@ As outlined in the Part 1 on correctness, it is critical that deletions are only
 executed once the key is not referenced anywhere in S3.
 This property is obviously upheld by the scheme above.
 
-#### We Accept Object Leakage In Acceptable Circumcstances
+#### We Accept Object Leakage In Acceptable Circumstances
 
 If we crash in the flow above between (2) and (3), we lose track of unreferenced object.
 Further, enqueuing a single to the persistent queue may not be durable immediately to amortize cost of flush to disk.
@@ -8835,7 +9261,7 @@ struct Tenant {
   ...
 
   txns: HashMap<TxnId, Transaction>,
-  // the most recently started txn's id; only most recently sarted can win
+  // the most recently started txn's id; only most recently started can win
   next_winner_txn: Option<TxnId>,
 }
 struct Transaction {
@@ -8859,7 +9285,7 @@ A transaction T in state Committed has subsequent transactions that may or may n
 
 So, for garbage collection, we need to assess transactions in state Committed and RejectAcknowledged:
 
-- Commited: delete objects on the deadlist.
+- Committed: delete objects on the deadlist.
     - We don’t need a LIST request here, the deadlist is sufficient. So, it’s really cheap.
     - This is **not true MVCC garbage collection**; by deleting the objects on Committed transaction T ’s deadlist, we might delete data referenced by other transactions that were concurrent with T, i.e., they started while T was still open. However, the fact that T is committed means that the other transactions are RejectPending or RejectAcknowledged, so, they don’t matter. Pageservers executing these doomed RejectPending transactions must handle 404 for GETs gracefully, e.g., by trying to commit txn so they observe the rejection they’re destined to get anyways. 404’s for RejectAcknowledged is handled below.
 - RejectAcknowledged: delete all objects created in that txn, and discard deadlists.
@@ -8915,15 +9341,15 @@ If a pageserver is unresponsive from Control Plane’s / Compute’s perspective
 
 At this point, availability is restored and user pain relieved.
 
-What’s left is to somehow close the doomed transaction of the unresponsive pageserver, so that it beomes RejectAcknowledged, and GC can make progress. Since S3 is cheap, we can afford to wait a really long time here, especially if we put a soft bound on the amount of data a transaction may produce before it must commit. Procedure:
+What’s left is to somehow close the doomed transaction of the unresponsive pageserver, so that it becomes RejectAcknowledged, and GC can make progress. Since S3 is cheap, we can afford to wait a really long time here, especially if we put a soft bound on the amount of data a transaction may produce before it must commit. Procedure:
 
 1. Ensure the unresponsive pageserver is taken out of rotation for new attachments. That probably should happen as part of the routine above.
 2. Make a human operator investigate decide what to do (next morning, NO ONCALL ALERT):
     1. Inspect the instance, investigate logs, understand root cause.
     2. Try to re-establish connectivity between pageserver and Control Plane so that pageserver can retry commits, get rejected, ack rejection ⇒ enable GC.
-    3. Use below procedure to decomission pageserver.
+    3. Use below procedure to decommission pageserver.
 
-### Decomissioning A Pageserver (Dead or Alive-but-Unrespsonive)
+### Decommissioning A Pageserver (Dead or Alive-but-Unresponsive)
 
 The solution, enabled by this proposal:
 
@@ -8983,7 +9409,7 @@ Issues that we discussed:
     1. In abstract terms, this proposal provides a linearized history for a given S3 prefix.
     2. In concrete terms, this proposal provides a linearized history per tenant.
     3. There can be multiple writers at a given time, but only one of them will win to become part of the linearized history.
-4. ************************************************************************************Alternative ideas mentioned during meetings that should be turned into a written prospoal like this one:************************************************************************************
+4. ************************************************************************************Alternative ideas mentioned during meetings that should be turned into a written proposal like this one:************************************************************************************
     1. @Dmitry Rodionov : having linearized storage of index_part.json in some database that allows serializable transactions / atomic compare-and-swap PUT
     2. @Dmitry Rodionov :
     3. @Stas : something like this scheme, but somehow find a way to equate attachment duration with transaction duration, without losing work if pageserver dies months after attachment.
@@ -9047,7 +9473,7 @@ If the compaction algorithm doesn't change between the two compaction runs, is d
 *However*:
 1. the file size of the overwritten L1s may not be identical, and
 2. the bit pattern of the overwritten L1s may not be identical, and,
-3. in the future, we may want to make the compaction code non-determinstic, influenced by past access patterns, or otherwise change it, resulting in L1 overwrites with a different set of delta records than before the overwrite
+3. in the future, we may want to make the compaction code non-deterministic, influenced by past access patterns, or otherwise change it, resulting in L1 overwrites with a different set of delta records than before the overwrite
 
 The items above are a problem for the [split-brain protection RFC](https://github.com/neondatabase/neon/pull/4919) because it assumes that layer files in S3 are only ever deleted, but never replaced (overPUTted).
 
@@ -9056,7 +9482,7 @@ But node B based its world view on the version of node A's `index_part.json` fro
 That earlier `index_part.json`` contained the file size of the pre-overwrite L1.
 If the overwritten L1 has a different file size, node B will refuse to read data from the overwritten L1.
 Effectively, the data in the L1 has become inaccessible to node B.
-If node B already uploaded an index part itself, all subsequent attachments will use node B's index part, and run into the same probem.
+If node B already uploaded an index part itself, all subsequent attachments will use node B's index part, and run into the same problem.
 
 If we ever introduce checksums instead of checking just the file size, then a mismatching bit pattern (2) will cause similar problems.
 
@@ -9114,7 +9540,7 @@ Multi-object changes that previously created and removed files in timeline dir a
 * atomic `index_part.json` update in S3, as per guarantee that S3 PUT is atomic
 * local timeline dir state:
   * irrelevant for layer map content => irrelevant for atomic updates / crash consistency
-  * if we crash after index part PUT, local layer files will be used, so, no on-demand downloads neede for them
+  * if we crash after index part PUT, local layer files will be used, so, no on-demand downloads needed for them
   * if we crash before index part PUT, local layer files will be deleted
 
 ## Trade-Offs
@@ -9133,7 +9559,7 @@ Assuming upload queue allows for unlimited queue depth (that's what it does toda
 * wal ingest: currently unbounded
 * L0 => L1 compaction: CPU time proportional to `O(sum(L0 size))` and upload work proportional to `O()`
   * Compaction threshold is 10 L0s and each L0 can be up to 256M in size. Target size for L1 is 128M.
-  * In practive, most L0s are tiny due to 10minute `DEFAULT_CHECKPOINT_TIMEOUT`.
+  * In practice, most L0s are tiny due to 10minute `DEFAULT_CHECKPOINT_TIMEOUT`.
 * image layer generation: CPU time `O(sum(input data))` + upload work `O(sum(new image layer size))`
   * I have no intuition how expensive / long-running it is in reality.
 * gc: `update_gc_info`` work (not substantial, AFAIK)
@@ -9151,7 +9577,7 @@ Pageserver crashes are very rare ; it would likely be acceptable to re-do the lo
 However, regular pageserver restart happen frequently, e.g., during weekly deploys.
 
 In general, pageserver restart faces the problem of tenants that "take too long" to shut down.
-They are a problem because other tenants that shut down quickly are unavailble while we wait for the slow tenants to shut down.
+They are a problem because other tenants that shut down quickly are unavailable while we wait for the slow tenants to shut down.
 We currently allot 10 seconds for graceful shutdown until we SIGKILL the pageserver process (as per `pageserver.service` unit file).
 A longer budget would expose tenants that are done early to a longer downtime.
 A short budget would risk throwing away more work that'd have to be re-done after restart.
@@ -9229,7 +9655,7 @@ tenants/$tenant/timelines/$timeline/$key_and_lsn_range
 tenants/$tenant/timelines/$timeline/$layer_file_id-$key_and_lsn_range
 ```
 
-To guarantee uniqueness, the unqiue number is a sequence number, stored in `index_part.json`.
+To guarantee uniqueness, the unique number is a sequence number, stored in `index_part.json`.
 
 This alternative does not solve atomic layer map updates.
 In our crash-during-compaction scenario above, the compaction run after the crash will not overwrite the L1s, but write/PUT new files with new sequence numbers.
@@ -9239,11 +9665,11 @@ We'd need to write a deduplication pass that checks if perfectly overlapping lay
 However, this alternative is appealing because it systematically prevents overwrites at a lower level than this RFC.
 
 So, this alternative is sufficient for the needs of the split-brain safety RFC (immutable layer files locally and in S3).
-But it doesn't solve the problems with crash-during-compaction outlined earlier in this RFC, and in fact, makes it much more accute.
+But it doesn't solve the problems with crash-during-compaction outlined earlier in this RFC, and in fact, makes it much more acute.
 The proposed design in this RFC addresses both.
 
 So, if this alternative sounds appealing, we should implement the proposal in this RFC first, then implement this alternative on top.
-That way, we avoid a phase where the crash-during-compaction problem is accute.
+That way, we avoid a phase where the crash-during-compaction problem is acute.
 
 ## Related issues
 
@@ -9874,7 +10300,7 @@ pageservers are updated to be aware of it.
 
 As well as simplifying implementation, putting heatmaps in S3 will be useful
 for future analytics purposes -- gathering aggregated statistics on activity
-pattersn across many tenants may be done directly from data in S3.
+patterns across many tenants may be done directly from data in S3.
 
 
 # Content from file ../neon/docs/rfcs/029-getpage-throttling.md:
@@ -10229,7 +10655,7 @@ Separating corrupt writes from non-corrupt ones is a hard problem in general,
 and if the application was involved in making the corrupt write, a recovery
 would also involve the application. Therefore, corruption that has made it into
 the WAL is outside of the scope of this feature. However, the WAL replay can be
-issued to right before the point in time where the corruption occured. Then the
+issued to right before the point in time where the corruption occurred. Then the
 data loss is isolated to post-corruption writes only.
 
 ## Impacted components (e.g. pageserver, safekeeper, console, etc)
@@ -10243,7 +10669,7 @@ limits and billing we apply to existing timelines.
 
 ## Proposed implementation
 
-The first problem to keep in mind is the reproducability of `initdb`.
+The first problem to keep in mind is the reproducibility of `initdb`.
 So an initial step would be to upload `initdb` snapshots to S3.
 
 After that, we'd have the endpoint spawn a background process which
@@ -10285,6 +10711,152 @@ https://www.notion.so/neondatabase/Pageserver-disaster-recovery-one-pager-4ecfb5
 ### Unresolved questions
 
 none known (outside of the mentioned ones).
+
+
+# Content from file ../neon/docs/rfcs/030-vectored-timeline-get.md:
+
+# Vectored Timeline Get
+
+Created on: 2024-01-02
+Author: Christian Schwarz
+
+# Summary
+
+A brief RFC / GitHub Epic describing a vectored version of the `Timeline::get` method that is at the heart of Pageserver.
+
+# Motivation
+
+During basebackup, we issue many `Timeline::get` calls for SLRU pages that are *adjacent* in key space.
+For an example, see
+https://github.com/neondatabase/neon/blob/5c88213eaf1b1e29c610a078d0b380f69ed49a7e/pageserver/src/basebackup.rs#L281-L302.
+
+Each of these `Timeline::get` calls must traverse the layer map to gather reconstruct data (`Timeline::get_reconstruct_data`) for the requested page number (`blknum` in the example).
+For each layer visited by layer map traversal, we do a `DiskBtree` point lookup.
+If it's negative (no entry), we resume layer map traversal.
+If it's positive, we collect the result in our reconstruct data bag.
+If the reconstruct data bag contents suffice to reconstruct the page, we're done with `get_reconstruct_data` and move on to walredo.
+Otherwise, we resume layer map traversal.
+
+Doing this many `Timeline::get` calls is quite inefficient because:
+
+1. We do the layer map traversal repeatedly, even if, e.g., all the data sits in the same image layer at the bottom of the stack.
+2. We may visit many DiskBtree inner pages multiple times for point lookup of different keys.
+   This is likely particularly bad for L0s which span the whole key space and hence must be visited by layer map traversal, but
+   may not contain the data we're looking for.
+3. Anecdotally, keys adjacent in keyspace and written simultaneously also end up physically adjacent in the layer files [^1].
+   So, to provide the reconstruct data for N adjacent keys, we would actually only _need_ to issue a single large read to the filesystem, instead of the N reads we currently do.
+   The filesystem, in turn, ideally stores the layer file physically contiguously, so our large read will turn into one IOP toward the disk.
+
+[^1]: https://www.notion.so/neondatabase/Christian-Investigation-Slow-Basebackups-Early-2023-12-34ea5c7dcdc1485d9ac3731da4d2a6fc?pvs=4#15ee4e143392461fa64590679c8f54c9
+
+# Solution
+
+We should have a vectored aka batched aka scatter-gather style alternative API for `Timeline::get`. Having such an API  unlocks:
+
+* more efficient basebackup
+* batched IO during compaction (useful for strides of unchanged pages)
+* page_service: expose vectored get_page_at_lsn for compute (=> good for seqscan / prefetch)
+  * if [on-demand SLRU downloads](https://github.com/neondatabase/neon/pull/6151) land before vectored Timeline::get, on-demand SLRU downloads will still benefit from this API
+
+# DoD
+
+There is a new variant of `Timeline::get`, called `Timeline::get_vectored`.
+It takes as arguments an `lsn: Lsn` and a `src: &[KeyVec]` where `struct KeyVec { base: Key, count: usize }`.
+
+It is up to the implementor to figure out a suitable and efficient way to return the reconstructed page images.
+It is sufficient to simply return a `Vec<Bytes>`, but, likely more efficient solutions can be found after studying all the callers of `Timeline::get`.
+
+Functionally, the behavior of `Timeline::get_vectored` is equivalent to
+
+```rust
+let mut keys_iter: impl Iterator<Item=Key>
+  = src.map(|KeyVec{ base, count }| (base..base+count)).flatten();
+let mut out = Vec::new();
+for key in keys_iter {
+    let data = Timeline::get(key, lsn)?;
+    out.push(data);
+}
+return out;
+```
+
+However, unlike above, an ideal solution will
+
+* Visit each `struct Layer` at most once.
+* For each visited layer, call `Layer::get_value_reconstruct_data` at most once.
+  * This means, read each `DiskBtree` page at most once.
+* Facilitate merging of the reads we issue to the OS and eventually NVMe.
+
+Each of these items above represents a significant amount of work.
+
+## Performance
+
+Ideally, the **base performance** of a vectored get of a single page should be identical to the current `Timeline::get`.
+A reasonable constant overhead over current `Timeline::get` is acceptable.
+
+The performance improvement for the vectored use case is demonstrated in some way, e.g., using the `pagebench` basebackup benchmark against a tenant with a lot of SLRU segments.
+
+# Implementation
+
+High-level set of tasks / changes to be made:
+
+- **Get clarity on API**:
+  - Define naive `Timeline::get_vectored` implementation & adopt it across pageserver.
+  - The tricky thing here will be the return type (e.g. `Vec<Bytes>` vs `impl Stream`).
+  - Start with something simple to explore the different usages of the API.
+    Then iterate with peers until we have something that is good enough.
+- **Vectored Layer Map traversal**
+  - Vectored `LayerMap::search` (take 1 LSN and N `Key`s instead of just 1 LSN and 1 `Key`)
+  - Refactor `Timeline::get_reconstruct_data` to hold & return state for N `Key`s instead of 1
+    - The slightly tricky part here is what to do about `cont_lsn` [after we've found some reconstruct data for some keys](https://github.com/neondatabase/neon/blob/d066dad84b076daf3781cdf9a692098889d3974e/pageserver/src/tenant/timeline.rs#L2378-L2385)
+      but need more.
+      Likely we'll need to keep track of `cont_lsn` per key and continue next iteration at `max(cont_lsn)` of all keys that still need data.
+- **Vectored `Layer::get_value_reconstruct_data` / `DiskBtree`**
+  - Current code calls it [here](https://github.com/neondatabase/neon/blob/d066dad84b076daf3781cdf9a692098889d3974e/pageserver/src/tenant/timeline.rs#L2378-L2384).
+  - Delta layers use `DiskBtreeReader::visit()` to collect the `(offset,len)` pairs for delta record blobs to load.
+  - Image layers use `DiskBtreeReader::get` to get the offset of the image blob to load. Underneath, that's just a `::visit()` call.
+  - What needs to happen to `DiskBtree::visit()`?
+    * Minimally
+      * take a single `KeyVec` instead of a single `Key` as argument, i.e., take a single contiguous key range to visit.
+      * Change the visit code to to invoke the callback for all values in the `KeyVec`'s key range
+      * This should be good enough for what we've seen when investigating basebackup slowness, because there, the key ranges are contiguous.
+    * Ideally:
+      * Take a `&[KeyVec]`, sort it;
+      * during Btree traversal, peek at the next `KeyVec` range to determine whether we need to descend or back out.
+      * NB: this should be a straight-forward extension of the minimal solution above, as we'll already be checking for "is there more key range in the requested `KeyVec`".
+- **Facilitate merging of the reads we issue to the OS and eventually NVMe.**
+  - The `DiskBtree::visit` produces a set of offsets which we then read from a `VirtualFile` [here](https://github.com/neondatabase/neon/blob/292281c9dfb24152b728b1a846cc45105dac7fe0/pageserver/src/tenant/storage_layer/delta_layer.rs#L772-L804)
+    - [Delta layer reads](https://github.com/neondatabase/neon/blob/292281c9dfb24152b728b1a846cc45105dac7fe0/pageserver/src/tenant/storage_layer/delta_layer.rs#L772-L804)
+      - We hit (and rely) on `PageCache` and `VirtualFile here (not great under pressure)
+    - [Image layer reads](https://github.com/neondatabase/neon/blob/292281c9dfb24152b728b1a846cc45105dac7fe0/pageserver/src/tenant/storage_layer/image_layer.rs#L429-L435)
+  - What needs to happen is the **vectorization of the `blob_io` interface and then the `VirtualFile` API**.
+  - That is tricky because
+    - the `VirtualFile` API, which sits underneath `blob_io`, is being touched by ongoing [io_uring work](https://github.com/neondatabase/neon/pull/5824)
+    - there's the question how IO buffers will be managed; currently this area relies heavily on `PageCache`, but there's controversy around the future of `PageCache`.
+      - The guiding principle here should be to avoid coupling this work to the `PageCache`.
+      - I.e., treat `PageCache` as an extra hop in the I/O chain, rather than as an integral part of buffer management.
+
+
+Let's see how we can improve by doing the first three items in above list first, then revisit.
+
+## Rollout / Feature Flags
+
+No feature flags are required for this epic.
+
+At the end of this epic, `Timeline::get` forwards to `Timeline::get_vectored`, i.e., it's an all-or-nothing type of change.
+
+It is encouraged to deliver this feature incrementally, i.e., do many small PRs over multiple weeks.
+That will help isolate performance regressions across weekly releases.
+
+# Interaction With Sharding
+
+[Sharding](https://github.com/neondatabase/neon/pull/5432) splits up the key space, see functions `is_key_local` / `key_to_shard_number`.
+
+Just as with `Timeline::get`, callers of `Timeline::get_vectored` are responsible for ensuring that they only ask for blocks of the given `struct Timeline`'s shard.
+
+Given that this is already the case, there shouldn't be significant interaction/interference with sharding.
+
+However, let's have a safety check for this constraint (error or assertion) because there are currently few affordances at the higher layers of Pageserver for sharding<=>keyspace interaction.
+For example, `KeySpace` is not broken up by shard stripe, so if someone naively converted the compaction code to issue a vectored get for a keyspace range it would violate this constraint.
 
 
 # Content from file ../neon/docs/rfcs/README.md:
@@ -11249,7 +11821,7 @@ implementation where we keep more data than we would need to, do not
 change the synthetic size or incur any costs to the user.
 
 The synthetic size is calculated for the whole project. It is not
-straighforward to attribute size to individual branches. See "What is
+straightforward to attribute size to individual branches. See "What is
 the size of an individual branch?" for discussion on those
 difficulties.
 
@@ -11476,7 +12048,7 @@ and truncate the WAL.
 
 Synthetic size is calculated for the whole project, and includes all
 branches. There is no such thing as the size of a branch, because it
-is not straighforward to attribute the parts of size to individual
+is not straightforward to attribute the parts of size to individual
 branches.
 
 ## Example: attributing size to branches
@@ -12311,6 +12883,698 @@ ansible-playbook -e "auth_token=${AUTH_TOKEN}" remote.yaml
 3. Run `DB_CONNSTR=... ./upload.sh prod_feb30` to upload dumps to `prod_feb30` table in specified postgres database.
 
 
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-d9194a83ad93cbe6/out/build/INSTALL.md:
+
+Building and installing a packaged release of jemalloc can be as simple as
+typing the following while in the root directory of the source tree:
+
+    ./configure
+    make
+    make install
+
+If building from unpackaged developer sources, the simplest command sequence
+that might work is:
+
+    ./autogen.sh
+    make
+    make install
+
+You can uninstall the installed build artifacts like this:
+
+    make uninstall
+
+Notes:
+ - "autoconf" needs to be installed
+ - Documentation is built by the default target only when xsltproc is
+available.  Build will warn but not stop if the dependency is missing.
+
+
+## Advanced configuration
+
+The 'configure' script supports numerous options that allow control of which
+functionality is enabled, where jemalloc is installed, etc.  Optionally, pass
+any of the following arguments (not a definitive list) to 'configure':
+
+* `--help`
+
+    Print a definitive list of options.
+
+* `--prefix=<install-root-dir>`
+
+    Set the base directory in which to install.  For example:
+
+        ./configure --prefix=/usr/local
+
+    will cause files to be installed into /usr/local/include, /usr/local/lib,
+    and /usr/local/man.
+
+* `--with-version=(<major>.<minor>.<bugfix>-<nrev>-g<gid>|VERSION)`
+
+    The VERSION file is mandatory for successful configuration, and the
+    following steps are taken to assure its presence:
+    1) If --with-version=<major>.<minor>.<bugfix>-<nrev>-g<gid> is specified,
+       generate VERSION using the specified value.
+    2) If --with-version is not specified in either form and the source
+       directory is inside a git repository, try to generate VERSION via 'git
+       describe' invocations that pattern-match release tags.
+    3) If VERSION is missing, generate it with a bogus version:
+       0.0.0-0-g0000000000000000000000000000000000000000
+
+    Note that --with-version=VERSION bypasses (1) and (2), which simplifies
+    VERSION configuration when embedding a jemalloc release into another
+    project's git repository.
+
+* `--with-rpath=<colon-separated-rpath>`
+
+    Embed one or more library paths, so that libjemalloc can find the libraries
+    it is linked to.  This works only on ELF-based systems.
+
+* `--with-mangling=<map>`
+
+    Mangle public symbols specified in <map> which is a comma-separated list of
+    name:mangled pairs.
+
+    For example, to use ld's --wrap option as an alternative method for
+    overriding libc's malloc implementation, specify something like:
+
+      --with-mangling=malloc:__wrap_malloc,free:__wrap_free[...]
+
+    Note that mangling happens prior to application of the prefix specified by
+    --with-jemalloc-prefix, and mangled symbols are then ignored when applying
+    the prefix.
+
+* `--with-jemalloc-prefix=<prefix>`
+
+    Prefix all public APIs with <prefix>.  For example, if <prefix> is
+    "prefix_", API changes like the following occur:
+
+      malloc()         --> prefix_malloc()
+      malloc_conf      --> prefix_malloc_conf
+      /etc/malloc.conf --> /etc/prefix_malloc.conf
+      MALLOC_CONF      --> PREFIX_MALLOC_CONF
+
+    This makes it possible to use jemalloc at the same time as the system
+    allocator, or even to use multiple copies of jemalloc simultaneously.
+
+    By default, the prefix is "", except on OS X, where it is "je_".  On OS X,
+    jemalloc overlays the default malloc zone, but makes no attempt to actually
+    replace the "malloc", "calloc", etc. symbols.
+
+* `--without-export`
+
+    Don't export public APIs.  This can be useful when building jemalloc as a
+    static library, or to avoid exporting public APIs when using the zone
+    allocator on OSX.
+
+* `--with-private-namespace=<prefix>`
+
+    Prefix all library-private APIs with <prefix>je_.  For shared libraries,
+    symbol visibility mechanisms prevent these symbols from being exported, but
+    for static libraries, naming collisions are a real possibility.  By
+    default, <prefix> is empty, which results in a symbol prefix of je_ .
+
+* `--with-install-suffix=<suffix>`
+
+    Append <suffix> to the base name of all installed files, such that multiple
+    versions of jemalloc can coexist in the same installation directory.  For
+    example, libjemalloc.so.0 becomes libjemalloc<suffix>.so.0.
+
+* `--with-malloc-conf=<malloc_conf>`
+
+    Embed `<malloc_conf>` as a run-time options string that is processed prior to
+    the malloc_conf global variable, the /etc/malloc.conf symlink, and the
+    MALLOC_CONF environment variable.  For example, to change the default decay
+    time to 30 seconds:
+
+      --with-malloc-conf=decay_ms:30000
+
+* `--enable-debug`
+
+    Enable assertions and validation code.  This incurs a substantial
+    performance hit, but is very useful during application development.
+
+* `--disable-stats`
+
+    Disable statistics gathering functionality.  See the "opt.stats_print"
+    option documentation for usage details.
+
+* `--enable-prof`
+
+    Enable heap profiling and leak detection functionality.  See the "opt.prof"
+    option documentation for usage details.  When enabled, there are several
+    approaches to backtracing, and the configure script chooses the first one
+    in the following list that appears to function correctly:
+
+    + libunwind      (requires --enable-prof-libunwind)
+    + libgcc         (unless --disable-prof-libgcc)
+    + gcc intrinsics (unless --disable-prof-gcc)
+
+* `--enable-prof-libunwind`
+
+    Use the libunwind library (http://www.nongnu.org/libunwind/) for stack
+    backtracing.
+
+* `--disable-prof-libgcc`
+
+    Disable the use of libgcc's backtracing functionality.
+
+* `--disable-prof-gcc`
+
+    Disable the use of gcc intrinsics for backtracing.
+
+* `--with-static-libunwind=<libunwind.a>`
+
+    Statically link against the specified libunwind.a rather than dynamically
+    linking with -lunwind.
+
+* `--disable-fill`
+
+    Disable support for junk/zero filling of memory.  See the "opt.junk" and
+    "opt.zero" option documentation for usage details.
+
+* `--disable-zone-allocator`
+
+    Disable zone allocator for Darwin.  This means jemalloc won't be hooked as
+    the default allocator on OSX/iOS.
+
+* `--enable-utrace`
+
+    Enable utrace(2)-based allocation tracing.  This feature is not broadly
+    portable (FreeBSD has it, but Linux and OS X do not).
+
+* `--enable-xmalloc`
+
+    Enable support for optional immediate termination due to out-of-memory
+    errors, as is commonly implemented by "xmalloc" wrapper function for malloc.
+    See the "opt.xmalloc" option documentation for usage details.
+
+* `--enable-lazy-lock`
+
+    Enable code that wraps pthread_create() to detect when an application
+    switches from single-threaded to multi-threaded mode, so that it can avoid
+    mutex locking/unlocking operations while in single-threaded mode.  In
+    practice, this feature usually has little impact on performance unless
+    thread-specific caching is disabled.
+
+* `--disable-cache-oblivious`
+
+    Disable cache-oblivious large allocation alignment by default, for large
+    allocation requests with no alignment constraints.  If this feature is
+    disabled, all large allocations are page-aligned as an implementation
+    artifact, which can severely harm CPU cache utilization.  However, the
+    cache-oblivious layout comes at the cost of one extra page per large
+    allocation, which in the most extreme case increases physical memory usage
+    for the 16 KiB size class to 20 KiB.
+
+* `--disable-syscall`
+
+    Disable use of syscall(2) rather than {open,read,write,close}(2).  This is
+    intended as a workaround for systems that place security limitations on
+    syscall(2).
+
+* `--disable-cxx`
+
+    Disable C++ integration.  This will cause new and delete operator
+    implementations to be omitted.
+
+* `--with-xslroot=<path>`
+
+    Specify where to find DocBook XSL stylesheets when building the
+    documentation.
+
+* `--with-lg-page=<lg-page>`
+
+    Specify the base 2 log of the allocator page size, which must in turn be at
+    least as large as the system page size.  By default the configure script
+    determines the host's page size and sets the allocator page size equal to
+    the system page size, so this option need not be specified unless the
+    system page size may change between configuration and execution, e.g. when
+    cross compiling.
+
+* `--with-lg-hugepage=<lg-hugepage>`
+
+    Specify the base 2 log of the system huge page size.  This option is useful
+    when cross compiling, or when overriding the default for systems that do
+    not explicitly support huge pages.
+
+* `--with-lg-quantum=<lg-quantum>`
+
+    Specify the base 2 log of the minimum allocation alignment.  jemalloc needs
+    to know the minimum alignment that meets the following C standard
+    requirement (quoted from the April 12, 2011 draft of the C11 standard):
+
+    >  The pointer returned if the allocation succeeds is suitably aligned so
+      that it may be assigned to a pointer to any type of object with a
+      fundamental alignment requirement and then used to access such an object
+      or an array of such objects in the space allocated [...]
+
+    This setting is architecture-specific, and although jemalloc includes known
+    safe values for the most commonly used modern architectures, there is a
+    wrinkle related to GNU libc (glibc) that may impact your choice of
+    <lg-quantum>.  On most modern architectures, this mandates 16-byte
+    alignment (<lg-quantum>=4), but the glibc developers chose not to meet this
+    requirement for performance reasons.  An old discussion can be found at
+    <https://sourceware.org/bugzilla/show_bug.cgi?id=206> .  Unlike glibc,
+    jemalloc does follow the C standard by default (caveat: jemalloc
+    technically cheats for size classes smaller than the quantum), but the fact
+    that Linux systems already work around this allocator noncompliance means
+    that it is generally safe in practice to let jemalloc's minimum alignment
+    follow glibc's lead.  If you specify `--with-lg-quantum=3` during
+    configuration, jemalloc will provide additional size classes that are not
+    16-byte-aligned (24, 40, and 56).
+
+* `--with-lg-vaddr=<lg-vaddr>`
+
+    Specify the number of significant virtual address bits.  By default, the
+    configure script attempts to detect virtual address size on those platforms
+    where it knows how, and picks a default otherwise.  This option may be
+    useful when cross-compiling.
+
+* `--disable-initial-exec-tls`
+
+    Disable the initial-exec TLS model for jemalloc's internal thread-local
+    storage (on those platforms that support explicit settings).  This can allow
+    jemalloc to be dynamically loaded after program startup (e.g. using dlopen).
+    Note that in this case, there will be two malloc implementations operating
+    in the same process, which will almost certainly result in confusing runtime
+    crashes if pointers leak from one implementation to the other.
+
+* `--disable-libdl`
+
+    Disable the usage of libdl, namely dlsym(3) which is required by the lazy
+    lock option.  This can allow building static binaries.
+
+The following environment variables (not a definitive list) impact configure's
+behavior:
+
+* `CFLAGS="?"`
+* `CXXFLAGS="?"`
+
+    Pass these flags to the C/C++ compiler.  Any flags set by the configure
+    script are prepended, which means explicitly set flags generally take
+    precedence.  Take care when specifying flags such as -Werror, because
+    configure tests may be affected in undesirable ways.
+
+* `EXTRA_CFLAGS="?"`
+* `EXTRA_CXXFLAGS="?"`
+
+    Append these flags to CFLAGS/CXXFLAGS, without passing them to the
+    compiler(s) during configuration.  This makes it possible to add flags such
+    as -Werror, while allowing the configure script to determine what other
+    flags are appropriate for the specified configuration.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.  Note that CFLAGS is not passed to
+    'cpp' when 'configure' is looking for include files, so you must use
+    CPPFLAGS instead if you need to help 'configure' find header files.
+
+* `LD_LIBRARY_PATH="?"`
+
+    'ld' uses this colon-separated list to find libraries.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    'configure' uses this to find programs.
+
+In some cases it may be necessary to work around configuration results that do
+not match reality.  For example, Linux 4.5 added support for the MADV_FREE flag
+to madvise(2), which can cause problems if building on a host with MADV_FREE
+support and deploying to a target without.  To work around this, use a cache
+file to override the relevant configuration variable defined in configure.ac,
+e.g.:
+
+    echo "je_cv_madv_free=no" > config.cache && ./configure -C
+
+
+## Advanced compilation
+
+To build only parts of jemalloc, use the following targets:
+
+    build_lib_shared
+    build_lib_static
+    build_lib
+    build_doc_html
+    build_doc_man
+    build_doc
+
+To install only parts of jemalloc, use the following targets:
+
+    install_bin
+    install_include
+    install_lib_shared
+    install_lib_static
+    install_lib_pc
+    install_lib
+    install_doc_html
+    install_doc_man
+    install_doc
+
+To clean up build results to varying degrees, use the following make targets:
+
+    clean
+    distclean
+    relclean
+
+
+## Advanced installation
+
+Optionally, define make variables when invoking make, including (not
+exclusively):
+
+* `INCLUDEDIR="?"`
+
+    Use this as the installation prefix for header files.
+
+* `LIBDIR="?"`
+
+    Use this as the installation prefix for libraries.
+
+* `MANDIR="?"`
+
+    Use this as the installation prefix for man pages.
+
+* `DESTDIR="?"`
+
+    Prepend DESTDIR to INCLUDEDIR, LIBDIR, DATADIR, and MANDIR.  This is useful
+    when installing to a different path than was specified via --prefix.
+
+* `CC="?"`
+
+    Use this to invoke the C compiler.
+
+* `CFLAGS="?"`
+
+    Pass these flags to the compiler.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    Use this to search for programs used during configuration and building.
+
+
+## Development
+
+If you intend to make non-trivial changes to jemalloc, use the 'autogen.sh'
+script rather than 'configure'.  This re-generates 'configure', enables
+configuration dependency rules, and enables re-generation of automatically
+generated source files.
+
+The build system supports using an object directory separate from the source
+tree.  For example, you can create an 'obj' directory, and from within that
+directory, issue configuration and build commands:
+
+    autoconf
+    mkdir obj
+    cd obj
+    ../configure --enable-autogen
+    make
+
+
+## Documentation
+
+The manual page is generated in both html and roff formats.  Any web browser
+can be used to view the html manual.  The roff manual page can be formatted
+prior to installation via the following command:
+
+    nroff -man -t doc/jemalloc.3
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-d9194a83ad93cbe6/out/build/TUNING.md:
+
+This document summarizes the common approaches for performance fine tuning with
+jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
+reasonably well in practice, and most applications should not have to tune any
+options. However, in order to cover a wide range of applications and avoid
+pathological cases, the default setting is sometimes kept conservative and
+suboptimal, even for many common workloads.  When jemalloc is properly tuned for
+a specific application / workload, it is common to improve system level metrics
+by a few percent, or make favorable trade-offs.
+
+
+## Notable runtime options for performance tuning
+
+Runtime options can be set via
+[malloc_conf](http://jemalloc.net/jemalloc.3.html#tuning).
+
+* [background_thread](http://jemalloc.net/jemalloc.3.html#background_thread)
+
+    Enabling jemalloc background threads generally improves the tail latency for
+    application threads, since unused memory purging is shifted to the dedicated
+    background threads.  In addition, unintended purging delay caused by
+    application inactivity is avoided with background threads.
+
+    Suggested: `background_thread:true` when jemalloc managed threads can be
+    allowed.
+
+* [metadata_thp](http://jemalloc.net/jemalloc.3.html#opt.metadata_thp)
+
+    Allowing jemalloc to utilize transparent huge pages for its internal
+    metadata usually reduces TLB misses significantly, especially for programs
+    with large memory footprint and frequent allocation / deallocation
+    activities.  Metadata memory usage may increase due to the use of huge
+    pages.
+
+    Suggested for allocation intensive programs: `metadata_thp:auto` or
+    `metadata_thp:always`, which is expected to improve CPU utilization at a
+    small memory cost.
+
+* [dirty_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.dirty_decay_ms) and
+  [muzzy_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.muzzy_decay_ms)
+
+    Decay time determines how fast jemalloc returns unused pages back to the
+    operating system, and therefore provides a fairly straightforward trade-off
+    between CPU and memory usage.  Shorter decay time purges unused pages faster
+    to reduces memory usage (usually at the cost of more CPU cycles spent on
+    purging), and vice versa.
+
+    Suggested: tune the values based on the desired trade-offs.
+
+* [narenas](http://jemalloc.net/jemalloc.3.html#opt.narenas)
+
+    By default jemalloc uses multiple arenas to reduce internal lock contention.
+    However high arena count may also increase overall memory fragmentation,
+    since arenas manage memory independently.  When high degree of parallelism
+    is not expected at the allocator level, lower number of arenas often
+    improves memory usage.
+
+    Suggested: if low parallelism is expected, try lower arena count while
+    monitoring CPU and memory usage.
+
+* [percpu_arena](http://jemalloc.net/jemalloc.3.html#opt.percpu_arena)
+
+    Enable dynamic thread to arena association based on running CPU.  This has
+    the potential to improve locality, e.g. when thread to CPU affinity is
+    present.
+    
+    Suggested: try `percpu_arena:percpu` or `percpu_arena:phycpu` if
+    thread migration between processors is expected to be infrequent.
+
+Examples:
+
+* High resource consumption application, prioritizing CPU utilization:
+
+    `background_thread:true,metadata_thp:auto` combined with relaxed decay time
+    (increased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:30000,muzzy_decay_ms:30000`).
+
+* High resource consumption application, prioritizing memory usage:
+
+    `background_thread:true,tcache_max:4096` combined with shorter decay time
+    (decreased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:5000,muzzy_decay_ms:5000`), and lower arena count
+    (e.g. number of CPUs).
+
+* Low resource consumption application:
+
+    `narenas:1,tcache_max:1024` combined with shorter decay time (decreased
+    `dirty_decay_ms` and / or `muzzy_decay_ms`,e.g.
+    `dirty_decay_ms:1000,muzzy_decay_ms:0`).
+
+* Extremely conservative -- minimize memory usage at all costs, only suitable when
+allocation activity is very rare:
+
+    `narenas:1,tcache:false,dirty_decay_ms:0,muzzy_decay_ms:0`
+
+Note that it is recommended to combine the options with `abort_conf:true` which
+aborts immediately on illegal options.
+
+## Beyond runtime options
+
+In addition to the runtime options, there are a number of programmatic ways to
+improve application performance with jemalloc.
+
+* [Explicit arenas](http://jemalloc.net/jemalloc.3.html#arenas.create)
+
+    Manually created arenas can help performance in various ways, e.g. by
+    managing locality and contention for specific usages.  For example,
+    applications can explicitly allocate frequently accessed objects from a
+    dedicated arena with
+    [mallocx()](http://jemalloc.net/jemalloc.3.html#MALLOCX_ARENA) to improve
+    locality.  In addition, explicit arenas often benefit from individually
+    tuned options, e.g. relaxed [decay
+    time](http://jemalloc.net/jemalloc.3.html#arena.i.dirty_decay_ms) if
+    frequent reuse is expected.
+
+* [Extent hooks](http://jemalloc.net/jemalloc.3.html#arena.i.extent_hooks)
+
+    Extent hooks allow customization for managing underlying memory.  One use
+    case for performance purpose is to utilize huge pages -- for example,
+    [HHVM](https://github.com/facebook/hhvm/blob/master/hphp/util/alloc.cpp)
+    uses explicit arenas with customized extent hooks to manage 1GB huge pages
+    for frequently accessed data, which reduces TLB misses significantly.
+
+* [Explicit thread-to-arena
+  binding](http://jemalloc.net/jemalloc.3.html#thread.arena)
+
+    It is common for some threads in an application to have different memory
+    access / allocation patterns.  Threads with heavy workloads often benefit
+    from explicit binding, e.g. binding very active threads to dedicated arenas
+    may reduce contention at the allocator level.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-d9194a83ad93cbe6/out/build/doc_internal/PROFILING_INTERNALS.md:
+
+# jemalloc profiling
+This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
+
+Note: this document is markdown with embedded LaTeX; different markdown renderers may not produce the expected output.  Viewing with `pandoc -s PROFILING_INTERNALS.md -o PROFILING_INTERNALS.pdf` is recommended.
+
+## Some tricks in our implementation toolbag
+
+### Sampling
+Recording our metadata is quite expensive; we need to walk up the stack to get a stack trace. On top of that, we need to allocate storage to record that stack trace, and stick it somewhere where a profile-dumping call can find it. That call might happen on another thread, so we'll probably need to take a lock to do so. These costs are quite large compared to the average cost of an allocation. To manage this, we'll only sample some fraction of allocations. This will miss some of them, so our data will be incomplete, but we'll try to make up for it. We can tune our sampling rate to balance accuracy and performance.
+
+### Fast Bernoulli sampling
+Compared to our fast paths, even a `coinflip(p)` function can be quite expensive. Having to do a random-number generation and some floating point operations would be a sizeable relative cost. However (as pointed out in [[Vitter, 1987](https://dl.acm.org/doi/10.1145/23002.23003)]), if we can orchestrate our algorithm so that many of our `coinflip` calls share their parameter value, we can do better. We can sample from the geometric distribution, and initialize a counter with the result. When the counter hits 0, the `coinflip` function returns true (and reinitializes its internal counter).
+This can let us do a random-number generation once per (logical) coinflip that comes up heads, rather than once per (logical) coinflip. Since we expect to sample relatively rarely, this can be a large win.
+
+### Fast-path / slow-path thinking
+Most programs have a skewed distribution of allocations. Smaller allocations are much more frequent than large ones, but shorter lived and less common as a fraction of program memory. "Small" and "large" are necessarily sort of fuzzy terms, but if we define "small" as "allocations jemalloc puts into slabs" and "large" as the others, then it's not uncommon for small allocations to be hundreds of times more frequent than large ones, but take up around half the amount of heap space as large ones. Moreover, small allocations tend to be much cheaper than large ones (often by a factor of 20-30): they're more likely to hit in thread caches, less likely to have to do an mmap, and cheaper to fill (by the user) once the allocation has been returned.
+
+## An unbiased estimator of space consumption from (almost) arbitrary sampling strategies
+Suppose we have a sampling strategy that meets the following criteria:
+
+  - One allocation being sampled is independent of other allocations being sampled.
+  - Each allocation has a non-zero probability of being sampled.
+
+We can then estimate the bytes in live allocations through some particular stack trace as:
+
+$$ \sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]} $$
+
+where the sum ranges over some index variable of live allocations from that stack, $S_i$ is the size of the $i$'th allocation, and $I_i$ is an indicator random variable for whether or not the $i'th$ allocation is sampled. $S_i$ and $\mathrm{E}[I_i]$ are constants (the program allocations are fixed; the random variables are the sampling decisions), so taking the expectation we get
+
+$$ \sum_i S_i \mathrm{E}[I_i] \frac{1}{\mathrm{E}[I_i]}.$$
+
+This is of course $\sum_i S_i$, as we want (and, a similar calculation could be done for allocation counts as well).
+This is a fairly general strategy; note that while we require that sampling decisions be independent of one another's outcomes, they don't have to be independent of previous allocations, total bytes allocated, etc. You can imagine strategies that:
+
+  - Sample allocations at program startup at a higher rate than subsequent allocations
+  - Sample even-indexed allocations more frequently than odd-indexed ones (so long as no allocation has zero sampling probability)
+  - Let threads declare themselves as high-sampling-priority, and sample their allocations at an increased rate.
+
+These can all be fit into this framework to give an unbiased estimator.
+
+## Evaluating sampling strategies
+Not all strategies for picking allocations to sample are equally good, of course. Among unbiased estimators, the lower the variance, the lower the mean squared error. Using the estimator above, the variance is:
+
+$$
+\begin{aligned}
+& \mathrm{Var}[\sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]}]  \\
+=& \sum_i \mathrm{Var}[S_i I_i \frac{1}{\mathrm{E}[I_i]}] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{E}[I_i](1 - \mathrm{E}[I_i]) \\
+=& \sum_i S_i^2 \frac{1 - \mathrm{E}[I_i]}{\mathrm{E}[I_i]}.
+\end{aligned}
+$$
+
+We can use this formula to compare various strategy choices. All else being equal, lower-variance strategies are better.
+
+## Possible sampling strategies
+Because of the desire to avoid the fast-path costs, we'd like to use our Bernoulli trick if possible. There are two obvious counters to use: a coinflip per allocation, and a coinflip per byte allocated.
+
+### Bernoulli sampling per-allocation
+An obvious strategy is to pick some large $N$, and give each allocation a $1/N$ chance of being sampled. This would let us use our Bernoulli-via-Geometric trick. Using the formula from above, we can compute the variance as:
+
+$$ \sum_i S_i^2 \frac{1 - \frac{1}{N}}{\frac{1}{N}}  = (N-1) \sum_i S_i^2.$$
+
+That is, an allocation of size $Z$ contributes a term of $(N-1)Z^2$ to the variance.
+
+### Bernoulli sampling per-byte
+Another option we have is to pick some rate $R$, and give each byte a $1/R$ chance of being picked for sampling (at which point we would sample its contained allocation). The chance of an allocation of size $Z$ being sampled, then, is
+
+$$1-(1-\frac{1}{R})^{Z}$$
+
+and an allocation of size $Z$ contributes a term of
+
+$$Z^2 \frac{(1-\frac{1}{R})^{Z}}{1-(1-\frac{1}{R})^{Z}}.$$
+
+In practical settings, $R$ is large, and so this is well-approximated by
+
+$$Z^2 \frac{e^{-Z/R}}{1 - e^{-Z/R}} .$$
+
+Just to get a sense of the dynamics here, let's look at the behavior for various values of $Z$. When $Z$ is small relative to $R$, we can use $e^z \approx 1 + x$, and conclude that the variance contributed by a small-$Z$ allocation is around
+
+$$Z^2 \frac{1-Z/R}{Z/R} \approx RZ.$$
+
+When $Z$ is comparable to $R$, the variance term is near $Z^2$ (we have $\frac{e^{-Z/R}}{1 - e^{-Z/R}} = 1$ when $Z/R = \ln 2 \approx 0.693$). When $Z$ is large relative to $R$, the variance term goes to zero.
+
+## Picking a sampling strategy
+The fast-path/slow-path dynamics of allocation patterns point us towards the per-byte sampling approach:
+
+  - The quadratic increase in variance per allocation in the first approach is quite costly when heaps have a non-negligible portion of their bytes in those allocations, which is practically often the case.
+  - The Bernoulli-per-byte approach shifts more of its samples towards large allocations, which are already a slow-path.
+  - We drive several tickers (e.g. tcache gc) by bytes allocated, and report bytes-allocated as a user-visible statistic, so we have to do all the necessary bookkeeping anyways.
+
+Indeed, this is the approach we use in jemalloc. Our heap dumps record the size of the allocation and the sampling rate $R$, and jeprof unbiases by dividing by $1 - e^{-Z/R}$.  The framework above would suggest dividing by $1-(1-1/R)^Z$; instead, we use the fact that $R$ is large in practical situations, and so $e^{-Z/R}$ is a good approximation (and faster to compute).  (Equivalently, we may also see this as the factor that falls out from viewing sampling as a Poisson process directly).
+
+## Consequences for heap dump consumers
+Using this approach means that there are a few things users need to be aware of.
+
+### Stack counts are not proportional to allocation frequencies
+If one stack appears twice as often as another, this by itself does not imply that it allocates twice as often. Consider the case in which there are only two types of allocating call stacks in a program. Stack A allocates 8 bytes, and occurs a million times in a program. Stack B allocates 8 MB, and occurs just once in a program. If our sampling rate $R$ is about 1MB, we expect stack A to show up about 8 times, and stack B to show up once. Stack A isn't 8 times more frequent than stack B, though; it's a million times more frequent.
+
+### Aggregation must be done after unbiasing samples
+Some tools manually parse heap dump output, and aggregate across stacks (or across program runs) to provide wider-scale data analyses. When doing this aggregation, though, it's important to unbias-and-then-sum, rather than sum-and-then-unbias. Reusing our example from the previous section: suppose we collect heap dumps of the program from a million machines. We then have 8 million occurs of stack A (each of 8 bytes), and a million occurrences of stack B (each of 8 MB). If we sum first, we'll attribute 64 MB to stack A, and 8 TB to stack B. Unbiasing changes these numbers by an infinitesimal amount, so that sum-then-unbias dramatically underreports the amount of memory allocated by stack A.
+
+## An avenue for future exploration
+While the framework we laid out above is pretty general, as an engineering decision we're only interested in fairly simple approaches (i.e. ones for which the chance of an allocation being sampled depends only on its size). Our job is then: for each size class $Z$, pick a probability $p_Z$ that an allocation of that size will be sampled. We made some handwave-y references to statistical distributions to justify our choices, but there's no reason we need to pick them that way. Any set of non-zero probabilities is a valid choice.
+The real limiting factor in our ability to reduce estimator variance is that fact that sampling is expensive; we want to make sure we only do it on a small fraction of allocations. Our goal, then, is to pick the $p_Z$ to minimize variance given some maximum sampling rate $P$. If we define $a_Z$ to be the fraction of allocations of size $Z$, and $l_Z$ to be the fraction of allocations of size $Z$ still alive at the time of a heap dump, then we can phrase this as an optimization problem over the choices of $p_Z$:
+
+Minimize
+
+$$ \sum_Z Z^2 l_Z \frac{1-p_Z}{p_Z} $$
+
+subject to
+
+$$ \sum_Z a_Z p_Z \leq P $$
+
+Ignoring a term that doesn't depend on $p_Z$, the objective is minimized whenever
+
+$$ \sum_Z Z^2 l_Z \frac{1}{p_Z} $$
+
+is. For a particular program, $l_Z$ and $a_Z$ are just numbers that can be obtained (exactly) from existing stats introspection facilities, and we have a fairly tractable convex optimization problem (it can be framed as a second-order cone program). It would be interesting to evaluate, for various common allocation patterns, how well our current strategy adapts. Do our actual choices for $p_Z$ closely correspond to the optimal ones? How close is the variance of our choices to the variance of the optimal strategy?
+You can imagine an implementation that actually goes all the way, and makes $p_Z$ selections a tuning parameter. I don't think this is a good use of development time for the foreseeable future; but I do wonder about the answers to some of these questions.
+
+## Implementation realities
+
+The nice story above is at least partially a lie. Initially, jeprof (copying its logic from pprof)  had the sum-then-unbias error described above.  The current version of jemalloc does the unbiasing step on a per-allocation basis internally, so that we're always tracking what the unbiased numbers "should" be.  The problem is, actually surfacing those unbiased numbers would require a breaking change to jeprof (and the various already-deployed tools that have copied its logic). Instead, we use a little bit more trickery. Since we know at dump time the numbers we want jeprof to report, we simply choose the values we'll output so that the jeprof numbers will match the true numbers.  The math is described in `src/prof_data.c` (where the only cleverness is a change of variables that lets the exponentials fall out).
+
+This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
+
+
 # Content from file ../neon/test_runner/README.md:
 
 ## Neon test runner
@@ -12503,6 +13767,26 @@ All tests run only once. Usually to obtain more consistent performance numbers, 
 Local test results for main branch, and results of daily performance tests, are stored in a neon project deployed in production environment. There is a Grafana dashboard that visualizes the results. Here is the [dashboard](https://observer.zenith.tech/d/DGKBm9Jnz/perf-test-results?orgId=1). The main problem with it is the unavailability to point at particular commit, though the data for that is available in the database. Needs some tweaking from someone who knows Grafana tricks.
 
 There is also an inconsistency in test naming. Test name should be the same across platforms, and results can be differentiated by the platform field. But currently, platform is sometimes included in test name because of the way how parametrization works in pytest. I.e. there is a platform switch in the dashboard with neon-local-ci and neon-staging variants. I.e. some tests under neon-local-ci value for a platform switch are displayed as `Test test_runner/performance/test_bulk_insert.py::test_bulk_insert[vanilla]` and `Test test_runner/performance/test_bulk_insert.py::test_bulk_insert[neon]` which is highly confusing.
+
+
+# Content from file ../neon/test_runner/performance/pageserver/README.md:
+
+How to reproduce benchmark results / run these benchmarks interactively.
+
+1. Get an EC2 instance with Instance Store. Use the same instance type as used for the benchmark run.
+2. Mount the Instance Store => `neon.git/scripts/ps_ec2_setup_instance_store`
+3. Use a pytest command line (see other READMEs further up in the pytest hierarchy).
+
+For tests that take a long time to set up / consume a lot of storage space,
+we use the test suite's repo_dir snapshotting functionality (`from_repo_dir`).
+It supports mounting snapshots using overlayfs, which improves iteration time.
+
+Here's a full command line.
+
+```
+RUST_BACKTRACE=1 NEON_ENV_BUILDER_USE_OVERLAYFS_FOR_SNAPSHOTS=1 DEFAULT_PG_VERSION=15 BUILD_TYPE=release \
+    ./scripts/pytest test_runner/performance/pageserver/pagebench/test_pageserver_max_throughput_getpage_at_latest_lsn.py
+````
 
 
 # Content from file ../neon/test_runner/pg_clients/README.md:

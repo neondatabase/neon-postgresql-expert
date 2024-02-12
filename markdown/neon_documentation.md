@@ -2,10 +2,10 @@
 
 ---
 title: Neon documentation
-updatedOn: '2024-01-05T19:45:09.629Z'
+updatedOn: '2024-02-09T17:53:20.588Z'
 ---
 
-Neon is Serverless Postgres built for the cloud. Neon separates compute and storage to offer modern developer features such as autoscaling, branching, bottomless storage, and more.
+Neon is a fully managed serverless Postgres with a [generous free tier](https://console.neon.tech). Neon separates compute and storage to offer modern developer features such as autoscaling, branching, bottomless storage, and more.
 
 ## Get started
 
@@ -58,6 +58,10 @@ Refer to our _Get started_ documentation to get up and running in just a few min
 
 <img src="/images/technology-logos/exograph-logo.svg" width="36" height="36" alt="Exograph" href="/docs/guides/exograph" title="Use Exograph with Neon" />
 
+<img src="/images/technology-logos/ferret-logo.svg" width="36" height="36" alt="FerretDB" href="/docs/guides/ferretdb" title="Use FerretDB with Neon" />
+
+<img src="/images/technology-logos/fivetran-logo.svg" width="36" height="36" alt="Fivetran" href="/docs/guides/logical-replication-fivetran" title="Replicate data from Neon with Fivetran" />
+
 <img src="/images/technology-logos/flyway-logo.svg" width="36" height="36" alt="Flyway" href="/docs/guides/flyway" title="Use Flyway with Neon" />
 
 <img src="/images/technology-logos/go-logo.svg" width="80" height="36" alt="Go" href="/docs/guides/go" title="Connect a Go application to Neon" />
@@ -88,6 +92,8 @@ Refer to our _Get started_ documentation to get up and running in just a few min
 
 <img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-reactive" title="Connect Quarkus (Reactive) to Neon" />
 
+<img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/ruby-on-rails" title="Connect a Rails application to Neon" />
+
 <img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
 
 <img src="/images/technology-logos/rust-logo.svg" width="36" height="36" alt="Rust" href="/docs/guides/rust" title="Connect a Rust application to Neon" />
@@ -106,9 +112,7 @@ Refer to our _Get started_ documentation to get up and running in just a few min
 
 ## Join the community
 
-If you have questions about Neon or Postgres, reach out to Neon community members and developers in the [Neon Discord Server](/discord) or [Neon Discourse Community](https://community.neon.tech/).
-
-<CommunityBanner buttonText="Join community" buttonUrl="https://community.neon.tech" logo="discourse">Welcome to the Neon Discourse Community!</CommunityBanner>
+If you have questions about Neon or Postgres, reach out to Neon community members and developers on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
 
 <CommunityBanner buttonText="Join server" buttonUrl="https://discord.gg/92vNTzKDGp" logo="discord">Welcome to the Neon Discord Server!</CommunityBanner>
 
@@ -120,7 +124,7 @@ title: What is Neon?
 enableTableOfContents: true
 redirectFrom:
   - /docs/cloud/about
-updatedOn: '2023-10-07T10:43:33.399Z'
+updatedOn: '2024-01-26T16:30:34.542Z'
 ---
 
 Neon is a fully managed serverless Postgres with a generous free tier.
@@ -128,7 +132,7 @@ Neon separates storage and compute and offers modern developer features such as 
 
 ## Serverless
 
-Neon automatically and transparently scales up compute on demand, in response to application workload. Neon also scales down to zero on inactivity. Since Neon is serverless, it only charges for what you use and can deliver up to a 10x reduction in cost. To learn more, see [Autoscaling](/docs/introduction/autoscaling), and [Auto-suspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
+Neon automatically and transparently scales up compute on demand, in response to application workload. Neon also scales down to zero on inactivity. Since Neon is serverless, it only charges for what you use and can deliver up to a 10x reduction in cost. To learn more, see [Autoscaling](/docs/introduction/autoscaling), and [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
 
 ## Built for developer productivity
 
@@ -156,7 +160,7 @@ You can find [neondatabase](https://github.com/neondatabase/neon) on GitHub. We 
 
 ## Compatibility
 
-Neon compute is the latest version of Postgres. It is 100% compatible with any application that uses the official release of Postgres. Currently, we support [Postgres 14](https://www.postgresql.org/docs/14/release-14.html), [Postgres 15](https://www.postgresql.org/docs/15/release-15.html) (the default), and [Postgres 16](https://www.postgresql.org/docs/16/release-16.html). For details refer to the [Postgres compatibility](/docs/reference/compatibility) page.
+Neon compute is the latest version of Postgres. It is 100% compatible with any application that uses the official release of Postgres. Currently, we support [Postgres 14](https://www.postgresql.org/docs/14/release-14.html), [Postgres 15](https://www.postgresql.org/docs/15/release-15.html), and [Postgres 16](https://www.postgresql.org/docs/16/release-16.html) (the default). For details refer to the [Postgres compatibility](/docs/reference/compatibility) page.
 
 
 # Neon roadmap
@@ -167,18 +171,70 @@ redirectFrom:
   - /docs/cloud/roadmap
   - /docs/conceptual-guides/roadmap
   - /docs/reference/roadmap
-updatedOn: '2023-10-07T10:43:33.416Z'
+updatedOn: '2024-02-08T20:07:48.873Z'
 ---
+Our developers are focused on making Neon the default choice for serverless PostgreSQL. This roadmap describes committed features that are coming soon. We are as excited as you are to see new features in Neon, but their development, release, and timing are at our discretion.
 
-The Neon **Limited Preview** started in February, 2022, and was made available to a small number of select users and friends.
+As always, we are listening. If you see something you like, something you disagree with, or something you'd love for us to add, let us know in our Discord feedback channel.
+
+<CommunityBanner buttonText="Leave feedback" buttonUrl="https://discord.com/channels/1176467419317940276/1176788564890112042" logo="discord">Share your ideas in&nbsp;Discord</CommunityBanner>
+
+For the latest features and fixes, check our [Changelog](/docs/changelog), updated every Friday. You can subscribe to updates using our [RSS feed](https://neon.tech/docs/changelog/rss.xml).
+
+## Coming soon
+
+Here's a snapshot of what we're working on now:
+
+* [Observability](#observability)
+* [Developer workflows](#developer-workflows)
+* [Account management](#account-management)
+* [More regions](#more-regions)
+
+### Observability
+
+* **Autoscaling visualizations**
+
+    Adding dynamic charts, populated with real-time data, to help you visualize how autoscaling impacts CPU and RAM usage over time. See [Monitoring autoscaling](/docs/guides/autoscaling-guide#monitor-autoscaling) for a sneak peek.
+
+### Developer workflows
+
+* **Branch restore with Time Travel Assist**
+
+    Instantly restore a branch to an earlier state in its history. Use Time Travel Assist to run queries against historical data, making sure you are restoring to the right point in time.
+
+    We'll be adding the ability to restore to another branch as well soon after.
+
+    If there are any new branching features that you think could help your development team's workflow, let us know in [Discord](https://discord.com/channels/1176467419317940276/1176788564890112042).
+
+* **Improvements to Vercel integration**
+
+    To ensure that users of the integration that access Neon from Vercel's serverless environment do not run out of connections, we're changing the database connection settings added to a Vercel project to pooled connections by default.
+
+### Account management
+
+* **Organization support**
+
+    We are adding features to support using Neon in your organization. Later, we'll add support for managing individual teams within the organization as well.
+
+### More regions
+
+*  We are currently evaluating new regions. Please reach out on Discord to let us know which region you would like to see next. 
+
+## A brief history of Neon
+
+The Neon **Limited Preview** started in February 2022 and was made available to a small number of select users and friends.
 
 On June 15th, 2022, the Neon team announced the [Technical Preview](#technical-preview), making Neon available to a wider audience. Thousands of users were able to try Neon's [Free Tier](/docs/introduction/free-tier).
 
 On December 6th, 2022, Neon released its branching feature and dropped the invite gate, welcoming everyone to try Neon's Free Tier.
 
-On March 15th, 2023, Neon launched paid plans, providing increased limits and added features, including _Project sharing_ and _Autoscaling_. For information about Neon's paid  plans, refer to our [Pricing](https://neon.tech/pricing) page.
+In the spring of 2023, Neon launched [paid plans](https://neon.tech/pricing) with new features like Project Sharing, [Autoscaling](/docs/introduction/autoscaling), and [Autosuspend](/docs/introduction/auto-suspend). We also added support for US East (N. Virginia)
 
-Support for more regions and additional features will be released in the coming months.
+In the summer of 2023, we released the [Neon CLI](/docs/reference/neon-cli). New features included a configurable [history retention](/docs/introduction/point-in-time-restore) window as well as support for Postgres 16 and the Isreal (Tel Aviv) region. We also announced [SOC 2 Type 1](https://neon.tech/blog/soc2-type-1#our-journey-to-soc2) compliance.
+
+In the fall of 2023, we added [IP allowlisting](/docs/introduction/ip-allow), email signup, and [logical replication](/docs/introduction/logical-replication). We also announced [SOC 2 Type 2](https://neon.tech/blog/soc2-type2) compliance.
+
+In January of 2024, we added support for the Asia Pacific (Sydney) region.
 
 ## Technical Preview
 
@@ -222,14 +278,14 @@ title: Compute lifecycle
 enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/compute-lifecycle
-updatedOn: '2023-11-23T13:58:00.341Z'
+updatedOn: '2024-01-10T18:34:05.860Z'
 ---
 
 A compute node in Neon is a stateless Postgres process due to the separation of storage and compute. It has two main states: `Active` and `Idle`.
 
 `Active` means that Postgres is currently running. If there are no active queries for 5 minutes, your compute node is automatically placed into an `Idle` state to save on energy and resources. [Neon Pro Plan](/docs/introduction/pro-plan) users can disable this auto-suspension behavior so that a compute always remains active, or they can increase or decrease the amount of time after which a compute is placed into an `Idle` state. Auto-suspension behavior is controlled by an **Suspend compute after a period of inactivity** setting. For information about configuring this setting, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
 
-The _Auto-suspend_ feature is conservative. It treats an "idle-in-transaction" connection as active to avoid breaking application logic that involves long-running transactions. Only connections that are truly inactive are closed after the defined period of inactivity.
+The _Autosuspend_ feature is conservative. It treats an "idle-in-transaction" connection as active to avoid breaking application logic that involves long-running transactions. Only connections that are truly inactive are closed after the defined period of inactivity.
 
 When you connect to an idle compute, Neon automatically activates it. Activation can take anywhere from 500 ms to a few seconds, meaning that the first connection may have a higher latency than subsequent connections. Cold-start times are fastest in the `US East (Ohio) — aws-us-east-2` region, which hosts the Neon Control Plane. The Neon Control plane will be deployed regionally in future Neon releases, bringing the same millesecond cold-start times to all supported regions.
 
@@ -256,7 +312,7 @@ For information about Postgres server configuration, see [Server Configuration](
 title: Autoscaling
 subtitle: Learn how Neon automatically scales compute resources on demand
 enableTableOfContents: true
-updatedOn: '2023-12-09T09:37:25.764Z'
+updatedOn: '2024-01-10T18:34:05.859Z'
 ---
 
 Neon's _Autoscaling_ feature, available for [Neon Pro Plan](/docs/introduction/pro-plan) users, dynamically adjusts the amount of compute resources allocated to a Neon compute endpoint in response to the current load, eliminating the need for manual intervention.
@@ -266,20 +322,20 @@ Neon's _Autoscaling_ feature, available for [Neon Pro Plan](/docs/introduction/p
 Neon's Autoscaling feature offers the following benefits:
 
 - **On-demand scaling:** Autoscaling helps with workloads that experience variations over time, such as applications with regional or time-based changes in demand.
-- **Cost effectiveness**: Autoscaling optimizes resource utilization, ensuring that organizations only pay for required resources, rather than over-provisioning to handle peak loads.
+- **Cost-effectiveness**: Autoscaling optimizes resource utilization, ensuring that organizations only pay for required resources, rather than over-provisioning to handle peak loads.
 - **Resource and cost control**: Autoscaling operates within a user-defined range, ensuring that your compute resources and associated costs do not scale indefinitely.
-- **No manual intervention**: After you enable Autoscaling and set scaling limits, no manual intervention is required, allowing you to focus on your applications.
+- **No manual intervention**: After you enable autoscaling and set scaling limits, no manual intervention is required, allowing you to focus on your applications.
 
-## How to enable Autoscaling
+## How to enable autoscaling
 
-You can enable Autoscaling when creating a Neon project or afterward using a simple compute configuration dialog. For instructions, see:
+You can enable autoscaling when creating a Neon project or afterward using a simple compute configuration dialog. For instructions, see:
 
 - [Create a project](/docs/manage/projects#create-a-project)
 - [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint)
 
-## How Autoscaling works
+## How autoscaling works
 
-A Neon project can have one or more computes, each representing an individual Postgres instance. Storage is decoupled from these computes, meaning that the Postgres servers executing queries are physically separate from the data storage location. This separation offers numerous advantages, including enablement of Neon's Autoscaling feature.
+A Neon project can have one or more computes, each representing an individual Postgres instance. Storage is decoupled from these computes, meaning that the Postgres servers executing queries are physically separate from the data storage location. This separation offers numerous advantages, including enablement of Neon's autoscaling feature.
 
 ![High-level architecture diagram](/docs/introduction/autoscale-high-level-architecture.webp)
 
@@ -309,37 +365,37 @@ The live migration process allows for the proactive reduction of node load by mi
 
 ### Memory scaling
 
-Postgres memory consumption can escalate rapidly in specific scenarios. Fortunately, Neon's Autoscaling system is able to detect memory usage increases without constantly requesting metrics from the VM. This is accomplished by running Postgres within a [cgroups](/docs/reference/glossary#cgroups), which provides notifications when memory usage crosses a specified threshold. Using cgroups in this way requires running our [vm-informant](/docs/reference/glossary#vm-informant) in the VM alongside Postgres to request more resources from the autoscaler-agent when Postgres consumes too much memory. The vm-informant also verifies that downscaling requests from an autoscaler-agent will leave sufficient memory leftover.
+Postgres memory consumption can escalate rapidly in specific scenarios. Fortunately, Neon's autoscaling system is able to detect memory usage increases without constantly requesting metrics from the VM. This is accomplished by running Postgres within a [cgroups](/docs/reference/glossary#cgroups), which provides notifications when memory usage crosses a specified threshold. Using cgroups in this way requires running our [vm-informant](/docs/reference/glossary#vm-informant) in the VM alongside Postgres to request more resources from the autoscaler-agent when Postgres consumes too much memory. The vm-informant also verifies that downscaling requests from an autoscaler-agent will leave sufficient memory leftover.
 
 ### Local file cache
 
-To expedite queries, the Autoscaling system incorporates a Postgres extension that places a cache in front of the storage layer. Many queries benefit from this additional memory, particularly those requiring multiple database scans (such as creating an index). The [local file cache](/docs/reference/glossary#local-file-cache) capitalizes on the additional memory allocated to the VM by dedicating a portion to the cache to itself. The cache is backed by disk and kept at a size intended to fit in the kernel page cache. Due to the storage model, writebacks are not required, resulting in near-instant evictions. The vm-informant adjusts the local file cache size when scaling occurs through the autoscaler-agent, ensuring seamless operation.
+To expedite queries, the autoscaling system incorporates a Postgres extension that places a cache in front of the storage layer. Many queries benefit from this additional memory, particularly those requiring multiple database scans (such as creating an index). The [local file cache](/docs/reference/glossary#local-file-cache) capitalizes on the additional memory allocated to the VM by dedicating a portion to the cache to itself. The cache is backed by disk and kept at a size intended to fit in the kernel page cache. Due to the storage model, writebacks are not required, resulting in near-instant evictions. The vm-informant adjusts the local file cache size when scaling occurs through the autoscaler-agent, ensuring seamless operation.
 
 ## Autoscaling source code
 
-To further explore Neon's autoscaling implementation, visit Neon's [Autoscaling](https://github.com/neondatabase/autoscaling) GitHub repository. While not primarily designed for external use, Neon welcomes exploration and contributions.
+To further explore Neon's autoscaling implementation, visit Neon's [autoscaling](https://github.com/neondatabase/autoscaling) GitHub repository. While not primarily designed for external use, Neon welcomes exploration and contributions.
 
 
-# Auto-suspend
+# Autosuspend
 
 ---
-title: Auto-suspend
+title: Autosuspend
 subtitle: Scale computes to zero when not in use
 enableTableOfContents: true
-updatedOn: '2023-11-23T13:58:00.340Z'
+updatedOn: '2024-01-10T18:34:05.859Z'
 ---
 
-Neon's _Auto-suspend_ feature controls when a Neon compute instance transitions to an `Idle` state (scales to zero) due to inactivity.
+Neon's _Autosuspend_ feature controls when a Neon compute instance transitions to an `Idle` state (scales to zero) due to inactivity.
 
-By default, a Neon compute instance scales to zero after 300 seconds (5 minutes) of inactivity. For [Neon Free Tier](/docs/introduction/free-tier) users, this setting is fixed. [Neon Pro Plan](/docs/introduction/pro-plan) users can increase, decrease, or disable the _Auto-suspend_ setting, controlling when or if a compute scales to zero.
+By default, a Neon compute instance scales to zero after 300 seconds (5 minutes) of inactivity. For [Neon Free Tier](/docs/introduction/free-tier) users, this setting is fixed. [Neon Pro Plan](/docs/introduction/pro-plan) users can increase, decrease, or disable the autosuspend setting, controlling when or if a compute scales to zero.
 
-Reasons for adjusting the _Auto-suspend_ setting might include:
+Reasons for adjusting the autosuspend setting might include:
 
-- **Avoiding cold starts**. Restarting a compute from an `Idle` state can take anywhere from 500 ms to a few seconds (see [Compute lifecycle](/docs/introduction/compute-lifecycle)). You can turn off the _Auto-suspend_ feature to avoid cold starts. For compute time cost information, see [Billing metrics](/docs/introduction/billing).
-- **Reducing the frequency of cold starts**. You can configure _Auto-suspend_ to occur less frequently, keeping your compute active during busier hours while ensuring that it suspends when usage drops off.
+- **Avoiding cold starts**. Restarting a compute from an `Idle` state can take anywhere from 500 ms to a few seconds (see [Compute lifecycle](/docs/introduction/compute-lifecycle)). You can turn off the _Autosuspend_ feature to avoid cold starts. For compute time cost information, see [Billing metrics](/docs/introduction/billing).
+- **Reducing the frequency of cold starts**. You can configure autosuspend to occur less frequently, keeping your compute active during busier hours while ensuring that it suspends when usage drops off.
 - **Suspending a compute more quickly to reduce compute usage**. Compute startup times can be as low as 500 ms, which may be sufficient for your purposes. In this case, you can suspend computes more frequently reduce compute usage.
 
-You can configure the _Auto-suspend_ setting in an existing project by editing a compute endpoint. You can also configure it when you first create a Neon project, which sets the _Auto-suspend_ default for the project. For instructions, refer to [Configuring Auto-suspend for Neon computes](/docs/guides/auto-suspend-guide).
+You can configure the autosuspend setting in an existing project by editing a compute endpoint. You can also configure it when you first create a Neon project, which sets the autosuspend default for the project. For instructions, refer to [Configuring autosuspend for Neon computes](/docs/guides/auto-suspend-guide).
 
 
 # Branching
@@ -351,7 +407,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/branches
   - /docs/conceptual-guides/branching
-updatedOn: '2023-10-07T10:43:33.404Z'
+updatedOn: '2024-01-26T18:19:19.805Z'
 ---
 
 <a id="branches-coming-soon/"></a>
@@ -416,7 +472,7 @@ Refer to the following guide for instructions.
 
 ### Data recovery
 
-If you lose data due to an unintended deletion or some other event, you can create a branch from the past to recover the lost data.
+If you lose data due to an unintended deletion or some other event, you can restore a branch to any point in its history retention period to recover lost data. You can also create a new point-in-time branch for historical analysis or any other reason.
 
 ![data recovery branch](/docs/introduction/branching_data_loss.png)
 
@@ -424,23 +480,23 @@ Refer to the following guides for instructions.
 
 <DetailIconCards>
 
-<a href="/docs/introduction/point-in-time-restore" description="Restore data to a previous state with Neon's point-in-time restore feature" icon="invert">Learn about point-in-time restore</a>
+<a href="/docs/guides/branch-restore" description="Restore a branch to its history with Branch Restore" icon="invert">Branch Restore with Time Travel</a>
 
-<a href="/docs/guides/branching-pitr" description="Learn how to restore your data to previous state with branching" icon="screen">Create a branch from the past</a>
+<a href="/docs/guides/branching-pitr" description="Learn how to create a branch from historical data" icon="screen">Create a branch from the past</a>
 
 </DetailIconCards>
 
 
-# Point-in-time restore
+# Branch reset and restore
 
 ---
-title: Point-in-time restore
-subtitle: Restore your data to a previous state
+title: Branch reset and restore
+subtitle: Learn about the different branch reset and restore features in Neon
 enableTableOfContents: true
-updatedOn: '2023-10-24T18:56:54.989Z'
+updatedOn: '2024-01-26T18:19:19.806Z'
 ---
 
-Neon retains a history of changes for all branches, enabling point-in-time restore. This feature allows you to restore data to any point within the retention period. You can use the point-in-time restore feature as a database [backup](/docs/manage/backups) strategy, to view the past state of your database, or to recover lost data.
+Neon retains a history of changes for all branches. This shared history provides the basis for a variety of branch restore and reset operations: resetting a branch to its parent, restoring a branch to its history, creating a new branch from a selected point-in-time, and Time Travel queries against the shared history. You can use these features to reset a development branch to main, to recover lost data, as a database backup strategy, or to view the past state of your database.
 
 ## History retention
 
@@ -453,9 +509,19 @@ Increasing the history retention period affects all branches in your Neon projec
 
 History is retained in the form of Write-Ahead-Log (WAL) records. As WAL records age out of the retention period, they are evicted from storage and no longer count toward project storage.
 
-## Point-in-time restore
+## Branch reset and restore features
 
-A point-in-time restore operation is performed by creating a branch using the **Time** or **LSN** option. Your **History retention** period dictates how far back you can restore your data. To learn how to perform a point-in-time restore operation, refer to [Branching — Point-in-time restore](https://neon.tech/docs/guides/branching-pitr).
+Find out more about the different branch reset and restore features that Neon provides.
+
+<DetailIconCards>
+
+<a href="/docs/guides/branch-restore" description="Learn how to restore a branch to its history with Time Travel assist" icon="split-branch">Branch Restore with Time Travel</a>
+
+<a href="/docs/manage/branches#reset-a-branch-from-parent" description="Learn how to restore a branch to its history with Time Travel assist" icon="split-branch">Reset a branch from its parent</a>
+
+<a href="/docs/guides/branching-pitr" description="Create a new point-in-time branch from timestamp or LSN" icon="split-branch">Create a point-in-time branch</a>
+
+</DetailIconCards>
 
 
 # Read replicas
@@ -464,7 +530,7 @@ A point-in-time restore operation is performed by creating a branch using the **
 title: Read replicas
 subtitle: Maximize scalability and more with Neon's instant read replicas
 enableTableOfContents: true
-updatedOn: '2023-11-21T14:22:40.985Z'
+updatedOn: '2024-01-10T18:34:05.861Z'
 ---
 
 Neon read replicas are independent read-only compute instances designed to perform read operations on the same data as your read-write computes. Neon read replicas do not replicate data across database instances. Instead, read requests are directed to a single source — a capability made possible by Neon's architecture, which separates storage and compute. The following diagram shows how read-write and read-only compute instances send read requests to the same Neon [Pageserver](/docs/reference/glossary#pageserver).
@@ -475,7 +541,7 @@ In data replication terms, Neon read replicas are asynchronous, which means they
 
 Neon supports creating read replicas in the same region as your database. Cross-region read replicas are currently not supported. You can expect that feature in a future release.
 
-You can instantly create one or more read replicas for any branch in your Neon project and configure the amount of vCPU and memory allocated to each. Read replicas also support Neon's Autoscaling and Auto-suspend features, providing you with control over the compute resources used by your read replicas.
+You can instantly create one or more read replicas for any branch in your Neon project and configure the amount of vCPU and memory allocated to each. Read replicas also support Neon's Autoscaling and Autosuspend features, providing you with control over the compute resources used by your read replicas.
 
 <video autoPlay playsInline muted loop width="800" height="600">
   <source type="video/mp4" src="/docs/introduction/read_replicas_demo.mp4"/>
@@ -497,7 +563,7 @@ Advantages of Neon's read replica feature include the following:
 1. **Efficient storage**: With read-only compute instances reading from the same source as your read-write computes, no additional storage is required to create a read replica. Data is neither duplicated nor replicated, which means zero additional storage cost.
 2. **Data consistency**: Read-write and read-only compute instances read data from a single source, ensuring a high degree of data consistency.
 3. **Scalability**: With no data replication required, you can create read replicas almost instantly, providing fast and seamless scalability. You can also scale read replica compute resources the same way you scale read-write compute resources.
-4. **Cost effectiveness**: By removing the need for additional storage and data replication, costs associated with storage and data transfer are avoided. Neon's read replicas also benefit from Neon's [Autoscaling](/docs/introduction/autoscaling) and [Auto-suspend](/docs/manage/endpoints#auto-suspend-configuration) features, which enable efficient management of compute resources.
+4. **Cost effectiveness**: By removing the need for additional storage and data replication, costs associated with storage and data transfer are avoided. Neon's read replicas also benefit from Neon's [Autoscaling](/docs/introduction/autoscaling) and [Autosuspend](/docs/manage/endpoints#auto-suspend-configuration) features, which enable efficient management of compute resources.
 5. **Instant availability**. With an architecture that separates storage and compute, you can allow read-replicas to scale to zero when not in use without introducing lag. When a read replica starts up, it is up to date with your read-write primary almost instantly.
 
 ## Get started with read replicas
@@ -549,9 +615,10 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/conceptual-guides/regions
-updatedOn: '2023-11-24T11:25:06.758Z'
+updatedOn: '2024-02-03T12:08:43.595Z'
 ---
-Neon supports project deployment in several regions. We recommended that you select the region closest to your application server to reduce latency between your Neon project and your application.
+
+Neon supports project deployment in several regions. We recommended that you select the region closest to your application server to reduce latency between your Neon database and your application.
 
 ## Available regions
 
@@ -562,6 +629,7 @@ Neon currently supports the following AWS regions:
 - US West (Oregon) &mdash; `aws-us-west-2`
 - Europe (Frankfurt) &mdash; `aws-eu-central-1`
 - Asia Pacific (Singapore) &mdash; `aws-ap-southeast-1`
+- Asia Pacific (Sydney)	&mdash; `aws-ap-southeast-2`
 - Israel (Tel Aviv) &mdash; `aws-il-central-1`
 
 ## Select a region for your Neon project
@@ -589,7 +657,7 @@ Neon Free Tier users are limited to a single project. In this case, you can expo
 
 Moving data to a new Neon project may require downtime if you are moving a production database, as the import procedure may take some time depending on the size of your data. To prevent the loss of data during the import operation, consider disabling writes from your applications before initiating the import operation. You can re-enable writes when the import is completed. Neon does not currently support disabling database writes. Writes must be disabled at the application level.
 
-To request support for additional regions, please visit the [Hosting in other AWS regions](https://community.neon.tech/t/hosting-in-other-aws-regions/81/5) topic in the Neon Community Forum.
+To request support for additional regions, please sumbit a feature request on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
 
 <NeedHelp/>
 
@@ -605,8 +673,10 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/introduction/billing#neon-plans
-updatedOn: '2024-01-05T19:45:09.630Z'
+updatedOn: '2024-01-23T17:45:24.329Z'
 ---
+
+<NewPricing/>
 
 Neon offers the following plans: **Free Tier**, **Pro**, and **Custom**. The Neon Pro Plan is _usage-based_, ensuring you never over-provision and only pay for what you use. **Custom** plans are volume-based, offering potential discounts. The table below provides an overview of plans offered by Neon. For more information about a particular plan, refer to the individual plan pages:
 
@@ -629,8 +699,8 @@ For information about how Neon bills for paid plans, please refer to our [Billin
 | **Storage**                           | 3 GiB per branch                                                                                                                                                         | Unlimited\*                                                | Unlimited                                                       |
 | **Dedicated resources**               | -                                                                                                                                                                       | -                                                          | &check;                                                         |
 | **Project sharing**                   | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
-| **Auto-suspend compute**              | &check;                                                                                                                                                                 | &check;                                                    | &check;                                                         |
-| **Configurable auto-suspend compute** | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
+| **Autosuspend compute**              | &check;                                                                                                                                                                 | &check;                                                    | &check;                                                         |
+| **Configurable autosuspend compute** | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
 | **Autoscaling**                       | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
 | **Logical replication**               | &check;                                                                                                                                                                 | &check;                                                    | &check;                                                         |
 | **Read replicas**                     | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
@@ -640,7 +710,7 @@ For information about how Neon bills for paid plans, please refer to our [Billin
 
 **Notes:**
 
-- The Neon Pro Plan has default limits of 20 projects, 200 GiB of storage, and 20 simultaneously active computes to protect against unintended usage. To increase these limits, please [open a support ticket](/docs/introduction/support). The simultaneously active compute limit does not affect the primary branch compute, which always remains available.
+- The Neon Pro Plan has default limits of 20 projects, 20 simultaneously active computes, and 200 GiB of logical data storage to protect against unintended usage. To increase these limits, please [open a support ticket](/docs/introduction/support). The simultaneously active compute limit does not affect the primary branch compute, which always remains available.
 - The Neon Free Tier has an [Active time](/docs/reference/glossary#active-time) limit of 100 hours per month, but that limit only affects non-primary branch compute usage. Active time on all computes is counted toward the limit, but when the limit is exceeded, only non-primary branch computes are subject to suspension. **Your primary branch compute always remains available regardless of the limit, ensuring that access to data on your primary branch is never interrupted.** You can monitor _Active time_ on the **Usage** widget on the Neon **Dashboard**. The _Active time_ limit resets at the beginning of each month. For instance, if you enroll in the Neon Free Tier on January 15th, your _Active time_ limit will reset on February 1st.
 
 ## Support
@@ -657,8 +727,10 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/reference/technical-preview-free-tier
   - /docs/introduction/technical-preview-free-tier
-updatedOn: '2023-11-30T18:21:20.863Z'
+updatedOn: '2024-01-23T17:45:24.328Z'
 ---
+
+<NewPricing/>
 
 Neon is currently in Technical Preview. For information about how the Technical Preview fits within Neon's release plans, refer to the [Neon roadmap](/docs/reference/roadmap).
 
@@ -685,8 +757,10 @@ title: Neon Pro Plan
 subtitle: Learn about the advantages of upgrading to the Neon Pro Plan
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-20T16:07:46.080Z'
+updatedOn: '2024-01-23T17:45:24.329Z'
 ---
+
+<NewPricing/>
 
 The Neon Pro Plan plan is intended for users who have completed their evaluation of Neon on the Neon Free Tier and are ready to transition to a production-level plan with higher limits and advanced features.
 
@@ -699,7 +773,7 @@ Upgrading to the Neon Pro Plan gives you higher limits, advanced features, and a
 ### Higher limits
 
 - **More projects:** The Neon Pro Plan offers unlimited projects, while the Neon Free Tier offers only one. But what is a Neon project, and why would you need more than one? A project is a top-level container in Neon for your computes, branches, databases, and roles. Projects are a way to organize your resources and usage. If you are a company that develops data-driven applications, it might make sense to create a project for each client or each application. For information about objects that a project contains, see [The Neon object hierarchy](/docs/manage/overview).
-- **Unlimited storage:** The Neon Pro Plan supports any data size. There's a default limit of 200 GiB to protect your account from unintended use, but if you [open a support ticket](/docs/introduction/support), we can raise the limit to whatever you require.
+- **Unlimited storage:** The Neon Pro Plan supports any data size. There's a default logical data size limit of 200 GiB to protect your account from unintended use, but if you [open a support ticket](/docs/introduction/support), we can raise the limit to whatever you require.
 - **Unlimited branches:** With the Neon Pro Plan, there is no limit on branches. You can create as many branches as required to support your CI/CD pipeline. You can instantly and cost-effectively create a database branch for every preview deployment, client, or developer.
 - **Unlimited databases:** There is no limit on Postgres databases in any Neon plan. You can create as many databases as you need.
 
@@ -711,20 +785,20 @@ The Neon Pro Plan has default limit of 20 simultaneously active computes to prot
 
 The Neon Pro Plan comes with the following advanced features, and we plan to add more.
 
-- **Autoscaling:** The _Autoscaling_ feature automatically adjusts compute size based on demand. You set a maximum and minimum compute size, and the Autoscaling feature automatically scales compute resources between those boundaries for optimum performance and cost-efficiency. No manual intervention is required to handle sudden usage spikes, and no downtime is required to reconfigure system resources. Neon Pro Plan users can enable and configure Autoscaling in the Neon Console. For instructions, see [Autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
+- **Autoscaling:** The _Autoscaling_ feature automatically adjusts compute size based on demand. You set a maximum and minimum compute size, and the Autoscaling feature automatically scales compute resources between those boundaries for optimum performance and cost-efficiency. No manual intervention is required to handle sudden usage spikes, and no downtime is required to reconfigure system resources. Neon Pro Plan users can enable and configure autoscaling in the Neon Console. For instructions, see [Autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
 - **Larger computes:** The Neon Pro Plan supports computes with up to **7 vCPUs and 28 GB of RAM**, providing the processing power  to handle any workload. By comparison, the Neon Free Tier provides .25 vCPUs and 1GB of RAM, which is great for prototyping and evaluation but less than needed at scale. For configuration instructions, see [Compute size configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
-- **Configurable Auto-suspend:** The Neon Free Tier automatically suspends computes after 5 minutes of inactivity. With the Neon Neon Pro Plan, you can increase or decrease this time period, or you can disable the Auto-suspend feature entirely. A shorter delay, such as 60 seconds, can potentially reduce compute costs. A longer delay keeps your compute active for longer intervals, reducing the number of cold starts. To prevent cold starts entirely, in cases where even a few seconds delay is too much, you can disable the Auto-suspend feature entirely so that your compute is always active. The Auto-suspend feature is configured in the Neon Console. For instructions, see [Auto-suspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
+- **Configurable Autosuspend:** The Neon Free Tier automatically suspends computes after 5 minutes of inactivity. With the Neon Neon Pro Plan, you can increase or decrease this time period, or you can disable the Autosuspend feature entirely. A shorter delay, such as 60 seconds, can potentially reduce compute costs. A longer delay keeps your compute active for longer intervals, reducing the number of cold starts. To prevent cold starts entirely, in cases where even a few seconds delay is too much, you can disable the Autosuspend feature entirely so that your compute is always active. The Autosuspend feature is configured in the Neon Console. For instructions, see [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
 - **Project sharing:** The _Project sharing_ feature lets you share your Neon projects with other Neon users. Project sharing is managed on the **Settings** page in the Neon Console. Simply add the email account of the user you want to share your project with. Projects can be shared with any Neon user, including Neon Free Tier users. Usage is applied to the project owner's Neon account. For instructions, see [Share a project](/docs/manage/projects#share-a-project).
 - **Read replicas:** Neon's read replica feature enhances scalability and performance by allowing you to create read-only compute instances that operate on the same data as your read-write computes. With this feature, you can offload analytics or reporting queries, efficiently distribute read requests to achieve higher throughput, or provide read-only data access to certain users or applications. For more information, see [Read replicas](/docs/introduction/read-replicas).
 - **IP Allow:** Control access to the branch where your database resides. Any IP address not on the allowlist is automatically blocked, ensuring that only authorized IP addresses can access your data. The allowlist can be applied to all branches (the default) or to your [primary branch](#primary-branch) only. For more information, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
 ### Added support
 
-In addition to the [community forum](https://community.neon.tech/) and the ability to open support tickets, Neon Pro Plan users have access to Neon Support via video chat. Please [open a support ticket](/docs/introduction/support) to request a video chat.
+In addition to our [Discord Server](https://discord.com/invite/92vNTzKDGp) and the ability to open support tickets, Neon Pro Plan users have access to Neon Support via video chat. Please [open a support ticket](/docs/introduction/support) to request a video chat.
 
 ## How does billing work?
 
-The Neon Pro Plan bills for usage monthly. Please refer to our [Billing metrics](/docs/introduction/billing) page for information about metrics and rates. To estimate monthly costs, try the [pricing calculator](/calculator) or the [Pro Plan Cost Estimator](/docs/introduction/billing#pro-plan-cost-estimator) in the Neon Console. If you still have questions or need help estimating costs, please reach out to our [Sales](/contact-sales) team. We're ready to help.
+The Neon Pro Plan bills for usage monthly. Please refer to our [Billing metrics](/docs/introduction/billing) page for information about metrics and rates. To estimate monthly costs, try the [pricing calculator](https://neon.tech/calculator) or the [Pro Plan Cost Estimator](/docs/introduction/billing#pro-plan-cost-estimator) in the Neon Console. If you still have questions or need help estimating costs, please reach out to our [Sales](/contact-sales) team. We're ready to help.
 
 ## How do I upgrade to Pro?
 
@@ -740,7 +814,7 @@ ERROR: could not extend file because cluster size limit (3072 MB) has been excee
 HINT: This limit is defined by neon.max_cluster_size GUC
 ```
 
-To force a restart of your compute endpoint, you can temporarily set your compute's **Suspend compute after a period of inactivity** setting to 1 second (the default is 5 minutes). See [Auto-suspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions. Alternatively, you can issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. Please be aware that restarting a compute endpoint interrupts any connections currently using the compute endpoint.
+To force a restart of your compute endpoint, you can temporarily set your compute's **Suspend compute after a period of inactivity** setting to 1 second (the default is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions. Alternatively, you can issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. Please be aware that restarting a compute endpoint interrupts any connections currently using the compute endpoint.
 </Admonition>
 
 ## How do I downgrade?
@@ -778,11 +852,12 @@ If you are interested in exploring a _Custom_ plan with Neon, please reach out t
 title: Billing
 enableTableOfContents: true
 subtitle: Learn how Neon billing works to save you money
-updatedOn: '2024-01-03T21:00:38.272Z'
+updatedOn: '2024-01-23T17:45:24.324Z'
 ---
 
-Find all the documentation you need to understand, manage, and optimize the features and metrics that contribute to your monthly Neon bill.
+<NewPricing/>
 
+Find all the documentation you need to understand, manage, and optimize the features and metrics that contribute to your monthly Neon bill.
 
 ## Pricing calculators and billing overview
 
@@ -827,23 +902,25 @@ Find information about invoices, payment methods, and other actions around viewi
 title: Billing overview
 enableTableOfContents: true
 subtitle: The basics about how billing works in Neon
-updatedOn: '2024-01-03T21:00:38.275Z'
+updatedOn: '2024-01-23T17:45:24.326Z'
 ---
+
+<NewPricing/>
 
 The largest part of your bill typically comes from compute costs &#8212; the size of your compute plus your level of activity. Storage costs make up the next largest part of your bill. The amount of data that you write, either to storage within Neon or data egress outside of Neon, also adds to your cost, though typically a small percentage per month.
 
 ## Compute costs
-With key features like [autoscaling](/docs/guides/autoscaling-guide), [auto-suspend](/docs/guides/auto-suspend-guide), minimum and max [compute sizes](/docs/manage/endpoints#compute-size-and-autoscaling-configuration) enabled, you can get a sense of how your compute costs might accrue in the following graph.
+With key features like [autoscaling](/docs/guides/autoscaling-guide), [autosuspend](/docs/guides/auto-suspend-guide), minimum and max [compute sizes](/docs/manage/endpoints#compute-size-and-autoscaling-configuration) enabled, you can get a sense of how your compute costs might accrue in the following graph.
 
 ![Compute metrics graph](/docs/introduction/compute-metrics2.png)
 
 You can see how the compute time that you get billed for scales between your minimum and maximum CPU settings: compute time never rises above your max level, and it never drops below your minimum setting. With autosuspend, you are not charged at all during inactive periods. For projects with inconsistent demand, this can save significant compute costs.
 
-For a more detailed breakdown of compute cost metrics, see [compute time](docs/introduction/billing#compute-time).
+For a more detailed breakdown of compute cost metrics, see [compute time](/docs/introduction/billing#compute-time).
 
 ## Storage costs
 
-Neon storage uses copy-on-write branching to keep storage size as small as possible. This can make it hard to visualize "how big is my database", since branches with a shared history don't immediately add to storage costs. Storage size is a combination of your total data plus the shared change history that is used to enable branching-related features like [point-in-time restore](/docs/introduction/point-in-time-restore), [query testing](/docs/guides/branching-test-queries), and [reset from parent](docs/manage/branches#reset-a-branch-from-parent).
+Neon storage uses copy-on-write branching to keep storage size as small as possible. This can make it hard to visualize "how big is my database", since branches with a shared history don't immediately add to storage costs. Storage size is a combination of your total data plus the shared change history that is used to enable branching-related features like [point-in-time restore](/docs/introduction/point-in-time-restore), [query testing](/docs/guides/branching-test-queries), and [reset from parent](/docs/manage/branches#reset-a-branch-from-parent).
 
 Storage costs are based on the size of your project and how long it is stored.
 
@@ -857,7 +934,7 @@ The amount of data that you write to storage or transfer out of Neon (for exampl
 
 ![Data write and transfer](/docs/introduction/neon_boundary.jpg)
 
-For more detail on these metrics, see [Written data](docs/introduction/billing#written-data) and [Data transfer](/docs/introduction/billing#data-transfer).
+For more detail on these metrics, see [Written data](/docs/introduction/billing#written-data) and [Data transfer](/docs/introduction/billing#data-transfer).
 
 
 # Pricing calculators
@@ -866,7 +943,7 @@ For more detail on these metrics, see [Written data](docs/introduction/billing#w
 title: Pricing calculators
 enableTableOfContents: true
 subtitle: Get familiar with Neon billing using our pricing calculators
-updatedOn: '2024-01-03T21:00:38.274Z'
+updatedOn: '2024-01-19T14:14:18.726Z'
 ---
 
 If you already have a sense of your sizing and usage needs, we recommend that you try out the [Pricing Calculator](#pricing-calculator) on our website or our [Pro Plan Cost Estimator](#pro-plan-cost-estimator) in the Neon Console. These tools let you estimate monthly costs based on the billing metrics above.
@@ -878,11 +955,11 @@ With autoscaling as the key to our pay-for-use model, you will ideally have some
 * _What level of performance does your applciation require_?
 * _How much storage do you require_?
 
-These questions translate into the metrics [active time](/docs/introduction/billing#active-time), [compute size](docs/manage/endpoints#compute-size-and-autoscaling-configuration), and [storage space](/docs/introduction/billing#project-storage).
+These questions translate into the metrics [active time](/docs/introduction/billing#active-time), [compute size](/docs/manage/endpoints#compute-size-and-autoscaling-configuration), and [storage space](/docs/introduction/billing#project-storage).
 
 ## Pricing calculator
 
-The [Pricing](https://neon.tech/pricing) page on the Neon website provides a [calculator](https://neon.tech/calculator) that allows you to estimate monthly costs based on usage amounts that you provide.
+The Neon website provides a [pricing calculator](https://neon.tech/calculator) that allows you to estimate monthly costs based on usage amounts that you provide.
 
 ![Pricing page calculator](/docs/introduction/pricing_page_calculator.png)
 
@@ -900,8 +977,10 @@ To provide cost estimates, the **Pro Plan Cost Estimator** requires at least one
 ---
 title: Billing metrics
 enableTableOfContents: true
-updatedOn: '2024-01-03T21:00:38.276Z'
+updatedOn: '2024-01-23T17:45:24.327Z'
 ---
+
+<NewPricing/>
 
 Neon [paid plans](/docs/introduction/plans#neon-plans) bill for usage based on the following metrics:
 
@@ -944,7 +1023,7 @@ Factors that affect _Compute time_ include:
 
 - The number of active computes
 - The size of each compute
-- The _Auto-suspend_ feature, which suspends a compute after 5 minutes of inactivity. [Neon Pro Plan](/docs/introduction/pro-plan) users can configure the `Auto-suspend` timeout timeout or disable _Auto-suspend_ entirely.
+- The _Autosuspend_ feature, which suspends a compute after 5 minutes of inactivity. [Neon Pro Plan](/docs/introduction/pro-plan) users can configure the autosuspend timeout or disable autosuspend entirely.
 - The _Autoscaling_ feature, which allows you to set a minimum and maximum compute size. Compute size automatically scales up and down between these boundaries based on workload.
 
 <Admonition type="note">
@@ -995,7 +1074,7 @@ To estimate your own monthly _Compute time_ cost:
    ```
 
 <Admonition type="tip">
-Neon also provides calculators to help with cost estimates. See [Pricing calculators](#pricing-calculators).
+Neon also provides calculators to help with cost estimates. See [Pricing calculators](/docs/introduction/billing-calculators).
 </Admonition>
 
 ## Project storage
@@ -1050,7 +1129,7 @@ Data transfer (GiB) * price per GiB
 title: Billing rates
 enableTableOfContents: true
 subtitle: Billing rates by region
-updatedOn: '2024-01-03T21:00:38.275Z'
+updatedOn: '2024-02-01T14:45:11.347Z'
 ---
 
 Current billing rates for all relevant metrics by region.
@@ -1082,6 +1161,11 @@ Current billing rates for all relevant metrics by region.
 | AWS            | Asia Pacific (Singapore) | Written data    | $0.09600  | GiB            |
 | AWS            | Asia Pacific (Singapore) | Data transfer   | $0.09000  | GiB            |
 |                |                          |                 |           |                |
+| AWS            | Asia Pacific (Sydney)    | Compute time    | $0.121    | Compute-hour\* |
+| AWS            | Asia Pacific (Sydney)    | Project storage | $0.00022  | GiB-hour       |
+| AWS            | Asia Pacific (Sydney)    | Written data    | $0.09600  | GiB            |
+| AWS            | Asia Pacific (Sydney)    | Data transfer   | $0.09000  | GiB            |
+|                |                          |                 |           |                |
 | AWS            | Israel (Tel Aviv)        | Compute time    | $0.121    | Compute-hour\* |
 | AWS            | Israel (Tel Aviv)        | Project storage | $0.00022  | GiB-hour       |
 | AWS            | Israel (Tel Aviv)        | Written data    | $0.09600  | GiB            |
@@ -1095,8 +1179,10 @@ Current billing rates for all relevant metrics by region.
 ---
 title: Manage billing
 enableTableOfContents: true
-updatedOn: '2023-10-24T18:56:54.989Z'
+updatedOn: '2024-01-23T17:45:24.328Z'
 ---
+
+<NewPricing/>
 
 A Neon account subscribed to a paid plan can manage billing from the **Billing** page in the Neon Console. On the **Billing** page, you can:
 
@@ -1167,6 +1253,14 @@ You will be required to remove any projects, branches, or data that exceed [Neon
 
 To downgrade from Enterprise or Platform Partnership plans, please contact [Sales](https://neon.tech/contact-sales). Cancellation of these plans is handled in accordance with the Master Subscription Agreement (MSA) outlined in the customer agreement.
 
+## Purchase Neon on AWS Marketplace
+
+As an alternative Neon billing, you can purchase Neon on the [AWS Marketplace](https://aws.amazon.com/marketplace/pp/prodview-o32z34khv4272?sr=0-1&applicationId=AWSMPContessa&utm_campaign=Developer%20Days&utm_source=hs_email&utm_medium=email&_hsenc=p2ANqtz-8U-1v7Sm5HHexFnV3Mkkwwsq5hnq9ThQnbQOqhuB11RT9cNwtAoalhaq98WMgL70rwfFhq) or through the [AWS Private Offers](https://docs.aws.amazon.com/marketplace/latest/userguide/private-offers-overview.html) program.
+
+Purchasing Neon from the AWS Marketplace gives you consolidated billing, seamless provisioning, and the ability to use AWS credits on Neon.
+
+If you have any questions about this billing option, please reach out to our [Sales](https://neon.tech/contact-sales) team. 
+
 
 # Sample billing
 
@@ -1174,8 +1268,10 @@ To downgrade from Enterprise or Platform Partnership plans, please contact [Sale
 title: Sample project billing
 enableTableOfContents: true
 subtitle: Practical example of how Neon pricing is calculated
-updatedOn: '2024-01-03T21:00:38.276Z'
+updatedOn: '2024-01-26T20:27:59.554Z'
 ---
+
+<NewPricing/>
 
 ## Generative AI example
 
@@ -1204,7 +1300,7 @@ Given the high number of connections used by this application, [connection pooli
 
 ### Compute, storage, data write and transfer:
 
-* **Compute time.** This metric refers to the size of CPU required to handle your interactions plus the length of time your compute is active. The average daily compute usage is 23.94 GB, totaling 718.35 GB for the sample month. This indicates steady but low-intensity database usage.
+* **Compute time.** This metric refers to the size of CPU required to handle your interactions plus the length of time your compute is active. The average daily compute usage is 23.94 hours, totaling 718.35 hours for the sample month. This indicates steady but low-intensity database usage.
 * **Storage size.** The amount of database storage currently used by your project. It includes the total volume of data across all branches plus the shared history. The database is now over 25 GiB and growing steadily with new written data as the user base grows.
 * **Written data.** This metric shows the volume of data actively written to database storage. The daily average of 0.15 GB results in a total of 4.4 GB for the month.
 * **Data transfer.** This refers to the amount of data transferred out of Neon. Daily average is 0.09 GB with a monthly total of 2.7 GB.
@@ -1272,7 +1368,7 @@ This table shows what the billing costs might look like with billing rates set t
 ---
 title: Support
 enableTableOfContents: true
-updatedOn: '2023-12-22T16:01:34.806Z'
+updatedOn: '2024-01-11T14:49:37.566Z'
 ---
 
 Support channels for the Neon Free Tier, Pro, and Custom plans are outlined below.
@@ -1291,7 +1387,7 @@ All Neon users can join the [Neon Discord Server](/discord) or [Neon Discourse C
 
 ## Open a support ticket
 
-[Neon Pro Plan](/docs/introduction/pro-plan) and [Custom Plan](/docs/introduction/custom-plan) users can open a support ticket from the Neon console. Look for the **Support** link in the sidebar. It opens the **Create Support Ticket** modal, where you can describe your issue.
+[Neon Pro Plan](/docs/introduction/pro-plan) and [Custom Plan](/docs/introduction/custom-plan) users can open a support ticket in the Neon Console. Look for the **Support** link in the sidebar. It opens the **Create Support Ticket** modal, where you can describe your issue. To access the modal directly, [click here](https://console.neon.tech/app/projects?modal=support).
 
 ![Support ticket modal](/docs/introduction/neon-support-modal.png)
 
@@ -1301,7 +1397,7 @@ Video chat requests and retail customer support inquiries can be submitted throu
 
 ## Support email
 
-If you're unable to access Neon's primary support channels (e.g., the support ticket form in the Neon Console or the Neon Community Forum), you can use the following email as a fallback:
+If you're unable to access Neon's primary support channels (e.g., the support ticket form in the Neon Console or our [Discord Server](https://discord.com/invite/92vNTzKDGp)), you can use the following email as a fallback:
 
 **Email**: `support@neon.tech`
 
@@ -1342,7 +1438,7 @@ redirectFrom:
   - /docs/cloud/getting-started/
   - /docs/cloud/getting_started/
   - /docs/get-started-with-neon/setting-up-a-project
-updatedOn: '2024-01-04T13:08:07.135Z'
+updatedOn: '2024-02-09T14:18:56.793Z'
 ---
 
 You can sign up for free and upgrade to a paid plan when you are ready to scale. For information about what's included with the Neon Free Tier, see [Neon Free Tier](/docs/introduction/free-tier). For information about Neon's paid plan options, see [Neon plans](/docs/introduction/plans).
@@ -1355,6 +1451,18 @@ After signing up, you are directed to the Neon Console to create your first proj
 
 You are presented with the connection details for your new project, which you can use to connect to your database from a client or application. You can save the connection details or retrieve them later from the **Connection details** widget on the Neon **Dashboard**.
 ![Connection details dialog](/docs/get-started-with-neon/connection_details_modal.png)
+
+## Signing in to a social account with your email
+
+If you already have a Neon account using one of our social or partner login options but you now want to sign in with your email account, all you have to do is add a password to your profile.
+
+Go to **Profile** and click **Update Password**.
+
+<Admonition type="note">
+If you don't see an **Update Password** button, please sign out and sign back in. You should then see the option. This is a legacy issue; it will be resolved soon.
+</Admonition>
+
+You will be guided through a few steps, asking you to reauthenticate using your original social account, and then create your new password. After that, you are free to sign into your Neon account using either your social account or the email option.
 
 ## Next steps
 
@@ -1511,7 +1619,7 @@ Optimize your connections by enabling connection pooling.
 title: Connect from any application
 subtitle: Learn how to connect to Neon from any application
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.741Z'
+updatedOn: '2024-02-08T15:20:54.274Z'
 ---
 When connecting to Neon from an application or client, you connect to a database in your Neon project. In Neon, a database belongs to a branch, which may be the primary branch of your project (`main`) or a child branch.
 
@@ -1521,12 +1629,14 @@ You can obtain the database connection details you require from the **Connection
 
 Neon supports pooled and direct connections to the database. Use a pooled connection string if your application uses a high number of concurrent connections. For more information, see [Connection pooling](/docs/connect/connection-pooling#connection-pooling).
 
-A Neon connection string includes the role, the hostname, and the database name.
+A Neon connection string includes the role, password, hostname, and database name.
 
 ```text
 postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
-           ^              ^                                               ^
-           |- role        |- hostname                                     |- database
+           ^    ^         ^                                               ^
+     role -|    |         |- hostname                                     |- database
+                |
+                |- password
 ```
 
 <Admonition type="note">
@@ -1547,23 +1657,15 @@ PGPORT=5432
 
 Variable:
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname"
 ```
 
-</CodeBlock>
-
 Command-line:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 psql postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
 ```
-
-</CodeBlock>
 
 <Admonition type="note">
 Neon requires that all connections use SSL/TLS encryption, but you can increase the level of protection by appending an `sslmode` parameter setting to your connection string. For instructions, see [Connect to Neon securely](/docs/connect/connect-securely).
@@ -1571,7 +1673,7 @@ Neon requires that all connections use SSL/TLS encryption, but you can increase 
 
 ## Where do I obtain a password?
 
-You can obtain a Neon connection string with your password from the Neon **Dashboard**, under **Connection Details**.
+It's included in your Neon connection string, which you can find on the Neon **Dashboard**, in the **Connection Details** widget.
 
 ## What port does Neon use?
 
@@ -1583,7 +1685,7 @@ The **Connection Details** widget on the **Neon Dashboard** also provides connec
 
 ![Language and framework connection examples](/docs/connect/code_connection_examples.png)
 
-Our *Guides* documentation also provides connection examples.
+See our [Framework, language, and platform guides](https://neon.tech/docs/guides/guides-intro) for more connection examples.
 
 ## Network protocol support
 
@@ -1594,7 +1696,7 @@ Additionally, Neon provides a serverless driver that supports both WebSocket and
 ## Connection notes
 
 - Some older client libraries and drivers, including older `psql` executables, are built without [Server Name Indication (SNI)](/docs/reference/glossary#sni) support and require a workaround. For more information, see [Connection errors](/docs/connect/connection-errors).
-- Some Java-based tools that use the pgJDBC driver for connecting to Postgres, such as DBeaver, DataGrip, and CLion, do not support including a role name and password in a database connection string or URL field. When you find that a connection string is not accepted, try entering the database name, role, and password values in the appropriate fields in the tool's connection UI when configuring a connection to Neon. For an example, see [Connect a GUI or IDE](/docs/connect/connect-postgres-gui#connect-to-the-database).
+- Some Java-based tools that use the pgJDBC driver for connecting to Postgres, such as DBeaver, DataGrip, and CLion, do not support including a role name and password in a database connection string or URL field. When you find that a connection string is not accepted, try entering the database name, role, and password values in the appropriate fields in the tool's connection UI when configuring a connection to Neon. For examples, see [Connect a GUI or IDE](/docs/connect/connect-postgres-gui#connect-to-the-database).
 
 <NeedHelp/>
 
@@ -1605,7 +1707,7 @@ Additionally, Neon provides a serverless driver that supports both WebSocket and
 title: Connect a GUI application
 subtitle: Learn how to connect a GUI application to Neon
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.743Z'
+updatedOn: '2024-02-08T15:20:54.275Z'
 ---
 
 This topic describes how to connect to a Neon database from a GUI application or IDE. Most GUI applications and IDEs that support connecting to a Postgres database also support connecting to Neon.
@@ -1687,18 +1789,15 @@ Some applications require an Server Name Indication (SNI) workaround. Neon uses 
 | [Retool](https://retool.com/) | |
 | [TablePlus](https://tableplus.com/) | SNI support on macOS since build 436, and on Windows since build 202. No SNI support on Linux currently. For older versions, use [SNI workaround B](/docs/connect/connection-errors#b-use-libpq-keyvalue-syntax-in-the-database-field). |
 | [Segment](https://segment.com/) | Requires [SNI workaround D](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field) |
+| [Skyvia](https://skyvia.com/) | Requires setting the **SSL Mode** option to `Require`, and **SSL TLS Protocol** to 1.2. The other SSL fields are not required for **SSL Mode**: `Require`. |
 
 ## Connection issues
 
 Applications that use older client libraries or drivers that do not support Server Name Indication (SNI) may not permit connecting to Neon. If you encounter the following error, refer to [Connection errors](/docs/connect/connection-errors) for possible workarounds.
 
-<CodeBlock shouldWrap>
-
-```txt
+```txt shouldWrap
 ERROR: The endpoint ID is not specified. Either upgrade the Postgres client library (libpq) for SNI support or pass the endpoint ID (the first part of the domain name) as a parameter: '&options=endpoint%3D'. See [https://neon.tech/sni](https://neon.tech/sni) for more information.
 ```
-
-</CodeBlock>
 
 <NeedHelp/>
 
@@ -1787,7 +1886,7 @@ redirectFrom:
   - /docs/quickstart/postgres
   - /docs/integrations/postgres
   - /docs/get-started-with-neon/query-with-psql-editor
-updatedOn: '2023-11-24T11:25:06.745Z'
+updatedOn: '2024-02-08T15:20:54.276Z'
 ---
 
 The following instructions require a working installation of [psql](https://www.postgresql.org/download/). The `psql` client is the native command-line client for Postgres. It provides an interactive session for sending commands to Postgres and running ad-hoc queries. For more information about `psql`, refer to the [psql reference](https://www.postgresql.org/docs/15/app-psql.html), in the _PostgreSQL Documentation_.
@@ -1806,13 +1905,9 @@ You can obtain a connection string from the **Connection Details** widget on the
 
 From your terminal or command prompt, run the `psql` client with the connection string copied from the Neon **Dashboard**.
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 psql postgres://[user]:[password]@[neon_hostname]/[dbname]
 ```
-
-</CodeBlock>
 
 <Admonition type="note">
 Neon requires that all connections use SSL/TLS encryption, but you can increase the level of protection by appending an `sslmode` parameter setting to your connection string. For instructions, see [Connect to Neon securely](/docs/connect/connect-securely).
@@ -1826,13 +1921,9 @@ You can obtain a Neon connection string with your password from the Neon **Dashb
 
 Neon uses the default Postgres port, `5432`. If you need to specify the port in your connection string, you can do so as follows:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 psql postgres://[user]:[password]@[neon_hostname][:port]/[dbname]
 ```
-
-</CodeBlock>
   
 ## Running queries
 
@@ -1863,7 +1954,7 @@ title: Connect with pgcli
 subtitle: Learn how to connect to Neon using the interactive pgcli client
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-11-24T11:25:06.742Z'
+updatedOn: '2024-02-08T15:20:54.274Z'
 ---
 
 The `pgcli` client is an interactive command-line interface for Postgres that offers several advantages over the traditional `psql` client, including syntax highlighting, autocompletion, multi-line editing, and query history.
@@ -1888,13 +1979,9 @@ The easiest way to connect to Neon using the `pgcli` client is with a connection
 
 From your terminal or command prompt, run the `pgcli` client with the connection string. Your command will look something like this:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 pgcli postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
 ```
-
-</CodeBlock>
 
 ## Run queries
 
@@ -1955,7 +2042,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/security/secure-connections
-updatedOn: '2023-11-24T11:25:06.743Z'
+updatedOn: '2024-02-08T15:20:54.275Z'
 ---
 
 Neon requires that all connections use SSL/TLS encryption to ensure that data sent over the Internet cannot be viewed or manipulated by third parties. Neon rejects connections that do not use SSL/TLS, behaving in the same way as standalone Postgres with only `hostssl` records in a `pg_hba.conf` configuration file.
@@ -1966,21 +2053,17 @@ However, there are different levels of protection when using SSL/TLS encryption,
 
 When connecting to Neon or any Postgres database, the `sslmode` parameter setting determines the security of the connection. You can append the `sslmode` parameter to your Neon connection string as shown:
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=verify-full
 ```
-
-</CodeBlock>
 
 Neon supports the following `sslmode` settings, in order of least to most secure.
 
 | sslmode | Description |
 | --- | --- |
-| require | Encryption is required and the server's SSL/TLS certificate is verified. If verification fails, the connection is refused. |
-| verify-ca | Encryption is required and the server's SSL/TLS certificate is verified. In addition, the client verifies that the server's certificate has been signed by a trusted certificate authority (CA). |
-| verify-full | Encryption is required and the server's SSL/TLS certificate is fully verified, including hostname verification, expiration checks, and revocation checks. In addition, the client verifies that the server's certificate has been signed by a trusted certificate authority (CA). |
+| `require` | Encryption is required and the server's SSL/TLS certificate is verified. If verification fails, the connection is refused. |
+| `verify-ca` | Encryption is required and the server's SSL/TLS certificate is verified. In addition, the client verifies that the server's certificate has been signed by a trusted certificate authority (CA). |
+| `verify-full` | Encryption is required and the server's SSL/TLS certificate is fully verified, including hostname verification, expiration checks, and revocation checks. In addition, the client verifies that the server's certificate has been signed by a trusted certificate authority (CA). |
 
 The choice of which mode to use depends on the specific security requirements of the application and the level of risk that you are willing to tolerate. Neon recommends that you always use `verify-full` mode, which ensures the highest level of security and protects against a wide range of attacks including man-in-the-middle attacks. The following sections describe how to configure connections using `verify-full` mode.
 
@@ -2077,7 +2160,7 @@ subtitle: Learn how to enable connection pooling in Neon
 enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/connection-pooling
-updatedOn: '2024-01-05T18:59:15.317Z'
+updatedOn: '2024-02-09T16:27:39.008Z'
 ---
 
 Neon uses [PgBouncer](https://www.pgbouncer.org/) to offer support for connection pooling, enabling up to 10,000 concurrent connections. PgBouncer is a lightweight connection pooler for Postgres.
@@ -2110,17 +2193,62 @@ Enabling connection pooling in Neon requires adding a `-pooler` suffix to the co
 
 You can add the `-pooler` suffix to the endpoint ID in your connection string as shown:
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname
 ```
-
-</CodeBlock>
 
 The **Connection Details** widget on the Neon **Dashboard** provides **Pooled connection** checkbox that adds the `-pooler` option to a connection string that you can copy and paste.
 
 ![Connection Details pooled connection string](/docs/connect/connection_details_pooled.png)
+
+## Optimize queries with PgBouncer and prepared statements
+
+Protocol-level prepared statements are supported with Neon and PgBouncer as of the [PgBouncer 1.22.0 release](https://github.com/pgbouncer/pgbouncer/releases/tag/pgbouncer_1_21_0). Using prepared statements can help boost query performance while providing an added layer of protection against potential SQL injection attacks.
+
+### Understanding prepared statements
+
+A prepared statement in Postgres allows for the optimization of an SQL query by defining its structure once and executing it multiple times with varied parameters. Here's an SQL-level example to illustrate. Note that direct SQL-level `PREPARE` and `EXECUTE` are not supported with PgBouncer (see [below](#use-prepared-statements-with-pgbouncer)), so you can't use this query from the SQL editor. It is meant to give you a clear idea of how a prepared statement works. Refer to the protocol-level samples below to see how this SQL-level example translates to different protocol-level examples.
+
+```sql
+PREPARE fetch_plan (TEXT) AS
+SELECT * FROM users WHERE username = $1;
+
+EXECUTE fetch_plan('alice');
+```
+
+`fetch_plan` here is the prepared statement's name, and `$1` acts as a parameter placeholder.
+
+The benefits of using prepared statements include:
+
+- **Performance**: Parsing the SQL and creating the execution plan happens just once, speeding up subsequent executions. This performance benefit would be most noticeable on databases with heavy and repeated traffic.
+- **Security**: By sending data values separately from the query, prepared statements reduce the risk of SQL injection attacks.
+
+You can learn more about prepared statements in the PostgreSQL documentation. See [PREPARE](https://www.postgresql.org/docs/current/sql-prepare.html).
+
+### Use prepared statements with PgBouncer
+
+Since pgBouncer supports protocol-level prepared statements only, you must rely on PostgreSQL client libraries instead (direct SQL-level `PREPARE` and `EXECUTE` are not supported). Fortunately, most PostgreSQL client libraries support prepared statements. Here are a couple of examples showing how to use prepared statements with Javascript and Python client libraries:
+
+<CodeTabs labels={["pg", "psycopg2"]}>
+
+```javascript
+const query = {
+   // give the query a unique name
+   name: 'fetch-plan',
+      text: 'SELECT * FROM users WHERE username = $1',
+      values: ['alice'],
+  };
+  client.query(query);
+```
+
+```python
+cur = conn.cursor()
+  query = "SELECT * FROM users WHERE username = %s;"
+  cur.execute(query, ('alice',), prepare=True)
+  results = cur.fetchall()
+```
+
+</CodeTabs>
 
 ## Neon PgBouncer configuration settings
 
@@ -2145,7 +2273,7 @@ The following list describes each setting. For a full explanation of each parame
 
 ## Connection pooling notes and limitations
 
-Neon uses PgBouncer in _transaction mode_, which does not support Postgres features such as prepared statements or [LISTEN](https://www.postgresql.org/docs/15/sql-listen.html)/[NOTIFY](https://www.postgresql.org/docs/15/sql-notify.html). For a complete list of limitations, refer to the "_SQL feature map for pooling modes_" section in the [pgbouncer.org Features](https://www.pgbouncer.org/features.html) documentation.
+Neon uses PgBouncer in _transaction mode_, which limits some functionality in Postgres. For a complete list of limitations, refer to the "_SQL feature map for pooling modes_" section in the [pgbouncer.org Features](https://www.pgbouncer.org/features.html) documentation.
 
 <NeedHelp/>
 
@@ -2161,7 +2289,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/how-to-guides/connectivity-issues
   - /docs/connect/connectivity-issues
-updatedOn: '2023-11-27T10:35:45.864Z'
+updatedOn: '2024-02-08T15:20:54.276Z'
 ---
 
 This topic describes how to resolve connection errors you may encounter when using Neon. The errors covered include:
@@ -2172,6 +2300,7 @@ This topic describes how to resolve connection errors you may encounter when usi
 - [Can't reach database server](#cant-reach-database-server)
 - [Error undefined: Database error](#error-undefined-database-error)
 - [Terminating connection due to administrator command](#terminating-connection-due-to-administrator-command)
+- [Unsupported startup parameter](#unsupported-startup-parameter)
 
 <Admonition type="info">
 Connection problems are sometimes related to a system issue. To check for system issues, please refer to the [Neon status page](https://neonstatus.com/).  
@@ -2181,13 +2310,9 @@ Connection problems are sometimes related to a system issue. To check for system
 
 With older clients and some native Postgres clients, you may receive the following error when attempting to connect to Neon:
 
-<CodeBlock shouldWrap>
-
-```txt
+```txt shouldWrap
 ERROR: The endpoint ID is not specified. Either upgrade the Postgres client library (libpq) for SNI support or pass the endpoint ID (the first part of the domain name) as a parameter: '&options=endpoint%3D'. See [https://neon.tech/sni](https://neon.tech/sni) for more information.
 ```
-
-</CodeBlock>
 
 This error occurs if your client library or application does not support the **Server Name Indication (SNI)** mechanism in TLS.
 
@@ -2201,13 +2326,9 @@ If a library or application upgrade does not help, there are several workarounds
 
 Neon supports a connection option named `endpoint`, which you can use to identify the compute endpoint you are connecting to. Specifically, you can add `options=endpoint%3D[endpoint_id]` as a parameter to your connection string, as shown in the example below. The `%3D` is a URL-encoded `=` sign. Replace `[endpoint_id]` with your compute's endpoint ID, which you can find in your Neon connection string. It looks similar to this: `ep-cool-darkness-123456`.
 
-<CodeBlock shouldWrap>
-
-```txt
+```txt shouldWrap
 postgres://[user]:[password]@[neon_hostname]/[dbname]?options=endpoint%3D[endpoint-id]
 ```
-
-</CodeBlock>
 
 <Admonition type="note">
 The `endpoint` connection option was previously named `project`. The `project` option is deprecated but remains supported for backward compatibility.
@@ -2273,23 +2394,15 @@ Neon has tested the following drivers for SNI support:
 
 The following error is often the result of an incorrectly defined connection information, or the driver you are using does not support Server Name Indication (SNI).
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 ERROR:  password authentication failed for user '<user_name>' connection to server at "ep-billowing-fun-123456.us-west-2.aws.neon.tech" (12.345.67.89), port 5432 failed: ERROR:  connection is insecure (try using `sslmode=require`)
 ```
 
-</CodeBlock>
-
 Check your connection to see if it is defined correctly. Your Neon connection string can be obtained from the **Connection Details** widget on the Neon **Dashboard**. It appears similar to this:
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 postgres://[user]:[password]@[neon_hostname]/[dbname]
 ```
-
-</CodeBlock>
 
 For clients or applications that require specifying connection parameters such as user, password, and hostname separately, the values in a Neon connection string correspond to the following:
 
@@ -2303,7 +2416,7 @@ If you find that your connection string is defined correctly, see the instructio
 
 ## Couldn't connect to compute node
 
-This error arises when the Neon proxy, which accepts and handles connections from clients that use the Postgres protocol, fails to establish a connection with your compute. This issue sometimes occurs due to repeated connection attempts during the compute's restart phase after it has been idle due to [Auto-suspension](/docs/reference/glossary#auto-suspend-compute) (scale to zero). Currently, the transition from an idle state to an active one takes a few seconds.
+This error arises when the Neon proxy, which accepts and handles connections from clients that use the Postgres protocol, fails to establish a connection with your compute. This issue sometimes occurs due to repeated connection attempts during the compute's restart phase after it has been idle due to [Autosuspend](/docs/reference/glossary#autosuspend-compute) (scale to zero). Currently, the transition from an idle state to an active one takes a few seconds.
 
 Consider these recommended steps:
 
@@ -2318,14 +2431,10 @@ If the connection issue persists, please reach out to [Support](https://neon.tec
 
 This error is sometimes encountered when using Prisma Client with Neon.
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 Error: P1001: Can't reach database server at `ep-white-thunder-826300.us-east-2.aws.neon.tech`:`5432`
 Please make sure your database server is running at `ep-white-thunder-826300.us-east-2.aws.neon.tech`:`5432`.
 ```
-
-</CodeBlock>
 
 A compute node in Neon has two main states: **Active** and **Idle**. Active means that Postgres is currently running. If there are no active queries for 5 minutes, the activity monitor gracefully places the compute node into an idle state to save energy and resources.
 
@@ -2347,7 +2456,21 @@ Prisma Migrate requires a direct connection to the database. It does not support
 
 The `terminating connection due to administrator command` error is typically encountered when running a query from a connection that has sat idle long enough for the compute endpoint to suspend due to inactivity. Neon automatically suspends a compute endpoint after 5 minutes of inactivity, by default. You can reproduce this error by connecting to your database from an application or client such as `psql`, letting the connection remain idle until the compute suspends, and then running a query from the same connection.
 
-If you encounter this error, you can try adjusting the timing of your query or reestablishing the connection before running the query. Alternatively, if you are a [Neon Pro Plan](/docs/introduction/pro-plan) user, you can disable auto-suspend or configure a different suspension period. For instructions, see [Configuring Auto-suspend for Neon computes](/docs/guides/auto-suspend-guide).  [Neon Free Tier](/docs/introduction/free-tier) users cannot modify the default 5 minute auto-suspend setting. 
+If you encounter this error, you can try adjusting the timing of your query or reestablishing the connection before running the query. Alternatively, if you are a [Neon Pro Plan](/docs/introduction/pro-plan) user, you can disable autosuspend or configure a different suspension period. For instructions, see [Configuring Autosuspend for Neon computes](/docs/guides/auto-suspend-guide).  [Neon Free Tier](/docs/introduction/free-tier) users cannot modify the default 5 minute autosuspend setting.
+
+## Unsupported startup parameter
+
+This error is reported in two variations:
+
+```text
+unsupported startup parameter: <...>
+```
+
+```text
+unsupported startup parameter in options: <...>
+```
+
+The error occurs when using a pooled Neon connection string with startup options that are not supported by PgBouncer. PgBouncer allows only startup parameters it can keep track of in startup packets. These include: `client_encoding`, `datestyle`, `timezone`, `standard_conforming_strings`, and `application_name`. See **track_extra_parameters**, in the [PgBouncer documentation](https://www.pgbouncer.org/config.html#track_extra_parameters). To resolve this error, you can either remove the unsupported parameter from your connection string or use an unpooled Neon connection string. For information about pooled and unpooled connections in Neon, see [Connection pooling](/docs/connect/connection-pooling).
 
 <NeedHelp/>
 
@@ -2359,10 +2482,10 @@ title: Connection latency and timeouts
 subtitle: Learn about strategies to manage connection latencies and timeouts
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-20T16:07:46.077Z'
+updatedOn: '2024-01-19T14:14:18.722Z'
 ---
 
-Neon's _Auto-suspend_ feature ('scale to zero') is designed to minimize costs by automatically scaling a compute resource down to zero after a period of inactivity. By default, Neon scales a compute to zero after 5 minutes of inactivity. A characteristic of this feature is the concept of a "cold start". During this process, a compute instance transitions from an idle state to an active state to process requests. Currently, activating a Neon compute from an idle state takes anywhere from 500 ms to a few seconds not counting other factors that can add to latencies such as the physical distance between your application and database or startup times of other services that participate in your connection process.
+Neon's _Autosuspend_ feature ('scale to zero') is designed to minimize costs by automatically scaling a compute resource down to zero after a period of inactivity. By default, Neon scales a compute to zero after 5 minutes of inactivity. A characteristic of this feature is the concept of a "cold start". During this process, a compute instance transitions from an idle state to an active state to process requests. Currently, activating a Neon compute from an idle state takes anywhere from 500 ms to a few seconds not counting other factors that can add to latencies such as the physical distance between your application and database or startup times of other services that participate in your connection process.
 
 Cold-start times are fastest in the `US East (Ohio) — aws-us-east-2` region, which hosts the Neon Control Plane. The Neon Control plane will be deployed regionally in future Neon releases, bringing the same millesecond cold-start times to all supported regions.
 
@@ -2390,23 +2513,23 @@ You can try any of these methods and watch the status of your compute as it chan
 
 Given the potential impact on application responsiveness, it's important to have strategies in place for managing connection latencies and timeouts. Here are some methods you can implement:
 
-- [Adjust your Auto-suspend (scale to zero) configuration](#adjust-your-auto-suspend-scale-to-zero-configuration)
+- [Adjust your Autosuspend (scale to zero) configuration](#adjust-your-auto-suspend-scale-to-zero-configuration)
 - [Place your application and database in the same region](#place-your-application-and-database-in-the-same-region)
 - [Increase your connection timeout](#increase-your-connection-timeout)
 - [Build connection timeout handling into your application](#build-connection-timeout-handling-into-your-application)
 - [Use application-level caching](#use-application-level-caching)
 
-### Adjust your Auto-suspend (scale to zero) configuration
+### Adjust your Autosuspend (scale to zero) configuration
 
-With the [Neon Pro Plan](/docs/introduction/pro-plan), you can configure the length of time that the system remains in an inactive state before Neon scales your compute down to zero. This lets you set the balance between performance (never scaling down) and cost (scaling to zero at reasonable intervals). The **Suspend compute after a period of inactivity** setting is set to 5 minutes by default. You can disable Auto-suspend entirely or set a custom period up to a maximum of 7 days. Limiting or disabling autosuspend can eliminate or reduce startup times, but it also increases compute usage. For configuration instructions, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
+With the [Neon Pro Plan](/docs/introduction/pro-plan), you can configure the length of time that the system remains in an inactive state before Neon scales your compute down to zero. This lets you set the balance between performance (never scaling down) and cost (scaling to zero at reasonable intervals). The **Suspend compute after a period of inactivity** setting is set to 5 minutes by default. You can disable autosuspend entirely or set a custom period up to a maximum of 7 days. Limiting or disabling autosuspend can eliminate or reduce startup times, but it also increases compute usage. For configuration instructions, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
 
-Consider combining this strategy with Neon's _Autoscaling_ feature (available with the [Neon Pro Plan](/docs/introduction/pro-plan)), which allows you to run a compute with minimal resources and scale up on demand. For example, with _Autoscaling_, you can configure a minimum compute size to reduce costs during off-peak times. In the image shown below, the **Suspend compute after a period of inactivity** is set to 1 hour so that your compute only suspends after an hour of inactivity, and _Autoscaling_ is configured with the 1/4 minimum compute size to keep costs low during periods of inactivity or light usage.
+Consider combining this strategy with Neon's _Autoscaling_ feature (available with the [Neon Pro Plan](/docs/introduction/pro-plan)), which allows you to run a compute with minimal resources and scale up on demand. For example, with autoscaling, you can configure a minimum compute size to reduce costs during off-peak times. In the image shown below, the **Suspend compute after a period of inactivity** is set to 1 hour so that your compute only suspends after an hour of inactivity, and autoscaling is configured with the 1/4 minimum compute size to keep costs low during periods of inactivity or light usage.
 
-![Connection warmup Auto-suspend and Autoscaling configuration](/docs/connect/cold_start_compute_config.png)
+![Connection warmup autosuspend and autoscaling configuration](/docs/connect/cold_start_compute_config.png)
 
-To determine what an "always-on" compute would cost per month, please refer to our [Billing](/docs/introduction/billing) documentation or the [pricing calculator](/calculator).
+To determine what an "always-on" compute would cost per month, please refer to our [Billing](/docs/introduction/billing) documentation or the [pricing calculator](https://neon.tech/calculator).
 
-For Autoscaling configuration instructions, see [Compute size and Autoscaling configuration](https://neon.tech/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
+For autoscaling configuration instructions, see [Compute size and autoscaling configuration](https://neon.tech/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
 
 ### Place your application and database in the same region
 
@@ -2539,37 +2662,12 @@ With the right strategies, you can optimize your system to handle connection lat
 title: Overview of the Neon object hierarchy
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-11-23T13:58:00.342Z'
+updatedOn: '2024-01-31T12:01:56.610Z'
 ---
-Managing your Neon project requires an understanding of the Neon object hierarchy. The following diagram shows how objects in Neon are related. See below for a description of of each object.
 
-```text
-Neon account
-    |
-    |- API keys
-    | 
-    |- project 
-    |      |
-    |      |---- primary branch (main) ---- compute endpoint a
-    |                |    |
-    |                |    |---- roles
-    |                |    |---- databases           
-    |                |                         
-    |                |---- child branch 1 ---- compute endpoint b 
-    |                |          |    |
-    |                |          |    |---- roles
-    |                |          |    |---- databases   
-    |                |          |
-    |                |          |---- child branch 1.a ---- compute endpoint c 
-    |                |                          |
-    |                |                          |---- roles
-    |                |                          |---- databases
-    |                |
-    |                |---- child branch 2 
-    |                                |
-    |                                |---- roles
-    |                                |---- databases
-```
+Managing your Neon project requires an understanding of the Neon object hierarchy. The following diagram shows how objects in Neon are related. See below for a description of each object.
+
+![Neon object hierarchy](/docs/manage/neon_object_hierarchy.jpg)
 
 ## Neon account
 
@@ -2581,23 +2679,23 @@ API keys are global and belong to the Neon account. API keys are used with the [
 
 ## Projects
 
-A project is the top-level object in the Neon object hierarchy. It is a container for all other objects, with the exception of API keys, which are global. Branches and compute endpoints belong to a project. A Neon project defines the region where project resources reside. A Neon account can have multiple projects, but tier limits define the number of projects per Neon account. For more information, see [Manage projects](/docs/manage/projects).
+A project is the top-level object in the Neon object hierarchy. It is a container for all objects except for API keys, which are global and work with any project owned by your Neon account. Branches, compute endpoints, roles, and databases belong to a project. A Neon project also defines the region where project resources reside. A Neon account can have multiple projects, but tier limits define the number of projects per Neon account. For more information, see [Manage projects](/docs/manage/projects).
 
-## Branches
+## Primary branch
 
-Data resides in a branch. Each Neon project is created with a primary branch called `main`. You can create child branches from `main` or from previously created branches. A branch can contain multiple databases and roles. Tier limits define the number of branches you can create in a project and the amount of data per branch. For more information, see [Manage branches](/docs/manage/branches).
+Data resides in a branch. Each Neon project is created with a primary branch called `main`. This initial branch is also your project's root branch, which cannot be deleted. After creating more branches, you can designate a different branch as your primary branch, but your root branch cannot be deleted. You can create child branches from any branch in your project. Each branch can contain multiple databases and roles. Tier limits define the number of branches you can create in a project and the amount of data per branch. To learn more, see [Manage branches](/docs/manage/branches).
 
 ## Compute endpoint
 
-A compute endpoint is a compute resource associated with a branch. A read-write compute endpoint is created for a project's primary branch, by default. Neon supports both read-write and read-only compute endpoints. Read-only compute endpoints are also referred to as [Read replicas](/docs/introduction/read-replicas). A branch can have a single read-write compute endpoint but supports multiple read-only compute endpoints. You can choose whether or not to create a compute endpoint when creating a branch. To connect to a database that resides in a branch, you must connect via a compute endpoint that is associated with the branch. Tier limits define the resources (vCPUs and RAM) available to a compute endpoint. For more information, see [Manage computes](/docs/manage/endpoints).
+A compute endpoint is a compute resource associated with a branch. A read-write compute endpoint is created for a project's primary branch by default. Neon supports both read-write and read-only compute endpoints. Read-only compute endpoints are also referred to as [Read replicas](/docs/introduction/read-replicas). A branch can have a single read-write compute endpoint but supports multiple read-only compute endpoints. To connect to a database that resides in a branch, you must connect via a compute endpoint that is associated with the branch. Tier limits define the resources (vCPUs and RAM) available to a compute endpoint. For more information, see [Manage computes](/docs/manage/endpoints). Compute size, autoscaling, and autosuspend (scale-to-zero) are all settings that are configured for a compute endpoint. 
 
 ## Roles
 
-In Neon, roles are Postgres roles. A role is required to create and access a database. A role belongs to a branch. There is no limit on the number of roles you can create. The primary branch of a Neon project is created with a role named for the Neon account that you registered with. For example, if you registered with a Google account for "Casey Smith", Neon creates a role named "Casey" in the primary branch. This role is the owner of the ready-to-use `neondb` database in your project's primary branch. For more information, see [Manage roles](/docs/manage/roles).
+In Neon, roles are Postgres roles. A role is required to create and access a database. A role belongs to a branch. There is no limit on the number of roles you can create. The primary branch of a Neon project is created with a role named for the account that you registered with. For example, if you registered with a Google account for "Casey Smith", Neon creates a role named "Casey" in the primary branch. If you registered with an email account like `alex@domain.com`, Neon creates a role named "alex". This role is the owner of the ready-to-use `neondb` database in your project's primary branch. Any role created via the Neon Console, CLI, or API is created with [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) privileges. For more information, see [Manage roles](/docs/manage/roles).
 
 ## Databases
 
-As with any standalone instance of Postgres, a database is a container for SQL objects such as schemas, tables, views, functions, and indexes. In Neon, a database belongs to a branch. The primary branch of a Neon project is created with a ready-to-use database named `neondb`. There is no limit on the number of databases you can create. For more information, see [Manage databases](/docs/manage/databases).
+As with any standalone instance of Postgres, a database is a container for SQL objects such as schemas, tables, views, functions, and indexes. In Neon, a database belongs to a branch. The primary branch of a Neon project is created with a ready-to-use database named `neondb`. There is no defined limit on the number of databases you can create in a Neon project. For more information, see [Manage databases](/docs/manage/databases).
 
 
 # API keys
@@ -2608,7 +2706,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/using-api-keys
   - /docs/get-started-with-neon/api-keys
-updatedOn: '2023-11-24T11:25:06.759Z'
+updatedOn: '2024-01-08T20:02:33.925Z'
 ---
 
 Most actions performed in the Neon Console can be performed using the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api). Using the Neon API requires an API key. This topic describes how to generate, revoke, and use API keys.
@@ -2646,7 +2744,7 @@ The following `cURL` example uses the `/projects` endpoint to retrieve projects 
 ```bash
 curl 'https://console.neon.tech/api/v2/projects' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 where:
@@ -2698,7 +2796,7 @@ The `jq` option specified in each example is an optional third-party tool that f
 
 The following Neon API method creates an API key. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/createapikey).
 
-```text
+```http
 POST /api_keys 
 ```
 
@@ -2729,7 +2827,7 @@ The response body includes an `id` for the key and a generated 64-bit `key` valu
 
 The following Neon API method lists API keys for your Neon account. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/listapikeys).
 
-```text
+```http
 GET /api_keys
 ```
 
@@ -2776,7 +2874,7 @@ curl "https://console.neon.tech/api/v2/api_keys" \
 
 The following Neon API method revokes the specified API key. The `key_id` is a required parameter. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/revokeapikey).
 
-```text
+```http
 DELETE /api_keys/{key_id}
 ```
 
@@ -2817,7 +2915,7 @@ isDraft: false
 subtitle: Learn how to manage Neon projects from the Neon Console or the Neon API.
 redirectFrom:
   - /docs/get-started-with-neon/projects
-updatedOn: '2023-12-21T14:51:31.033Z'
+updatedOn: '2024-01-26T16:30:34.543Z'
 ---
 
 With Neon, everything starts with the project. It is the top-level object in the [Neon object hierarchy](/docs/manage/overview). A project can hold as many databases, and with the Neon Pro Plan, as many branches of those databases, as your application or workflow needs. However, [tier limits](/docs/introduction/plans) define how many projects you can create. The Neon Free Tier limits you to one project per Neon account.
@@ -2848,7 +2946,7 @@ Once you open a project, you can use the **Settings** page to manage that partic
 You can tab between these sections:
 
 - **General** &#8212; Change the name of your project or copy the project ID.
-- **Compute** &#8212; Set the auto-suspend and sizing defaults for any new compute instances you create when branching.
+- **Compute** &#8212; Set the autosuspend and sizing defaults for any new compute instances you create when branching.
 - **Storage** &#8212; Choose how long Neon maintains a history of changes for all branches.
 - **Sharing** &#8212; Let other users access your project's databases.
 - **Delete** &#8212; Use with care! This action deletes your entire project and all its objects, and is irreversible.
@@ -2873,8 +2971,8 @@ To create a Neon project:
 2. Click **New Project**.
 3. Specify values for **Name**, **Postgres version**, and **Region**. Project names are limited to 64 characters. If you are a [Neon Pro Plan](/docs/introduction/pro-plan) user, you can specify **Compute size** settings when creating a project. The settings you specify become the default settings for compute endpoints that you add to your project when creating [branches](/docs/manage/branches#create-a-branch) or [read replicas](/docs/guides/read-replica-guide).
 
-    - Neon supports fixed size computes and _Autoscaling_. For more information, see [Compute size and Autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
-    - The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. For more information, see [Auto-suspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
+    - Neon supports fixed size computes and autoscaling. For more information, see [Compute size and autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
+    - The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. For more information, see [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
   
 4. Click **Create Project**.
 
@@ -2938,7 +3036,7 @@ From the **Settings** page, you can also set defaults or apply bulk changes acro
 - [Reset default compute size](#reset-the-default-compute-size) (Neon Pro Plan only)
 - [Configure history retention range](#configure-history-retention)
 - [Enable logical replication](#enable-logical-replication)
-- [Configiure IP Allow](#configure-ip-allow)
+- [Configure IP Allow](#configure-ip-allow)
 
 ### Reset the default compute size
 
@@ -2953,7 +3051,7 @@ To reset the default compute size, go to **Settings** > **Compute**.
 You can choose from two options:
 
 - **Fixed Size:** Select a fixed compute size ranging from .25 CUs to 7 CUs. A fixed-size compute does not scale to meet workload demand.
-- **Autoscaling:** This option allows you to specify a minimum and maximum compute size. Neon scales the compute size up and down within the selected compute size boundaries in response to the current load. Currently, _Autoscaling_ supports a range of 1/4 (.25) CU to 7 CUs. The 1/4 CU and 1/2 CU settings are _shared compute_. For information about how Neon implements the _Autoscaling_ feature, see [Autoscaling](/docs/introduction/autoscaling).
+- **Autoscaling:** This option allows you to specify a minimum and maximum compute size. Neon scales the compute size up and down within the selected compute size boundaries in response to the current load. Currently, the _Autoscaling_ feature supports a range of 1/4 (.25) CU to 7 CUs. The 1/4 CU and 1/2 CU settings are _shared compute_. For information about how Neon implements the _Autoscaling_ feature, see [Autoscaling](/docs/introduction/autoscaling).
 
 _Example: default minimum and maximum autoscale settings_
 
@@ -3000,23 +3098,88 @@ After enabling logical replication, the next steps involve creating publications
 
 ### Configure IP Allow
 
-Available to [Neon Pro Plan](/docs/introduction/pro-plan) users, the IP Allow feature provides an added layer of security for your data, restricting access to the branch where your database resides to only those IP addresses that you specify. In Neon, the IP allowlist is applied to all branches by default. Optionally, you can apply the IP allowlist to your project's [primary branch](/docs/manage/branches#primary-branch) only. For instance, you might want to restrict access to the primary branch to a handful of trusted IPs while allowing broader access to development branches.
+Available to [Neon Pro Plan](/docs/introduction/pro-plan) users, the IP Allow feature provides an added layer of security for your data, restricting access to the branch where your database resides to only those IP addresses that you specify. In Neon, the IP allowlist is applied to all branches by default. 
 
-By default, Neon allows IP addresses from 0.0.0.0, which means that Neon accepts connections from any IP address. Once you configure IP Allow by adding IP addresses or ranges, only those IP addresses will be allowed to access to Neon.
+Optionally, you can allow unrestricted access to your project's [non-primary branches](/docs/manage/branches#non-primary-branch). For instance, you might want to restrict access to the primary branch to a handful of trusted IPs while allowing unrestricted access to your development branches.
+
+By default, Neon allows IP addresses from `0.0.0.0`, which means that Neon accepts connections from any IP address. Once you configure IP Allow by adding IP addresses or ranges, only those IP addresses will be allowed to access Neon.
 
 <Admonition type="note">
 Currently, Neon only supports [IPv4](https://en.wikipedia.org/wiki/Internet_Protocol_version_4).
 </Admonition>
 
-You configure **IP Allow** for a project using the Neon Console:
+<Tabs labels={["Neon Console", "CLI", "API"]}>
+
+<TabItem>
+
+To configure an allowlist:
 
 1. Select a project in the Neon console.
 2. On the Neon **Dashboard**, select **Settings**.
 3. Select **IP Allow**.
     ![IP Allow configuration](/docs/manage/ip_allow.png)
-4. Specify the IP addresses you want to permit.
-5. Optionally, select **Apply to primary branch only** to apply the allowlist to your project's [primary branch](/docs/manage/branches#primary-branch) only
-5. Click **Apply changes**.
+4. Specify the IP addresses you want to permit. Separate multiple entries with commas.
+5. Optionally, select **Allow unrestricted access to non-primary branches** to allow full access to your [no primary branches](/docs/manage/branches#non-primary-branch).
+5. Click **Save changes**.
+
+</TabItem>
+
+<TabItem>
+
+The [Neon CLI ip-allow command](/docs/reference/cli-ip-allow) supports IP Allow configuration. For example, the following `add` command adds IP addresses to the allowlist for an existing Neon project. Multiple entries are separated by a space. No delimiter is required.
+
+```bash
+neonctl ip-allow add 192.168.1.1 192.168.1.2
+┌─────────────────────┬─────────────────────┬──────────────┬─────────────────────┐
+│ Id                  │ Name                │ IP Addresses │ Primary Branch Only │
+├─────────────────────┼─────────────────────┼──────────────┼─────────────────────┤
+│ wispy-haze-26469780 │ wispy-haze-26469780 │ 192.168.1.1  │ false               │
+│                     │                     │ 192.168.1.2  │                     │
+└─────────────────────┴─────────────────────┴──────────────┴─────────────────────┘
+```
+
+To apply an IP allowlist to the primary branch only, use the you can `--primary-only` option:
+
+```bash
+neonctl ip-allow add 192.168.1.1 --primary-only
+```
+
+To reverse that setting, use `--primary-only false`.
+
+```bash
+neonctl ip-allow add 192.168.1.1 --primary-only false
+```
+
+</TabItem>
+
+<TabItem>
+
+The [Create project](https://api-docs.neon.tech/reference/createproject) and [Update project](https://api-docs.neon.tech/reference/updateproject) methods support **IP Allow** configuration. For example, the following API call configures **IP Allow** for an existing Neon project. Separate multiple entries with commas. Each entry must be quoted. You can set the `"primary_branch_only` option to `true` to apply the allowlist to your primary branch only, or `false` to apply it to all branches in your Neon project.
+
+```bash
+curl -X PATCH \
+     https://console.neon.tech/api/v2/projects/falling-salad-31638542 \
+     -H 'accept: application/json' \
+     -H 'authorization: Bearer $NEON_API_KEY' \
+     -H 'content-type: application/json' \
+     -d '
+{
+  "project": {
+    "settings": {
+      "allowed_ips": {
+        "primary_branch_only": true,
+        "ips": [
+          "192.168.1.1", "192.168.1.2"
+        ]
+      }
+    }
+  }
+}
+' | jq
+```
+</TabItem>
+
+</Tabs>
 
 #### How to specify IP addresses
 
@@ -3050,6 +3213,66 @@ A combined example using all three options above, specified as a comma-separated
 
 This list combines individual IP addresses, a range of IP addresses, and a CIDR block. It illustrates how different types of IP specifications can be used together in a single allowlist configuration, offering a flexible approach to access control.
 
+#### Update an IP Allow configuration
+
+You can update your IP Allow configuration via the Neon Console or API as described in [Configure IP Allow](#configure-ip-allow). Replace the current configuration with the new configuration. For example, if your IP Allow configuration currently allows access from IP address `192.168.1.1`, and you want to extend access to IP address `192.168.1.2`, specify both addresses in your new configuration: `192.168.1.1, 192.168.1.2`. You cannot append values to an existing configuration. You can only replace an existing configuration with a new one.
+
+The Neon CLI provides an `ip-allow` command with `add`, `reset`, and `remove` options that you can use to update your IP Allow configuration. For instructions, refer to [Neon CLI commands — ip-allow](/docs/reference/cli-ip-allow).
+
+#### Remove an IP Allow configuration
+
+To remove an IP configuration entirely to go back to the default "no IP restrictions" (`0.0.0.0`) configuration:
+
+<Tabs labels={["Neon Console", "CLI", "API"]}>
+
+<TabItem>
+
+1. Select a project in the Neon console.
+2. On the Neon **Dashboard**, select **Settings**.
+3. Select **IP Allow**.
+4. Clear the **Allowed IP addresses and ranges** field.
+5. If applicable, clear the **Apply to primary branch only** checkbox.
+5. Click **Apply changes**.
+
+</TabItem>
+
+<TabItem>
+
+The [Neon CLI ip-allow command](/docs/reference/cli-ip-allow) supports removing an IP Allow configuration. To do so, specify `--ip-allow reset` without specifying any IP address values:
+
+```bash
+neonctl ip-allow reset
+```
+
+</TabItem>
+
+<TabItem>
+
+Specify the `ips` option with an empty string. If applicable, also include `"primary_branch_only": false`. 
+
+```bash
+curl -X PATCH \                                                            
+     https://console.neon.tech/api/v2/projects/falling-salad-31638542 \
+     -H 'accept: application/json' \
+     -H 'authorization: Bearer $NEON_API_KEY' \
+     -H 'content-type: application/json' \
+     -d '
+{
+  "project": {
+    "settings": {
+      "allowed_ips": {
+        "primary_branch_only": false,
+        "ips": []         
+      }
+    }
+  }
+}
+'
+```
+</TabItem>
+
+</Tabs>
+
 ## Manage projects with the Neon API
 
 Project actions performed in the Neon Console can also be performed using the Neon API. The following examples demonstrate how to create, view, and delete projects using the Neon API. For other project-related API methods, refer to the [Neon API reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
@@ -3068,7 +3291,7 @@ A Neon API request requires an API key. For information about obtaining an API k
 
 The following Neon API method creates a project. The [Neon Free Tier](/docs/introduction/free-tier) permits one project per account. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/createproject).
 
-```text
+```http
 POST /projects
 ```
 
@@ -3077,7 +3300,7 @@ The API method appears as follows when specified in a cURL command. The `myproje
 ```bash
 curl 'https://console.neon.tech/api/v2/projects' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "project": {
@@ -3204,7 +3427,7 @@ The response includes information about the roles, the ready-to-use database (`n
 
 The following Neon API method lists projects for your Neon account. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/listprojects).
 
-```text
+```http
 GET /projects
 ```
 
@@ -3213,7 +3436,7 @@ The API method appears as follows when specified in a cURL command:
 ```bash
 curl 'https://console.neon.tech/api/v2/projects' \
  -H 'Accept: application/json' \
- -H 'Authorization: Bearer $NEON_API_KEY' | jq
+ -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 <details>
@@ -3246,7 +3469,7 @@ curl 'https://console.neon.tech/api/v2/projects' \
 
 The following Neon API method updates the specified project. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/updateproject).
 
-```text
+```http
 PATCH /projects/{project_id}
 ```
 
@@ -3255,7 +3478,7 @@ The API method appears as follows when specified in a cURL command. The `project
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/ep-cool-darkness-123456' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "project": {
@@ -3293,7 +3516,7 @@ curl 'https://console.neon.tech/api/v2/projects/ep-cool-darkness-123456' \
 
 The following Neon API method deletes the specified project. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/deleteproject).
 
-```text
+```http
 DELETE /projects/{project_id}
 ```
 
@@ -3303,7 +3526,7 @@ The API method appears as follows when specified in a cURL command. The `project
 curl -X 'DELETE' \
   'https://console.neon.tech/api/v2/projects/ep-cool-darkness-123456' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -3341,7 +3564,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/get-started-with-neon/get-started-branching
-updatedOn: '2023-12-12T20:27:22.598Z'
+updatedOn: '2024-02-08T15:20:54.295Z'
 ---
 
 Data resides in a branch. Each Neon project is created with a [primary branch](#primary-branch) called `main`. You can create child branches from `main` or from previously created branches. A branch can contain multiple databases and roles. Tier limits define the number of branches you can create in a project and the amount of data you can store in a branch.
@@ -3379,7 +3602,7 @@ To create a branch:
 ![Create branch dialog](/docs/manage/create_branch.png)
 4. Enter a name for the branch.
 5. Select a parent branch. You can branch from your Neon project's [primary branch](#primary-branch) or a [non-primary branch](#non-primary-branch).
-6. Select an **Include data up to** option to specify the data to be included in your branch.   
+6. Select an **Include data up to** option to specify the data to be included in your branch.
     - **Current point in time**: Creates a branch with the latest available data from the parent (the default).
     - **Specific date and time**: Creates a branch with data up to a specific date and time, allowing for point-in-time restore.
     - **Specific Log Sequence Number**: Creates a branch with data up to a specific [Log Sequence Number (LSN)](/docs/reference/glossary#lsn) in the database log, allowing for precise point-in-time restore.
@@ -3454,13 +3677,9 @@ You can also query the databases in a branch from the Neon SQL Editor. For instr
 3. Copy the connection string. A connection string includes your role name, the compute endpoint hostname, and database name.
 4. Connect with `psql` as shown below.
 
-  <CodeBlock shouldWrap>
-
-  ```bash
+  ```bash shouldWrap
   psql postgres://[user]:[password]@[neon_hostname]/[dbname]
   ```
-
-  </CodeBlock>
 
 <Admonition type="tip">
 A compute endpoint hostname starts with an `ep-` prefix. You can also find a compute endpoint hostname on the **Branches** page in the Neon Console. See [View branches](#view-branches).
@@ -3473,9 +3692,10 @@ If you want to connect from an application, the **Connection Details** widget on
 When working with database branches, you might find yourself in a situation where you need to update your working branch to the latest data from your main branch. For example, let's say you have two child branches `staging` and `development` forked from your `main` branch. You have been working on the `development` branch and find it is now too far out of date with `main`. You have no schema changes in `development` to consider or preserve; you just want a quick refresh of the data. With the **Reset from parent** feature, you can perform a clean reset to the latest data from the parent in a single operation, saving you the complication of manually creating and restoring branches.
 
 <u>Key points</u>:
-* You can only reset a branch to the latest data from its parent. Point-in-time resets based on timestamp or LSN are not currently supported.
-* This reset is a complete override, not a refresh or a merge. Any local changes made to the child branch are lost during this reset.
-* Existing connections will be temporarily interupted during the reset. However, your connection details _do not change_. All connections are re-established as soon as the reset is done.
+
+- You can only reset a branch to the latest data from its parent. Point-in-time resets based on timestamp or LSN are not currently supported.
+- This reset is a complete overwrite, not a refresh or a merge. Any local changes made to the child branch are lost during this reset.
+- Existing connections will be temporarily interrupted during the reset. However, your connection details _do not change_. All connections are re-established as soon as the reset is done.
 
 <Tabs labels={["Console", "CLI", "API"]}>
 
@@ -3500,6 +3720,7 @@ Using the CLI, you can reset a branch from parent using the following command:
 ``` bash
 neonctl branches reset <id|name> --parent
 ```
+
 In the `id|name` field, specify the branch ID or name of the child branch whose data you want to reset. The `--parent` parameter specifies the kind of reset action that Neon will perform. In the future, there may be other kinds of resets available. For example, rewinding a branch to an earlier period in time.
 
 If you have multiple projects in your account, you'll also have to include the `project-id` in the command along with the branch.
@@ -3509,14 +3730,17 @@ neonctl branches reset <id|name> --parent --project-id <project id>
 ```
 
 Example:
+
 ``` bash
 neonctl branches reset development --parent --project-id noisy-pond-12345678
 ```
+
 Alternatively, you can set the `project-id` as a background context for your CLI session, letting you perform other actions against that project without having to include the `project-id` in every command. The setting is saved in a `context-file` and remains in place until you set a new context, or you remove the `context-file`.
 
 ```bash
 neonctl set-context --project-id <project id>
 ```
+
 Read more about performing branching actions from the CLI in [CLI - branches](/docs/reference/cli-branches), and more about setting contexts in [CLI - set-context](/docs/reference/cli-set-context).
 
 </TabItem>
@@ -3526,7 +3750,6 @@ Resetting from parent is not yet directly supported from the API. However, you c
 </TabItem>
 
 </Tabs>
-
 
 ## Delete a branch
 
@@ -3577,7 +3800,7 @@ A Neon API request requires an API key. For information about obtaining an API k
 
 The following Neon API method creates a branch. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/createprojectbranch).
 
-```text
+```http
 POST /projects/{project_id}/branches 
 ```
 
@@ -3587,10 +3810,10 @@ The API method appears as follows when specified in a cURL command. The `endpoin
 This method does not require a request body. Without a request body, the method creates a branch from the project's primary branch, and a compute endpoint is not created.
 </Admonition>
 
-```curl
+```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "endpoints": [
@@ -3682,16 +3905,16 @@ The response body includes information about the branch, the branch's compute en
 
 The following Neon API method lists branches for the specified project. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/listprojectbranches).
 
-```text
+```http
 GET /projects/{project_id}/branches
 ```
 
 The API method appears as follows when specified in a cURL command:
 
-```curl
+```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
@@ -3735,7 +3958,7 @@ The response body lists the project's primary branch and any child branches. The
 
 The following Neon API method deletes the specified branch. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/deleteprojectbranch).
 
-```text
+```http
 DELETE /projects/{project_id}/branches/{branch_id}
 ```
 
@@ -3745,7 +3968,7 @@ The API method appears as follows when specified in a cURL command:
 curl -X 'DELETE' \
   'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches/br-dawn-scene-747675' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 - The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
@@ -3807,7 +4030,7 @@ You can verify that a branch is deleted by listing the branches for your project
 title: Manage computes
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-21T14:51:31.033Z'
+updatedOn: '2024-02-08T21:09:24.094Z'
 ---
 
 A single read-write compute endpoint is created for your project's [primary branch](/docs/reference/glossary#primary-branch), by default.
@@ -3827,7 +4050,7 @@ Project
 
 Neon supports both read-write and read-only compute endpoints. Read-only compute endpoints are also referred to as [Read replicas](/docs/introduction/read-replicas). A branch can have a single read-write compute endpoint but supports multiple read-only compute endpoints.
 
-Tier limits define resources (vCPUs and RAM) available to a compute endpoint. The  [Neon Free Tier](/docs/introduction/free-tier) provides a shared vCPU and up to 1 GB of RAM per compute endpoint. The [Neon Pro Plan](/docs/introduction/pro-plan) supports larger compute sizes and _Autoscaling_.
+Tier limits define resources (vCPUs and RAM) available to a compute endpoint. The  [Neon Free Tier](/docs/introduction/free-tier) provides a shared vCPU and up to 1 GB of RAM per compute endpoint. The [Neon Pro Plan](/docs/introduction/pro-plan) supports larger compute sizes and autoscaling.
 
 ## View a compute endpoint
 
@@ -3838,8 +4061,8 @@ Compute endpoint details shown on the branch page include:
 - **Id**: The compute endpoint ID.
 -- **Type**: The type of compute endpoint. `R/W` (Read-write) or `R/O` (Read-only).
 - **Status**: The compute endpoint status (`Active`, `Idle`, or `Stopped`).
-- **Compute size**: The size of the compute endpoint. [Neon Pro Plan](/docs/introduction/pro-plan) users can configure the amount of vCPU and RAM for a compute endpoint when creating or editing a compute endpoint. Shows _Autoscaling_ minimum and maximum vCPU values if _Autoscaling_ is enabled.
-- **Auto-suspend delay**: The number of seconds of inactivity after which a compute endpoint is automatically suspended. The default is 300 seconds (5 minutes). For more information, see [Auto-suspend configuration](#auto-suspend-configuration).
+- **Compute size**: The size of the compute endpoint. [Neon Pro Plan](/docs/introduction/pro-plan) users can configure the amount of vCPU and RAM for a compute endpoint when creating or editing a compute endpoint. Shows autoscaling minimum and maximum vCPU values if autoscaling is enabled.
+- **Auto-suspend delay**: The number of seconds of inactivity after which a compute endpoint is automatically suspended. The default is 300 seconds (5 minutes). For more information, see [Autosuspend configuration](#auto-suspend-configuration).
 - **Last active**: The date and time the compute was last active.
 
 ## Create a compute endpoint
@@ -3855,7 +4078,7 @@ To create an endpoint:
 
 ## Edit a compute endpoint
 
-Neon paid plan users can edit a compute endpoint to change the [compute size](#compute-size-and-autoscaling-configuration) or [Auto-suspend](#auto-suspend-configuration) configuration.
+Neon paid plan users can edit a compute endpoint to change the [compute size](#compute-size-and-autoscaling-configuration) or [Autosuspend](#auto-suspend-configuration) configuration.
 
 To edit a compute endpoint:
 
@@ -3866,7 +4089,10 @@ To edit a compute endpoint:
    The **Edit** window opens, letting you take a range of actions, depending on your tier.
 1. Once you've made your changes, click **Save**. All changes take immediate effect.
 
-### What happens to the endpoint when making changes
+For information about selecting an appropriate compute size, see [How to size your compute](#how-to-size-your-compute).
+
+### What happens to the compute endpoint when making changes
+
 Some key points to understand about how your endpoint responds when you make changes to your compute settings:
 
 * Changing the size of your fixed compute restarts the endpoint and _temporarily disconnects all existing connections_. 
@@ -3876,13 +4102,13 @@ Some key points to understand about how your endpoint responds when you make cha
 * Editing minimum or maximum autoscaling sizes also requires a restart; existing connections are temporarily disconnected.
 * Changes to autosuspend settings do not require an endpoint restart; existing connections are unaffected.
 
-### Compute size and Autoscaling configuration
+### Compute size and autoscaling configuration
 
 [Neon Pro Plan](/docs/introduction/pro-plan) users can change compute size settings when [editing a compute endpoint](#edit-a-compute-endpoint).
 
-_Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute endpoint. The number of CUs determines the processing capacity of the compute endpoint. One CU has 1 vCPU and 4 GB of RAM, 2 CUs have 2 vCPUs and 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of CUs, as shown in the table below. Currently, a Neon compute can have anywhere from 1/4 (.25) to 7 CUs.
+_Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute endpoint. The number of CUs determines the processing capacity of the compute endpoint. One CU has 1 vCPU and 4 GB of RAM, 2 CUs have 2 vCPUs and 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the vCPUs, as shown in the table below. Currently, a Neon compute can have anywhere from 1/4 (.25) to 7 CUs.
 
-| Compute Units | vCPU | RAM    |
+| Compute size (in CUs)  | vCPU | RAM    |
 |:--------------|:-----|:-------|
 | .25           | .25  | 1 GB   |
 | .5            | .5   | 2 GB   |
@@ -3894,20 +4120,82 @@ _Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute e
 | 6             | 6    | 24 GB  |
 | 7             | 7    | 28 GB  |
 
-Neon supports two compute size configuration options:
+Neon supports fixed-size and autoscaling compute configurations.
 
-- **Fixed Size:** This option allows you to select a fixed compute size ranging from .25 CUs to 7 CUs. A fixed-size compute does not scale to meet workload demand.
-- **Autoscaling:** This option allows you to specify a minimum and maximum compute size. Neon scales the compute size up and down within the selected compute size boundaries to meet workload demand. _Autoscaling_ currently supports a range of 1/4 (.25) to 7 CUs. For information about how Neon implements the _Autoscaling_ feature, see [Autoscaling](/docs/introduction/autoscaling).
+- **Fixed size:** You can use the slider to select a fixed compute size ranging from .25 CUs to 7 CUs. A fixed-size compute does not scale to meet workload demand.
+- **Autoscaling:** You can also use the slider to specify a minimum and maximum compute size. Neon scales the compute size up and down within the selected compute size boundaries to meet workload demand. _Autoscaling_ currently supports a range of 1/4 (.25) to 7 CUs. For information about how Neon implements the _Autoscaling_ feature, see [Autoscaling](/docs/introduction/autoscaling).
 
 <Admonition type="info">
 The `neon_utils` extension provides a `num_cpus()` function you can use to monitor how the _Autoscaling_ feature allocates compute resources in response to workload. For more information, see [The neon_utils extension](/docs/extensions/neon-utils).
 </Admonition>
 
-### Auto-suspend configuration
+### How to size your compute
 
-Neon's _Auto-suspend_ feature automatically transitions a compute endpoint into an `Idle` state after a period of inactivity, also known as "scale-to-zero". By default, suspension occurs after 5 minutes of inactivity, but this delay can be adjusted. For instance, you can increase the delay to reduce the frequency of suspensions, or you can disable _Auto-suspend_ completely to maintain an "always-active" compute endpoint. An "always-active" configuration eliminates the few seconds of latency required to reactivate a compute endpoint but is likely to increase your compute time usage.
+The size of your compute determines the amount of memory available to cache your frequently accessed data and the maximum number of simultaneous connections you can support. As a result, if your compute size is too small, this can lead to suboptimal query performance and connection limit issues. 
 
-The maximum **Suspend compute after a period of inactivity** setting is 7 days. To configure a compute as "always-active", deselect **Suspend compute after a period of inactivity**. For more information, refer to [Configuring Auto-suspend for Neon computes](/docs/guides/auto-suspend-guide).
+In Postgres, the `shared_buffers` setting defines the amount of data that can be held in memory. In Neon, the `shared_buffers` parameter is always set to 128 MB, but Neon uses a local file cache to extend the amount of memory allocated to shared buffers to 50% of your compute's RAM. The 50% RAM limit is a guideline rather than an enforced limit, but it's advisable not to exceed this maximum; otherwise, you might encounter out-of-memory errors.
+
+The Postgres `max_connections` setting defines your compute's maximum simultaneous connection limit and is set according to your compute size. Larger computes support higher maximum connection limits.
+
+The following table outlines the vCPU, RAM, `shared_buffer` limit (50 % of RAM), and the `max_connections` limit for each compute size that Neon supports.
+
+| Compute Size (CU) | vCPU | RAM   | shared_buffers | max_connections | 
+|--------------|------|-------|----------------|-----------------|
+| 0.25         | 0.25 | 1 GB  | 0.5 GB         | 112             |
+| 0.50         | 0.50 | 2 GB  | 1 GB           | 225             |
+| 1            | 1    | 4 GB  | 2 GB           | 450             |
+| 2            | 2    | 8 GB  | 4 GB           | 901             |
+| 3            | 3    | 12 GB | 6 GB           | 1351            |
+| 4            | 4    | 16 GB | 8 GB           | 1802            |
+| 5            | 5    | 20 GB | 10 GB          | 2253            |
+| 6            | 6    | 24 GB | 12 GB          | 2703            |
+| 7            | 7    | 28 GB | 14 GB          | 3154            |
+
+
+<Admonition type="note">
+Neon Pro Plan users can configure the size of their computes. The compute size for Free Tier users is set at .25 CU (.25 vCPU and 1 GB RAM).
+</Admonition> 
+
+When selecting a compute size, ideally, you want to keep as much of your dataset in memory as possible. This improves performance by reducing the amount of reads from storage. If your dataset is not too large, select a compute size that will hold the entire dataset in memory. For larger datasets that cannot be fully held in memory, select a compute size that can hold your [working set](/docs/reference/glossary#working-set). Selecting a compute size for a working set involves advanced steps, which are outlined below. See [Sizing your computed based on the working set](#sizing-your-computed-based-on-the-working-set).
+
+Regarding connection limits, you'll want a compute size that can support your anticipated maximum number of concurrent connections. If you are using _Autoscaling_, it is important to remember that your `max_connections` setting is based on the _minimum compute size_ in your autoscaling configuration. The `max_connections` setting does not scale with your compute. To avoid the `max_connections` constraint, you can use a pooled connection with your application, which supports up to 10,000 concurrent user connections. See [Connection pooling](/docs/connect/connection-pooling).
+
+#### Sizing your computed based on the working set
+
+If it's not possible to hold your entire dataset in memory, the next best option is to ensure that your working set is in memory. A working set is a subset of frequently accessed or recently used data and indexes. To determine whether your working set is fully in memory, you can query the cache hit ratio for your workload. The cache hit ratio measures how many queries are serviced from memory compared to how many queries are received. Queries not serviced from memory must bypass the cache to retrieve data from disk. 
+
+For example, if you have 100 queries successfully served from memory, and two queries go to disk, your cache hit ratio is 100/102, which is 98%.
+
+You can use the following query to find your cache hit ratio:
+
+```sql
+SELECT 
+  sum(heap_blks_read) as heap_read,
+  sum(heap_blks_hit)  as heap_hit,
+  sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
+FROM 
+  pg_statio_user_tables;
+```
+
+If this query does not return a cache hit ratio of 99%, your working set is not fully or adequately in memory. In this case, consider using a larger compute with more memory.
+
+<Admonition type="note">
+The cache hit ratio query is based on statistics that represent the lifetime of your compute instance, from the last time the compute started until the time you ran the query. Be aware that statistics are lost when your compute stops and gathered again from scratch when your compute restarts. You'll only want to run the cache hit ratio query after a representative workload has had time to run. For example, say that you increased your compute size after seeing a cache hit ratio below 99%. Changing the compute size restarts your compute, so you lose all of your current usage statistics. In this case, you should run a representative workload before you try the cache hit ratio query again to see if your cache hit ratio improved.
+</Admonition>
+
+#### Autoscaling considerations
+
+Autoscaling is most effective when your data (either your full dataset or your working set) can be fully cached in memory on the minimum compute size in your autoscaling configuration.
+
+Consider this scenario: If your data size is approximately 6 GB, starting with a compute size of .25 CU can lead to suboptimal performance because your data cannot be adequately cached. While your compute _will_ scale up from .25 CU on demand, you may experience poor query performance until your compute scales up and fully caches your working set. You can avoid this issue if your minimum compute size can hold your working set in memory.
+
+As mentioned above, your `max_connections` setting is based on the minimum compute size in your autoscaling configuration and does not scale along with your compute. To avoid this `max_connections` constraint, you can use a pooled connection for your application. See [Connection pooling](/docs/connect/connection-pooling).
+
+### Autosuspend configuration
+
+Neon's _Autosuspend_ feature automatically transitions a compute endpoint into an `Idle` state after a period of inactivity, also known as "scale-to-zero". By default, suspension occurs after 5 minutes of inactivity, but this delay can be adjusted. For instance, you can increase the delay to reduce the frequency of suspensions, or you can disable autosuspend completely to maintain an "always-active" compute endpoint. An "always-active" configuration eliminates the few seconds of latency required to reactivate a compute endpoint but is likely to increase your compute time usage.
+
+The maximum **Suspend compute after a period of inactivity** setting is 7 days. To configure a compute as "always-active", deselect **Suspend compute after a period of inactivity**. For more information, refer to [Configuring autosuspend for Neon computes](/docs/guides/auto-suspend-guide).
 
 ## Restart a compute endpoint
 
@@ -3921,7 +4209,7 @@ You can restart a compute endpoint using one of the following methods:
 
 - Stop activity on your compute endpoint (stop running queries) and wait for your compute endpoint to suspend due to inactivity. By default, Neon suspends a compute after 5 minutes of inactivity. You can watch the status of your compute on the **Branches** page in the Neon console. Select your branch and monitor your compute's **Status** field. Wait for it to report an `Idle` status. The compute will restart the next time it's accessed, and the status will change to `Active`. 
 - Issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. You can do this directly from the [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api), using the **Try It!** feature. You'll need an [API key](https://neon.tech/docs/manage/api-keys#create-an-api-key).
-- Neon Pro Plan users can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second to initiate a restart (the default setting is 5 minutes). See [Auto-suspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions.
+- Neon Pro Plan users can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second to initiate a restart (the default setting is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions.
 
 ## Delete a compute endpoint
 
@@ -3952,7 +4240,7 @@ A Neon API request requires an API key. For information about obtaining an API k
 
 The following Neon API method creates a compute endpoint.
 
-```text
+```http
 POST /projects/{project_id}/endpoints
 ```
 
@@ -3962,7 +4250,7 @@ The API method appears as follows when specified in a cURL command. The branch y
 curl -X 'POST' \
   'https://console.neon.tech/api/v2/projects/hidden-cell-763301/endpoints' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "endpoint": {
@@ -4021,7 +4309,7 @@ curl -X 'POST' \
 
 The following Neon API method lists compute endpoints for the specified project. A compute endpoint belongs to a Neon project. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/listprojectendpoints).
 
-```text
+```http
 GET /projects/{project_id}/endpoints
 ```
 
@@ -4031,7 +4319,7 @@ The API method appears as follows when specified in a cURL command:
 curl -X 'GET' \
   'https://console.neon.tech/api/v2/projects/hidden-cell-763301/endpoints' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -4094,7 +4382,7 @@ curl -X 'GET' \
 
 The following Neon API method updates the specified compute endpoint. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/updateprojectendpoint).
 
-```text
+```http
 PATCH /projects/{project_id}/endpoints/{endpoint_id}
 ```
 
@@ -4104,7 +4392,7 @@ The API method appears as follows when specified in a cURL command. The example 
 curl -X 'PATCH' \
   'https://console.neon.tech/api/v2/projects/hidden-cell-763301/endpoints/ep-young-art-646685' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "endpoint": {
@@ -4174,7 +4462,7 @@ curl -X 'PATCH' \
 
 The following Neon API method deletes the specified compute endpoint. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/deleteprojectendpoint).
 
-```text
+```http
 DELETE /projects/{project_id}/endpoints/{endpoint_id}
 ```
 
@@ -4184,7 +4472,7 @@ The API method appears as follows when specified in a cURL command.
 curl -X 'DELETE' \
   'https://console.neon.tech/api/v2/projects/hidden-cell-763301/endpoints/ep-young-art-646685' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -4231,12 +4519,12 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/manage/users
-updatedOn: '2024-01-06T10:04:05.689Z'
+updatedOn: '2024-02-09T17:53:20.589Z'
 ---
 
 In Neon, roles are Postgres roles. Each Neon project is created with a default Postgres role that takes its name from your Neon account (the email, GitHub, Google, or partner account that you registered with). This role owns the ready-to-use database (`neondb`) that is created in your Neon project's primary branch.
 
-Your default Postgres role and roles created in the Neon console, API, and CLI are granted membership in the [neon_superuser](#the-neon_superuser-role) role. Roles created with SQL from clients like [psql](/docs/connect/query-with-psql-editor), [pgAdmin](https://www.pgadmin.org/), or the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) are only granted the basic [public schema privileges](/docs/manage/database-access#public-schema-privileges) granted to newly created roles in a standalone Postgres installation. These users must be selectively granted permissions for each database object. For more information, see [Manage database access](/docs/manage/database-access).
+Your default Postgres role and roles created in the Neon console, API, and CLI are granted membership in the [neon_superuser](#the-neonsuperuser-role) role. Roles created with SQL from clients like [psql](/docs/connect/query-with-psql-editor), [pgAdmin](https://www.pgadmin.org/), or the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) are only granted the basic [public schema privileges](/docs/manage/database-access#public-schema-privileges) granted to newly created roles in a standalone Postgres installation. These users must be selectively granted permissions for each database object. For more information, see [Manage database access](/docs/manage/database-access).
 
 <Admonition type="note">
 Neon is a managed Postgres service, so you cannot access the host operating system, and you can't connect using the Postgres `superuser` account like you can in a standalone Postgres installation.
@@ -4264,7 +4552,8 @@ Roles created in the Neon console, CLI, or API, including the default role creat
 - `NOLOGIN`: The role cannot be used to log in to the Postgres server. Neon is a managed Postgres service, so you cannot access the host operating system directly.
 - `pg_read_all_data`: A predefined role in Postgres that provides the ability to read all data (tables, views, sequences), as if having `SELECT` rights on those objects, and `USAGE` rights on all schemas.
 - `pg_write_all_data`: A predefined role in Postgres that provides the ability to write all data (tables, views, sequences), as if having `INSERT`, `UPDATE`, and `DELETE` rights on those objects, and `USAGE` rights on all schemas.
-- `EXECUTE` privilege on the `pg_stat_statements_reset()` function that is part of the `pg_stat_statements` extension.
+- `pg_create_subscription`:	Allows users with `CREATE` permission on the database to issue `CREATE SUBSCRIPTION`. The `pg_create_subscription` role is only available as of Postgres 16. The `neon_superuser` role in Postgres 14 and 15 can issue `CREATE SUBSCRIPTION` with only `CREATE` permission on the database. 
+- `EXECUTE` privilege on the `pg_stat_statements_reset()` function that is part of the `pg_stat_statements` extension. This privilege was introduced with the January 12, 2024 release. If you installed the `pg_stat_statements` extension prior to this release, drop and recreate the `pg_stat_statements` extension to enable this privilege. See [Install an extension](/docs/extensions/pg-extensions#install-an-extension).
 
 You can think of roles with `neon_superuser` privileges as administrator roles. If you require roles with limited privileges, such as a read-only role, you can create those roles from an SQL client. For more information, see [Manage database access](/docs/manage/database-access).
 
@@ -4274,7 +4563,7 @@ Creating a database with the `neon_superuser` role, altering a database to have 
 
 ## Manage roles in the Neon console
 
-This section describes how to create, view, and delete roles in the Neon Console. All roles created in the Neon console are granted membership in the [neon_superuser](#the-neon_superuser-role) role.
+This section describes how to create, view, and delete roles in the Neon Console. All roles created in the Neon console are granted membership in the [neon_superuser](#the-neonsuperuser-role) role.
 
 ### Create a role
 
@@ -4328,13 +4617,13 @@ For password requirements, see [Manage roles with SQL](/docs/manage/roles#manage
 
 ## Manage roles with the Neon CLI
 
-The Neon CLI supports creating and deleting roles. For instructions, see [Neon CLI commands — roles](/docs/reference/cli-roles). Roles created with the Neon CLI are granted membership in the [neon_superuser](#the-neon_superuser-role) role.
+The Neon CLI supports creating and deleting roles. For instructions, see [Neon CLI commands — roles](/docs/reference/cli-roles). Roles created with the Neon CLI are granted membership in the [neon_superuser](#the-neonsuperuser-role) role.
 
 ## Manage roles with the Neon API
 
 Role actions performed in the Neon Console can also be performed using Neon API role methods. The following examples demonstrate how to create, view, reset passwords for, and delete roles using the Neon API. For other role-related methods, refer to the [Neon API reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
 
-Roles created with the Neon API are granted membership in the [neon_superuser](#the-neon_superuser-role) role.
+Roles created with the Neon API are granted membership in the [neon_superuser](#the-neonsuperuser-role) role.
 
 In Neon, roles belong to branches, which means that when you create a role, it is created in a branch. Role-related requests are therefore performed using branch API methods.
 
@@ -4352,7 +4641,7 @@ A Neon API request requires an API key. For information about obtaining an API k
 
 The following Neon API method creates a role. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/createprojectbranchrole).
 
-```text
+```http
 POST /projects/{project_id}/branches/{branch_id}/roles
 ```
 
@@ -4365,7 +4654,7 @@ The API method appears as follows when specified in a cURL command. The `project
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
@@ -4420,7 +4709,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 The following Neon API method lists roles for the specified branch. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/listprojectbranchroles).
 
-```text
+```http
 GET /projects/{project_id}/branches/{branch_id}/roles
 ```
 
@@ -4429,7 +4718,7 @@ The API method appears as follows when specified in a cURL command. The `project
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 <details>
@@ -4462,7 +4751,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 The following Neon API method resets the password for the specified role. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/resetprojectbranchrolepassword).
 
-```text
+```http
 POST /projects/{project_id}/branches/{branch_id}/roles/{role_name}/reset_password
 ```
 
@@ -4472,7 +4761,7 @@ The API method appears as follows when specified in a cURL command. The `project
 curl -X 'POST' \
   'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles/alex/reset_password' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 <details>
@@ -4521,7 +4810,7 @@ curl -X 'POST' \
 
 The following Neon API method deletes the specified role. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/deleteprojectbranchrole).
 
-```text
+```http
 DELETE /projects/{project_id}/branches/{branch_id}/roles/{role_name}
 ```
 
@@ -4531,7 +4820,7 @@ The API method appears as follows when specified in a cURL command. The `project
 curl -X 'DELETE' \
   'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles/alex' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 <details>
@@ -4577,7 +4866,7 @@ curl -X 'DELETE' \
 
 ## Manage roles with SQL
 
-Roles created with SQL have the same basic `public` schema privileges as newly created roles in a standalone Postgres installation. These roles are not granted membership in the [neon_superuser](#the-neon_superuser-role) role like roles created with the Neon Console, CLI, or API. You must grant these roles the privileges you want them to have.
+Roles created with SQL have the same basic `public` schema privileges as newly created roles in a standalone Postgres installation. These roles are not granted membership in the [neon_superuser](#the-neonsuperuser-role) role like roles created with the Neon Console, CLI, or API. You must grant these roles the privileges you want them to have.
 
 To create a role with SQL, issue a `CREATE ROLE` statement from a client such as [psql](/docs/connect/query-with-psql-editor), [pgAdmin](https://www.pgadmin.org/), or the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor).
 
@@ -4631,7 +4920,7 @@ The following names are protected and cannot be given to a role:
 title: Manage databases
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-11-24T19:55:37.127Z'
+updatedOn: '2024-01-08T20:02:33.926Z'
 ---
 
 A database is a container for SQL objects such as schemas, tables, views, functions, and indexes. In the [Neon object hierarchy](/docs/manage/overview), a database exists within a branch of a project. There is no limit on the number of databases you can create.
@@ -4723,7 +5012,7 @@ The following Neon API method creates a database. To view the API documentation 
 
 The role specified by `owner_name` is the owner of that database.
 
-```text
+```http
 POST /projects/{project_id}/branches/{branch_id}/databases
 ```
 
@@ -4736,7 +5025,7 @@ The API method appears as follows when specified in a cURL command. The `project
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/databases' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "database": {
@@ -4792,7 +5081,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 The following Neon API method lists databases for the specified branch. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/listprojectbranchdatabases).
 
-```text
+```http
 GET /projects/{project_id}/branches/{branch_id}/databases
 ```
 
@@ -4801,7 +5090,7 @@ The API method appears as follows when specified in a cURL command. The `project
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/databases' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 <details>
@@ -4836,7 +5125,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 The following Neon API method updates the specified database. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/updateprojectbranchdatabase).
 
-```text
+```http
 PATCH /projects/{project_id}/branches/{branch_id}/databases/{database_name}
 ```
 
@@ -4845,7 +5134,7 @@ The API method appears as follows when specified in a cURL command. The `project
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/databases/mydb' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "database": {
@@ -4900,7 +5189,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 The following Neon API method deletes the specified database. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/deleteprojectbranchdatabase).
 
-```text
+```http
 DELETE /projects/{project_id}/branches/{branch_id}/databases/{database_name}
 ```
 
@@ -4910,7 +5199,7 @@ The API method appears as follows when specified in a cURL command. The `project
 curl -X 'DELETE' \
   'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/databases/database1' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 <details>
@@ -4990,7 +5279,7 @@ The following names are protected and cannot be given to a database:
 title: Manage integrations
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-14T15:32:00.575Z'
+updatedOn: '2024-01-12T16:49:12.349Z'
 ---
 
 The **Integrations** page in the Neon Console provides a hub for managing third-party integrations with your Neon project. Use these supported integrations to optimize and extend Neon's functionality and streamline your workflow.
@@ -5019,7 +5308,7 @@ To express interest:
 2. Click the **Request** link.
 3. Type your message and click **Yes, I'm interested**.
 
-## Suggest new integrations
+## Suggest an integration
 
 If you can't find the integration you're looking for:
 
@@ -5037,7 +5326,7 @@ The Neon team will review your request and get back to you.
 title: Operations
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-06T15:44:48.724Z'
+updatedOn: '2024-01-23T23:09:11.247Z'
 ---
 
 An operation is an action performed by the Neon Control Plane on a Neon object or resource. Operations are typically initiated by user actions, such as creating a branch or deleting a database. Other operations may be initiated by the Neon Control Plane, such as suspending a [compute endpoint](/docs/reference/glossary#compute-endpoint) after a period of inactivity or checking its availability. You can monitor operations to keep an eye on the overall health of your Neon project or to check the status of specific operations. When working with the Neon API, you can poll the status of operations to ensure that an API request is completed before issuing the next API request. For more information, see [Poll operation status](#poll-operation-status).
@@ -5055,7 +5344,13 @@ An operation is an action performed by the Neon Control Plane on a Neon object o
 
 ## View operations
 
-You can view operations in the **Operations** widget on the Neon **Dashboard** or on the **Operations** page.
+You can view operations via the Neon Console, [Neon CLI](https://neon.tech/docs/reference/neon-cli), or [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
+
+<Tabs labels={["Neon Console", "CLI", "API"]}>
+
+<TabItem>
+
+You can view operations in the **Operations** widget on the Neon **Dashboard** or by selecting the **Operations** page in the sidebar.
 
 ![Operations](/docs/manage/operations.png)
 
@@ -5067,9 +5362,39 @@ Operation details include:
 - **Duration**: The duration of the operation.
 - **Date**: The date and time the operation occurred.
 
-## View operations with the Neon API
+</TabItem>
 
-The following topics are covered in this section:
+<TabItem>
+
+To view operation using the Neon CLI:
+
+```bash
+neonctl operations list --project-id <project_id>
+```
+
+See [Neon CLI commands — operations](/docs/reference/cli-operations).
+
+</TabItem>
+
+<TabItem>
+
+To list operations with the Neon API:
+
+```bash
+curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/operations' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer $NEON_API_KEY"
+```
+
+See [Get a list of operations](https://api-docs.neon.tech/reference/listprojectoperations).
+</TabItem>
+
+</Tabs>
+
+
+## Operations and the Neon API
+
+This section describes how to work with operations using the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api). The following topics are covered:
 
 - [List operations](#list-operations): Describes how to list all operations for a Neon project.
 - [List operations with pagination](#list-operations-with-pagination): Describes how to list all operations for a Neon project and paginate the response.
@@ -5089,7 +5414,7 @@ cURL command:
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/operations' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -5150,7 +5475,7 @@ cURL command:
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/operations?limit=1' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -5184,7 +5509,7 @@ To list the next page of operations, add the `cursor` value returned in the resp
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/operations?cursor=2022-12-09T08%3A47%3A52.20417Z&limit=1' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -5226,7 +5551,7 @@ cURL command:
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/operations/97c7a650-e4ff-43d7-8c58-4c67f5050167' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -5287,7 +5612,7 @@ You can use the [Get operation details](https://api-docs.neon.tech/reference/lis
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/operations/055b17e6-ffe3-47ab-b545-cfd7db6fd8b8' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 <details>
@@ -5698,6 +6023,10 @@ For information about creating a point-in-time restore branch, see [Branching �
 
 You can backup a database using `pg_dump`, in the same way backups are created for a standalone Postgres instance.
 
+<Admonition type="important">
+Avoid using `pg_dump` over a [pooled Neon connection](https://neon.tech/docs/connect/connection-pooling) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an unpooled connection instead.
+</Admonition>
+
 This method dumps a single database in a single branch of your Neon project. If you need to create backups for multiple databases in multiple branches, you must perform a dump operation for each database in each branch separately.
 
 To dump a database from your Neon project, please refer to the `pg_dump` instructions in our [Import from Postgres](/docs/import/import-from-postgres) guide.
@@ -5859,7 +6188,7 @@ title: Manage logical replication in Neon
 subtitle: Learn how to manage logical replication in Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-01-05T19:45:09.628Z'
+updatedOn: '2024-02-09T17:53:20.587Z'
 ---
 
 This topic provides commands for managing publications, subscriptions, and replication slots. It also includes information about logical replication specific to Neon, including [known limitations](#known-limitations).
@@ -5887,9 +6216,6 @@ This command creates a publication that publishes all changes in two tables:
 ```sql
 CREATE PUBLICATION my_publication FOR TABLE users, departments;
 ```
-<Admonition type="note">
-Neon currently does not support creating publications using `CREATE PUBLICATION publication_name FOR ALL TABLES` syntax. The `ALL TABLES` clause requires the PostgreSQL superuser privilege, which is not available in a managed service like Neon.
-</Admonition>
 
 This command creates a publication that only publishes `INSERT` and `UPDATE` operations. Delete operations will not be published.
 
@@ -5939,10 +6265,6 @@ COMMIT;
 ## Subscriptions
 
 This section outlines how to manage **subscriptions** in your replication setup.
-
-<Admonition type="note">
-Currently, you cannot create subscriptions on a Neon database. Neon can only act as a publisher in a replication setup. The commands in this section would only be run on an external Postgres database that you are using as a subscriber.
-</Admonition>
 
 ### Create a subscription
 
@@ -6094,11 +6416,9 @@ wal_level
 logical
 ```
 
-### Logical replication and Auto-suspend
+### Logical replication and autosuspend
 
-By default, a Neon compute instance scales to zero after 300 seconds (5 minutes) of inactivity. For [Neon Free Tier](/docs/introduction/free-tier) users, this setting is fixed. [Neon Pro Plan](/docs/introduction/pro-plan) users can increase, decrease, or disable the _Auto-suspend_ setting, controlling when or if a compute scales to zero.
-
-In a logical replication setup, a subscriber may keep the connection to your Neon publisher database active in order to poll for changes or perform sync operations, preventing your Neon compute instance from scaling to zero. Some subscribers allow you to configure connection or sync frequency, which may be necessary to continue taking advantage of Neon's _Auto-suspend_ feature. Please refer to your subscriber's documentation or contact their support team for details.
+By default, Neon's [Autosuspend](/docs/introduction/auto-suspend) feature suspends a compute after 300 seconds (5 minutes) of inactivity. In a logical replication setup, Neon does not autosuspend a compute instance that has an active connection from a logical replication subscriber. In other words, a compute instance with an active subscriber remains active at all times.
 
 ### Replication roles
 
@@ -6137,7 +6457,7 @@ The following Neon API method creates a role. To view the API documentation for 
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
@@ -6204,9 +6524,8 @@ If you require different values for these parameters, please contact Neon suppor
 
 Neon is working toward removing the following limitations in future releases:
 
-- A Neon database can only act as a _publisher_ in a replication setup. Creating a subscription on a Neon database is not permitted. This means that you cannot replicate data from one Neon database to another or from one Neon project to another.
 - Only your default Neon Postgres role and roles created via the Neon Console, CLI, or API have the `REPLICATION` privilege. This privilege cannot be granted to other roles. You can expect this limitation to be lifted in a future release. Roles created via SQL do not have the `REPLICATION` privilege, and this privilege cannot be granted.
-- You cannot use `CREATE PUBLICATION my_publication FOR ALL TABLES` syntax in Neon. Specifying `ALL TABLES` requires the Postgres `superuser` privilege, which is not available on Neon. Instead, you can specify multiple tables using `CREATE PUBLICATION my_pub FOR TABLE <table1>, <table2>` syntax.
+- `max_slot_wal_keep_size` is set to 1 GB, limiting the maximum size of WAL files that replication slots are allowed to retain in the `pg_wal` directory. This is a temporary limit that will be removed in a future release. The limit avoids an accumulation of WAL data at the publisher due to a lagging subscriber, which could cause a slow compute start.
 
 ## References
 
@@ -6231,10 +6550,10 @@ subtitle: 'Explore Neon framework, language, platform, and feature guides'
 enableTableOfContents: true
 redirectFrom:
   - /docs/integrations/integrations-list/
-updatedOn: '2024-01-05T19:45:09.625Z'
+updatedOn: '2024-01-16T20:50:14.111Z'
 ---
 
-Find detailed instructions for integration across various frameworks, languages, and platforms, or exploring Neon's features, our guides are tailored to assist you.
+Find detailed instructions for integration across various frameworks, languages, and platforms, or if exploring Neon's features, our guides are tailored to assist you.
 
 ## Framework, language, and platform guides
 
@@ -6261,6 +6580,10 @@ Integrate your applications with Neon.
 <img src="/images/technology-logos/elixir-logo.svg" width="36" height="36" alt="Elixir" href="/docs/guides/elixir-ecto" title="Connect from Elixir with Ecto to Neon" />
 
 <img src="/images/technology-logos/exograph-logo.svg" width="36" height="36" alt="Exograph" href="/docs/guides/exograph" title="Use Exograph with Neon" />
+
+<img src="/images/technology-logos/ferret-logo.svg" width="36" height="36" alt="FerretDB" href="/docs/guides/ferretdb" title="Use FerretDB with Neon" />
+
+<img src="/images/technology-logos/fivetran-logo.svg" width="36" height="36" alt="Fivetran" href="/docs/guides/logical-replication-fivetran" title="Replicate data from Neon with Fivetran" />
 
 <img src="/images/technology-logos/flyway-logo.svg" width="36" height="36" alt="Flyway" href="/docs/guides/flyway" title="Use Flyway with Neon" />
 
@@ -6292,6 +6615,8 @@ Integrate your applications with Neon.
 
 <img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-reactive" title="Connect Quarkus (Reactive) to Neon" />
 
+<img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/ruby-on-rails" title="Connect a Rails application to Neon" />
+
 <img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
 
 <img src="/images/technology-logos/rust-logo.svg" width="36" height="36" alt="Rust" href="/docs/guides/rust" title="Connect a Rust application to Neon" />
@@ -6302,7 +6627,7 @@ Integrate your applications with Neon.
 
 <img src="/images/technology-logos/symfony-logo.svg" width="36" height="36" alt="Symfony" href="/docs/guides/symfony" title="Connect from Symfony with Doctrine to Neon" />
 
-<img src="/images/technology-logos/vercel-logo.svg"  width="42" height="36" alt="Vercel" href="/docs/guides/vercel" title="Integrate Neon with Vercel" />
+<img src="/images/technology-logos/vercel-logo.svg"  width="42" height="36" alt="Vercel" href="/docs/guides/vercel" title="Connect with the Neon Vercel Integration" />
 
 <img src="/images/technology-logos/wundergraph-logo.svg" width="36" height="36" alt="Wundergraph" href="/docs/guides/wundergraph" title="Use Wundergraph with Neon" />
 
@@ -6318,21 +6643,21 @@ Automatically scale compute resources up and down based on demand.
 
 <DetailIconCards>
 
-<a href="/docs/introduction/autoscaling" description="Find out how autoscaling can reduce your costs." icon="autoscaling">Learn about Autoscaling</a>
+<a href="/docs/introduction/autoscaling" description="Find out how autoscaling can reduce your costs." icon="autoscaling">Learn about autoscaling</a>
 
-<a href="/docs/guides/autoscaling-guide" description="Enable Autoscaling to automatically scale compute resources on demand" icon="enable">Enable Autoscaling</a>
+<a href="/docs/guides/autoscaling-guide" description="Enable autoscaling to automatically scale compute resources on demand" icon="enable">Enable autoscaling</a>
 
 </DetailIconCards>
 
-### Auto-suspend
+### Autosuspend
 
 Control when Neon compute resources scale to zero.
 
 <DetailIconCards>
 
-<a href="/docs/introduction/auto-suspend" description="Discover how Neon can reduce your compute to zero when not in use" icon="hourglass">Learn about Auto-suspend</a>
+<a href="/docs/introduction/auto-suspend" description="Discover how Neon can reduce your compute to zero when not in use" icon="hourglass">Learn about autosuspend</a>
 
-<a href="/docs/guides/autoscaling-guide" description="Configure Auto-suspend to control when your compute scales to zero" icon="setup">Configure Auto-suspend</a>
+<a href="/docs/guides/autoscaling-guide" description="Configure autosuspend to control when your compute scales to zero" icon="setup">Configure autosuspend</a>
 
 </DetailIconCards>
 
@@ -6401,7 +6726,7 @@ Learn how Neon read replicas can help you scale and manage read-only workloads.
 </DetailIconCards>
 
 
-# Neon features
+# Neon
 
 # Autoscaling
 
@@ -6410,54 +6735,52 @@ title: Enable Autoscaling in Neon
 subtitle: Learn how to enable Neon's Autoscaling feature to automatically scale compute
   resources on demand
 enableTableOfContents: true
-updatedOn: '2023-10-24T18:56:54.982Z'
+updatedOn: '2024-02-08T21:31:43.906Z'
 ---
 
-Neon's Autoscaling feature dynamically adjusts the amount of compute resources allocated to a Neon compute endpoint in response to the current workload, eliminating the need for manual intervention. This guide demonstrates how to enable _Autoscaling_ in your Neon project.
+Neon's _Autoscaling_ feature dynamically adjusts the amount of compute resources allocated to a Neon compute endpoint in response to the current workload, eliminating the need for manual intervention. This guide demonstrates how to enable autoscaling in your Neon project and how to [visualize](#monitor-autoscaling) your usage.
 
-_Autoscaling_ is a [Neon Pro Plan](/docs/introduction/pro-plan) feature. Neon Pro Plan users can enable Autoscaling for a new project, for an existing project, or for an individual compute endpoint. _Autoscaling_ is supported with both read-write and read-only compute endpoints. Read-only compute endpoints enable Neon's [Read replica](/docs/introduction/read-replicas) feature.
+_Autoscaling_ is a [Neon Pro Plan](/docs/introduction/pro-plan) feature. Neon Pro Plan users can enable autoscaling for a new project, for an existing project, or for an individual compute endpoint. Autoscaling is supported with both read-write and read-only compute endpoints. Read-only compute endpoints enable Neon's [Read replica](/docs/introduction/read-replicas) feature.
 
-## Enable Autoscaling for a new project
+## Enable autoscaling for a new project
 
-Enabling Autoscaling when you create a project allows you to set _Autoscaling_ default settings for all compute endpoints created in your project. You can adjust _Autoscaling_ settings for individual compute endpoints afterward, but setting defaults when creating a project saves you from having to configure the settings for each compute endpoint later on.
+Enabling autoscaling when you create a project allows you to set autoscaling default settings for all compute endpoints created in your project. You can adjust autoscaling settings for individual compute endpoints afterward, but setting defaults when creating a project saves you from having to configure the settings for each compute endpoint later on.
 
-To enable Autoscaling when you first create your project:
+To enable autoscaling when you first create your project:
 
 1. Navigate to the [Neon Console](https://console.neon.tech).
 2. If you are creating your very first project, click **Create a project**. Otherwise, click **New Project**.
 3. Specify a name, a Postgres version, and a region.
-4. Under **Compute size**, select the **Autoscaling** option.
-5. Using the slider, specify a minimum and maximum compute size.
+4. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
     ![Autoscaling](/docs/guides/autoscaling_project_creation.png)
 
     <Admonition type="note">
-    You can configure the Auto-suspend setting for your compute endpoint at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. This feature is also referred to as "scale-to-zero".
+    You can configure the autosuspend setting for your compute endpoint at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. This feature is also referred to as "scale-to-zero".
     </Admonition>
 
 6. Click **Create Project**. Your initial compute endpoint is created with the specified settings. All future compute endpoints that you create will use this setting.
 
-## Enable Autoscaling for an existing project
+## Enable autoscaling for an existing project
 
-Configuring the _Autoscaling_ setting for an existing project sets the project's default, which is applied to all compute endpoints created from that point forward. Existing compute endpoints are unaffected. You can adjust _Autoscaling_ default or configure the setting for individual compute endpoints later, as necessary.
+Configuring autoscaling for an existing project sets the project's default, which is applied to all compute endpoints created from that point forward. Existing compute endpoints are unaffected. You can adjust autoscaling default or configure the setting for individual compute endpoints later, as necessary.
 
-To configure Autoscaling default settings for an existing project:
+To configure autoscaling default settings for an existing project:
 
 1. Select a project in the Neon console.
 1. On the Neon **Dashboard**, select **Settings**.
 1. Select **Compute** and click **Change**.
-1. Under **Compute size**, select the **Autoscaling** option.
-1. Using the slider, specify a minimum and maximum compute size.
+1. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
     ![Autoscaling](/docs/guides/autoscaling_existing_project.png)
 
     <Admonition type="note">
-    You can configure the Auto-suspend setting for your compute endpoint at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. This feature is also referred to as "scale-to-zero".
+    You can configure the autosuspend setting for your compute endpoint at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. This feature is also referred to as "scale-to-zero".
     </Admonition>
 
 6. Click **Save**.
 
-## Enable Autoscaling for a compute endpoint
+## Enable autoscaling for a compute endpoint
 
-[Neon Pro Plan](/docs/introduction/pro-plan) users can edit an individual compute endpoint to alter the compute endpoint configuration, which includes _Autoscaling_.
+[Neon Pro Plan](/docs/introduction/pro-plan) users can edit an individual compute endpoint to alter the compute endpoint configuration, which includes autoscaling.
 
 To edit a compute endpoint:
 
@@ -6465,41 +6788,72 @@ To edit a compute endpoint:
 1. Select a branch.
 1. Click on the compute endpoint you want to edit.
 ![Edit compute endpoint menu](/docs/guides/autoscaling_edit.png)
-1. Under **Compute size**, select the **Autoscaling** option.
-1. Using the slider, specify a minimum and maximum compute size.
+1. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
     ![Autoscaling edit settings](/docs/guides/autoscaling_edit_settings.png)
 
-    Neon scales the compute size up and down within the specified range to meet workload demand. _Autoscaling_ currently supports a range of 1/4 (.25) to 7 vCPUs. One vCPU has 4 GB of RAM, 2 vCPUs have 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPUs.
+    Neon scales the compute size up and down within the specified range to meet workload demand. Autoscaling currently supports a range of 1/4 (.25) to 7 vCPUs. One vCPU has 4 GB of RAM, 2 vCPUs have 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPUs.
 
     <Admonition type="note">
-    You can configure the Auto-suspend setting for your compute endpoint at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. This feature is also referred to as "scale-to-zero".
+    You can configure the autosuspend setting for your compute endpoint at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. This feature is also referred to as "scale-to-zero".
     </Admonition>
 1. Click **Save**.
 
-## Monitor Autoscaling
+## Monitor autoscaling
 
-The `neon_utils` extension provides a `num_cpus()` function for monitoring how the _Autoscaling_ feature allocates compute resources in response to workload. For more information, see [The neon_utils extension](/docs/extensions/neon-utils).
+<Admonition type="comingSoon">
+The Autoscaling Graphs are available for select users and will be expanded to all paying users soon.
+</Admonition>
+
+From the Neon Console, you can view how your vCPU and RAM usage scales over time (last hour, day, and week). From the **Branches** page, open the branch you want to inspect, then open the **Edit** modal for its compute endpoint.
+
+![autoscaling graph example](/docs/guides/autoscaling_graphs_sample.png)
+
+Some key points about this Autoscaling view:
+
+- Allocation refers to the vCPU and memory size provisioned to handle current demand; autoscaling automatically adjusts this allocation, increasing or decreasing the allocated vCPU and memory size in a step-wise fashion as demand fluctuates, within your minimum and maximum limits.
+- Your minimum and maximum limits are shown as solid horizontal lines. This represents the allocation boundary: the size of your allocated vCPU/memory stays within this range so long as your compute endpoint remains active. It scales to zero after the defined period of inactivity.
+- A re-activated compute endpoint scales up immediately to your minimum allocation, ensuring adequate performance for your anticipated demand.
+
+Place your cursor anywhere in the graph to get more usage detail about that particular point in time.
+
+![autoscaling graph detail](/docs/guides/autoscaling_graph_detail.png)
+
+See below for some rules of thumb on actions you might want to take based on trends you see in this view.
+
+### Start with a good minimum
+
+Ideally, for smaller datasets, you want to keep as much of your dataset in memory (RAM) as possible. This improves performance by minimizing I/O operations. We recommend setting a large enough minimum limit to fit your full dataset in memory. For larger datasets and more sizing advice, see [how to size your compute endpoint](/docs/manage/endpoints#how-to-size-your-compute).
+
+### Setting your maximum
+
+If your autoscaling graphs show regular spikes that hit your maximum setting, consider increasing your maximum. However, because these spikes plateau at the maximum setting, it can be difficult to determine your actual demand.
+
+Another approach is to set a higher threshold than you need and monitor usage spikes to get a sense of where your typical maximum demand reaches; you can then throttle the maximum setting down closer to anticipated/historical demand. Either way, with autoscaling you only pay for what you use; a higher setting does not translate to higher costs unless the demand is there to increase usage.
+
+### The neon_utils extension
+
+Another tool for understanding usage, the `neon_utils` extension provides a `num_cpus()` function that helps you monitor how the _Autoscaling_ feature allocates compute resources in response to workload. For more information, see [The neon_utils extension](/docs/extensions/neon-utils).
 
 
-# Auto-suspend
+# Autosuspend
 
 ---
-title: Configuring Auto-suspend for Neon computes
-subtitle: Learn how to configure Neon's Auto-suspend feature to control when your
-  compute scales to zero
+title: Configuring Autosuspend for Neon computes
+subtitle: Learn how to configure Neon's Autosuspend feature to control when your compute
+  scales to zero
 enableTableOfContents: true
-updatedOn: '2023-10-24T18:56:54.982Z'
+updatedOn: '2024-01-10T18:34:05.854Z'
 ---
 
-Neon's [Auto-suspend](/docs/introduction/auto-suspend) feature controls when a Neon compute instance transitions to an `Idle` state (scales to zero) due to inactivity. This guide demonstrates how to configure the _Auto-suspend_ setting in your Neon project.
+Neon's [Autosuspend](/docs/introduction/auto-suspend) feature controls when a Neon compute instance transitions to an `Idle` state (scales to zero) due to inactivity. This guide demonstrates how to configure the autosuspend setting in your Neon project.
 
-[Neon Pro Plan](/docs/introduction/pro-plan) users can configure the _Auto-suspend_ setting for a new project, for an existing project, or for an individual compute endpoint. Configuring the _Auto-suspend_ setting for a new or existing project sets the project's default Auto-suspend setting, which is used from that point forward when creating new compute endpoints.
+[Neon Pro Plan](/docs/introduction/pro-plan) users can configure the autosuspend setting for a new project, for an existing project, or for an individual compute endpoint. Configuring the autosuspend setting for a new or existing project sets the project's default autosuspend setting, which is used from that point forward when creating new compute endpoints.
 
-### Configure the Auto-suspend setting for a new project
+### Configure the autosuspend setting for a new project
 
-Configuring the _Auto-suspend_ setting for a new project sets the project's default, which is applied to all compute endpoints created from that point forward. You can adjust this _Auto-suspend_ default at any time, or configure the setting for individual compute endpoints later, as necessary.
+Configuring the autosuspend setting for a new project sets the project's default, which is applied to all compute endpoints created from that point forward. You can adjust this autosuspend default at any time, or configure the setting for individual compute endpoints later, as necessary.
 
-To configure the _Auto-suspend_ default setting when you first create your project:
+To configure the autosuspend default setting when you first create your project:
 
 1. Navigate to the [Neon Console](https://console.neon.tech).
 1. If you are creating your very first project, click **Create a project**. Otherwise, click **New Project**.
@@ -6513,11 +6867,11 @@ To configure the _Auto-suspend_ default setting when you first create your proje
 1. Click **Save**.
 1. Click **Create Project**. Your initial compute endpoint is created with the specified setting.
 
-### Configure the Auto-suspend setting for an existing project
+### Configure the autosuspend setting for an existing project
 
-Configuring the _Auto-suspend_ setting for an existing project sets the project's default, which is applied to all compute endpoints created from that point forward. Existing compute endpoints are unaffected. You can adjust the _Auto-suspend_ default or configure the setting for individual compute endpoints later, as necessary.
+Configuring the autosuspend setting for an existing project sets the project's default, which is applied to all compute endpoints created from that point forward. Existing compute endpoints are unaffected. You can adjust the autosuspend default or configure the setting for individual compute endpoints later, as necessary.
 
-To configure the Auto-suspend default for an existing project:
+To configure the autosuspend default for an existing project:
 
 1. Select a project in the Neon console.
 1. On the Neon **Dashboard**, select **Settings**.
@@ -6530,9 +6884,9 @@ To configure the Auto-suspend default for an existing project:
 
 1. Click **Save**.
 
-## Configure Auto-suspend for a compute endpoint
+## Configure autosuspend for a compute endpoint
 
-To configure the _Auto-suspend_ setting for an individual compute endpoint:
+To configure the autosuspend setting for an individual compute endpoint:
 
 1. In the Neon Console, select **Branches**.
 1. Select a branch.
@@ -6569,7 +6923,7 @@ You can try any of these methods and watch the status of your compute as it tran
 title: Get started with branching
 subtitle: Everything you need to get started with Neon's branching feature
 enableTableOfContents: true
-updatedOn: '2023-11-27T15:11:58.207Z'
+updatedOn: '2024-01-26T18:19:19.803Z'
 ---
 
 Find detailed information and instructions about Neon's branching feature and how you can integrate branching with your development workflows.
@@ -6628,13 +6982,13 @@ Test potentially destructive or performance-impacting queries before your run th
 
 ## Data recovery
 
-Create a branch from the past to recover lost data or track down issues.
+Recover lost data or track down issues by restoring a branch to its history, or just create a point-in-time branch for historical analysis or any other reason.
 
 <DetailIconCards>
 
-<a href="/docs/introduction/point-in-time-restore" description="Learn about Neon's point-in-time restore feature" icon="invert">Point-in-time restore</a>
+<a href="/docs/guides/branch-restore" description="Learn how to revert changes or recover lost data using Neon Branch Restore with Time Travel Assist" icon="invert">Branch Restore with Time Travel Assist</a>
 
-<a href="/docs/guides/branching-pitr" description="Learn how to restore your data to previous state using Neon's branching feature" icon="screen">Create a branch from the past</a>
+<a href="/docs/guides/branching-pitr" description="Learn how to create point-in-time branches" icon="screen">Create a branch from the past</a>
 
 <a href="https://neon.tech/blog/time-travel-with-postgres" description="Blog: Time travel with database branching to recover lost data" icon="screen">Time Travel with Postgres</a>
 
@@ -6665,17 +7019,182 @@ Explore example applications that use Neon's branching feature.
 </DetailIconCards>
 
 
+# Branch Restore
+
+---
+title: Branch Restore
+subtitle: Learn how to revert changes or recover lost data using Neon Branch Restore
+  with Time Travel Assist
+enableTableOfContents: true
+updatedOn: '2024-02-08T20:07:48.873Z'
+---
+<Admonition type="comingSoon">
+This feature is available for select users and will be expanded to all users soon.
+</Admonition>
+
+With Neon's branch restore capability, you can easily restore a branch to an earlier state in its history. You can also use Time Travel Assist to run read-only queries against any point in your history retention window to pinpoint the exact moment you need to restore to.
+
+## How branch restore works
+
+### Restore from history
+
+The restore operation lets you revert the state of a selected branch to an earlier point in time. For example, you can revert to a state just before a data loss occurred.
+
+![branch restore to timestamp](/docs/guides/branch-restore_feature.png)
+
+By default, the history retention for a Neon project is 7 days. You can revert a branch to any time within that configured [retention window](/docs/manage/projects#configure-history-retention), down to the millisecond.
+
+A few key points to keep in mind about the restore operation:
+
+- [Restore backups are created automatically in case you make a mistake](#automatic-backups)
+- [Current data is overwritten](#overwrite-not-a-merge)
+- [All databases on a branch are restored](#changes-apply-to-all-databases)
+- [Connections to the selected branch are temporarily interrupted](#connections-temporarily-interrupted)
+
+#### Automatic backups
+
+In case you need to rollback a restore, Neon preserves the branch's final state before the restore operation in an automatically created backup branch, which takes the following format:
+
+```md
+{branch_name}_old_{head_timestamp}
+```
+
+You can use this backup to rollback the restore operation if necessary. The backup branches are listed on the **Branches** page in the Neon Console among your other branches.
+
+This backup becomes the parent of your original branch, which makes rolling back the restore operation simple: [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent).
+
+![Backup branch as parent to original](/docs/guides/branch_restore_backup.png)
+
+#### Overwrite, not a merge
+
+It is important to understand that whenever you restore a branch, you are performing a _complete_ overwrite, not a merge or refresh. Everything on your current branch, data and schema, is replaced with the contents from the historical source. All data changes from the selected restore point onwards are excluded from the branch.
+
+#### Changes apply to all databases
+
+A reminder that in Neon's [object hierarchy](/docs/manage/overview), a branch can include any number of databases. Keep this in mind when restoring branches. For example, let's say you want to restore lost data in a given database. If you restore your branch to an earlier point in time before the data loss occurred, the operation applies to _all_ databases on the branch, not just the one you are troubleshooting. You can expect the restore operation to last a few seconds.
+
+In general, Neon recommends that you avoid creating too many databases in a single Neon project. If you have multiple, distinct applications, each one deserves its own Neon project. A good rule of thumb: use one Neon project per source code repository.
+
+#### Connections temporarily interrupted
+
+Existing connections to the selected branch are temporarily interrupted during the restore operation. However, your connection details do not change. Applications can automatically re-establish their database connections as soon as the restore operation is finished.
+
+#### Technical details
+
+Neon is open source and built in public, so if you are interested in understanding the technical implementation of a branch restore operation, see the details below.
+
+<details>
+<summary>View technical details</summary>
+
+Similar to the manual restore operation using the Neon Console and API described [here](/docs/guides/branching-pitr), the Restore operation performs a similar set of actions, but automatically:
+
+1. On initiating a restore action, Neon builds a new point-in-time branch by matching your selected timestamp to the corresponding LSN of the relevant entries in the shared WAL record.
+1. The compute endpoint for your initial branch is moved to this new branch so that your connection string remains stable.
+1. We rename your new branch to the exact name as your initial branch, so the effect is seamless; it looks and acts like the same branch.
+1. Your initial branch, which now has no compute attached to it, is renamed to _branch_name_old_head_timestamp_ to keep the pre-restore branch available should you need to roll back. Note that the initial branch was the parent for your new branch, and this is reflected when you look at your branch details.
+
+</details>
+
+### Time Travel Assist
+
+To help troubleshoot your data's history, you can use Time Travel Assist to run read-only queries against any selected timestamp within your history retention window. It's a good idea to run this kind of query to make sure you've targeted the correct restore point before you restore a branch.
+
+The restore operation and Time Travel Assist are meant to work together. When you select a branch and timestamp, you are setting up Time Travel Assist to automatically query against that particular point in time.
+
+![Time travel assist](/docs/guides/branch_time_travel.png)
+
+#### Ephemeral endpoints
+
+Time travel queries leverage Neon's instant branching capability to create a temporary branch and compute endpoint at the selected point in time, which is automatically removed once you are done with your time travel querying. The compute endpoints are ephemeral: they are not listed on the **Branches** page or in a CLI or API list branches request.
+
+However, you can see the history of operations related to the creation and deletion of the ephemeral branch on the **Operations** page:
+
+- start_compute
+- create_branch
+- delete_timeline
+- suspend_compute
+
+#### How long do ephemeral endpoints remain active
+
+The ephemeral endpoints are created according to your configured [default compute size](/docs/manage/projects#reset-the-default-compute-size). An ephemeral endpoint remains active for as long as you keep running queries against it. After 10 seconds of inactivity, the timeline is deleted and the endpoint is removed.
+
+## How to use branch restore
+
+### Restoring from history
+
+Use the **Restore** page to restore a branch to an earlier timestamp in its history. Choose your branch, pick your timestamp, and then click the **Restore branch** button.
+
+![branch restore to timestamp](/docs/guides/branch_restore_timestamp.png)
+
+All databases on the selected branch are instantly updated with the data and schema from the chosen point in time. From the **Branches** page, you can now see a backup branch was created with the state of the branch at the restore point in time.
+
+![branch restore backup branch](/docs/guides/branch_restore_backup_file.png)
+
+To make sure you choose the right restore point, we encourage you to use Time Travel Assist _before_ running a restore job, but the backup branch is there if you need it.
+If you do need to revert your changes, you can [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent) since that is your branch's relationship to the restore point backup.
+
+### Performing time travel queries
+
+Here is how to use the Time Travel Assist SQL editor:
+
+1. Select the branch you want to query against, then select a timestamp, the same as you would to [Restore a branch](#restore-a-branch-to-an-earlier-state).
+
+    This makes the selection for the Time Travel query. Notice the updated fields above the SQL editor show the **branch** and **timestamp** you just selected.
+    ![Time travel query](/docs/guides/time_travel_assist.png)
+  
+1. Check that you have the right database selected to run your query against. Use the database selector under the SQL editor to switch to a different database for querying against.
+1. Write your read-only query in the editor, then click **Query at timestamp** to run the query. You don't have to include time parameters in the query; the query is automatically targeted to your selected timestamp.
+
+If your query is successful, you will see a table of results under the editor.
+
+Depending on your query and the selected timestamp, instead of a table of results, you might see different error messages like:
+| Error                | Explanation             |
+|----------------------|-------------------------|
+| If you query a timestamp in the future         | Console request failed with 400 Bad Request: timestamp [timestamp] is in the future, try an older timestamp |
+| If you query a timestamp from before your project was created | Console request failed with 400 Bad Request: parent timestamp [timestamp] is earlier than the project creation timestamp [timestamp], try a more recent timestamp |
+| If you query from earlier than your history retention window | Console request failed with 400 Bad Request: timestamp [timestamp] recedes your project's history retention window of 168h0m0s, try a more recent timestamp |
+
+Adjust your selected timestamp accordingly.
+
+## Billing considerations
+
+There are minimal impacts to billing from the branch restore and Time Travel Assist features.
+
+### Restore from history (billing)
+
+Restoring a branch to its own history adds to your number of branches &#8212; due to the restore_backup branch &#8212; but since they do not have any compute endpoint attached, they do not add to any consumption costs.
+
+### Time travel queries (billing)
+
+The ephemeral endpoints used to run your Time Travel Assist queries do contribute to your consumption usage totals for the billing period, like any other active endpoint that consumes resources.
+
+A couple of details to note:
+
+- The endpoints are shortlived. They are suspended 10 seconds after you stop querying.
+- Since these endpoints are created according to your default compute size (which applies to all new branch computes you create),  you may want to reduce this default if you're performing a lot of time-travel queries for troubleshooting.
+
+## Limitations
+
+- You cannot delete a backup branch without first removing the child branch.
+- Once you restore a branch, [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent) restores from the restore backup branch, not the original parent.
+
+
 # Branching — Point-in-time restore
 
 ---
 title: Branching — Point-in-time restore
-subtitle: Restore your data to previous state using Neon's branching feature
+subtitle: Create a new point-in-time branch or restore your data to a previous state
+  using Neon's branching feature
 enableTableOfContents: true
 redirectFrom:
   - /docs/tutorial/data-recovery
   - /docs/guides/branching-data-recovery
-updatedOn: '2023-11-27T16:33:52.716Z'
+updatedOn: '2024-02-08T15:20:54.280Z'
 ---
+
+<Admonition type="comingSoon" title="New feature: Branch restore">
+A simpler one-click branch restore operation is available now for select users, coming soon to all users. Read more about it [here](/docs/guides/branch-restore). The restore procedure described on this page is still valid and might fit your specific use case.
+</Admonition>
 
 Neon retains a history of changes for all branches in a Neon project, which allows you to create a branch that restores data to any time within the defined history retention period. You can use this capability to recover lost data, which is a form of Point-in-time restore (PITR).
 
@@ -6698,7 +7217,7 @@ To create a point-in-time branch:
 6. Under **Include data up to**, select the **Specific date and time** option, which creates a branch with data up to the specified date and time. For example, if the data loss occurred on Nov 26, 2023 at 5:01pm, select Nov 11, 2023, at 5:00pm, just before the faulty query was run.
 
     <Admonition type="note">
-    The **Specific date and time** option does not include data changes that occured after the specified date and time, which means the branch contains data as it existed previously. You can only specify a date and time that falls within your history retention window, which is 7 days by default. See [Configure history retention](/docs/manage/projects#configure-history-retention).
+    The **Specific date and time** option does not include data changes that occurred after the specified date and time, which means the branch contains data as it existed previously. You can only specify a date and time that falls within your history retention window, which is 7 days by default. See [Configure history retention](/docs/manage/projects#configure-history-retention).
     </Admonition>
 
 8. Click **Create new branch** to create your branch.
@@ -6732,13 +7251,9 @@ To connect to your branch:
 3. Copy the connection string. A connection string includes your role name, password, compute endpoint hostname, and database name.
 4. Connect with `psql`.
 
-   <CodeBlock shouldWrap>
-
-   ```bash
+   ```bash shouldWrap
    psql postgres://[user]:[password]@[neon_hostname]/[dbname]
    ```
-
-   </CodeBlock>
 
 ## Verify the data
 
@@ -6769,11 +7284,11 @@ If your previous primary branch was your project's root branch (the initial bran
 
 To use your new primary branch with your applications, update your application connection details. To do so, replace your current connection details with the connection details for your new primary branch, which you retrieved earlier when connecting to your branch.
 
-Alternatively, if you do not want change connection details, you can move the compute endpoint from your old primary branch to the new  branch. See [Reassign the compute endpoint](#reassign-the-compute-endpoint) for instructions.
+Alternatively, if you do not want change connection details, you can move the compute endpoint from your old primary branch to the new branch. See [Reassign the compute endpoint](#reassign-the-compute-endpoint) for instructions.
 
 ## Reassign the compute endpoint
 
-To avoid changing connection details in your application, you can reassign the compute endpoint from your old primary branch to your new  branch. If you followed the steps above, you created a branch with a compute endpoint. In this case, you have to:
+To avoid changing connection details in your application, you can reassign the compute endpoint from your old primary branch to your new branch. If you followed the steps above, you created a branch with a compute endpoint. In this case, you have to:
 
 1. **Remove the compute endpoint from the new branch**
 
@@ -6806,7 +7321,7 @@ subtitle: Create a Neon branch to test queries before running them in production
 enableTableOfContents: true
 redirectFrom:
   - /docs/tutorial/test-queries
-updatedOn: '2023-11-27T13:05:30.917Z'
+updatedOn: '2024-01-08T20:02:33.920Z'
 ---
 
 Complex queries that modify data or alter schemas have the potential to be destructive. It is advisable to test these types of queries before running them in production. On other database systems, testing potentially destructive queries can be time and resource intensive. For example, testing may involve setting up a separate database instance and replicating data. With Neon, you can instantly create a database branch with a full copy-on-write clone of your production data in just a few clicks. When you finish testing, you can remove the branch just as easily.
@@ -6863,9 +7378,9 @@ neonctl branches create --project-id <project-id> --name my_test_branch
 ```bash
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/<project-id>/branches \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -6915,8 +7430,8 @@ neonctl branches delete my_test_branch
 ```bash
 curl --request DELETE \
      --url https://console.neon.tech/api/v2/projects/<project-id>/branches/<branch-id> \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' |jq
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 </CodeTabs>
@@ -7029,7 +7544,7 @@ This API key configuration ensures that the API key is kept secure while still p
 title: Branching with the Neon API
 subtitle: Learn how to create and delete branches with the Neon API
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.749Z'
+updatedOn: '2024-01-09T23:16:47.220Z'
 ---
 The examples in this guide demonstrate creating, viewing, and deleting branches using the Neon API. For other branch-related API methods, refer to the [Neon API reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
 
@@ -7039,15 +7554,15 @@ The API examples that follow may only show some of the user-configurable request
 
 The `jq` program specified in each example is an optional third-party tool that formats the `JSON` response, making it easier to read. For information about this utility, see [jq](https://stedolan.github.io/jq/).
 
-### Prerequisites
+## Prerequisites
 
 A Neon API request requires an API key. For information about obtaining an API key, see [Create an API key](../manage/api-keys#create-an-api-key). In the examples below, `$NEON_API_KEY` is specified in place of an actual API key, which you must provide when making a Neon API request.
 
-### Create a branch with the API
+## Create a branch with the API
 
 The following Neon API method creates a branch. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/createprojectbranch).
 
-```text
+```http
 POST /projects/{project_id}/branches
 ```
 
@@ -7057,10 +7572,10 @@ The API method appears as follows when specified in a cURL command:
 This method does not require a request body. Without a request body, the method creates a branch from the project's primary branch, and a compute endpoint is not created.
 </Admonition>
 
-```curl
+```bash
 curl 'https://console.neon.tech/api/v2/projects/<project_id>/branches' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "endpoints": [
@@ -7145,20 +7660,20 @@ The response includes information about the branch, the branch's compute endpoin
 }
 ```
 
-### List branches with the API
+## List branches with the API
 
 The following Neon API method lists branches for the specified project. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/listprojectbranches).
 
-```text
+```http
 GET /projects/{project_id}/branches
 ```
 
 The API method appears as follows when specified in a cURL command:
 
-```curl
+```bash
 curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
@@ -7195,11 +7710,11 @@ Response:
 }
 ```
 
-### Delete a branch with the API
+## Delete a branch with the API
 
 The following Neon API method deletes the specified branch. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/deleteprojectbranch).
 
-```text
+```http
 DELETE /projects/{project_id}/branches/{branch_id}
 ```
 
@@ -7209,7 +7724,7 @@ The API method appears as follows when specified in a cURL command:
 curl -X 'DELETE' \
   'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches/br-dawn-scene-747675' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' | jq
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 - The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
@@ -7448,7 +7963,7 @@ The following example applications use GitHub Actions to create and delete branc
 title: Refresh a branch
 subtitle: Learn how to refresh a Neon branch using the Neon API
 enableTableOfContents: true
-updatedOn: '2023-10-07T10:43:33.373Z'
+updatedOn: '2024-02-08T15:20:54.280Z'
 ---
 
 When you create a branch in Neon, you create a copy-on-write clone that reflects the current state of the parent branch, but what do you do if your branch becomes stale? For example, changes are made to the data or schema on the parent branch that you would like reflected in your development branch, or your branch has aged out of the point-in-time restore window (the history shared with the parent branch) and is now taking up storage space. Ideally, you want to refresh your branch but keep the same compute endpoint, whose connection details may already be configured in your application or toolchain.
@@ -7477,12 +7992,12 @@ The following information is required to perform the procedure:
 
 The [Create branch](https://api-docs.neon.tech/reference/createprojectbranch) request shown below creates a branch without a compute endpoint. The only required parameter is your Neon `project_id`. The `project_id` value used in the example below is `dark-cell-12604300`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
 
-```curl
+```bash
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/dark-cell-12604300/branches \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -7557,24 +8072,20 @@ The response body includes the `id` of your new branch. You will need this value
 
 The [Update endpoint](https://api-docs.neon.tech/reference/updateprojectendpoint) API request shown below moves the compute endpoint from your current branch to the new branch. The required parameters are the `project_id` and `endpoint_id` of your current branch, and the `branch_id` of your new branch. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
 
-<CodeBlock shouldWrap>
-
-```curl
+```bash shouldWrap
 curl --request PATCH \
      --url https://console.neon.tech/api/v2/projects/%20dark-cell-12604300/endpoints/ep-divine-violet-55990977 \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "endpoint": {
     "branch_id": "br-falling-flower-15986510"
   }
 }
-' |jq
+' | jq
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Response body</summary>
@@ -7612,16 +8123,12 @@ curl --request PATCH \
 
 The [Delete branch](https://api-docs.neon.tech/reference/deleteprojectbranch) API request shown below deletes the old branch. The old branch will take up storage space, so it's recommended that you remove it. The required parameters are the `project_id` and `branch_id`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
 
-<CodeBlock shouldWrap>
-
-```curl
+```bash shouldWrap
 curl --request DELETE \
      --url https://console.neon.tech/api/v2/projects/dark-cell-12604300/branches/br-wandering-forest-45768684 \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' |jq
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" | jq
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Response body</summary>
@@ -7666,14 +8173,12 @@ curl --request DELETE \
 
 Optionally, you can rename the new branch to the name of the old branch. The [Update branch](https://api-docs.neon.tech/reference/updateprojectbranch) API request shown below renames the new branch from `dev_branch_2` to `dev_branch_1`.
 
-<CodeBlock shouldWrap>
-
-```curl
+```bash shouldWrap
 curl --request PATCH \
      --url https://console.neon.tech/api/v2/projects/dark-cell-12604300/branches/br-falling-flower-15986510 \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -7682,8 +8187,6 @@ curl --request PATCH \
 }
 '
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Response body</summary>
@@ -7709,6 +8212,7 @@ curl --request PATCH \
   "operations": []
 }
 ```
+
 </details>
 
 
@@ -7719,7 +8223,7 @@ title: Promote a branch
 subtitle: Learn how to promote a branch to the primary branch of your Neon project using
   the Neon API
 enableTableOfContents: true
-updatedOn: '2023-10-24T18:56:54.983Z'
+updatedOn: '2024-02-08T15:20:54.280Z'
 ---
 
 This guide describes how to create a new branch and promote it to the primary branch of your Neon project in the context of a data recovery scenario. It also describes how to move the compute endpoint from your existing primary branch to the new branch to avoid having to reconfigure your application's database connection details.
@@ -7758,12 +8262,12 @@ The [Create branch](https://api-docs.neon.tech/reference/createprojectbranch) re
 
 The `project_id` value used in the example below is `young-silence-08999984`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key. The branch is given the  name `recovery_branch`. You will change the name in a later step.
 
-```curl
+```bash
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -7844,14 +8348,12 @@ Creating a point-in-time branch can also be performed using the Neon Console or 
 
 The [Update endpoint](https://api-docs.neon.tech/reference/updateprojectendpoint) API request shown below moves the compute endpoint from your current primary branch to the new branch. The required parameters are the `project_id` and `endpoint_id` of your current primary branch, and the `branch_id` of the new branch. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
 
-<CodeBlock shouldWrap>
-
-```curl
+```bash shouldWrap
 curl --request PATCH \
      --url https://console.neon.tech/api/v2/projects/young-silence-08999984/endpoints/ep-curly-term-54009904 \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "endpoint": {
@@ -7860,8 +8362,6 @@ curl --request PATCH \
 }
 '
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Response body</summary>
@@ -7903,14 +8403,12 @@ This procedure can only be performed using the Neon API. You can expect Neon Col
 
 The [Update branch](https://api-docs.neon.tech/reference/updateprojectbranch) API request shown below renames the old primary branch to `old_main`. You may want to delete this branch later to reduce storage usage, but just rename it for now. The required parameters are the `project_id` and `branch_id`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
 
-<CodeBlock shouldWrap>
-
-```curl
+```bash shouldWrap
 curl --request PATCH \
      --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches/br-twilight-field-06246553 \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -7919,8 +8417,6 @@ curl --request PATCH \
 }
 '
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Response body</summary>
@@ -7955,14 +8451,12 @@ Renaming a branch can also be performed using the Neon Console or CLI. See [Rena
 
 Rename the new branch to the name of the old branch, which was `main`. The [Update branch](https://api-docs.neon.tech/reference/updateprojectbranch) API request shown below renames the new branch from `recovery_branch` to `main`.
 
-<CodeBlock shouldWrap>
-
-```curl
+```bash shouldWrap
 curl --request PATCH \
      --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches/br-solitary-hat-85369851 \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -7971,8 +8465,6 @@ curl --request PATCH \
 }
 '
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Response body</summary>
@@ -8000,6 +8492,7 @@ curl --request PATCH \
   "operations": []
 }
 ```
+
 </details>
 
 <Admonition type="note">
@@ -8010,16 +8503,12 @@ Renaming a branch can also be performed using the Neon Console or CLI. See [Rena
 
 The [Set primary branch](https://api-docs.neon.tech/reference/setprimaryprojectbranch) API request sets the new branch as the primary branch for the project.
 
-<CodeBlock shouldWrap>
-
-```curl
+```bash shouldWrap
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches/br-solitary-hat-85369851/set_as_primary \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY'
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY"
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Response body</summary>
@@ -8047,6 +8536,7 @@ curl --request POST \
   "operations": []
 }
 ```
+
 </details>
 
 <Admonition type="note">
@@ -8088,6 +8578,8 @@ To learn more about Postgres logical replication, see [Learn about logical repli
 
 <img src="/images/technology-logos/airbyte-logo.svg" width="36" height="36" alt="Airbyte" href="/docs/guides/logical-replication-airbyte" title="Replicate data from Neon with Airbyte" />
 
+<img src="/images/technology-logos/fivetran-logo.svg" width="36" height="36" alt="Fivetran" href="/docs/guides/logical-replication-fivetran" title="Replicate data from Neon with Fivetran" />
+
 <img src="/images/technology-logos/kafka-logo.svg" width="36" height="36" alt="Kafka" href="/docs/guides/logical-replication-kafka-confluent" title="Replicate data from Neon with Kafka (Confluent)" />
 
 <img src="/images/technology-logos/materialize-logo.svg" width="36" height="36" alt="Materialize" href="/docs/guides/logical-replication-materialize" title="Replicate data from Neon to Materialize" />
@@ -8114,10 +8606,10 @@ title: Replicate data with Airbyte
 subtitle: Learn how to replicate data from Neon with Airbyte
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-21T15:11:12.212Z'
+updatedOn: '2024-02-08T15:20:54.284Z'
 ---
 
-Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations. 
+Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
 
 [Airbyte](https://airbyte.com/) is an open-source data integration platform that moves data from a source to a destination system. Airbyte offers a large library of connectors for various data sources and destinations.
 
@@ -8187,7 +8679,7 @@ The following Neon API method creates a role. To view the API documentation for 
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
@@ -8210,7 +8702,7 @@ GRANT SELECT ON ALL TABLES IN SCHEMA <schema_name> TO <role_name>;
 ALTER DEFAULT PRIVILEGES IN SCHEMA <schema_name> GRANT SELECT ON TABLES TO <role_name>;
 ```
 
-Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication in the future.
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
 
 ## Create a replication slot
 
@@ -8234,7 +8726,7 @@ Perform the following steps for each table you want to replicate data from:
     ALTER TABLE tbl1 REPLICA IDENTITY DEFAULT;
     ```
 
-    In rare cases, if your tables use data types that support [TOAST](https://www.postgresql.org/docs/current/storage-toast.html) or have very large field values, consider using `REPLICA IDENTITY FULL` instead: 
+    In rare cases, if your tables use data types that support [TOAST](https://www.postgresql.org/docs/current/storage-toast.html) or have very large field values, consider using `REPLICA IDENTITY FULL` instead:
 
     ```sql
     ALTER TABLE tbl1 REPLICA IDENTITY FULL;
@@ -8248,7 +8740,6 @@ Perform the following steps for each table you want to replicate data from:
 
     The publication name is customizable. Refer to the [Postgres docs](https://www.postgresql.org/docs/current/logical-replication-publication.html) if you need to add or remove tables from your publication.
 
-
 <Admonition type="note">
 The Airbyte UI currently allows selecting any tables for Change Data Capture (CDC). If a table is selected that is not part of the publication, it will not be replicated even though it is selected. If a table is part of the publication but does not have a replication identity, the replication identity will be created automatically on the first run if the Postgres role you use with Airbyte has the necessary permissions.
 </Admonition>
@@ -8256,16 +8747,12 @@ The Airbyte UI currently allows selecting any tables for Change Data Capture (CD
 ## Create a Postgres source in Airbyte
 
 1. From your Airbyte Cloud account, select **Sources** from the left navigation bar, search for **Postgres**, and then create a new Postgres source.
-2. Enter the connection details for your Neon database. You can get these details from your Neon connection string, which you'll find in the **Connection Details** widget on the **Dashboard** of your Neon project. 
+2. Enter the connection details for your Neon database. You can get these details from your Neon connection string, which you'll find in the **Connection Details** widget on the **Dashboard** of your Neon project.
     For example, given a connection string like this:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
     ```
-
-    </CodeBlock>
 
     Enter the details in the Airbyte **Create a source** dialog as shown below. Your values will differ.
 
@@ -8280,7 +8767,7 @@ The Airbyte UI currently allows selecting any tables for Change Data Capture (CD
 3. Under **Optional fields**, list the schemas you want to sync. Schema names are case-sensitive, and multiple schemas may be specified. By default, `public` is the only selected schema.
 4. Select an SSL mode. You will most frequently choose `require` or `verify-ca`. Both of these options always require encryption. The `verify-ca` mode requires a certificate. Refer to [Connect securely](/docs/connect/connect-securely) for information about the location of certificate files you can use with Neon.
 5. Under **Advanced**:
-    
+
     - Select **Logical Replication (CDC)** from available replication methods.
     - In the **Replication Slot** field, enter the name of the replication slot you created previously: `airbyte_slot`.
     - In the **Publication** field, enter the name of the publication you created previously: `airbyte_publication`.
@@ -8310,6 +8797,197 @@ To complete your data integration setup, you can now add one of Airbyte's many s
 <NeedHelp/>
 
 
+# Fivetran
+
+---
+title: Replicate data with Fivetran
+subtitle: Learn how to replicate data from Neon with Fivetran
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-02-08T15:20:54.284Z'
+---
+
+Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
+
+[Fivetran](https://fivetran.com/) is an automated data movement platform that helps you centralize data from disparate sources, which you can then manage directly from your browser. Fivetran extracts your data and loads it into your data destination.
+
+In this guide, you will learn how to define a Neon Postgres database as a data source in Fivetran so that you can replicate data to one or more of Fivetran's supported destinations.
+
+## Prerequisites
+
+- A [Fivetran account](https://fivetran.com/)
+- A [Neon account](https://console.neon.tech/)
+
+## Enable logical replication in Neon
+
+<Admonition type="important">
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning active connections will be temporarily dropped before automatically reconnecting.
+</Admonition>
+
+To enable logical replication in Neon:
+
+1. Select your project in the Neon console.
+2. On the Neon **Dashboard**, select **Settings**.
+3. Select **Beta**.
+4. Click **Enable** to enable logical replication.
+
+You can verify that logical replication is enabled by running the following query from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor):
+
+```sql
+SHOW wal_level;
+ wal_level 
+-----------
+ logical
+```
+
+## Create a Postgres role for replication
+
+We recommend using a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon Console, CLI, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
+
+<Tabs labels={["Neon Console", "CLI", "API"]}>
+
+<TabItem>
+
+To create a role in the Neon Console:
+
+1. Navigate to the [Neon Console](https://console.neon.tech).
+2. Select a project.
+3. Select **Roles**.
+4. Select the branch where you want to create the role.
+4. Click **New Role**.
+5. In the role creation dialog, specify a role name.
+6. Click **Create**.
+
+The role is now created and you are provided with the password for the role, which you can show, copy, or download.
+
+</TabItem>
+
+<TabItem>
+
+The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole).
+
+```bash
+neonctl roles create --name <role>
+```
+
+</TabItem>
+
+<TabItem>
+
+The following Neon API method creates a role. To view the API documentation for this method, refer to the [Neon API reference](/docs/reference/cli-roles).
+
+```bash
+curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
+  -H 'Accept: application/json' \
+  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "role": {
+    "name": "alex"
+  }
+}' | jq
+```
+
+</TabItem>
+
+</Tabs>
+
+## Grant schema access to your Postgres role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. Run these commands for each schema:
+
+```sql
+GRANT USAGE ON SCHEMA <schema_name> TO <role_name>;
+GRANT SELECT ON ALL TABLES IN SCHEMA <schema_name> TO <role_name>;
+ALTER DEFAULT PRIVILEGES IN SCHEMA <schema_name> GRANT SELECT ON TABLES TO <role_name>;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+## Create a publication
+
+Create the Postgres publication. Include all tables you want to replicate as part of the publication:
+
+```sql
+CREATE PUBLICATION fivetran_pub FOR TABLE <tbl1, tbl2, tbl3>;
+```
+
+The publication name is customizable. Refer to the [Postgres docs](https://www.postgresql.org/docs/current/logical-replication-publication.html) if you need to add or remove tables from your publication.
+
+## Create a replication slot
+
+Fivetran requires a dedicated replication slot. Only one source should be configured to use this replication slot.
+
+Fivetran uses the `pgoutput` plugin in Postgres for decoding WAL changes into a logical replication stream. To create a replication slot called `fivetran_slot` that uses the `pgoutput` plugin, run the following command on your database using your replication role:
+
+```sql
+SELECT pg_create_logical_replication_slot('fivetran_pgoutput_slot', 'pgoutput');
+```
+
+The name assigned to the replication slot is `fivetran_pgoutput_slot`. You will need to provide this name when you set up your Fivetran source.
+
+## Create a Postgres source in Fivetran
+
+1. Log in to your [Fivetran](https://fivetran.com/) account.
+1. On the **Select your datasource** page, search for the **PostgreSQL** source and click **Set up**.
+1. In your connector setup form, enter a value for **Destination Schema Prefix**. This prefix applies to each replicated schema and cannot be changed once your connector is created. In this example, we'll use `neon` as the prefix.
+1. Enter the connection details for your Neon database. You can get these details from your Neon connection string, which you'll find in the **Connection Details** widget on the **Dashboard** of your Neon project.
+    For example, let's say this is your connection string:
+
+    ```bash shouldWrap
+    postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+    ```
+
+    From this string, the values in the Fivetran **Create a source** dialog would show as below. Your actual values will differ, with the exception of the port number.
+
+    - **Host**: ep-cool-darkness-123456.us-east-2.aws.neon.tech
+    - **Port**: 5432
+    - **Username**: alex
+    - **Password**: AbC123dEf
+    - **Database Name**: dbname
+
+1. For **Connection Method**, select **Logical replication of the WAL using the pgoutput plugin** and enter values for the **Replication Slot** and **Publication Name**. You deifned these values earlier (`fivetran_pgoutput_slot` and `fivetran_pub`, respectively).
+
+    ![Fivetran connector setup](/docs/guides/fivetran_connector_setup.png)
+
+1. If you are using Neon's **IP Allow** feature to limit IP addresses that can connect to Neon, add Fivetran's IPs to your allowlist in Neon.
+
+    ![Fivetran IP addresses](/docs/guides/fivetran_ips.png)
+
+    For instructions, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow). You'll need to do this before you can validate your connection in the next step. If you are not using Neon's **IP Allow** feature, you can skip this step.
+
+1. Click **Save & Test**. Fivetran tests and validates the connection to your database. Upon successful completion of the setup tests, you can sync your data using Fivetran.
+
+    During the test, Fivetran asks you to confirm the certificate chain by selecting the certificate to use as the trust anchor. Select the `CN=ISRG Root X1, 0=Internet Security Research Group, C=US` option. This certificate is valid unitl until 2035-06-04.
+
+    When the connection test is completed, you should see an **All connection tests passed!** message in Fivetran, as shown below:
+
+    ![Fivetran all connections passed message](/docs/guides/fivetran_connection_test.png)
+
+1. Click **Continue**.
+1. On the **Select Data to Sync** page, review the connector schema and select any columns you want to block or hash.
+
+    ![Fivetran select data to sync page](/docs/guides/fivetran_select_data.png)
+
+1. Click **Save & Continue**.
+
+1. On the **How would you like to handle changes?** page, specify how you would like to handle future schema changes. For this example, we'll select **We will allow all new schemas, tables and columns**. Choose the option that best fits your organization's requirements.
+
+    ![Fivetran how to handle changes](/docs/guides/fivetran_changes.png)
+
+1. Click **Continue**. Your data is now ready to sync.
+
+    ![Fivetran data is ready to sync page](/docs/guides/fivetran_ready_to_sync.png)
+
+1. Click **Start Initial Sync** to enable syncing.
+
+## References
+
+- [Fivetran Generic PostgreSQL Setup Guide](https://fivetran.com/docs/databases/postgresql/setup-guide)
+
+<NeedHelp/>
+
+
 # Kafka (Confluent)
 
 ---
@@ -8317,7 +8995,7 @@ title: Replicate data with Kafka (Confluent) and Debezium
 subtitle: Learn how to replicate data from Neon with Kafka (Confluent) and Debezium
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-21T15:11:12.216Z'
+updatedOn: '2024-02-08T15:20:54.285Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
@@ -8416,7 +9094,7 @@ The following Neon API method creates a role. To view the API documentation for 
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
@@ -8439,7 +9117,7 @@ GRANT SELECT ON ALL TABLES IN SCHEMA <schema_name> TO <role_name>;
 ALTER DEFAULT PRIVILEGES IN SCHEMA <schema_name> GRANT SELECT ON TABLES TO <role_name>;
 ```
 
-Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication in the future.
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
 
 ## Create a replication slot
 
@@ -8451,19 +9129,19 @@ To create a replication slot called `debezium`, run the following command on you
 SELECT pg_create_logical_replication_slot('debezium', 'pgoutput');
 ```
 
-- `debezium` is the name assigned to the replication slot. You will need to provide the slot name when you set up your source connector in Confluent. 
-- `pgoutput` is the logical decoder plugin used in this example. Neon supports both `pgoutput` and `wal2json` decoder plugins. 
+- `debezium` is the name assigned to the replication slot. You will need to provide the slot name when you set up your source connector in Confluent.
+- `pgoutput` is the logical decoder plugin used in this example. Neon supports both `pgoutput` and `wal2json` decoder plugins.
 
 ## Set up a Kafka cluster in Confluent Cloud
 
-1. Sign in to Confluent Cloud at https://confluent.cloud.
+1. Sign in to Confluent Cloud at [https://confluent.cloud](https://confluent.cloud).
 2. Click **Add cluster**.
 3. On the **Create cluster** page, for the **Basic cluster**, select **Begin configuration**.
 4. On the **Region/zones** page, choose a cloud provider, a region, and select a single availability zone.
 5. Select **Continue**.
 6. Specify your payment details. You can select **Skip payment** for now if you're just trying out the setup.
 7. Specify a cluster name, review the configuration and cost information, and select **Launch cluster**. In this example, we use `cluster_neon` as the cluster name.
-    It may take a few minutes to provision your cluster. After the cluster has provisioned, the **Cluster Overview** page displays.
+    It may take a few minutes to provision your cluster. After the cluster has been provisioned, the **Cluster Overview** page displays.
 
 ## Set up a source connector
 
@@ -8505,7 +9183,7 @@ To set up a Postgres CDC source connector for Confluent Cloud:
 6. Under **Output Kafka record value format**, select an output format for Kafka record values. The default is `JSON`, so we'll use that format in this guide. Other supported values include `AVRO`, `JSON_SR`, and `PROTOBUF`, which are schema-based message formats. If you use any of these, you must also configure a [Confluent Cloud Schema Registry](https://docs.confluent.io/cloud/current/sr/index.html).
 
     Expand the **Show advanced configurations** drop-down and set the following values:
-    
+
     - Under **Advanced configuration**
       - Ensure **Slot name** is set to `debezium`. This is the name of the replication slot you created earlier.
       - Set the **Publication name** to `users_publication`, which is the name of the publication you created earlier.
@@ -8514,13 +9192,13 @@ To set up a Postgres CDC source connector for Confluent Cloud:
 
     Click **Continue**.
 
-7. For **Connector sizing**, accept the default for the maximum number of [Tasks](https://docs.confluent.io/platform/current/connect/index.html#tasks). Tasks can be scaled up at a later time for additional throughput capacity. 
+7. For **Connector sizing**, accept the default for the maximum number of [Tasks](https://docs.confluent.io/platform/current/connect/index.html#tasks). Tasks can be scaled up at a later time for additional throughput capacity.
 
     Click **Continue**.
 
 8. Adjust your **Connector name** if desired, and review your **Connector configuration**, which is provided in `JSON` format, as shown below. We'll use the default connector name in this guide.
 
-    ```JSON
+    ```json
     {
       "connector.class": "PostgresCdcSource",
       "name": "PostgresCdcSourceConnector_0",
@@ -8563,7 +9241,6 @@ To set up a Postgres CDC source connector for Confluent Cloud:
 
     Click **Continue** to provision the connector, which may take a few monents to complete.
 
-
 ## Verify your Kafka stream
 
 To verify that events are now being published to a Kafka stream in Confluent:
@@ -8596,10 +9273,10 @@ title: Replicate data to Materialize
 subtitle: Learn how to replicate data from Neon to Materialize
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-21T15:11:12.217Z'
+updatedOn: '2024-02-08T15:20:54.285Z'
 ---
 
-Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations. 
+Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
 
 [Materialize](https://materialize.com/) is a data warehouse for operational workloads, purpose-built for low-latency applications. You can use it to process data at speeds and scales not possible in traditional databases, but without the cost, complexity, or development time of most streaming engines.
 
@@ -8609,7 +9286,7 @@ In this guide, you will learn how to stream data from your Neon Postgres databas
 
 - A [Materialize account](https://materialize.com/register/)
 - A [Neon account](https://console.neon.tech/)
-- Optionally, you can install the [psql](https://www.postgresql.org/docs/current/logical-replication.html) command line utility for running commands in both Neon and Materialize. Alternatively, you can run commands from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) and Materialize **SQL Shell**, which require no installation or setup. 
+- Optionally, you can install the [psql](https://www.postgresql.org/docs/current/logical-replication.html) command line utility for running commands in both Neon and Materialize. Alternatively, you can run commands from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) and Materialize **SQL Shell**, which require no installation or setup.
 
 ## Enable logical replication
 
@@ -8694,7 +9371,7 @@ The following Neon API method creates a role. To view the API documentation for 
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
@@ -8747,7 +9424,7 @@ Materialize recommends starting with a medium [size](https://materialize.com/doc
 
 ## Start ingesting data
 
-Now that you’ve configured your database network and created an ingestion cluster, you can connect Materialize to your Neon Postgres database and start ingesting data. 
+Now that you’ve configured your database network and created an ingestion cluster, you can connect Materialize to your Neon Postgres database and start ingesting data.
 
 1. From a `psql` client connected to Materialize or from the Materialize **SQL Shell**, use the [CREATE SECRET](https://materialize.com/docs/sql/create-secret/) command to securely store the password for the Postgres role you created earlier:
 
@@ -8772,13 +9449,9 @@ Now that you’ve configured your database network and created an ingestion clus
 
     You can find the connection details for your replication role in the **Connection Details** widget on the Neon **Dashboard**. A Neon connection string looks like this:
 
-    <CodeBlock shouldWrap>
-
-    ```text
+    ```text shouldWrap
     postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
     ```
-
-    </CodeBlock>
 
     - Replace `<host>` with your Neon hostname (e.g., `ep-cool-darkness-123456.us-east-2.aws.neon.tech`)
     - Replace `<role_name>` with the name of your Postgres role (e.g., `alex`)
@@ -8797,7 +9470,6 @@ Now that you’ve configured your database network and created an ingestion clus
     - To ingest data from specific schemas or tables in your publication, you can use `FOR SCHEMAS (<schema1>,<schema2>)` or `FOR TABLES (<table1>, <table2>)` instead of `FOR ALL TABLES`.
     - After creating a source, you can incorporate upstream schema changes for specific replicated tables using the `ALTER SOURCE...{ADD | DROP} SUBSOURCE` syntax.
     </Admonition>
-
 
 ## Check the ingestion status
 
@@ -8827,7 +9499,6 @@ In this step, you’ll verify that the source is running and then check the stat
             ```
 
         For each subsource, make sure the status is running. If you see stalled or failed, there’s likely a configuration issue for you to fix. Check the error field for details and fix the issue before moving on. If the status of any subsource is starting for more than a few minutes, contact [Materialize support](https://materialize.com/docs/support/).
-
 
 2. Once the source is running, use the [mz_source_statistics](https://materialize.com/docs/sql/system-catalog/mz_internal/#mz_source_statistics) table to check the status of the initial snapshot:
 
@@ -8895,7 +9566,7 @@ After the snapshotting phase, Materialize starts ingesting change events from th
             JOIN mz_schemas AS n ON n.id = s.schema_id
             JOIN mz_databases AS d ON d.id = n.database_id;
         ```
-    
+
     b. From a `psql` client connected to your Neon database or from the **Neon SQL Editor**, check the replication slot lag, using the replication slot name from the previous step:
 
         ```sql
@@ -8927,7 +9598,7 @@ title: Replicate data to an external Postgres instance
 subtitle: Learn how to replicate data from Neon to an external Postgres instance
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-21T15:11:12.218Z'
+updatedOn: '2024-01-12T19:25:22.357Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from Neon to external subscribers. This guide shows you how to stream data from a Neon Postgres database to an external Postgres database.
@@ -9019,7 +9690,7 @@ The following Neon API method creates a role. To view the API documentation for 
 ```bash
 curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
   -H 'Accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
@@ -9051,34 +9722,6 @@ A subscriber is a destination that receives data changes from your publications.
 This section describes how to configure a subscription on a standalone Postgres instance to a publication defined on your Neon database. After the subscription is defined, the destination Postgres instance will be able to receive data changes from the publication defined on your Neon database.
 
 It is assumed that you have a separate Postgres instance ready to act as the subscriber. This must be a Postgres instance other than Neon, such as a local PostgreSQL installation. Currently, a Neon database cannot be defined as a subscriber. The PostgreSQL version of the subscriber should be compatible with the publisher. The primary (publishing) server must be of the same or a higher version than the replica (subscribing) server. For example, you can replicate from PostgreSQL 14 to 16, but not from 16 to 14. Neon supports Postgres 14, 15, and 16. The Postgres version is defined when you create a Neon project.
-
-### Allow inbound traffic
-
-Configure `pg_hba.conf`, which is located in the same directory as `postgresql.conf`, to allow replication connections from your Neon database host:
-
-    You can set the IP address to `0.0.0.0` to allow connections from any IP. However, this is not recommended for production environments due to security concerns.
-
-    ```ini
-    host replication <replication_username> 0.0.0.0/0 md5
-    ```
-
-    It's safer to specify the IP address of your publishing Neon database. You can use a tool like `nslookup` to find the IP address of your Neon host, which you can obtain from your Neon connection string. For example:
-
-    ```bash
-    nslookup ep-cool-darkness-123456.us-east-2.aws.neon.tech
-    ```
-
-    Then, update `pg_hba.conf` with that IP address:
-
-    ```ini
-    host replication <replication_username> 192.0.2.1/32 md5
-    ```
-
-    Apply the changes by reloading the PostgreSQL configuration:
-
-    ```sql
-    SELECT pg_reload_conf();
-    ```
 
 ### Create a subscription
 
@@ -9212,7 +9855,7 @@ The costs associated with a shared project are charged to the Neon account that 
 title: Working with Neon read replicas
 subtitle: Learn how to create and and manage read replicas in Neon
 enableTableOfContents: true
-updatedOn: '2023-12-01T20:41:23.486Z'
+updatedOn: '2024-01-10T18:34:05.858Z'
 ---
 
 [Read replicas](/docs/introduction/read-replicas) are supported with the [Neon Pro Plan](/docs/introduction/pro-plan). This guide will lead you through the process of creating and managing read replicas.
@@ -9224,7 +9867,7 @@ The general methodology of using read replicas to segregate read-only work from 
 - Providing read-only data access to specific users or applications who do not need to modify data
 - Configuring different CPU and memory resources for each read replica for different users and applications
 
-Regardless of the application, the steps for creating, configuring, and connecting to a read replica are the same. You can create one or more read replicas for any branch in your Neon project and configure the vCPU and memory allocated to each. Neon's _Autoscaling_ and _Auto-suspend_ features are also supported, providing you with control over compute usage.
+Regardless of the application, the steps for creating, configuring, and connecting to a read replica are the same. You can create one or more read replicas for any branch in your Neon project and configure the vCPU and memory allocated to each. Neon's _Autoscaling_ and _Autosuspend_ features are also supported, providing you with control over compute usage.
 
 ## Prerequisites
 
@@ -9244,7 +9887,7 @@ To create a read replica from the Neon Console:
 2. Select the branch where your database resides.
 3. Click **Add compute**.
 4. On the **Create Compute Endpoint** dialog, select **Read-only** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable **Autoscaling** and configure a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes. You can set this value up 7 days.
+5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes. You can set this value up 7 days.
     <Admonition type="note">
     The compute size configuration determines the processing power of your database. More vCPU and memory means more processing power but also higher compute costs. For information about compute costs, see [Billing metrics](/docs/introduction/billing).
     </Admonition>
@@ -9271,9 +9914,9 @@ In Neon, a read replica is implemented as a read-only compute endpoint. To creat
 ```bash
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/<project_id>/endpoints \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "endpoint": {
@@ -9325,7 +9968,7 @@ In Neon, a read replica is implemented as a read-only compute endpoint.  To view
 curl -X 'GET' \
   'https://console.neon.tech/api/v2/projects/<project_id>/endpoints' \
   -H 'accept: application/json' \
-  -H 'Authorization: Bearer $NEON_API_KEY'
+  -H "Authorization: Bearer $NEON_API_KEY"
 ```
 
 For information about obtaining the required `project_id` parameter for this command, refer to [Get endpoints](https://api-docs.neon.tech/reference/listprojectendpoints), in the _Neon API reference_. For information about obtaining an Neon API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
@@ -9338,7 +9981,7 @@ In the response body for this method, read replica compute endpoints are identif
 
 ## Edit a read replica
 
-You can edit a read replica using the Neon Console or [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) to change the [Compute size](/docs/manage/endpoints#compute-size-and-autoscaling-configuration) or [Auto-suspend](/docs/manage/endpoints#auto-suspend-configuration) configuration.
+You can edit a read replica using the Neon Console or [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) to change the [Compute size](/docs/manage/endpoints#compute-size-and-autoscaling-configuration) or [Autosuspend](/docs/manage/endpoints#auto-suspend-configuration) configuration.
 
 <Tabs labels={["Console", "API"]}>
 
@@ -9357,9 +10000,9 @@ In Neon, a read replica is implemented as a read-only compute endpoint. To edit 
 ```bash
 curl --request PATCH \
      --url https://console.neon.tech/api/v2/projects/<project_id>/endpoints/<endpoint_id> \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY` \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "endpoint": {
@@ -9401,8 +10044,8 @@ In Neon, a read replica is implemented as a read-only compute endpoint. To delet
 ```bash
 curl --request DELETE \
      --url https://console.neon.tech/api/v2/projects/<project_id>/endpoints/<endpoint_id> \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY’
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY"
 ```
 
 Compute endpoints are identified by their `project_id` and `endpoint_id`. For information about obtaining the required `project_id` and `endpoint_id` parameters, refer to [Delete endpoint](https://api-docs.neon.tech/reference/deleteprojectendpoint), in the _Neon API reference_. For information about obtaining an Neon API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
@@ -9420,7 +10063,7 @@ Compute endpoints are identified by their `project_id` and `endpoint_id`. For in
 title: Read replicas — Data analysis and reporting
 subtitle: Leverage read replicas for running data-intensive queries
 enableTableOfContents: true
-updatedOn: '2023-11-27T16:33:52.718Z'
+updatedOn: '2024-02-08T15:20:54.289Z'
 ---
 
 With Neon's read replica feature, you can instantly create a dedicated read-only compute instance for running data-intensive analytics or reporting queries. This allows you to avoid disruption or performance degradation on your production database.
@@ -9458,7 +10101,7 @@ Creating a read replica involves adding a read-only compute endpoint to a branch
 2. Select the branch where your database resides.
 3. Click **Add compute**.
 4. On the **Create Compute Endpoint** dialog, select **Read-only** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a fixed size compute with a specific amount of vCPU and RAM (the default) or enable _Autoscaling_ by configuring a minimum and maximum compute size using the slider. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your compute automatically suspends due to inactivity. The default setting is 5 minutes. You can set this value up to 7 days.
+5. Specify the **Compute size** options. You can configure a fixed size compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size using the slider. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your compute automatically suspends due to inactivity. The default setting is 5 minutes. You can set this value up to 7 days.
     <Admonition type="note">
     The compute size configuration determines the processing power of your database. More vCPU and memory means more processing power but also higher compute costs. For information about compute costs, see [Billing metrics](/docs/introduction/billing).
     </Admonition>
@@ -9473,9 +10116,9 @@ Alternatively, you can create read replicas using the [Neon API](https://api-doc
 ```bash
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/late-bar-27572981/endpoints \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "endpoint": {
@@ -9503,13 +10146,9 @@ Connecting to a read replica is the same as connecting to any branch, except you
 
     The connection string appears similar to the following:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
     ```
-
-    </CodeBlock>
 
     If you expect a high number of connections, select **Pooled connection** to add the `-pooler` flag to the connection string.
 
@@ -9524,13 +10163,9 @@ Connecting to a read replica is the same as connecting to any branch, except you
 
 1. Connect to your application from a client such as `psql` or add the connection details to your application. For example, to connect using `psql`, issue the following command:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     psql postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
     ```
-
-    </CodeBlock>
 
 ## Run the analytics query on the read replica
 
@@ -9564,7 +10199,7 @@ To delete a read replica:
 title: Use Neon read replicas with Prisma
 subtitle: Learn how to scale Prisma applications with Neon read replicas
 enableTableOfContents: true
-updatedOn: '2023-10-24T18:56:54.985Z'
+updatedOn: '2024-02-08T15:20:54.290Z'
 ---
 
 A Neon read replica is an independent read-only compute instance that performs read operations on the same data as your read-write compute, which means adding a read replica to a Neon project requires no additional storage.
@@ -9588,7 +10223,7 @@ You can create one or more read replicas for any branch in your Neon project. Cr
 2. Select the branch where your database resides.
 3. Click **Add compute**.
 4. On the **Create Compute Endpoint** dialog, select **Read-only** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable **Autoscaling** and configure a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes. You can set this value up to 7 days.
+5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes. You can set this value up to 7 days.
    <Admonition type="note">
    The compute size configuration determines the processing power of your database. More vCPU and memory means more processing power but also higher compute costs. For information about compute costs, see [Billing metrics](/docs/introduction/billing).
    </Admonition>
@@ -9603,9 +10238,9 @@ Alternatively, you can create read replicas using the [Neon API](https://api-doc
 ```bash
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/late-bar-27572981/endpoints \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "endpoint": {
@@ -9630,13 +10265,9 @@ Connecting to a read replica is the same as connecting to any branch in a Neon p
 1. Under **Compute**, select your **Read-only** compute endpoint.
 1. Select the connection string and copy it. This is the information you need to connect to the read replica from your Prisma Client. The connection string appears similar to the following:
 
-   <CodeBlock shouldWrap>
-
-   ```bash
+   ```bash shouldWrap
    postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
    ```
-
-   </CodeBlock>
 
    If you expect a high number of connections, select **Pooled connection** to add the `-pooler` flag to the connection string, but remember to append `?pgbouncer=true` to the connection string when using a pooled connection. Prisma requires this flag when using Prisma Client with PgBouncer. See [Use connection pooling with Prisma](/docs/guides/prisma#use-connection-pooling-with-prisma) for more information.
 
@@ -9709,181 +10340,6 @@ This example demonstrates how to use the [@prisma/extension-read-replicas](https
 </DetailIconCards>
 
 
-# Extensions
-
-# neon
-
----
-title: The neon extension
-enableTableOfContents: true
-updatedOn: '2023-11-28T18:39:00.765Z'
----
-
-With each Neon project, Neon creates  a "neon" extension, which includes functions and views designed to gather Neon-specific metrics. The metrics are intended for use by the Neon team for the purpose of enhancing our service. The views are owned by a Neon system role (`cloud_admin`), but you are able to view them by connecting to the `postgres` database using `psql` and executing the command `\dv neon.*`, as shown below. At present, the extension includes two views for local file cache metrics. We may incorporate additional views in future releases.
-
-<CodeBlock shouldWrap>
-
-```bash
-psql 'postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/postgres?sslmode=require'
-
-postgres=> \dv neon.*
-            List of relations
-Schema |      Name      | Type |    Owner    
---------+----------------+------+-------------
-neon   | local_cache    | view | cloud_admin
-neon   | neon_lfc_stats | view | cloud_admin
-(2 rows)
-```
-
-</CodeBlock>
-
-<NeedHelp/>
-
-
-# neon_utils
-
----
-title: The neon_utils extension
-subtitle: Monitor how Neon's Autoscaling feature allocates compute resources
-enableTableOfContents: true
-updatedOn: '2023-11-27T16:33:52.713Z'
----
-
-The `neon_utils` extension provides a `num_cpus()` function you can use to monitor how Neon's _Autoscaling_ feature allocates vCPU in response to workload. The function returns the current number of allocated vCPUs.
-
-For information about Neon's _Autoscaling_ feature, see [Autoscaling](https://neon.tech/docs/introduction/autoscaling).
-
-## Install the `neon_utils` extension
-
-Install the `neon_utils` extension by running the following `CREATE EXTENSION` statement in the Neon **SQL Editor** or from a client such as `psql` that is connected to Neon.
-
-```sql
-CREATE EXTENSION neon_utils;
-```
-
-For information about using the Neon **SQL Editor**, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
-
-## Use the `num_cpus()` function
-
-In Neon, computing capacity is measured in _Compute Units (CU)_. One CU is 1 vCPU and 4 GB of RAM, 2 CU is 2 vCPU and 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPU. A Neon compute can have anywhere from .25 to 7 CU.
-
-Defining a minimum and maximum compute size for your compute endpoint, as shown below, enables _Autoscaling_.
-
-![Edit compute endpoint dialog showing an Autoscaling configuration](/docs/extensions/edit_compute_endpoint.png)
-
-As your workload changes, computing capacity scales dynamically between the minimum and maximum settings defined in your compute endpoint configuration. To retrieve the number of allocated vCPU at any point in time, you can run the following query:
-
-```sql
-SELECT num_cpus();
-```
-
-For _Autoscaling_ configuration instructions, see [Compute size and Autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
-
-## Limitations
-
-The following limitations apply:
-
-- The `num_cpus()` function does not return fractional vCPU sizes. The _Autoscaling_ feature can scale by fractional vCPU, but the `num_cpus()` function reports the next whole number. For example, if the current number of allocated vCPU is `.25` or `.5`, the `num_cpus()` function returns `1`.
-- The `num_cpus()` function only works on compute endpoints that have the _Autoscaling_ feature enabled. Running the function on a fixed size compute endpoint does not return a correct value.
-
-## Observe Autoscaling with `neon_utils` and `pgbench`
-
-The following instructions demonstrate how you can use the `num_cpus()` function with `pgbench` to observe how Neon's Autoscaling feature responds to workload.
-
-### Prerequisites
-
-- Ensure that _Autoscaling_ is enabled for your compute endpoint. For instructions, see [Compute size and Autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration). The following example uses a minimum setting of 0.25 Compute Units (CU) and a maximum of 4.
-- The [pgbench](https://www.postgresql.org/docs/current/pgbench.html) utility.
-
-### Run the test
-
-1. Install the `neon_utils` extension:
-
-    ```sql
-    CREATE EXTENSION IF NOT EXISTS neon_utils;
-    ```
-
-2. Create a `test.sql` file with the following queries:
-
-    ```sql
-    SELECT LOG(factorial(5000)) / LOG(factorial(2500));
-    SELECT txid_current();
-    ```
-
-3. To avoid errors when running `pgbench`, initialize your database with the tables used by `pgbench`. This can be done using the `pgbench -i` command, specifying the connection string for your Neon database. You can obtain a connection string from the **Connection Details** widget on the Neon **Dashboard**.
-
-    <CodeBlock shouldWrap>
-
-    ```bash
-    pgbench -i postgres://[user]:[password]@[neon_hostname]/[dbname]
-    ```
-
-    </CodeBlock>
-
-4. Run a `pgbench` test with your `test.sql` file, specifying your connection string:
-
-    <CodeBlock shouldWrap>
-
-    ```bash
-    pgbench -f test.sql -c 15 -T 1000 -P 1 postgres://[user]:[password]@[neon_hostname]/[dbname]
-    ```
-
-    </CodeBlock>
-
-    The test produces output similar to the following on a compute endpoint set to scale from 0.25 to 4 CUs.
-
-    ```bash
-    pgbench (15.3)
-    starting vacuum...end.
-    progress: 8.4 s, 0.0 tps, lat 0.000 ms stddev 0.000, 0 failed
-    progress: 9.0 s, 0.0 tps, lat 0.000 ms stddev 0.000, 0 failed
-    progress: 10.0 s, 4.0 tps, lat 1246.290 ms stddev 3.253, 0 failed
-    progress: 11.0 s, 6.0 tps, lat 1892.455 ms stddev 446.686, 0 failed
-    progress: 12.0 s, 9.0 tps, lat 2091.352 ms stddev 1068.303, 0 failed
-    progress: 13.0 s, 5.0 tps, lat 1881.682 ms stddev 700.852, 0 failed
-    progress: 14.0 s, 6.0 tps, lat 2660.009 ms stddev 1404.672, 0 failed
-    progress: 15.0 s, 9.0 tps, lat 2354.776 ms stddev 1248.686, 0 failed
-    progress: 16.0 s, 8.0 tps, lat 1770.870 ms stddev 776.465, 0 failed
-    progress: 17.0 s, 7.0 tps, lat 1800.686 ms stddev 611.749, 0 failed
-    progress: 18.0 s, 18.0 tps, lat 1681.841 ms stddev 1187.918, 0 failed
-    progress: 19.0 s, 29.0 tps, lat 561.201 ms stddev 139.565, 0 failed
-    progress: 20.0 s, 27.0 tps, lat 507.782 ms stddev 153.889, 0 failed
-    progress: 21.0 s, 30.0 tps, lat 493.312 ms stddev 121.688, 0 failed
-    progress: 22.0 s, 32.0 tps, lat 513.444 ms stddev 185.033, 0 failed
-    progress: 23.0 s, 32.0 tps, lat 503.135 ms stddev 199.435, 0 failed
-    progress: 24.0 s, 28.0 tps, lat 492.913 ms stddev 124.019, 0 failed
-    progress: 25.0 s, 43.0 tps, lat 366.719 ms stddev 123.547, 0 failed
-    progress: 26.0 s, 49.0 tps, lat 334.276 ms stddev 79.043, 0 failed
-    progress: 27.0 s, 40.0 tps, lat 354.922 ms stddev 83.560, 0 failed
-    progress: 28.0 s, 31.0 tps, lat 400.645 ms stddev 29.236, 0 failed
-    progress: 29.0 s, 48.0 tps, lat 373.522 ms stddev 64.446, 0 failed
-    progress: 30.0 s, 44.0 tps, lat 333.343 ms stddev 86.497, 0 failed
-    progress: 31.0 s, 44.0 tps, lat 326.754 ms stddev 82.990, 0 failed
-    progress: 32.0 s, 44.0 tps, lat 329.317 ms stddev 76.728, 0 failed
-    progress: 33.0 s, 53.0 tps, lat 321.572 ms stddev 76.427, 0 failed
-    progress: 34.0 s, 57.0 tps, lat 254.500 ms stddev 33.013, 0 failed
-    progress: 35.0 s, 60.0 tps, lat 251.035 ms stddev 37.574, 0 failed
-    progress: 36.0 s, 58.0 tps, lat 256.846 ms stddev 36.390, 0 failed
-    progress: 37.0 s, 60.0 tps, lat 249.165 ms stddev 36.764, 0 failed
-    progress: 38.0 s, 57.0 tps, lat 263.885 ms stddev 31.351, 0 failed
-    progress: 39.0 s, 56.0 tps, lat 262.529 ms stddev 43.900, 0 failed
-    progress: 40.0 s, 58.0 tps, lat 259.052 ms stddev 39.737, 0 failed
-    ...
-    ```
-
-4. Call the `num_cpus()` function to retrieve the current number of allocated vCPU.
-
-    ```sql
-    ​​neondb=> SELECT num_cpus();
-    num_cpus
-    ----------
-            4
-    (1 row)
-    ```
-
-<NeedHelp/>
-
-
 # Frameworks
 
 # Next.js
@@ -9895,7 +10351,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/vercel
   - /docs/integrations/vercel
-updatedOn: '2024-01-05T13:33:51.462Z'
+updatedOn: '2024-02-08T15:20:54.285Z'
 ---
 
 Next.js by Vercel is an open-source web development framework that enables React-based web applications. This topic describes how to create a Neon project and access it from a Next.js application.
@@ -9930,7 +10386,7 @@ If you do not have one already, create a Neon project. Save your connection deta
       ```shell
       npm install postgres
       ```
-      
+
       ```shell
       npm install @neondatabase/serverless
       ```
@@ -9941,13 +10397,9 @@ If you do not have one already, create a Neon project. Save your connection deta
 
 Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]
 ```
-
-</CodeBlock>
 
 ## Configure the Postgres client
 
@@ -10144,7 +10596,6 @@ export default function Page({ data }) {}
 
 </CodeTabs>
 
-
 ### Serverless Functions
 
 From your Serverless Functions, add the following code snippet to connect to your Neon database:
@@ -10231,14 +10682,11 @@ export const config = {
 };
 ```
 
-
 ## Run the app
 
 When you run `npm run dev` you can expect to see one of the following in your terminal output:
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 # node-postgres & Neon serverless driver
 
 {
@@ -10254,22 +10702,20 @@ Result(1) [
 ]
 ```
 
-</CodeBlock>
-
 <NeedHelp/>
 
 
 # Astro
 
 ---
-title: Connect an Astro site or application to Neon
-subtitle: Set up a Neon project in seconds and connect from an Astro site or application
+title: Connect an Astro site or application to Neon Postgres
+subtitle: Set up a Neon project in seconds and connect to your Postgres database from an
+  Astro site or application
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.749Z'
+updatedOn: '2024-02-08T15:20:54.279Z'
 ---
 
-Astro builds fast content sites, powerful web applications, dynamic server APIs, and everything in-between. This topic describes how to create a Neon project and access it from an Astro site or application.
-
+Astro builds fast content sites, powerful web applications, dynamic server APIs, and everything in-between. This guide describes how to create a Neon Postgres database and access it from an Astro site or application.
 
 To create a Neon project and access it from an Astro site or application:
 
@@ -10312,13 +10758,9 @@ If you do not have one already, create a Neon project. Save your connection deta
 
 Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]
 ```
-
-</CodeBlock>
 
 ## Configure the Postgres client
 
@@ -10370,15 +10812,14 @@ const response = await sql`SELECT version()`;
 console.log(response);
 ---
 ```
+
 </CodeTabs>
 
 ## Run the app
 
 When you run `npm run dev` you can expect to see one of the following in your terminal output:
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 # node-postgres & Neon serverless driver 
 
 {
@@ -10394,7 +10835,6 @@ Result(1) [
 ]
 ```
 
-</CodeBlock>
 
 <NeedHelp/>
 
@@ -10405,11 +10845,11 @@ Result(1) [
 title: Connect a Remix application to Neon
 subtitle: Set up a Neon project in seconds and connect from a Remix application
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.755Z'
+updatedOn: '2024-02-08T15:20:54.290Z'
 ---
 
 
-Remix is an open-source full stack JavaScript framework that lets you focus on building out the user interface using familiar web standards. This guide explains how to connect Remix with Neon using a secure server-side request. 
+Remix is an open-source full stack JavaScript framework that lets you focus on building out the user interface using familiar web standards. This guide explains how to connect Remix with Neon using a secure server-side request.
 
 To create a Neon project and access it from a Remix application:
 
@@ -10452,22 +10892,17 @@ If you do not have one already, create a Neon project. Save your connection deta
 
 Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]
 ```
 
-</CodeBlock>
-
 ## Configure the Postgres client
 
-There are two parts to connecting a Remix application to Neon. The first is `db.server`. Remix will ensure any code added to this file won't be included in the client bundle. The second is the route where the connection to the database will be used. 
+There are two parts to connecting a Remix application to Neon. The first is `db.server`. Remix will ensure any code added to this file won't be included in the client bundle. The second is the route where the connection to the database will be used.
 
 ### db.server
 
 Create a `db.server.ts` file at the root of your `/app` directory and add the following code snippet to connect to your Neon database:
-
 
 <CodeTabs labels={["node-postgres", "postgres.js", "Neon serverless driver"]}>
 
@@ -10497,6 +10932,7 @@ const sql = neon(process.env.DATABASE_URL);
 
 export { sql };
 ```
+
 </CodeTabs>
 
 ### route
@@ -10558,16 +10994,14 @@ export default function Page() {
   const data = useLoaderData();
 }
 ```
-</CodeTabs>
 
+</CodeTabs>
 
 ## Run the app
 
 When you run `npm run dev` you can expect to see one of the following in your terminal output:
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 # node-postgres & Neon serverless driver 
 
 {
@@ -10583,7 +11017,125 @@ Result(1) [
 ]
 ```
 
-</CodeBlock>
+<NeedHelp/>
+
+
+# Ruby on Rails
+
+---
+title: Connect a Ruby on Rails application to Neon Postgres
+subtitle: Set up a Neon project in seconds and connect from a Ruby on Rails application
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.290Z'
+---
+
+[Ruby on Rails](https://rubyonrails.org/), also known simply as Rails, is an open-source web application framework written in Ruby. It uses a model-view-controller architecture, making it a good choice for developing database-backed web applications. This guide shows how to connect to a Ruby on Rails application to a Neon Postgres database.
+
+To connect to Neon from a Ruby on Rails application:
+
+1. [Create a Neon Project](#create-a-neon-project)
+2. [Create a Rails Project](#create-a-rails-project)
+3. [Configure a PostgreSQL Database using Rails](#configure-a-postgresql-database-using-rails)
+4. [Create a Rails Controller](#create-a-rails-controller-to-query-the-database)
+5. [Run the application](#run-the-application)
+
+This guide was tested using Ruby v3.3.0 and Rails v7.1.2.
+
+## Create a Neon Project
+
+If you do not have one already, create a Neon project.
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+## Create a Rails Project
+
+Create a Rails project using the [Rails CLI](https://guides.rubyonrails.org/command_line.html), and specify PostgreSQL as the database type:
+
+```shell
+gem install rails
+rails new neon-with-rails --database=postgresql
+```
+
+You now have a Rails project in a folder named `neon-with-rails`.
+
+## Configure a PostgreSQL Database using Rails
+
+Create a `.env` file in the root of your Rails project, and add the connection string for your Neon compute. Do not specify a database name after the forward slash in the connection string. Rails will choose the correct database depending on the environment.
+
+```shell shouldWrap
+DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/
+```
+
+<Admonition type="note">
+You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+</Admonition>
+
+<Admonition type="important">
+The role you specified in the `DATABASE_URL` must have **CREATEDB** privileges. Roles created in the Neon console, CLI, or API, including the default role created with a Neon project, are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the `CREATEDB` privilege. Alternatively, you can create roles with SQL to grant specific privileges. See [Manage database access](/docs/manage/database-access).
+</Admonition>
+
+Create the development database by issuing the following commands from the root of your project directory:
+
+```shell
+# Load the DATABASE_URL into your session
+source .env
+
+# Create the development database
+bin/rails db:create
+```
+
+## Create a Rails Controller to Query the Database
+
+Run the following command to create a controller and view. The controller will query the database version and supply it to the view file to render a web page that displays the PostgreSQL version.
+
+```shell
+rails g controller home index
+```
+
+Replace the controller contents at `app/controllers/home_controller.rb` with:
+
+```ruby
+class HomeController < ApplicationController
+  def index
+    @version = ActiveRecord::Base.connection.execute("SELECT version();").first['version']
+  end
+end
+```
+
+Replace the contents of the view file at `app/views/home/index.html.erb` with:
+
+```ruby
+<% if @version %>
+  <p><%= @version %></p>
+<% end %>
+```
+
+Replace the contents of `config/routes.rb` with the following code to serve your home view as the root page of the application:
+
+```ruby
+Rails.application.routes.draw do.
+  get "up" => "rails/health#show", as: :rails_health_check
+
+  # Defines the root path route ("/")
+  root 'home#index'
+end
+```
+
+## Run the application
+
+Start the application using the Rails CLI from the root of the project:
+
+```shell
+bin/rails server -e development
+```
+
+Visit [localhost:3000/](http://localhost:3000/) in your web browser. Your Neon database's Postgres version will be displayed. For example:
+
+```
+PostgreSQL 15.5 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+```
 
 <NeedHelp/>
 
@@ -10596,7 +11148,7 @@ Result(1) [
 title: Connect from Elixir with Ecto to Neon
 subtitle: Set up a Neon project in seconds and connect from Elixir with Ecto
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.751Z'
+updatedOn: '2024-02-08T15:20:54.282Z'
 ---
 
 This guide describes how to connect from an Elixir application with Ecto, which is a database wrapper and query generator for Elixir. Ecto provides an API and abstractions for interacting databases, enabling Elixir developers to query any database using similar constructs.
@@ -10628,13 +11180,9 @@ To create the database:
 
 You can obtain the connection string for the database from the **Connection Details** widget on the Neon **Dashboard**. Select a branch, a role, and the database you want to connect to. A connection string is constructed for you. Your connection string should look something like this:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-west-2.aws.neon.tech/friends
 ```
-
-</CodeBlock>
 
 You will need the connection string details later in the setup.
 
@@ -10783,15 +11331,11 @@ mix ecto.migrate
 
 The output of this command should appear similar to the following:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 14:30:04.924 [info]  == Running 20230524172817 Friends.Repo.Migrations.CreatePeople.change/0 forward
 14:30:04.925 [info]  create table people
 14:30:05.014 [info]  == Migrated 20230524172817 in 0.0s
 ```
-
-</CodeBlock>
 
 You can use the **Tables** feature in the Neon Console to view the table that was created:
 
@@ -10815,7 +11359,7 @@ The [Ecto Getting Started Guide](https://hexdocs.pm/ecto/getting-started.html#co
 ## Usage notes
 
 - Suppose you have `PGHOST` environment variable on your system set to something other than your Neon hostname. In that case, this hostname will be used instead of the Neon `hostname` defined in your Ecto Repo configuration when running `mix ecto` commands. To avoid this issue, you can either set the `PGHOST` environment variable to your Neon hostname or specify `PGHOST=""` when running `mix ecto` commands; for example: `PGHOST="" mix ecto.migrate`.
-- By default, Neon's _Auto-suspend_ feature scales computes to zero after 300 seconds (5 minutes) of inactivity, which can result in a `connection not available` error when running `mix ecto` commands. Typically, a Neon compute takes a few seconds to transition from `Idle` to `Active`. Wait a few seconds and try running the command again. Alternatively, consider the strategies outlined in [Connection latency and timeouts](/docs/connect/connection-latency) to manage connection issues resulting from compute suspension.
+- By default, Neon's _Autosuspend_ feature scales computes to zero after 300 seconds (5 minutes) of inactivity, which can result in a `connection not available` error when running `mix ecto` commands. Typically, a Neon compute takes a few seconds to transition from `Idle` to `Active`. Wait a few seconds and try running the command again. Alternatively, consider the strategies outlined in [Connection latency and timeouts](/docs/connect/connection-latency) to manage connection issues resulting from compute suspension.
 
 <NeedHelp/>
 
@@ -10898,7 +11442,7 @@ You can find all of the connection details listed above in the **Connection Deta
 title: Connect Quarkus (JDBC) to Neon
 subtitle: Learn how to connect to Neon from Quarkus using JDBC
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.754Z'
+updatedOn: '2024-02-08T15:20:54.288Z'
 ---
 
 [Quarkus](https://quarkus.io/) is a Java framework optimized for cloud environments. This guide shows how to connect to Neon from a Quarkus project using the PostgreSQL JDBC driver.
@@ -10936,17 +11480,13 @@ You now have a Quarkus project in a folder named `neon-with-quarkus-jdbc` with t
 
 Create a `.env` file in the root of your Quarkus project directory. Configure a JDBC data source using the components of your Neon database connection string and specifying the database kind as shown:
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 QUARKUS_DATASOURCE_DB_KIND=postgresql
 QUARKUS_DATASOURCE_USERNAME=[user]
 QUARKUS_DATASOURCE_PASSWORD=[password]
 # Note that "jdbc" is prepended, and that "?sslmode=require" is appended to the connection string
 QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://[neon_hostname]/[dbname]?sslmode=require
 ```
-
-</CodeBlock>
 
 <Admonition type="note">
 You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
@@ -11020,7 +11560,7 @@ PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1
 title: Connect Quarkus (Reactive) to Neon
 subtitle: Learn how to connect to Neon from Quarkus using a Reactive SQL Client
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.755Z'
+updatedOn: '2024-02-08T15:20:54.289Z'
 ---
 
 [Quarkus](https://quarkus.io/) is a Java framework optimized for cloud environments. This guide shows how to connect to Neon from a Quarkus project using a Reactive SQL Client.
@@ -11058,14 +11598,10 @@ You now have a Quarkus project in a folder named `neon-with-quarkus` with the Re
 
 Create a `.env` file in the root of your Quarkus project directory. Configure a reactive data source using your Neon database connection string and specifying the database kind as shown:
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 # Note that "?sslmode=require" is appended to the Neon connection string
 QUARKUS_DATASOURCE_REACTIVE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
 ```
-
-</CodeBlock>
 
 <Admonition type="note">
 You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
@@ -11197,7 +11733,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/node
   - /docs/integrations/node
-updatedOn: '2023-11-24T11:25:06.753Z'
+updatedOn: '2024-02-08T15:20:54.286Z'
 ---
 
 This guide describes how to create a Neon project and connect to it from a Node.js application. Examples are provided for using the [node-postgres](https://www.npmjs.com/package/pg) and [Postgres.js](https://www.npmjs.com/package/postgres) clients. Use the client you prefer.
@@ -11248,18 +11784,18 @@ If you do not have one already, create a Neon project.
 
 ## Store your Neon credentials
 
-Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+Add a `.env` file to your project directory and add your Neon connection details to it. You can find the connection details for your database in the **Connection Details** widget on the Neon **Dashboard**. Please select Node.js from the **Connection string** dropdown. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
-<CodeBlock shouldWrap>
-
-```shell
-DATABASE_URL=ppostgres://[user]:[password]@[neon_hostname]/[dbname]?options=endpoint%3D[endpoint_id]
+```shell shouldWrap
+PGHOST='[neon_hostname]'
+PGDATABASE='[dbname]'
+PGUSER='[user]'
+PGPASSWORD='[password]'
+ENDPOINT_ID='[endpoint_id]'
 ```
 
-</CodeBlock>
-
 <Admonition type="note">
-A special `endpoint` connection option is appended to the connection string above: `options=endpoint%3D[endpoint_id]`. This option is used with Postgres clients such as `node-postgres` and `Postgres.js` that do not support Server Name Indication (SNI), which Neon relies on to route incoming connections. For more information, see [connection errors](/docs/connect/connection-errors).
+A special `ENDPOINT_ID` variable is included in the `.env` file above. This variable can be used with older Postgres clients that do not support Server Name Indication (SNI), which Neon relies on to route incoming connections. If you are using a newer [node-postgres](https://node-postgres.com/) or [postgres.js](https://github.com/porsager/postgres) client, you won't need it. For more information, see [Endpoint ID variable](#endpoint-id-variable).
 </Admonition>
 
 <Admonition type="important">
@@ -11276,38 +11812,53 @@ Add an `app.js` file to your project directory and add the following code snippe
   const { Pool } = require('pg');
   require('dotenv').config();
 
+  let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
+
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    host: PGHOST,
+    database: PGDATABASE,
+    username: PGUSER,
+    password: PGPASSWORD,
+    port: 5432,
     ssl: {
       require: true,
     },
   });
 
-  async function getPostgresVersion() {
+  async function getPgVersion() {
     const client = await pool.connect();
     try {
-      const response = await client.query('SELECT version()');
-      console.log(response.rows[0]);
+      const result = await client.query('SELECT version()');
+      console.log(result.rows[0]);
     } finally {
       client.release();
     }
   }
 
-  getPostgresVersion();
+  getPgVersion();
   ```
 
   ```javascript
   const postgres = require('postgres');
   require('dotenv').config();
 
-  const sql = postgres(process.env.DATABASE_URL, { ssl: 'require' });
+  let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env;
 
-  async function getPostgresVersion() {
-    const response = await sql`select version()`;
-    console.log(response);
+  const sql = postgres({
+    host: PGHOST,
+    database: PGDATABASE,
+    username: PGUSER,
+    password: PGPASSWORD,
+    port: 5432,
+    ssl: 'require',
+  });
+
+  async function getPgVersion() {
+    const result = await sql`select version()`;
+    console.log(result[0]);
   }
 
-  getPostgresVersion();
+  getPgVersion();
   ```
 
 </CodeTabs>
@@ -11317,11 +11868,40 @@ Add an `app.js` file to your project directory and add the following code snippe
 Run `node app.js` to view the result.
 
 ```shell
-Result(1) [
-  {
-    version: 'PostgreSQL 16.0 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit'
-  }
-]
+{
+  version: 'PostgreSQL 16.0 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit'
+}
+```
+
+## Endpoint ID variable
+
+For older clients that do not support Server Name Indication (SNI), the `postgres.js` example below shows how to include the `ENDPOINT_ID` variable in your application's connection configuration. This is a workaround that is not required if you are using a newer [node-postgres](https://node-postgres.com/) or [postgres.js](https://github.com/porsager/postgres) client. For more information about this workaround and when it is required, see [The endpoint ID is not specified](https://neon.tech/docs/connect/connection-errors#the-endpoint-id-is-not-specified) in our [connection errors](/docs/connect/connection-errors) documentation.
+
+```javascript
+// app.js
+const postgres = require('postgres');
+require('dotenv').config();
+
+let { PGHOST, PGDATABASE, PGUSER, PGPASSWORD, ENDPOINT_ID } = process.env;
+
+const sql = postgres({
+  host: PGHOST,
+  database: PGDATABASE,
+  username: PGUSER,
+  password: PGPASSWORD,
+  port: 5432,
+  ssl: 'require',
+  connection: {
+    options: `project=${ENDPOINT_ID}`,
+  },
+});
+
+async function getPgVersion() {
+  const result = await sql`select version()`;
+  console.log(result);
+}
+
+getPgVersion();
 ```
 
 <NeedHelp/>
@@ -11338,7 +11918,7 @@ redirectFrom:
   - /docs/integrations/prisma
   - /docs/guides/prisma-guide
   - /docs/guides/prisma-migrate
-updatedOn: '2023-12-07T20:16:16.144Z'
+updatedOn: '2024-02-08T15:20:54.287Z'
 ---
 
 Prisma is an open-source, next-generation ORM that lets you to manage and interact with your database. This guide covers the following topics:
@@ -11371,13 +11951,9 @@ To establish a basic connection from Prisma to Neon, perform the following steps
 
    Your setting will appear similar to the following:
 
-   <CodeBlock shouldWrap>
-
-   ```text
+   ```text shouldWrap
    DATABASE_URL="postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
    ```
-
-   </CodeBlock>
 
 <Admonition type="important">
 If you plan to use Prisma Client from a serverless function, see [Use connection pooling with Prisma](#use-connection-pooling-with-prisma) for additional configuration instructions. To adjust your connection string to avoid connection timeout issues, see [Connection timeouts](#connection-timeouts).
@@ -11387,14 +11963,10 @@ If you plan to use Prisma Client from a serverless function, see [Use connection
 
 Serverless functions can end up requiring a large number of database connections as demand increases. If you use serverless functions in your application, it is recommended that you use a pooled Neon connection string with the `pgbouncer=true` option, as shown:
 
-<CodeBlock shouldWrap>
-
-```ini
+```ini shouldWrap
 # Pooled Neon connection string
 DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require&pgbouncer=true"
 ```
-
-</CodeBlock>
 
 - A pooled Neon connection string adds `-pooler` to the endpoint ID, which tells Neon to use a pooled connection. You can add `-pooler` to your connection string manually or copy a pooled connection string from the **Connection Details** widget on the Neon **Dashboard**. Use the **Pooled connection** checkbox to add the `-pooler` suffix.
 - Neon uses PgBouncer to provide [connection pooling](/docs/connect/connection-pooling). Prisma requires the `pgbouncer=true` flag when using Prisma Client with PgBouncer, as described in the [Prisma documentation](https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#add-pgbouncer-to-the-connection-url).
@@ -11433,17 +12005,13 @@ After adding the `directUrl` property to your `schema.prisma` file, update the `
 
 When you finish updating your `.env` file, your variable settings should appear similar to the following:
 
-<CodeBlock shouldWrap>
-
-```ini
+```ini shouldWrap
 # Pooled Neon connection string
 DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require&pgbouncer=true"
 
 # Unpooled Neon connection string
 DIRECT_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require"
 ```
-
-</CodeBlock>
 
 ## Use the Neon serverless driver with Prisma
 
@@ -11504,14 +12072,10 @@ You can now use Prisma Client as you normally would with full type-safety. Prism
 
 A connection timeout that occurs when connecting from Prisma to Neon causes an error similar to the following:
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 Error: P1001: Can't reach database server at `ep-white-thunder-826300.us-east-2.aws.neon.tech`:`5432`
 Please make sure your database server is running at `ep-white-thunder-826300.us-east-2.aws.neon.tech`:`5432`.
 ```
-
-</CodeBlock>
 
 This error most likely means that the Prisma query engine timed out before the Neon compute was activated.
 
@@ -11519,13 +12083,9 @@ A Neon compute has two main states: _Active_ and _Idle_. Active means that the c
 
 When you connect to an idle compute from Prisma, Neon automatically activates it. Activation typically happens within a few seconds but added latency can result in a connection timeout. To address this issue, you can adjust your Neon connection string by adding a `connect_timeout` parameter. This parameter defines the maximum number of seconds to wait for a new connection to be opened. The default value is 5 seconds. A higher setting may provide the time required to avoid connection timeouts. For example:
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 DATABASE_URL="postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&connect_timeout=10"
 ```
-
-</CodeBlock>
 
 <Admonition type="note">
 A `connect_timeout` setting of 0 means no timeout.
@@ -11537,25 +12097,17 @@ Another possible cause of timeouts is [Prisma's connection pool](https://www.pri
 
 The default size of the Prisma connection pool is determined by the following formula: `num_physical_cpus * 2 + 1`,  where `num_physical_cpus` represents the number of physical CPUs on the machine where your application runs. For example, if your machine has four physical CPUs, your connection pool will contain nine connections (4 * 2 + 1 = 9). As mentioned in the [Prisma documentation](https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/connection-pool#default-connection-pool-size), this formula is a good starting point, but the recommended connection limit also depends on your deployment paradigm — particularly if you are using serverless. You can specify the number of connections explicitly by setting the `connection_limit` parameter in your database connection URL. For example:
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 DATABASE_URL="postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&connect_timeout=15&connection_limit=20"
 ```
-
-</CodeBlock>
 
 For configuration guidance, refer to Prisma's [Recommended connection pool size guide](https://www.prisma.io/docs/guides/performance-and-optimization/connection-management#recommended-connection-pool-size).
 
 In addition to pool size, you can configure a `pool_timeout` setting. This setting defines the amount of time the Prisma Client query engine has to process a query before it throws an exception and moves on to the next query in the queue. The default `pool_timeout` setting is 10 seconds. If you still experience timeouts after increasing `connection_limit` setting, you can try setting the `pool_timeout` parameter to a value larger than the default (10 seconds). For configuration guidance, refer to [Increasing the pool timeout](https://www.prisma.io/docs/guides/performance-and-optimization/connection-management#increasing-the-pool-timeout), in the _Prisma documentation_.
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 DATABASE_URL="postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&connect_timeout=15&connection_limit=20&pool_timeout=15"
 ```
-
-</CodeBlock>
 
 You can disable pool timeouts by setting `pool_timeout=0`.
 
@@ -11759,7 +12311,7 @@ title: Connect a Python application to Neon using Psycopg
 subtitle: Set up a Neon project in seconds and connect from a Python application using
   Psycopg
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.754Z'
+updatedOn: '2024-02-08T15:20:54.288Z'
 ---
 
 This guide describes how to create a Neon project and connect to it from a simple Python application using [Psycopg (psycopg2)](https://pypi.org/project/psycopg2/), a popular Postgres database adapter for the Python programming language. The application connects to Neon and retrieves the current time and Postgres version.
@@ -11811,19 +12363,15 @@ The project is created with a ready-to-use `neondb` database, which you will con
 
 ## Store your Neon credentials
 
-Add a `.env` file to your project's root directory and add your Neon connection string to it. 
+Add a `.env` file to your project's root directory and add your Neon connection string to it.
 
 You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 Your connection string will look something like this:
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
 ```
-
-</CodeBlock>
 
 ## Configure your python script
 
@@ -11872,14 +12420,10 @@ python3 neon-connect.py
 
 If the connection is successful, the script returns information similar to the following:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 Current time: 2023-05-24 08:53:10.403140+00:00
 PostgreSQL version: PostgreSQL 15.2 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
 ```
-
-</CodeBlock>
 
 <NeedHelp/>
 
@@ -12053,7 +12597,7 @@ title: Use Exograph with Neon
 subtitle: Build GraphQL backends in minutes with Exograph and Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-11-30T17:39:12.801Z'
+updatedOn: '2024-01-27T09:01:18.978Z'
 ---
 
 _This guide was contributed by the Exograph team_
@@ -12141,8 +12685,265 @@ In this guide, we have created a basic todo backend using Exograph and Neon. You
 
 To deploy Exograph in the cloud and connect it to Neon, follow the guide below (select the "External Database" tab for Neon-specific instructions in each case):
 
-1. Deploying on [Fly.io](https://exograph.dev/docs/deployment/cloud-deployment) (these instructions can be adapted to other cloud providers)
-2. Deploying on [AWS Lambda](https://exograph.dev/docs/deployment/aws-lambda-deployment)
+1. Deploying on [Fly.io](https://exograph.dev/docs/deployment/flyio) (these instructions can be adapted to other cloud providers)
+2. Deploying on [AWS Lambda](https://exograph.dev/docs/deployment/aws-lambda)
+
+
+# FerretDB
+
+---
+title: Use FerretDB with Neon
+subtitle: Add MongoDB compatibility to your Neon database with FerretDB
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-02-08T15:20:54.282Z'
+---
+
+FerretDB is an open source document database that adds MongoDB compatibility to other databases, including Postgres. By using FerretDB, developers can access familiar MongoDB features and tools using the same syntax and commands for many of their use cases.
+
+In this guide, you'll learn about FerretDB and how you can add MongoDB compatibility to your Neon Postgres database.
+
+## Advantages of FerretDB
+
+The benefits of using FerretDB include:
+
+- **MongoDB compatibility**
+
+    FerretDB gives you access to the syntax, tools, querying language, and commands available in MongoDB for many common use cases. MongoDB is known for its simple and intuitive NoSQL query language which is widely used by many developers. By using FerretDB, you can enable Postgres databases like Neon to run MongoDB workloads.
+
+    For related information, see [MongoDB Compatibility - What's Really Important?](https://blog.ferretdb.io/mongodb-compatibility-whats-really-important/)
+
+- **Open source**
+
+    As an open source document database, you won't be at risk of vendor lock-in. Since MongoDB's license change to Server Side Public License (SSPL), there's been a lot of confusion regarding what this means for users and what it would mean for their applications. According to the Open Source Initiative – the steward of open source and the set of rules that define open source software – SSPL is not considered open source.
+
+    FerretDB is licensed under Apache 2.0, makes it a good option for users looking for a MongoDB alternative.
+
+- **Multiple backend options**
+
+    FerretDB currently supports Postgres and SQLite backends, with many ongoing efforts to support other backends. Many databases built on Postgres can serve as a backend for FerretDB, including Neon. That means you can take advantage of all the features available in the backend of your choice to scale and manage your database infrastructure without fear of vendor lock-in.
+
+To learn more, see [Understanding FerretDB](https://docs.ferretdb.io/understanding-ferretdb/).
+
+## Prerequisites
+
+The prerequisites for this guide include the following:
+
+- A Neon account and project. See [Sign up](/docs/get-started-with-neon/signing-up).
+- A database. This guide uses a database named `ferretdb`. It's easy to create a database in Neon. See [Create a database](/docs/manage/databases#create-a-database) for instructions.
+- Docker. For instructions, see [Get Docker](https://docs.docker.com/get-docker/). To verify your installation or check if you already have Docker installed, you can run `docker --version`.
+- The `mongosh` command-line tool. For installation instructions, see [Install mongosh](https://www.mongodb.com/docs/mongodb-shell/install/). If you are a macOS user, you can quickly install with Homebrew: `brew install mongosh`.
+
+## Retrieve your Neon database connection string
+
+From the Neon **Dashboard**, retrieve the connection string for your `ferretdb` database from the **Connection Details** widget.
+
+Your database connection string will look something like this:
+
+```bash shouldWrap
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/ferretdb
+```
+
+## Run FerretDB with Neon via Docker
+
+Execute the following command to run FerretDB in a Docker container and connect it to your Neon Postgres database (`NEON_DB_CONNECTION_STRING`):
+
+```bash shouldWrap
+docker run docker run -p 27017:27017 -e FERRETDB_POSTGRESQL_URL=<NEON_DB_CONNECTION_STRING> ghcr.io/ferretdb/ferretdb
+```
+
+## Test via mongosh
+
+From another terminal, test to see if the FerretDB instance is connected to your Neon database using `mongosh`. To connect via `mongosh`, you will need a connection string. Use the credentials for your Neon database connection string.
+
+So in this case, the MongoDB connection string will be:
+
+```bash shouldWrap
+mongosh 'mongodb://<postgres-username>:<postgres-password>@127.0.0.1/ferretdb?authMechanism=PLAIN'
+```
+
+This will connect you directly to the FerretDB instance where you can run MongoDB commands.
+
+```bash
+~$ mongosh 'mongodb://<username>:<password>@127.0.0.1/ferretdb?authMechanism=PLAIN'
+Current Mongosh Log ID: 657c28296fda6bb93a0c0058
+Connecting to:      mongodb://<credentials>@127.0.0.1/?authMechanism=PLAIN&directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.0.2
+Using MongoDB:      6.0.42
+Using Mongosh:      2.0.2
+mongosh 2.1.1 is available for download: https://www.mongodb.com/try/download/shell
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-12-15T10:19:28.991Z: Powered by FerretDB v1.17.0 and PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc.
+   2023-12-15T10:19:28.991Z: Please star us on GitHub: https://github.com/FerretDB/FerretDB.
+   2023-12-15T10:19:28.991Z: The telemetry state is undecided.
+   2023-12-15T10:19:28.991Z: Read more about FerretDB telemetry and how to opt out at https://beacon.ferretdb.io.
+------
+
+ferretdb>
+```
+
+You are now directly connected to your `ferretdb` database.
+
+## Insert documents into FerretDB
+
+With `mongosh`, you can now insert some documents into your FerretDB instance directly from the `ferretdb>` prompt shown above. You are going to insert two basketball player documents into a `players` collection.
+
+```json
+db.players.insertMany([
+    {
+        nba_id: 23,
+        player_name: "Jordan",
+        player_extended_name: "Michael Jordan",
+        quality: "Gold - Legendary",
+        overall: 99,
+        nationality: "USA",
+        position: "SG",
+        shooting: 98,
+        passing: 85,
+        dribbling: 95,
+        defense: 93,
+        physicality: 92,
+        rebounding: 87
+    },
+    {
+        nba_id: 34,
+        player_name: "Barkley",
+        player_extended_name: "Charles Barkley",
+        quality: "Gold - Rare",
+        overall: 93,
+        nationality: "USA",
+        position: "PF",
+        shooting: 86,
+        passing: 76,
+        dribbling: 78,
+        defense: 88,
+        physicality: 94,
+        rebounding: 95,
+        base_id: 332
+    }
+]);
+```
+
+Now, when you run `db.players.find()`, it should return all the documents stored in the collection:
+
+```json
+ferretdb> db.players.find()
+[
+  {
+    _id: ObjectId('65a1b5d53d6122d2b5122e41'),
+    nba_id: 34,
+    player_name: 'Barkley',
+    player_extended_name: 'Charles Barkley',
+    quality: 'Gold - Rare',
+    overall: 93,
+    nationality: 'USA',
+    position: 'PF',
+    shooting: 86,
+    passing: 76,
+    dribbling: 78,
+    defense: 88,
+    physicality: 94,
+    rebounding: 95,
+    base_id: 332
+  },
+  {
+    _id: ObjectId('65a1b5d53d6122d2b5122e40'),
+    nba_id: 23,
+    player_name: 'Jordan',
+    player_extended_name: 'Michael Jordan',
+    quality: 'Gold - Legendary',
+    overall: 99,
+    nationality: 'USA',
+    position: 'SF',
+    shooting: 98,
+    passing: 85,
+    dribbling: 95,
+    defense: 93,
+    physicality: 92,
+    rebounding: 87
+  }
+]
+
+```
+
+## Update a record in FerretDB
+
+Next, you need to update the "Jordan" record to reflect his current position as a `SF`. To do this, we can just run an `updateOne` command to target just that particular player:
+
+```json
+db.players.updateOne(
+    { player_name: "Jordan" },
+    { $set: { position: "SF" } }
+);
+```
+
+Query the collection to see if the changes have been made:
+
+```json
+ferretdb> db.players.find({player_name: "Jordan"})
+[
+  {
+    _id: ObjectId('65a1b5d53d6122d2b5122e40'),
+    nba_id: 23,
+    player_name: 'Jordan',
+    player_extended_name: 'Michael Jordan',
+    quality: 'Gold - Legendary',
+    overall: 99,
+    nationality: 'USA',
+    position: 'SF',
+    shooting: 98,
+    passing: 85,
+    dribbling: 95,
+    defense: 93,
+    physicality: 92,
+    rebounding: 87
+  }
+]
+```
+
+You can run many MongoDB operations on FerretDB. See the list of [supported commands](https://docs.ferretdb.io/reference/supported-commands/) in the FerretDB documentation.
+
+## View your database on Neon
+
+In addition to a document database view of the collection in FerretDB, you can also view and query the data in Neon.
+
+To view your current documents, go to the Neon **Dashboard** and select **Tables** from the sidebar. Then, from the **Schema** menu, select `ferretdb`. FerretDB stores the documents in Postgres as [JSONB](https://www.postgresql.org/docs/current/datatype-json.html) data.
+
+![FerretDB table showing player data](/docs/guides/ferretdb_table.png)
+
+To query the data for a specific player via SQL, you can do so via the [Neon SQL Editor](https://neon.tech/docs/get-started-with-neon/query-with-neon-sql-editor) or an SQL client like [psql](/docs/connect/query-with-psql-editor):
+
+```sql
+SELECT _jsonb
+FROM ferretdb.players_a90eae09
+WHERE _jsonb ->> 'player_name' = 'Jordan';
+```
+
+## Get started with FerretDB
+
+FerretDB lets you run MongoDB workloads on relational databases. This flexibility means you can easily add MongoDB compatibility to your Neon Postgres database while avoiding vendor lock-in and retaining control of your data architecture.
+
+To get started with FerretDB, check out the [FerretDB Get Started](https://docs.ferretdb.io/quickstart-guide/) docs.
+
+## References
+
+- [Sign up for Neon](/docs/get-started-with-neon/signing-up)
+- [Get Docker](https://docs.docker.com/get-docker/)
+- [Install mongosh](https://www.mongodb.com/docs/mongodb-shell/install/)
+- [MongoDB Compatibility - What's Really Important?](https://blog.ferretdb.io/mongodb-compatibility-whats-really-important/)
+- [JSON types in Postgres](https://www.postgresql.org/docs/current/datatype-json.html)
+- [FerretDB on GitHub](https://github.com/FerretDB/FerretDB)
+- [FerretDB supported commands](https://docs.ferretdb.io/reference/supported-commands/)
+- [Postgres JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [Neon SQL Editor](https://neon.tech/docs/get-started-with-neon/query-with-neon-sql-editor)
+- [Connect with psql](/docs/connect/query-with-psql-editor)
+- [Understanding FerretDB](https://docs.ferretdb.io/understanding-ferretdb/)
+- [FerretDB Get Started](https://docs.ferretdb.io/quickstart-guide/)
+
+<NeedHelp/>
 
 
 # Grafbase
@@ -12153,7 +12954,7 @@ subtitle: Learn how to build and deploy serverless GraphQL backends with Grafbas
   Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-10-07T10:43:33.377Z'
+updatedOn: '2024-02-08T15:20:54.283Z'
 ---
 
 _This guide was contributed by Josep Vidal from Grafbase_
@@ -12240,23 +13041,15 @@ A database connection string is required to forward queries to your Neon databas
 1. Navigate to the Neon **Dashboard**.
 2. Copy the connection string for your database from the **Connection Details** widget. The connection string should appear similar to the following:
 
-    <CodeBlock shouldWrap>
-
-    ```text
+    ```text shouldWrap
     postgres://[user]:[password]@[neon_hostname]/[dbname]
     ```
 
-    </CodeBlock>
-
 3. Add a `DATABASE_URL` environment variable to your `grafbase/.env` file and set the value to your connection string. For example:
 
-    <CodeBlock shouldWrap>
-
-    ```text
+    ```text shouldWrap
     DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]
     ```
-
-    </CodeBlock>
 
 ## Add code to the resolvers
 
@@ -12310,7 +13103,7 @@ To test the resolvers with Neon, perform the following steps:
     npx grafbase dev
     ```
 
-2. Go to http://localhost:4000 and execute the following GraphQL mutation, which creates a new product:
+2. Go to [http://localhost:4000](http://localhost:4000) and execute the following GraphQL mutation, which creates a new product:
 
     ```graphql
     mutation {
@@ -12438,7 +13231,7 @@ title: Use StepZen with Neon
 subtitle: Learn how to use StepZen to build a GraphQL API for your Neon database
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-10-07T10:43:33.394Z'
+updatedOn: '2024-02-08T15:20:54.291Z'
 ---
 
 _This guide was contributed by Roy Derks from StepZen_
@@ -12465,13 +13258,9 @@ Running the `init.sql` file creates the `address`, `customer`, `product`, and `o
 
 You can seed the database directly from the terminal by running the following `psql` command:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 psql postgres://[user]:[password]@[neon_hostname]/[dbname] < init.sql
 ```
-
-</CodeBlock>
 
 The command takes a Neon connection string as the first argument and a file as the second argument.
 
@@ -13046,7 +13835,7 @@ If you had trouble with any of the steps outlined above, refer to the video guid
 title: Get started with Flyway and Neon
 subtitle: Learn how to manage schema changes in Neon with Flyway
 enableTableOfContents: true
-updatedOn: '2023-11-27T16:33:52.717Z'
+updatedOn: '2024-02-08T15:20:54.283Z'
 ---
 
 Flyway is a database migration tool that facilitates version control for databases. It allows developers to manage and track changes to the database schema, ensuring that the database evolves consistently across different environments.
@@ -13103,21 +13892,15 @@ From the Neon **Dashboard**, retrieve your password and a Java connection string
 
 Your Java connection string should look something like this:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?user=alex&password=AbC123dEf
 ```
-
-</CodeBlock>
 
 ## Configure flyway
 
 To configure Flyway to connect to your Neon database, create a `flyway.conf` file in the /conf directory. Include the following items, modified to use the connection details you retrieved in the previous step.
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 flyway.url=jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech:5432/neondb
 
 flyway.user=alex
@@ -13126,8 +13909,6 @@ flyway.password=AbC123dEf
 
 flyway.locations=filesystem:/home/alex/flyway-x.y.z/sql
 ```
-
-</CodeBlock>
 
 ## Create the first migration
 
@@ -13226,7 +14007,7 @@ Learn how you can use Flyway with multiple database environments. See [Use Flywa
 title: Manage multiple database environments
 subtitle: Learn how to manage schemas for multiple database environments with Flyway
 enableTableOfContents: true
-updatedOn: '2023-12-04T12:15:51.547Z'
+updatedOn: '2024-02-08T15:20:54.282Z'
 ---
 
 With Flyway, you can manage and track changes to your database schema, ensuring that the database evolves consistently across different environments.
@@ -13273,26 +14054,20 @@ Perform these steps twice, once for your _development_ branch and once for your 
 
 <TabItem>
 
-<CodeBlock showLineNumbers>
-
-```bash
+```bash showLineNumbers
 neonctl branches create --name development
 ```
-
-</CodeBlock>
 
 </TabItem>
 
 <TabItem>
 
-<CodeBlock showLineNumbers>
-
-```bash
+```bash showLineNumbers
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/{project_id}/branches \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -13306,8 +14081,6 @@ curl --request POST \
 }
 ' | jq
 ```
-
-</CodeBlock>
 
 </TabItem>
 
@@ -13323,33 +14096,21 @@ Your connection strings should look something like the ones shown below. Note th
 
 - **main**
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?user=alex&password=AbC123dEf
     ```
 
-    </CodeBlock>
-
 - **development**
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     jdbc:postgresql://ep-mute-night-47642501.us-east-2.aws.neon.tech/neondb?user=alex&password=AbC123dEf
     ```
 
-    </CodeBlock>
-
 - **staging**
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     jdbc:postgresql://ep-shrill-shape-27763949.us-east-2.aws.neon.tech/neondb?user=alex&password=AbC123dEf
     ```
-
-    </CodeBlock>
 
 ## Configure flyway to connect each environment
 
@@ -13370,9 +14131,7 @@ By default, Flyway loads its configuration from the default `conf/flyway.conf` f
 
 2. In each configuration file, update the following items with the correct connection details for that database environment. The `url` setting will differ for each environment (in `env_prod.conf`, the `url` will point to `main`). In this example, where you are the only user, the `user` and `password` settings should be the same for each of your three database environments.
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     flyway.url=jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech:5432/neondb
 
     flyway.user=alex
@@ -13383,8 +14142,6 @@ By default, Flyway loads its configuration from the default `conf/flyway.conf` f
 
     flyway.baselineOnMigrate=true
     ```
-
-    </CodeBlock>
 
     - The `flyway.locations` setting tells Flyway where to look for your migration files. We'll create them in the `/sql` directory in a later step.
     - The `flyway.baselineOnMigrate=true` setting tells Flyway to perform a baseline action when you run the `migrate` command on a non-empty schema with no Flyway schema history table. The schema will then be initialized with the `baselineVersion` before executing migrations. Only migrations above the `baselineVersion` will then be applied. This is useful for initial Flyway deployments on projects with an existing database. You can disable this setting by commenting it out again or setting it to false after applying your first migration on the database.
@@ -13407,37 +14164,25 @@ Run the migration on each environment in order by specifying the environment's c
 
 <TabItem>
 
-<CodeBlock showLineNumbers>
-
-```bash
+```bash showLineNumbers
 flyway migrate -configFiles="conf/env_dev.conf"
 ```
 
-</CodeBlock>
-
 </TabItem>
 
 <TabItem>
 
-<CodeBlock showLineNumbers>
-
-```bash
+```bash showLineNumbers
 flyway migrate -configFiles="conf/env_staging.conf"
 ```
 
-</CodeBlock>
-
 </TabItem>
 
 <TabItem>
 
-<CodeBlock showLineNumbers>
-
-```bash
+```bash showLineNumbers
 flyway migrate -configFiles="conf/env_prod.conf"
 ```
-
-</CodeBlock>
 
 </TabItem>
 
@@ -13479,7 +14224,7 @@ You've seen how you can instantly create new database environment with Neon's br
 title: Get started with Liquibase and Neon
 subtitle: Learn how to manage schema changes in Neon with Liquibase
 enableTableOfContents: true
-updatedOn: '2023-11-30T17:39:12.805Z'
+updatedOn: '2024-02-08T15:20:54.284Z'
 ---
 
 Liquibase is an open-source library for tracking, managing, and applying database schema changes. To learn more about Liquibase, refer to the [Liquibase documentation](https://docs.liquibase.com/home.html).
@@ -13490,7 +14235,7 @@ This guide steps you through installing the Liquibase CLI, configuring Liquibase
 
 - A Neon account. See [Sign up](/docs/get-started-with-neon/signing-up).
 - A Neon project. See [Create your first project](/docs/get-started-with-neon/setting-up-a-project).
-- Liquibase requires Java. For Liquibase Java requirements, see [Requirements](https://docs.liquibase.com/start/install/liquibase-requirements.html). To check if you have Java installed, run `java --version`, or `java -version` on macOS`. 
+- Liquibase requires Java. For Liquibase Java requirements, see [Requirements](https://docs.liquibase.com/start/install/liquibase-requirements.html). To check if you have Java installed, run `java --version`, or `java -version` on macOS`.
 
 ## Download and extract Liquibase
 
@@ -13583,13 +14328,9 @@ From the Neon **Dashboard**, retrieve your password and a Java connection string
 
 Your Java connection string should look something like the one shown below.
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech/blog?user=alex&password=AbC123dEf
 ```
-
-</CodeBlock>
 
 ## Connect from Liquibase to your Neon database
 
@@ -13608,14 +14349,10 @@ jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech/blog?user=alex
 
 3. Open the the `liquibase.properties` file in an editor and add entries for a [liquibase changelog file](https://docs.liquibase.com/concepts/changelogs/home.html) and your database `url`. We'll call the changelog file `dbchangelog.xml`. You will use this file to define schema changes. For the `url`, specify the Neon connection string you retrieved previously.
 
-    <CodeBlock shouldWrap>
-
-    ```env
+    ```bash shouldWrap
     changeLogFile:dbchangelog.xml  
     url: jdbc:postgresql://ep-floral-poetry-66238369.us-east-2.aws.neon.tech/blog?user=alex&password=4GfNAqycba8P&sslmode=require
     ```
-
-    </CodeBlock>
 
 ## Take a snapshot of your database
 
@@ -13787,7 +14524,7 @@ Learn how to use Liquibase with Neon's database branching feature to set up a de
 title: Liquibase developer workflow with Neon
 subtitle: Implement a developer workflow with Liquibase and Neon branching
 enableTableOfContents: true
-updatedOn: '2023-11-30T17:39:12.804Z'
+updatedOn: '2024-02-08T15:20:54.283Z'
 ---
 
 Liquibase is an open-source database-independent library for tracking, managing, and applying database schema changes. To learn more about Liquibase, refer to the [Liquibase documentation](https://docs.liquibase.com/home.html).
@@ -13800,7 +14537,7 @@ The instructions in this guide are based on the workflow described in the [Liqui
 
 - A Neon account. See [Sign up](/docs/get-started-with-neon/signing-up).
 - A Neon project. See [Create your first project](/docs/get-started-with-neon/setting-up-a-project).
-- Liquibase requires Java. For Liquibase Java requirements, see [Requirements](https://docs.liquibase.com/start/install/liquibase-requirements.html). To check if you have Java installed, run `java --version`, or `java -version` on macOS`. 
+- Liquibase requires Java. For Liquibase Java requirements, see [Requirements](https://docs.liquibase.com/start/install/liquibase-requirements.html). To check if you have Java installed, run `java --version`, or `java -version` on macOS`.
 - An installation of Liquibase. For instructions, refer to [Get started with Liquibase and Neon](/docs/guides/liquibase).
 
 ## Initialize a new Liquibase project
@@ -13885,7 +14622,7 @@ The `liquibase.properties` file defines the location of the Liquibase changelog 
 
 2. Change the `changeLogFile` setting as shown:
 
-    ```env
+    ```bash
     changeLogFile=dbchangelog.xml
     ``````
 
@@ -13893,9 +14630,7 @@ The `liquibase.properties` file defines the location of the Liquibase changelog 
 
 3. Change the target database `url`, `username`, and `password` settings to the correct values for the `blog` database on your `dev1` branch. You can obtain the required details from the connection string you copied previously. You will need to swap out the hostname (`ep-silent-hill-85675036.us-east-2.aws.neon.tech`), username, and password for your own.
 
-    <CodeBlock shouldWrap>
-
-    ```env
+    ```bash shouldWrap
     liquibase.command.url=jdbc:postgresql://ep-silent-hill-85675036.us-east-2.aws.neon.tech:5432/blog
 
     liquibase.command.username: alex
@@ -13903,21 +14638,15 @@ The `liquibase.properties` file defines the location of the Liquibase changelog 
     liquibase.command.password: AbC123dEf
     ```
 
-    </CodeBlock>
-
 4. Change the source database settings to the correct values for the `blog` database on your `main` branch. The username and password will be the same as your `dev1` branch, but make sure to use the right hostname. Copy the snippet below and replace the hostname (`ep-cool-darkness-123456.us-east-2.aws.neon.tech`), username, and password for your own.
 
-    <CodeBlock shouldWrap>
-
-    ```env
+    ```bash shouldWrap
     liquibase.command.referenceUrl: jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech:5432/blog
 
     liquibase.command.referenceUsername: alex
 
     liquibase.command.referencePassword: AbC123dEf
     ```
-
-    </CodeBlock>
 
 ## Take a snapshot of your target database
 
@@ -14061,13 +14790,9 @@ It is a best practice to review schema changes before saving and applying them t
 
 You can run the [status](https://docs.liquibase.com/commands/change-tracking/status.html) command to see if there are any changesets that haven't been applied to the source database. Notice that the command specifies the hostname of the source database:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 liquibase --url=jdbc:postgresql://ep-rapid-bush-01185324.us-east-2.aws.neon.tech:5432/blog status --verbose
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Command output</summary>
@@ -14089,13 +14814,9 @@ Liquibase command 'status' was executed successfully.
 
 Before applying the update, you can run the [updateSQL](https://docs.liquibase.com/commands/update/update-sql.html) command to inspect the SQL Liquibase will apply when running the update command:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 liquibase --url=jdbc:postgresql://ep-rapid-bush-01185324.us-east-2.aws.neon.tech:5432/blog updateSQL
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Command output</summary>
@@ -14147,13 +14868,9 @@ Liquibase command 'updateSql' was executed successfully.
 
 You can also run a `diff` command to compare your source and target databases.
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 liquibase --referenceUrl=jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech:5432/blog --referenceUsername alex --referencePassword IwMdnTs1R6kH diff
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Command output</summary>
@@ -14225,13 +14942,9 @@ When you are satisfied with the changes that will be applied, save your changelo
 
 Apply the new changesets to the source database on your primary branch:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 liquibase --url=jdbc:postgresql://ep-cool-darkness-123456.us-east-2.aws.neon.tech:5432/blog update
 ```
-
-</CodeBlock>
 
 <details>
 <summary>Command output</summary>
@@ -14277,16 +14990,20 @@ When you run a changeset for the first time on the source database, you will fin
 ---
 title: Neon serverless driver
 enableTableOfContents: true
-subtitle: Learn how to connect to Neon from serverless and edge environments over HTTP
-  or WebSockets
-updatedOn: '2023-10-13T14:08:36.352Z'
+subtitle: Connect to Neon from serverless environments over HTTP or WebSockets
+updatedOn: '2024-02-09T17:53:20.590Z'
 ---
 
-The [Neon serverless driver](https://github.com/neondatabase/serverless) is a low-latency Postgres driver for JavaScript and TypeScript that allows you to query data from serverless and edge environments over HTTP or WebSockets in place of TCP.
+The [Neon serverless driver](https://github.com/neondatabase/serverless) is a low-latency Postgres driver for JavaScript and TypeScript that allows you to query data from serverless and edge environments over **HTTP** or **WebSockets** in place of TCP. The driver's low-latency capability is due to [message pipelining and other optimizations](https://neon.tech/blog/quicker-serverless-postgres).
 
-You can use the driver as a drop-in replacement for [node-postgres](https://node-postgres.com/), the popular npm `pg` package you may already be familiar with. See [Using node-postgres Pool or Client](#using-node-postgres-pool-or-client).
+When to query over HTTP vs WebSockets:
 
-The driver's low-latency capability is due to [message pipelining and other optimizations](https://neon.tech/blog/quicker-serverless-postgres).
+- **HTTP**: Querying over an HTTP [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) request is faster for single, non-interactive transactions, also referred to as "one-shot queries". Issuing [multiple queries](#issue-multiple-queries-with-the-transaction-function) via a single, non-interactive transaction is also supported. See [Use the driver over HTTP](#how-to-use-the-driver-over-http).
+- **WebSockets**: If you require session or interactive transaction support or compatibility with [node-postgres](https://node-postgres.com/) (the popular **npm** `pg` package), use WebSockets. See [Use the driver over WebSockets](#use-the-driver-over-websockets).
+
+<Admonition type="note">
+The Neon serverless driver is currently in beta and subject to change in the future.
+</Admonition>
 
 ## Install the Neon serverless driver
 
@@ -14300,15 +15017,19 @@ The driver includes TypeScript types (the equivalent of `@types/pg`). No additio
 
 ## Configure your Neon database connection
 
-You can obtain a connection string for your database from the **Connection Details** widget on the Neon **Dashboard** and set it as an environment variable. Your Neon connection string will look something like this:
+You can obtain a connection string for your database from the **Connection Details** widget on the Neon **Dashboard**. Your Neon connection string will look something like this:
 
 ```shell
 DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]
 ```
 
-## How to use the driver over HTTP
+The examples that follow assume that your database connection string is assigned to a `DATABASE_URL` variable in your application's environment file.
 
-To use the Neon serverless driver over HTTP, you must use the driver's `neon` function. You can use raw SQL queries or tools such as [Drizzle-ORM](https://orm.drizzle.team/docs/quick-postgresql/neon), [kysely](https://github.com/kysely-org/kysely), [Zapatos](https://jawj.github.io/zapatos/), and others for type safety.
+## Use the driver over HTTP
+
+The Neon serverless driver uses the [neon](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#neon-function) function for queries over HTTP.
+
+You can use raw SQL queries or tools such as [Drizzle-ORM](https://orm.drizzle.team/docs/quick-postgresql/neon), [kysely](https://github.com/kysely-org/kysely), [Zapatos](https://jawj.github.io/zapatos/), and others for type safety. Please note that [Drizzle Kit](https://orm.drizzle.team/kit-docs/overview) does not support the Neon serverless driver — you'll have to use a standard Postgres driver with Drizzle Kit, like `node-postgres` or `postgres.js`.
 
 <CodeTabs labels={["Node.js", "Drizzle-ORM", "Vercel Edge Function", "Vercel Serverless Function"]}>
 
@@ -14367,20 +15088,197 @@ export default async function handler(
 </CodeTabs>
 
 <Admonition type="note">
-The maximum request size and response size for queries over HTTP is 10 MB. Additionally, there is a 15 second proxy timeout for SQL requests over HTTP. Long running queries that exceed the 15 second threshold are terminated.
+The maximum request size and response size for queries over HTTP is 10 MB. Additionally, there is a 15-second proxy timeout for SQL requests over HTTP. Long-running queries that exceed the 15-second threshold are terminated.
 </Admonition>
 
-## Experimental connection caching
+### neon function configuration options
 
-Connection caching provides server-side connection pooling, so that a new connection does not  have to be set up for each query over HTTP. You can enable it by setting `fetchConnectionCache` to `true` in the `neonConfig` object.
+The `neon(...)` function returns a query function that can be used both as a tagged-template function and as an ordinary function:
 
-## Using node-postgres Pool or Client
+```javascript
+import { neon } from '@neondatabase/serverless';
+const sql = neon(process.env.DATABASE_URL);
 
-You can use the Neon serverless driver in the same way you would use `node-postgres` with `Pool` and `Client`. Where you usually import `pg`, import `@neondatabase/serverless` instead.
+// as a tagged-template function
+const rowsA = await sql`SELECT * FROM posts WHERE id = ${postId}`;
+
+// as an ordinary function (exactly equivalent)
+const rowsB = await sql('SELECT * FROM posts WHERE id = $1', [postId]);
+```
+
+By default, the query function returned by `neon(...)` returns only the rows resulting from the provided SQL query, and it returns them as an array of objects where the keys are column names. For example:
+
+```javascript
+import { neon } from '@neondatabase/serverless';
+const sql = neon(process.env.DATABASE_URL);
+const rows = await sql`SELECT * FROM posts WHERE id = ${postId}`;
+// -> [{ id: 12, title: "My post", ... }]
+```
+
+However, you can customize the return format of the query function using the configuration options `fullResults` and `arrayMode`. These options are available both on the `neon(...)` function and on the query function it returns (but only when the query function is called as an ordinary function, not as a tagged-template function).
+
+- `arrayMode: boolean`, `false` by default
+
+  The default `arrayMode` value is `false`. When it is true, rows are returned as an array of arrays instead of an array of objects:
+
+  ```javascript
+  import { neon } from '@neondatabase/serverless';
+  const sql = neon(process.env.DATABASE_URL, { arrayMode: true });
+  const rows = await sql`SELECT * FROM posts WHERE id = ${postId}`;
+  // -> [[12, "My post", ...]]
+  ```
+
+  Or, with the same effect:
+
+  ```javascript
+  import { neon } from '@neondatabase/serverless';
+  const sql = neon(process.env.DATABASE_URL);
+  const rows = await sql('SELECT * FROM posts WHERE id = $1', [postId], { arrayMode: true });
+  // -> [[12, "My post", ...]]
+  ```
+
+- `fullResults: boolean` 
+
+  The default `fullResults` value is `false`. When it is `true`, additional metadata is returned alongside the result rows, which are then found in the `rows` property of the return value. The metadata matches what would be returned by `node-postgres`:
+
+  ```javascript
+  import { neon } from '@neondatabase/serverless';
+  const sql = neon(process.env.DATABASE_URL, { fullResults: true });
+  const results = await sql`SELECT * FROM posts WHERE id = ${postId}`;
+  /* -> {
+    rows: [{ id: 12, title: "My post", ... }],
+    fields: [
+      { name: "id", dataTypeID: 23, ... },
+      { name: "title", dataTypeID: 25, ... },
+      ...
+    ],
+    rowCount: 1,
+    rowAsArray: false,
+    command: "SELECT"
+  } 
+  */
+  ```
+
+  Or, with the same effect:
+
+  ```javascript
+  import { neon } from '@neondatabase/serverless';
+  const sql = neon(process.env.DATABASE_URL);
+  const results = await sql('SELECT * FROM posts WHERE id = $1', [postId], { fullResults: true });
+  // -> { ... same as above ... }
+ 
+  ```
+
+- `fetchOptions: Record<string, any>`
+
+  The `fetchOptions` option can also be passed to either `neon(...)` or the `query` function. This option takes an object that is merged with the options to the `fetch` call.
+
+  For example, to increase the priority of every database `fetch` request:
+
+  ```javascript
+  import { neon } from '@neondatabase/serverless';
+  const sql = neon(process.env.DATABASE_URL, { fetchOptions: { priority: 'high' } });
+  const rows = await sql`SELECT * FROM posts WHERE id = ${postId}`;
+  ```
+
+  Or to implement a `fetch` timeout:
+
+  ```javascript
+  import { neon } from '@neondatabase/serverless';
+  const sql = neon(process.env.DATABASE_URL);
+  const abortController = new AbortController();
+  const timeout = setTimeout(() => abortController.abort('timed out'), 10000);
+  const rows = await sql(
+    'SELECT * FROM posts WHERE id = $1', [postId], 
+    { fetchOptions: { signal: abortController.signal } }
+  );  // throws an error if no result received within 10s
+  clearTimeout(timeout);
+  ```
+
+For additional details, see [Options and configuration](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#options-and-configuration).
+
+### Issue multiple queries with the transaction() function
+
+The `transaction(queriesOrFn, options)` function is exposed as a property on the query function. It allows multiple queries to be executed within a single, non-interactive transaction.
+
+The first argument to `transaction(), queriesOrFn`, is either an array of queries or a non-async function that receives a query function as its argument and returns an array of queries.
+
+The array-of-queries case looks like this:
+
+```javascript
+import { neon } from '@neondatabase/serverless';
+const sql = neon(process.env.DATABASE_URL);
+const showLatestN = 10;
+
+const [posts, tags] = await sql.transaction([
+  sql`SELECT * FROM posts ORDER BY posted_at DESC LIMIT ${showLatestN}`,
+  sql`SELECT * FROM tags`,
+], { 
+  isolationLevel: 'RepeatableRead',
+  readOnly: true, 
+});
+```
+
+Or as an example of the function case:
+
+```javascript
+const [authors, tags] = await neon(process.env.DATABASE_URL)
+  .transaction(txn => [
+    txn`SELECT * FROM authors`,
+    txn`SELECT * FROM tags`,
+  ]);
+```
+
+The optional second argument to `transaction()`, `options`, has the same keys as the options to the ordinary query function -- `arrayMode`, `fullResults` and `fetchOptions` — plus three additional keys that concern the transaction configuration. These transaction-related keys are: `isolationMode`, `readOnly` and `deferrable`.
+
+Note that options **cannot** be supplied for individual queries within a transaction. Query and transaction options must instead be passed as the second argument of the `transaction()` function. For example, this `arrayMode` setting is ineffective (and TypeScript won't compile it): `await sql.transaction([sql('SELECT now()', [], { arrayMode: true })])`. Instead, use `await sql.transaction([sql('SELECT now()')], { arrayMode: true })`.
+
+- `isolationMode`
+
+  This option selects a Postgres [transaction isolation mode](https://www.postgresql.org/docs/current/transaction-iso.html). If present, it must be one of `ReadUncommitted`, `ReadCommitted`, `RepeatableRead`, or `Serializable`.
+
+- `readOnly`
+  
+  If `true`, this option ensures that a `READ ONLY` transaction is used to execute the queries passed. This is a boolean option. The default value is `false`.
+
+- `deferrable`
+
+  If `true` (and if `readOnly` is also `true`, and `isolationMode` is `Serializable`), this option ensures that a `DEFERRABLE` transaction is used to execute the queries passed. This is a boolean option. The default value is `false`.
+
+For additional details, see [transaction(...) function](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#transaction-function).
+
+### Experimental connection caching
+
+Connection caching provides server-side connection pooling so that a new connection does not have to be set up for each query over HTTP. You can enable it by setting `fetchConnectionCache` to `true` using the [neonConfig](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#neonconfig-configuration) object.
+
+```javascript
+import { neonConfig } from '@neondatabase/serverless';
+
+// Enable connection cache (pool) on the server for HTTP fetch queries
+neonConfig.fetchConnectionCache = true
+```
 
 <Admonition type="note">
-The `Pool` and `Client` objects must be connected, used, and closed within a single request handler. Don't create the objects outside a request handler; don't create them in one handler and try to reuse them in another; and to avoid exhausting available connections, don't forget to close them.
+This experimental option is currently only recommended for use with a non-pooled Neon connection string. For information about pooled and non-pooled Neon connections, see [Connection pooling](/docs/connect/connection-pooling).
 </Admonition>
+
+### Advanced configuration options
+
+For advanced configuration options, see [neonConfig configuration](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#neonconfig-configuration), in the Neon serverless driver GitHub readme.
+
+## Use the driver over WebSockets
+
+The Neon serverless driver supports the [Pool and Client](https://github.com/neondatabase/serverless?tab=readme-ov-file#pool-and-client) constructors for querying over WebSockets.
+
+The `Pool` and `Client` constructors, provide session and transaction support, as well as `node-postgres` compatibility. You can find the API guide for the `Pool` and `Client` constructors in the [node-postgres](https://node-postgres.com/) documentation.
+
+Consider using the driver with `Pool` or `Client` in the following scenarios:
+
+- You already use `node-postgres` in your code base and would like to migrate to using `@neondatabase/serverless`.
+- You are writing a new code base and want to use a package that expects a `node-postgres-compatible` driver.
+- Your backend service uses sessions / interactive transactions with multiple queries per connection.
+
+You can use the Neon serverless driver in the same way you would use `node-postgres` with `Pool` and `Client`. Where you usually import `pg`, import `@neondatabase/serverless` instead. Please note that [Drizzle Kit](https://orm.drizzle.team/kit-docs/overview) does not support the Neon serverless driver — you'll have to use a standard Postgres driver with Drizzle Kit, like `node-postgres` or `postgres.js`.
 
 <CodeTabs labels={["Node.js", "Prisma", "Drizzle-ORM", "Vercel Edge Function", "Vercel Serverless Function"]}>
 
@@ -14473,60 +15371,21 @@ export default async function handler(
 
 </CodeTabs>
 
-## When to use the neon function vs Pool or Client
+### Pool and Client usage notes
 
-The Neon serverless driver supports the `neon` function for queries over HTTP, and `Pool` and `Client` constructors for querying over WebSockets.
+- In Node.js and some other environments, there's no built-in WebSocket support. In these cases, supply a WebSocket constructor function.
 
-### The neon function
+  ```javascript
+  import ws from 'ws';
+  neonConfig.webSocketConstructor = ws;
+  ```
+- In serverless environments such as Vercel Edge Functions or Cloudflare Workers, WebSocket connections can't outlive a single request. That means `Pool` or `Client` objects must be connected, used and closed within a single request handler. Don't create them outside a request handler; don't create them in one handler and try to reuse them in another; and to avoid exhausting available connections, don't forget to close them.
 
-Querying over an HTTP [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) request is faster for single, non-interactive transactions. If you do not require sessions or transactions, consider using HTTP for faster response times.
+For examples that demonstrate these points, see [Pool and Client](https://github.com/neondatabase/serverless?tab=readme-ov-file#pool-and-client).
 
-### neon function configuration options
+### Advanced configuration options
 
-The `neon(...)` function supports `arrayMode`, `fullResults`, and `fetchOptions` option keys for customizing the query function. For usage information, see [Options and configuration](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#options-and-configuration).
-
-The `neon(...)` function also supports issuing multiple queries at once in a single, non-interactive transaction using the `transaction()` function, which is exposed as a property of the query function. For example:
-
-```javascript
-import { neon } from '@neondatabase/serverless';
-const sql = neon(process.env.DATABASE_URL);
-const showLatestN = 10;
-
-const [posts, tags] = await sql.transaction([
-  sql`SELECT * FROM posts ORDER BY posted_at DESC LIMIT ${showLatestN}`,
-  sql`SELECT * FROM tags`,
-]);
-```
-
-The `transaction()` function supports the same option keys as the ordinary query function — `arrayMode`, `fullResults`, and `fetchOptions` — plus three additional keys concerning transaction configuration:
-
-- `isolationMode`
-
-  Must be one of `ReadUncommitted`, `ReadCommitted`, `RepeatableRead`, or `Serializable`.
-
-- `readOnly`
-  
-  Ensures that a `READ ONLY` transaction is used to execute queries. This is a boolean option. The default value is `false`.
-
-- `deferrable`
-
-  Ensures that a `DEFERRABLE` transaction is used to execute queries. This is a boolean option. The default value is `false`.
-
-For additional details, see [transaction(...) function](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#transaction-function).
-
-### Pool or Client
-
-The `Pool` and `Client` constructors, which support querying over WebSockets, provide session and transaction support, as well as `node-postgres` compatibility. You can find the API guide for the `Pool` and `Client` constructors in the [node-postgres](https://node-postgres.com/) documentation.
-
-Consider using the driver with `Pool` or `Client` in the following scenarios:
-
-- You already use `node-postgres` in your code base and would like to migrate to using `@neondatabase/serverless`.
-- You are writing a new code base and want to use a package that expects a `node-postgres-compatible` driver.
-- Your backend service uses sessions / interactive transactions with multiple queries per connection.
-
-### Pool and Client configuration options
-
-For configuration options that apply to `Pool` and `Client`, see [options and configuration](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#options-and-configuration) in the driver's GitHub repository.
+For advanced configuration options, see [neonConfig configuration](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#neonconfig-configuration), in the Neon serverless driver GitHub readme.
 
 ## Example applications
 
@@ -14557,6 +15416,22 @@ The Ping Thing application pings a Neon Serverless Postgres database using a Ver
 <a href="https://github.com/neondatabase/ping-thing" description="Ping a Neon Serverless Postgres database using a Vercel Edge Function to see the journey your request makes" icon="github">Ping Thing</a>
 </DetailIconCards>
 
+## Neon serverless driver GitHub repository and changelog
+
+The GitHub repository and [changelog](https://github.com/neondatabase/serverless/blob/main/CHANGELOG.md) for the Neon serverless driver are found [here](https://github.com/neondatabase/serverless).
+
+## References
+
+- [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
+- [node-postgres](https://node-postgres.com/)
+- [Drizzle-ORM](https://orm.drizzle.team/docs/quick-postgresql/neon)
+- [kysely](https://github.com/kysely-org/kysely)
+- [Zapatos](https://jawj.github.io/zapatos/)
+- [Vercel Edge Functions](https://vercel.com/docs/functions/edge-functions)
+- [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+
+<NeedHelp/>
+
 
 # AWS Lambda
 
@@ -14564,7 +15439,7 @@ The Ping Thing application pings a Neon Serverless Postgres database using a Ver
 title: Connect from AWS Lambda
 subtitle: Learn how to set up a Neon database and connect from an AWS Lambda function
 enableTableOfContents: true
-updatedOn: '2023-10-07T10:43:33.372Z'
+updatedOn: '2024-02-08T15:20:54.279Z'
 ---
 
 AWS Lambda is a serverless, event-driven compute service that allows you to run code without provisioning or managing servers. It is a convenient and cost-effective solution for running various types of workloads, including those that require a database.
@@ -14736,10 +15611,8 @@ Create the Lambda function using the [Serverless Framework](https://www.serverle
     </Admonition>
 
     You can copy the connection string from **Connection Details** widget the Neon Console. Add the `DATABASE_URL` under `environment`, and add `sslmode=require` to the end of the connection string to enable SSL. The `sslmode=require` option tells Postgres to use SSL encryption and verify the server's certificate.
-
-    <CodeBlock shouldWrap>
   
-    ```yaml
+    ```yaml shouldWrap
     provider:
      name: aws
      runtime: nodejs14.x
@@ -14754,8 +15627,6 @@ Create the Lambda function using the [Serverless Framework](https://www.serverle
              path: /users
              method: get
     ```
-
-    </CodeBlock>
 
 7. Deploy the serverless function using the following command:
 
@@ -14830,13 +15701,9 @@ If you make API calls to the Lambda function from your app, you will likely need
 
 You can run the following command to enable CORS to your local development environment:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 aws apigatewayv2 update-api --api-id <api-id> --cors-configuration AllowOrigins="http://localhost:3000"
 ```
-
-</CodeBlock>
 
 You can find your `api-id` on the API Gateway dashboard:
 
@@ -15007,6 +15874,267 @@ For more information about using PolyScale and how it works, refer to the [PolyS
 
 # Deployment platforms
 
+# Deno
+
+---
+title: Use Neon with Deno Deploy
+subtitle: Connect a Neon Postgres database to your Deno Deploy application
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.282Z'
+---
+
+[Deno Deploy](https://deno.com/deploy) is a scalable serverless platform for running JavaScript, TypeScript, and WebAssembly at the edge, designed by the creators of Deno. It simplifies the deployment process and offers automatic scaling, zero-downtime deployments, and global distribution.
+
+This guide demonstrates how to connect to a Neon Postgres database from a simple Deno application that uses [deno-postgres](https://deno.land/x/postgres@ls) driver to interact with the database.
+
+The guide covers two deployment options:
+
+- [Deploying your application locally with Deno Runtime](#deploy-your-application-locally-with-deno-runtime)
+- [Deploying your application with the Deno Deploy serverless platform](#deploy-your-application-with-deno-deploy)
+
+## Prerequisites
+
+To follow the instructions in this guide, you will need:
+
+- A Neon project. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- To use the Deno Deploy serverless platform, you require a Deno Deploy account. Visit [Deno Deploy](https://deno.com/deploy) to sign up or log in.
+
+## Retrieve your Neon database connection string
+
+Retrieve your database connection string from the **Connection Details** widget in the Neon Console.
+
+Your connection string should look something like this:
+
+```bash shouldWrap
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
+```
+
+You'll need the connection string a little later in the setup.
+
+## Deploy your application locally with Deno Runtime
+
+Deno Runtime is an open-source runtime for TypeScript and JavaScript. The following instructions describe how to deploy an example application locally using Deno Runtime.
+
+### Install the Deno Runtime and deployctl
+
+Follow the [Install Deno and deployctl](https://docs.deno.com/deploy/manual/#install-deno-and-deployctl) instructions in the Deno documentation to install the Deno runtime and `deployctl` command-line utility on your local machine.
+
+### Create the example application
+
+Next, create the `server.ts` script on your local machine.
+
+```ts
+// server.ts
+
+import { serve } from "https://deno.land/std@0.214.0/http/server.ts";
+import * as postgres from "https://deno.land/x/postgres@v0.17.0/mod.ts";
+
+const databaseUrl = Deno.env.get("DATABASE_URL")!;
+
+const pool = new postgres.Pool(databaseUrl, 3, true);
+
+const connection = await pool.connect();
+try {
+  await connection.queryObject`
+    CREATE TABLE IF NOT EXISTS books (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      author TEXT NOT NULL
+    );
+  `;
+
+  // Check if the table is empty by getting the count of rows
+  const result = await connection.queryObject<{ count: number }>`
+    SELECT COUNT(*) AS count FROM books;
+  `;
+  const bookCount = Number(result.rows[0].count);
+
+  if (bookCount === 0) {
+    // The table is empty, insert the book records
+    await connection.queryObject`
+      INSERT INTO books (title, author) VALUES
+        ('The Hobbit', 'J. R. R. Tolkien'),
+        ('Harry Potter and the Philosopher''s Stone', 'J. K. Rowling'),
+        ('The Little Prince', 'Antoine de Saint-Exupéry');
+    `;
+  }
+} finally {
+  connection.release();
+}
+
+serve(async (req) => {
+  const url = new URL(req.url);
+  if (url.pathname !== "/books") {
+    return new Response("Not Found", { status: 404 });
+  }
+
+  const connection = await pool.connect();
+
+  try {
+    switch (req.method) {
+      case "GET": {
+        const result = await connection.queryObject`SELECT * FROM books`;
+        const body = JSON.stringify(result.rows, null, 2);
+        return new Response(body, {
+          headers: { "content-type": "application/json" },
+        });
+      }
+      default:
+        return new Response("Method Not Allowed", { status: 405 });
+    }
+  } catch (err) {
+    console.error(err);
+    return new Response(`Internal Server Error\n\n${err.message} `, {
+      status: 500,
+    });
+  } finally {
+    connection.release();
+  }
+});
+```
+
+The script creates a table named `books` in the `neondb` database if it does not exist and inserts some data into it. It then starts a server that listens for requests on the `/books` endpoint. When a request is received, the script returns data from the `books` table.
+
+### Run the script locally
+
+To run the script locally, set the `DATABASE_URL` environment variable to the Neon connection string you copied earlier.
+
+```bash
+export DATABASE_URL=YOUR_NEON_CONNECTION_STRING
+```
+
+Then, run the command below to start the app server. The `--allow-env` flag allows the script to access the environment variables, and the `--allow-net` flag allows the script to make network requests. If the Deno runtime prompts you to allow these permissions, enter `y` to continue.
+
+```bash
+deno run --allow-env --allow-net server.ts
+```
+
+### Query the endpoint
+
+You can request the `/books` endpoint with a `cURL` command to view the data returned by the script:
+
+```bash
+curl http://localhost:8000/books
+```
+
+The `cURL` command should return the following data:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "The Hobbit",
+    "author": "J. R. R. Tolkien"
+  },
+  {
+    "id": 2,
+    "title": "Harry Potter and the Philosopher's Stone",
+    "author": "J. K. Rowling"
+  },
+  {
+    "id": 3,
+    "title": "The Little Prince",
+    "author": "Antoine de Saint-Exupéry"
+  }
+]%                                     
+```
+
+## Deploy your application with Deno Deploy
+
+Deno Deploy is a globally distributed platform for serverless JavaScript applications. Your code runs on managed servers geographically close to your users, enabling low latency and faster response times. Deno Deploy applications run on light-weight V8 isolates powered by the Deno runtime.
+
+### Set up the project
+
+1. If you have not done so already, install the `deployctl` command-line utility, as described [above](#install-the-deno-runtime-and-deployctl).
+1. If you have not done so already, create the example `server.ts` application on your local machine, as described [above](#create-the-example-application).
+1. Register or log in to [Deno](https://deno.com/) and navigate to the [Create a project](https://dash.deno.com/new) page, where you can select a project template for your preferred framework, link a code repo, or create an empty project.
+1. The example application in this guide is a simple Deno script you've created locally, so let's select the **Create an empty project** option. Note the name of your Deno Deploy project. You will need it in a later step. Projects are given a generated Heroku-style name, which looks something like this: `cloudy-otter-57`.
+1. Click the `Settings` button and add a `DATABASE_URL` environment variable. Set the value to your Neon connection string and click **Save**.
+1. To authenticate `deployctl` from the terminal, you will need an access token for your Deno Deploy account. Navigate back to your [Deno dashboard](https://dash.deno.com/account#access-tokens) and create a new access token. Copy the token value and set the `DENO_DEPLOY_TOKEN` environment variable on your local machine by running this command from your terminal:
+
+    ```bash
+    export DENO_DEPLOY_TOKEN=YOUR_ACCESS_TOKEN
+    ```
+
+### Deploy using deployctl
+
+To deploy the application, navigate to the directory of your `server.ts` application, and run the following command:
+
+```bash
+deployctl deploy --project=YOUR_DENO_DEPLOY_PROJECT_NAME --prod server.ts
+```
+
+The `--prod` flag specifies that the application should be deployed to the production environment.
+
+The `deployctl` command deploys the application to the Deno Deploy serverless platform. Once the deployment is complete, you'll see a message similar to the following:
+
+```bash
+$ deployctl deploy --project=cloudy-otter-57 --prod server.ts
+✔ Deploying to project cloudy-otter-57.
+  ℹ The project does not have a deployment yet. Automatically pushing initial deployment to production (use --prod for further updates).
+✔ Entrypoint: /home/ubuntu/neon-deno/server.ts
+ℹ Uploading all files from the current dir (/home/ubuntu/neon-deno)
+✔ Found 1 asset.
+✔ Uploaded 1 new asset.
+✔ Production deployment complete.
+✔ Created config file 'deno.json'.
+
+View at:
+ - https://cloudy-otter-57-8csne31fymac.deno.dev
+ - https://cloudy-otter-57.deno.dev
+```
+
+### Verifying the deployment
+
+You can now access the application at the URL specified in the output. You can verify its connection to your Neon database by visiting the `/books` endpoint in your browser or using `cURL` to see if the data is returned as expected.
+
+```bash
+$ curl https://cloudy-otter-57.deno.dev/books
+[
+  {
+    "id": 1,
+    "title": "The Hobbit",
+    "author": "J. R. R. Tolkien"
+  },
+  {
+    "id": 2,
+    "title": "Harry Potter and the Philosopher's Stone",
+    "author": "J. K. Rowling"
+  },
+  {
+    "id": 3,
+    "title": "The Little Prince",
+    "author": "Antoine de Saint-Exupéry"
+  }
+]
+```
+
+To check the health of the deployment or modify settings, navigate to the [Project Overview](https://dash.deno.com/account/projects) page and select your project from the **Projects** list.
+
+### Deploying using Github
+
+When deploying a more complex Deno application, with custom build steps, you can use Deno's Github integration. The integration lets you link a Deno Deploy project to a GitHub repository. For more information, see [Deploying with GitHub](https://docs.deno.com/deploy/manual/how-to-deploy).
+
+## Removing the example application and Neon project
+
+To delete the example application on Deno Deploy, follow these steps:
+
+1. From the Deno Deploy [dashboard](https://dash.deno.com/account/projects), select your **Project**.
+1. Select the **Settings** tab.
+1. In the **Danger Zone** section, click **Delete** and follow the instructions.
+
+To delete your Neon project, refer to [Delete a project](/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Deno Deploy](https://deno.com/deploy)
+- [Deno Runtime Quickstart](https://docs.deno.com/runtime/manual)
+- [Deno Deploy Quickstart](https://docs.deno.com/deploy/manual/)
+- [demo-postgres driver](https://deno.land/x/postgres@ls)
+
+<NeedHelp/>
+
+
 # Koyeb
 
 ---
@@ -15014,7 +16142,7 @@ title: Use Neon with Koyeb
 subtitle: Learn how to connect a Neon Postgres database to an application deployed with
   Koyeb
 enableTableOfContents: true
-updatedOn: '2023-10-07T10:43:33.385Z'
+updatedOn: '2024-02-01T14:26:32.333Z'
 ---
 
 [Koyeb](https://www.koyeb.com/) is a developer-friendly, serverless platform designed to easily deploy reliable and scalable applications globally. Koyeb offers native autoscaling, automatic HTTPS (SSL), auto-healing, and global load-balancing across their edge network with zero configuration.
@@ -15049,9 +16177,9 @@ You can deploy on Koyeb using the control panel or the Koyeb CLI.
 
 To deploy the application from the Koyeb [control panel](https://app.koyeb.com/), follow these steps:
 
-1. Select **Create App**.
+1. Navigate to the `Apps` tab and select **Create App**.
 1. Select GitHub as the deployment method.
-1. Enter `https://github.com/koyeb/example-express-prisma` in the **Public GitHub repository** field.
+1. When asked to select the repository to deploy, enter `https://github.com/koyeb/example-express-prisma` in the **Public GitHub repository** field.
 1. Keep `example-express-prisma` as the name and `main` as the branch.
 1. In **Build and deployment settings**, enable the **Override** setting and add the following **Build command**: `npm run postgres:init`
 1. Select the region closest to your Neon database.
@@ -15082,24 +16210,25 @@ The example application exposes a `/planets` endpoint that you can use to list p
 
 ### From the Koyeb CLI
 
-The [Koyeb CLI](https://www.koyeb.com/docs/quickstart/koyeb-cli) requires an API access token, which you can generate in the Koyeb [control panel](https://app.koyeb.com/), under **Account** > **API**.
+You can also deploy your application using the Koyeb CLI. To install it, follow the instructions in the [Koyeb CLI documentation](https://www.koyeb.com/docs/quickstart/koyeb-cli). 
 
-To deploy the example application using the Koyeb CLI, run the following command in your terminal.
+Using the CLI requires an API access token, which you can generate in the Koyeb [control panel](https://app.koyeb.com/), under **Organization Settings** > **API**. Once generated, run the command `koyeb login` and enter the token when prompted.
+
+To deploy the example application, run the following command in your terminal. Make sure to replace the `DATABASE_URL` with your Neon connection string.
 
 ```bash
-koyeb app init express-neon \
+koyeb apps init express-neon \
+--instance-type free \
 --git github.com/koyeb/example-express-prisma \
 --git-branch main \
 --git-build-command "npm run postgres:init" \
 --ports 8080:http \
 --routes /:8080 \
 --env PORT=8080 \
---env DATABASE_URL="postgres://[user]:[password]@[neon_hostname]/[dbname]"
-```
+--env DATABASE_URL="{}"
+``` 
 
-Make sure to replace `[user]`, `[password]`, and `[host]` with your Neon connection string values.
-
-### Access Koyeb deployment logs
+#### Access Koyeb deployment logs
 
 To track the app deployment and visualize build logs, execute the following command:
 
@@ -15107,7 +16236,7 @@ To track the app deployment and visualize build logs, execute the following comm
 koyeb service logs express-neon/express-neon -t build
 ```
 
-### Access your app
+#### Access your app
 
 After the build and deployment have finished, you can retrieve the public domain to access your application by running the following command:
 
@@ -15214,13 +16343,13 @@ title: Connect with the Neon Vercel Integration
 subtitle: Learn how to connect your Vercel project to Neon using the Neon Vercel
   Integration
 enableTableOfContents: true
-updatedOn: '2024-01-05T19:42:48.860Z'
+updatedOn: '2024-02-08T15:20:54.291Z'
 ---
 
 This guide describes how to connect using the [Neon Vercel Integration](https://vercel.com/integrations/neon) from the Vercel marketplace. The integration connects your Vercel project to a Neon database and enables creating a database branch for each preview deployment.
 
 <Admonition type="note">
-This is a Beta version of the Neon Vercel Integration. For assistance or to suggest improvements, please reach out to us on our [Discord Server](https://discord.com/invite/92vNTzKDGp) or in our [Discourse Community Forum](https://community.neon.tech/).
+This is a Beta version of the Neon Vercel Integration. For assistance or to suggest improvements, please reach out to us on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
 </Admonition>
 
 ## About the Neon Vercel Integration
@@ -15238,22 +16367,22 @@ Neon’s branching feature addresses these challenges. A branch is a copy-on-wri
 
 ![Branch database](/docs/guides/vercel_branch_database.webp)
 
-When you push changes to the GitHub repository associated with your Vercel project, triggering a preview deployment, the integration automatically creates a branch in Neon and connects it to your preview deployment by setting Vercel preview environment variables.
+When you push changes to the repository associated with your Vercel project, triggering a preview deployment, the integration automatically creates a branch in Neon and connects it to your preview deployment by setting Vercel preview environment variables. 
 
 ## Add the Neon Vercel Integration
 
 This section describes how to add the Neon Vercel Integration to your Vercel project.
 
 <Admonition type="note" title="Notes">
-- Please be aware that the Neon Vercel Integration connects one Vercel project to one Neon project. It does not support connecting multiple Vercel projects to one Neon project, nor does it support connecting multiple Neon projects to one Vercel project.
-- The Neon Vercel Integration is currently only supported with the GitHub source code repository.
+- Please be aware that the Neon Vercel Integration connects one Vercel project to one Neon project. It does not support connecting multiple Vercel projects to one Neon project or connecting multiple Neon projects to one Vercel project.
+- The Neon Vercel Integration is supported with GitHub, GitLab, and Bitbucket source code repositories.
 </Admonition>
 
 Prerequisites:
 
 - A [Vercel account](https://vercel.com).
 - A Vercel project. If you do not have one, see [Creating a project](https://vercel.com/docs/concepts/projects/overview#creating-a-project), in the _Vercel documentation_.
-- The integration sets the `PGHOST`, `PGUSER`, `PGDATABASE`, `PGPASSWORD`, and `DATABASE_URL` environment variables for your Vercel production, development, and preview environments. Make sure these variables do not already exist in your Vercel project settings. For more information, see [Troubleshoot connection issues](#troubleshoot-connection-issues).
+- The integration initially sets the `DATABASE_URL` environment variable for your Vercel **Production** and **Development** environments. When you create a preview deployment, the integration will also set this variable for your **Preview** environment. Make sure this variable does not already exist in your Vercel project settings. To use different Postgres variables with the Neon integration, see [Manage Vercel environment variables](#manage-vercel-environment-variables). 
 
 To add the integration:
 
@@ -15268,9 +16397,10 @@ To add the integration:
     1. Select the Neon project that you want to connect to your Vercel project by selecting the Neon project, database, and role that Vercel will use to connect.
       ![Connect to Neon](/docs/guides/vercel_connect_neon.png)
 
-          The root branch of your Neon project is preselected as your **Production branch**.
-
-          The **Create a branch for your development environment** option creates a branch named `vercel-dev` and sets Vercel development environment variables for it. The `vercel-dev` branch is a clone of your production branch that you can modify without affecting your production branch.
+          The **Create a branch for your development environment** option creates a branch named `vercel-dev` and sets Vercel development environment variables for it. The `vercel-dev` branch is a clone of your project's primary branch (`main`) that you can modify without affecting data on your primary branch.
+         <Admonition type="note">
+         Branches created for preview deployments are created from the [primary branch](/docs/reference/glossary#primary-branch) of your Neon project. Earlier versions of the integration created branches from the initial [root branch](/docs/reference/glossary#root-branch) of your Neon project, which is designated as the primary branch by default. Neon lets you [change the primary branch](/docs/manage/branches#set-a-branch-as-primary). If you have an older version of the integration that creates branches from your project's root branch, and you want branches created from your primary branch instead, you can upgrade your integration by reinstalling it from the Vercel Marketplace.
+         </Admonition>
 
           When you finish making selections, click **Continue**.
     1. Confirm the integration settings. This allows the integration to:
@@ -15285,22 +16415,22 @@ To add the integration:
     1. Click **Done** to complete the installation.
 1. To view the results of the integration in Neon:
     1. Navigate to the [Neon Console](https://console.neon.tech/).
-    1. Select the project you connected to.
+    1. Select the project you are connected to.
     1. Select **Branches**.
-       You will see the root branch of your project. If you created a development branch, you will also see a `vercel-dev` branch.
+       You will see the primary branch of your project (`main`). If you created a development branch, you will also see a `vercel-dev` branch.
        ![Neon branches](/docs/guides/vercel_neon_branches.png)
 1. To view the results of the integration in Vercel:
     1. Navigate to [Vercel](https://vercel.com/).
     1. Select the Vercel project you added the integration to.
     1. Select **Settings** > **Environment Variables**.
-       You should see the `PGHOST`, `PGUSER`, `PGDATABASE`, `PGPASSWORD`, and `DATABASE_URL` variable settings added by the integration.
+       You should see the `DATABASE_URL` variable settings added by the integration.
        ![Vercel environment variables](/docs/guides/vercel_env_variables.png)
 
 ## Use the Neon Vercel Integration
 
-After you add the Neon Vercel Integration to a Vercel project, Neon creates a database branch for each preview deployment. The branch is created when you push commits made on your local branch to your application's GitHub repository. To see the integration in action, follow these steps:
+After you add the Neon Vercel Integration to a Vercel project, Neon creates a database branch for each preview deployment. The branch is created when you push commits made on your local branch to your application's source code repository. To see the integration in action, follow these steps:
 
-1. Create a branch in your local GitHub repository.
+1. Create a branch in your local source code repository.
 
    ```bash
    cd myapp
@@ -15324,14 +16454,37 @@ After you add the Neon Vercel Integration to a Vercel project, Neon creates a da
 
    - The commit triggers a preview deployment in Vercel, as would occur without the Neon integration.
      ![Neon preview deployment branch](/docs/guides/vercel_deployments.png)
-   - The integration creates a database branch in Neon. This branch is an isolated copy-on-write clone of your production branch, with its own dedicated compute endpoint. The branch is created with the same name as your `git` branch.
+   - The integration creates a branch in Neon. This branch is an isolated copy-on-write clone of your root branch, with its own dedicated compute endpoint. The branch is created with the same name as your `git` branch.
      ![Neon preview deployment branch](/docs/guides/vercel_neon_app_update.png)
-   - The integration sets Vercel preview environment variables to connect the preview deployment to the new database branch.
+   - The integration sets Vercel preview environment variables to connect the preview deployment to the new branch.
      ![Vercel preview settings](/docs/guides/vercel_preview_settings.png)
 
 <Admonition type="note">
 The Neon Free Tier lets you create up to 10 branches. To avoid running out of branches for new preview deployments, remove old branches regularly. See [Delete a branch](/docs/manage/branches#delete-a-branch) for instructions.
 </Admonition>
+
+## Manage Vercel environment variables
+
+The Neon Vercel Integration initially sets the `DATABASE_URL` environment variable for your Vercel **Production** and **Development** environments. When you create a preview deployment, the integration also sets this variable for your **Preview** environment. If you want to use different Postgres environment variables, the Neon Vercel Integration also supports these variables for defining your database connection:
+
+- `PGHOST`
+- `PGUSER`
+- `PGDATABASE`
+- `PGPASSWORD`
+
+You can enable these variables from the Neon Console:
+
+1. In the Neon Console, select your project.
+2. Select the **Integrations** page.
+3. Find the Vercel integration under the **Manage** heading, and click **Manage**.
+4. In the **Vercel integration** drawer, select the environment variables you require. The selected variables will be set in your Vercel project with your next push. 
+
+<Admonition type="note" title="Notes">
+- Clicking **Redeploy** in Vercel does not apply variable changes made in Neon to your Vercel project. This only occurs with your next push.
+- The integration appends the `sslmode=require` option to the Neon connection string that it sets for the `DATABASE_URL` environment variable in Vercel.
+</Admonition> 
+
+![Select Vercel variables](/docs/guides/vercel_select_variables.png)
 
 ## Make the integration available to other Vercel projects
 
@@ -15350,7 +16503,7 @@ Please be aware that the Neon Vercel Integration connects one Vercel project to 
 1. Navigate to this URL: [https://vercel.com/integrations/neon/new](https://vercel.com/integrations/neon/new).
 1. Follow the prompts. When you reach the **Integrate Neon** dialog, select the Vercel project that you want to add the integration to. Vercel projects that are already integrated with Neon are identified as `CONNECTED`, so you'll have to select a different Vercel project.
    ![Confirm integration settings](/docs/guides/vercel_add_new_project.png)
-1. Continue following the prompts to complete the setup. These are the same steps described above, in [Add the Neon integration](#add-the-neon-vercel-integration). When you select a Neon project to connect to, be sure to select one that is not already connected to a Vercel project, as you cannot connect one Vercel project to multiple Neon projects or vice versa. 
+1. Continue following the prompts to complete the setup. These are the same steps described above, in [Add the Neon integration](#add-the-neon-vercel-integration). When you select a Neon project to connect to, be sure to select one that is not already connected to a Vercel project, as you cannot connect one Vercel project to multiple Neon projects or vice versa.
 
 ## Troubleshoot connection issues
 
@@ -15360,13 +16513,9 @@ This section describes commonly encountered connection issues for the Neon Verce
 
 If the environment variables configured by the Neon integration already exist, you may encounter the following error due to an existing integration that sets one or more of the same environment variables.
 
-<CodeBlock shouldWrap>
-
-```text
+```text shouldWrap
 Failed to set environment variables in Vercel. Please make sure that the following environment variables are not set: PGHOST, PGUSER, PGDATABASE, PGPASSWORD, DATABASE_URL
 ```
-
-</CodeBlock>
 
 In this case, you can remove or rename the existing environment variables in your Vercel project settings and retry the Neon integration.
 
@@ -15381,18 +16530,16 @@ In this case, you can remove or rename the existing environment variables in you
 
 ### DATABASE_URL not set on first preview deployment
 
-In Vercel, the preview environment `DATABASE_URL` is not set by the Neon Vercel Integration on the first preview deployment for a pull request.
+In earlier versions of the integration, the preview environment `DATABASE_URL` is not set by the Neon Vercel Integration on the first preview deployment after adding the integration to a Vercel project.
 
-This is a known [issue](https://github.com/neondatabase/cloud/issues/5378) with a dependency on Vercel that we are working to resolve.
+To avoid this issue, you can reinstall the integration to update to the latest version. Alternatively, a workaround is to redeploy your preview deployment in Vercel. The preview environment `DATABASE_URL` is set on the next deployment. For redeploy instructions, see [Managing Deployments](https://vercel.com/docs/deployments/managing-deployments), in the _Vercel documentation_.
 
-The current workaround is to redeploy your preview deployment in Vercel. The preview environment `DATABASE_URL` is set on the next deployment. For redeploy instructions, see [Managing Deployments](https://vercel.com/docs/deployments/managing-deployments), in the _Vercel documentation_.
+## Manage the Neon Postgres integration in Vercel
 
-## Manage the Neon Vercel Integration
-
-To view integration permissions, manage integration access, or remove the Neon integration:
+To view permissions, manage which Vercel projects your integration has access to, or uninstall the Neon integration:
 
 1. On the Vercel dashboard, select **Settings** > **Integrations**.
-1. Find the **Neon** integration and select **Manage**.
+1. Find the **Neon** integration and select **Configure**.
 
    <Admonition type="note">
    Removing the Neon Vercel Integration removes the Vercel environment variables set by the integration. It does not remove Neon branches created by the integration. To remove Neon branches, see [Delete a branch](/docs/manage/branches#delete-a-branch).
@@ -15688,13 +16835,14 @@ title: Manage billing with consumption limits
 subtitle: Learn how to set usage quotas per project with the Neon API
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-11-10T14:21:35.348Z'
+updatedOn: '2024-02-08T15:20:54.287Z'
 ---
 
-When setting up your billing solution with Neon, you may want to impose some hard limits on how much storage or compute resources a given project can consume. For example, you may want to cap how much usage your free tier users can consume versus pro or enterprise users. With the Neon API, you can use the `quota` key to set usage limits for a variety of consumption metrics. These limits act as thresholds after which all active computes for a project are [suspended](#suspending-active-computes). 
+When setting up your billing solution with Neon, you may want to impose some hard limits on how much storage or compute resources a given project can consume. For example, you may want to cap how much usage your free tier users can consume versus pro or enterprise users. With the Neon API, you can use the `quota` key to set usage limits for a variety of consumption metrics. These limits act as thresholds after which all active computes for a project are [suspended](#suspending-active-computes).
 
 ## Metrics and quotas
-By default, Neon tracks a variety of consumption metrics at the project level. If you want to set quotas (max limits) for these metrics, you need to explicitly [configure](#configuring-quotas) them. 
+
+By default, Neon tracks a variety of consumption metrics at the project level. If you want to set quotas (max limits) for these metrics, you need to explicitly [configure](#configuring-quotas) them.
 
 ### Available metrics
 
@@ -15702,16 +16850,16 @@ Here are the relevant metrics that you can track in order to understand your use
 
 #### Project-level metrics
 
-* `active_time_seconds`
-* `compute_time_seconds`
-* `written_data_bytes`
-* `data_transfer_bytes` 
+- `active_time_seconds`
+- `compute_time_seconds`
+- `written_data_bytes`
+- `data_transfer_bytes`
 
-These consumption metrics represent total cumulative usage across all branches and computes in a given project, accrued so far in a given monthly billing period. Metrics are refreshed on the first day of the following month, when the new billing period starts. 
+These consumption metrics represent total cumulative usage across all branches and computes in a given project, accrued so far in a given monthly billing period. Metrics are refreshed on the first day of the following month, when the new billing period starts.
 
 #### Branch-level metric
 
-There is an additional value that you also might want to track: `logical_size`, which gives you the current size of a particular branch. 
+There is an additional value that you also might want to track: `logical_size`, which gives you the current size of a particular branch.
 
 Neon updates all metrics every 15 minutes but it could take up to 1 hour before they are reportable.
 
@@ -15723,14 +16871,14 @@ You can set quotas for these consumption metrics per project using the `quote` o
 
 The `quota` object includes an array of parameters used to set threshold limits. Their names generally match their corresponding metric:
 
-* `active_time_seconds` &#8212; Sets the maximum amount of time your project's total compute endpoints are allowed to be active during the current billing period. It excludes time when computes are in an `Idle` state due to [auto-suspension](/docs/reference/glossary#auto-suspend-compute).
-* `compute_time_seconds` &#8212; Sets the maximum amount of CPU seconds allowed in total across all of a project's compute endpoints. This includes any endpoints deleted during the current billing period. Note that the larger the compute size per endpoint, the faster the project consumes `compute_time_seconds`. For example, 1 second at .25 vCPU costs .25 compute seconds, while 1 second at 4 vCPU costs 4 compute seconds.
+- `active_time_seconds` &#8212; Sets the maximum amount of time your project's total compute endpoints are allowed to be active during the current billing period. It excludes time when computes are in an `Idle` state due to [auto-suspension](/docs/reference/glossary#autosuspend-compute).
+- `compute_time_seconds` &#8212; Sets the maximum amount of CPU seconds allowed in total across all of a project's compute endpoints. This includes any endpoints deleted during the current billing period. Note that the larger the compute size per endpoint, the faster the project consumes `compute_time_seconds`. For example, 1 second at .25 vCPU costs .25 compute seconds, while 1 second at 4 vCPU costs 4 compute seconds.
    | vCPUs  | active_time_seconds | compute_time_seconds |
    |--------|-----------------------|------------------------|
    | 0.25   | 1                     | 0.25                   |
    | 4      | 1                     | 4                      |
-* `written_data_bytes` &#8212; Sets the maximum amount of data in total, measured in bytes, that can be written across all of a project's branches for the month.
-* `data_transfer_bytes` &#8212; Sets the maximum amount of egress data, measured in bytes, that can be transferred out of Neon from across all of a project's branches using the proxy.
+- `written_data_bytes` &#8212; Sets the maximum amount of data in total, measured in bytes, that can be written across all of a project's branches for the month.
+- `data_transfer_bytes` &#8212; Sets the maximum amount of egress data, measured in bytes, that can be transferred out of Neon from across all of a project's branches using the proxy.
 
 There is one additional `quota` parameter, `logical_size_bytes`, which applies to individual branches, not to the overall project. You can use `logical_size_bytes` to set the maximum size (measured in bytes) that any one individual branch is allowed to reach. Once this threshold is met, the compute for that particular branch (and _only_ that particular branch) is suspended. Note that this limit is _not_ refreshed once per month: it is a strict size limit that applies for the life of the branch.
 
@@ -15738,17 +16886,16 @@ There is one additional `quota` parameter, `logical_size_bytes`, which applies t
 
 Let's say you want to set limits for an application with two tiers, Trial and Pro, you might set limits like the following:
 
-| Parameter (project)       | Trial  (.25 vCPU)               | Pro  (max 4 vCPU)                |
-|---------------------------|---------------------------------|----------------------------------|
-| active_time_seconds     | 633,600 (business month 22 days)| 2,592,000 (30 days)              |
-| compute_time_seconds    | 158,400 (approx 44 hours)       | 10,368,000 (4 times the active time for 4 vCPUs)|
-| written_data_bytes      | 1,000,000,000 (approx. 1 GiB)   | 50,000,000,000 (approx. 50 GiB)  |
-| data_transfer_bytes     | 500,000,000 (approx. 500 MiB)   | 10,000,000,000 (approx. 10 GiB)  |
+| Parameter (project)  | Trial (.25 vCPU)                 | Pro (max 4 vCPU)                                 |
+| -------------------- | -------------------------------- | ------------------------------------------------ |
+| active_time_seconds  | 633,600 (business month 22 days) | 2,592,000 (30 days)                              |
+| compute_time_seconds | 158,400 (approx 44 hours)        | 10,368,000 (4 times the active time for 4 vCPUs) |
+| written_data_bytes   | 1,000,000,000 (approx. 1 GiB)    | 50,000,000,000 (approx. 50 GiB)                  |
+| data_transfer_bytes  | 500,000,000 (approx. 500 MiB)    | 10,000,000,000 (approx. 10 GiB)                  |
 
-| Parameter (branch)        | Trial                           | Pro                              |
-|---------------------------|---------------------------------|----------------------------------|
-| logical_size_bytes      | 100,000,000 (approx. 100 MiB)   | 10,000,000,000 (approx. 10 GiB)  |
-
+| Parameter (branch) | Trial                         | Pro                             |
+| ------------------ | ----------------------------- | ------------------------------- |
+| logical_size_bytes | 100,000,000 (approx. 100 MiB) | 10,000,000,000 (approx. 10 GiB) |
 
 ### Guidelines
 
@@ -15757,18 +16904,20 @@ Generally, the most effective quotas for controlling spend per project are those
 ### Neon Default Limits
 
 In addition to the configurable limits that you can set, Neon also sets certain branch size limits by default. You might notice these limits in a [Get Project](#retrieving-details-about-a-project) response:
-* `branch_logical_size_limit` (MiB)
-* `branch_logical_size_limit_bytes `(Bytes)
+
+- `branch_logical_size_limit` (MiB)
+- `branch_logical_size_limit_bytes`(Bytes)
 
 These limits are not directly configurable. They act as "failsafe" limits to prevent runaway branch size growth due to possible issues with your application. If you need larger limits here, contact Neon Support.
 
-For Neon Free Tier users, the limit is approximately 3 GiB per branch:
-* `branch_logical_size_limit`: 3072
-* `branch_logical_size_limit_bytes:` 3221225472
+For Neon Free Tier users, the logical data size limit is approximately 3 GiB per branch:
+- `branch_logical_size_limit`: 3072
+- `branch_logical_size_limit_bytes:` 3221225472
 
 For Neon Pro Tier users, the limit is approximately 200 GiB per branch:
-* `branch_logical_size_limit`: 204800
-* `branch_logical_size_limit_bytes`: 214748364800
+
+- `branch_logical_size_limit`: 204800
+- `branch_logical_size_limit_bytes`: 214748364800
 
 ## Suspending active computes
 
@@ -15778,28 +16927,29 @@ When any configured metric reaches its quota limit, all active computes for that
 
 See [Querying metrics and quotas](#querying-metrics-and-quotas) to find your reset date, billing period, and other values related to the project's consumption.
 
-<Admonition type="Note">
-Neon tracks these consumption metrics on a monthly cycle. If you want to track metrics on a different cycle, you need to take snapshots of your metrics at the desired interval and store the data externally. You can also use the Preview [Consumption API](#retrieving-metrics-for-all-projects) to collect metrics from across a range of billing periods. 
+<Admonition type="note">
+Neon tracks these consumption metrics on a monthly cycle. If you want to track metrics on a different cycle, you need to take snapshots of your metrics at the desired interval and store the data externally. You can also use the Preview [Consumption API](#retrieving-metrics-for-all-projects) to collect metrics from across a range of billing periods.
 </Admonition>
 
 ## Configuring quotas
 
 You can set quotas using the Neon API either in a `POST` when you create a project or a `PATCH` to update an existing project:
-* [Set quotas when you create the project](#set-quotas-when-you-create-the-project)
-* [Update an existing project](#update-an-existing-project)
+
+- [Set quotas when you create the project](#set-quotas-when-you-create-the-project)
+- [Update an existing project](#update-an-existing-project)
 
 ### Set quotas when you create the project
+
 For performance reasons, you might want to configure these quotas at the same time that you create a new project for your user using the [Create a project](https://api-docs.neon.tech/reference/createproject) API, reducing the number of API calls you need to make.
 
 Here is a sample `POST` in `curl` that creates a new project called `UserNew` and sets the `active_time_seconds` quota to a total allowed time of 10 hours (36,000 seconds) for the month, and a total allowed `compute_time_seconds` set to 2.5 hours (9,000 seconds) for the month. This 4:1 ratio between active and compute time is suitable for a fixed compute size of 0.25 vCPU.
 
-<CodeBlock highlight="11,12">
-```bash
+```bash {11,12}
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "project": {
@@ -15815,21 +16965,19 @@ curl --request POST \
 }
 ' | jq
 ```
-</CodeBlock>
-
 
 ### Update an existing project
+
 If you need to change the quota limits for an existing project &#8212; for example, if a user switches their plan to a higher usage tier &#8212; you can reset those limits via `PATCH` request. See [Update a project](https://api-docs.neon.tech/reference/updateproject) in the Neon API.
 
 Here is a sample `PATCH` that updates both the `active_time_seconds` and `compute_time_seconds` quotas to 30 hours (108,000):
 
-<CodeBlock highlight="11,12">
-```bash
+```bash {11,12}
 curl --request PATCH \
      --url https://console.neon.tech/api/v2/projects/[project_ID]\
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "project": {
@@ -15843,20 +16991,21 @@ curl --request PATCH \
 }
 ' | jq
 ```
-</CodeBlock>
 
 ## Querying metrics and quotas
 
 You can get metrics and quota details for a single project or a list of metrics for all projects at once:
-* [Per project](#retrieving-details-about-a-project)
-* [All projects](#retrieving-metrics-for-all-projects)
+
+- [Per project](#retrieving-details-about-a-project)
+- [All projects](#retrieving-metrics-for-all-projects)
 
 ### Retrieving details about a project
 
 Using a `GET` request from the Neon API (see [Get project details](https://api-docs.neon.tech/reference/getproject)), you can find the following consumption details for a given project:
-* Current consumption metrics accumulated for the billing period
-* Start and end dates for the billing period
-* Current usage quotas (max limits) configured for the project
+
+- Current consumption metrics accumulated for the billing period
+- Start and end dates for the billing period
+- Current usage quotas (max limits) configured for the project
 
 Using these details, you can set up the logic for when to send notification warnings, when to reset a quota, and other possible actions related to the pending or current suspension of a project's active computes.
 
@@ -15865,16 +17014,16 @@ Here is an example a `GET` request for an individual project.
 ```bash
 curl --request GET \
      --url https://console.neon.tech/api/v2/projects/[project_ID] \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' | jq
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
 And here is what the response might look like. The key fields are highlighted.
 
 <details>
 <summary>Response body</summary>
-<CodeBlock highlight="3-7,21-22,35-36">
-```json
+
+```json {3-7,21-22,35-36}
 {
   "project": {
     "data_storage_bytes_hour": 1040,
@@ -15920,16 +17069,16 @@ And here is what the response might look like. The key fields are highlighted.
   }
 }
 ```
-</CodeBlock>
+
 </details>
 
 Looking at this response, here are some conclusions we can draw:
 
-* **This project is _1 hour away_ from being suspended.**
-  
+- **This project is _1 hour away_ from being suspended.**
+
   With current `compute_time_seconds` at _68,400_ (19 hours) and the quota for that metric set at _72,000_ (20 hours), the project is only _1 hour_ of compute time away from being suspended.
 
-* **This project is _1 day away_ from a quota refresh.**
+- **This project is _1 day away_ from a quota refresh.**
 
   If today's date is _October 31st, 2023_, and the `consumption_period_end` parameter is _2023-11-01T00:00:00Z_ (November 1st, 2023), then the project has _1 day_ left before all quota parameters (except for `logical_byte_size`) are refreshed.
 
@@ -15937,7 +17086,7 @@ Looking at this response, here are some conclusions we can draw:
 
 Instead of retrieving metrics for a single project per request, you can use the [Consumption API](https://api-docs.neon.tech/reference/listprojectsconsumption) to get a full list of key consumption metrics for all the projects in your Neon account in a single API request. You can specify a date range to get metrics from across multiple billing periods and control pagination for large result sets.
 
-<Admonition type="Warning" title="Preview API">
+<Admonition type="warning" title="Preview API">
 This functionality is part of the preview API and is subject to change in the future.
 </Admonition>
 
@@ -15946,34 +17095,35 @@ Here is the URL in the Neon API where you can get details for all projects in yo
 ```bash
 https://console.neon.tech/api/v2/consumption/projects
 ```
+
 This API endpoint accepts the following query parameters: `from`,`to`, `limit`, and `cursor`.
 
 #### Set a date range across multiple billing periods
 
-You can set `from` and `to` query parameters to define a time range that can span across multiple billing periods. 
-* `from` — Sets the start date and time of the time period for which you are seeking metrics.
-* `to` — Sets the end date and time for the  the interval for which you desire metrics.
+You can set `from` and `to` query parameters to define a time range that can span across multiple billing periods.
+
+- `from` — Sets the start date and time of the time period for which you are seeking metrics.
+- `to` — Sets the end date and time for the the interval for which you desire metrics.
 
 The response is organized by project and billing period: one object per project, per active billing period within the range. For example, if you choose a 6-month time range you will get up to 6 objects for every project active within those months. The response includes any projects deleted within that time range.
 
-If you do not include these parameters, the query defaults to the current consumption period. 
+If you do not include these parameters, the query defaults to the current consumption period.
 
-Here is an example query that returns metrics from September 1st and December 1st, 2023. Time values must be provided  in ISO 8601 format. You can use this [timestamp converter](https://www.timestamp-converter.com/).
+Here is an example query that returns metrics from September 1st and December 1st, 2023. Time values must be provided in ISO 8601 format. You can use this [timestamp converter](https://www.timestamp-converter.com/).
 
-<CodeBlock shouldWrap>
-```bash
+```bash shouldWrap
 curl --request GET \
      --url 'https://console.neon.tech/api/v2/consumption/projects?limit=10&from=2023-09-01T00%3A00%3A00Z&to=2023-12-01T00%3A00%3A00Z' \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' | jq
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" | jq
 ```
-</CodeBlock>
 
 And here is a sample response (with key lines highlighted):
+
 <details>
 <summary>Response body</summary>
-<CodeBlock highlight="5,10,11,13,15,18-20,24,29,30,32,33,35-37,40,42">
-```json
+
+```json {5,10,11,13,15,18-20,24,29,30,32,33,35-37,40,42}
 {
   "projects": [
     {
@@ -16019,50 +17169,52 @@ And here is a sample response (with key lines highlighted):
   }
 }
 ```
-</CodeBlock>
+
 </details>
 
 Key details:
-* The `period_id` key and `previous_period_id` are unique values used to identify and connect periods across the time range. 
-* The `period_start` and `period_end` keys show the dates for that particular billing period. A `null` value indicates that the object is for the current billing period.
-* The `cursor` object under `pagination` shows the last project Id in the response. See more about pagination in the next section.
+
+- The `period_id` key and `previous_period_id` are unique values used to identify and connect periods across the time range.
+- The `period_start` and `period_end` keys show the dates for that particular billing period. A `null` value indicates that the object is for the current billing period.
+- The `cursor` object under `pagination` shows the last project Id in the response. See more about pagination in the next section.
 
 #### Control pagination for large result sets
 
 To control pagination (number of results per response), you can include these query parameters:
-* `limit` &#8212; sets the number of project objects to be included in the response
-* `cursor` &#8212; by default, the response uses the project `id` from the last project in the list as the `cursor` value (included in the `pagination` object at the end of the response). Generally, it is up to the application to collect and use this cursor value when setting up the next request.
+
+- `limit` &#8212; sets the number of project objects to be included in the response
+- `cursor` &#8212; by default, the response uses the project `id` from the last project in the list as the `cursor` value (included in the `pagination` object at the end of the response). Generally, it is up to the application to collect and use this cursor value when setting up the next request.
 
 Here is an example `GET` request asking for the next 100 projects, starting with project id `divine-tree-77657175`:
 
-<CodeBlock shouldWrap>
-```bash
+```bash shouldWrap
 curl --request GET \
      --url https://console.neon.tech/api/v2/consumption/projects?cursor=divine-tree-77657175&limit=100\
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' | jq'
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" | jq
 ```
-</CodeBlock>
 
-<Admonition type="Note">
+<Admonition type="note">
 To learn more about using pagination to control large response sizes, the [Keyset pagination](https://learn.microsoft.com/en-us/ef/core/querying/pagination#keyset-pagination) page in the Microsoft docs gives a helpful overview.
 </Admonition>
 
-
 ## Resetting a project after suspend
+
 Projects remain suspended until the next billing period. It is good practice to notify your users when they are close to reaching a limit; if the user is then suspended and loses access to their database, it will not be unexpected. If you have configured no further actions, the user will have to wait until the next billing period starts to resume usage.
 
 Alternatively, you can actively reset a suspended compute by changing the impacted quota to `0`: this effectively removes the limit entirely. You will need to reset this quota at some point if you want to maintain limits.
 
 ### Using quotas to actively suspend a user
+
 If you want to suspend a user for any reason &#8212; for example, suspicious activity or payment issues &#8212; you can use these quotas to actively suspend a given user. For example, setting `active_time_limit` to a very low threshold (e.g., `1`) will force a suspension if the user has 1 second of active compute for that month. To remove this suspension, you can set the threshold temporarily to `0` (infinite) or some value larger than their currently consumed usage.
 
 ## Other consumption related settings
 
 In addition to setting quota limits against the project as a whole, there are other sizing-related settings you might want to use to control the amount of resources any particular endpoint is able to consume:
-* `autoscaling_limit_min_cu` &#8212; Sets the minimium compute size for the endpoint. The default minimum is .25 vCPU but can be increased if your user's project could benefit from a larger compute start size.
-* `autoscaling_limit_max_cu` &#8212; Sets a hard limit on how much compute an endpoint can consume in response to increased demand. For more info on min and max cpu limits, see [Autoscaling](/docs/guides/autoscaling-guide).
-* `suspend_timeout_seconds` &#8212; Sets how long an endpoint's allotted compute will remain active with no current demand. After the timeout period, the endpoint is suspended until demand picks up. For more info, see [Autosuspend](/docs/guides/auto-suspend-guide).
+
+- `autoscaling_limit_min_cu` &#8212; Sets the minimium compute size for the endpoint. The default minimum is .25 vCPU but can be increased if your user's project could benefit from a larger compute start size.
+- `autoscaling_limit_max_cu` &#8212; Sets a hard limit on how much compute an endpoint can consume in response to increased demand. For more info on min and max cpu limits, see [Autoscaling](/docs/guides/autoscaling-guide).
+- `suspend_timeout_seconds` &#8212; Sets how long an endpoint's allotted compute will remain active with no current demand. After the timeout period, the endpoint is suspended until demand picks up. For more info, see [Autosuspend](/docs/guides/auto-suspend-guide).
 
 There are several ways you can set these endpoint settings using the Neon API: you can set project-level defaults that apply for any new computes created in the project, you can define the endpoint settings when creating a new branch, or you can adjust these settings when creating or updating an endpoint for an existing branch.
 
@@ -16074,15 +17226,14 @@ See these sample CURL requests for each method.
 In this sample, we are setting defaults for all new endpoints created in the project as a whole. The minimum compute size is at **1 vCPU**, the max size at **3 vCPU**, and a 10 minute (**600 seconds**) inactivty period before the endpoint is suspended.
 
 These default values are set in the
-`default_endpoint_settings` object. 
-<CodeBlock highlight="9-12">
+`default_endpoint_settings` object.
 
-``` bash
+```bash {9-12}
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "project": {
@@ -16096,18 +17247,17 @@ curl --request POST \
 }
 ' | jq
 ```
-</CodeBlock>
+
 </TabItem>
 <TabItem>
 In this POST request, we are creating a new endpoint at the same time that we create our new branch called `Development`. We've sized the endpoint at **1 vCPU** min, **3 vCPU** max, and with a timeout period of 10 minutes (**600 seconds**).
 
-<CodeBlock highlight="14-16">
-``` bash
+```bash {14-16}
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/noisy-pond-28482075/branches \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "branch": {
@@ -16124,19 +17274,17 @@ curl --request POST \
 }
 ' | jq
 ```
-</CodeBlock>
 
 </TabItem>
 <TabItem>
 In this example, we are creating a new endpoint for an already existing branch with ID `br-wandering-field-12345678`, with a min compute of **2 vCPU**, a max of **6 vCPU**, and a suspend timeout of 5 minutes (**300** seconds).
 
-<CodeBlock highlight="10-13">
-``` bash
+```bash {10-13}
 curl --request POST \
      --url https://console.neon.tech/api/v2/projects/noisy-pond-28482075/endpoints \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $NEON_API_KEY' \
-     --header 'content-type: application/json' \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
      --data '
 {
   "endpoint": {
@@ -16149,10 +17297,10 @@ curl --request POST \
 }
 ' | jq
 ```
-</CodeBlock>
 
 </TabItem>
 </Tabs>
+
 
 # AI & embeddings
 
@@ -16335,14 +17483,14 @@ For example applications built based on this general process, see the following:
 title: Scale your AI applications with Neon
 subtitle: Learn about how you can scale your AI and LLM applications with Neon
 enableTableOfContents: true
-updatedOn: '2023-10-07T10:43:33.361Z'
+updatedOn: '2024-01-10T18:34:05.849Z'
 ---
 
 Neon offers the following features enabling you to build scalable AI and LLM applications that meet workload demand while managing costs.
 
 ## Autoscaling
 
-With Neon, you do not have to pick a size for your database upfront. Neon is able to automatically allocate compute resources to meet demand. This is made possible by Neon’s architecture, which separates storage and compute, allowing compute resources to be managed independently.
+With Neon, you do not have to pick a size for your database upfront. Neon can automatically allocate compute resources to meet demand. This is made possible by Neon’s architecture, which separates storage and compute, allowing compute resources to be managed independently.
 
 Neon's _Autoscaling_ feature automatically scales up compute on demand in response to application workload and down to zero on inactivity, and you are only charged for the compute resources you use.
 
@@ -16369,16 +17517,2293 @@ With the Neon serverless driver, you can reduce query latencies for your AI appl
 See [Neon serverless driver](/docs/serverless/serverless-driver) to learn more.
 
 
+# AI tools
+
+# Google Colab
+
+---
+title: Google Colab
+subtitle: Use Google Colab with Neon for vector similarity search
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.272Z'
+---
+
+[Google Colab](https://colab.research.google.com/) is a hosted Jupyter Notebook service that requires no setup to use and provides free access to computing resources, including GPUs and TPUs.
+You can use Google Colab to run python code through the browser.
+
+This guide shows how to create a notebook in Colab, connect to a Neon database, install the `pgvector` extension to enabled Neon as a vector store, and run a vector search query.
+
+## Prerequisites
+
+To perform the steps in this guide, you require a Neon database for storing vectors. You can use the ready-to-use `neondb` database or create your own. See [Create a database](/docs/manage/databases#create-a-database) for instructions.
+
+## Retrieve your database connection string
+
+In the **Connection Details** widget on the Neon **Dashboard**, select a branch, a user, and the database you want to connect to. A connection string is constructed for you.
+
+![Connection details widget](/docs/connect/connection_details.png)
+
+## Create a notebook
+
+In your browser, navigate to [Google Colab](https://colab.research.google.com/), and click **New notebook**.
+
+![Google Colab](/docs/ai/google_colab.png)
+
+Alternatively, you can open a predefined Google Colab notebook for this guide by clicking the **Open in Colab** button below.
+
+<a target="_blank" href="https://colab.research.google.com/github/neondatabase/neon-google-colab-notebooks/blob/main/neon_pgvector_quickstart.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+## Connect to your database
+
+1. In your Colab notebook, create a code block to define your database connection and create a cursor object. Replace `postgres://[user]:[password]@[neon_hostname]/[dbname]` with the database connection string you retrieved in the previous step.
+
+    ```python shouldWrap
+    import os
+    import psycopg2
+
+    # Provide your Neon connection string
+    connection_string = "postgres://[user]:[password]@[neon_hostname]/[dbname]"
+
+    # Connect using the connection string
+    connection = psycopg2.connect(connection_string)
+
+    # Create a new cursor object
+    cursor = connection.cursor()
+    ```
+
+2. Execute the code block (**Ctrl** + **Enter**).
+
+3. Add a code block for testing the database connection.
+
+    ```python
+    # Execute this query to test the database connection
+    cursor.execute("SELECT 1;")
+    result = cursor.fetchone()
+
+    # Check the query result
+    if result == (1,):
+        print("Your database connection was successful!")
+    else:
+        print("Your connection failed.")
+    ```
+
+4. Execute the code block (**Ctrl** + **Enter**).
+
+## Install the pgvector extension
+
+1. Create a codeblock to install the `pgvector` extension to enable your Neon database as a vector store:
+
+    ```python
+    # Execute this query to install the pgvector extension
+    cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+    ```
+
+2. Execute the code block (**Ctrl** + **Enter**).
+
+## Create a table and add vector data
+
+1. Add a code block to create a table and insert data:
+
+    ```python shouldWrap
+    create_table_sql = '''
+    CREATE TABLE items (
+    id BIGSERIAL PRIMARY KEY,
+    embedding VECTOR(3)
+    );
+    '''
+
+    # Insert data
+    insert_data_sql = '''
+    INSERT INTO items (embedding) VALUES ('[1,2,3]'), ('[4,5,6]'), ('[7,8,9]');
+    '''
+
+    # Execute the SQL statements
+    cursor.execute(create_table_sql)
+    cursor.execute(insert_data_sql)
+
+    # Commit the changes
+    connection.commit()
+    ```
+
+2. Execute the code block (**Ctrl** + **Enter**).
+
+## Query your data
+
+1. Add a codeblock to perform a vector similarity search.
+
+    ```python shouldWrap
+    cursor.execute("SELECT * FROM items ORDER BY embedding <-> '[3,1,2]' LIMIT 3;")
+    all_data = cursor.fetchall()
+    print(all_data)
+    ```
+
+2. Execute the code block (**Ctrl** + **Enter**).
+
+## Next steps
+
+For more information about using Neon with `pgvector`, see [The pgvector extension](/docs/extensions/pgvector).
+
+<NeedHelp/>
+
+
+# Postgres
+
+# Data types
+
+# Array
+
+---
+title: Postgres Array Data Type
+subtitle: Manage collections of elements using arrays
+enableTableOfContents: true
+updatedOn: '2024-02-03T13:30:12.163Z'
+---
+
+In Postgres, the `ARRAY` data type is used to store and manipulate collections of elements in a single column. An array can have variable length and one or more dimensions, but must hold elements of the same data type. Postgres provides a variety of functions and operators for working with arrays.
+
+Arrays are particularly useful when dealing with multiple values that are logically related. For instance, they can store a list of phone numbers for a contact, product categories for an e-commerce item, or even multi-dimensional data for scientific or analytical computations.
+
+<CTA />
+
+## Storage and syntax
+
+Arrays in Postgres are declared by specifying the element type followed by square brackets. For example,
+- `INTEGER[]` defines an array of integers.
+- `TEXT[][]` defines a two-dimensional array of text values.
+- `NUMERIC[3]` defines an array of three numeric values. However, note that Postgres doesn't enforce the specified size of an array.
+
+Array literals in Postgres are written within curly braces `{}` and separated by commas. For instance,
+- An array of integers might look like `{1, 2, 3}`.
+- Multidimensional arrays use nested curly braces, like `{{1, 2, 3}, {4, 5, 6}}`.
+
+The `ARRAY` constructor syntax can also be used to create arrays. For example,
+- `ARRAY[1, 2, 3]` creates an array of integers.
+- `ARRAY[[1, 2, 3], [4, 5, 6]]` creates a two-dimensional array.
+
+## Example usage
+
+Consider the case of maintaining a product catalog for an online store. The same product may belong to multiple categories. For example,  an iPad could be tagged as 'Electronics', 'Computer', or 'Mobile'. In this case, we can use an array to store the categories for each product.
+
+First, let's create a `products` table with some sample data:
+
+```sql
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    categories TEXT[],
+    units_sold INTEGER[][]
+);
+
+INSERT INTO products (name, categories, units_sold)
+VALUES
+    ('Laptop', '{"Electronics","Computer","Office"}', '{{3200, 3300, 3400, 3500}, {3600, 3700, 3800, 3900}}'),
+    ('Headphones', '{"Electronics","Audio"}', '{{2400, 2500, 2600, 2700}, {2800, 2900, 3000, 3100}}'),
+    ('Table', '{"Furniture","Office"}', '{{900, 950, 1000, 1050}, {1100, 1150, 1200, 1250}}'),
+    ('Keyboard', '{"Electronics","Accessories"}', '{{4100, 4200, 4300, 4400}, {4500, 4600, 4700, 4800}}');
+```
+
+The `units_sold` column is a two-dimensional array that stores the number of units sold for each product. The first dimension represents the year, and the second dimension represents the quarter.
+
+Now, we can access the values in the array column `categories`, and use it in our queries. For example, the query below finds products belonging to the `Electronics` category.
+
+```sql
+SELECT name, categories
+FROM products
+WHERE 'Electronics' = ANY (categories);
+```
+
+Note that the `ANY` operator checks if the value specified exists in the array.
+This query returns the following result:
+
+```text
+| id | name       | categories                      |
+|----|------------|---------------------------------|
+| 1  | Laptop     | {Electronics, Computer, Office} |
+| 2  | Headphones | {Electronics, Audio}            |
+| 4  | Keyboard   | {Electronics, Accessories}      |
+```
+
+## Other examples
+
+### Indexing arrays
+
+Elements in an array can be accessed by their index. Postgres arrays are 1-based, meaning indexing starts at 1.
+
+For example, to get the first category of each product:
+
+```sql
+SELECT name, categories[1] AS first_category
+FROM products;
+```
+
+This query returns the following result:
+
+```text
+| name       | first_category |
+|------------|----------------|
+| Laptop     | Electronics    |
+| Headphones | Electronics    |
+| Table      | Furniture      |
+| Keyboard   | Electronics    |
+```
+
+Multiple elements can be accessed using the `SLICE` operator. For example, to get the first three categories of each product:
+
+```sql
+SELECT name, categories[1:3] AS first_three_categories
+FROM products;
+```
+
+This query returns the following result:
+
+```text
+| name       | first_three_categories          |
+|------------|---------------------------------|
+| Laptop     | {Electronics, Computer, Office} |
+| Headphones | {Electronics, Audio}            |
+| Table      | {Furniture, Office}             |
+| Keyboard   | {Electronics, Accessories}      |
+```
+
+Multidimensional arrays can be accessed using multiple indices. For example, to get the number of units sold in the last quarter of the first year for each product, we can use the query:
+
+```sql
+SELECT name, units_sold[1][4] AS units_sold_last_quarter
+FROM products;
+```
+
+This query returns the following:
+
+```text
+| name       | units_sold_last_quarter |
+|------------|-------------------------|
+| Laptop     | 3500                    |
+| Headphones | 2700                    |
+| Table      | 1050                    |
+| Keyboard   | 4400                    |
+```
+
+### Modifying arrays
+
+Array values can be modified using functions or by directly indexing into the array. You can change specific elements of an array, add or remove elements, or even replace the entire array.
+
+For example, the query below replaces the `Audio` category across all products with `Sound`.
+
+```sql
+UPDATE products
+SET categories = array_replace(categories, 'Audio', 'Sound')
+WHERE 'Audio' = ANY (categories)
+RETURNING *;
+```
+
+This query returns the following result:
+
+```text
+| id | name       | categories            | units_sold                                   |
+|----|------------|-----------------------|----------------------------------------------|
+| 2  | Headphones | {Electronics,Sound}   | {{2400,2500,2600,2700},{2800,2900,3000,3100}} |
+```
+
+### Array functions and operators
+
+Postgres provides a variety of functions and operators for working with arrays. You can find the full list of functions and operators in the [Postgres documentation](#resources).
+
+We'll look at some commonly used functions below.
+
+**Length of an array**
+
+We can query the number of categories each product has been tagged with:
+
+```sql
+SELECT name, array_length(categories, 1) as category_count
+FROM products;
+```
+
+This query returns the following result:
+
+```text
+| name       | category_count |
+|------------|----------------|
+| Laptop     | 3              |
+| Headphones | 3              |
+| Table      | 2              |
+| Keyboard   | 2              |
+```
+
+The `array_length` function returns the length of the array in the specified dimension. In this case, we specified the first dimension, which is the number of categories for each product.
+
+**Expanding an array into rows**
+
+We can use the `unnest` function to expand an array into rows. For example, to get the number of laptops sold in each quarter, we can use the query:
+
+```sql
+SELECT name, unnest(units_sold) AS units_sold
+FROM products
+WHERE name = 'Laptop';
+```
+
+This query returns the following result:
+
+```text
+| name   | units_sold |
+|--------|------------|
+| Laptop | 3200       |
+| Laptop | 3300       |
+| Laptop | 3400       |
+| Laptop | 3500       |
+| Laptop | 3600       |
+| Laptop | 3700       |
+| Laptop | 3800       |
+| Laptop | 3900       |
+```
+
+We could use the output of `unnest` to calculate the total number of units sold for each product; for example:
+
+```sql
+WITH table_units AS (
+  SELECT name, unnest(units_sold) AS total_units_sold
+  FROM products
+)
+SELECT name, sum(total_units_sold)
+FROM table_units
+GROUP BY name;
+```
+
+This query returns the following result:
+
+```text
+| name       | sum   |
+|------------|-------|
+| Keyboard   | 35600 |
+| Table      | 8600  |
+| Laptop     | 28400 |
+| Headphones | 22000 |
+```
+
+**Concatenating arrays**
+
+We can concatenate two arrays using the `||` operator. For example, the query below produces a list of all categories across all products.
+
+```sql
+SELECT ARRAY[1,2,3] || ARRAY[4,5] as concatenated_array;
+```
+
+This query returns the following result:
+
+```text
+| concatenated_array |
+|--------------------|
+| {1,2,3,4,5}        |
+```
+
+**Aggregating values into an array**
+
+We can use the `array_agg` function to produce an array from a set of rows. For example, to get a list of all products that are in the `Electronics` category, we can use the query:
+
+```sql
+SELECT array_agg(name) AS product_names
+FROM products
+WHERE 'Electronics' = ANY (categories);
+```
+
+This query returns the following result:
+
+```text
+| product_names                |
+|------------------------------|
+| {Laptop,Headphones,Keyboard} |
+```
+
+## Additional considerations
+
+- **Performance and UX**: While arrays provide flexibility, they can be less performant than normalized data structures for large datasets. Compared to a set of rows, arrays can also be more tedious to work with for complex queries. 
+
+- **Indexing**: Postgres lets you create indexes on array elements for faster searches. Specifically, an inverted index like `GIN` creates an entry for each element in the array. This allows for fast lookups but can be expensive to maintain for large arrays.
+
+- **No type enforcement**: Postgres supports defining the size of an array or the number of dimensions in the schema. However, Postgres does not enforce these definitions. For example, the query below works successfully:
+
+    ```sql
+    CREATE TABLE test_size (
+      id SERIAL PRIMARY KEY,
+      arr1 INTEGER[3]
+    );
+    INSERT INTO test_size (arr1)
+    VALUES (ARRAY[1,2,3]), (ARRAY[1,2]);
+    ```
+
+    It is therefore up to the application to ensure data integrity.
+
+## Resources
+
+- [PostgreSQL documentation - Array Types](https://www.postgresql.org/docs/current/arrays.html)
+- [PostgreSQL documentation - Array Functions](https://www.postgresql.org/docs/current/functions-array.html)
+
+<NeedHelp />
+
+
+# Boolean
+
+---
+title: Postgres Boolean data type
+subtitle: Representing truth values in Postgres
+enableTableOfContents: true
+updatedOn: '2024-01-28T13:46:59.383Z'
+---
+
+In Postgres, the Boolean datatype is designed to store truth values. A Boolean column can hold one of three states: `true`, `false`, or `NULL` representing unknown or missing values. 
+
+For instance, Boolean values can be used in a dataset to represent the status of an order, whether a user is active, or whether a product is in stock. A Boolean value could also be produced as a result of comparisons or logical operations.
+
+<CTA />
+
+## Storage and syntax
+
+In SQL statements, Boolean values are represented by the keywords `TRUE`, `FALSE`, and `NULL`. Postgres is flexible and allows for various textual representations of these values:
+
+- `TRUE` can also be represented as `t`, `true`, `y`, `yes`, `on`, `1`.
+- `FALSE` can also be represented as `f`, `false`, `n`, `no`, `off`, `0`.
+
+A boolean value is stored as a single byte. 
+
+## Example usage
+
+Consider a table of users for a web application. We can add a Boolean column to represent whether a user is active or not. 
+
+The query below creates a `users` table and inserts some sample data:
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username TEXT NOT NULL,
+    is_active BOOLEAN,
+    has_paid_subscription BOOLEAN
+);
+
+INSERT INTO users (username, is_active, has_paid_subscription)
+VALUES 
+    ('alice', TRUE, TRUE),
+    ('bob', TRUE, FALSE),
+    ('charlie', FALSE, TRUE),
+    ('david', NULL, NULL),
+    ('eve', FALSE, FALSE);
+```
+
+Say we want to find all the users currently active on the website. The `WHERE` clause accepts a Boolean expression, so we can filter down to the rows where the `is_active` column is `TRUE`.
+
+```sql
+SELECT *
+FROM users
+WHERE is_active = TRUE;
+```
+
+This query returns the following:
+
+```text
+| id | username | is_active | has_paid_subscription |
+|----|----------|-----------|-----------------------|
+| 1  | alice    | t         | t                     |
+| 2  | bob      | t         | f                     |
+```
+
+## Other examples
+
+### Conditional logic
+
+Boolean data types are commonly used in conditional statements like `WHERE`, `IF`, and `CASE`. For example, the `CASE` statement is a control flow structure that allows you to perform `IF-THEN-ELSE` logic in SQL. 
+
+In the query below, we categorize users based on their activity and account type. 
+
+```sql
+SELECT username,
+    CASE
+        WHEN is_active = TRUE AND has_paid_subscription = TRUE THEN 'Active Paid'
+        WHEN is_active = TRUE AND has_paid_subscription = FALSE THEN 'Active Free'
+        WHEN is_active = FALSE AND has_paid_subscription = TRUE THEN 'Inactive Paid'
+        WHEN is_active = FALSE AND has_paid_subscription = FALSE THEN 'Inactive Free'
+        ELSE 'Unknown'
+    END AS user_status
+FROM users;
+```
+
+This query returns the following:
+
+```text
+| username | user_status   |
+|----------|---------------|
+| alice    | Active Paid   |
+| bob      | Active Free   |
+| charlie  | Inactive Paid |
+| david    | Unknown       |
+| eve      | Inactive Free |
+```
+
+### Boolean expressions
+
+Boolean expressions combine multiple boolean values using operators like `AND`, `OR`, and `NOT`. These expressions return boolean values and are crucial in complex SQL queries. 
+
+For example, we can use a Boolean expression to find all the users who are active but don't have a paid subscription yet.
+
+```sql
+SELECT id, username
+FROM users
+WHERE is_active = TRUE AND has_paid_subscription = FALSE;
+```
+
+This query returns the following:
+
+```text
+| id | username |
+|----|----------|
+| 2  | bob      |
+```
+
+### Boolean aggregations
+
+Postgres also supports aggregating over a set of Boolean values, using functions like `bool_and()` and `bool_or()`. 
+
+For example, we can query to check that no inactive users have a paid subscription. 
+
+```sql
+SELECT bool_or(has_paid_subscription) AS inactive_paid_users
+FROM users
+WHERE is_active = FALSE;
+```
+
+This query returns the following:
+
+```text
+| inactive_paid_users |
+|---------------------|
+| t                   |
+```
+
+This indicates there is at least one inactive user with an ongoing subscription. We should probably email them a reminder to log in. 
+
+### Boolean in join conditions
+
+Booleans can be effectively used in the `JOIN` clause to match rows across tables. 
+
+In the query below, we join the `users` table with the table containing contact information to send a promotional email to all active users. 
+
+```sql
+WITH contacts (user_id, email) AS (
+    VALUES
+    (1, 'alice@email.com'),
+    (2, 'bob@email.com'),
+    (3, 'charlie@email.com'),
+    (4, 'david@email.com'),
+    (5, 'eve@email.com')
+)
+SELECT u.id, u.username, c.email
+FROM users u
+JOIN contacts c ON u.id = c.user_id AND u.is_active = TRUE;
+```
+
+This query returns the following:
+
+```text
+| id | username | email           |
+|----|----------|-----------------|
+| 1  | alice    | alice@email.com |
+| 2  | bob      | bob@email.com   |
+```
+
+## Additional considerations
+
+- **NULL**: `NULL` in boolean terms indicates an unknown state, which is neither `TRUE` nor `FALSE`. In conditional statements, `NULL` values will not equate to `FALSE`.
+- **Type Casting**: Be mindful when converting Booleans to other data types. For instance, casting a Boolean to an integer results in `1` for `TRUE` and `0` for `FALSE`. This behavior is useful in aggregations or mathematical operations.
+- **Indexing**: Using Booleans in indexing might not always be efficient, especially if the distribution of true and false values is uneven. 
+
+## Resources
+
+- [PostgreSQL Boolean Type documentation](https://www.postgresql.org/docs/current/datatype-boolean.html)
+
+<NeedHelp />
+
+
+# Date and time
+
+---
+title: Postgres Date and Time Data Types
+subtitle: Work with date and time values in Postgres
+enableTableOfContents: true
+updatedOn: '2024-02-04T17:39:41.493Z'
+---
+
+Postgres offers a rich set of native data types for storing date and time values. Both moment-in-time and interval data can be stored, and Postgres provides a variety of functions to query and manipulate them. 
+
+Modeling date and time enables precise timestamping, duration calculations, and is essential in various use cases related to finance, logistics, events logging, and so on. 
+
+<CTA />
+
+## Storage and syntax
+
+There are 5 primary date/time types in Postgres:
+
+- `DATE` - represents a date value, stored as 4 bytes. Resolution is 1 day.
+- `TIME` - represents a time-of-day value, stored as 8 bytes. Resolution is 1 microsecond.
+- `TIMESTAMP` - represents a combined date and time value, stored as 8 bytes. Resolution is 1 microsecond.
+- `TIMESTAMPTZ` - represents a combined date and time value, along with time zone information, stored as 8 bytes. Resolution is 1 microsecond. It is stored internally as a UTC value, but is displayed in the timezone set by the client.
+- `INTERVAL` - represents a duration of time, stored as 16 bytes. Resolution is 1 microsecond. Optionally, you can restrict the set of values stored to a larger unit of time (e.g., `INTERVAL MONTH`). 
+
+Date/time values are specified as string literals. Postgres accepts most of the standard datetime formats. For example:
+
+```sql
+SELECT 
+    '2024-01-01'::DATE AS date_value,
+    '09:00:00'::TIME AS time_value,
+    '2024-01-01 09:00:00'::TIMESTAMP AS timestamp_value,
+    '2024-01-01 09:00:00-05'::TIMESTAMPTZ AS timestamptz_value,
+    '1 month'::INTERVAL AS interval_value;
+```
+
+There are also some special date/time literals that can be used in queries. Some of them are:
+
+- `epoch` - represents the Unix epoch (1970-01-01 00:00:00 UTC)
+- `infinity` - represents an infinite timestamp, greater than all other timestamps
+- `-infinity` - represents an infinite timestamp, smaller than all other timestamps
+- `now` - represents the current timestamp
+
+## Example usage
+
+Consider a conference event management system that tracks schedules for planned sessions. 
+
+The query below creates a table to store all the sessions and inserts some sample data.
+
+```sql
+CREATE TABLE conference_sessions (
+    session_id SERIAL PRIMARY KEY,
+    session_title TEXT NOT NULL,
+    session_date DATE NOT NULL,
+    start_time TIMESTAMPTZ NOT NULL,
+    planned_duration INTERVAL NOT NULL,
+    finish_time TIMESTAMPTZ
+);
+
+INSERT INTO conference_sessions (session_title, session_date, start_time, planned_duration, finish_time)
+VALUES 
+    ('Keynote Speech', '2024-05-15', '2024-05-15 09:00:00+00', '2 hours', '2024-05-15 11:30:00+00'),
+    ('Data Science Workshop', '2024-05-16', '2024-05-16 11:00:00+00', '3 hours', '2024-05-16 14:00:00+00'),
+    ('AI Panel Discussion', '2024-05-17', '2024-05-17 14:00:00+00', '1.5 hours', '2024-05-17 15:20:00+00');
+```
+
+**Filtering on date/time values**
+
+You can find all sessions scheduled for a specific date using a query like this:
+
+```sql
+SELECT session_title, start_time
+FROM conference_sessions
+WHERE session_date = '2024-05-16';
+```
+
+The query returns the following values:
+
+```text
+      session_title    |       start_time
+-----------------------+------------------------
+ Data Science Workshop | 2024-05-16 11:00:00+00
+```
+
+**Arithmetic operations with date/time**
+
+You can write a query like this to find sessions that went over the planned duration:
+
+```sql
+SELECT session_title, planned_duration, finish_time - start_time AS actual_duration
+FROM conference_sessions
+WHERE finish_time - start_time > planned_duration;
+``` 
+
+The query returns the following values:
+
+```text
+ session_title  | planned_duration | actual_duration
+----------------+------------------+-----------------
+ Keynote Speech | 02:00:00         | 02:30:00
+```
+
+**Aggregating date/time values**
+
+You can write a query like this to find the average duration of all sessions:
+
+```sql
+SELECT AVG(finish_time - start_time) AS avg_duration
+FROM conference_sessions;
+```
+
+The query returns the following value:
+
+```text
+ avg_duration
+--------------
+ 02:16:40
+```
+
+## Other examples
+
+### Date and time functions
+
+Postgres offers a variety of functions for manipulating date and time values, such as `EXTRACT`, `AGE`, `OVERLAPS`, and more.
+
+For example, you can run this query to see if the times for any two sessions overlapped: 
+
+```sql
+SELECT 
+    a.session_title AS session_a,
+    b.session_title AS session_b,
+    a.start_time as session_a_start,
+    b.start_time as session_b_start
+FROM conference_sessions a, conference_sessions b
+WHERE a.session_id < b.session_id
+AND (a.start_time, a.planned_duration) OVERLAPS (b.start_time, b.planned_duration);
+```
+
+This query returns no rows, indicating that there are no overlapping sessions.
+
+### Handling time zones
+
+Postgres supports adding time zone information to both time-of-day (`TIME WITH TIME ZONE`) and moment-in-time (`TIMESTAMP WITH TIME ZONE` / `TIMESTAMPTZ`) values. 
+
+- If you use a time zone unaware type (e.g., `TIME` or `TIMESTAMP`), Postgres ignores any time zone information provided in the input string. 
+- If you use a time-zone-aware type (e.g., `TIMETZ` or `TIMESTAMPTZ`), Postgres converts the input string to UTC and stores it internally. It then displays the value in the `current time zone` set for the session. 
+
+To illustrate this, you can create a table with both time-zone aware and unaware columns, and insert a sample row: 
+
+```sql
+CREATE TABLE time_example (
+    ts TIMESTAMP,
+    tstz_utc TIMESTAMPTZ,
+    tstz_pst TIMESTAMPTZ
+);
+
+INSERT INTO time_example (ts, tstz_utc, tstz_pst)
+VALUES 
+    ('2024-01-01 09:00:00-08', '2024-01-01 09:00:00+00', '2024-01-01 09:00:00-08');
+```
+
+You can then check the current timezone set for the session:
+
+```sql
+SHOW timezone;
+-- Returns 'GMT' (same as UTC)
+```
+
+Now, if you query the table:
+
+```sql
+SELECT * FROM time_example;
+```
+
+This query returns the following:
+
+```text
+         ts          |        tstz_utc        |        tstz_pst
+---------------------+------------------------+------------------------
+ 2024-01-01 09:00:00 | 2024-01-01 09:00:00+00 | 2024-01-01 17:00:00+00
+```
+
+Postgres ignores the timezone information for the first column and returns the second and third columns in the UTC timezone.
+
+## Additional considerations
+
+- **Indexing**: Date/time values often involve range queries and sorting. Indexing date/time columns can thus significantly improve query performance. 
+- **Daylight Saving Time**: Working with time zones can be tricky, especially when dealing with daylight savings time. For additional details, refer to the [PostgreSQL Date/Time Types documentation](https://www.postgresql.org/docs/current/datatype-datetime.html).
+
+## Resources
+
+- [PostgreSQL documentation - Date/Time Types](https://www.postgresql.org/docs/current/datatype-datetime.html)
+- [PostgreSQL documentation - Date/Time Functions](https://www.postgresql.org/docs/current/functions-datetime.html)
+
+<NeedHelp />
+
+
+# Character
+
+---
+title: Postgres Character Data Types
+subtitle: Work with text data in Postgres
+enableTableOfContents: true
+updatedOn: '2024-02-04T14:22:44.186Z'
+---
+
+In Postgres, character data types are used to store strings. There are three primary character types: `CHAR(n)`, `VARCHAR(n)`, and `TEXT`. `CHAR(n)` and `VARCHAR(n)` types are suitable for strings with known or limited length; for example, usernames and email addresses. Whereas `TEXT` is ideal for storing large variable-length strings, such as blog posts or product descriptions. 
+
+<CTA />
+
+## Storage and syntax
+
+- `VARCHAR(n)` allows storing any string up to `n` characters. 
+- `CHAR(n)` stores strings in a fixed length. If a string is shorter than `n`, it is padded with spaces. 
+- `TEXT` has no length limit, making it ideal for large texts. 
+
+Storing strings requires one or a few bytes of overhead over the actual string length. `CHAR` and `VARCHAR` columns need an extra check at input time to ensure the string length is within the specified limit. Most Postgres string functions take and return `TEXT` values. 
+
+String values are represented as literals in single quotes. For example, `'hello'` is a string literal.
+
+## Example usage
+
+Consider a database tracking data for a library. We have books with titles and optional descriptions. Titles are usually of a similar length, so they can be modeled with a `CHAR` type. However, descriptions can vary significantly in length, so they are assigned the `TEXT` type. 
+
+The query below creates a `books` table and inserts some sample data:
+
+```sql
+CREATE TABLE books (
+    id SERIAL PRIMARY KEY,
+    title CHAR(50),
+    description TEXT
+);
+
+INSERT INTO books (title, description)
+VALUES 
+    ('Postgres Guide', 'A comprehensive guide to PostgreSQL.'),
+    ('Data Modeling Essentials', NULL),
+    ('SQL for Professionals', 'An in-depth look at advanced SQL techniques.');
+```
+
+To find books with descriptions, you can use the following query:
+
+```sql
+SELECT title
+FROM books
+WHERE description IS NOT NULL;
+```
+
+This query returns the following:
+
+```text
+                       title
+----------------------------------------------------
+ Postgres Guide
+ SQL for Professionals
+```
+
+## Other examples
+
+### String functions and operators
+
+Postgres provides various functions and operators for manipulating character data. For instance, the `||` operator concatenates strings.
+
+The query below joins the title and description columns together:
+
+```sql
+SELECT title || ' - ' || description AS full_description
+FROM books;
+```
+
+This query returns the following:
+
+```text
+                           full_description
+----------------------------------------------------------------------
+ Postgres Guide - A comprehensive guide to PostgreSQL.
+
+ SQL for Professionals - An in-depth look at advanced SQL techniques.
+```
+
+For more string functions and operators, see [PostgreSQL String Functions and Operators](https://www.postgresql.org/docs/current/functions-string.html).
+
+### Pattern matching
+
+With `VARCHAR` and `TEXT`, you can use pattern matching to find specific text. The `LIKE` operator is commonly used for this purpose.
+
+```sql
+SELECT id, title
+FROM books
+WHERE title LIKE 'Data%';
+```
+
+This returns books whose titles start with "Data". 
+
+```text
+ id |                       title
+----+----------------------------------------------------
+  2 | Data Modeling Essentials
+```
+
+## Additional considerations
+
+- **Performance**: There are no significant performance differences between any of the types. Using fixed/limited length types, `CHAR` and `VARCHAR` can be useful for data validation. 
+- **Function Support**: All character types support a wide range of functions and operators for string manipulation and pattern matching. 
+
+## Resources
+
+- [PostgreSQL Character Types documentation](https://www.postgresql.org/docs/current/datatype-character.html)
+
+<NeedHelp />
+
+
+# JSON
+
+---
+title: Postgres JSON Data Types
+subtitle: Modeling JSON data in Postgres
+enableTableOfContents: true
+updatedOn: '2024-02-04T13:56:31.612Z'
+---
+
+Postgres supports JSON (JavaScript Object Notation) data types, providing a flexible way to store and manipulate semi-structured data. The two types are `JSON` and `JSONB`. The functions work similarly, but there are trade-offs related to data ingestion and querying performance. 
+
+`JSON` and `JSONB` are ideal for storing data that doesn't fit neatly into a traditional relational model, since new fields can be added without altering the database schema. Additionally, they can also be used to model document-like data typically stored in NoSQL databases. 
+
+<CTA />
+
+## Storage and syntax
+
+### JSON
+
+- The `JSON` data type stores `JSON` data in text format.
+- It preserves an exact copy of the original `JSON` input, including whitespace and ordering of object keys.
+- An advantage over storing `JSON` data in a `TEXT` column is that Postgres validates the `JSON` data at ingestion time, ensuring it is well-formed. 
+
+### JSONB
+
+- The `JSONB` (JSON Binary) data type stores `JSON` data in a decomposed binary format.
+- Unlike `JSON`, `JSONB` does not preserve whitespace or the order of object keys. For duplicate keys, only the last value is stored. 
+- `JSONB` is more efficient for querying, as it doesn't require re-parsing the `JSON` data every time it is accessed. 
+
+`JSON` values can be created from string literals by casting. For example:
+
+```sql
+SELECT
+    '{"name": "Alice", "age": 30}'::JSON as col_json,
+    '[1, 2, "foo", null]'::JSONB as col_jsonb;
+```
+
+This query returns the following:
+
+```text
+           col_json           |      col_jsonb
+------------------------------+---------------------
+ {"name": "Alice", "age": 30} | [1, 2, "foo", null]
+```
+
+## Example usage
+
+Consider the case of managing user profiles for a social media application. Profile data is semi-structured, with a set of fields common to all users, while other fields are optional and may vary across users. `JSONB` is a good fit for this use case. 
+
+Using the query below, we can create a table to store user profiles:
+
+```sql
+CREATE TABLE user_profiles (
+    id SERIAL PRIMARY KEY,
+    profile JSONB NOT NULL
+);
+
+INSERT INTO user_profiles (profile)
+VALUES
+    ('{"name": "Alice", "age": 30, "interests": ["music", "travel"], "settings": {"privacy": "public", "notifications": true, "theme": "light"}}'),
+    ('{"name": "Bob", "age": 25, "interests": ["photography", "cooking"], "settings": {"privacy": "private", "notifications": false}, "city": "NYC"}'),
+    ('{"name": "Charlie", "interests": ["music", "cooking"], "settings": {"privacy": "private", "notifications": true, "language": "English"}}');
+```
+
+With `JSONB`, we can directly query and manipulate elements within the `JSON` structure. For example, to find all the users interested in music, we can run the query:
+
+```sql
+SELECT 
+    id, 
+    profile -> 'name' as name, 
+    profile -> 'interests' as interests
+FROM user_profiles
+WHERE profile @> '{"interests":["music"]}'::JSONB;
+```
+
+The `@>` operator checks if the left `JSONB` operand contains the right `JSONB` operand as a subset. While the `->` operator extracts the value of a `JSON` key as a `JSON` value.
+
+This query returns the following:
+
+```text
+ id |   name    |      interests
+----+-----------+----------------------
+  1 | "Alice"   | ["music", "travel"]
+  3 | "Charlie" | ["music", "cooking"]
+```
+
+Note that the `name` values returned are still in `JSON` format. To extract the value as text, we can use the `->>` operator instead:
+
+```sql
+SELECT 
+    id, 
+    profile ->> 'name' as name
+FROM user_profiles;
+```
+
+This query returns the following:
+
+```text
+ id |  name
+----+---------
+  1 | Alice
+  2 | Bob
+  3 | Charlie
+```
+
+## JSON functions and operators
+
+Postgres implements several functions and operators for querying and manipulating `JSON` data, including these functions described in the Neon documentation:
+
+- [json_array_elements](/docs/functions/json_array_elements)
+- [jsonb_array_elements](/docs/functions/jsonb_array_elements)
+- [json_build_object](/docs/functions/json_build_object)
+- [json_each](/docs/functions/json_each)
+- [json_extract_path](/docs/functions/json_extract_path)
+- [json_extract_path_text](/docs/functions/json_extract_path_text)
+- [json_object](/docs/functions/json_object)
+- [json_populate_record](/docs/functions/json_populate_record)
+- [json_to_record](/docs/functions/json_to_record)
+
+For additional `JSON` operators and functions, refer to the [official PostgreSQL documentation](https://www.postgresql.org/docs/current/functions-json.html)
+
+### Nested data 
+
+Postgres supports storing nested `JSON` values. For example, in the user profile table, the `settings` field is a `JSON` object itself. The nested values can be extracted by chaining the `->` operator. 
+
+For example, to access the `privacy` setting for all users, you can run the query:
+
+```sql
+SELECT 
+    id, 
+    profile -> 'name' as name, 
+    profile -> 'settings' ->> 'privacy' as privacy
+FROM user_profiles;
+```
+
+This query returns the following:
+
+```text
+ id |   name    | privacy
+----+-----------+---------
+  1 | "Alice"   | public
+  2 | "Bob"     | private
+  3 | "Charlie" | private
+```
+
+### Modifying JSONB data
+
+The `JSONB` type supports updating individual fields. For example, the query below sets the `privacy` setting for all public users to `friends-only`:
+
+```sql
+UPDATE user_profiles
+SET profile = jsonb_set(profile, '{settings, privacy}', '"friends-only"')
+WHERE profile -> 'settings' ->> 'privacy' = 'public';
+```
+
+`jsonb_set` is a Postgres function that takes a `JSONB` value, a path to the field to update, and the new value. The path is specified as an array of keys.
+
+Field updates are not supported for the `JSON` type.
+
+### Indexing JSONB data
+
+Postgres supports GIN (Generalized Inverted Index) indexes for `JSONB` data, which can improve query performance significantly.
+
+```sql
+CREATE INDEX idxgin ON user_profiles USING GIN (profile);
+```
+
+This makes evaluation of `key-exists (?)` and `containment (@>)` operators efficient. For example, the query to fetch all users who have music as an interest can leverage this index. 
+
+```sql
+SELECT *
+FROM user_profiles
+WHERE profile @> '{"interests":["music"]}';
+```
+
+## Additional considerations
+
+### JSON vs JSONB
+
+`JSONB` is the recommended data type for storing `JSON` data in Postgres for a few reasons.
+
+- **Indexing**: `JSONB` allows for the creation of GIN (Generalized Inverted Index) indexes, which makes searching within `JSONB` columns faster.
+- **Performance**: `JSONB` binary format is more efficient for querying and manipulating, as it doesn't require re-parsing the `JSON` data for each access. It also supports in-place updates to individual fields.
+- **Data integrity**: `JSONB` ensures that keys in an object are unique. 
+
+There might be some legacy use cases where preserving the exact format of the `JSON` data is important. In such cases, the `JSON` data type can be used.
+
+## Resources
+
+- [PostgreSQL documentation - JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+- [PostgreSQL documentation - JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+
+<NeedHelp />
+
+
+# Decimal
+
+---
+title: Postgres Decimal data types
+subtitle: Work with exact numerical values in Postgres
+enableTableOfContents: true
+updatedOn: '2024-02-03T16:07:31.864Z'
+---
+
+In Postgres, decimal data types are used to represent numbers with arbitrarily high precision. They are crucial in financial applications and scientific computation, where exact precision is required for numerical calculations.
+
+<CTA />
+
+## Storage and syntax
+
+Postgres provides a single decimal/numeric type referred to as `DECIMAL` or `NUMERIC`. It offers user-defined precision and can represent numbers exactly up to a certain number of digits.
+
+The syntax for defining a decimal column is `DECIMAL(precision, scale)` or `NUMERIC(precision, scale)`, where:
+- `precision` is the total count of significant digits in the number (both to the left and right of the decimal point).
+- `scale` is the count of decimal digits in the fractional part.
+
+Declaring a column as `NUMERIC` without specifying precision and scale, stores numbers of any precision exactly (up to the implementation limit).
+
+We illustrate the behavior of `NUMERIC` with the following example:
+
+```sql
+SELECT 1234.56::NUMERIC(10, 4) AS num_A,
+       1234.56::NUMERIC(10, 1) AS num_B,
+       1234.56789::NUMERIC AS num_C;
+```
+
+This query yields the following output:
+
+```text
+num_a     | num_b  |   num_c
+----------+--------+------------
+1234.5600 | 1234.6 | 1234.56789
+```
+
+The number `1234.56` is represented exactly in all three cases. However, the `NUMERIC(10, 4)` type rounds the number to 4 decimal places, while `NUMERIC(10, 1)` rounds to 1 decimal place. When no precision and scale are specified, the number is stored exactly.
+
+## Example usage
+
+Consider a financial application managing user portfolios. Here, `DECIMAL` is ideal for storing currency values to avoid rounding errors. For example, representing the price of a stock or the total value of a portfolio.
+
+The following SQL creates a `portfolios` table:
+
+```sql
+CREATE TABLE portfolios (
+    portfolio_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    stock_symbol TEXT NOT NULL,
+    shares_owned DECIMAL(10, 4),
+    price_per_share DECIMAL(10, 2)
+);
+
+INSERT INTO portfolios (user_id, stock_symbol, shares_owned, price_per_share)
+VALUES
+    (101, 'AAPL', 150.1234, 145.67),
+    (102, 'MSFT', 200.000, 214.53);
+```
+
+## Other examples
+
+### Arithmetic operations
+
+Postgres allows various arithmetic operations on decimal types. These operations maintain precision and are critical in contexts where rounding errors could be costly.
+
+For example, the following query calculates the total value of each stock holding:
+
+```sql
+SELECT price_per_share * shares_owned AS total_value
+FROM portfolios;
+```
+
+This query yields the following output:
+```text
+total_value
+--------------
+21868.475678
+42906.000000
+```
+
+This query calculates the total value of each stock holding with precise decimal representation.
+
+## Differences from floating-point
+
+It's important to differentiate `DECIMAL`/`NUMERIC` from floating-point types (`REAL`, `DOUBLE PRECISION`):
+
+- **Precision**: `DECIMAL`/`NUMERIC` types maintain exact precision, while floating-point types are approximate and can introduce rounding errors.
+- **Performance**: Operations on `DECIMAL`/`NUMERIC` types are generally slower than floating-point types due to the precision and complexity of calculations.
+
+
+## Additional considerations
+
+- **Range and Precision**: Always define `DECIMAL`/`NUMERIC` with an appropriate range and precision based on the application's requirements. Overestimating precision can lead to unnecessary storage and performance overhead.
+
+## Resources
+
+- [PostgreSQL documentation - Numeric Types](https://www.postgresql.org/docs/current/datatype-numeric.html)
+
+<NeedHelp />
+
+
+# Floating point
+
+---
+title: Postgres Floating-point data types
+subtitle: Working with float values in PostgreSQL
+enableTableOfContents: true
+updatedOn: '2024-02-03T16:07:31.867Z'
+---
+
+In Postgres, floating point data types are used to represent numbers that might have a fractional part. These types are essential for situations where precision is key, such as scientific calculations, financial computations, and more.
+
+<CTA />
+
+## Storage and syntax
+
+Postgres supports two primary floating-point types:
+
+1. `REAL`: Also known as "single precision," `REAL` occupies 4 bytes of storage. It offers a precision of at least 6 decimal digits.
+2. `DOUBLE PRECISION`: Known as "double precision," this type uses 8 bytes of storage and provides a precision of at least 15 decimal digits.
+
+Both types are approximate numeric types, meaning they may have rounding errors and are not recommended for storing exact decimal values, like monetary data.
+
+## Example usage
+
+For a weather data application, `REAL` might be used for storing temperature readings, where extreme precision isn't critical, as in the following example:
+
+```sql
+CREATE TABLE weather_data (
+    reading_id SERIAL PRIMARY KEY,
+    temperature REAL NOT NULL,
+    humidity REAL NOT NULL
+);
+
+INSERT INTO weather_data (temperature, humidity)
+VALUES
+    (23.5, 60.2),
+    (20.1, 65.3),
+    (22.8, 58.1);
+```
+
+For more complex scientific calculations involving extensive decimal data, `DOUBLE PRECISION` would be more appropriate, as in this example:
+
+```sql
+CREATE TABLE scientific_data (
+    measurement_id SERIAL PRIMARY KEY,
+    precise_temperature DOUBLE PRECISION NOT NULL,
+    co2_levels DOUBLE PRECISION NOT NULL,
+    measurement_time TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+INSERT INTO scientific_data (precise_temperature, co2_levels, measurement_time)
+VALUES
+    (23.456789, 415.123456789, '2024-02-03 10:00:00'),
+    (20.123456, 417.123789012, '2024-02-03 11:00:00'),
+    (22.789012, 418.456123789, '2024-02-03 12:00:00');
+```
+
+## Other examples
+
+### Arithmetic operations
+
+Floating-point types support the standard arithmetic operations: addition, subtraction, multiplication, division, and modulus. However, operations like division might lead to potential rounding errors and precision loss.
+
+```sql
+SELECT 10.0 / 3.0;
+```
+
+This query yields `3.3333333333333333`, which does not represent the quantity `10 / 3` exactly, but rather rounded to the nearest representable value. When performing a series of operations, these rounding errors can accumulate and lead to significant precision loss.
+
+### Special Floating-point values
+
+Postgres floating-point types can represent special values like `'infinity'`, `'-infinity'`, and `'NaN'` (not a number). These values can be useful in certain mathematical or scientific computations.
+
+Consider a table named `calculations`, which might store the results of various scientific computations, including temperature changes, pressure levels, and calculation errors that could potentially result in `'infinity'`, `'-infinity'`, or `'NaN'` values:
+
+```sql
+CREATE TABLE calculations (
+    calculation_id SERIAL PRIMARY KEY,
+    temperature_change DOUBLE PRECISION,
+    pressure_level DOUBLE PRECISION,
+    error_margin DOUBLE PRECISION
+);
+
+-- Inserting special floating-point values
+INSERT INTO calculations (temperature_change, pressure_level, error_margin)
+VALUES
+    ('infinity', 101.325, 0.001), -- An example where temperature change is beyond measurable scale
+    ('-infinity', 0.0, 0.0001),   -- An example with a negative infinite value
+    ('NaN', 101.325, 'NaN');      -- Examples of undefined results or unmeasurable quantities
+```
+
+Notice that you must use single quotes to wrap these values as shown above.
+
+## Additional considerations
+
+- **Accuracy and rounding**: Be aware of rounding errors. For applications requiring exact decimal representation (like financial calculations), consider using `NUMERIC` or `DECIMAL` types instead.
+- **Performance**: While `DOUBLE PRECISION` offers more precision, it might not be as performant due to the larger storage size.
+
+## Resources
+
+- [PostgreSQL documentation - Numeric Types](https://www.postgresql.org/docs/current/datatype-numeric.html)
+
+<NeedHelp />
+
+
+# Integer
+
+---
+title: Postgres Integer data types
+subtitle: Work with integers in Postgres
+enableTableOfContents: true
+updatedOn: '2024-02-03T16:07:31.867Z'
+---
+
+In Postgres, integer data types are used for storing numerical values without a fractional component. They are useful as identifiers, counters, and many other common data modeling tasks. Postgres offers multiple integer types, catering to different ranges of values and storage sizes.
+
+<CTA />
+
+## Storage and syntax
+
+Postgres supports three primary integer types. Choosing the appropriate integer type depends on the range of data expected.
+
+1. `SMALLINT`: A small-range integer, occupying 2 bytes of storage. It's useful for columns with a small range of values.
+2. `INTEGER`: The standard integer type, using 4 bytes of storage. It's the most commonly used since it balances storage/performance efficiency and range capacity.
+3. `BIGINT`: A large-range integer, taking up 8 bytes. It's used when the range of `INTEGER` is insufficient.
+
+Note that Postgres doesn't support unsigned integers. All integer types can store both positive and negative values.
+
+## Example usage
+
+Consider a database for a small online bookstore. Here, `SMALLINT` could be used for storing the number of copies of a book in stock, while `INTEGER` would be appropriate for a unique identifier for each book.
+
+The query below creates a `books` table with these columns:
+
+```sql
+CREATE TABLE books (
+    book_id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    copies_in_stock SMALLINT
+);
+
+INSERT INTO books (book_id, title, copies_in_stock)
+VALUES
+    (1, 'War and Peach', 50),
+    (2, 'The Great Gatsby', 20),
+    (3, 'The Catcher in the Rye', 100);
+```
+
+## Other examples
+
+### Integer operations
+
+Postgres supports various arithmetic operations on integer types, including addition, subtraction, multiplication, and division.
+
+Note that the division of integers does not yield a fractional result; it truncates the result to an integer.
+
+```sql
+SELECT 10 / 4; -- Yields 2, not 2.5
+```
+
+## Sequences and auto-Increment
+
+Postgres also provides `SERIAL`, which is a pseudo-type for creating auto-incrementing integers, often used for primary keys. It's effectively an `INTEGER` that automatically increments with each new row insertion.
+
+There is also `BIGSERIAL` and `SMALLSERIAL` for auto-incrementing `BIGINT` and `SMALLINT` columns, respectively.
+
+For example, we can create an `orders` table with an auto-incrementing `order_id` column:
+
+```sql
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    order_details TEXT
+);
+
+INSERT INTO orders (order_details)
+VALUES ('Order 1'), ('Order 2'), ('Order 3');
+RETURNING *;
+```
+
+This query returns the following:
+
+```text
+ order_id | order_details
+----------+---------------
+        1 | Order 1
+        2 | Order 2
+        3 | Order 3
+```
+
+The `order_id` column gets a unique integer value for each new order.
+
+## Additional considerations
+
+- **Data integrity**: Integer types strictly store numerical values. Attempting to insert non-numeric data, or a value outside the range of that particular type will result in an error.
+- **Performance**: Choosing the correct integer type (`SMALLINT`, `INTEGER`, `BIGINT`) based on the expected value range can optimize storage efficiency and performance.
+
+## Resources
+
+- [PostgreSQL documentation - Numeric Types](https://www.postgresql.org/docs/current/datatype-numeric.html)
+
+<NeedHelp />
+
+
+# UUID
+
+---
+title: Postgres UUID data type
+subtitle: Working with UUIDs in Postgres
+enableTableOfContents: true
+updatedOn: '2024-01-28T13:46:59.385Z'
+---
+
+`UUID` stands for `Universally Unique Identifier`. A `UUID` is a 128-bit value used to ensure global uniqueness across tables and databases. 
+
+In Postgres, the UUID data type is ideal for assigning unique identifiers to entities such as users, orders, or products. They are particularly useful in distributed scenarios, where the system is spread across different databases or services, and unique keys need to be generated independently.
+
+<CTA />
+
+## Storage and syntax
+
+UUIDs are stored as 128-bit values, represented as a sequence of hexadecimal digits. They are typically formatted in five groups, of sizes 8, 4, 4, 4 and 12, separated by hyphens. For example:
+
+- `123e4567-e89b-12d3-a456-426655440000`, or
+- `a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11`
+
+Postgres accepts UUID values in the above format, while also allowing uppercase letters and missing hyphen separators. You can also generate them using functions like `gen_random_uuid()` which is available natively in Postgres, or the `uuid_generate_v4()` function which requires the `uuid-ossp` extension. 
+
+## Example usage
+
+Consider a scenario where we track user sessions in a web application. UUIDs are commonly used to identify sessions due to their uniqueness. 
+
+The query below creates a table and inserts some sample session data:
+
+```sql
+CREATE TABLE sessions (
+    session_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id INT,
+    activity TEXT
+);
+
+INSERT INTO sessions (user_id, activity)
+VALUES 
+    (1, 'login'),
+    (2, 'view'),
+    (1, 'view'),
+    (1, 'logout'),
+    (3, 'write')
+RETURNING *;
+```
+
+This query returns the following:
+
+```text
+| session_id                             | user_id | activity |
+|----------------------------------------|---------|----------|
+| b148aab2-5a03-4d96-a119-c32fc8a4bfaa   | 1       | login    |
+| 72be2042-0072-4858-b090-cb27c31e44b1   | 2       | view     |
+| e817b187-aba3-4b0d-a34e-a1d82319627c   | 1       | view     |
+| a940a06a-a8d4-4e90-a90c-d8fa096e620f   | 1       | logout   |
+| df56fbf8-1fcd-408a-a1c6-4e18e35b8349   | 3       | write    |
+```
+
+To retrieve a specific session, we can query by its UUID:
+
+```sql
+SELECT *
+FROM sessions
+WHERE session_id = 'e817b187-aba3-4b0d-a34e-a1d82319627c';
+```
+
+This query returns the following:
+```text
+| session_id                             | user_id | activity |
+|----------------------------------------|---------|----------|
+| e817b187-aba3-4b0d-a34e-a1d82319627c   | 1       | view     |
+```
+
+## Other examples
+
+### Using UUID column as primary key
+
+Using UUIDs as primary keys is common since the likelihood of the same UUID value being generated twice is very small. This is helpful in distributed systems or when merging data from different sources. 
+
+For example, we can create a table to store products and use a UUID column as the primary key. 
+
+```sql
+CREATE TABLE products (
+    product_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    price NUMERIC
+);
+
+INSERT INTO products (name, price)
+VALUES 
+    ('Apple', 1.99),
+    ('Banana', 2.99),
+    ('Orange', 3.99)
+RETURNING *;
+```
+
+This query returns the following:
+```text
+| product_id                             | name   | price |
+|----------------------------------------|--------|-------|
+| ce3b39d8-1bae-4ed3-b4db-2a74658f0d85   | Apple  | 1.99  |
+| 14c18af1-a352-45e6-976e-3c194bdc6ee8   | Banana | 2.99  |
+| f303866d-d08a-48a7-81c3-c30486149d87   | Orange | 3.99  |
+```
+
+### Avoiding data leakage 
+
+In systems where data security is a concern, using non-sequential IDs like UUIDs can help obscure the total number of records, preventing potential information leaks. This is in contrast to the sequential IDs provided by the `SERIAL` data type, which can inadvertently reveal information about the number of users, orders, etc. 
+
+For example, the query below creates a table that tracks users of an API with some sample data:
+
+```sql
+CREATE TABLE api_users (
+    serial_id SERIAL PRIMARY KEY,
+    uuid_id UUID DEFAULT gen_random_uuid(),
+    username TEXT NOT NULL
+);
+
+INSERT INTO api_users (username)
+VALUES 
+    ('user1'),
+    ('user2'),
+    ('user3')
+RETURNING *;
+```
+
+This query returns the following:
+
+```text
+| serial_id | uuid_id                              | username |
+|-----------|--------------------------------------|----------|
+| 1         | e5836695-f2d0-47f4-86e8-d0dbaae4031a | user1    |
+| 2         | d22ec671-806a-4db2-8c60-f0f8754f9b7b | user2    |
+| 3         | 108eb93a-071e-4407-8b78-a73aabd9e803 | user3    |
+```
+
+Notice that the `serial_id` column hints at the number of rows already present in the table. 
+
+## Additional considerations
+
+- **Randomness and uniqueness**: UUIDs are designed to be globally unique, but there's an extremely small probability of generating a duplicate UUID. If you're automatically generating UUIDs at insertion, and a duplicate UUID is generated, the insertion will fail. In the rare event that a collision occurs, applications that generate UUIDs should implement a retry mechanism.
+- **Performance and indexing**: UUIDs are larger than traditional integer IDs, requiring more storage space. Index structures on UUID columns therefore consume more storage as well. However, in terms of performance for read-heavy workloads, leveraging indexed UUID columns for filtering or sorting can significantly improve query performance. In this context, you have to evaluate the tradeoff between storage efficiency and query performance.
+- **Readability**: UUIDs are not human-readable, which can make debugging or manual inspection of data more challenging. 
+
+## Resources
+
+- [PostgreSQL UUID Type documentation](https://www.postgresql.org/docs/current/datatype-uuid.html)
+
+<NeedHelp />
+
+
+# Extensions
+
+# Supported extensions
+
+---
+title: Supported Postgres extensions
+enableTableOfContents: true
+redirectFrom:
+  - /docs/reference/pg-extensions
+updatedOn: '2024-02-09T17:53:20.585Z'
+---
+
+Neon supports the Postgres extensions shown in the following table. The supported version of the extension sometimes differs by Postgres version.
+
+<a id="default-extensions/"></a>
+
+| Extension                | PG14                               | PG15  | PG16                              |Notes                                                                                                                |
+| :------------------------| --------------------------------------------------------------: | ----------------------------------------------------------------:| ----------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------|
+| [address_standardizer](https://postgis.net/docs/Extras.html#Address_Standardizer)     | 3.3.3  | 3.3.3  |    3.3.3  |                                                                                                          |
+| [address_standardizer_data_us](https://postgis.net/docs/Extras.html#Address_Standardizer)      | 3.3.3        | 3.3.3 | 3.3.3 |                                                                                                 |
+| [autoinc (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)             | 1.0 | 1.0  |   1.0  |                                                                                                                 |
+| [bloom](https://www.postgresql.org/docs/16/bloom.html)                     | 1.0            | 1.0             |   1.0             |                                                                                                                  |
+| [btree_gin](https://www.postgresql.org/docs/16/btree-gin.html)                | 1.3        | 1.3         |      1.3         |                                                                                                              |
+| [btree_gist](https://www.postgresql.org/docs/16/btree-gist.html)               | 1.6       | 1.7        |    1.7        |                                                                                                                  |
+| [citext](/docs/extensions/citext)                   | 1.6           | 1.6            |    1.6            |                                                                                                                  |
+| [cube](https://www.postgresql.org/docs/16/cube.html)                    | 1.5             | 1.5              |    1.5              |                                                                                                                 |
+| [dict_int](https://www.postgresql.org/docs/16/dict-int.html)                 | 1.0         | 1.0          |     1.0          |                                                                                                                 |
+| [earthdistance](https://www.postgresql.org/docs/16/earthdistance.html)            | 1.1    | 1.1     |  1.1     |                                                                                                                   |
+| [fuzzystrmatch](https://www.postgresql.org/docs/16/fuzzystrmatch.html)            | 1.1    | 1.1     |   1.1     |                                                                                                                 |
+| [h3](https://github.com/zachasme/h3-pg/blob/main/docs/api.md)                       | 4.1.3| 4.1.3 | 4.1.3 | Some components have been split out into the `h3_postgis` extension. Install both the `h3` and `h3_postgis` extensions.                                                                                                                   |
+| [h3_postgis](https://github.com/zachasme/h3-pg/blob/main/docs/api.md)               | 4.1.2| 4.1.3 |  4.1.2 | Install with `CREATE EXTENSION h3_postgis CASCADE;` (requires `postgis` and `postgis_raster`)                                                                 |
+| [hll](https://github.com/citusdata/postgresql-hll)                      | 2.18             | 2.18              |  2.18              |                                                                                                                   |
+| [hstore](/docs/extensions/hstore)                   | 1.8           | 1.8            | 1.8            |                                                                                                                   |
+| [hypopg](https://hypopg.readthedocs.io/en/rel1_stable/)                   | 1.4.0          | 1.4.0           |  1.4.0           |                                                                                                                  |
+| [insert_username (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)    | 1.0 | 1.0  |   1.0  |                                                                                                                 |
+| [intagg](https://www.postgresql.org/docs/16/intagg.html)                   | 1.1           | 1.1           |  1.1           |                                                                                                                   |
+| [intarray](https://www.postgresql.org/docs/16/intarray.html)               | 1.5         | 1.5         |  1.5         |                                                                                                                   |
+| [ip4r](https://github.com/RhodiumToad/ip4r)                     | 2.4.2                    | 2.4.2                    |   2.4.2                    |                                                                                                                   |
+| [isn](https://www.postgresql.org/docs/16/isn.html)                      | 1.2              | 1.2              |   1.2              |                                                                                                                   |
+| [lo](https://www.postgresql.org/docs/16/lo.html)                       | 1.1               | 1.1               |  1.1               |                                                                                                                     |
+| [ltree](https://www.postgresql.org/docs/16/ltree.html)                    | 1.2            | 1.2           |   1.2           |                                                                                                                  |
+| [moddattime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)         | 1.0 | 1.0  |   1.0  |                                                                                                                  |
+| [neon](/docs/extensions/neon)               | 1.1                               | 1.1                               |     1.1              |                                                                                                                   |
+| [neon_utils](/docs/extensions/neon-utils)               | 1.0                              | 1.0                               |     1.0              |                                                                                                                   |
+| [pg_graphql](https://github.com/supabase/pg_graphql)               | 1.4.0                 | 1.4.0                  |  1.4.0                  |                                                                                                                   |
+| [pg_hashids](https://github.com/iCyberon/pg_hashids)                | 1.2.1                | 1.2.1                  |  1.2.1                  |                                                                                                                  |
+| [pg_hint_plan](https://github.com/ossc-db/pg_hint_plan)             | 1.4.1                  | 1.5.0                  |  1.6.0                  |                                                                                                                   |
+| [pg_jsonschema](https://github.com/supabase/pg_jsonschema)            | 0.2.0              | 0.2.0               | 0.2.0               |                                                                                                                  |
+| [pg_prewarm](https://www.postgresql.org/docs/16/pgprewarm.html)              | 1.2        | 1.2         |   1.2         |                                                                                                                  |
+| [pg_roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)          | 0.5          | 0.5         |  0.5         |                                                                                                                  | Install with `CREATE EXTENSION roaringbitmap;`
+| [pg_stat_statements](/docs/extensions/pg_stat_statements)       | 1.9 | 1.10 | 1.10 |
+| [pg_tiktoken](/docs/extensions/pg_tiktoken)              | 0.0.1                 | 0.0.1                  |  0.0.1                  |                                                                                                                  | The [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role has `EXECUTE` privilege on the `pg_stat_statements_reset()` function.
+| [pg_trgm](/docs/extensions/pg_trgm)                 | 1.6           | 1.6            |     1.6            |                                                                                                                 |
+| [pg_uuidv7](https://github.com/fboulnois/pg_uuidv7)                | 1.0                   | 1.0                  |    1.0                  |                                                                                                                  |
+| [pgcrypto](https://www.postgresql.org/docs/16/pgcrypto.html)                 | 1.3         | 1.3          |    1.3          |                                                                                                                   |
+| [pgjwt](https://github.com/michelp/pgjwt)                    | 0.2.0                       | 0.2.0                       |   0.2.0                       |                                                                                                                   |
+| [pgrouting](https://docs.pgrouting.org/3.4/en/index.html)                 | 3.4.2          | 3.4.2            | 3.4.2            | The PostGIS extension must be installed first.
+| [pgrowlocks](https://www.postgresql.org/docs/16/pgrowlocks.html)               | 1.2       | 1.2        |   1.2        |                                                                                                                 |
+| [pgstattuple](https://www.postgresql.org/docs/16/pgstattuple.html)              | 1.5      | 1.5       |  1.5       |                                                                                                                  |
+| [pgtap](https://pgtap.org/documentation.html)                    | 1.2.0                   | 1.2.0       |   1.2.0       |                                                                                                                    |
+| [pgvector](/docs/extensions/pgvector)                 | 0.6.0                   | 0.6.0  | 0.6.0                  | Install with `CREATE EXTENSION vector;`                                                                                                                    |
+| [pgx_ulid](https://github.com/pksunkara/pgx_ulid)                 | 0.1.3                   | 0.1.3  | 0.1.3                                 | Install with `CREATE EXTENSION ulid;`                                                                                                                    |
+| [plcoffee](https://github.com/plv8/plv8/)                 | 3.1.5                          | 3.1.5  | 3.1.8                         |                                                                                                                    |
+| [plls](https://github.com/plv8/plv8/)                     | 3.1.5                          | 3.1.5 | 3.1.8                          |                                                                                                                    |  
+| [plpgsql](https://www.postgresql.org/docs/16/plpgsql.html)                  | 1.0          | 1.0   | 1.0        | Pre-installed with Postgres.                                                                                     |
+| [plpgsql_check](https://pgxn.org/dist/plpgsql_check/)            | 2.5.3                   | 2.5.3  | 2.5.3                      |                                                                                      |
+| [plv8](https://plv8.github.io/)                  | 3.1.10                                | 3.1.10  | 3.1.10                                |                                                                                                                    |
+| [postgis](/docs/extensions/postgis)                  | 3.3.3                                   | 3.3.3     | 3.3.3                                |                                                                                                                    |
+| [postgis_raster](https://postgis.net/docs/RT_reference.html)           | 3.3.3             | 3.3.3  | 3.3.3              |                                                                                                                    |
+| [postgis_sfcgal](https://oslandia.gitlab.io/SFCGAL/)           | 3.3.3                    | 3.3.3  | 3.3.3                    |                                                                                                                    |
+| [postgis_tiger_geocoder](https://postgis.net/docs/Extras.html#Tiger_Geocoder)   | 3.3.3    | 3.3.3 | 3.3.3    | Cannot be installed using the Neon SQL Editor. Use your `psql` user credentials to install this extension.         |
+| [postgis_topology](https://www.postgis.net/docs/Topology.html)          | 3.3.3            | 3.3.3   | 3.3.3            |                                                                                                                    |
+| [prefix](https://github.com/dimitri/prefix)                   | 1.2.0                     | 1.2.0   | 1.2.0                      |                                                                                                                    |
+| [rdkit](https://github.com/rdkit/rdkit)                    | 4.3.0                           | 4.3.0  | 4.3.0  |                                                                                                                   |
+| [refint (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)             | 1.0 | 1.0  |  1.0  |                                                                                                                  |
+| [roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)             | 0.5 | 0.5  |  0.5  |
+| [rum](https://github.com/postgrespro/rum)                      | 1.3          | 1.3           |   1.3           |                                                                                                                  |
+| [seg](https://www.postgresql.org/docs/16/seg.html)                      | 1.4              | 1.4               |   1.4               |                                                                                                                   |
+| [tablefunc](https://www.postgresql.org/docs/16/tablefunc.html)                | 1.0        | 1.0         |     1.0         |                                                                                                                 |
+| [tcn](https://www.postgresql.org/docs/16/tcn.html)                      | 1.0              | 1.0               |  1.0               |                                                                                                                  |
+| [timescaledb](/docs/extensions/timescaledb)              | 2.10.1              | 2.10.1               | 2.13.0               | Only Apache-2 licensed features are supported. Compression is not supported.                                                                                                                 |
+| [tsm_system_rows](https://www.postgresql.org/docs/16/tsm-system-rows.html)          | 1.0  | 1.0   |  1.0   |                                                                                                                   |
+| [tsm_system_time](https://www.postgresql.org/docs/16/tsm-system-time.html)          | 1.0  | 1.0   |   1.0   |                                                                                                                  |
+| [unaccent](https://www.postgresql.org/docs/16/unaccent.html)                 | 1.1         | 1.1          |  1.1          |                                                                                                                    |
+| [unit](https://github.com/df7cb/postgresql-unit)                     | 7                 | 7                  |   7                  |                                                                                                                   |
+| [uuid-ossp](https://www.postgresql.org/docs/16/uuid-ossp.html)                | 1.1        | 1.1         | 1.1         | Double-quote the extension name when installing: `CREATE EXTENSION "uuid-ossp"`                                    |
+| [xml2](https://www.postgresql.org/docs/current/xml2.html)                      | 1.1       | 1.1         |  1.1         |                                                                                                                 |
+
+## Install an extension
+
+Unless otherwise noted, supported extensions can be installed using [CREATE EXTENSION](https://www.postgresql.org/docs/16/sql-createextension.html) syntax.
+
+```sql
+CREATE EXTENSION <extension_name>
+```
+
+You can install extensions from the Neon SQL Editor or from a client such as `psql` that permits running SQL queries. For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Update an extension version
+
+Neon updates supported extensions as new versions become available. Version updates are communicated in the [Changelog](/docs/changelog). To check the current version of extensions you have installed, query the `pg_extension` table:
+
+```bash
+SELECT * FROM pg_extension;
+```
+
+You can update an extension to the latest version using `ALTER EXTENSION <extension_name> UPDATE TO <new_version>` syntax. For example:
+
+  ```sql
+  ALTER EXTENSION postgis_topology UPDATE TO '3.3.2';
+  ```
+
+<Admonition type="important">
+When Neon releases a new extension or new extension version, a compute restart is required to make the new extension or extension version available for installation or update. A compute restart may occur on its own due to Neon's default [Autosuspend](/docs/introduction/auto-suspend) behavior. However, if your compute never restarts because you disabled Autosuspend or because your compute is constantly active, you may need force a restart. To force a restart, Neon Pro Plan users can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second (the default is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions. Alternatively, all Neon users can issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. Please be aware that restarting a compute endpoint temporarily interrupts any connections currently using the compute.
+</Admonition>
+
+## Extension support notes
+
+- Neon supports the `uuid-ossp` extension for generating UUIDs instead of the `uuid` extension.
+- The `sslinfo` extension is not supported. Neon handles connections via a proxy that checks SSL.
+- The `pg_cron` extension is not supported. Neon scales to zero when it is not being used, which means that a scheduler that runs inside the database cannot be implemented. Consider using an scheduler that runs externally instead.
+- The `file_fdw` extension is not supported. Files would not remain accessible when Neon scales to zero.
+
+## Request extension support
+
+To request support for a Postgres extension, paid plan users can [open a support ticket](https://console.neon.tech/app/projects?modal=support). Free plan users can submit a request via the **feedback** channel on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
+
+### Custom-built extensions
+
+Neon supports custom-built Postgres extensions for exclusive use with your Neon account. If you developed your own Postgres extension and want to use it with Neon, please reach out to us as described above. Please include the following information in your request:
+
+- A repository link or archive file containing the source code for your extension
+- A description of what the extension does, instructions for compiling it, and any prerequisites
+- Whether an NDA or licensing agreement is necessary for Neon to provide support for your extension
+
+Please keep in mind that certain restrictions may apply with respect to Postgres privileges and local file system access. Additionally, Neon features such as _Autoscaling_ and _Autosuspend_ may limit the types of extensions we can support.
+
+Depending on the nature of your extension, Neon may also request a liability waiver.
+
+<NeedHelp/>
+
+
+# citext
+
+---
+title: The citext Extension
+subtitle: Use the citext extension to handle case-insensitive data in PostgreSQL
+enableTableOfContents: true
+updatedOn: '2024-01-28T13:46:59.386Z'
+---
+
+The `citext` extension in PostgreSQL provides a case-insensitive data type for text. This is particularly useful in scenarios where the case of text data should not affect queries, such as usernames or email addresses, or any form of textual data where case-insensitivity is desired. 
+
+<CTA />
+
+This guide covers the `citext` extension — its setup, usage, and practical examples in PostgreSQL. For datasets where consistent text formatting isn't guaranteed, case-insensitive queries can streamline operations.
+
+<Admonition type="note">
+The `citext` extension is an open-source module for PostgreSQL. It can be easily installed and used in any PostgreSQL database. This guide provides steps for installation and usage, with further details available in the [PostgreSQL Documentation](https://postgresql.org/docs/current/citext.html).
+</Admonition>
+
+## Enable the `citext` extension
+
+You can enable `citext` by running the following `CREATE EXTENSION` statement in the Neon **SQL Editor** or from a client such as `psql` that is connected to Neon.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS citext;
+```
+
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Example usage
+
+**Creating a table with citext**
+
+Consider a user registration system where the user's email should be unique, regardless of case. 
+
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE,
+    email CITEXT UNIQUE
+);
+```
+
+In this table, the `email` field is of type `citext`, ensuring that email addresses are treated case-insensitively.
+
+**Inserting data**
+
+Insert data as you would normally. The `citext` type automatically handles case-insensitivity. 
+
+```sql
+INSERT INTO users (username, email)
+VALUES 
+  ('johnsmith', 'JohnSmith@email.com'),
+  ('AliceSmith', 'ALICE@example.com'),
+  ('BobJohnson', 'Bob@example.com'),
+  ('EveAnderson', 'eve@example.com');
+```
+
+**Case-insensitive querying**
+
+Queries against `citext` columns are inherently case-insensitive. Effectively, it calls the `lower()` function on both strings when comparing two values. 
+
+```sql
+SELECT * FROM users WHERE email = 'johnsmith@email.com';
+```
+
+This query returns the following:
+```text
+| id | username   | email                  |
+|----|------------|------------------------|
+| 1  | johnsmith  | JohnSmith@email.com    |
+```
+
+The email address matched even though the case was different. 
+
+## More examples
+
+**Using citext with regex functions**
+
+The `citext` extension can be used with regular expressions and other string-matching functions, which perform string matching in a case-insensitive manner. 
+
+For example, the query below finds users whose email addresses start with 'AL'.
+
+```sql
+SELECT * FROM users WHERE regexp_match(email, '^AL', 'i') IS NOT NULL;
+```
+
+This query returns the following:
+```text
+| id | username    | email              |
+|----|-------------|--------------------|
+| 1  | AliceSmith  | ALICE@example.com  |
+```
+
+**Using citext data as TEXT**
+
+If you do want case-sensitive behavior, you can cast `citext` data to `text` and use it as shown here: 
+
+Query:
+```sql
+SELECT * FROM users WHERE email::text LIKE '%EVE%';
+```
+
+This query will only return results if it finds a user with an email address containing 'EVE'.
+
+## Benefits of Using citext
+
+- **Query simplicity**: No need for functions like `lower()` or `upper()` to perform case-insensitive comparisons.
+- **Data integrity**: Helps maintain data consistency, especially in user input scenarios.
+
+## Performance considerations
+
+### Indexing with citext
+
+Indexing `citext` fields is similar to indexing regular text fields. However, it's important to note that the index will be case-insensitive. 
+
+```sql
+CREATE INDEX idx_email ON users USING btree(email);
+```
+
+This index will improve the performance of queries involving the `email` field. Depending on whether the more frequent use case is case-sensitive or case-insensitive, you can choose to index the `citext` field or cast it to `text` and index that. 
+
+### Comparison with `lower()` function
+
+`Citext` internally does an operation similar to `lower()` on both sides of the comparison, so there is not a big performance jump. However, using `citext` ensures consistent case-insensitive behavior across queries without the need for repeatedly applying the `lower()` function, which makes errors less likely. 
+
+## Conclusion
+
+The `citext` extension helps manage case-insensitivity in text data within PostgreSQL. It simplifies queries and ensures consistency in data handling. This guide provides an overview of using `citext`, including creating and querying case-insensitive fields.
+
+## Resources
+
+- [PostgreSQL citext documentation](https://www.postgresql.org/docs/current/citext.html)
+
+<NeedHelp/>
+
+
+# hstore
+
+---
+title: The hstore extension
+subtitle: Manage key-value pairs in Postgres using hstore
+enableTableOfContents: true
+updatedOn: '2024-01-28T13:46:59.387Z'
+---
+
+The `hstore` extension is a flexible way to store and manipulate sets of key-value pairs within a single Postgres value. It is particularly useful for semi-structured data or data that does not have a rigid schema. 
+
+<CTA />
+
+This guide covers the basics of the `hstore` extension - how to enable it, how to store and query key-value pairs, and perform operations on hstore data with examples. `hstore` is valuable in scenarios where schema-less data needs to be stored efficiently, such as in configurations, application settings, or any situation where the data structure may evolve over time. 
+
+<Admonition type="note">
+    `hstore` is an open-source extension for Postgres that can be installed on any compatible Postgres instance. Detailed installation instructions and compatibility information can be found at [PostgreSQL Extensions](https://www.postgresql.org/docs/current/contrib.html).
+</Admonition>
+
+**Version availability**
+
+Please refer to the [list of all extensions](https://neon.tech/docs/extensions/pg-extensions) available in Neon for up-to-date information. 
+
+Currently, Neon uses version `1.8` of the `hstore` extension for all Postgres versions.
+
+## Enable the `hstore` extension
+
+Enable the extension by running the following SQL statement in your Postgres client:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS hstore;
+```
+
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Example usage
+
+**Creating a table with hstore column**
+
+Consider a table that stores the product catalog for an electronics shop. Each product has a name and a set of attributes that describe it. The attributes for each product are not fixed and may change over time. This makes `hstore` a good choice for storing this data. 
+
+```sql
+CREATE TABLE product (
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(255),
+   attributes HSTORE
+);
+```
+
+**Inserting data**
+
+Inserting data into an `hstore` column is done by providing a string containing key-value pairs into the column. 
+
+```sql
+INSERT INTO product (name, attributes)
+VALUES
+    ('Desktop', 'brand => HP, price => 900, processor => "Intel Core i5", storage => "1TB HDD"'),
+    ('Tablet', 'brand => Apple, price => 500, os => iOS, screen_size => 10.5'),
+    ('Smartwatch', 'brand => Garmin, price => 250, water_resistant => true, battery_life => "7 days"'),
+    ('Camera', 'brand => Nikon, price => 1200, megapixels => 24, video_resolution => "4K"'),
+    ('Laptop', 'brand => Dell, price => 1200, screen_size => 15.6'),
+    ('Smartphone', 'brand => Samsung, price => 800, os => Android'),
+    ('Headphones', 'brand => Sony, price => 150, wireless => true, color => "Black"');
+```
+
+`hstore` stores both keys and values for each record as strings (values can be nulls). For numeric attributes like price and megapixels, they are cast to strings when inserted into the table.
+
+**Querying `hstore` data**
+
+`hstore` columns can be referenced as regular columns in a query. To access the attributes in an `hstore` column, we use the `->` operator. 
+
+For example, to retrieve the name and brand for all products with price less than 1000, we can run the following query:
+
+```sql
+SELECT name, attributes->'brand' AS brand
+FROM product
+WHERE (attributes->'price')::INT < 1000;
+```
+
+Since the `price` attribute is stored as a string, we need to cast it to an integer before comparing it to 1000. This query returns the following:
+
+```text
+| name       | brand   |
+|------------|---------|
+| Desktop    | HP      |
+| Tablet     | Apple   |
+| Smartwatch | Garmin  |
+| Smartphone | Samsung |
+| Headphones | Sony    |
+```
+
+## Operators for `hstore` data
+
+`hstore` offers a variety of operators for manipulating and querying key-value pairs. We go over some examples below.
+
+**Check if a key exists**
+
+The `?` operator is used to check if an `hstore` contains a specific key.
+
+```sql
+SELECT id, name 
+FROM product
+WHERE attributes ? 'os';
+```
+
+This query returns the following:
+
+```text
+| id | name       |
+|----|------------|
+| 2  | Tablet     |
+| 6  | Smartphone |
+```
+
+**Check if an hstore contains another hstore**
+
+The `@>` operator is used to check if the `hstore` on the left contains the right operand. For example, the query below looks for products that have a `brand` attribute of `Apple`. 
+
+```sql
+SELECT id, name
+FROM product
+WHERE attributes @> 'brand => "Apple"';
+```
+
+This query returns the following:
+
+```text
+| id | name   |
+|----|--------|
+| 2  | Tablet |
+```
+
+**Concatenating two hstore values**
+
+The `||` operator is used to concatenate two `hstore` values. For example, the query below updates the attributes for the product with name `Laptop`. 
+
+```sql
+UPDATE product
+SET attributes = attributes || 'weight => 2.5'
+WHERE name = 'Laptop' AND attributes -> 'brand' = 'Dell';
+```
+
+To verify, we can run the query below. 
+```sql
+SELECT id, name, attributes -> 'weight' AS weight
+FROM product
+WHERE name = 'Laptop' AND attributes -> 'brand' = 'Dell';
+```
+
+This query returns the following:
+
+```text
+| id | name   | weight |
+|----|--------|--------|
+|  5 | Laptop | 2.5    |
+```
+
+**Check if a hstore contains any of the specified keys**
+
+The `?|` operator is used to check if an `hstore` contains any of the keys specified in the right operand. For example, the query below returns all products that have either a `screen_size` or `megapixels` attribute.
+
+```sql
+SELECT id, name
+FROM product
+WHERE attributes ?| ARRAY['screen_size', 'megapixels'];
+```
+
+This query returns the following:
+
+```text
+| id | name   |
+|----|--------|
+| 2  | Tablet |
+| 4  | Camera |
+| 5  | Laptop |
+```
+
+## `Hstore` functions
+
+The `hstore` extension also adds functions to manipulate the `hstore` data. We go over some examples below. 
+
+**Retrieve all keys**
+
+The `akeys` function returns an array of all the keys in an `hstore` value. For example, the query below returns all the keys for Dell laptop products. 
+
+```sql
+SELECT id, name, akeys(attributes) AS keys
+FROM product
+WHERE name = 'Laptop' AND attributes -> 'brand' = 'Dell';
+```
+
+This query returns the following:
+
+```text
+| id | name   | keys                             |
+|----|--------|----------------------------------|
+| 1  | Laptop | {brand,price,weight,screen_size} |
+```
+
+**Convert hstore to JSON**
+
+The `hstore_to_json` function converts an `hstore` value to `JSON`. For example, the query below converts the `attributes` column to `JSON` for all products with a `brand` attribute of `Apple`.
+
+```sql
+SELECT hstore_to_json(attributes) AS attributes
+FROM product
+WHERE attributes -> 'brand' = 'Apple';
+```
+
+**Extract all keys and values**
+
+The `each` function returns the set of key-value pairs for an `hstore` value. For example, the query below returns each attribute of the Nikon Camera as a separate row.
+
+```sql
+SELECT id, (each(attributes)).*
+FROM product
+WHERE name = 'Camera' AND attributes -> 'brand' = 'Nikon';
+```
+
+This query returns the following:
+
+```text
+| id | key              | value |
+|----|------------------|-------|
+| 1  | brand            | Nikon |
+| 2  | price            | 1200  |
+| 3  | megapixels       | 24    |
+| 4  | video_resolution | 4K    |
+```
+
+## Comparing `hstore` with `JSON`
+
+The `hstore` and `JSON` data types can be both used to store semi-structured data. `Hstore` has a flat data model — both keys and values must be strings. This makes it more efficient for simple key-value data.
+
+In constrast, `JSON` supports a variety of data types, and can also store nested data structures. This makes it more flexible, but trades off some performance.
+
+## Indexing and performance
+
+Indexing can improve the performance of queries involving `hstore` data, particularly for large datasets. 
+
+`Hstore` supports the regular `btree` and `hash` indexes. However, this is only useful for equality comparisons of the entire `hstore` value, since these indexes have no knowledge of its substructure.
+
+```sql
+CREATE INDEX btree_idx_attributes ON product USING hash (attributes);
+```
+
+For queries that involve key-level filtering, like the `@>` or the `?` operators, the `GIN` and `GIST` indexes are more useful. The indexes can be created as shown in this example:
+
+```sql
+CREATE INDEX gin_idx_attributes ON product USING gin (attributes);
+```
+
+## Conclusion
+
+The `hstore` extension offers a powerful and flexible way to handle semi-structured data in Postgres. This guide provides an overview of using `hstore`, including creating records and querying on its attributes. It also covers some of the common operators and functions available for `hstore` data.
+
+## Resources
+
+- [PostgreSQL hstore documentation](https://www.postgresql.org/docs/current/hstore.html)
+
+<NeedHelp/>
+
+
+# neon
+
+---
+title: The neon extension
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.277Z'
+---
+
+With each Neon project, Neon creates  a "neon" extension, which includes functions and views designed to gather Neon-specific metrics. The metrics are intended for use by the Neon team for the purpose of enhancing our service. The views are owned by a Neon system role (`cloud_admin`), but you are able to view them by connecting to the `postgres` database using `psql` and executing the command `\dv neon.*`, as shown below. At present, the extension includes two views for local file cache metrics. We may incorporate additional views in future releases.
+
+```bash shouldWrap
+psql 'postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/postgres?sslmode=require'
+
+postgres=> \dv neon.*
+            List of relations
+Schema |      Name      | Type |    Owner    
+--------+----------------+------+-------------
+neon   | local_cache    | view | cloud_admin
+neon   | neon_lfc_stats | view | cloud_admin
+(2 rows)
+```
+
+<NeedHelp/>
+
+
+# neon_utils
+
+---
+title: The neon_utils extension
+subtitle: Monitor how Neon's Autoscaling feature allocates compute resources
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.277Z'
+---
+
+The `neon_utils` extension provides a `num_cpus()` function you can use to monitor how Neon's _Autoscaling_ feature allocates vCPU in response to workload. The function returns the current number of allocated vCPUs.
+
+For information about Neon's _Autoscaling_ feature, see [Autoscaling](https://neon.tech/docs/introduction/autoscaling).
+
+## Install the `neon_utils` extension
+
+Install the `neon_utils` extension by running the following `CREATE EXTENSION` statement in the Neon **SQL Editor** or from a client such as `psql` that is connected to Neon.
+
+```sql
+CREATE EXTENSION neon_utils;
+```
+
+For information about using the Neon **SQL Editor**, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Use the `num_cpus()` function
+
+In Neon, computing capacity is measured in _Compute Units (CU)_. One CU is 1 vCPU and 4 GB of RAM, 2 CU is 2 vCPU and 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPU. A Neon compute can have anywhere from .25 to 7 CU.
+
+Defining a minimum and maximum compute size for your compute endpoint, as shown below, enables autoscaling.
+
+![Edit compute endpoint dialog showing an autoscaling configuration](/docs/extensions/edit_compute_endpoint.png)
+
+As your workload changes, computing capacity scales dynamically between the minimum and maximum settings defined in your compute endpoint configuration. To retrieve the number of allocated vCPU at any point in time, you can run the following query:
+
+```sql
+SELECT num_cpus();
+```
+
+For autoscaling configuration instructions, see [Compute size and autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
+
+## Limitations
+
+The following limitations apply:
+
+- The `num_cpus()` function does not return fractional vCPU sizes. The _Autoscaling_ feature can scale by fractional vCPU, but the `num_cpus()` function reports the next whole number. For example, if the current number of allocated vCPU is `.25` or `.5`, the `num_cpus()` function returns `1`.
+- The `num_cpus()` function only works on compute endpoints that have the _Autoscaling_ feature enabled. Running the function on a fixed size compute endpoint does not return a correct value.
+
+## Observe autoscaling with `neon_utils` and `pgbench`
+
+The following instructions demonstrate how you can use the `num_cpus()` function with `pgbench` to observe how Neon's _Autoscaling_ feature responds to workload.
+
+### Prerequisites
+
+- Ensure that autoscaling is enabled for your compute endpoint. For instructions, see [Compute size and autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration). The following example uses a minimum setting of 0.25 Compute Units (CU) and a maximum of 4.
+- The [pgbench](https://www.postgresql.org/docs/current/pgbench.html) utility.
+
+### Run the test
+
+1. Install the `neon_utils` extension:
+
+    ```sql
+    CREATE EXTENSION IF NOT EXISTS neon_utils;
+    ```
+
+2. Create a `test.sql` file with the following queries:
+
+    ```sql
+    SELECT LOG(factorial(5000)) / LOG(factorial(2500));
+    SELECT txid_current();
+    ```
+
+3. To avoid errors when running `pgbench`, initialize your database with the tables used by `pgbench`. This can be done using the `pgbench -i` command, specifying the connection string for your Neon database. You can obtain a connection string from the **Connection Details** widget on the Neon **Dashboard**.
+
+    ```bash shouldWrap
+    pgbench -i postgres://[user]:[password]@[neon_hostname]/[dbname]
+    ```
+
+4. Run a `pgbench` test with your `test.sql` file, specifying your connection string:
+
+    ```bash shouldWrap
+    pgbench -f test.sql -c 15 -T 1000 -P 1 postgres://[user]:[password]@[neon_hostname]/[dbname]
+    ```
+
+    The test produces output similar to the following on a compute endpoint set to scale from 0.25 to 4 CUs.
+
+    ```bash
+    pgbench (15.3)
+    starting vacuum...end.
+    progress: 8.4 s, 0.0 tps, lat 0.000 ms stddev 0.000, 0 failed
+    progress: 9.0 s, 0.0 tps, lat 0.000 ms stddev 0.000, 0 failed
+    progress: 10.0 s, 4.0 tps, lat 1246.290 ms stddev 3.253, 0 failed
+    progress: 11.0 s, 6.0 tps, lat 1892.455 ms stddev 446.686, 0 failed
+    progress: 12.0 s, 9.0 tps, lat 2091.352 ms stddev 1068.303, 0 failed
+    progress: 13.0 s, 5.0 tps, lat 1881.682 ms stddev 700.852, 0 failed
+    progress: 14.0 s, 6.0 tps, lat 2660.009 ms stddev 1404.672, 0 failed
+    progress: 15.0 s, 9.0 tps, lat 2354.776 ms stddev 1248.686, 0 failed
+    progress: 16.0 s, 8.0 tps, lat 1770.870 ms stddev 776.465, 0 failed
+    progress: 17.0 s, 7.0 tps, lat 1800.686 ms stddev 611.749, 0 failed
+    progress: 18.0 s, 18.0 tps, lat 1681.841 ms stddev 1187.918, 0 failed
+    progress: 19.0 s, 29.0 tps, lat 561.201 ms stddev 139.565, 0 failed
+    progress: 20.0 s, 27.0 tps, lat 507.782 ms stddev 153.889, 0 failed
+    progress: 21.0 s, 30.0 tps, lat 493.312 ms stddev 121.688, 0 failed
+    progress: 22.0 s, 32.0 tps, lat 513.444 ms stddev 185.033, 0 failed
+    progress: 23.0 s, 32.0 tps, lat 503.135 ms stddev 199.435, 0 failed
+    progress: 24.0 s, 28.0 tps, lat 492.913 ms stddev 124.019, 0 failed
+    progress: 25.0 s, 43.0 tps, lat 366.719 ms stddev 123.547, 0 failed
+    progress: 26.0 s, 49.0 tps, lat 334.276 ms stddev 79.043, 0 failed
+    progress: 27.0 s, 40.0 tps, lat 354.922 ms stddev 83.560, 0 failed
+    progress: 28.0 s, 31.0 tps, lat 400.645 ms stddev 29.236, 0 failed
+    progress: 29.0 s, 48.0 tps, lat 373.522 ms stddev 64.446, 0 failed
+    progress: 30.0 s, 44.0 tps, lat 333.343 ms stddev 86.497, 0 failed
+    progress: 31.0 s, 44.0 tps, lat 326.754 ms stddev 82.990, 0 failed
+    progress: 32.0 s, 44.0 tps, lat 329.317 ms stddev 76.728, 0 failed
+    progress: 33.0 s, 53.0 tps, lat 321.572 ms stddev 76.427, 0 failed
+    progress: 34.0 s, 57.0 tps, lat 254.500 ms stddev 33.013, 0 failed
+    progress: 35.0 s, 60.0 tps, lat 251.035 ms stddev 37.574, 0 failed
+    progress: 36.0 s, 58.0 tps, lat 256.846 ms stddev 36.390, 0 failed
+    progress: 37.0 s, 60.0 tps, lat 249.165 ms stddev 36.764, 0 failed
+    progress: 38.0 s, 57.0 tps, lat 263.885 ms stddev 31.351, 0 failed
+    progress: 39.0 s, 56.0 tps, lat 262.529 ms stddev 43.900, 0 failed
+    progress: 40.0 s, 58.0 tps, lat 259.052 ms stddev 39.737, 0 failed
+    ...
+    ```
+
+4. Call the `num_cpus()` function to retrieve the current number of allocated vCPU.
+
+    ```sql
+    ​​neondb=> SELECT num_cpus();
+    num_cpus
+    ----------
+            4
+    (1 row)
+    ```
+
+<NeedHelp/>
+
+
 # pgvector
 
 ---
 title: The pgvector extension
 subtitle: Use the pgvector for vector similarity search in Postgres
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.748Z'
+updatedOn: '2024-01-23T19:40:04.086Z'
 ---
 
 The `pgvector` extension enables you to store vector embeddings and perform vector similarity search in Postgres. It is particularly useful for applications involving natural language processing, such as those built on top of OpenAI's GPT models. This topic describes how to enable the `pgvector` extension in Neon and how to create, store, and query vectors.
+
+<CTA />
 
 ## Enable the pgvector extension
 
@@ -16475,6 +19900,248 @@ Always consider your compute instance's memory resources when adjusting this par
 <NeedHelp/>
 
 
+# pg_stat_statements
+
+---
+title: The pg_stat_statements extension
+subtitle: Track planning and execution statistics for all SQL statements
+enableTableOfContents: true
+updatedOn: '2024-01-30T00:50:58.828Z'
+---
+
+The `pg_stat_statements` extension provides a detailed statistical view of SQL statement execution within a Postgres database. It tracks information such as execution counts, total and average execution times, and more, helping database administrators and developers analyze and optimize SQL query performance.
+
+<CTA />
+
+This guide covers:
+
+- [Enabling pg_stat_statements](#enable-the-pgstatstatements-extension)
+- [Usage examples](#usage-examples)
+- [Resetting statistics](#reset-statistics)
+
+<Admonition type="note">
+`pg_stat_statements` is an open-source extension for Postgres that can be installed on any Neon project using the instructions below.
+</Admonition>
+
+###  Version availability
+
+The version of `pg_stat_statements` available on Neon depends on the version of Postgres you select for your Neon project.
+
+- Postgres 14 - `pg_stat_statements` 1.9
+- Postgres 15 - `pg_stat_statements` 1.10
+- Postgres 16 - `pg_stat_statements` 1.10
+
+## Enable the `pg_stat_statements` extension
+
+You can enable the extension by running the following `CREATE EXTENSION` statement in the Neon **SQL Editor** or from a client such as `psql` that is connected to Neon.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_stat_statements;
+```
+
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Usage examples
+
+This section provides `pg_stat_statements` usage examples.
+
+### Query the pg_stat_statements view
+
+The main interface is the `pg_stat_statements` view, which contains one row per distinct database query, showing various statistics.
+
+```sql
+SELECT * FROM pg_stat_statements LIMIT 10;
+```
+
+The view contains details like those shown below:
+
+```
+| userid | dbid  | queryid               | query                 | calls |
+|--------|-------|-----------------------|-----------------------|-------|
+| 16391  | 16384 | -9047282044438606287  | SELECT * FROM users;  | 10    |
+```
+
+For a complete list of `pg_stat_statements` columns and descriptions, see [The pg_stat_statements View](https://www.postgresql.org/docs/current/pgstatstatements.html#PGSTATSTATEMENTS-PG-STAT-STATEMENTS).
+
+Let's explore some example usage patterns.
+
+### Find the most frequently executed queries
+
+The most frequently run queries are often critical paths and optimization candidates. 
+
+This query retrieves details about the most frequently executed queries, ordered by the number of calls. Only the top 10 rows are returned (`LIMIT 10`):
+
+```sql
+SELECT
+  userid,
+  query,
+  calls,
+  (total_exec_time / 1000 / 60) as total_min,
+  mean_exec_time as avg_ms
+FROM pg_stat_statements
+ORDER BY 3 DESC
+LIMIT 10;
+```
+
+### Monitor slow queries
+
+A high average runtime can indicate an inefficient query.
+
+The query below uses the `query`, `mean_exec_time` (average execution time per call), and `calls` columns. The condition `WHERE mean_exec_time > 1` filters out queries with an average execution time greater than 1 unit (you may adjust this threshold as needed).
+
+```sql
+SELECT 
+    query, 
+    mean_exec_time, 
+    calls
+FROM 
+    pg_stat_statements
+WHERE 
+    mean_exec_time > 1
+ORDER BY 
+    mean_exec_time DESC;
+```
+
+This query returns the following results:
+
+```
+| Query                                         | Mean Time | Calls |
+|-----------------------------------------------|-----------|-------|
+| SELECT p.*, c.name AS category FROM products  | 250.60ms  |  723  |
+```
+
+This query retrieves the top 10 queries with the highest average execution time, focusing on queries run more than 500 times, for the current user.
+
+```sql
+WITH statements AS (
+    SELECT * 
+    FROM pg_stat_statements pss
+    JOIN pg_roles pr ON (pss.userid = pr.oid)
+    WHERE pr.rolname = current_user
+)
+SELECT 
+    calls, 
+    mean_exec_time, 
+    query
+FROM statements
+WHERE 
+    calls > 500
+    AND shared_blks_hit > 0
+ORDER BY 
+    mean_exec_time DESC
+LIMIT 10;
+```
+
+This query returns the 10 longest-running queries for the current user, focusing on those executed over 500 times and with some cache usage. It orders queries by frequency and cache efficiency to highlight potential areas for optimization.
+
+```sql
+WITH statements AS (
+    SELECT * 
+    FROM pg_stat_statements pss
+    JOIN pg_roles pr ON (pss.userid = pr.oid)
+    WHERE pr.rolname = current_user
+)
+SELECT 
+    calls, 
+    shared_blks_hit,
+    shared_blks_read,
+    shared_blks_hit / (shared_blks_hit + shared_blks_read)::NUMERIC * 100 AS hit_cache_ratio,
+    query
+FROM statements
+WHERE 
+    calls > 500
+    AND shared_blks_hit > 0
+ORDER BY 
+    calls DESC, 
+    hit_cache_ratio ASC
+LIMIT 10;
+```
+
+This query retrieves the top 10 longest-running queries (in terms of mean execution time), focusing on queries executed more than 500 times, for the current user.
+
+```sql
+WITH statements AS (
+    SELECT * 
+    FROM pg_stat_statements pss
+    JOIN pg_roles pr ON (userid = oid)
+    WHERE rolname = current_user
+)
+SELECT 
+    calls, 
+    min_exec_time,
+    max_exec_time, 
+    mean_exec_time,
+    stddev_exec_time,
+    (stddev_exec_time / mean_exec_time) AS coeff_of_variance,
+    query
+FROM statements
+WHERE calls > 500
+AND shared_blks_hit > 0
+ORDER BY mean_exec_time DESC
+```
+
+### Find queries that return many rows
+
+To identify queries that return a lot of rows, you can select the `query` and `rows` columns, representing the SQL statement and the number of rows returned by each statement, respectively.
+
+```sql
+SELECT 
+    query, 
+    rows
+FROM 
+    pg_stat_statements
+ORDER BY 
+    rows DESC
+LIMIT 
+    10;
+```
+
+This query returns results similar to the following:
+
+```
+| Query                                             | Rows    |
+|---------------------------------------------------|---------|
+| SELECT * FROM products;                           | 112,394 |
+| SELECT * FROM users;                              | 98,723  |
+| SELECT p.*, c.name AS category FROM products      | 23,984  |
+```
+
+### Find the most time-consuming queries
+
+The following query returns details about the most time-consuming queries, ordered by execution time.
+
+
+```sql
+SELECT
+  userid,
+  query,
+  calls,
+  total_exec_time,
+  rows
+FROM
+  pg_stat_statements
+ORDER BY
+  total_exec_time DESC
+LIMIT 10;
+```
+
+## Reset statistics
+
+When executed, the `pg_stat_statements_reset()` function resets the accumulated statistical data, such as execution times and counts for SQL statements, to zero. It's particularly useful in scenarios where you want to start fresh with collecting performance statistics.
+
+<Admonition type="note">
+In Neon, only [neon_superuser](https://neon.tech/docs/manage/roles#the-neonsuperuser-role) roles have the privilege required to execute this function. The default role created with a Neon project and roles created in the Neon Console, CLI, and API are granted membership in the `neon_superuser` role.
+</Admonition>
+
+```sql
+SELECT pg_stat_statements_reset();
+```
+
+## Resources
+
+- [PostgreSQL documentation for pg_stat_statements](https://www.postgresql.org/docs/current/pgstatstatements.html)
+
+
 # pg_tiktoken
 
 ---
@@ -16482,12 +20149,14 @@ title: The pg_tiktoken extension
 subtitle: Efficiently tokenize data in your Postgres database using OpenAI's `tiktoken`
   library
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.747Z'
+updatedOn: '2024-01-23T19:40:04.085Z'
 ---
 
 The `pg_tiktoken` extension enables fast and efficient tokenization of data in your Postgres database using OpenAI's [tiktoken](https://github.com/openai/tiktoken) library.
 
 This topic provides guidance on installing the extension, utilizing its features for tokenization and token management, and integrating the extension with ChatGPT models.
+
+<CTA />
 
 ## What is a token?
 
@@ -16656,574 +20325,4165 @@ As you explore the capabilities of the `pg_tiktoken extension`, we encourage you
 <NeedHelp/>
 
 
-# pg_embedding
+# pg_trgm
 
 ---
-title: The pg_embedding extension (Support Discontinued)
-subtitle: null
+title: The pg_trgm extension
+subtitle: Improve Postgres text searches with the pg_trgm extension
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.747Z'
+updatedOn: '2024-01-28T13:46:59.387Z'
 ---
 
-<Admonition type="warning">
-As of **Sept 29, 2023**, Neon is no longer committing to `pg_embedding`.
+The `pg_trgm` extension enhances Postgres' ability to perform text searches by using trigram matching. Trigrams are groups of three consecutive characters taken from a string. By breaking down text into trigrams, Postgres can perform more efficient and flexible searches, such as similarity and proximity searches. 
 
-Support will remain in place for existing users of the extension, but we strongly encourage migrating to [pgvector](https://github.com/pgvector/pgvector).
+This extension is particularly useful for applications requiring fuzzy string matching or searching within large bodies of text.
 
-For migration instructions, see [Migrate from pg_embedding to pgvector](#migrate-from-pg_embedding-to-pgvector).
+<CTA />
+
+In this guide, we'll explore the `pg_trgm` extension, covering how to enable it, use it for text searches, and optimize queries. This extension has applications in data retrieval, text analysis, and anywhere robust text search capabilities are needed.
+
+<Admonition type="note">
+    The `pg_trgm` extension is open-source and can be installed on any Postgres setup. Detailed information about the extension is available in the [PostgreSQL Documentation](https://www.postgresql.org/docs/current/pgtrgm.html).
 </Admonition>
 
-## Migrate from pg_embedding to pgvector
+**Version availability**
 
-The `pg_embedding` extension stores embeddings in `real[]` type columns, while `pgvector` uses `vector` type columns. To migrate from `pg_embedding` to `pg_vector`, you have two options:
+Please refer to the [list of all extensions](https://neon.tech/docs/extensions/pg-extensions) available in Neon for up-to-date information. 
 
-- **Use casting**: Keep your embeddings data as it is, in `real[]` type columns, and cast from `real[]` to `vector` in your queries and index creation statements.
-- **Use the vector type**: Recreate your table using the `vector` type instead of `real[]`. This method requires copying data from one table to another.
+Currently, Neon uses version `1.6` of the `pg_trgm` extension for all Postgres versions.
 
-Both migration methods are described below.
+## Enable the `pg_trgm` extension
 
-The migration instructions are based on the following setup, which has the `pg_embedding` extension installed, a table named `documents` defined with a `real[]` column named `embedding`, and an `hnsw` index defined on the `embeddings` column. You have to adapt the queries in the migration instructions according to your setup.
-
-```sql
-CREATE EXTENSION embedding;
-CREATE TABLE documents(id BIGSERIAL PRIMARY KEY, embedding real[]);
-INSERT INTO documents(embedding) VALUES ('{1,2,3}'),('{4,5,6}');
-CREATE INDEX ON documents USING hnsw(embedding) WITH (dims=3, m=3, efconstruction=5, efsearch=5);
-```
-
-### Migration option 1: Use casting
-
-To migrate to `pgvector` without altering the `embeddings` column type, and cast from `real[]` to `vector`:
-
-1. Drop the `pg_embedding` extension:
-
-    ```sql
-    DROP EXTENSION embedding CASCADE;
-    ```
-
-    The `CASCADE` clause removes the HNSW index that you defined with `pg_embedding`, which means that search queries fall back to using sequential scans until you install `pgvector` and recreate your index.
-
-2. Create the `pgvector` extension:
-
-    ```sql
-    CREATE EXTENSION vector;
-    ```
-
-3. Update your queries to cast embeddings data from `real[]` to `vector`. For example, the following query casts embeddings data stored in the `embedding` column, defined as a `real[]`, to `vector`.
-
-    ```sql
-    SELECT * FROM documents ORDER BY embedding::vector <-> '[3,1,2]' LIMIT 5;
-    ```
-
-4. Recreate your index, casting the `real[]` type column to `vector`, as shown:
-
-    ```sql
-    CREATE INDEX ON documents USING hnsw ((embedding::vector(3)) vector_cosine_ops);
-    ```
-
-### Migration option 2: Use the vector type
-
-To migrate to `pgvector`, changing your `embeddings` column type from `real[]` to `vector`:
-
-1. Drop the `pg_embedding` extension:
-
-    ```sql
-    DROP EXTENSION embedding CASCADE;
-    ```
-
-    The `CASCADE` clause removes the HNSW index that you defined with `pg_embedding`, which means that search queries fall back to using sequential scans until you install `pgvector` and recreate your index.
-
-2. Create the `pgvector` extension:
-
-    ```sql
-    CREATE EXTENSION vector;
-    ```
-
-3. Create a new table with the `vector` type:
-
-    ```sql
-    CREATE TABLE new_documents (id BIGSERIAL PRIMARY KEY, embedding vector(3));
-    ```
-
-4. Copy data over from your old table:
-
-    ```sql
-    INSERT INTO new_documents (id, embedding)
-    SELECT id, embedding::vector(3) FROM documents;
-    ```
-
-5. Drop the old table:
-
-    ```sql
-    DROP TABLE documents;
-    ```
-
-6. Rename the new table to the name of the old table:
-
-    ```sql
-    ALTER TABLE new_documents RENAME TO documents;
-    ```
-
-7. Recreate your index. For example:
-
-    ```sql
-    CREATE INDEX ON documents USING hnsw (embedding vector_l2_ops);
-    ```
-
-8. Optionally, run a test query:
-
-    ```sql
-    SELECT * FROM documents ORDER BY embedding <-> '[3,1,2]' LIMIT 5;
-    ```
-
-## About pg_embedding
-
-The `pg_embedding` extension enables the use of the Hierarchical Navigable Small World (HNSW) algorithm for vector similarity search in Postgres.
-
-This extension is based on [ivf-hnsw](https://github.com/dbaranchuk/ivf-hnsw) implementation of HNSW
-the code for the current state-of-the-art billion-scale nearest neighbor search system<sup>[[1]](https://github.com/neondatabase/pg_embedding#references)</sup>.
-
-Neon also supports `pgvector` for vector similarity search. See [The pgvector extension](/docs/extensions/pgvector).
-
-## Using the pg_embedding extension
-
-This section describes how to use the `pg_embedding` extension in Neon with simple examples demonstrating the required statements, syntax, and options.
-
-### Usage summary
-
-The statements in this summary are described in further detail in the sections that follow.
+Activate `pg_trgm` by running the `CREATE EXTENSION` statement in your Postgres client:
 
 ```sql
-CREATE EXTENSION embedding;
-CREATE TABLE documents(id integer PRIMARY KEY, embedding real[]);
-INSERT INTO documents(id, embedding) VALUES (1, '{0,1,2}'), (2, '{1,2,3}'),  (3, '{1,1,1}');
-SELECT id FROM documents ORDER BY embedding <-> ARRAY[3,3,3] LIMIT 1;
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
 ```
 
-### Enable the extension
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor). 
 
-<Admonition type="warning">
-The `pg_embedding` extension is no longer available for installation in Neon. Please refer to the notice at the top of the page.
-</Admonition>
+## Example usage
 
-To enable the `pg_embedding` extension, run the following `CREATE EXTENSION` statement in the Neon [SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or from a client such as [psql](/docs/connect/query-with-psql-editor):
+Let's say you're developing a database of books and you want to find books with similar titles. We first create a test table and insert some sample data, using the query below.
 
 ```sql
-CREATE EXTENSION embedding;
+CREATE TABLE books (
+    id SERIAL PRIMARY KEY,
+    title TEXT
+);
+
+INSERT INTO books (title)
+VALUES 
+    ('The Great Gatsby'),
+    ('The Grapes of Wrath'),
+    ('Great Expectations'),
+    ('War and Peace'),
+    ('Pride and Prejudice'),
+    ('To Kill a Mockingbird'),
+    ('1984');
 ```
 
-### Create a table for your vector data
+**Basic string matching**
 
-To store your vector data, create a table similar to the following:
+The `pg_trgm` extension can help you do fuzzy matches on strings. 
+
+For example, the query below looks for titles that are similar to the misspelled phrase "Grate Expectation". The `%` operator, provided by `pg_trgm`, measures similarity between two strings based on trigrams, and returns results if the similarity is above a certain threshold.
 
 ```sql
-CREATE TABLE documents(id INTEGER, embedding real[]);
+SELECT *
+FROM books
+WHERE title % 'Grate Expectation';
 ```
 
-This statement generates a table named `documents` with a `real[]` type column for storing vector data. Your table and vector column names may differ.
+This query returns the following:
+```text
+| id | title               |
+|----|---------------------|
+| 1  | Great Expectations  |
+```
 
-### Insert data
+The similarity threshold can be adjusted by setting the `pg_trgm.similarity_threshold` parameter (default value is `0.3`). 
 
-To insert vector data, use an `INSERT` statement similar to the following:
+## Trigrams
 
-<CodeBlock shouldWrap>
+### Counting trigrams
+
+The `pg_trgm` module makes these assumptions about how to count trigrams in a text string:
+
+- Only alphanumeric characters are considered. 
+- The string is lowercased before counting trigrams.
+- Each word is assumed to be prefixed with two spaces and suffixed with one space. 
+- The set of trigrams output is deduplicated.
+
+We can use the `show_trgm` function to see how `pg_trgm` counts trigrams in a string. Here is an example: 
 
 ```sql
-INSERT INTO documents(id, embedding) VALUES (1, '{0,1,2}'), (2, '{1,2,3}'),  (3, '{1,1,1}');
+SELECT show_trgm('War and Peace'); -- {" a"," p"," w"," an"," pe"," wa",ace,and,"ar ","ce ",eac,"nd ",pea,war}
 ```
 
-</CodeBlock>
+### Computing similarity
 
-## Similarity search
+Given the set of trigrams for two strings `A` and `B`, `pg_trgm` computes the similarity score as the size of the intersection of the two sets divided by the size of the union of the two sets. 
 
-The `pg_embedding` extension supports Euclidean (L2), cosine, and Manhattan distance metrics.
+Here is an example. 
+```sql
+SELECT show_trgm('War'), show_trgm('Bar'), similarity('War', 'Bar');
+```
 
-Euclidean (L2) distance:
+This query returns the following:
+```text
+| show_trgm              | show_trgm              | similarity |
+|------------------------|------------------------|------------|
+| {" w"," wa","ar ",war} | {" b"," ba","ar ",bar} | 0.14285715 |
+```
+
+There are 7 distinct trigrams across the two input strings and 1 trigram in common. So the similarity score comes out to be 1/7 (0.14285715). 
+
+## Advanced text searching
+
+`pg_trgm` offers powerful tools for more complex text search requirements. 
+
+**Proximity search**
+
+The `similarity` function provided by `pg_trgm`, returns a number between 0 and 1, representing how similar the two strings are. By filtering on the similarity score, you can search for strings that are within the specified threshold. 
 
 ```sql
-SELECT id FROM documents ORDER BY embedding <-> array[3,3,3] LIMIT 1;
+SELECT title
+FROM books
+WHERE SIMILARITY(title, 'War and') > 0.3;
 ```
 
-Cosine distance:
+This query returns the following:
+```text
+| title         |
+|---------------|
+| War and Peace |
+```
+
+**Substring matching**
+
+`pg_trgm` also provides functionality to match the input text value against substrings within the target string. The query below illustrates this:
 
 ```sql
-SELECT id FROM documents ORDER BY embedding <=> array[3,3,3] LIMIT 1;
+SELECT 
+    word_similarity('apple', 'green apples'),
+    strict_word_similarity('apple', 'green apples');
 ```
 
-Manhattan distance:
+This query returns the following:
+```text
+| word_similarity | strict_word_similarity |
+|-----------------|------------------------|
+| 0.8333333       | 0.625                  |
+```
+
+The `word_similarity` function returns the maximum similarity score between the input string and any substring of the target string. The similarity score is still computed using trigrams. In this example, the first string `apple` matches with the substring `apple` in the target. 
+
+In contrast, the `strict_word_similarity` function only considers a subset of substrings from the target, namely only sequences of full words in the target string. That is, the first string `apple` matches the substring `apples` in the target, hence the lower score. 
+
+**Distance scores**
+
+There are operators to calculate the `distance` between two strings, i.e., one minus the similarity score. 
 
 ```sql
-SELECT id FROM documents ORDER BY embedding <~> array[3,3,3] LIMIT 1;
+SELECT similarity('Hello', 'Halo') AS similarity, 'Hello' <-> 'Halo' AS distance;
 ```
 
-where:
-
-- `SELECT id FROM documents` selects the `id` field from all records in the `documents` table.
-- `ORDER BY` sorts the selected records in ascending order based on the calculated distances. In other words, records with values closer to the `[1.1, 2.2, 3.3]` query vector according to the distance metric will be returned first.
-- `<->`, `<=>`, and `<~>` operators define the distance metric, which calculates the distance between the query vector and each row of the dataset.
-- `LIMIT 1` limits the result set to one record after sorting. You can adjust this value as required.
-
-In summary, the query retrieves the ID of the record from the `documents` table whose value is closest to the `[3,3,3]` query vector according to the specified distance metric.
-
-### Create an HNSW index
-
-To optimize search behavior, you can add an HNSW index. To create the HNSW index on your vector column, use a `CREATE INDEX` statement as shown in the following examples. The `pg_embedding` extension supports indexes for use with Euclidean, cosine, and Manhattan distance metrics. You must ensure that your search query syntax matches the index that you define. You will notice in the query examples below that each distance metric has a specific operator (`<->`, `<=>`, and `<~>`).
-
-Euclidean (L2) distance index:
-
-```sql
-CREATE INDEX ON documents USING hnsw(embedding) WITH (dims=3, m=3, efconstruction=5, efsearch=5);
-SET enable_seqscan = off;
-SELECT id FROM documents ORDER BY embedding <-> array[3,3,3] LIMIT 1;
+This query returns the following:
+```text
+| similarity | distance  |
+|------------|-----------|
+| 0.22222222 | 0.7777778 |
 ```
 
-Cosine distance index:
+Similarly, there are operators to compute the distance based on the `word_similarity`  and `strict_word_similarity` functions. 
 
-```sql
-CREATE INDEX ON documents USING hnsw(embedding ann_cos_ops) WITH (dims=3, m=3, efconstruction=5, efsearch=5);
-SET enable_seqscan = off;
-SELECT id FROM documents ORDER BY embedding <=> array[3,3,3] LIMIT 1;
-```
+## Performance considerations
 
-Manhattan distance index:
+While `pg_trgm` enhances text search capabilities, computing similarity can get expensive when matching against a large set of strings. Here are a couple of tips to improve performance:
 
-```sql
-CREATE INDEX ON documents USING hnsw(embedding ann_manhattan_ops) WITH (dims=3, m=3, efconstruction=5, efsearch=5);
-SET enable_seqscan = off;
-SELECT id FROM documents ORDER BY embedding <~> array[3,3,3] LIMIT 1;
-```
+- **Indexing**: Using `pg_trgm`, you can create a `GiST` or `GIN` index to speed up similarity search queries. This also helps regular expression-based searches, such as with `LIKE` and `ILIKE` operators. 
+    ```sql
+    CREATE INDEX trgm_idx_gist ON books USING GIST (title gist_trgm_ops);
+    -- or
+    CREATE INDEX trgm_idx_gin ON books USING GIN (title gin_trgm_ops);
+    ```
 
-### Tuning the HNSW algorithm
+- **Limiting results**: Use `LIMIT` to restrict the number of rows returned for more efficient querying.
 
-The following options allow you to tune the HNSW algorithm when creating an index:
+## Conclusion
 
-- `dims`: Defines the number of dimensions in your vector data.  This is a required parameter.
-- `m`: Defines the maximum number of links or "edges" created for each node during graph construction. A higher value increases accuracy (recall) but also increases the size of the index in memory and index construction time.
-- `efconstruction`: Influences the trade-off between index quality and construction speed. A high `efconstruction` value creates a higher quality graph, enabling more accurate search results, but a higher value also means that index construction takes longer.
-- `efsearch`: Influences the trade-off between query accuracy (recall) and speed. A higher `efsearch` value increases accuracy at the cost of speed. This value should be equal to or larger than `k`, which is the number of nearest neighbors you want your search to return (defined by the `LIMIT` clause in your `SELECT` query).
+`pg_trgm` offers a versatile set of tools for text processing and searching in Postgres. We went over the basics of the extension, including how to enable it and how to use it for fuzzy string matching and proximity searches. 
 
-In summary, to prioritize search speed over accuracy, use lower values for `m` and `efsearch`. Conversely, to prioritize accuracy over search speed, use a higher value for `m` and `efsearch`. A higher `efconstruction` value enables more accurate search results at the cost of index build time, which is also affected by the size of your dataset.
+## Resources
 
-<Admonition type="info">
-For an idea of how to configure index option values, consider the benchmark performed by Neon using the _GIST-960 Euclidean dataset_, which provides a training set of 1 million vectors of 960 dimensions. The benchmark was run with this series of index option values:
-
-- `dims`: 960
-- `m`: 32, 64, and 128.
-- `efconstruction`: 64, 128, and 256
-- `efsearch`: 32, 64, 128, 256, and 512
-
-For a million rows of data, we recommend an `m` setting between 48 and 64, and as mentioned [above](#tuning-the-hnsw-algorithm), `efsearch` should be equal to or larger than the number of nearest neighbors you want your search to return.
-
-To learn more about the benchmark, see [Introducing pg_embedding extension for vector search in Postgres and LangChain](https://neon.tech/blog/pg-embedding-extension-for-vector-search). Try experimenting with different settings to find the ones that work best for your particular application.
-</Admonition>
-
-## How HNSW search works
-
-HNSW is a graph-based approach to indexing multi-dimensional data. It constructs a multi-layered graph, where each layer is a subset of the previous one. During a search, the algorithm navigates through the graph from the top layer to the bottom to quickly find the nearest neighbor. An HNSW graph is known for its superior performance in terms of speed and accuracy.
-
-![HNSW graph](/docs/extensions/hnsw_graph.png)
-
-The search process begins at the topmost layer of the HNSW graph. From the starting node, the algorithm navigates to the nearest neighbor in the same layer. The algorithm repeats this step until it can no longer find neighbors more similar to the query vector.
-
-Using the found node as an entry point, the algorithm moves down to the next layer in the graph and repeats the process of navigating to the nearest neighbor. The process of navigating to the nearest neighbor and moving down a layer is repeated until the algorithm reaches the bottom layer.
-
-In the bottom layer, the algorithm continues navigating to the nearest neighbor until it cannot find any nodes that are more similar to the query vector. The current node is then returned as the most similar node to the query vector.
-
-The key idea behind HNSW is that by starting the search at the top layer and moving down through each layer, the algorithm can quickly navigate to the area of the graph that contains the node that is most similar to the query vector. This makes the search process much faster than if it had to search through every node in the graph.
-
-## pg_embedding extension GitHub repository
-
-The GitHub repository for the Neon `pg_embedding` extension can be found [here](https://github.com/neondatabase/pg_embedding).
-
-## Further reading
-
-To further your understanding of HNSW, the following resources are recommended:
-
-- [Efficient and robust approximate nearest neighbor search using Hierarchical Navigable Small World graphs, Yu. A. Malkov, D. A. Yashunin](https://arxiv.org/ftp/arxiv/papers/1603/1603.09320.pdf)
-- [Similarity Search, Part 4: Hierarchical Navigable Small World (HNSW)](https://towardsdatascience.com/similarity-search-part-4-hierarchical-navigable-small-world-hnsw-2aad4fe87d37)
-- [IVFPQ + HNSW for Billion-scale Similarity Search](https://towardsdatascience.com/ivfpq-hnsw-for-billion-scale-similarity-search-89ff2f89d90e)
+- [PostgreSQL pg_trgm documentation](https://www.postgresql.org/docs/current/pgtrgm.html)
+- [PostgreSQL Text Search](https://www.postgresql.org/docs/current/textsearch.html)
 
 <NeedHelp/>
 
 
-# AI tools
-
-# Google Colab
+# postgis
 
 ---
-title: Google Colab
-subtitle: Use Google Colab with Neon for vector similarity search
+title: The postgis extension
+subtitle: Work with geospatial data in Postgres using PostGIS
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.740Z'
+updatedOn: '2024-01-28T13:46:59.388Z'
 ---
 
-[Google Colab](https://colab.research.google.com/) is a hosted Jupyter Notebook service that requires no setup to use and provides free access to computing resources, including GPUs and TPUs.
-You can use Google Colab to run python code through the browser.
+The `postgis` extension provides support for spatial data - coordinates, maps and polygons, encompassing geographical and location-based information. It introduces new data types, functions, and operators to manage and analyze spatial data effectively. 
 
-This guide shows how to create a notebook in Colab, connect to a Neon database, install the `pgvector` extension to enabled Neon as a vector store, and run a vector search query.
+<CTA />
 
-## Prerequisites
+This guide introduces you to the `postgis` extension - how to enable it, store and query spatial data, and perform geospatial analysis with real-world examples. Geospatial data is crucial in fields like urban planning, environmental science, and logistics. 
 
-To perform the steps in this guide, you require a Neon database for storing vectors. You can use the ready-to-use `neondb` database or create your own. See [Create a database](/docs/manage/databases#create-a-database) for instructions.
+<Admonition type="note">
+    PostGIS is an open-source extension for Postgres that can be installed on any Neon Project using the instructions below. Detailed installation instructions and compatibility information can be found at [PostGIS Documentation](https://postgis.net/documentation/).
+</Admonition>
 
-## Retrieve your database connection string
+**Version availability:**
 
-In the **Connection Details** widget on the Neon **Dashboard**, select a branch, a user, and the database you want to connect to. A connection string is constructed for you.
+Please refer to the [list of all extensions](https://neon.tech/docs/extensions/pg-extensions) available in Neon for up-to-date information. 
 
-![Connection details widget](/docs/connect/connection_details.png)
+Currently, Neon uses version `3.3.3` of the `postgis` extension for all Postgres versions.
 
-## Create a notebook
+## Enable the `postgis` extension
 
-In your browser, navigate to [Google Colab](https://colab.research.google.com/), and click **New notebook**.
+You can enable the extension by running the following `CREATE EXTENSION` statement in the Neon **SQL Editor** or from a client such as `psql` that is connected to Neon.
 
-![Google Colab](/docs/ai/google_colab.png)
+```sql
+CREATE EXTENSION IF NOT EXISTS postgis;
+```
 
-Alternatively, you can open a predefined Google Colab notebook for this guide by clicking the **Open in Colab** button below.
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
 
-<a target="_blank" href="https://colab.research.google.com/github/neondatabase/neon-google-colab-notebooks/blob/main/neon_pgvector_quickstart.ipynb">
-  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
-</a>
+## Example usage
 
-## Connect to your database
+**Create a table with spatial data**
 
-1. In your Colab notebook, create a code block to define your database connection and create a cursor object. Replace `postgres://[user]:[password]@[neon_hostname]/[dbname]` with the database connection string you retrieved in the previous step.
+Suppose you're managing a city's public transportation system. You can create a table to store the locations of bus stops. 
 
-    <CodeBlock shouldWrap>
+```sql
+CREATE TABLE bus_stops (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    location GEOGRAPHY(Point) 
+);
+```
 
-    ```python
-    import os
-    import psycopg2
+Here, the location column is of type `GEOGRAPHY(Point)`, which is a spatial data type provided by the `postgis` extension and used to store points on the Earth's surface. 
 
-    # Provide your Neon connection string
-    connection_string = "postgres://[user]:[password]@[neon_hostname]/[dbname]"
+**Inserting data**
 
-    # Connect using the connection string
-    connection = psycopg2.connect(connection_string)
+Data can be inserted into the table using regular `INSERT` statements. 
 
-    # Create a new cursor object
-    cursor = connection.cursor()
-    ```
+```sql
+INSERT INTO bus_stops (name, location)
+VALUES 
+    ('Main St & 3rd Ave', ST_Point(-73.935242, 40.730610)),
+    ('Elm St & 5th Ave', ST_Point(-73.991070, 40.730824));
+```
 
-    </CodeBlock>
+The `ST_Point` function is used to create a point from the specified latitude and longitude.
 
-2. Execute the code block (**Ctrl** + **Enter**).
+**Querying spatial data**
 
-3. Add a code block for testing the database connection.
+Now, we can perform spatial queries using the built-in functions provided by `PostGIS`. For example, below we try to find points within a certain distance from a reference. 
 
-    ```python
-    # Execute this query to test the database connection
-    cursor.execute("SELECT 1;")
-    result = cursor.fetchone()
+Query:
+```sql
+SELECT name FROM bus_stops 
+WHERE ST_DWithin(location, ST_Point(-73.95, 40.7305)::GEOGRAPHY, 2000);
+```
 
-    # Check the query result
-    if result == (1,):
-        print("Your database connection was successful!")
-    else:
-        print("Your connection failed.")
-    ```
+This query returns the following:
+```text
+| name               |
+|--------------------|
+| Main St & 3rd Ave  |
+```
 
-4. Execute the code block (**Ctrl** + **Enter**).
+The `ST_DWithin` function returns true if the distance between two points is less than or equal to the specified distance (when used with the `GEOGRAPHY` type, the unit is meters). 
 
-## Install the pgvector extension
+## Spatial data types
 
-1. Create a codeblock to install the `pgvector` extension to enable your Neon database as a vector store:
+PostGIS extends Postgres data types to handle spatial data. The primary spatial types are:
 
-    ```python
-    # Execute this query to install the pgvector extension
-    cursor.execute("CREATE EXTENSION IF NOT EXISTS vector;")
-    ```
+- **GEOMETRY**: A flexible type for spatial data, supporting various shapes. It models shapes in the cartesian coordinate plane. Each `GEOMETRY` value is also associated with a spatial reference system (SRS), which defines the coordinate system and units of measurement. 
+- **GEOGRAPHY**: Specifically designed for large-scale spatial operations on the Earth's surface, factoring in the Earth's curvature. The coordinates for a `GEOGRAPHY` shape are specified in degrees of latitude and longitude. 
 
-2. Execute the code block (**Ctrl** + **Enter**).
+The actual shapes are stored as a set of coordinates. For example, a point is stored as a pair of coordinates, a line as a set of points, and a polygon as a set of lines. 
 
-## Create a table and add vector data
+## Longer example
 
-1. Add a code block to create a table and insert data:
+PostGIS provides a number of other functions for spatial analysis - area, distance, intersection, and more. To illustrate, we'll create dataset representing a small set of landmarks and roads in a fictional city and run spatial queries on it.
 
-    <CodeBlock shouldWrap>
+**Creating the test dataset**
 
-    ```python
-    create_table_sql = '''
-    CREATE TABLE items (
-    id BIGSERIAL PRIMARY KEY,
-    embedding VECTOR(3)
-    );
-    '''
+```sql
+CREATE TABLE landmarks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    location GEOMETRY(Point)
+);
 
-    # Insert data
-    insert_data_sql = '''
-    INSERT INTO items (embedding) VALUES ('[1,2,3]'), ('[4,5,6]'), ('[7,8,9]');
-    '''
+CREATE TABLE roads (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    path GEOMETRY(LineString)
+);
 
-    # Execute the SQL statements
-    cursor.execute(create_table_sql)
-    cursor.execute(insert_data_sql)
+INSERT INTO landmarks (name, location)
+VALUES 
+    ('Park', ST_Point(100, 200)),
+    ('Museum', ST_Point(200, 300)),
+    ('Library', ST_Point(300, 200));
 
-    # Commit the changes
-    connection.commit()
-    ```
+INSERT INTO roads (name, path)
+VALUES 
+    ('Main Street', ST_MakeLine(ST_Point(100, 200), ST_Point(200, 300))),
+    ('Second Street', ST_MakeLine(ST_Point(200, 300), ST_Point(300, 200)));
+```
 
-    </CodeBlock>
+**Nearest landmark to a given point**
 
-2. Execute the code block (**Ctrl** + **Enter**).
+Finding the nearest places to a given point is a common spatial query. We can use the `ST_Distance` function to find the distance between two points and order the results by distance. 
 
-## Query your data
+```sql
+SELECT name, ST_Distance(location, ST_GeomFromText('POINT(150 250)')) AS distance
+FROM landmarks
+ORDER BY distance
+LIMIT 1;
+```
 
-1. Add a codeblock to perform a vector similarity search.
+This query returns the following:
+```text
+| name   | distance |
+|--------|----------|
+| Park   | 70.7107  |
+```
 
-    <CodeBlock shouldWrap>
+**Intersection of Roads**
 
-    ```python
-    cursor.execute("SELECT * FROM items ORDER BY embedding <-> '[3,1,2]' LIMIT 3;")
-    all_data = cursor.fetchall()
-    print(all_data)
-    ```
+We can use the `ST_Intersects` function to find if two roads intersect. To ensure we don't get duplicate pairs of roads, we filter out pairs where the first road has a higher `id` than the second road.
 
-    </CodeBlock>
+```sql
+SELECT a.name, b.name
+FROM roads a AS name_A, roads b AS name_B
+WHERE a.id < b.id AND ST_Intersects(a.path, b.path);
+```
 
-2. Execute the code block (**Ctrl** + **Enter**).
+This query returns the following:
+```text
+| name_A         | name_B         |
+|----------------|----------------|
+| Main Street    | Second Street  |
+```
 
-## Next steps
+**Buffer zone around a landmark**
 
-For more information about using Neon with `pgvector`, see [The pgvector extension](/docs/extensions/pgvector).
+Say, the municipal council wants to create a buffer zone of 50 units around landmarks and check which roads intersect these zones. `ST_Buffer` computes an area around the given point with the specified radius. 
+
+```sql
+SELECT l.name AS landmark, r.name AS road
+FROM landmarks l, roads r
+WHERE ST_Intersects(r.path, ST_Buffer(l.location, 50));
+```
+
+This query returns the following:
+```text
+| landmark | road          |
+|----------|---------------|
+| Park     | Main Street   |
+| Museum   | Main Street   |
+| Museum   | Second Street |
+| Library  | Second Street |
+```
+
+**Line of Sight Between Landmarks**
+
+To check if there's a direct line of sight (no roads intersecting) between two landmarks, we can combine two `postgis` functions. 
+
+```sql
+SELECT 
+    'No direct line of sight' AS info
+FROM 
+    landmarks l1, landmarks l2, roads r
+WHERE 
+    l1.name = 'Park' AND l2.name = 'Library' AND 
+    ST_Intersects(ST_MakeLine(l1.location, l2.location), r.path)
+LIMIT 1;
+```
+
+This query returns the following:
+```text
+| info                     |
+|--------------------------|
+| No direct line of sight  |
+```
+
+This tells us there's no direct line of sight between the Park and the Library. 
+
+## Performance considerations
+
+When working with PostGIS, thinking about performance is crucial, especially when dealing with large datasets or complex spatial queries. 
+
+### Indexing
+
+**GIST** (Generalized Search Tree) is the default spatial index in PostGIS. GiST indexes are well-suited for multidimensional data, like points, lines, and polygons. It can significantly improve query performance, especially for spatial search operations and joins. 
+
+```sql
+CREATE INDEX spatial_index_name ON landmarks USING GIST(location);
+```
+
+### Query optimization
+
+- **Unnecessary Casting**: `GEOMETRY` and `GEOGRAPHY` are the two primary data types in `postgis`, and a lot of functions are overloaded to work with both. However, casting between the two types can be expensive, so it's best to store data in the more frequently used type. 
+- **Use Appropriate Precision**: Reducing the precision of coordinates can often improve performance without significantly impacting the results. 
+
+## Conclusion
+These examples provide a quick introduction to handling and analyzing spatial data in PostgresQL. We saw how to create tables with spatial data, insert data, and perform spatial queries using the `postgis` extension. It offers a powerful set of tools, with functions for calculating distances, identifying spatial relationships, and aggregating spatial data. 
+
+## Resources
+- [PostGIS Documentation](https://postgis.net/documentation)
+- [PostGIS Intro Workshop](https://postgis.net/workshops/postgis-intro/)
 
 <NeedHelp/>
 
 
-# Postgres extensions
+# timescaledb
 
 ---
-title: Postgres extensions
+title: The timescaledb extension
+subtitle: Work with time-series data in Postgres with the timescaledb extension
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.278Z'
+---
+
+`timescaledb` enables the efficient storage and retrieval of time-series data. Time-series data is a sequential collection of observations or measurements recorded over time. For example, IoT devices continuously generate data points with timestamps, representing measurements or events. `timescaledb` is designed to handle large volumes of time-stamped data and provides SQL capabilities on top of a time-oriented data model such as IoT data, sensor readings, financial market data, and other time-series datasets.
+
+<CTA />
+
+This guide provides an introduction to the `timescaledb` extension. You’ll learn how to enable the extension in Neon, create hypertables, run simple queries, and analyze data using `timescaledb` functions. Finally, you’ll see how to delete data to free up space.
+
+<Admonition type="note">
+`timescaledb` is an open-source extension for Postgres that can be installed on any Neon Project using the instructions below.
+</Admonition>
+
+**Version availability:**
+
+The version of `timescaledb` available on Neon depends on the version of Postgres you select for your Neon project.
+
+- Postgres 14 - `timescaledb` 2.10.1
+- Postgres 15 - `timescaledb` 2.10.1
+- Postgres 16 - `timescaledb` 2.13.0
+
+_Only [Apache-2](https://docs.timescale.com/about/latest/timescaledb-editions/) licensed features are supported. Compression is not supported._
+
+## Enable the `timescaledb` extension
+
+You can enable the extension by running the following `CREATE EXTENSION` statement in the Neon **SQL Editor** or from a client such as `psql` that is connected to Neon.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+```
+
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Create a hypertable
+
+`timescaledb` hypertables are a high-level abstraction, extending traditional Postgres tables to manage temporal data more effectively. A hypertable simplifies the organization and retrieval of time-series information by providing built-in partitioning based on time intervals.
+
+To begin with, create a SQL table for temperature data:
+
+```sql
+CREATE TABLE weather_conditions (
+ time        TIMESTAMP WITH TIME ZONE NOT NULL,
+ device_id   TEXT,
+ temperature  NUMERIC,
+ humidity     NUMERIC
+);
+```
+
+Convert it to a hypertable using the [`create_hypertable`](https://docs.timescale.com/api/latest/hypertable/create_hypertable/) function:
+
+```sql
+SELECT create_hypertable('weather_conditions', 'time');
+```
+
+You should receive the following output:
+
+```text
+|       create_hypertable         |
+|---------------------------------|
+| (3,public,weather_conditions,t) |
+```
+
+It is possible to use both standard SQL commands and `timescaledb` functions (which will be covered later).
+
+To use an SQL query to insert data in the `weather_conditions` table:
+
+```sql
+INSERT INTO weather_conditions
+VALUES
+   (NOW(), 'weather-pro-000002', 72.0, 52.0),
+   (NOW(), 'weather-pro-000003', 71.5, 51.5),
+   (NOW(), 'weather-pro-000004', 73.0, 53.2);
+```
+
+To retrieve the data by time in descending order:
+
+```sql
+SELECT * FROM weather_conditions ORDER BY time DESC;
+```
+
+You should receive the following output:
+
+```text
+|             time              |     device_id      | temperature | humidity |
+|-------------------------------|--------------------|-------------|----------|
+| 2024-01-15 13:30:27.464107+00 | weather-pro-000002 |      72.0   |   52.0   |
+| 2024-01-15 13:30:27.464107+00 | weather-pro-000003 |      71.5   |   51.5   |
+| 2024-01-15 13:30:27.464107+00 | weather-pro-000004 |      73.0   |   53.2   |
+```
+
+## Load weather data
+
+You can use the [sample weather dataset from TimescaleDB](https://assets.timescale.com/docs/downloads/weather_small.tar.gz) and load it into your Neon database using [psql](/docs/connect/query-with-psql-editor).
+
+Download the weather data:
+
+```shell
+curl https://assets.timescale.com/docs/downloads/weather_small.tar.gz -o weather_small.tar.gz
+
+tar -xvzf weather_small.tar.gz
+```
+
+Load the data into Neon database - enter the username, password, host and database name. You can find these details in the **Connection Details** widget on the Neon **Dashboard**.
+
+```shell shouldWrap
+psql 'postgresql://<username>:<password>@<host>/<database_name>?sslmode=require' -c "\COPY weather_conditions FROM weather_small_conditions.csv CSV"
+```
+
+You should receive the following output:
+
+```text
+COPY 1000000
+```
+
+## Use hyperfunctions to analyze data
+
+You can now start using `timescaledb` functions to analyze the data.
+
+[**first()**](https://docs.timescale.com/api/latest/hyperfunctions/first/)
+
+Get the first temperature reading for each location:
+
+```sql
+SELECT
+device_id,
+first(temperature, time) AS first_temperature
+FROM weather_conditions
+GROUP BY device_id
+LIMIT 10;
+```
+
+The aggregate function [`first`](https://docs.timescale.com/api/latest/hyperfunctions/first/) was used to get the earliest `temperature` value based on `time` within an aggregate group.
+
+You should receive the following output:
+
+```text
+|     device_id      | first_temperature  |
+|--------------------|--------------------|
+| weather-pro-000000 |               39.9 |
+| weather-pro-000001 |               32.4 |
+| weather-pro-000002 |               39.8 |
+| weather-pro-000003 |               36.8 |
+| weather-pro-000004 |               71.8 |
+| weather-pro-000005 |               71.8 |
+| weather-pro-000006 |                 37 |
+| weather-pro-000007 |                 72 |
+| weather-pro-000008 |               31.3 |
+| weather-pro-000009 |               84.4 |
+```
+
+[**last()**](https://docs.timescale.com/api/latest/hyperfunctions/last/)
+
+Get the latest temperature reading for each location:
+
+```sql
+SELECT
+device_id,
+last(temperature, time) AS first_temperature
+FROM weather_conditions
+GROUP BY device_id
+LIMIT 10;
+```
+
+The aggregate function [`last`](https://docs.timescale.com/api/latest/hyperfunctions/last/) was used to get the latest `temperature` value based on `time` within an aggregate group.
+
+You should receive the following output:
+
+```text
+|     device_id      | first_temperature |
+|--------------------|-------------------|
+| weather-pro-000000 |                42 |
+| weather-pro-000001 |                42 |
+| weather-pro-000002 |              72.0 |
+| weather-pro-000003 |              71.5 |
+| weather-pro-000004 |              73.0 |
+| weather-pro-000005 | 70.3              |
+| weather-pro-000006 |                42 |
+| weather-pro-000007 | 69.9              |
+| weather-pro-000008 |                42 |
+| weather-pro-000009 |                91 |
+```
+
+[**time_bucket()**](https://docs.timescale.com/api/latest/hyperfunctions/time_bucket/)
+
+Calculate the average temperature per hour for a specific device:
+
+```sql
+SELECT
+time_bucket('1 hour', time) AS bucket_time,
+AVG(temperature) AS avg_temperature
+FROM weather_conditions
+WHERE device_id = 'weather-pro-000001'
+GROUP BY bucket_time
+ORDER BY bucket_time
+LIMIT 10;
+```
+
+The query uses the [`time_bucket`](https://docs.timescale.com/api/latest/hyperfunctions/time_bucket/) hyperfunction to group timestamps into one-hour intervals, calculating the average temperature for each interval from the table for a specific device, and then displays the results for the top 10 intervals.
+
+You should receive the following output:
+
+```text
+|      bucket_time       |   avg_temperature   |
+|------------------------|---------------------|
+| 2016-11-15 12:00:00+00 | 32.76               |
+| 2016-11-15 13:00:00+00 | 33.60               |
+| 2016-11-15 14:00:00+00 | 34.83               |
+| 2016-11-15 15:00:00+00 | 36.26               |
+| 2016-11-15 16:00:00+00 | 37.19               |
+| 2016-11-15 17:00:00+00 | 38.12               |
+| 2016-11-15 18:00:00+00 | 39.02               |
+| 2016-11-15 19:00:00+00 | 40.03               |
+| 2016-11-15 20:00:00+00 | 40.87               |
+| 2016-11-15 21:00:00+00 | 41.93               |
+```
+
+[**histogram()**](https://docs.timescale.com/api/latest/hyperfunctions/histogram/)
+
+Bucket device humidity data:
+
+```sql
+SELECT device_id, histogram(humidity, 40, 60, 5)
+FROM weather_conditions
+GROUP BY device_id
+LIMIT 10;
+```
+
+Here, we use the [`histogram`](https://docs.timescale.com/api/latest/hyperfunctions/histogram/) function to create a distribution of humidity values within specified buckets (`40` to `60` with a size of `5`) for each `device_id`.
+
+You should receive the following output:
+
+```text
+|     device_id      |      histogram      |
+|--------------------|---------------------|
+| weather-pro-000000 | {0,0,0,710,290,0,0} |
+| weather-pro-000001 | {0,0,0,805,186,9,0} |
+| weather-pro-000002 | {0,0,0,217,784,0,0} |
+| weather-pro-000003 | {0,0,0,510,491,0,0} |
+| weather-pro-000004 | {0,0,0,1000,1,0,0} |
+| weather-pro-000005 | {0,0,0,1000,0,0,0} |
+| weather-pro-000006 | {0,0,0,999,1,0,0}  |
+| weather-pro-000007 | {0,0,0,1000,0,0,0} |
+| weather-pro-000008 | {0,0,0,834,166,0,0} |
+| weather-pro-000009 | {0,0,0,0,0,0,1000} |
+```
+
+[**approximate_row_count()**](https://docs.timescale.com/api/latest/hyperfunctions/approximate_row_count/)
+
+Use the [`approximate_row_count`](https://docs.timescale.com/api/latest/hyperfunctions/approximate_row_count/) function to get the approximate number of rows in `weather_conditions` hypertable:
+
+```sql
+SELECT approximate_row_count('weather_conditions');
+```
+
+You should receive the following output:
+
+```text
+| approximate_row_count |
+|-----------------------|
+|             1000000   |
+```
+
+## Working with chunks
+
+Chunks are fundamental storage units within hypertables. Instead of storing the entire time-series dataset as a single monolithic table, `timescaledb` breaks it down into smaller, manageable chunks. Each chunk represents a distinct time interval, making data retrieval and maintenance more efficient.
+
+[**show_chunks()**](https://docs.timescale.com/api/latest/hypertable/show_chunks/)
+
+The [`show_chunks`](https://docs.timescale.com/api/latest/hypertable/show_chunks/) function can be used to understand the underlying structure and organization of your time-series data and provides insights into how your hypertable is partitioned.
+
+```sql
+SELECT show_chunks('weather_conditions');
+```
+
+You should receive the following output:
+
+```text
+|               show_chunks               |
+|-----------------------------------------|
+| _timescaledb_internal._hyper_7_24_chunk |
+| _timescaledb_internal._hyper_7_25_chunk |
+```
+
+`show_chunks` output indicates the presence of two internal chunks within your hypertable. To show detailed chunks information:
+
+```sql
+SELECT * FROM chunks_detailed_size('weather_conditions') ORDER BY chunk_name;
+```
+
+You should receive the following output:
+
+```text
+|     chunk_schema      |    chunk_name     | table_bytes | index_bytes | toast_bytes | total_bytes | node_name |
+|-----------------------|-------------------|-------------|-------------|-------------|-------------|-----------|
+| _timescaledb_internal | _hyper_7_24_chunk |        8192 |       16384 |        8192 |       32768 |           |
+| _timescaledb_internal | _hyper_7_25_chunk |    82190336 |     8249344 |        8192 |    90447872 |           |
+```
+
+[**drop_chunks()**](https://docs.timescale.com/api/latest/hypertable/drop_chunks/)
+
+You can use the [`drop_chunks`](https://docs.timescale.com/api/latest/hypertable/drop_chunks/) function to remove data chunks whose time range falls completely before (or after) a specified time.
+
+```sql
+SELECT drop_chunks('temperature_data', INTERVAL '1 days');
+```
+
+It returns a list of the chunks that were dropped.
+
+You should receive the following output:
+
+```text
+|               drop_chunks               |
+|-----------------------------------------|
+| _timescaledb_internal._hyper_4_19_chunk |
+| _timescaledb_internal._hyper_4_20_chunk |
+```
+
+## Data deletion
+
+You may run into space concerns as data accumulates in timescaledb hypertables. While Neon's Postgres service does not support compression, deleting old data is an option if you don't need to hold on to it for long periods of time.
+
+You can use the [`drop_chunks`](https://docs.timescale.com/api/latest/hypertable/drop_chunks/#:~:text=drop_chunks(),always%20before%20the%20end%20time.) function outlined above to easily delete outdated chunks from a hypertable. For example, to delete all chunks older than 3 months:
+
+```sql
+SELECT drop_chunks('temperature_data', INTERVAL '3 months');
+```
+
+The query deletes any chunks that contain only data older than 3 months.
+
+To automatically run this deletion periodically, you can setup a cron task. For example, adding this line to the crontab will run the deletion query every day at 1AM:
+
+```sql
+0 1 * * * psql -c "SELECT drop_chunks('temperature_data', INTERVAL '3 months')"
+```
+
+<Admonition type="note">
+Please be aware that Noen's [Autosuspend](/docs/guides/auto-suspend-guide) feature may affect the running of scheduled jobs. It may be necessary to start the compute before running a job.
+</Admonition>
+
+This will help ensure the hypertable size is managed by deleting old unneeded data. Tune the interval passed to drop_chunks and the cron schedule based on your data retention needs.
+
+## Conclusion
+
+You were able to configure the timescaledb extension in Neon and create a hypertable to store `weather` data. Then you executed simple queries and analyzed data using a combination of standard SQL and `timescaledb` functions before finally using `drop_chunks()` to delete data.
+
+## Reference
+
+- [TimescaleDB editions](https://docs.timescale.com/about/latest/timescaledb-editions/)
+- [TimesscaleDB hyperfunctions](https://docs.timescale.com/api/latest/hyperfunctions/)
+
+
+# Functions
+
+# array_to_json
+
+---
+title: Postgres array_to_json() function
+subtitle: Converts an SQL array to a JSON array
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.244Z'
+---
+
+You can use the `array_to_json` function to convert a Postgres array into its `JSON` representation, transforming an array of values into a `JSON` array. This helps facilitate integration with web services, APIs, and web frameworks that heavily rely on `JSON`.
+
+<CTA />
+
+## Function signature
+
+```sql
+array_to_json(anyarray [, pretty_bool])
+```
+
+Line feeds will be added between dimension 1 elements if `pretty_bool` is true.
+
+## `array_to_json` example
+
+Let's consider a scenario where an e-commerce platform stores customer preferences as an array of string values in a `customers` table.
+
+**customers**
+
+```sql
+CREATE TABLE customers (
+ id SERIAL PRIMARY KEY,
+ name TEXT NOT NULL,
+ preferences TEXT[]
+);
+
+INSERT INTO customers (name, preferences)
+VALUES ('John Doe', '{clothing, electronics}');
+
+INSERT INTO customers (name, preferences)
+VALUES ('Jane Doe', '{books, music, travel}');
+```
+
+```
+ id  |   name   |      preferences       
+----+----------+------------------------
+  1 | John Doe | {clothing,electronics}
+  2 | Jane Doe | {books,music,travel}
+```
+
+You can use the `array_to_json` function as shown to transform the array of string values into a `JSON` array:
+
+```sql
+SELECT id, name, array_to_json(preferences) AS json_preferences
+FROM customers;
+```
+
+This query returns the following result:
+
+```
+ id  |   name   |      json_preferences      
+----+----------+----------------------------
+  1 | John Doe | ["clothing","electronics"]
+  2 | Jane Doe | ["books","music","travel"]
+```
+
+## Advanced examples
+
+Let's now take a look at a few advanced examples.
+
+### Use `array_to_json` with `array_agg`
+
+Imagine you have an e-commerce website with user's shopping cart items, as shown in the following `cart_items` table:
+
+**cart_items**
+
+```sql
+CREATE TABLE cart_items (
+ id SERIAL PRIMARY KEY,
+ user_id INTEGER NOT NULL,
+ product_id INTEGER NOT NULL,
+ quantity INTEGER NOT NULL
+);
+
+INSERT INTO cart_items (user_id, product_id, quantity)
+VALUES (1, 123, 1), (1, 456, 2), (1, 789, 3);
+
+
+INSERT INTO cart_items (user_id, product_id, quantity)
+VALUES (2, 123, 2), (2, 456, 3), (2, 789, 4);
+```
+
+```
+ id  | user_id | product_id | quantity 
+----+---------+------------+----------
+  1 |       1 |        123 |        1
+  2 |       1 |        456 |        2
+  3 |       1 |        789 |        3
+  4 |       2 |        123 |        2
+  5 |       2 |        456 |        3
+  6 |       2 |        789 |        4
+```
+
+You can utilize `array_to_json` to create a clean and efficient `JSON` representation of the cart contents for a specific user.
+
+In the example below, the `row_to_json` function converts each row of the result set into a `JSON` object.
+
+The `array_agg` function is an aggregate function that aggregates multiple values into an array. It is used here to aggregate the `JSON` objects created by `row_to_json` into a `JSON` array.
+
+```sql
+SELECT array_to_json(
+ array_agg(row_to_json(t))
+) AS items
+FROM (
+     SELECT product_id, quantity FROM cart_items WHERE user_id = 1
+   ) t;
+```
+
+This query returns the following result:
+
+```shell
+                                               items                                               
+---------------------------------------------------------------------------------------------------
+ [{"product_id":123,"quantity":1},{"product_id":456,"quantity":2},{"product_id":789,"quantity":3}]
+```
+
+And this is the resulting `JSON` structure:
+
+
+```json
+[
+   {
+       "product_id": 123,
+       "quantity": 1
+   },
+   {
+       "product_id": 456,
+       "quantity": 2
+   },
+   {
+       "product_id": 789,
+       "quantity": 3
+   }
+]
+```
+
+### Handling `NULL` in `array_to_json`
+
+The `array_to_json` function handles `NULL` values gracefully, representing them as `JSON` `null` within the resulting array.
+
+Let's consider a `survey_responses` table representing a survey where each participant can provide multiple responses to different questions. Some participants may not answer all questions, leading to `NULL` values in the data.
+
+```sql
+CREATE TABLE survey_responses (
+   participant_id SERIAL PRIMARY KEY,
+   participant_name VARCHAR(50),
+   responses VARCHAR(50)[]
+);
+
+-- Insert sample data with NULL responses
+INSERT INTO survey_responses (participant_name, responses) VALUES
+   ('Participant A', ARRAY['Yes', 'No', 'Maybe']),
+   ('Participant B', ARRAY['Yes', NULL, 'No']),
+   ('Participant C', ARRAY[NULL, 'No', 'Yes']),
+   ('Participant D', ARRAY['Yes', 'No', NULL]);
+```
+
+```
+ participant_id  | participant_name |   responses    
+----------------+------------------+----------------
+              1 | Participant A    | {Yes,No,Maybe}
+              2 | Participant B    | {Yes,NULL,No}
+              3 | Participant C    | {NULL,No,Yes}
+              4 | Participant D    | {Yes,No,NULL}
+```
+
+The output correctly represents `NULL` values as `JSON` `null` in the `responses_json` array.
+
+```sql
+SELECT
+   participant_id,
+   participant_name,
+   array_to_json(COALESCE(responses, ARRAY[]::VARCHAR[])) AS responses_json
+FROM
+   survey_responses;
+```
+
+This query returns the following result:
+
+```
+participant_id | participant_name | responses_json    
+---------------+-----------------=+---------------------
+             1 | Participant A    | ["Yes","No","Maybe"]
+             2 | Participant B    | ["Yes",null,"No"]
+             3 | Participant C    | [null,"No","Yes"]
+             4 | Participant D    | ["Yes","No",null]
+```
+
+## Additional considerations
+
+This section outlines additional considerations when using the `array_to_json` function.
+
+### JSON functions
+
+In scenarios where more control over the `JSON` structure is required, consider using the `json_build_array` and `json_build_object` functions. These functions allow for a more fine-grained construction of `JSON` objects and arrays.
+
+### Formatting `array_to_json` output with `pretty_bool`
+
+The `pretty_bool` parameter, when set to `true`, instructs `array_to_json` to format the output with indentation and line breaks for improved readability.
+
+Execute the earlier query with `pretty_bool` as `true`:
+
+```sql
+SELECT array_to_json(
+ array_agg(row_to_json(t)), true
+) AS items
+FROM (
+     select product_id, quantity from cart_items WHERE user_id = 1
+   ) t;
+```
+
+This query returns the following result:
+
+```
+               items               
+-----------------------------------
+ [{"product_id":123,"quantity":1},+
+  {"product_id":456,"quantity":2},+
+  {"product_id":789,"quantity":3}]
+```
+
+<Admonition type="note">
+The output displayed in `psql` might be truncated or wrap long lines for visual clarity.
+</Admonition> 
+
+## Resources
+
+- [PostgreSQL documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+ß
+
+
+# dense_rank
+
+---
+title: Postgres dense_rank() function
+subtitle: Returns the rank of the current row without gaps
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.245Z'
+---
+
+You can use the `dense_rank` function to assign a rank to each distinct row within a result set. It provides a non-gapped ranking of values which is particularly useful when dealing with datasets where ties need to be acknowledged without leaving gaps in the ranking sequence.
+
+<CTA />
+
+## Function signature
+
+```sql
+dense_rank() OVER (
+   [PARTITION BY partition_expression, ... ]
+   ORDER BY sort_expression [ASC | DESC], ...
+)
+```
+
+## `dense_rank` example
+
+Let’s say we have a `student_scores` table of students along with their name and score:
+
+```sql
+CREATE TABLE student_scores (
+   student_id SERIAL PRIMARY KEY,
+   student_name VARCHAR(50) NOT NULL,
+   score INT NOT NULL
+);
+
+INSERT INTO student_scores (student_name, score) VALUES
+   ('Alice', 85),
+   ('Bob', 92),
+   ('Charlie', 78),
+   ('David', 92),
+   ('Eve', 85),
+   ('Frank', 78);
+```
+
+**student_scores**
+
+```
+| student_id | student_name | score |
+|------------|--------------|-------|
+| 1          | Alice        | 85    |
+| 2          | Bob          | 92    |
+| 3          | Charlie      | 78    |
+| 4          | David        | 92    |
+| 5          | Eve          | 85    |
+| 6          | Frank        | 78    |
+```
+
+You can use `dense_rank` to assign a rank to each row in the result set:
+
+```sql
+SELECT
+   student_id,
+   student_name,
+   score,
+   dense_rank() OVER (ORDER BY score DESC) AS rank
+FROM
+   student_scores;
+```
+
+This query returns the following values:
+
+```
+| student_id | student_name | score | rank |
+|------------|--------------|-------|------|
+| 2          | Bob          | 92    | 1    |
+| 4          | David        | 92    | 1    |
+| 1          | Alice        | 85    | 2    |
+| 5          | Eve          | 85    | 2    |
+| 3          | Charlie      | 78    | 3    |
+| 6          | Frank        | 78    | 3    |
+```
+
+## Advanced examples
+
+This section shows advanced usage examples for the `dense_rank` function. 
+
+### `dense_rank` with `PARTITION BY` and `ORDER BY` clause
+
+Let's modify the previous example to include a `class_id` column to represent different classes:
+
+**student_scores_by_class**
+
+```sql
+CREATE TABLE student_scores_by_class (
+   student_id SERIAL PRIMARY KEY,
+   student_name VARCHAR(50) NOT NULL,
+   score INT NOT NULL,
+   class_id INT NOT NULL
+);
+
+INSERT INTO student_scores_by_class (student_name, score, class_id) VALUES
+   ('Alice', 85, 1),
+   ('Bob', 92, 1),
+   ('Charlie', 78, 1),
+   ('David', 92, 2),
+   ('Eve', 85, 2),
+   ('Frank', 78, 2);
+```
+
+```
+| student_id | student_name | score | class_id |
+|------------|--------------|-------|----------|
+| 1          | Alice        | 85    | 1        |
+| 2          | Bob          | 92    | 1        |
+| 3          | Charlie      | 78    | 1        |
+| 4          | David        | 92    | 2        |
+| 5          | Eve          | 85    | 2        |
+| 6          | Frank        | 78    | 2        |
+```
+
+The `PARTITION BY` clause below is used in conjunction with ranking function to divide the result set into partitions based on one or more columns. Within each partition, the ranking function operates independently.
+
+```sql
+SELECT
+   student_id,
+   student_name,
+   score,
+   class_id,
+   dense_rank() OVER (PARTITION BY class_id ORDER BY score DESC) AS rank_within_class
+FROM
+   student_scores_by_class;
+```
+
+This query returns the following values:
+
+```
+| student_id | student_name | score | class_id | rank_within_class |
+|------------|--------------|-------|----------|-------------------|
+| 2          | Bob          | 92    | 1        | 1                 |
+| 1          | Alice        | 85    | 1        | 2                 |
+| 3          | Charlie      | 78    | 1        | 3                 |
+| 4          | David        | 92    | 2        | 1                 |
+| 5          | Eve          | 85    | 2        | 2                 |
+| 6          | Frank        | 78    | 2        | 3                 |
+```
+
+This partitions the result set into two groups based on the `class_id` column, and the ranking is performed independently within each class. As a result, students are ranked within their respective classes, and the ranking starts fresh for each class.
+
+### Filter `dense_rank` results in `WHERE` clause
+
+To filter on `dense_rank` results in a `WHERE` clause, move the function into a common table expression (CTE).
+
+Let's say you want to find the dense rank for the top two scores within each class:
+
+```sql
+WITH RankedScores AS (
+   SELECT
+       student_id,
+       student_name,
+       score,
+       class_id,
+       dense_rank() OVER (PARTITION BY class_id ORDER BY score DESC) AS dense_rank
+   FROM
+       student_scores_by_class
+)
+SELECT
+   student_id,
+   student_name,
+   score,
+   class_id,
+   dense_rank
+FROM
+   RankedScores
+WHERE
+   dense_rank <= 2;
+```
+
+This query returns the following values:
+
+```
+| student_id | student_name | score | class_id | dense_rank |
+|------------|--------------|-------|----------|------------|
+| 2          | Bob          | 92    | 1        | 1          |
+| 1          | Alice        | 85    | 1        | 2          |
+| 4          | David        | 92    | 2        | 1          |
+| 5          | Eve          | 85    | 2        | 2          |
+```
+
+## Additional considerations
+
+This section covers additional considerations for the `dense_rank` function. 
+
+### How is `dense_rank` different from the `rank` function?
+
+The `rank` function assigns a unique rank to each distinct row in the result set and leaves gaps in the ranking sequence when there are ties.
+If two or more rows have the same values and are assigned the same rank, the next rank will be skipped.
+
+
+```sql
+SELECT
+   student_id,
+   student_name,
+   score,
+   rank() OVER (ORDER BY score DESC) AS rank
+FROM
+   student_scores;
+```
+
+This query returns the following values:
+
+```
+| student_id | student_name | score | rank |
+|------------|--------------|-------|------|
+| 2          | Bob          | 92    | 1    |
+| 4          | David        | 92    | 1    |
+| 1          | Alice        | 85    | 3    |
+| 5          | Eve          | 85    | 3    |
+| 3          | Charlie      | 78    | 5    |
+| 6          | Frank        | 78    | 5    |
+```
+
+Alice and Eve, who share the second-highest score, have ranks 3 and 5, and there is a gap in the ranking sequence. When using `dense_rank`, Alice and Eve, who share the second-highest score, both have a rank of 2, and there is no gap in the ranking sequence.
+
+### Aggregations
+
+You can combine `dense_rank` with other functions like `COUNT`, `SUM`, `AVG` for aggregations.
+
+Use with `COUNT`:
+
+```sql
+SELECT class_id, dense_rank() OVER (ORDER BY COUNT(*) DESC) AS student_count_rank, COUNT(*) AS student_count
+FROM student_scores_by_class
+GROUP BY class_id;
+```
+
+This query returns the following values:
+
+```text
+| class_id | student_count_rank | student_count   |
+|-----------|---------------------|---------------|
+|     2     |          1          |       3       |
+|     1     |          1          |       3       |
+```
+
+Use with `SUM`:
+
+```sql
+SELECT class_id, dense_rank() OVER (ORDER BY SUM(score) DESC) AS total_score_rank, SUM(score) AS total_score
+FROM student_scores_by_class
+GROUP BY class_id;
+```
+
+This query ranks the classes based on their total scores, assigning the highest rank to the class with the highest total score.
+
+This query returns the following values:
+
+```
+| class_id | total_score_rank   | total_score |
+|-----------|-------------------|-------------|
+|     2     |         1         |     255     |
+|     1     |         1         |     255     |
+```
+
+Use with `AVG`:
+
+```sql
+SELECT class_id, dense_rank() OVER (ORDER BY AVG(score) DESC) AS average_score_rank, AVG(score) AS average_score
+FROM student_scores_by_class
+GROUP BY class_id;
+```
+
+This query ranks the classes based on their average scores, assigning the highest rank to the class with the highest average score.
+
+This query returns the following values:
+
+```
+| class_id  | average_score_rank  |    average_score    |
+|-----------|---------------------|---------------------|
+|     2     |          1          | 85.0000000000000000 |
+|     1     |          1          | 85.0000000000000000 |
+```
+
+### Indexing
+
+Creating indexes on the columns specified in the `ORDER BY` (sorting) and `PARTITION BY` (partitioning) clauses can significantly improve performance. In this case, queries on the `student_scores` table would benefit from creating indexes on `class_id` and `score` columns.
+
+## Resources
+
+- [PostgreSQL documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+
+# json_array_elements
+
+---
+title: Postgres json_array_elements() function
+subtitle: Expand a JSON array into a set of rows
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.246Z'
+---
+
+You can use `json_array_elements` function to expand a `JSON` array into a set of rows, each containing one element of the array. It is a simpler option compared to complex looping logic. It is also more efficient than executing the same operation on the application side by reducing data transfer and processing overhead.
+
+<CTA />
+
+## Function signature
+
+```sql
+json_array_elements(json)
+```
+
+## `json_array_elements` example
+
+Suppose you have a `developers` table with information about developers:
+
+**developers**
+
+```sql
+CREATE TABLE developers (
+ id INT PRIMARY KEY,
+ name TEXT,
+ skills JSON
+);
+
+INSERT INTO developers (id, name, skills) VALUES
+ (1, 'Alice', '["Java", "Python", "SQL"]'),
+ (2, 'Bob', '["C++", "JavaScript"]'),
+ (3, 'Charlie', '["HTML", "CSS", "React"]');
+```
+
+```text
+| id |  name   |          skills          
+|----|---------|---------------------------
+| 1  | Alice   | ["Java", "Python", "SQL"]
+| 2  | Bob     | ["C++", "JavaScript"]
+| 3  | Charlie | ["HTML", "CSS", "React"]
+```
+
+Now, let's say you want to extract a row for each skill from the skills `JSON` array. You can use `json_array_elements` to do that:
+
+```sql
+SELECT id, name, skill
+FROM developers,
+    json_array_elements(skills) AS skill;
+```
+
+This query returns the following result:
+
+```text
+| id |  name   |    skill     |
+|----|---------|--------------|
+| 1  | Alice   | "Java"       |
+| 1  | Alice   | "Python"     |
+| 1  | Alice   | "SQL"        |
+| 2  | Bob     | "C++"        |
+| 2  | Bob     | "JavaScript" |
+| 3  | Charlie | "HTML"       |
+| 3  | Charlie | "CSS"        |
+| 3  | Charlie | "React"      |
+```
+
+## Advanced examples
+
+This section shows advanced `json_array_elements` examples.
+
+### `json_array_elements` with nested data
+
+Let's consider a scenario where we have a `products` table storing information about products. The table schema and data are provided below.
+
+**products**
+
+```sql
+CREATE TABLE products (
+ id INTEGER PRIMARY KEY,
+ name TEXT,
+ details JSON
+);
+
+INSERT INTO products (id, name, details) VALUES
+ (1, 'T-Shirt', '{"sizes": ["S", "M", "L", "XL"], "colors": ["Red", "Blue", "Green"]}'),
+ (2, 'Hoodie', '{"sizes": ["XS", "S", "M", "L", "XL"], "colors": ["Black", "Gray"]}'),
+ (3, 'Dress', '{"sizes": ["S", "M", "L"], "colors": ["Pink", "Purple", "Black"]}'),
+ (4, 'Jeans', '{"sizes": ["28", "30", "32", "34"], "colors": ["Blue", "Black"]}'),
+ (5, 'Jacket', '{"sizes": ["S", "M", "L", "XL"], "colors": ["Black", "Brown", "Navy"]}');
+```
+
+```text
+| id |  name   |                                details                                 |                             
+|----|---------|------------------------------------------------------------------------|
+| 1  | T-Shirt | {"sizes": ["S", "M", "L", "XL"], "colors": ["Red", "Blue", "Green"]}   | 
+| 2  | Hoodie  | {"sizes": ["XS", "S", "M", "L", "XL"], "colors": ["Black", "Gray"]}    |
+| 3  | Dress   | {"sizes": ["S", "M", "L"], "colors": ["Pink", "Purple", "Black"]}      |
+| 4  | Jeans   | {"sizes": ["28", "30", "32", "34"], "colors": ["Blue", "Black"]}       |
+| 5  | Jacket  | {"sizes": ["S", "M", "L", "XL"], "colors": ["Black", "Brown", "Navy"]} |
+```
+
+The `json_array_elements` function can be used to get all the combinations of size and color for a specific product. For example:
+
+```sql
+SELECT
+ id,
+ name,
+ size,
+ color
+FROM products AS p,
+ json_array_elements(p.details -> 'sizes') AS size,
+ json_array_elements(p.details -> 'colors') AS color
+WHERE name = 'T-Shirt';
+```
+
+This query returns the following values:
+
+```text
+| id |  name   | size | color  |
+|----|---------|------|--------|
+| 1  | T-Shirt | "S"  | "Red"  |
+| 1  | T-Shirt | "S"  | "Blue" |
+| 1  | T-Shirt | "S"  | "Green"|
+| 1  | T-Shirt | "M"  | "Red"  |
+| 1  | T-Shirt | "M"  | "Blue" |
+| 1  | T-Shirt | "M"  | "Green"|
+| 1  | T-Shirt | "L"  | "Red"  |
+| 1  | T-Shirt | "L"  | "Blue" |
+| 1  | T-Shirt | "L"  | "Green"|
+| 1  | T-Shirt | "XL" | "Red"  |
+| 1  | T-Shirt | "XL" | "Blue" |
+| 1  | T-Shirt | "XL" | "Green"|
+```
+
+## Filtering `json_array_elements`
+
+You can use the `json_array_elements` function to extract the sizes from the `JSON` data and then filter the products based on a specific color (or size), as in this example:
+
+```sql
+SELECT *
+FROM products
+WHERE 'Blue' IN (
+    SELECT json_array_elements_text(details->'colors')
+);
+```
+
+This query returns the following values:
+
+```text
+| id |   name   |                               details                                |
+|----|----------|----------------------------------------------------------------------|
+|  1 | T-Shirt  | {"sizes": ["S", "M", "L", "XL"], "colors": ["Red", "Blue", "Green"]} |
+|  4 | Jeans    | {"sizes": ["28", "30", "32", "34"], "colors": ["Blue", "Black"]}     |
+```
+
+## Handling `NULL` in `json_array_elements`
+
+This example updates the table to insert another product (`Socks`) with one of the values in the `sizes` as `null`:
+
+**products**
+
+```sql
+INSERT INTO products (id, name, details) VALUES (6, 'Socks', '{"sizes": ["S", null, "L", "XL"], "colors": ["White", "Black", "Gray"]}');
+```
+
+```text
+| id |  name   |                                 details                                 |
+|----|---------|-------------------------------------------------------------------------|
+|  6 | Socks   | {"sizes": ["S", null, "L", "XL"], "colors": ["White", "Black", "Gray"]} |
+```
+
+Querying for `Socks` shows how `null` values in an array are handled:
+
+```sql
+SELECT
+ id,
+ name,
+ size
+FROM products AS p,
+ json_array_elements(p.details -> 'sizes') AS size
+WHERE name = 'Socks';
+```
+
+This query returns the following values:
+
+```text
+| id | name  | size |
+|----|-------|------|
+|  6 | Socks | "S"  |
+|  6 | Socks | null |
+|  6 | Socks | "L"  |
+|  6 | Socks | "XL" |
+```
+
+### Nested arrays in `json_array_elements`
+
+You can also handle nested arrays with `json_array_elements`.
+
+Consider a scenario where each product has multiple variants, and each variant has an array of sizes and an array of colors. This example uses an `elecronics_products` table, shown below.
+
+**electronics_products**
+
+```sql
+CREATE TABLE electronics_products (
+ id INTEGER PRIMARY KEY,
+ name TEXT,
+ details JSON
+);
+
+INSERT INTO electronics_products (id, name, details) VALUES
+ (1, 'Laptop', '{"variants": [{"model": "A", "sizes": ["13 inch", "15 inch"], "colors": ["Silver", "Black"]}, {"model": "B", "sizes": ["15 inch", "17 inch"], "colors": ["Gray", "White"]}]}'),
+ (2, 'Smartphone', '{"variants": [{"model": "X", "sizes": ["5.5 inch", "6 inch"], "colors": ["Black", "Gold"]}, {"model": "Y", "sizes": ["6.2 inch", "6.7 inch"], "colors": ["Blue", "Red"]}]}');
+```
+
+```text
+| id |    name    |                                                                                   details                                                                                    |
+|----|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|  1 | Laptop     | {"variants": [{"model": "A", "sizes": ["13 inch", "15 inch"], "colors": ["Silver", "Black"]}, {"model": "B", "sizes": ["15 inch", "17 inch"], "colors": ["Gray", "White"]}]} |
+|  2 | Smartphone | {"variants": [{"model": "X", "sizes": ["5.5 inch", "6 inch"], "colors": ["Black", "Gold"]}, {"model": "Y", "sizes": ["6.2 inch", "6.7 inch"], "colors": ["Blue", "Red"]}]}   |
+```
+
+To handle the nested arrays and extract information about each variant, you can use the `json_array_elements` function like this:
+
+```sql
+SELECT
+ id,
+ name,
+ variant->>'model' AS model,
+ size,
+ color
+FROM
+ electronics_products,
+  json_array_elements(details->'variants') AS variant,
+  json_array_elements_text(variant->'sizes') AS t1(size),
+  json_array_elements_text(variant->'colors') AS t2(color);
+```
+
+This query returns the following values:
+
+```text
+| id |    name    | model |   size   | color  |
+|----|------------|-------|----------|--------|
+|  1 | Laptop     | A     | 13 inch  | Silver |
+|  1 | Laptop     | A     | 13 inch  | Black  |
+|  1 | Laptop     | A     | 15 inch  | Silver |
+|  1 | Laptop     | A     | 15 inch  | Black  |
+|  1 | Laptop     | B     | 15 inch  | Gray   |
+|  1 | Laptop     | B     | 15 inch  | White  |
+|  1 | Laptop     | B     | 17 inch  | Gray   |
+|  1 | Laptop     | B     | 17 inch  | White  |
+|  2 | Smartphone | X     | 5.5 inch | Black  |
+|  2 | Smartphone | X     | 5.5 inch | Gold   |
+|  2 | Smartphone | X     | 6 inch   | Black  |
+|  2 | Smartphone | X     | 6 inch   | Gold   |
+|  2 | Smartphone | Y     | 6.2 inch | Blue   |
+|  2 | Smartphone | Y     | 6.2 inch | Red    |
+|  2 | Smartphone | Y     | 6.7 inch | Blue   |
+|  2 | Smartphone | Y     | 6.7 inch | Red    |
+```
+
+## Additional considerations
+
+This section outlines additional considerations including alternative functions and `JSON` array order.
+
+### Alternates to `json_array_elements`
+
+- `jsonb_array_elements` - Consider this variant for performance benefits with `jsonb` data. `jsonb_array_elements` only accepts `jsonb` data, while `json_array_elements` works with both `json` and `jsonb`. It is typically faster, especially for larger arrays, due to its optimization for the binary `jsonb` format.
+- `json_array_elements_text` - While `json_array_elements` returns each extracted element as a `JSON` value, `json_array_elements_text` returns each extracted element as a plain text _string_.
+
+### Ordering `json_array_elements` output using `WITH ORDINALITY`
+
+If the order of the elements is important, consider using the `WITH ORDINALITY` option:
+
+```sql
+SELECT
+   id,
+   name,
+   skill,
+   ordinality
+FROM
+   developers,
+   json_array_elements(skills) WITH ORDINALITY AS t(skill, ordinality);
+```
+
+This query returns the following values:
+
+```text
+| id |  name   |    skill     | ordinality |
+|----|---------|--------------|------------|
+|  1 | Alice   | "Java"       |          1 |
+|  1 | Alice   | "Python"     |          2 |
+|  1 | Alice   | "SQL"        |          3 |
+|  2 | Bob     | "C++"        |          1 |
+|  2 | Bob     | "JavaScript" |          2 |
+|  3 | Charlie | "HTML"       |          1 |
+|  3 | Charlie | "CSS"        |          2 |
+|  3 | Charlie | "React"      |          3 |
+```
+
+The `WITH ORDINALITY` option in the query adds an `ordinality` column representing the original order of the skills in the array.
+
+## Resources
+
+- [PostgreSQL documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+
+# jsonb_array_elements
+
+---
+title: Postgres jsonb_array_elements() function
+subtitle: Expands a JSONB array into a set of rows
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.249Z'
+---
+
+You can use the `jsonb_array_elements` function to expand a `JSONB` array into a set of rows, each containing one element of the array. It is a simpler option compared to complex looping logic. It is also more efficient than executing the same operation on the application side by reducing data transfer and processing overhead.
+
+<CTA />
+
+## Function signature
+
+```sql
+jsonb_array_elements(json)
+```
+
+## `jsonb_array_elements` example
+
+Suppose you have a table with information about developers:
+
+**developers**
+
+```sql
+CREATE TABLE developers (
+ id INT PRIMARY KEY,
+ name TEXT,
+ skills JSONB
+);
+
+INSERT INTO developers (id, name, skills) VALUES
+ (1, 'Alice', '["Java", "Python", "SQL"]'),
+ (2, 'Bob', '["C++", "JavaScript"]'),
+ (3, 'Charlie', '["HTML", "CSS", "React"]');
+```
+
+```
+| id |  name   |          skills          
+|----|---------|---------------------------
+| 1  | Alice   | ["Java", "Python", "SQL"]
+| 2  | Bob     | ["C++", "JavaScript"]
+| 3  | Charlie | ["HTML", "CSS", "React"]
+```
+
+Now, let's say you want to extract each individual skill from the skills `JSON` array. You can use `jsonb_array_elements` for that:
+
+```sql
+SELECT id, name, skill
+FROM developers,
+    jsonb_array_elements(skills) AS skill;
+```
+
+This query returns the following values:
+
+```text
+| id |  name   |    skill    
+|----|---------|--------------
+| 1  | Alice   | "Java"
+| 1  | Alice   | "Python"
+| 1  | Alice   | "SQL"
+| 2  | Bob     | "C++"
+| 2  | Bob     | "JavaScript"
+| 3  | Charlie | "HTML"
+| 3  | Charlie | "CSS"
+| 3  | Charlie | "React"
+```
+
+## Advanced examples
+
+This section shows advanced `jsonb_array_elements` examples.
+
+## Filtering `jsonb_array_elements`
+
+You can use the `jsonb_array_elements` function to extract the sizes from the `JSON` data and then filter the products based on a specific color (or size):
+
+```sql
+SELECT *
+FROM products
+WHERE 'Blue' IN (
+ SELECT REPLACE(jsonb_array_elements(details->'colors')::text, '"', '')::text
+);
+```
+
+This query returns the following values:
+
+```text
+| id |   name   |                               details                                  |
+|----|----------|------------------------------------------------------------------------|
+|  1 | T-Shirt  | {"sizes": ["S", "M", "L", "XL"], "colors": ["Red", "Blue", "Green"]}   |
+|  4 | Jeans    | {"sizes": ["28", "30", "32", "34"], "colors": ["Blue", "Black"]}       |
+```
+
+## Handling `NULL` in `jsonb_array_elements`
+
+This example updates the table to insert another product (`Socks`) with one of the values in the `sizes` as `null`:
+
+**products**
+
+```text
+| id |  name   |                                 details                                 |
+|----|---------|-------------------------------------------------------------------------|
+|  6 | Socks   | {"sizes": ["S", null, "L", "XL"], "colors": ["White", "Black", "Gray"]} |
+```
+
+```sql
+INSERT INTO products (id, name, details) VALUES (6, 'Socks', '{"sizes": ["S", null, "L", "XL"], "colors": ["White", "Black", "Gray"]}');
+```
+
+Querying for `Socks` shows how null values in an array are handled:
+
+```sql
+SELECT
+ id,
+ name,
+ size
+FROM products AS p,
+ jsonb_array_elements(p.details -> 'sizes') AS size
+WHERE name = 'Socks';
+```
+
+This query returns the following values:
+
+```
+| id | name  | size |
+|----|-------|------|
+|  6 | Socks | "S"  |
+|  6 | Socks | null |
+|  6 | Socks | "L"  |
+|  6 | Socks | "XL" |
+```
+
+### Ordering `json_array_elements` output using `WITH ORDINALITY`
+
+Let's consider a scenario where you have a table named `workflow` with a `JSONB` column `steps` representing sequential steps in a workflow:
+
+**workflow**
+
+```sql
+CREATE TABLE workflow (
+   id SERIAL PRIMARY KEY,
+   workflow_name TEXT,
+   steps JSONB
+);
+
+INSERT INTO workflow (workflow_name, steps) VALUES
+   ('Employee Onboarding', '{"tasks": ["Submit Resume", "Interview", "Background Check", "Offer", "Orientation"]}'),
+   ('Project Development', '{"tasks": ["Requirement Analysis", "Design", "Implementation", "Testing", "Deployment"]}'),
+   ('Order Processing', '{"tasks": ["Order Received", "Payment Verification", "Packing", "Shipment", "Delivery"]}');
+```
+
+```
+| id |    workflow_name    |                                          steps                                          |
+|----|---------------------|-----------------------------------------------------------------------------------------|
+|  1 | Employee Onboarding | {"tasks": ["Submit Resume", "Interview", "Background Check", "Offer", "Orientation"]}   |
+|  2 | Project Development | {"tasks": ["Requirement Analysis", "Design", "Implementation", "Testing", "Deployment"]}|
+|  3 | Order Processing    | {"tasks": ["Order Received", "Payment Verification", "Packing", "Shipment", "Delivery"]}|
+```
+
+Each workflow consists of a series of tasks, and you want to extract and display the tasks along with their order in the workflow.
+
+```sql
+SELECT
+   workflow_name,
+   task.value AS task_name,
+   task.ordinality AS task_order
+FROM
+   workflow,
+   jsonb_array_elements(steps->'tasks') WITH ORDINALITY AS task;
+```
+
+This query returns the following values:
+
+```
+|    workflow_name    |       task_name        | task_order |
+|---------------------|------------------------|------------|
+| Employee Onboarding | "Submit Resume"        |          1 |
+| Employee Onboarding | "Interview"            |          2 |
+| Employee Onboarding | "Background Check"     |          3 |
+| Employee Onboarding | "Offer"                |          4 |
+| Employee Onboarding | "Orientation"          |          5 |
+| Project Development | "Requirement Analysis" |          1 |
+| Project Development | "Design"               |          2 |
+| Project Development | "Implementation"       |          3 |
+| Project Development | "Testing"              |          4 |
+| Project Development | "Deployment"           |          5 |
+| Order Processing    | "Order Received"       |          1 |
+| Order Processing    | "Payment Verification" |          2 |
+| Order Processing    | "Packing"              |          3 |
+| Order Processing    | "Shipment"             |          4 |
+| Order Processing    | "Delivery"             |          5 |
+```
+
+### Nested arrays in `jsonb_array_elements`
+
+You can also handle nested arrays with `jsonb_array_elements`.
+
+Consider a scenario where each product in an `electronics_products` table has multiple variants, and each variant has an array of sizes and an array of colors.
+
+**electronics_products**
+
+```sql
+CREATE TABLE electronics_products (
+ id INTEGER PRIMARY KEY,
+ name TEXT,
+ details JSONB
+);
+
+
+INSERT INTO electronics_products (id, name, details) VALUES
+ (1, 'Laptop', '{"variants": [{"model": "A", "sizes": ["13 inch", "15 inch"], "colors": ["Silver", "Black"]}, {"model": "B", "sizes": ["15 inch", "17 inch"], "colors": ["Gray", "White"]}]}'),
+ (2, 'Smartphone', '{"variants": [{"model": "X", "sizes": ["5.5 inch", "6 inch"], "colors": ["Black", "Gold"]}, {"model": "Y", "sizes": ["6.2 inch", "6.7 inch"], "colors": ["Blue", "Red"]}]}');
+```
+
+```text
+| id |    name    |                                                                                   details                                                                                   
+|----|------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+|  1 | Laptop     | {"variants": [{"model": "A", "sizes": ["13 inch", "15 inch"], "colors": ["Silver", "Black"]}, {"model": "B", "sizes": ["15 inch", "17 inch"], "colors": ["Gray", "White"]}]}
+|  2 | Smartphone | {"variants": [{"model": "X", "sizes": ["5.5 inch", "6 inch"], "colors": ["Black", "Gold"]}, {"model": "Y", "sizes": ["6.2 inch", "6.7 inch"], "colors": ["Blue", "Red"]}]}
+```
+
+To handle the nested arrays and extract information about each variant, you can run this query using the `jsonb_array_elements` function:
+
+```sql
+SELECT
+ id,
+ name,
+ variant->>'model' AS model,
+ size,
+ color
+FROM
+ electronics_products,
+  jsonb_array_elements(details->'variants') AS variant,
+  jsonb_array_elements_text(variant->'sizes') AS t1(size),
+  jsonb_array_elements_text(variant->'colors') AS t2(color);
+```
+
+This query returns the following values:
+
+```text
+| id |    name    | model |   size   | color  |
+|----|------------|-------|----------|--------|
+|  1 | Laptop     | A     | 13 inch  | Silver |
+|  1 | Laptop     | A     | 13 inch  | Black  |
+|  1 | Laptop     | A     | 15 inch  | Silver |
+|  1 | Laptop     | A     | 15 inch  | Black  |
+|  1 | Laptop     | B     | 15 inch  | Gray   |
+|  1 | Laptop     | B     | 15 inch  | White  |
+|  1 | Laptop     | B     | 17 inch  | Gray   |
+|  1 | Laptop     | B     | 17 inch  | White  |
+|  2 | Smartphone | X     | 5.5 inch | Black  |
+|  2 | Smartphone | X     | 5.5 inch | Gold   |
+|  2 | Smartphone | X     | 6 inch   | Black  |
+|  2 | Smartphone | X     | 6 inch   | Gold   |
+|  2 | Smartphone | Y     | 6.2 inch | Blue   |
+|  2 | Smartphone | Y     | 6.2 inch | Red    |
+|  2 | Smartphone | Y     | 6.7 inch | Blue   |
+|  2 | Smartphone | Y     | 6.7 inch | Red    |
+```
+
+### `jsonb_array_elements` with joins
+
+Let's assume you want to retrieve a list of users along with their roles in each organization. The data is stored in an `organizations` table and a `users` table.
+
+**organizations**
+
+```
+| id |                           members                            |
+|----|--------------------------------------------------------------|
+|  1 | [{"id": 23, "role": "admin"}, {"id": 24, "role": "default"}] |
+|  2 | [{"id": 23, "role": "user"}]                                 |
+|  3 | [{"id": 24, "role": "admin"}, {"id": 25, "role": "default"}] |
+|  4 | [{"id": 25, "role": "user"}]                                 |
+```
+
+**users**
+
+```
+| id  | name  |      email       |
+|-----|-------|------------------|
+| 23  | Max   | max@gmail.com    |
+| 24  | Joe   | joe@gmail.com    |
+| 25  | Alice | alice@gmail.com  |
+```
+
+```sql
+CREATE TABLE organizations (
+   id SERIAL PRIMARY KEY,
+   members JSONB
+);
+
+CREATE TABLE users (
+   id INTEGER PRIMARY KEY,
+   name TEXT,
+   email TEXT
+);
+
+INSERT INTO organizations (members) VALUES
+   ('[{ "id": 23, "role": "admin" }, { "id": 24, "role": "default" }]'),
+   ('[{ "id": 23, "role": "user" }]'),
+   ('[{ "id": 24, "role": "admin" }, { "id": 25, "role": "default" }]'),
+   ('[{ "id": 25, "role": "user" }]');
+
+INSERT INTO users (id, name, email) VALUES
+   (23, 'Max', 'max@gmail.com'),
+   (24, 'Joe', 'joe@gmail.com'),
+   (25, 'Alice', 'alice@gmail.com');
+```
+
+You can use the `jsonb_array_elements` function to extract the `members` from the `JSONB` array in the `organizations` table and then join with the `users` table.
+
+```sql
+SELECT
+   o.id AS organization_id,
+   u.id AS user_id,
+   u.name AS user_name,
+   u.email AS user_email,
+   m->>'role' AS member_role
+FROM
+   organizations o
+JOIN jsonb_array_elements(o.members) AS m ON true
+JOIN users u ON m->>'id' = u.id::TEXT;
+```
+
+This query returns the following values:
+
+```
+| organization_id | user_id | user_name |   user_email    | member_role |
+|-----------------|---------|-----------|-----------------|-------------|
+|               2 |      23 | Max       | max@gmail.com   | user        |
+|               1 |      23 | Max       | max@gmail.com   | admin       |
+|               3 |      24 | Joe       | joe@gmail.com   | admin       |
+|               1 |      24 | Joe       | joe@gmail.com   | default     |
+|               4 |      25 | Alice     | alice@gmail.com | user        |
+|               3 |      25 | Alice     | alice@gmail.com | default     |
+```
+
+## Additional considerations
+
+This section outlines additional considerations including alternative functions.
+
+### Alternatives to `jsonb_array_elements`
+
+Use `jsonb_array_elements` when you need to maintain the `JSON` structure of the elements for further `JSON`-related operations or analysis and `jsonb_array_elements_text` if you need to work with the extracted elements as plain text for string operations, text analysis, or integration with text-based functions.
+
+If you want to create a comma-separated list of all skills for each developer in the `developers` table, `jsonb_array_elements_text` can be used along with `string_agg`.
+
+```sql
+SELECT name, string_agg(skill, ',') AS skill_list
+FROM developers, jsonb_array_elements_text(skills) AS skill
+GROUP BY name;
+```
+
+This query returns the following values:
+
+```
+|  name   |   skill_list    |
+|---------|-----------------|
+|  Alice  | Java,Python,SQL |
+|   Bob   | C++,JavaScript  |
+| Charlie | HTML,CSS,React  |
+```
+
+Using `jsonb_array_elements` would result in an error because it returns `JSONB` values, which cannot be directly concatenated with the string operator.
+
+
+```sql
+SELECT name, string_agg(skill, ',') AS skill_list
+FROM developers, jsonb_array_elements(skills) AS skill
+GROUP BY name;
+```
+
+**jsonb_path_query**
+
+`jsonb_path_query` uses `JSON` Path expressions for flexible navigation and filtering within `JSONB` structures and returns a `JSONB` array containing matching elements. It supports filtering within the path expression itself, enabling complex conditions and excels at navigating and extracting elements from nested arrays and objects.
+
+If your query involves navigating through multiple levels of nesting, complex filtering conditions, or updates to `JSONB` data, `jsonb_path_query` is often the preferred choice.
+
+Consider a simple example — to extract the first skill of each developer in the `developers` table:
+
+```sql
+SELECT jsonb_path_query(skills, '$[0]') AS first_skill
+FROM developers;
+```
+
+This query returns the following values:
+
+```
+| first_skill |
+|-------------|
+|   "Java"    |
+|   "C++"     |
+|   "HTML"    |
+```
+
+## Resources
+
+- [PostgreSQL documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+
+# json_build_object
+
+---
+title: Postgres json_build_object() function
+subtitle: Builds a JSON object out of a variadic argument list
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.246Z'
+---
+
+
+`json_build_object` is used to construct a JSON object from a set of key-value pairs, creating a JSON representation of a row or set of rows. This has potential performance benefits compared to converting query results to JSON on the application side.
+
+<CTA />
+
+## Function signature
+
+```sql
+json_build_object ( VARIADIC "any" ) → json
+```
+
+## `json_build_object` example
+
+
+Let's consider a scenario where we have a table storing information about users:
+
+**users**
+
+```text
+| id |   name   | age |   city  
+|----|----------|-----|----------
+| 1  | John Doe |  30 | New York |
+| 2  | Jane Doe |  25 | London   |
+```
+
+Create the `users` table and insert some data into it:
+
+```sql
+CREATE TABLE users (
+ id SERIAL PRIMARY KEY,
+ name TEXT NOT NULL,
+ age INTEGER,
+ city TEXT
+);
+
+INSERT INTO users (name, age, city)
+VALUES ('John Doe', 30, 'New York'),
+      ('Jane Doe', 25, 'London');
+```
+
+Use `json_build_object` to create a JSON structure with user information:
+
+```sql
+SELECT id,
+ json_build_object(
+   'name', name,
+   'age', age,
+   'city', city
+ ) AS user_data
+FROM users;
+```
+
+This query returns the following results:
+
+```text
+| id |                       user_data                       
+|----|--------------------------------------------------------
+| 1  | {"name" : "John Doe", "age" : 30, "city" : "New York"}
+| 2  | {"name" : "Jane Doe", "age" : 25, "city" : "London"}
+```
+
+## Advanced examples
+
+### Nested objects with `json_build_object`
+
+Let’s say we have a table of products with an `attributes` column containing JSON data:
+
+**products**
+
+```text
+| id |    name    | price |            description            | category |                     attributes                    
+|----|------------|-------|-----------------------------------|----------|----------------------------------------------------
+| 1  | T-Shirt    | 25.99 | A comfortable cotton T-Shirt      | Clothing | {"size": "Medium", "color": "Blue", "rating": 4.5}
+| 2  | Coffee Mug | 12.99 | A ceramic mug with a funny design | Kitchen  | {"size": "Small", "color": "White", "rating": 3.8}
+| 3  | Sneakers   | 49.99 | Sporty sneakers for everyday use  | Footwear | {"size": "10", "color": "Black", "rating": 4.2}
+```
+
+Create the `products` table and insert some data into it:
+
+```sql
+CREATE TABLE products (
+   id SERIAL PRIMARY KEY,
+   name TEXT NOT NULL,
+   price DECIMAL(5, 2) NOT NULL,
+   description TEXT,
+   category TEXT,
+   attributes JSON
+);
+
+INSERT INTO products (name, price, description, category, attributes)
+VALUES
+   ('T-Shirt', 25.99, 'A comfortable cotton T-Shirt', 'Clothing', json_build_object(
+       'color', 'Blue',
+       'size', 'Medium',
+       'rating', 4.5
+   )),
+   ('Coffee Mug', 12.99, 'A ceramic mug with a funny design', 'Kitchen', json_build_object(
+       'color', 'White',
+       'size', 'Small',
+       'rating', 3.8
+   )),
+   ('Sneakers', 49.99, 'Sporty sneakers for everyday use', 'Footwear', json_build_object(
+       'color', 'Black',
+       'size', '10',
+       'rating', 4.2
+   ));
+```
+
+Use `json_build_object` to build a nested JSON object that represents the details of individual products:
+
+```sql
+SELECT
+   id,
+   name,
+   price,
+   json_build_object(
+       'category', category,
+       'description', description,
+       'attributes', json_build_object(
+           'color', attributes->>'color',
+           'size', attributes->>'size'
+       )
+   ) AS details
+FROM products;
+```
+
+This query returns the following results:
+
+```text
+| id |    name     | price |                                                               details                                                              
+|----|-------------|-------|-------------------------------------------------------------------------------------------------------------------------------------
+| 1  | T-Shirt     | 25.99 | {"category" : "Clothing", "description" : "A comfortable cotton T-Shirt", "attributes" : {"color" : "Blue", "size" : "Medium"}}
+| 2  | Coffee Mug  | 12.99 | {"category" : "Kitchen", "description" : "A ceramic mug with a funny design", "attributes" : {"color" : "White", "size" : "Large"}}
+```
+
+### Order `json_build_object` output
+
+Combine `json_build_object` with `ORDER BY` to sort the results based on a specific attribute within the JSON structure.
+
+For example, you can build a `JSON` structure with `json_build_object` from the contents of the above `products` table, and then order the results based on `rating`.
+
+```sql
+SELECT
+   id,
+   name,
+   price,
+   json_build_object(
+       'category', category,
+       'description', description,
+       'attributes', json_build_object(
+           'color', attributes->>'color',
+           'size', attributes->>'size',
+           'rating', attributes->>'rating'
+       )
+   ) AS details
+FROM products_with_rating
+ORDER BY (attributes->>'rating')::NUMERIC DESC;
+```
+
+`ORDER BY` was to order the results based on the descending order of rating.
+
+This query returns the following results:
+
+```text
+| id |    name    | price |                                                                        details                                                                       
+|----|------------|-------|-------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1  | T-Shirt    | 25.99 | {"category" : "Clothing", "description" : "A comfortable cotton T-Shirt", "attributes" : {"color" : "Blue", "size" : "Medium", "rating" : "4.5"}}
+| 3  | Sneakers   | 49.99 | {"category" : "Footwear", "description" : "Sporty sneakers for everyday use", "attributes" : {"color" : "Black", "size" : "10", "rating" : "4.2"}}
+| 2  | Coffee Mug | 12.99 | {"category" : "Kitchen", "description" : "A ceramic mug with a funny design", "attributes" : {"color" : "White", "size" : "Small", "rating" : "3.8"}}
+```
+
+### Grouped `json_build_object` output
+
+To create a `JSON` object that groups the total price for each category of products in the products table:
+
+```sql
+SELECT
+   category,
+   json_build_object(
+       'total_price', sum(price)
+   ) AS category_total_price
+FROM products
+GROUP BY category;
+```
+
+This query returns the following results:
+
+```text
+| category |  category_total_price  
+|----------|-------------------------
+| Kitchen  | {"total_price" : 12.99}
+| Clothing | {"total_price" : 25.99}
+```
+
+## Additional considerations
+
+### Performance and indexing
+
+The performance of the `json_build_object` depends on various factors including the number of key-value pairs, nested levels (deeply nested objects can be more expensive to build). Consider using `JSONB` data type with `jsonb_build_object` for better performance.
+
+If your `JSON` objects have nested structures, indexing on specific paths within the nested data can be beneficial for targeted queries.
+
+### Alternative functions
+
+Depending on your requirements, you might want to consider similar functions:
+
+- [json_object](/docs/functions/json_object) - Builds a JSON object out of a text array.
+- `json_agg` - Aggregates values, as a JSON array.
+- `row_to_json` - Returns a row as a JSON object.
+- `json_object_agg` - Aggregates key-value pairs into a JSON object.
+
+
+## Resources
+
+- [PostgreSQL documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+
+# json_each
+
+---
+title: Postgres json_each() function
+subtitle: Expands JSON into a record per key-value pair
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.247Z'
+---
+
+The `json_each` function in Postgres is used to expand a `JSON` object into a set of key-value pairs. 
+
+It is useful when you need to iterate over a `JSON` object's keys and values, such as when you're working with dynamic `JSON` structures where the schema is not fixed. Another important use case is performing data transformations and analytics. 
+
+<CTA />
+
+## Function signature
+
+```sql
+json_each(json JSON) -> SETOF record(key text, value json)
+```
+
+The function returns a set of rows, each containing a key and the corresponding value for each field in the input `JSON` object. The key is of type `text`, while the value is of type `json`.
+
+## Example usage
+
+Consider a `JSON` object representing a user's profile information. The `JSON` data will have multiple attributes and might look like this:
+
+```json
+{
+  "username": "johndoe",
+  "age": 30,
+  "email": "johndoe@example.com"
+}
+```
+
+We can go over all the fields in the profile `JSON` object using `json_each`, and produce a row for each key-value pair.
+
+```sql
+SELECT key, value
+FROM json_each('{"username": "johndoe", "age": 30, "email": "johndoe@example.com"}');
+```
+
+This query returns the following results:
+
+```text
+| key      | value                 |
+|----------|-----------------------|
+| username | "johndoe"             |
+| age      | 30                    |
+| email    | "johndoe@example.com" |
+```
+
+## Advanced examples
+
+### `json_each` custom column names
+
+You can use `AS` to specify custom column names for the key and value columns. 
+
+```sql
+SELECT attr_name, attr_value
+FROM json_each('{"username": "johndoe", "age": 30, "email": "johndoe@example.com"}')
+AS user_data(attr_name, attr_value);
+```
+
+This query returns the following results:
+
+```text
+| attr_name | attr_value            |
+|-----------|-----------------------|
+| username  | "johndoe"             |
+| age       | 30                    |
+| email     | "johndoe@example.com" |
+```
+
+### Use `json_each` as a table or row source
+
+Since `json_each` returns a set of rows, you can use it as a table source in a `FROM` clause. This lets us join the expanded `JSON` data in the output with other tables.
+
+Here, we're joining each row in the `user_data` table with the output of `json_each`:
+
+```sql
+CREATE TABLE user_data (
+    id INT,
+    profile JSON
+);
+INSERT INTO user_data (id, profile)
+VALUES
+    (123, '{"username": "johndoe", "age": 30, "email": "johndoe@example.com"}'),
+    (140, '{"username": "mikesmith", "age": 40, "email": "mikesmith@example.com"}');
+
+SELECT id, key, value
+FROM user_data, json_each(user_data.profile);
+```
+
+This query returns the following results:
+
+```text
+| id  | key      | value                   |
+|-----|----------|-------------------------|
+| 123 | username | "johndoe"               |
+| 123 | age      | 30                      |
+| 123 | email    | "johndoe@example.com"   |
+| 140 | username | "mikesmith"             |
+| 140 | age      | 40                      |
+| 140 | email    | "mikesmith@example.com" |
+```
+
+## Additional considerations
+
+### Performance implications
+
+When working with large `JSON` objects, `json_each` may lead to performance overhead, as it expands each key-value pair into a separate row.
+
+### Alternative functions
+
+- `json_each_text` - Similar functionality to `json_each` but returns the value as a text type instead of `JSON`. 
+- `json_object_keys` - It returns only the set of keys in the `JSON` object, without the values.
+- `jsonb_each` - It provides the same functionality as `json_each`, but accepts `JSONB` input instead of `JSON`. 
+
+## Resources
+
+- [PostgreSQL documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# jsonb_each
+
+---
+title: Postgres jsonb_each() function
+subtitle: Expands JSONB into a record per key-value pair
+enableTableOfContents: true
+updatedOn: '2024-02-06T23:28:28.687Z'
+---
+
+The `jsonb_each` function in Postgres is used to expand a `JSONB` object into a set of key-value pairs. 
+
+It is useful when you need to iterate over a `JSONB` object's keys and values, such as when you're working with dynamic `JSONB` structures where the schema is not fixed. Another important use case is performing data transformations and analytics. 
+
+<CTA />
+
+## Function signature
+
+```sql
+jsonb_each(json JSON) -> SETOF record(key text, value json)
+```
+
+The function returns a set of rows, each containing a key and the corresponding value for each field in the input `JSONB` object. The key is of type `text`, while the value is of type `JSONB`.
+
+## Example usage
+
+Consider a `JSONB` object representing a user's profile information. The `JSONB` data will have multiple attributes and might look like this:
+
+```json
+{
+  "username": "johndoe",
+  "age": 30,
+  "email": "johndoe@example.com"
+}
+```
+
+We can go over all the fields in the profile `JSONB` object using `jsonb_each`, and produce a row for each key-value pair.
+
+```sql
+SELECT key, value
+FROM jsonb_each('{"username": "johndoe", "age": 30, "email": "johndoe@example.com"}');
+```
+
+This query returns the following results:
+
+```text
+| key      | value                 |
+|----------|-----------------------|
+| username | "johndoe"             |
+| age      | 30                    |
+| email    | "johndoe@example.com" |
+```
+
+## Advanced examples
+
+### Assign custom names to columns output by `jsonb_each`
+
+You can use `AS` to specify custom column names for the key and value columns. 
+
+```sql
+SELECT attr_name, attr_value
+FROM jsonb_each('{"username": "johndoe", "age": 30, "email": "johndoe@example.com"}')
+AS user_data(attr_name, attr_value);
+```
+
+This query returns the following results:
+
+```text
+| attr_name | attr_value            |
+|-----------|-----------------------|
+| username  | "johndoe"             |
+| age       | 30                    |
+| email     | "johndoe@example.com" |
+```
+
+### Use `jsonb_each` output as a table or row source
+
+Since `jsonb_each` returns a set of rows, you can use it as a table source in a `FROM` clause. This lets us join the expanded `JSONB` data in the output with other tables.
+
+Here, we're joining each row in the `user_data` table with the output of `jsonb_each`:
+
+```sql
+CREATE TABLE user_data (
+    id INT,
+    profile JSON
+);
+INSERT INTO user_data (id, profile)
+VALUES
+    (123, '{"username": "johndoe", "age": 30, "email": "johndoe@example.com"}'),
+    (140, '{"username": "mikesmith", "age": 40, "email": "mikesmith@example.com"}');
+
+SELECT id, key, value
+FROM user_data, jsonb_each(user_data.profile);
+```
+
+This query returns the following results:
+
+```text
+| id  | key      | value                   |
+|-----|----------|-------------------------|
+| 123 | username | "johndoe"               |
+| 123 | age      | 30                      |
+| 123 | email    | "johndoe@example.com"   |
+| 140 | username | "mikesmith"             |
+| 140 | age      | 40                      |
+| 140 | email    | "mikesmith@example.com" |
+```
+
+## Additional considerations
+
+### Performance implications
+
+When working with large `JSONB` objects, `jsonb_each` may lead to performance overhead, as it expands each key-value pair into a separate row.
+
+### Alternative functions
+
+- `jsonb_each_text` - Similar functionality to `jsonb_each` but returns the value as a text type instead of `JSONB`. 
+- `jsonb_object_keys` - It returns only the set of keys in the `JSONB` object, without the values.
+- [json_each](/docs/functions/json_each) - It provides the same functionality as `jsonb_each`, but accepts `JSON` input instead of `JSONB`. 
+
+## Resources
+
+- [PostgreSQL documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# json_extract_path
+
+---
+title: Postgres json_extract_path() function
+subtitle: Extracts a JSON sub-object at the specified path
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.247Z'
+---
+
+You can use the `json_extract_path` function to extract the value at a specified path within a `JSON` document. This approach is performant compared to querying the entire `JSON` payload and processing it on the application side. It is particularly useful when dealing with nested `JSON` structures.
+
+<CTA />
+
+## Function signature
+
+```sql
+json_extract_path(from_json JSON, VARIADIC path_elems TEXT[]) -> JSON
+```
+
+## Example usage
+
+To illustrate the `json_extract_path` function in Postgres, let's consider a scenario where we have a table storing information about books. Each book has a `JSON` column containing details such as `title`, `author`, and publication `year`. You can create the `book` table using the SQL statements shown below.
+
+**books**
+
+```sql
+CREATE TABLE books (
+ id INT,
+ info JSON
+);
+
+INSERT INTO books (id, info) VALUES
+ (1, '{"title": "The Catcher in the Rye", "author": "J.D. Salinger", "year": 1951}'),
+ (2, '{"title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960}'),
+ (3, '{"title": "1984", "author": "George Orwell", "year": 1949}');
+```
+
+```text
+| id | info                                                                         |
+|----|------------------------------------------------------------------------------|
+| 1  | {"title": "The Catcher in the Rye", "author": "J.D. Salinger", "year": 1951} |
+| 2  | {"title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960}     |
+| 3  | {"title": "1984", "author": "George Orwell", "year": 1949}                   |
+```
+
+Now, let's use the `json_extract_path` function to extract the `title` and `author` of each book:
+
+```sql
+SELECT id,
+      json_extract_path(info, 'title') as title,
+      json_extract_path(info, 'author') as author
+FROM books;
+```
+
+This query returns the following values:
+
+```text
+| id | title                    | author           |
+|----|--------------------------|------------------|
+| 1  | "The Catcher in the Rye" | "J.D. Salinger"  |
+| 2  | "To Kill a Mockingbird"  | "Harper Lee"     |
+| 3  | "1984"                   | "George Orwell"  |
+```
+
+## Advanced examples
+
+Consider a `products` table that stores information about products in an e-commerce system. The table schema and data are outlined below.
+
+**products**
+
+```sql
+CREATE TABLE products (
+ id INT,
+ attributes JSON
+);
+
+INSERT INTO products (id, attributes) VALUES
+ (1, '{"name": "Laptop", "specs": {"brand": "Dell", "RAM": "16GB", "storage": {"type": "SSD", "capacity": "512GB"}}, "tags": ["pc"]}'),
+ (2, '{"name": "Smartphone", "specs": {"brand": "Google", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "256GB"}}, "tags": ["android",
+ "pixel"]}'),
+ (3, '{"name": "Smartphone", "specs": {"brand": "Apple", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "128GB"}}, "tags": ["ios", "iphone"]}');
+```
+
+```text
+| id     | attributes                                                                                                                                        |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | {"name": "Laptop", "specs": {"brand": "Dell", "RAM": "16GB", "storage": {"type": "SSD", "capacity": "512GB"}}, "tags": ["pc"]}                    |
+| 2      | {"name": "Smartphone", "specs": {"brand": "Google", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "256GB"}}, "tags": ["android", "pixel"]} |
+| 3      | {"name": "Smartphone", "specs": {"brand": "Apple", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "128GB"}}, "tags": ["ios", "iphone"]}     |
+```
+
+### Extract from nested JSON objects with `json_extract_path`
+
+Let's use `json_extract_path` to retrieve information about the storage type and capacity for each product, demonstrating how to extract values from a nested `JSON` object.
+
+```sql
+SELECT
+ id,
+ json_extract_path(attributes, 'specs', 'storage', 'type') as storage_type,
+ json_extract_path(attributes, 'specs', 'storage', 'capacity') as storage_capacity
+FROM products;
+```
+
+This query returns the following values:
+
+```text
+| id | storage_type | storage_capacity |
+|----|--------------|------------------|
+| 1  | "SSD"        | "512GB"          |
+| 2  | "UFS"        | "256GB"          |
+| 3  | "UFS"        | "128GB"          |
+```
+
+### Extract from array with `json_extract_path`
+
+Now, let's use `json_extract_path` to extract information about the associated tags as well, demonstrating how to extract values from a `JSON` array.
+
+```sql
+SELECT
+ id,
+ json_extract_path(attributes, 'specs', 'storage', 'type') as storage_type,
+ json_extract_path(attributes, 'specs', 'storage', 'capacity') as storage_capacity,
+ json_extract_path(attributes, 'tags', '0') as first_tag,
+ json_extract_path(attributes, 'tags', '1') as second_tag
+FROM products;
+```
+
+This query returns the following values:
+
+```text
+| id | storage_type | storage_capacity | first_tag | second_tag |
+|----|--------------|------------------|-----------|------------|
+| 1  | "SSD"        | "512GB"          | "pc"      |  null      |
+| 2  | "UFS"        | "256GB"          | "android" | "pixel"    |
+| 3  | "UFS"        | "128GB"          | "ios"     | "iphone"   |
+```
+
+### Use `json_extract_path` in Joins
+
+Let's say you have two tables, `employees` and `departments`, and the `employees` table has a `JSON` column named `details` that contains information about each employee's department. You want to join these tables based on the department information stored in the `JSON` column. The table schemas and data used in this example are shown below. 
+
+**departments**
+
+```sql
+CREATE TABLE departments (
+   department_id SERIAL PRIMARY KEY,
+   department_name VARCHAR(255)
+);
+
+INSERT INTO departments (department_name) VALUES
+   ('IT'),
+   ('HR'),
+   ('Marketing');
+```
+
+```text
+| department_id | department_name  |
+|---------------|------------------|
+|             1 | IT               |
+|             2 | HR               |
+|             3 | Marketing        |
+```
+
+**employees**
+
+```sql
+CREATE TABLE employees (
+   employee_id SERIAL PRIMARY KEY,
+   employee_name VARCHAR(255),
+   details JSON
+);
+
+INSERT INTO employees (employee_name, details) VALUES
+   ('John Doe', '{"department": "IT"}'),
+   ('Jane Smith', '{"department": "HR"}'),
+   ('Bob Johnson', '{"department": "Marketing"}');
+```
+
+```text
+| employee_id | employee_name |           details           |
+|-------------|---------------|-----------------------------|
+|           1 | John Doe      | {"department": "IT"}        |
+|           2 | Jane Smith    | {"department": "HR"}        |
+|           3 | Bob Johnson   | {"department": "Marketing"} |
+```
+
+You can use `JOIN` with `json_extract_path` to retrieve information:
+
+```sql
+SELECT
+   employees.employee_name,
+   departments.department_name
+FROM
+   employees
+JOIN
+   departments ON TRIM(BOTH '"' FROM json_extract_path(employees.details, 'department')::TEXT) = departments.department_name;
+```
+
+This query returns the following values:
+
+```test
+| employee_name | department_name  |
+|---------------|------------------|
+| John Doe      | IT               |
+| Jane Smith    | HR               |
+| Bob Johnson   | Marketing        |
+```
+
+The `json_extract_path` function extracts the value of the `department` key from the `JSON` column in the `employees` table. The `JOIN` is then performed based on matching department names.
+
+## Additional considerations
+
+### Performance and Indexing
+
+The `json_extract_path` function performs well when extracting data from `JSON` documents, especially compared to extracting data in application code. It allows performing the extraction directly in the database, avoiding transferring entire `JSON` documents to the application.
+
+However, performance can degrade with highly nested `JSON` structures and very long text strings. In those cases, using the binary `JSONB` data type and the `jsonb_extract_path` function will likely offer better performance.
+
+Indexing `JSON` documents can also significantly improve `json_extract_path` query performance when filtering data based on values extracted from `JSON`.
+
+### Alternative functions
+
+- [json_extract_path_text](/docs/functions/json_extract_path_text) - The regular `json_extract_path` function returns the extracted value as a `JSON` object or array, preserving its `JSON` structure, whereas the alternative `json_extract_path_text` function returns the extracted value as a plain text string, casting any `JSON` objects or arrays to their string representations.
+
+    Use the regular `json_extract_path` function when you need to apply `JSON`-specific functions or operators to the extracted value, requiring `JSON` data types. The alternative `json_extract_path_text` function is preferable if you need to work directly with the extracted value as a string, for text processing, concatenation, or comparison.
+
+- `jsonb_extract_path` - The `jsonb_extract_path` function works with the `jsonb` data type, which offers a binary representation of `JSON` data. This alternative function is generally faster than `json_extract_path` for most operations, as it's optimized for the binary `jsonb` format. This difference in performance is often more pronounced with larger `JSON` structures and frequent path extractions.
+
+{/*
+This example does not work. It returns empty values.
+### Invalid paths
+
+`json_extract_path` handles an invalid path by returning `NULL`, as in the following example:
+
+```sql
+SELECT
+ id,
+ json_extract_path(attributes, 'speks') as storage_type
+FROM products;
+```
+
+The query above, which specifies an invalid path (`'speks'` instead of `'specs'`), returns `NULL` as shown:
+
+```text
+| id | storage_type |
+|----|--------------|
+|  1 |   (null)     |
+|  2 |   (null)     |
+|  3 |   (null)     |
+```
+*/}
+
+## Resources
+
+- [PostgreSQL documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+<NeedHelp />
+
+
+# jsonb_extract_path
+
+---
+title: Postgres jsonb_extract_path() function
+subtitle: Extracts a JSONB sub-object at the specified path
+enableTableOfContents: true
+updatedOn: '2024-02-06T12:36:51.919Z'
+---
+
+You can use the `jsonb_extract_path` function to extract the value at a specified path within a `JSONB` document. This approach is more performant compared to querying the entire `JSONB` payload and processing it on the application side. It is particularly useful when dealing with nested `JSONB` structures.
+
+<CTA />
+
+## Function signature
+
+```sql
+jsonb_extract_path(from_json JSONB, VARIADIC path_elems TEXT[]) -> JSONB
+```
+
+## Example usage
+
+To illustrate the `jsonb_extract_path` function in Postgres, let's consider a scenario where we have a table storing information about books. Each book has a `JSONB` column containing details such as `title`, `author`, and publication `year`. You can create the `book` table using the SQL statements shown below.
+
+**books**
+
+```sql
+CREATE TABLE books (
+    id INT,
+    info JSONB
+);
+
+INSERT INTO books (id, info) 
+VALUES
+    (1, '{"title": "The Catcher in the Rye", "author": "J.D. Salinger", "year": 1951}'),
+    (2, '{"title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960}'),
+    (3, '{"title": "1984", "author": "George Orwell", "year": 1949}');
+```
+
+```text
+| id | info                                                                         |
+|----|------------------------------------------------------------------------------|
+| 1  | {"title": "The Catcher in the Rye", "author": "J.D. Salinger", "year": 1951} |
+| 2  | {"title": "To Kill a Mockingbird", "author": "Harper Lee", "year": 1960}     |
+| 3  | {"title": "1984", "author": "George Orwell", "year": 1949}                   |
+```
+
+Now, let's use the `jsonb_extract_path` function to extract the `title` and `author` of each book:
+
+```sql
+SELECT 
+    id,
+    jsonb_extract_path(info, 'title') as title,
+    jsonb_extract_path(info, 'author') as author
+FROM books;
+```
+
+This query returns the following values:
+
+```text
+| id | title                    | author           |
+|----|--------------------------|------------------|
+| 1  | "The Catcher in the Rye" | "J.D. Salinger"  |
+| 2  | "To Kill a Mockingbird"  | "Harper Lee"     |
+| 3  | "1984"                   | "George Orwell"  |
+```
+
+## Advanced examples
+
+Consider a `products` table that stores information about the products in an e-commerce system. The table schema and data are outlined below.
+
+**products**
+
+```sql
+CREATE TABLE products (
+    id INT,
+    attributes JSONB
+);
+
+INSERT INTO products (id, attributes) 
+VALUES
+    (1, '{"name": "Laptop", "specs": {"brand": "Dell", "RAM": "16GB", "storage": {"type": "SSD", "capacity": "512GB"}}, "tags": ["pc"]}'),
+    (2, '{"name": "Smartphone", "specs": {"brand": "Google", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "256GB"}}, "tags": ["android",
+    "pixel"]}'),
+    (3, '{"name": "Smartphone", "specs": {"brand": "Apple", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "128GB"}}, "tags": ["ios", "iphone"]}');
+```
+
+```text
+| id     | attributes                                                                                                                                        |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+| 1      | {"name": "Laptop", "specs": {"brand": "Dell", "RAM": "16GB", "storage": {"type": "SSD", "capacity": "512GB"}}, "tags": ["pc"]}                    |
+| 2      | {"name": "Smartphone", "specs": {"brand": "Google", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "256GB"}}, "tags": ["android", "pixel"]} |
+| 3      | {"name": "Smartphone", "specs": {"brand": "Apple", "RAM": "8GB", "storage": {"type": "UFS", "capacity": "128GB"}}, "tags": ["ios", "iphone"]}     |
+```
+
+### Extract value from nested JSONB object with `jsonb_extract_path`
+
+Let's use `jsonb_extract_path` to retrieve information about the storage type and capacity for each product, demonstrating how to extract values from a nested `JSONB` object.
+
+```sql
+SELECT
+    id,
+    jsonb_extract_path(attributes, 'specs', 'storage', 'type') as storage_type,
+    jsonb_extract_path(attributes, 'specs', 'storage', 'capacity') as storage_capacity
+FROM products;
+```
+
+This query returns the following values:
+
+```text
+| id | storage_type | storage_capacity |
+|----|--------------|------------------|
+| 1  | "SSD"        | "512GB"          |
+| 2  | "UFS"        | "256GB"          |
+| 3  | "UFS"        | "128GB"          |
+```
+
+### Extract values from JSON array with `jsonb_extract_path`
+
+Now, let's use `jsonb_extract_path` to extract information about the associated tags as well, demonstrating how to extract values from a `JSONB` array.
+
+```sql
+SELECT
+    id,
+    jsonb_extract_path(attributes, 'specs', 'storage', 'type') as storage_type,
+    jsonb_extract_path(attributes, 'specs', 'storage', 'capacity') as storage_capacity,
+    jsonb_extract_path(attributes, 'tags', '0') as first_tag,
+    jsonb_extract_path(attributes, 'tags', '1') as second_tag
+FROM products;
+```
+
+This query returns the following values:
+
+```text
+| id | storage_type | storage_capacity | first_tag | second_tag |
+|----|--------------|------------------|-----------|------------|
+| 1  | "SSD"        | "512GB"          | "pc"      |  null      |
+| 2  | "UFS"        | "256GB"          | "android" | "pixel"    |
+| 3  | "UFS"        | "128GB"          | "ios"     | "iphone"   |
+```
+
+### Joining data with values extracted using `jsonb_extract_path`
+
+Let's say you have two tables, `employees` and `departments`, and the `employees` table has a `JSONB` column named `details` that contains information about each employee's department. You want to join these tables based on the department information stored in the `JSONB` column. 
+
+The table schemas and data used in this example are shown below. 
+
+**departments**
+
+```sql
+CREATE TABLE departments (
+    department_id SERIAL PRIMARY KEY,
+    department_name VARCHAR(255)
+);
+
+INSERT INTO departments (department_name) 
+VALUES
+    ('IT'),
+    ('HR'),
+    ('Marketing');
+```
+
+```text
+| department_id | department_name  |
+|---------------|------------------|
+|             1 | IT               |
+|             2 | HR               |
+|             3 | Marketing        |
+```
+
+**employees**
+
+```sql
+CREATE TABLE employees (
+    employee_id SERIAL PRIMARY KEY,
+    employee_name VARCHAR(255),
+    details JSONB
+);
+
+INSERT INTO employees (employee_name, details) 
+VALUES
+    ('John Doe', '{"department": "IT"}'),
+    ('Jane Smith', '{"department": "HR"}'),
+    ('Bob Johnson', '{"department": "Marketing"}');
+```
+
+```text
+| employee_id | employee_name |           details           |
+|-------------|---------------|-----------------------------|
+|           1 | John Doe      | {"department": "IT"}        |
+|           2 | Jane Smith    | {"department": "HR"}        |
+|           3 | Bob Johnson   | {"department": "Marketing"} |
+```
+
+You can use `JOIN` with `jsonb_extract_path` to retrieve the value to join on:
+
+```sql
+SELECT
+    employees.employee_name,
+    departments.department_name
+FROM
+    employees
+JOIN
+    departments ON TRIM(BOTH '"' FROM jsonb_extract_path(employees.details, 'department')::TEXT) = departments.department_name;
+```
+
+This query returns the following values:
+
+```test
+| employee_name | department_name  |
+|---------------|------------------|
+| John Doe      | IT               |
+| Jane Smith    | HR               |
+| Bob Johnson   | Marketing        |
+```
+
+The `jsonb_extract_path` function extracts the value of the `department` key from the `JSONB` column in the `employees` table. The `JOIN` is then performed based on matching department names.
+
+### Handling invalid path inputs to `jsonb_extract_path`
+
+`jsonb_extract_path` handles an invalid path by returning `NULL`, as in the following example:
+
+```sql
+SELECT
+    id,
+    jsonb_extract_path(attributes, 'speks') as storage_type
+FROM products;
+```
+
+The query above, which specifies an invalid path (`'speks'` instead of `'specs'`), returns `NULL` as shown:
+
+```text
+ id | storage_type
+----+--------------
+  1 |
+  2 |
+  3 |
+```
+
+## Additional considerations
+
+### Performance and Indexing
+
+The `jsonb_extract_path` function performs well when extracting data from `JSONB` documents, especially compared to extracting data in application code. It allows performing the extraction directly in the database, avoiding transferring entire `JSONB` documents to the application.
+
+Indexing `JSONB` documents can also significantly improve `jsonb_extract_path` query performance when filtering data based on values extracted from `JSON`.
+
+### Alternative functions
+
+* [jsonb_extract_path_text](/docs/functions/jsonb_extract_path_text) - The regular `jsonb_extract_path` function returns the extracted value as a `JSONB` object or array, preserving its `JSON` structure, whereas the alternative `jsonb_extract_path_text` function returns the extracted value as a plain text string, casting any `JSONB` objects or arrays to their string representations.
+
+    Use the regular `jsonb_extract_path` function when you need to apply `JSONB`-specific functions or operators to the extracted value, requiring `JSONB` data types. The alternative `jsonb_extract_path_text` function is preferable if you need to work directly with the extracted value as a string, for text processing, concatenation, or comparison.
+
+* [json_extract_path](/docs/functions/json_extract_path) - The `jsonb_extract_path` function works with the `JSONB` data type, which offers a binary representation of `JSON` data, whereas `json_extract_path` takes a `JSON` value as an input and returns `JSON` too. The `JSONB` variant is typically more performant at query time, which is even more pronounced with larger `JSON` data payloads and frequent path extractions.
+
+## Resources
+
+- [PostgreSQL documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+<NeedHelp />
+
+
+# json_extract_path_text
+
+---
+title: Postgres json_extract_path_text() Function
+subtitle: Extracts a JSON sub-object at the specified path as text
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.247Z'
+---
+
+The `json_extract_path_text` function is designed to simplify extracting text from `JSON` data in Postgres. This function is similar to `json_extract_path` — it also produces the value at the specified path from a `JSON` object but casts it to plain text before returning. This makes it more straightforward for text manipulation and comparison operations. 
+
+<CTA />
+
+## Function signature
+
+```sql
+json_extract_path_text(from_json json, VARIADIC path_elems text[]) -> TEXT
+```
+
+The function accepts a `JSON` object and a variadic list of elements that specify the path to the desired value.
+
+## Example usage
+
+Let's consider a `users` table with a `JSON` column named `profile` containing various user details.
+
+Here's how we can create the table and insert some sample data:
+
+```sql
+CREATE TABLE users (
+    id INT,
+    profile JSON
+);
+
+INSERT INTO users (id, profile) 
+VALUES
+    (1, '{"name": "Alice", "contact": {"email": "alice@example.com", "phone": "1234567890"}, "hobbies": ["reading", "cycling", "hiking"]}'),
+    (2, '{"name": "Bob", "contact": {"email": "bob@example.com", "phone": "0987654321"}, "hobbies": ["gaming", "cooking"]}');
+```
+
+To extract and view the email addresses of all users, we can run the following query: 
+
+```sql
+SELECT id, json_extract_path_text(profile, 'contact', 'email') as email
+FROM users;
+```
+
+This query returns the following:
+
+```text
+| id | email              |
+|----|--------------------|
+| 1  | alice@example.com  |
+| 2  | bob@example.com    |
+```
+
+## Advanced examples
+
+### Use `json_extract_path_text` in Joins
+
+Let's say we have another table, `hobbies`, that includes additional information such as difficulty level and the average cost to practice each hobby. 
+
+We can create the `hobbies` table with some sample data with the following statements: 
+
+```sql
+CREATE TABLE hobbies (
+   hobby_id SERIAL PRIMARY KEY,
+   hobby_name VARCHAR(255),
+   difficulty_level VARCHAR(50),
+   average_cost VARCHAR(50)
+);
+
+INSERT INTO hobbies (hobby_name, difficulty_level, average_cost) 
+VALUES
+    ('Reading', 'Easy', 'Low'),
+    ('Cycling', 'Moderate', 'Medium'),
+    ('Gaming', 'Variable', 'High'),
+    ('Cooking', 'Variable', 'Low');
+```
+
+The `users` table we created previously has a `JSON` column named `profile` that contains information about each user's preferred hobbies. A fun exercise could be to find if a user has any hobbies that are easy to get started with. Then we can recommend they engage with it more often. 
+
+To fetch this list, we can run the query below. 
+
+```sql
+SELECT
+  json_extract_path_text(u.profile, 'name') as user_name,
+  h.hobby_name
+FROM users u
+JOIN hobbies h 
+ON json_extract_path_text(u.profile, 'hobbies') LIKE '%' || lower(h.hobby_name) || '%'
+WHERE h.difficulty_level = 'Easy';
+```
+
+We use `json_extract_path_text` to extract the list of hobbies for each user, and then check if the name of an easy hobby is present in the list. 
+
+This query returns the following:
+
+```text
+| user_name | hobby_name |
+|-----------|------------|
+| Alice     | Reading    |
+```
+
+### Extracting values from JSON arrays with `json_extract_path_text`
+
+`json_extract_path_text` can also be used to extract values from `JSON` arrays. 
+
+For instance, to extract the first and second hobbies for everyone, we can run the following query:
+
+```sql
+SELECT
+    json_extract_path_text(profile, 'name') as name,
+    json_extract_path_text(profile, 'hobbies', '0') as first_hobby,
+    json_extract_path_text(profile, 'hobbies', '1') as second_hobby
+FROM users;
+```
+
+This query returns the following:
+
+```text
+| name  | first_hobby | second_hobby |
+|-------|-------------|--------------|
+| Alice | reading     | cycling      |
+| Bob   | gaming      | cooking      |
+```
+
+## Additional considerations
+
+### Performance and indexing
+
+Performance considerations for `json_extract_path_text` are similar to those for `json_extract_path`. It is efficient for extracting data but can be impacted by large `JSON` objects or complex queries. Indexing `JSON` fields can improve performance in some cases. 
+
+### Alternative functions
+
+- [json_extract_path](/docs/functions/json_extract_path) - This is a similar function that can extract data from a `JSON` object at the specified path. The difference is that it returns a `JSON` object, while `json_extract_path_text` always returns text. The right function to use depends on what you want to use the output data for. 
+- [jsonb_extract_path_text](/docs/functions/jsonb_extract_path_text) - This is a similar function that can extract data from a `JSON` object at the specified path. It is more efficient but works only with data of the type `JSONB`.
+
+## Resources
+
+- [PostgreSQL Documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL Documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+<NeedHelp />
+
+
+# jsonb_extract_path_text
+
+---
+title: Postgres jsonb_extract_path_text() Function
+subtitle: Extracts a JSON sub-object at the specified path as text
+enableTableOfContents: true
+updatedOn: '2024-02-06T23:28:28.690Z'
+---
+
+The `jsonb_extract_path_text` function is designed to simplify extracting text from `JSONB` data in Postgres. This function is similar to `jsonb_extract_path` — it also produces the value at the specified path from a `JSONB` object but casts it to plain text before returning. This makes it more straightforward for text manipulation and comparison operations. 
+
+<CTA />
+
+## Function signature
+
+```sql
+jsonb_extract_path_text(from_json JSONB, VARIADIC path_elems text[]) -> TEXT
+```
+
+The function accepts a `JSONB` object and a variadic list of elements that specify the path to the desired value.
+
+## Example usage
+
+Let's consider a `users` table with a `JSONB` column named `profile` containing various user details.
+
+Here's how we can create the table and insert some sample data:
+
+```sql
+CREATE TABLE users (
+    id INT,
+    profile JSONB
+);
+
+INSERT INTO users (id, profile) 
+VALUES
+    (1, '{"name": "Alice", "contact": {"email": "alice@example.com", "phone": "1234567890"}, "hobbies": ["reading", "cycling", "hiking"]}'),
+    (2, '{"name": "Bob", "contact": {"email": "bob@example.com", "phone": "0987654321"}, "hobbies": ["gaming", "cooking"]}');
+```
+
+To extract and view the email addresses of all users, we can run the following query: 
+
+```sql
+SELECT id, jsonb_extract_path_text(profile, 'contact', 'email') as email
+FROM users;
+```
+
+This query returns the following:
+
+```text
+| id | email              |
+|----|--------------------|
+| 1  | alice@example.com  |
+| 2  | bob@example.com    |
+```
+
+## Advanced examples
+
+### Use output of `jsonb_extract_path_text` in a `JOIN` clause
+
+Let's say we have another table, `hobbies`, that includes additional information such as difficulty level and the average cost to practice each hobby. 
+
+We can create the `hobbies` table with some sample data with the following statements: 
+
+```sql
+CREATE TABLE hobbies (
+   hobby_id SERIAL PRIMARY KEY,
+   hobby_name VARCHAR(255),
+   difficulty_level VARCHAR(50),
+   average_cost VARCHAR(50)
+);
+
+INSERT INTO hobbies (hobby_name, difficulty_level, average_cost) 
+VALUES
+    ('Reading', 'Easy', 'Low'),
+    ('Cycling', 'Moderate', 'Medium'),
+    ('Gaming', 'Variable', 'High'),
+    ('Cooking', 'Variable', 'Low');
+```
+
+The `users` table we created previously has a `JSONB` column named `profile` that contains information about each user's preferred hobbies. A fun exercise could be to find if a user has any hobbies that are easy to get started with. Then we can recommend they engage with it more often. 
+
+To fetch this list, we can run the query below. 
+
+```sql
+SELECT
+  jsonb_extract_path_text(u.profile, 'name') as user_name,
+  h.hobby_name
+FROM users u
+JOIN hobbies h 
+ON jsonb_extract_path_text(u.profile, 'hobbies') LIKE '%' || lower(h.hobby_name) || '%'
+WHERE h.difficulty_level = 'Easy';
+```
+
+We use `jsonb_extract_path_text` to extract the list of hobbies for each user, and then check if the name of an easy hobby is present in the list. 
+
+This query returns the following:
+
+```text
+| user_name | hobby_name |
+|-----------|------------|
+| Alice     | Reading    |
+```
+
+### Extract values from JSON array with `jsonb_extract_path_text`
+
+`jsonb_extract_path_text` can also be used to extract values from `JSONB` arrays. 
+
+For instance, to extract the first and second hobbies for everyone, we can run the following query:
+
+```sql
+SELECT
+    jsonb_extract_path_text(profile, 'name') as name,
+    jsonb_extract_path_text(profile, 'hobbies', '0') as first_hobby,
+    jsonb_extract_path_text(profile, 'hobbies', '1') as second_hobby
+FROM users;
+```
+
+This query returns the following:
+
+```text
+| name  | first_hobby | second_hobby |
+|-------|-------------|--------------|
+| Alice | reading     | cycling      |
+| Bob   | gaming      | cooking      |
+```
+
+## Additional considerations
+
+### Performance and indexing
+
+Performance considerations for `jsonb_extract_path_text` are similar to those for `json_extract_path`. It is efficient for extracting data but can be impacted by large `JSONB` objects or complex queries. Indexing the `JSONB` column can improve performance in some cases. 
+
+### Alternative functions
+
+- [jsonb_extract_path](/docs/functions/jsonb_extract_path) - This is a similar function that can extract data from a `JSONB` object at the specified path. The difference is that it returns a `JSONB` object, while `jsonb_extract_path_text` always returns text. The right function to use depends on what you want to use the output data for. 
+- [json_extract_path_text](/docs/functions/json_extract_path_text) - This is a similar function that can extract data from a `JSON` object, (instead of `JSONB`) at the specified path. 
+
+## Resources
+
+- [PostgreSQL Documentation: JSON Functions and Operators](https://www.postgresql.org/docs/current/functions-json.html)
+- [PostgreSQL Documentation: JSON Types](https://www.postgresql.org/docs/current/datatype-json.html)
+
+<NeedHelp />
+
+
+# json_object
+
+---
+title: Postgres json_object() function
+subtitle: Creates a JSON object from key-value pairs
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.248Z'
+---
+
+The `json_object` function in Postgres is used to create a `JSON` object from a set of key-value pairs. It is particularly useful when you need to generate `JSON` data dynamically from existing table data or input parameters.
+
+<CTA />
+
+## Function signature
+
+```sql
+json_object(keys TEXT[], values TEXT[]) -> JSON
+-- or --
+json_object(keys_values TEXT[]) -> JSON
+```
+
+This function takes two text arrays as input: one for keys and one for values. Both arrays must have the same number of elements, as each key is paired with the corresponding value to construct the `JSON` object. 
+
+Alternatively, you can pass a single text array containing both keys and values. In this case, alternate elements in the array are treated as keys and values, respectively. 
+
+## Example usage
+
+Consider a scenario where you run a library and have a table that tracks details for each book. 
+
+The table with some sample data can be set up as shown:
+
+```sql
+-- Test database table for a bookstore inventory
+CREATE TABLE book_inventory (
+    book_id INT,
+    title TEXT,
+    author TEXT,
+    price NUMERIC,
+    genre TEXT
+);
+
+-- Inserting some test data into `book_inventory`
+INSERT INTO book_inventory VALUES
+(101, 'The Great Gatsby', 'F. Scott Fitzgerald', 18.99, 'Classic'),
+(102, 'Invisible Man', 'Ralph Ellison', 15.99, 'Novel');
+```
+
+When querying this dataset, the frontend client might want to present the data in a different way. Say you want the catalog information just as the list of book names while combining the rest of the fields into a single `metadata` attribute. You can do so as shown here:
+
+```sql
+SELECT book_id, title, json_object(
+  ARRAY['author', 'genre'], 
+  ARRAY[author, genre]
+) AS metadata
+FROM book_inventory;
+```
+
+This query returns the following result:
+
+```text
+| book_id | title            | metadata                                   |
+|---------|------------------|--------------------------------------------|
+| 101     | The Great Gatsby | {"author" : "F. Scott Fitzgerald",         |
+|         |                  |  "genre" : "Classic"}                      |
+| 102     | Invisible Man    | {"author" : "Ralph Ellison",               |
+|         |                  |  "genre" : "Novel"}                        |
+```
+
+## Advanced examples
+
+### Creating nested JSON objects with `json_object`
+
+You could use `json_object` to create nested `JSON` objects for representing more complex data. However, since `json_object` only expects text values for each key, we will need to combine it with other `JSON` functions like `json_build_object`. For example:
+
+```sql
+SELECT json_build_object(
+  'title', title,
+  'author', json_object(ARRAY['name', 'genre'], ARRAY[author, genre])
+) AS book_info
+FROM book_inventory;
+```
+
+This query returns the following result:
+
+```text
+| book_info                                                                                        |
+|--------------------------------------------------------------------------------------------------|
+| {"title" : "The Great Gatsby", "author" : {"name" : "F. Scott Fitzgerald", "genre" : "Classic"}} |
+| {"title" : "Invisible Man", "author" : {"name" : "Ralph Ellison", "genre" : "Novel"}}            |
+```
+
+## Additional considerations
+
+### Gotchas and footguns
+
+- Ensure both keys and values arrays have the same number of elements. Mismatched arrays will result in an error. Or, if passing in a single key-value array, ensure that the array has an even number of elements. 
+- Be aware of data type conversions. Since `json_object` expects text arrays, you may need to explicitly cast non-text data types to text. 
+
+### Alternative functions
+
+- [jsonb_object](https://www.postgresql.org/docs/current/functions-json.html) - Same functionality as `json_object`, but returns a `JSONB` object instead of `JSON`. 
+- [row_to_json](https://www.postgresql.org/docs/current/functions-json.html) - It can be used to create a `JSON` object from a table row (or a row of a  composite type) without needing to specify keys and values explicitly. Although, it is less flexible than `json_object` since all fields in the row are included in the `JSON` object. 
+- [json_build_object](/docs/functions/json_build_object) - Similar to `json_object`, but allows for more flexibility in constructing the `JSON` object, as it can take a variable number of arguments in the form of key-value pairs. 
+- [json_object_agg](https://www.postgresql.org/docs/current/functions-json.html) - It is used to aggregate the key-value pairs from multiple rows into a single `JSON` object. In contrast, `json_object` outputs a `JSON` object for each row. 
+
+## Resources
+
+- [PostgreSQL documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# jsonb_object
+
+---
+title: Postgres jsonb_object() function
+subtitle: Creates a JSONB object from key-value pairs
+enableTableOfContents: true
+updatedOn: '2024-02-06T23:28:28.690Z'
+---
+
+The `jsonb_object` function in Postgres is used to create a `JSONB` object from a set of key-value pairs. It is particularly useful when you need to generate `JSONB` data dynamically from existing table data or input parameters.
+
+<CTA />
+
+## Function signature
+
+```sql
+jsonb_object(keys TEXT[], values TEXT[]) -> JSONB
+-- or --
+jsonb_object(keys_values TEXT[]) -> JSONB
+```
+
+This function takes two text arrays as input: one for keys and one for values. Both arrays must have the same number of elements, as each key is paired with the corresponding value to construct the `JSONB` object. 
+
+Alternatively, you can pass a single text array containing both keys and values. In this case, alternate elements in the array are treated as keys and values, respectively. 
+
+## Example usage
+
+Consider a scenario where you run a library and have a table that tracks details for each book. 
+
+The table with some sample data can be set up as shown:
+
+```sql
+-- Test database table for a bookstore inventory
+CREATE TABLE book_inventory (
+    book_id INT,
+    title TEXT,
+    author TEXT,
+    price NUMERIC,
+    genre TEXT
+);
+
+-- Inserting some test data into `book_inventory`
+INSERT INTO book_inventory VALUES
+(101, 'The Great Gatsby', 'F. Scott Fitzgerald', 18.99, 'Classic'),
+(102, 'Invisible Man', 'Ralph Ellison', 15.99, 'Novel');
+```
+
+When querying this dataset, the frontend client might want to present the data in a different way. Say you want the catalog information just as the list of book names while combining the rest of the fields into a single `metadata` attribute. You can do so as shown here:
+
+```sql
+SELECT book_id, title, jsonb_object(
+  ARRAY['author', 'genre'], 
+  ARRAY[author, genre]
+) AS metadata
+FROM book_inventory;
+```
+
+This query returns the following result:
+
+```text
+| book_id | title            | metadata                                   |
+|---------|------------------|--------------------------------------------|
+| 101     | The Great Gatsby | {"author" : "F. Scott Fitzgerald",         |
+|         |                  |  "genre" : "Classic"}                      |
+| 102     | Invisible Man    | {"author" : "Ralph Ellison",               |
+|         |                  |  "genre" : "Novel"}                        |
+```
+
+## Advanced examples
+
+### Creating nested JSON objects with `jsonb_object`
+
+You could use `jsonb_object` to create nested `JSONB` objects for representing more complex data. However, since `jsonb_object` only expects text values for each key, we will need to combine it with other `JSONB` functions like `jsonb_build_object`. For example:
+
+```sql
+SELECT jsonb_build_object(
+  'title', title,
+  'author', jsonb_object(ARRAY['name', 'genre'], ARRAY[author, genre])
+) AS book_info
+FROM book_inventory;
+```
+
+This query returns the following result:
+
+```text
+| book_info                                                                                        |
+|--------------------------------------------------------------------------------------------------|
+| {"title" : "The Great Gatsby", "author" : {"name" : "F. Scott Fitzgerald", "genre" : "Classic"}} |
+| {"title" : "Invisible Man", "author" : {"name" : "Ralph Ellison", "genre" : "Novel"}}            |
+```
+
+## Additional considerations
+
+### Gotchas
+
+- Ensure both keys and values arrays have the same number of elements. Mismatched arrays will result in an error. Or, if passing in a single key-value array, ensure that the array has an even number of elements. 
+- Be aware of data type conversions. Since `jsonb_object` expects text arrays, you may need to explicitly cast non-text data types to text. 
+
+### Alternative options
+
+- [json_object](/docs/functions/json_object) - Same functionality as `jsonb_object`, but returns a `JSON` object instead of `JSONB`. 
+- [to_jsonb](https://www.postgresql.org/docs/current/functions-json.html) - It can be used to create a `JSONB` object from a table row (or a row of a  composite type) without needing to specify keys and values explicitly. Although, it is less flexible than `jsonb_object` since all fields in the row are included in the `JSONB` object. 
+- [jsonb_build_object](https://www.postgresql.org/docs/current/functions-json.html) - Similar to `jsonb_object`, but allows for more flexibility in constructing the `JSONB` object, as it can take a variable number of arguments in the form of key-value pairs. 
+- [jsonb_object_agg](https://www.postgresql.org/docs/current/functions-json.html) - It is used to aggregate the key-value pairs from multiple rows into a single `JSONB` object. In contrast, `jsonb_object` outputs a `JSONB` object for each row. 
+
+## Resources
+
+- [PostgreSQL documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# json_populate_record
+
+---
+title: Postgres json_populate_record() function
+subtitle: Casts a JSON object to a record
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.248Z'
+---
+
+The `json_populate_record` function is used to populate a record type with values from a `JSON` object. It is useful for parsing `JSON` data received from external sources, particularly when merging it into an existing record.
+
+<CTA />
+
+## Function signature
+
+```sql
+json_populate_record(base_record ANYELEMENT, json JSON)
+```
+
+This function takes two arguments: a base record of a row type (which can even be a `NULL` record) and a `JSON` object. It returns the record updated with the `JSON` values. 
+
+## Example usage
+
+Consider a database table that tracks employee information. When you receive employee information as `JSON` records, you can use `json_populate_record` to ingest the data into the table. 
+
+Here we create the `employees` table with some sample data.
+
+```sql
+CREATE TABLE employees (
+    id INT,
+    name TEXT,
+    department TEXT,
+    salary NUMERIC
+);
+```
+
+To illustrate, we start with a `NULL` record and cast the input `JSON` payload to the `employees` record type.
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM json_populate_record(
+    NULL::employees, 
+    '{"id": "123", "name": "John Doe", "department": "Engineering", "salary": "75000"}'
+)
+RETURNING *;
+```
+
+This query returns the following result:
+
+```text
+| id | name     | department  | salary |
+|----|----------|-------------|--------|
+| 123| John Doe | Engineering | 75000  |
+```
+
+## Advanced examples
+
+### Handling partial data with `json_populate_record`
+
+For data points where the `JSON` objects have missing keys, `json_populate_record` can still cast them into legible records. 
+
+Say we receive records for a bunch of employees who are known to be in Sales, but the `department` field is missing from the `JSON` payload. We can use `json_populate_record` with the default value specified for a field while the other fields are populated from the `JSON` payload, as in this example:
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM json_populate_record(
+    (1, 'ABC', 'Sales', 0)::employees,
+    '{"id": "124", "name": "Jane Smith", "salary": "68000"}'
+)
+RETURNING *;
+```
+
+This query returns the following:
+
+```text
+| id | name       | department | salary |
+|----|------------|------------|--------|
+| 124| Jane Smith | Sales      | 68000  |
+```
+
+### Working with custom types in `json_populate_record`
+
+The base record doesn't need to have the type of a table row and can be a [custom Postgres type](https://www.postgresql.org/docs/current/sql-createtype.html) too. For example, here we first define a custom type `address` and use `json_populate_record` to cast a `JSON` object to it:
+
+```sql
+CREATE TYPE address AS (
+    street TEXT,
+    city TEXT,
+    zip TEXT
+);
+
+SELECT *
+FROM json_populate_record(
+    NULL::address,
+    '{"street": "123 Main St", "city": "San Francisco", "zip": "94105"}'
+);
+```
+
+This query returns the following result:
+
+```text
+| street     | city          | zip   |
+|------------|---------------|-------|
+| 123 Main St| San Francisco | 94105 |
+```
+
+## Additional considerations
+
+### Alternative options
+
+- [json_to_record](/docs/functions/json_to_record) - It can be used similarly, with a couple differences. `json_populate_record` can be used with a base record of a pre-defined type, whereas `json_to_record` needs the record type defined inline in the `AS` clause. Further, `json_populate_record` can specify default values for missing fields through the base record, whereas `json_to_record` must assign them NULL values.
+- `json_populate_recordset` - It can be used similarly to parse `JSON`, the difference being that it returns a set of records instead of a single record. For example, if you have an array of `JSON` objects, you can use `json_populate_recordset` to convert each object into a new row. 
+- [jsonb_populate_record](/docs/functions/jsonb_populate_record) - It has the same functionality to `json_populate_record`, but accepts `JSONB` input instead of `JSON`. 
+
+## Resources
+
+- [Postgres documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# jsonb_populate_record
+
+---
+title: Postgres jsonb_populate_record() function
+subtitle: Casts a JSONB object to a record
+enableTableOfContents: true
+updatedOn: '2024-02-06T23:28:28.691Z'
+---
+
+The `jsonb_populate_record` function is used to populate a record type with values from a `JSONB` object. It is useful for parsing `JSONB` data received from external sources, particularly when merging it into an existing record.
+
+<CTA />
+
+## Function signature
+
+```sql
+jsonb_populate_record(base_record ANYELEMENT, json JSONB) -> ANYELEMENT
+```
+
+This function takes two arguments: a base record of a row type (which can even be a `NULL` record) and a `JSONB` object. It returns the record updated with the `JSONB` values. 
+
+## Example usage
+
+Consider a database table that tracks employee information. When you receive employee information as `JSONB` records, you can use `jsonb_populate_record` to ingest the data into the table. 
+
+Here we create the `employees` table with some sample data.
+
+```sql
+CREATE TABLE employees (
+    id INT,
+    name TEXT,
+    department TEXT,
+    salary NUMERIC
+);
+```
+
+To illustrate, we start with a `NULL` record and cast the input `JSONB` payload to the `employees` record type.
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM jsonb_populate_record(
+    NULL::employees, 
+    '{"id": "123", "name": "John Doe", "department": "Engineering", "salary": "75000"}'
+)
+RETURNING *;
+```
+
+This query returns the following result:
+
+```text
+| id | name     | department  | salary |
+|----|----------|-------------|--------|
+| 123| John Doe | Engineering | 75000  |
+```
+
+## Advanced examples
+
+### Handling partial data with `jsonb_populate_record`
+
+For data points where the `JSONB` objects have missing keys, `jsonb_populate_record` can still cast them into legible records. 
+
+Say we receive records for a bunch of employees who are known to be in Sales, but the `department` field is missing from the `JSONB` payload. We can use `jsonb_populate_record` with the default value specified for a field while the other fields are populated from the `JSONB` payload, as in this example:
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM jsonb_populate_record(
+    (1, 'ABC', 'Sales', 0)::employees,
+    '{"id": "124", "name": "Jane Smith", "salary": "68000"}'
+)
+RETURNING *;
+```
+
+This query returns the following:
+
+```text
+| id | name       | department | salary |
+|----|------------|------------|--------|
+| 124| Jane Smith | Sales      | 68000  |
+```
+
+### Using `jsonb_populate_record` with custom types 
+
+The base record doesn't need to have the type of a table row and can be a [custom Postgres type](https://www.postgresql.org/docs/current/sql-createtype.html) too. For example, here we first define a custom type `address` and use `jsonb_populate_record` to cast a `JSONB` object to it:
+
+```sql
+CREATE TYPE address AS (
+    street TEXT,
+    city TEXT,
+    zip TEXT
+);
+
+SELECT *
+FROM jsonb_populate_record(
+    NULL::address,
+    '{"street": "123 Main St", "city": "San Francisco", "zip": "94105"}'
+);
+```
+
+This query returns the following result:
+
+```text
+| street     | city          | zip   |
+|------------|---------------|-------|
+| 123 Main St| San Francisco | 94105 |
+```
+
+## Additional considerations
+
+### Alternative options
+
+- [jsonb_to_record](/docs/functions/jsonb_to_record) - It can be used similarly, with a couple differences. `jsonb_populate_record` can be used with a base record of a pre-defined type, whereas `jsonb_to_record` needs the record type defined inline in the `AS` clause. Further, `jsonb_populate_record` can specify default values for missing fields through the base record, whereas `jsonb_to_record` must assign them NULL values.
+- `jsonb_populate_recordset` - It can be used similarly to parse `JSONB`, the difference being that it returns a set of records instead of a single record. For example, if you have an array of `JSONB` objects, you can use `jsonb_populate_recordset` to convert each object into a new row. 
+- [json_populate_record](/docs/functions/json_populate_record) - It has the same functionality to `jsonb_populate_record`, but accepts `JSON` input instead of `JSONB`. 
+
+## Resources
+
+- [Postgres documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# json_to_record
+
+---
+title: Postgres json_to_record() function
+subtitle: Converts a JSON object to a record
+enableTableOfContents: true
+updatedOn: '2024-02-06T14:40:40.248Z'
+---
+
+You can use the `json_to_record` function to convert a top-level `JSON` object into a row, with the type specified by the `AS` clause. 
+
+This function is useful when you need to parse `JSON` data received from external sources, such as APIs or file uploads, and store it in a structured format. By using `json_to_record`, you can easily extract values from `JSON` and map them to the corresponding columns in your database table.
+
+<CTA />
+
+## Function signature
+
+```sql
+json_to_record(json JSON) AS (column_name column_type [, ...])
+```
+
+The function's definition includes a column definition list, where you specify the name and data type of each column in the resulting record. 
+
+## Example usage
+
+Consider a scenario in which you have `JSON` data representing employee information, and you want to ingest it for easier processing later. The `JSON` data looks like this:
+
+```json
+{
+  "id": "123",
+  "name": "John Doe",
+  "department": "Engineering",
+  "salary": "75000"
+}
+```
+
+The table you want to insert data into is defined as follows:
+
+```sql
+CREATE TABLE employees (
+    id INT,
+    name TEXT,
+    department TEXT,
+    salary NUMERIC
+);
+```
+
+Using `json_to_record`, you can insert the input data into the `employees` table as shown:
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM json_to_record('{"id": "123", "name": "John Doe", "department": "Engineering", "salary": "75000"}') AS x(id INT, name TEXT, department TEXT, salary NUMERIC);
+```
+
+To verify the data was inserted, you can run the following query:
+
+```sql
+SELECT * FROM employees;
+```
+
+This query returns the following result:
+```text
+| id | name     | department   | salary |
+|----|----------|--------------|--------|
+| 123| John Doe | Engineering  | 75000  |
+```
+
+## Advanced examples
+
+This section provides advanced `json_to_record` examples.
+
+### Handling partial data with `json_to_record`
+
+For datapoints where the `JSON` objects have missing keys, `json_to_record` can still cast them into records, producing `NULL` values for the unmatched columns. For example:
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM json_to_record('{
+  "id": "124",
+  "name": "Jane Smith"
+}') AS x(id INT, name TEXT, department TEXT, salary NUMERIC)
+RETURNING *;
+```
+
+This query returns the following result:
+
+```
+| id | name       | department   | salary |
+|----|------------|--------------|--------|
+| 124| Jane Smith |              |        |
+```
+
+### Handling nested data with `json_to_record`
+
+`json_to_record` can also be used to handle nested `JSON` input data (i.e., keys with values that are `JSON` objects themselves). You need to first define a [custom Postgres type](https://www.postgresql.org/docs/current/sql-createtype.html). The newly created type can then be used in the column definition list along with the other columns. 
+
+In the following example, we handle the `address` field by creating an `ADDRESS_TYPE` type first. 
+
+```sql
+CREATE TYPE ADDRESS_TYPE AS (
+  street TEXT,
+  city TEXT
+);
+
+SELECT *
+FROM json_to_record('{
+  "id": "125",
+  "name": "Emily Clark",
+  "department": "Marketing",
+  "salary": "68000",
+  "address": {
+    "street": "123 Elm St",
+    "city": "Springfield"
+  }
+}') AS x(id INT, name TEXT, department TEXT, salary NUMERIC, address ADDRESS_TYPE);
+```
+
+This query returns the following result:
+```text
+| id | name        | department | salary | address                     |
+|----|-------------|------------|--------|-----------------------------|
+| 1  | Emily Clark | Marketing  | 68000  | ("123 Elm St", Springfield) |
+```
+
+### Alternative functions
+
+- [json_populate_record](/docs/functions/json_populate_record): This function can also be used to create records using values from a `JSON` object. The difference is that `json_populate_record` requires the record type to be defined beforehand, while `json_to_record` needs the type definition inline. 
+- [json_to_recordset](https://www.postgresql.org/docs/current/functions-json.html): This function can be used similarly to parse `JSON`, the difference being that it returns a set of records instead of a single record. For example, if you have an array of `JSON` objects, you can use `json_to_recordset` to convert each object into a new row. 
+- [jsonb_to_record](https://www.postgresql.org/docs/current/functions-json.html): This function provides the same functionality as `json_to_record`, but accepts `JSONB` input instead of `JSON`. In cases where the input payload type isn't exactly specified, either of the two functions can be used. For example, take this `json_to_record` query: 
+
+    ```sql
+    SELECT *
+    FROM json_to_record('{"id": "123", "name": "John Doe", "department": "Engineering"}') 
+    AS x(id INT, name TEXT, department TEXT);
+    ```
+    It works just as well as this `JSONB` variant (below) since Postgres casts the literal `JSON` object to `JSON` or `JSONB` depending on the context.
+
+    ```sql
+    SELECT *
+    FROM jsonb_to_record('{"id": "123", "name": "Sally", "department": "Engineering"}')
+    AS x(id INT, name TEXT, department TEXT);
+    ```
+
+## Resources
+
+- [PostgreSQL documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# jsonb_to_record
+
+---
+title: Postgres jsonb_to_record() function
+subtitle: Convert a JSONB object to a record
+enableTableOfContents: true
+updatedOn: '2024-02-06T23:28:28.691Z'
+---
+
+You can use the `jsonb_to_record` function to convert a top-level `JSONB` object into a row, with the type specified by the `AS` clause. 
+
+This function is useful when you need to parse `JSONB` data received from external sources, such as APIs or file uploads, and store it in a structured format. By using `jsonb_to_record`, you can easily extract values from `JSONB` and map them to the corresponding columns in your database table.
+
+<CTA />
+
+## Function signature
+
+```sql
+jsonb_to_record(json JSONB) AS (column_name column_type [, ...])
+```
+
+The function's definition includes a column definition list, where you specify the name and data type of each column in the resulting record. 
+
+## Example usage
+
+Consider a scenario in which you have `JSONB` data representing employee information, and you want to ingest it for easier processing later. The `JSONB` data looks like this:
+
+```json
+{
+  "id": "123",
+  "name": "John Doe",
+  "department": "Engineering",
+  "salary": "75000"
+}
+```
+
+The table you want to insert data into is defined as follows:
+
+```sql
+CREATE TABLE employees (
+    id INT,
+    name TEXT,
+    department TEXT,
+    salary NUMERIC
+);
+```
+
+Using `jsonb_to_record`, you can insert the input data into the `employees` table as shown:
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM jsonb_to_record('{"id": "123", "name": "John Doe", "department": "Engineering", "salary": "75000"}') AS x(id INT, name TEXT, department TEXT, salary NUMERIC);
+```
+
+Note that the string representation of the JSON object didn't need to be explicitly cast to `JSONB`. Postgres automatically casts it to `JSONB` when the function is called. 
+
+To verify the data was inserted, you can run the following query:
+
+```sql
+SELECT * FROM employees;
+```
+
+This query returns the following result:
+```text
+| id | name     | department   | salary |
+|----|----------|--------------|--------|
+| 123| John Doe | Engineering  | 75000  |
+```
+
+## Advanced examples
+
+This section provides advanced `jsonb_to_record` examples.
+
+### Handling partial data with `jsonb_to_record`
+
+For datapoints where the `JSONB` objects have missing keys, `jsonb_to_record` can still cast them into records, producing `NULL` values for the unmatched columns. For example:
+
+```sql
+INSERT INTO employees
+SELECT *
+FROM jsonb_to_record('{
+  "id": "124",
+  "name": "Jane Smith"
+}') AS x(id INT, name TEXT, department TEXT, salary NUMERIC)
+RETURNING *;
+```
+
+This query returns the following result:
+
+```
+| id | name       | department   | salary |
+|----|------------|--------------|--------|
+| 124| Jane Smith |              |        |
+```
+
+### Handling nested data with `jsonb_to_record`
+
+`jsonb_to_record` can also be used to handle nested `JSONB` input data (i.e., keys with values that are `JSONB` objects themselves). You need to first define a [custom Postgres type](https://www.postgresql.org/docs/current/sql-createtype.html). The newly created type can then be used in the column definition list along with the other columns. 
+
+In the following example, we handle the `address` field by creating an `ADDRESS_TYPE` type first. 
+
+```sql
+CREATE TYPE ADDRESS_TYPE AS (
+  street TEXT,
+  city TEXT
+);
+
+SELECT *
+FROM jsonb_to_record('{
+  "id": "125",
+  "name": "Emily Clark",
+  "department": "Marketing",
+  "salary": "68000",
+  "address": {
+    "street": "123 Elm St",
+    "city": "Springfield"
+  }
+}') AS x(id INT, name TEXT, department TEXT, salary NUMERIC, address ADDRESS_TYPE);
+```
+
+This query returns the following result:
+```text
+| id | name        | department | salary | address                     |
+|----|-------------|------------|--------|-----------------------------|
+| 1  | Emily Clark | Marketing  | 68000  | ("123 Elm St", Springfield) |
+```
+
+### Alternative functions
+
+- [jsonb_populate_record](/docs/functions/jsonb_populate_record): This function can also be used to create records using values from a `JSONB` object. The difference is that `jsonb_populate_record` requires the record type to be defined beforehand, while `jsonb_to_record` needs the type definition inline. 
+- [jsonb_to_recordset](https://www.postgresql.org/docs/current/functions-json.html): This function can be used similarly to parse `JSONB`, the difference being that it returns a set of records instead of a single record. For example, if you have an array of `JSONB` objects, you can use `jsonb_to_recordset` to convert each object into a new row. 
+- [json_to_record](/docs/functions/json_to_record): This function provides the same functionality as `json_to_record`, but accepts `JSON` input instead of `JSONB`. In cases where the input payload type isn't exactly specified, either of the two functions can be used. 
+
+    For example, take this `json_to_record` query: 
+
+    ```sql
+    SELECT *
+    FROM json_to_record('{"id": "123", "name": "John Doe", "department": "Engineering"}') 
+    AS x(id INT, name TEXT, department TEXT);
+    ```
+    It works just as well as this `JSONB` variant (below) since Postgres casts the literal `JSON` object to `JSON` or `JSONB` depending on the context.
+
+    ```sql
+    SELECT *
+    FROM jsonb_to_record('{"id": "123", "name": "Sally", "department": "Engineering"}')
+    AS x(id INT, name TEXT, department TEXT);
+    ```
+
+## Resources
+
+- [PostgreSQL documentation: JSON functions](https://www.postgresql.org/docs/current/functions-json.html)
+
+
+# Compatibility
+
+---
+title: Postgres compatibility
 enableTableOfContents: true
 redirectFrom:
-  - /docs/reference/pg-extensions
-updatedOn: '2024-01-06T10:04:05.686Z'
+  - /docs/conceptual-guides/compatibility
+updatedOn: '2024-01-11T14:49:37.566Z'
 ---
 
-Neon supports the Postgres extensions shown in the following table. The supported version of the extension sometimes differs by Postgres version.
+Neon is protocol and application-compatible with Postgres. However, when using the Neon cloud service, there are some limitations that you should be aware of.
 
-<a id="default-extensions/"></a>
+## Postgres versions
 
-| Extension                | PG14                               | PG15  | PG16                              |Notes                                                                                                                |
-| :------------------------| --------------------------------------------------------------: | ----------------------------------------------------------------:| ----------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------|
-| [address_standardizer](https://postgis.net/docs/Extras.html#Address_Standardizer)     | 3.3.3  | 3.3.3  |    3.3.3  |                                                                                                          |
-| [address_standardizer_data_us](https://postgis.net/docs/Extras.html#Address_Standardizer)      | 3.3.3        | 3.3.3 | 3.3.3 |                                                                                                 |
-| [autoinc (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)             | 1.0 | 1.0  |   1.0  |                                                                                                                 |
-| [bloom](https://www.postgresql.org/docs/15/bloom.html)                     | 1.0            | 1.0             |   1.0             |                                                                                                                  |
-| [btree_gin](https://www.postgresql.org/docs/15/btree-gin.html)                | 1.3        | 1.3         |      1.3         |                                                                                                              |
-| [btree_gist](https://www.postgresql.org/docs/15/btree-gist.html)               | 1.6       | 1.7        |    1.7        |                                                                                                                  |
-| [citext](https://www.postgresql.org/docs/15/citext.html)                   | 1.6           | 1.6            |    1.6            |                                                                                                                  |
-| [cube](https://www.postgresql.org/docs/15/cube.html)                    | 1.5             | 1.5              |    1.5              |                                                                                                                 |
-| [dict_int](https://www.postgresql.org/docs/15/dict-int.html)                 | 1.0         | 1.0          |     1.0          |                                                                                                                 |
-| [earthdistance](https://www.postgresql.org/docs/15/earthdistance.html)            | 1.1    | 1.1     |  1.1     |                                                                                                                   |
-| [fuzzystrmatch](https://www.postgresql.org/docs/15/fuzzystrmatch.html)            | 1.1    | 1.1     |   1.1     |                                                                                                                 |
-| [h3](https://github.com/zachasme/h3-pg/blob/main/docs/api.md)                       | 4.1.3| 4.1.3 | 4.1.3 | Some components have been split out into the `h3_postgis` extension. Install both the `h3` and `h3_postgis` extensions.                                                                                                                   |
-| [h3_postgis](https://github.com/zachasme/h3-pg/blob/main/docs/api.md)               | 4.1.2| 4.1.3 |  4.1.2 | Install with `CREATE EXTENSION h3_postgis CASCADE;` (requires `postgis` and `postgis_raster`)                                                                 |
-| [hll](https://github.com/citusdata/postgresql-hll)                      | 2.18             | 2.18              |  2.18              |                                                                                                                   |
-| [hstore](https://www.postgresql.org/docs/15/hstore.html)                   | 1.8           | 1.8            | 1.8            |                                                                                                                   |
-| [hypopg](https://hypopg.readthedocs.io/en/rel1_stable/)                   | 1.4.0          | 1.4.0           |  1.4.0           |                                                                                                                  |
-| [insert_username (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)    | 1.0 | 1.0  |   1.0  |                                                                                                                 |
-| [intagg](https://www.postgresql.org/docs/15/intagg.html)                   | 1.1           | 1.1           |  1.1           |                                                                                                                   |
-| [intarray](https://www.postgresql.org/docs/15/intarray.html)               | 1.5         | 1.5         |  1.5         |                                                                                                                   |
-| [ip4r](https://github.com/RhodiumToad/ip4r)                     | 2.4.2                    | 2.4.2                    |   2.4.2                    |                                                                                                                   |
-| [isn](https://www.postgresql.org/docs/15/isn.html)                      | 1.2              | 1.2              |   1.2              |                                                                                                                   |
-| [lo](https://www.postgresql.org/docs/15/lo.html)                       | 1.1               | 1.1               |  1.1               |                                                                                                                     |
-| [ltree](https://www.postgresql.org/docs/15/ltree.html)                    | 1.2            | 1.2           |   1.2           |                                                                                                                  |
-| [moddattime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)         | 1.0 | 1.0  |   1.0  |                                                                                                                  |
-| [neon_utils](/docs/extensions/neon-utils)               | 1.0                              | 1.0                               |     1.0              |                                                                                                                   |
-| [pg_graphql](https://github.com/supabase/pg_graphql)               | 1.4.0                 | 1.4.0                  |  1.4.0                  |                                                                                                                   |
-| [pg_hashids](https://github.com/iCyberon/pg_hashids)                | 1.2.1                | 1.2.1                  |  1.2.1                  |                                                                                                                  |
-| [pg_hint_plan](https://github.com/ossc-db/pg_hint_plan)             | 1.4.1                  | 1.5.0                  |  1.6.0                  |                                                                                                                   |
-| [pg_jsonschema](https://github.com/supabase/pg_jsonschema)            | 0.2.0              | 0.2.0               | 0.2.0               |                                                                                                                  |
-| [pg_prewarm](https://www.postgresql.org/docs/15/pgprewarm.html)              | 1.2        | 1.2         |   1.2         |                                                                                                                  |
-| [pg_roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)          | 0.5          | 0.5         |  0.5         |                                                                                                                  | Install with `CREATE EXTENSION roaringbitmap;`
-| [pg_stat_statements](https://www.postgresql.org/docs/15/pgstatstatements.html)       | 1.10 | 1.10 | 1.10 |
-| [pg_tiktoken](https://github.com/kelvich/pg_tiktoken)              | 0.0.1                 | 0.0.1                  |  0.0.1                  |                                                                                                                  | The [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role has `EXECUTE` privilege on the `pg_stat_statements_reset()` function.
-| [pg_trgm](https://www.postgresql.org/docs/15/pgtrgm.html)                 | 1.6           | 1.6            |     1.6            |                                                                                                                 |
-| [pg_uuidv7](https://github.com/fboulnois/pg_uuidv7)                | 1.0                   | 1.0                  |    1.0                  |                                                                                                                  |
-| [pgcrypto](https://www.postgresql.org/docs/15/pgcrypto.html)                 | 1.3         | 1.3          |    1.3          |                                                                                                                   |
-| [pgjwt](https://github.com/michelp/pgjwt)                    | 0.2.0                       | 0.2.0                       |   0.2.0                       |                                                                                                                   |
-| [pgrouting](https://docs.pgrouting.org/3.4/en/index.html)                 | 3.4.2          | 3.4.2            | 3.4.2            | The PostGIS extension must be installed first.
-| [pgrowlocks](https://www.postgresql.org/docs/15/pgrowlocks.html)               | 1.2       | 1.2        |   1.2        |                                                                                                                 |
-| [pgstattuple](https://www.postgresql.org/docs/15/pgstattuple.html)              | 1.5      | 1.5       |  1.5       |                                                                                                                  |
-| [pgtap](https://pgtap.org/documentation.html)                    | 1.2.0                   | 1.2.0       |   1.2.0       |                                                                                                                    |
-| [pgvector](https://github.com/pgvector/pgvector)                 | 0.5.1                   | 0.5.1  | 0.5.1                  | Install with `CREATE EXTENSION vector;`                                                                                                                    |
-| [pgx_ulid](https://github.com/pksunkara/pgx_ulid)                 | 0.1.3                   | 0.1.3  | 0.1.3                                 | Install with `CREATE EXTENSION ulid;`                                                                                                                    |
-| [plcoffee](https://github.com/plv8/plv8/)                 | 3.1.5                          | 3.1.5  | 3.1.8                         |                                                                                                                    |
-| [plls](https://github.com/plv8/plv8/)                     | 3.1.5                          | 3.1.5 | 3.1.8                          |                                                                                                                    |  
-| [plpgsql](https://www.postgresql.org/docs/15/plpgsql.html)                  | 1.0          | 1.0   | 1.0        | Pre-installed with Postgres.                                                                                     |
-| [plpgsql_check](https://pgxn.org/dist/plpgsql_check/)            | 2.5.3                   | 2.5.3  | 2.5.3                      |                                                                                      |
-| [plv8](https://plv8.github.io/)                  | 3.1.5                                | 3.1.5  | 3.1.8                                |                                                                                                                    |
-| [postgis](https://postgis.net/)                  | 3.3.3                                   | 3.3.3     | 3.3.3                                |                                                                                                                    |
-| [postgis_raster](https://postgis.net/docs/RT_reference.html)           | 3.3.3             | 3.3.3  | 3.3.3              |                                                                                                                    |
-| [postgis_sfcgal](https://oslandia.gitlab.io/SFCGAL/)           | 3.3.3                    | 3.3.3  | 3.3.3                    |                                                                                                                    |
-| [postgis_tiger_geocoder](https://postgis.net/docs/Extras.html#Tiger_Geocoder)   | 3.3.3    | 3.3.3 | 3.3.3    | Cannot be installed using the Neon SQL Editor. Use your `psql` user credentials to install this extension.         |
-| [postgis_topology](https://www.postgis.net/docs/Topology.html)          | 3.3.3            | 3.3.3   | 3.3.3            |                                                                                                                    |
-| [prefix](https://github.com/dimitri/prefix)                   | 1.2.0                     | 1.2.0   | 1.2.0                      |                                                                                                                    |
-| [rdkit](https://github.com/rdkit/rdkit)                    | 4.3.0                           | 4.3.0  | 4.3.0  |                                                                                                                   |
-| [refint (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)             | 1.0 | 1.0  |  1.0  |                                                                                                                  |
-| [roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)             | 0.5 | 0.5  |  0.5  |
-| [rum](https://github.com/postgrespro/rum)                      | 1.3          | 1.3           |   1.3           |                                                                                                                  |
-| [seg](https://www.postgresql.org/docs/15/seg.html)                      | 1.4              | 1.4               |   1.4               |                                                                                                                   |
-| [tablefunc](https://www.postgresql.org/docs/15/tablefunc.html)                | 1.0        | 1.0         |     1.0         |                                                                                                                 |
-| [tcn](https://www.postgresql.org/docs/15/tcn.html)                      | 1.0              | 1.0               |  1.0               |                                                                                                                  |
-| [timescaledb](https://docs.timescale.com/about/latest/timescaledb-editions/)              | 2.10.1              | 2.10.1               | 2.13.0               | Only Apache-2 licensed features are supported. Compression is not supported.                                                                                                                 |
-| [tsm_system_rows](https://www.postgresql.org/docs/15/tsm-system-rows.html)          | 1.0  | 1.0   |  1.0   |                                                                                                                   |
-| [tsm_system_time](https://www.postgresql.org/docs/15/tsm-system-time.html)          | 1.0  | 1.0   |   1.0   |                                                                                                                  |
-| [unaccent](https://www.postgresql.org/docs/15/unaccent.html)                 | 1.1         | 1.1          |  1.1          |                                                                                                                    |
-| [unit](https://github.com/df7cb/postgresql-unit)                     | 7                 | 7                  |   7                  |                                                                                                                   |
-| [uuid-ossp](https://www.postgresql.org/docs/15/uuid-ossp.html)                | 1.1        | 1.1         | 1.1         | Double-quote the extension name when installing: `CREATE EXTENSION "uuid-ossp"`                                    |
-| [xml2](https://www.postgresql.org/docs/current/xml2.html)                      | 1.1       | 1.1         |  1.1         |                                                                                                                 |
+Neon cloud service is currently compatible with Postgres 14, 15, and 16. You can select the Postgres version you want to use when creating a Neon project. Postgres 15 is selected, by default. For information about creating a Neon project, See [Manage projects](/docs/manage/projects).
 
-## Install an extension
+## Postgres extensions
 
-Unless otherwise noted, supported extensions can be installed using [CREATE EXTENSION](https://www.postgresql.org/docs/15/sql-createextension.html) syntax.
+Neon supports numerous Postgres extensions, and we regularly add support for more. For a list of supported extensions, see [Postgres Extensions](/docs/extensions/pg-extensions). To request support for additional extensions, please reach out to us on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
 
-```sql
-CREATE EXTENSION <extension_name>
-```
+## Roles and permissions
 
-You can install extensions from the Neon SQL Editor or from a client such as `psql` that permits running SQL queries. For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+Neon is a managed Postgres service, so you cannot access the host operating system, and you can't connect using the Postgres `superuser` account like you can in a standalone Postgres installation.
 
-## Update an extension version
+Roles created in the Neon console, CLI, or API, including the default role created with a Neon project, are granted membership in the `neon_superuser` role. For information about the privileges associated with this role, see [The neon_superuser role](/docs/manage/roles#the-neonsuperuser-role).
 
-Neon updates supported extensions as new versions become available. Version updates are communicated in the [Changelog](/docs/changelog). To check the current version of extensions you have installed, query the `pg_extension` table:
+Roles created in Neon with SQL syntax, from a command-line tool like `psql` or the [Neon SQL Editor](/docs/connect/query-with-psql-editor), have the same privileges as newly created roles in a standalone Postgres installation. These roles are not granted membership in the `neon_superuser` role. You must grant these roles the privileges you want them to have. For more information, see [Manage roles with SQL](/docs/manage/roles#manage-roles-with-sql).
 
-```bash
-SELECT * FROM pg_extension;
-```
+Neon roles cannot access replication methods or install Postgres extensions other than those supported by Neon.
 
-You can update an extension to the latest version using `ALTER EXTENSION <extension_name> UPDATE TO <new_version>` syntax. For example:
+<a id="default-parameters/"></a>
 
-  ```sql
-  ALTER EXTENSION postgis_topology UPDATE TO '3.3.2';
-  ```
+## Neon Postgres parameter settings
 
-<Admonition type="important">
-When Neon releases a new extension or new extension version, a compute restart is required to make the new extension or extension version available for installation or update. A compute restart may occur on its own due to Neon's default [Auto-suspend](/docs/introduction/auto-suspend) behavior. However, if your compute never restarts because you disabled Auto-suspend or because your compute is constantly active, you may need force a restart. To force a restart, Neon Pro Plan users can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second (the default is 5 minutes). See [Auto-suspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions. Alternatively, all Neon users can issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. Please be aware that restarting a compute endpoint temporarily interrupts any connections currently using the compute.
+The following table lists Neon Postgres parameter settings that may differ from the expected default.
+
+| Parameter       | Value   | Note                                                                              |
+| --------------- | ------- | --------------------------------------------------------------------------------- |
+| fsync           | off     | Neon syncs data to the Neon Storage Engine to store your data safely and reliably |
+| max_connections |         | The value depends on compute size. Set to 100 for Neon.          |
+| shared_buffers  |         | The value depends on compute size                                                 |
+
+<Admonition type="note">
+You can use connection pooling in Neon to increase the number of supported connections. For more information, see [Connection pooling](/docs/connect/connection-pooling).
 </Admonition>
 
-## Extension support notes
+## Unlogged tables
 
-- Neon supports the `uuid-ossp` extension for generating UUIDs instead of the `uuid` extension.
-- The `sslinfo` extension is not supported. Neon handles connections via a proxy that checks SSL.
-- The `pg_cron` extension is not supported. Neon scales to zero when it is not being used, which means that a scheduler that runs inside the database cannot be implemented. Consider using an scheduler that runs externally instead.
-- The `file_fdw` extension is not supported. Files would not remain accessible when Neon scales to zero.
+Unlogged tables are maintained on Neon compute local storage. These tables do not survive compute restarts (including when a Neon compute instance is placed into an `Idle` state after a period of inactivity). This is unlike a standalone Postgres installation, where unlogged tables are only truncated in the event of abnormal process termination. Additionally, unlogged tables are limited by compute local storage size.
 
-## Request extension support
+## Spill and index build handling
 
-To request support for a Postgres extension, please post your request to the [Neon community forum](https://community.neon.tech/). [Neon Pro Plan](/docs/introduction/pro-plan) users can open a support ticket from the console. For more detail, see [Getting Support](/docs/introduction/support).
+Certain queries in Postgres can generate large datasets that do not fit in memory. In such cases, storage spills the data. In Neon, the size of compute local storage limits the ability to create large indexes or execute certain queries that generate large datasets.
 
-### Custom-built extensions
+## Temporary tables
 
-Neon supports custom-built Postgres extensions for exclusive use with your Neon account. If you developed your own Postgres extension and want to use it with Neon, please post your request to the [Neon community forum](https://community.neon.tech/). [Neon Pro Plan](/docs/introduction/pro-plan) users can open a support ticket from the console. For more detail, see [Getting Support](/docs/introduction/support). Please include the following information in your request:
+Temporary tables, which are stored in compute local storage, are limited by compute local storage size.
 
-- A repository link or archive file containing the source code for your extension
-- A description of what the extension does, instructions for compiling it, and any prerequisites
-- Whether an NDA or licensing agreement is necessary for Neon to provide support for your extension
+## Session context
 
-Please keep in mind that certain restrictions may apply with respect to Postgres privileges and local file system access. Neon features such as Autoscaling and Auto-suspend may limit the types of extensions we can support.
+The Neon cloud service automatically closes idle connections after a period of inactivity, as described in [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/). When connections are closed, anything defined within a session context is forgotten and must be recreated before being used again. For example, temporary tables, prepared statements, advisory locks, and notifications and listeners that were defined using the [NOTIFY](https://www.postgresql.org/docs/14/sql-notify.html)/[LISTEN](https://www.postgresql.org/docs/14/sql-listen.html) commands only exist for the duration of the current session and are lost when the session ends.
 
-Depending on the nature of your extension, Neon may also request a liability waiver.
+## Statistics collection
+
+Statistics collected by the Postgres [cumulative statistics system](https://www.postgresql.org/docs/14/monitoring-stats.html) are currently not saved when the Neon compute node is placed into an `Idle` state due to inactivity or restarted. For information about the lifecycle of a Neon compute, see [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/).
+
+## Database encoding
+
+Neon does not currently support changing the database encoding. This feature will become available when we add support for creating databases using SQL, which is on our roadmap. Currently, creating a database is supported only in the Neon Console. See [Manage databases](/docs/manage/databases).
+
+## PostgreSQL documentation
+
+Neon provides a mirror of the official PostgreSQL documentation on the [Neon documentation site](https://neon.tech/docs/introduction) for the convenience of our users. As Neon is built on standard PostgreSQL, most information from the official PostgreSQL documentation applies to our platform. However, there are a few key differences to consider when referencing the official PostgreSQL docs:
+
+- As a managed Postgres service, certain aspects of the official PostgreSQL documentation like installation procedures do not apply to Neon.
+- Some features detailed in the official PostgreSQL documentation may not be relevant for Neon, such as those mentioned on this Postgres compatibility page.
+- Features requiring the PostgreSQL superuser privilege may not be supported. See [Roles and permissions](#roles-and-permissions) above.
+- Neon may not support all of the extensions mentioned in the official PostgreSQL documentation. See [Postgres extensions](#postgres-extensions) above.
 
 <NeedHelp/>
 
@@ -17266,10 +24526,14 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/cloud/tutorials
   - /docs/how-to-guides/import-an-existing-database
-updatedOn: '2023-11-24T11:25:06.758Z'
+updatedOn: '2024-02-08T15:20:54.293Z'
 ---
 
 This topic describes migrating data from another Postgres database to Neon using the `pg_dump` and `pg_restore` command line utilities.
+
+<Admonition type="important">
+Avoid using `pg_dump` over a [pooled Neon connection](https://neon.tech/docs/connect/connection-pooling) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an unpooled connection instead.
+</Admonition>
 
 Repeat the `pg_dump` and `pg_restore` process for each database you want to migrate.
 
@@ -17282,28 +24546,20 @@ Repeat the `pg_dump` and `pg_restore` process for each database you want to migr
 - Create the target database in Neon. For example, if you are migrating a database named `pagila`, create a database named `pagila` in Neon. For instructions, see [Create a database](/docs/manage/databases#create-a-database).
 - Retrieve the connection string for your Neon database. You can find it in the **Connection Details** widget on the Neon **Dashboard**. It will look something like this:
 
-   <CodeBlock shouldWrap>
-
-   ```bash
+   ```bash shouldWrap
    postgres://[user]:[password]@[neon_hostname]/[dbname]
    ```
 
-   </CodeBlock>
-
 - Consider running a test migration first to ensure your actual migration goes smoothly. See [Run a test migration](#run-a-test-migration).
-- If your database is small, you can pipe `pg_dump` output directly to `pg_restore` to save time. See [Pipe pg_dump to pg_restore](#pipe-pg_dump-to-pg_restore).
+- If your database is small, you can pipe `pg_dump` output directly to `pg_restore` to save time. See [Pipe pg_dump to pg_restore](#pipe-pgdump-to-pgrestore).
 
 ## Export data with pg_dump
 
 Export your data from the source database with `pg_dump`:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 pg_dump -Fc -v -d <source_database_connection_string> -f <dump_file_name> 
 ```
-
-</CodeBlock>
 
 The `pg_dump` command above includes these arguments:
 
@@ -17312,7 +24568,7 @@ The `pg_dump` command above includes these arguments:
 - `-d`: Specifies the source database name or [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING).
 - `-f`: The dump file name. It can be any name you choose (`mydumpfile.bak`, for example).
 
-For more command options, see [Advanced pg_dump and pg_restore options](#advanced-pg_dump-and-pg_restore-options).
+For more command options, see [Advanced pg_dump and pg_restore options](#advanced-pgdump-and-pgrestore-options).
 
 ## Restore data to Neon with pg_restore
 
@@ -17322,13 +24578,9 @@ Restore your data to the target database in Neon with `pg_restore`.
 If you assigned database object ownership to different roles in your source database, consider adding the `-O, --no-owner` option to your `pg_restore` command to avoid errors. See [Database object ownership considerations](#database-object-ownership-considerations).
 </Admonition>
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 pg_restore -v -d <neon_database_connection_string> <dump_file_name>
 ```
-
-</CodeBlock>
 
 The example above includes these arguments:
 
@@ -17336,15 +24588,13 @@ The example above includes these arguments:
 - `-d`: Specifies the Neon database to connect to. The value is a Neon database connection string. See [Before you begin](#before-you-begin).
 - `<dump_file_name>` is the name of the dump file you created with `pg_dump`.
 
-For more command options, see [Advanced pg_dump and pg_restore options](#advanced-pg_dump-and-pg_restore-options).
+For more command options, see [Advanced pg_dump and pg_restore options](#advanced-pgdump-and-pgrestore-options).
 
 ## pg_dump and pg_restore example
 
 The following example shows how data from a `pagila` source database is dumped and restored to a `pagila` database in Neon using the commands described in the previous sections. (A database named `pagila` was created in Neon prior to running the restore operation.)
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 ~$ cd mydump
 ~/mydump$ pg_dump -Fc -v -d postgres://[user]:[password]@[neon_hostname]/pagila -f mydumpfile.bak 
 
@@ -17353,8 +24603,6 @@ mydumpfile.bak
 
 ~/mydump$ pg_restore -v -d postgres://[user]:[password]@[neon_hostname]/pagila mydumpfile.bak
 ```
-
-</CodeBlock>
 
 ## Pipe pg_dump to pg_restore
 
@@ -17366,13 +24614,9 @@ pg_dump [args] | pg_restore [args]
 
 For example:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 pg_dump -Fc -v -d <source_database_connection_string> | pg_restore -v -d <neon-database-connection-string>
 ```
-
-</CodeBlock>
 
 Piping is not recommended for large databases, as it is susceptible to failures during lengthy migration operations.
 
@@ -17384,7 +24628,7 @@ After migrating your data, update your applications to connect to your new datab
 
 ## Database object ownership considerations
 
-Roles created in the Neon console, including the default role created with your Neon project, are automatically granted membership in the [neon_superuser](/docs/manage/roles#neon_superuser) role. This role can create roles and databases, select from all tables and views, and insert, update, or delete data in all tables. However, the `neon_superuser` is not a PostgreSQL `superuser`. It cannot run `ALTER OWNER` statements to grant ownership of database objects. As a result, if you granted ownership of database objects in your source database to different roles, your dump file will contain `ALTER OWNER` statements, and those statements will cause non-fatal errors when you restore data to your Neon database.
+Roles created in the Neon console, including the default role created with your Neon project, are automatically granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role. This role can create roles and databases, select from all tables and views, and insert, update, or delete data in all tables. However, the `neon_superuser` is not a PostgreSQL `superuser`. It cannot run `ALTER OWNER` statements to grant ownership of database objects. As a result, if you granted ownership of database objects in your source database to different roles, your dump file will contain `ALTER OWNER` statements, and those statements will cause non-fatal errors when you restore data to your Neon database.
 
 <Admonition type="note">
 Regardless of `ALTER OWNER` statement errors, a restore operation still succeeds because assigning ownership is not necessary for the data itself to be restored. The restore operation will still create tables, import data, and create other objects.
@@ -17392,13 +24636,9 @@ Regardless of `ALTER OWNER` statement errors, a restore operation still succeeds
 
 To avoid the non-fatal errors, you can ignore database object ownership statements when restoring data by specifying the `-O, --no-owner` option in your `pg_restore` command:
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 pg_restore -v -O -d postgres://[user]:[password]@[neon_hostname]/pagila mydumpfile.bak 
 ```
-
-</CodeBlock>
 
 The Neon role performing the restore operation becomes the owner of all database objects.
 
@@ -17461,7 +24701,7 @@ For information about the Postgres client utilities referred to in this topic, r
 ---
 title: Import data from another Neon project
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.758Z'
+updatedOn: '2024-02-08T15:20:54.292Z'
 ---
 
 This guide describes how to migrate a database from one Neon project to another by piping data from `pg_dump` to `pg_restore`. Use these instructions to:
@@ -17487,23 +24727,15 @@ To import your data from another Neon project:
 
    You can obtain the connection strings from the Neon **Dashboard**, under **Connection Details**. Connections strings have this format:
 
-   <CodeBlock shouldWrap>
-
-   ```bash
+   ```bash shouldWrap
    postgres://[user]:[password]@[neon_hostname]/[dbname]
    ```
 
-   </CodeBlock>
-
 4. Prepare your import command to pipe data to from one Neon project to the other. The command will look similar to this:
 
-   <CodeBlock shouldWrap>
-
-   ```bash
+   ```bash shouldWrap
    pg_dump -Fc -v -d postgres://[user]:[password]@[neon_hostname]/[dbname] | pg_restore -v -d postgres://[user]:[password]@[neon_hostname]/[dbname]
    ```
-
-   </CodeBlock>
 
    The command includes these arguments:
 
@@ -17522,7 +24754,7 @@ To import your data from another Neon project:
 ---
 title: Import data from CSV
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.757Z'
+updatedOn: '2024-02-08T15:20:54.292Z'
 ---
 
 This topic describes how to import data into a Neon database table from a CSV file.
@@ -17533,13 +24765,9 @@ The following example uses the ready-to-use `neondb` database that is created wi
 
 1. Connect to the `neondb` database using `psql`. For example:
 
-   <CodeBlock shouldWrap>
-
-   ```bash
+   ```bash shouldWrap
    psql postgres://[user]:[password]@[neon_hostname]/[dbname]
    ```
-
-   </CodeBlock>
 
    <Admonition type="note">
    For more information about connecting to Neon with `psql`, see [Connect with psql](/docs/connect/query-with-psql-editor).
@@ -17594,7 +24822,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/how-to-guides/hasura-heroku-migration
   - /docs/how-to-guides/import-from-heroku
-updatedOn: '2023-11-24T11:25:06.757Z'
+updatedOn: '2024-02-08T15:20:54.292Z'
 ---
 
 This guide describes how to import your data from Heroku Postgres to Neon.
@@ -17617,13 +24845,9 @@ To migrate your data from Heroku to Neon:
 
     The example connection string used the instructions that follow is:
 
-    <CodeBlock shouldWrap>
-
-    ```text
+    ```text shouldWrap
     postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
     ```
-
-    </CodeBlock>
 
 ## Retrieve your Heroku app name and database name
 
@@ -17664,9 +24888,7 @@ where:
 
 For example:
 
-<CodeBlock shouldWrap>
-
-```shell
+```shell shouldWrap
 $ heroku pg:pull --app thawing-wave-57227 postgresql-trapezoidal-48645 postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
 
 heroku-cli: Pulling postgresql-trapezoidal-48645 ---> postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
@@ -17740,8 +24962,6 @@ pg_restore: creating FK CONSTRAINT "public.order order_customer_id_fkey"
 heroku-cli: Pulling complete.
 ```
 
-</CodeBlock>
-
 ## Verify that your data was imported
 
 1. Log in to the [Neon Console](https://console.neon.tech/app/projects).
@@ -17757,7 +24977,7 @@ heroku-cli: Pulling complete.
 ---
 title: Migrate with AWS Database Migration Service (DMS)
 enableTableOfContents: true
-updatedOn: '2023-11-27T16:33:52.719Z'
+updatedOn: '2024-02-08T15:20:54.294Z'
 ---
 
 This guide outlines the steps for using the AWS Database Migration Service (DMS) to migrate data to Neon from another hosted database server. AWS DMS supports a variety of database migration sources including PostgreSQL, MySQL, Oracle, and Microsoft SQL Server. For a complete list of data migration sources supported by AWS DMS, see [Source endpoints for data migration](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.Sources.html#CHAP_Introduction.Sources.DataMigration).
@@ -17869,13 +25089,9 @@ This section contains notes from our experience using AWS DMS to migrate data to
 - We populated the RDS PostgreSQL source database using the [AWS DMS sample Postgres database](https://github.com/aws-samples/aws-database-migration-samples/blob/master/PostgreSQL/sampledb/v1/README.md). To do this, we created an EC2 instance to connect to the database following the steps in this topic: [Create an Amazon EC2 Client](https://docs.aws.amazon.com/dms/latest/userguide/CHAP_GettingStarted.Prerequisites.html#CHAP_GettingStarted.Prerequisites.client).
 - The source database was populated using this `psql` command:
 
-  <CodeBlock shouldWrap>
-
-  ```bash
+  ```bash shouldWrap
   psql -h dms-postgresql.abc123def456hgi.us-east-2.rds.amazonaws.com -p 5432 -U postgres -d dms_sample -a -f ~/aws-database-migration-samples/PostgreSQL/sampledb/v1/postgresql.sql
   ```
-
-  </CodeBlock>
 
 - To verify that data was loaded in the source database, we connected using the following `psql` command and ran a `SELECT` query:
 
@@ -17893,23 +25109,15 @@ This section contains notes from our experience using AWS DMS to migrate data to
 
 - When creating the source database endpoint for the RDS Postgres 15 database, we set **Secure Socket Layer (SSL) mode** to `require`. Without this setting, we encountered the following error:
 
-    <CodeBlock shouldWrap>
-
-    ```text
+    ```text shouldWrap
     Test Endpoint failed: Application-Status: 1020912, Application-Message: Failed to connect Network error has occurred, Application-Detailed-Message: RetCode: SQL_ERROR SqlState: 08001 NativeError: 101 Message: FATAL: no pg_hba.conf entry for host "10.0.1.135", user "postgres", database "dms_sample", no encryption
     ```
 
-    </CodeBlock>
-
 - When creating the target database endpoint for the Neon database, we encountered the following error when testing the connection:
 
-    <CodeBlock shouldWrap>
-
-    ```text
+    ```text shouldWrap
     Endpoint failed: Application-Status: 1020912, Application-Message: Cannot connect to ODBC provider Network error has occurred, Application-Detailed-Message: RetCode: SQL_ERROR SqlState: 08001 NativeError: 101 Message: timeout expired
     ```
-
-    </CodeBlock>
 
     The replication instance, which was created in the private subnet where the source database resided, could not access the Neon database, which resides outside of the VPC. To allow the replication instance to access the Neon database, we added a NAT Gateway to the public subnet, allocated an Elastic IP address, and modified the **Route Table** associated with the private subnet to add a route via the NAT Gateway.
 
@@ -17920,7 +25128,7 @@ This section contains notes from our experience using AWS DMS to migrate data to
 title: Postgres sample data
 subtitle: 'Download sample data for learning, testing, and exploring Neon'
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.758Z'
+updatedOn: '2024-02-08T15:20:54.293Z'
 ---
 
 This guide describes how to download and install sample data for use with Neon.
@@ -17933,6 +25141,10 @@ This guide describes how to download and install sample data for use with Neon.
 - A Neon database connection string. After creating a database, you can obtain the connection string from the **Connection Details** widget on the Neon **Dashboard**. In the instructions that follow, replace `postgres://[user]:[password]@[neon_hostname]/[dbname]` with your connection string.
 - A Neon [Pro](/docs/introduction/pro-plan) account if you intend to install a dataset larger than 3 GB.
 - Instructions for each dataset require that you create a database. You can do so from a client such as `psql` or from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor).
+
+<Admonition type="note">
+You can also load sample data using the Neon CLI. See [Load sample data with the Neon CLI](#load-sample-data-with-the-neon-cli).
+</Admonition>
 
 ## Sample data
 
@@ -17967,23 +25179,15 @@ A table containing data about the periodic table of elements.
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/periodic_table.sql
     ```
 
-    </CodeBlock>
-
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     psql -d "postgres://[user]:[password]@[neon_hostname]/periodic_table" -f periodic_table.sql
     ```
-
-    </CodeBlock>
 
 4. Connect to the `periodic_table` database:
 
@@ -18013,13 +25217,9 @@ A dataset with multiple indicators for evaluating the happiness of countries of 
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/happiness_index.sql
     ```
-
-    </CodeBlock>
 
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
@@ -18065,23 +25265,15 @@ A dataset containing information on the passengers aboard the RMS Titanic, which
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/titanic.sql
     ```
 
-    </CodeBlock>
-
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     psql -d "postgres://[user]:[password]@[neon_hostname]/titanic" -f titanic.sql
     ```
-
-    </CodeBlock>
 
 4. Connect to the `titanic` database:
 
@@ -18113,23 +25305,15 @@ A dataset containing information about movies and tv shows on Netflix.
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/netflix.sql
     ```
 
-    </CodeBlock>
-
 3. Navigate to the directory where you downloaded the source file, and run the following command:
-
-    <CodeBlock>
 
     ```bash
     psql -d "postgres://[user]:[password]@[neon_hostname]/netflix" -f netflix_shows.sql
     ```
-
-    </CodeBlock>
 
 4. Connect to the `netflix` database:
 
@@ -18169,13 +25353,9 @@ Sample data for a fictional DVD rental store. Pagila includes tables for films, 
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/pagila.sql
     ```
-
-    </CodeBlock>
 
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
@@ -18218,23 +25398,15 @@ A sample database for a digital media store, including tables for artists, album
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/chinook.sql
     ```
 
-    </CodeBlock>
-
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     psql -d "postgres://[user]:[password]@[neon_hostname]/chinook" -f chinook.sql
     ```
-
-    </CodeBlock>
 
 4. Connect to the `chinook` database:
 
@@ -18275,13 +25447,9 @@ A dataset containing information about various LEGO sets, their themes, parts, c
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/lego.sql
     ```
-
-    </CodeBlock>
 
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
@@ -18323,23 +25491,15 @@ A dataset containing details about employees, their departments, salaries, and m
 
 2. Download the source file:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/employees.sql.gz
     ```
 
-    </CodeBlock>
-
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     pg_restore -d postgres://[user]:[password]@[neon_hostname]/employees -Fc employees.sql.gz -c -v --no-owner --no-privileges
     ```
-
-    </CodeBlock>
 
     Database objects are created in the `employees` schema rather than the `public` schema.
 
@@ -18371,13 +25531,9 @@ An OpenAI example dataset containing pre-computed vector embeddings for 25000 Wi
 
 1. Download the zip file (~700MB):
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     wget https://cdn.openai.com/API/examples/data/vector_database_wikipedia_articles_embedded.zip
     ```
-
-    </CodeBlock>
 
 2. Navigate to the directory where you downloaded the zip file, and run the following command to extract the source file:
 
@@ -18419,25 +25575,17 @@ An OpenAI example dataset containing pre-computed vector embeddings for 25000 Wi
 
 5. Create vector search indexes:
 
-    <CodeBlock shouldWrap>
-
-    ```sql
+    ```sql shouldWrap
     CREATE INDEX ON public.articles USING ivfflat (content_vector) WITH (lists = 1000);
 
     CREATE INDEX ON public.articles USING ivfflat (title_vector) WITH (lists = 1000);
     ```
 
-    </CodeBlock>
-
 6. Navigate to the directory where you extracted the source file, and run the following command:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     psql -d "postgres://[user]:[password]@[neon_hostname]/wikipedia" -c "\COPY public.articles (id, url, title, content, title_vector, content_vector, vector_id) FROM 'vector_database_wikipedia_articles_embedded.csv' WITH (FORMAT CSV, HEADER true, DELIMITER ',');"
     ```
-
-    </CodeBlock>
 
 <Admonition type="note">
 If you encounter a memory error related to the `maintenance_work_mem` setting, refer to [Indexing vectors](/docs/extensions/pgvector#indexing-vectors) for how to increase this setting.
@@ -18460,13 +25608,9 @@ An airport database containing information about airports, aircraft, bookings, p
 
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     pg_restore -d postgres://[user]:[password]@[neon_hostname]/postgres_air -Fc postgres_air_2023.backup -c -v --no-owner --no-privileges
     ```
-
-    </CodeBlock>
 
     Database objects are created in a `postgres_air` schema rather than the `public` schema.
 
@@ -18491,6 +25635,47 @@ An airport database containing information about airports, aircraft, bookings, p
 - License: [BSD 3-Clause License](https://github.com/hettie-d/postgres_air/blob/main/LICENSE)
 - `Copyright (c) 2020, hettie-d All rights reserved.`
 
+## Load sample data with the Neon CLI
+
+You can load data with the Neon CLI by passing the `--psql` option, which calls the `psql` command line utility.
+
+The Neon CLI and `psql` must be installed on your system. For installation instructions, see:
+
+- [Neon CLI — Install and connect](/docs/reference/cli-install)
+- [PostgreSQL Downloads](https://www.postgresql.org/download/) for `psql`
+
+If you have multiple Neon projects or branches, we recommend setting your Neon CLI project and branch context so that you don't have to specify them explicitly when running a Neon CLI command. See [Neon CLI commands — set-context](/docs/reference/cli-set-context).
+
+To load sample data:
+
+1. Download one of the data files listed above. For example:
+
+    ```bash shouldWrap
+    wget https://raw.githubusercontent.com/neondatabase/postgres-sample-dbs/main/periodic_table.sql
+    ```
+
+    Alternatively, supply your own data file.
+
+2. Load the data using one of the following Neon CLI commands ([projects](/docs/reference/cli-projects), [branches](/docs/reference/cli-branches), or [connection-string](/docs/reference/cli-connection-string)):
+
+    - Create a new Neon project, connect to it with `psql`, and run the `.sql` file.
+
+        ```bash
+        neonctl projects create --psql -- -f periodic_table.sql
+        ```
+
+    - Create a branch, connect to it with `psql`, and run the an `.sql` file.
+
+        ```bash
+        neonctl branches create --psql -- -f periodic_table.sql
+        ```
+
+    - Get a connection string, connect with `psql`, and run the `.sql` file.
+
+        ```bash
+        neonctl connection-string --psql -- -f periodic_table.sql
+        ```
+
 <NeedHelp/>
 
 
@@ -18504,7 +25689,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/security/security
   - /docs/security
-updatedOn: '2023-12-22T16:01:34.807Z'
+updatedOn: '2024-01-18T12:13:39.428Z'
 ---
 
 At Neon, security is our highest priority. We are committed to implementing best practices and earning the trust of our users. A key aspect of earning this trust is by ensuring that every touchpoint in our system, from connections, to data storage, to our internal processes, adheres to the highest security standards.
@@ -18532,6 +25717,8 @@ Neon’s infrastructure is hosted and managed within Amazon’s secure data cent
 ## SOC 2 compliance
 
 Neon has successfully completed SOC 2 Type 1 and Type 2 audits. For more information, see [SOC 2 compliance](soc2-compliance).
+
+You can request access to our SOC 2 report or directly download the public-facing SOC 3 compliance report on our [Neon Trust Center](https://trust.neon.tech/).
 
 ## Security reporting
 
@@ -18587,20 +25774,71 @@ If you identify a security vulnerability, please proceed as follows under the pr
 ---
 title: SOC 2 compliance
 enableTableOfContents: false
-updatedOn: '2023-12-04T09:09:04.225Z'
+updatedOn: '2024-01-18T12:13:39.430Z'
 ---
 
 Neon has successfully achieved both SOC 2 Type 1 and Type 2 compliance, demonstrating our commitment to data security and privacy. These compliance milestones, validated by independent auditors, affirm our adherence to the criteria set forth by the American Institute of Certified Public Accountants (AICPA) in the areas of security, availability, processing integrity, confidentiality, and privacy.
 
 The **SOC 2 Type 1 Compliance** audit assessed the design of our controls at a specific point in time. This evaluation verified that our systems and procedures are suitably designed to meet the AICPA's trust service criteria.
 
-The **SOC 2 Type 2 Compliance** audit assessed operational effectiveness of these controls over a period of time. This comprehensive audit provides assurance that our controls are not only well-designed but also consistently applied and effective in practice.
+The **SOC 2 Type 2 Compliance** audit assessed the operational effectiveness of these controls over a period of time. This comprehensive audit provides assurance that our controls are not only well-designed but also consistently applied and effective in practice.
 
 Achieving SOC 2 Type 1 and Type 2 compliance underscores Neon's ongoing commitment to safeguarding customer data and maintaining a high level of security. We will continue to invest in regular audits and adhere to industry best practices to ensure the security, integrity, and privacy of the data you entrust us with.
 
 <Admonition type="note">
 If you would like to review our SOC 2 audit reports, you can request those documents through our [Trust Center](https://trust.neon.tech/). If you have other security questions or concerns, please contact us at [security@neon.tech](mailto:security@neon.tech).
 </Admonition>
+
+
+# Acceptable Use Policy
+
+---
+title: Acceptable Use Policy
+enableTableOfContents: true
+updatedOn: '2024-01-29T09:55:23.882Z'
+---
+
+**Last Updated:** 23 January 2024
+
+## Overview
+
+Neon ("Neon," "we," "us," or "our") is committed to providing a secure and productive computing environment. This Acceptable Use Policy (“AUP”) outlines the acceptable use of our Platform and Services. By accessing and using Neon's Platform and Services, you agree to comply with this policy. Unless otherwise provided herein, capitalized terms will have the meaning specified in the applicable Terms of Service, Master Service Agreement, or any other agreed terms (“Agreement”).
+
+## Acceptable Use
+
+### General Guidelines
+
+- **Lawful Use:** Customers and Authorized Users, hereafter “Users,” must use Neon's resources in compliance with all applicable laws and regulations.
+- **Ethical Use:** Users are expected to act ethically and responsibly, respecting the rights of others and the integrity of Neon's resources.
+- **Security:** Users must take all reasonable steps to ensure the security of Neon's resources, including but not limited to using strong passwords and promptly reporting any security incidents.
+
+### Prohibited Activities
+
+The following activities are strictly prohibited:
+
+- **Unauthorized Access:** Users are prohibited from attempting to gain unauthorized access to Neon's serverless Postgres instances, data, or any other resources.
+- **Malicious Activities:** Any activities that could be deemed malicious, including but not limited to hacking, phishing, or deploying malware, are strictly prohibited.
+- **Abuse of Resources:** Users should not engage in activities that lead to excessive consumption of Neon's resources, disrupting the service for other users. This includes intentional or unintentional denial-of-service attacks.
+- **Data Breach Prevention:** Users are responsible for implementing adequate security measures to prevent data breaches. Any actions compromising the security of data stored in Neon are strictly prohibited. Unauthorized sharing of credentials, including but not limited to usernames and passwords, is strictly forbidden.
+- **Unauthorized Modifications:** Unauthorized modifications to Neon's infrastructure, configurations, or any other settings are prohibited. This includes attempts to alter serverless configurations or storage settings without proper authorization.
+- **Illegal Content:** Users must not store or transmit any illegal content through Neon. This includes but is not limited to copyrighted material without proper authorization, child pornography, or any content that violates applicable laws.
+- **Bulk Email and Spam:** Users are prohibited from using Neon's services for the purpose of sending bulk emails or engaging in spam activities. This includes the use of Neon's resources for email campaigns without proper authorization.
+- **Violations of Privacy:** Users must respect the privacy of others and should not engage in activities that violate the privacy of Neon's users or any third parties.
+- **Network Interference:** Users are not allowed to interfere with the normal operation of Neon's network infrastructure, including attempting to bypass security measures or manipulating network protocols.
+- **Insecure Development Practices:** Users are expected to follow secure development practices when utilizing Neon's services, and any insecure coding practices that could compromise the integrity of the service are prohibited.
+- **Creating Multiple Accounts:** Avoid creating multiple accounts, as this can result in an account block due to misuse of free-tier resources.
+
+## Enforcement
+
+Violations of this AUP may result in, including but not limited to account suspension or termination in accordance with the applicable Agreement and reporting to law enforcement authorities. Neon reserves the right to modify this AUP at any time without notice.
+
+## Reporting Violations
+
+Users who become aware of any violations of this AUP are encouraged to report them to [security@neon.tech](mailto:security@neon.tech).
+
+## Conclusion
+
+You agree to abide by this Acceptable Use Policy by using Neon's resources. Your compliance helps us maintain a secure and productive environment for everyone. Thank you for your cooperation.
 
 
 # Reference
@@ -18611,7 +25849,7 @@ If you would like to review our SOC 2 audit reports, you can request those docum
 title: Neon CLI
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-07T19:06:47.675Z'
+updatedOn: '2024-02-09T17:53:20.590Z'
 ---
 
 The Neon CLI is a command-line interface that lets you manage Neon directly from the terminal. This documentation references all commands and options available in the Neon CLI.
@@ -18622,7 +25860,7 @@ For installation instructions, see [Neon CLI — Install and connect](/docs/refe
 
 ```bash
 neonctl --help
-usage: neonctl <command> [options]
+usage: neonctl <command> [options]                               [aliases: neon]
 
 Commands:
   neonctl auth                        Authenticate              [aliases: login]
@@ -18652,16 +25890,17 @@ Global options:
 
 | Command                                                 | Subcommands                            | Description               |
 |---------------------------------------------------------|----------------------------------------|---------------------------|
-| [auth](../reference/cli-auth)                                     |                                        | Authenticate              |
-| [me](../reference/cli-me)                                         |                                        | Show current user         |
-| [projects](../reference/cli-projects)                             | `list`, `create`, `update`, `delete`, `get` | Manage projects           |
-| [branches](../reference/cli-branches)                             | `list`, `create`, `reset`, `rename`, `add-compute`, `set-primary`, `delete`, `get` | Manage branches           |
-| [databases](../reference/cli-databases)                           | `list`, `create`, `delete`             | Manage databases          |
-| [roles](../reference/cli-roles)                                   | `list`, `create`,  `delete`            | Manage roles              |
-| [operations](../reference/cli-operations)                         | `list`                                 | Manage operations         |
-| [connection-string](../reference/cli-connection-string)           |                                        | Get connection string     |
-| [set-context](../reference/cli-set-context)                       | `project-id`, `branch`                 | Set context for session   |
-| [completion](../reference/cli-completion)                         |                                        | Generate a completion script     |
+| [auth](/docs/reference/cli-auth)                                     |                                        | Authenticate              |
+| [me](/docs/reference/cli-me)                                         |                                        | Show current user         |
+| [projects](/docs/reference/cli-projects)                             | `list`, `create`, `update`, `delete`, `get` | Manage projects           |
+| [ip-allow](/docs/reference/cli-ip-allow)                             | `list`, `add`, `remove`, `reset`       | Manage IP Allow           |
+| [branches](/docs/reference/cli-branches)                             | `list`, `create`, `reset`, `rename`, `add-compute`, `set-primary`, `delete`, `get` | Manage branches           |
+| [databases](/docs/reference/cli-databases)                           | `list`, `create`, `delete`             | Manage databases          |
+| [roles](/docs/reference/cli-roles)                                   | `list`, `create`,  `delete`            | Manage roles              |
+| [operations](/docs/reference/cli-operations)                         | `list`                                 | Manage operations         |
+| [connection-string](/docs/reference/cli-connection-string)           |                                        | Get connection string     |
+| [set-context](/docs/reference/cli-set-context)                       |                                        | Set context for session   |
+| [completion](/docs/reference/cli-completion)                         |                                        | Generate a completion script     |
 
 ## Global options
 
@@ -18740,7 +25979,7 @@ Global options are supported with any Neon CLI command.
   neonctl branches create --help
   ```
 
-## GitHub
+## GitHub repository
 
 The GitHub repository for the Neon CLI is found [here](https://github.com/neondatabase/neonctl).
 
@@ -18751,7 +25990,7 @@ The GitHub repository for the Neon CLI is found [here](https://github.com/neonda
 title: Neon CLI — Install and connect
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-01T19:05:09.474Z'
+updatedOn: '2024-02-08T15:20:54.297Z'
 ---
 
 This section describes how to install the Neon CLI and connect via web authentication or API key.
@@ -18767,7 +26006,6 @@ npm i -g neonctl
 ```
 
 Requires [Node.js 18.0](https://nodejs.org/en/download/) or higher.
-
 
 </TabItem>
 
@@ -18789,13 +26027,9 @@ To install a [binary](https://github.com/neondatabase/neonctl/releases):
 
     Download the macOS binary:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     curl -sL https://github.com/neondatabase/neonctl/releases/latest/download/neonctl-macos -o neonctl
     ```
-
-    </CodeBlock>
 
     No installation is required. Run the Neon CLI as follows:
 
@@ -18807,13 +26041,9 @@ To install a [binary](https://github.com/neondatabase/neonctl/releases):
 
     Download the Linux binary:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     curl -sL https://github.com/neondatabase/neonctl/releases/latest/download/neonctl-linux -o neonctl
     ```
-
-    </CodeBlock>
 
     No installation is required. Run the Neon CLI as follows:
 
@@ -18825,13 +26055,9 @@ To install a [binary](https://github.com/neondatabase/neonctl/releases):
 
     Download the Windows binary:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     curl -sL -O https://github.com/neondatabase/neonctl/releases/latest/download/neonctl-win.exe
     ```
-
-    </CodeBlock>
 
     No installation is required. Run the Neon CLI as follows:
 
@@ -18843,14 +26069,43 @@ To install a [binary](https://github.com/neondatabase/neonctl/releases):
 
 </Tabs>
 
-
 ### Upgrade
 
-When a new version is released, you can update your Neon CLI using the installation methods described above. To check for the latest version, refer to the **Releases** information on the [Neon CLI GitHub repository](https://github.com/neondatabase/neonctl) page. To check your installed Neon CLI version, run the folliowing command:
+When a new version is released, you can update your Neon CLI using the methods described below. To check for the latest version, refer to the **Releases** information on the [Neon CLI GitHub repository](https://github.com/neondatabase/neonctl) page. To check your installed version of the Neon CLI, run the following command:
 
 ```bash
 neonctl --version
 ```
+
+<Tabs labels={["npm", "Homebrew", "Binary"]}>
+
+<TabItem>
+
+To upgrade the Neon CLI via [npm](https://www.npmjs.com/package/neonctl):
+
+```shell
+npm update -g neonctl
+```
+
+</TabItem>
+
+<TabItem>
+
+To upgrade the Neon CLI with [Homebrew](https://formulae.brew.sh/formula/neonctl):
+
+```bash
+brew upgrade neonctl
+```
+
+</TabItem>
+
+<TabItem>
+
+To upgrade a [binary](https://github.com/neondatabase/neonctl/releases) version, download the latest binary as described in the install instructions above, and replace your old binary with the new one.
+
+</TabItem>
+
+</Tabs>
 
 ## Connect
 
@@ -18893,7 +26148,7 @@ The Neon CLI supports autocompletion, which you can configure in a few easy step
 title: Neon CLI commands — auth
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-01T19:05:09.472Z'
+updatedOn: '2024-01-10T17:27:58.298Z'
 ---
 
 ## Before you begin
@@ -18927,7 +26182,7 @@ The authentication flow for the Neon CLI follows this order:
 - If the credentials file is not found, the Neon CLI initiates the `neonctl auth` web authentication process.
 </Admonition>
 
-### Options
+#### Options
 
 Only [global options](/docs/reference/neon-cli#global-options) apply.
 
@@ -19032,7 +26287,7 @@ neonctl me -o json
 title: Neon CLI commands — projects
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-01T19:05:09.476Z'
+updatedOn: '2024-01-19T14:15:57.931Z'
 ---
 
 ## Before you begin
@@ -19072,7 +26327,11 @@ neonctl projects list [options]
 
 #### Options
 
-Only [global options](/docs/reference/neon-cli#global-options) apply.
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `projects` subcommand supports this option:
+
+| Option       | Description   | Type   | Required  |
+| ------------ | ------------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
 
 #### Example
 
@@ -19107,8 +26366,11 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option                                | Description                                                                                               | Type    | Required                               |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------- | :-----------------------------------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
 | `--name` | The project name. The project ID is used if a name is not specified.               | string  |                                       |
 | `--region-id` | The region ID. Possible values: `aws-us-west-2`, `aws-ap-southeast-1`, `aws-eu-central-1`, `aws-us-east-2`, `aws-us-east-1`. Defaults to `aws-us-east-2` if not specified. | string number  |                                       |
+| `--psql` | Connect to a database via `psql` using connection string. `psql` must be installed to use this option. |boolean||
+| `--set-context` | Set the current context to the new project. The default is `false`. |boolean||
 
 #### Examples
 
@@ -19137,6 +26399,11 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
     ```bash
     neonctl projects create --output json
+    ```
+
+    <details>
+    <summary>Example output</summary>
+    ```json
     {
     "project": {
         "data_storage_bytes_hour": 0,
@@ -19182,6 +26449,31 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
     ]
     }
     ```
+    </details>
+
+- Create a project and connect to it with `psql`.
+
+    ```bash
+    neonctl project create --psql
+    ```
+
+- Create a project, connect to it with `psql`, and run an `.sql` file.
+
+    ```bash
+    neonctl project create --psql -- -f dump.sql
+    ```
+
+- Create a project, connect to it with `psql`, and run a query.
+
+    ```bash
+    neonctl project create --psql -- -c "SELECT version()"
+    ```
+
+- Create a project and set the Neon CLI project and branch context.
+
+    ```
+    neonctl project create --psql --set-context
+    ```
 
 ### update
 
@@ -19201,9 +26493,14 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option                                | Description                                                                                               | Type    | Required                               |
 | ------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------- | :-----------------------------------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
 | `--name` | The project name. The value cannot be empty.               | string  |             &check;                          |
+| `--ip-allow` | A list of IP addresses that are allowed to connect to the endpoint               | string  |                                       |
+| `--ip-primary-only` | If true, the list will be applied only to the primary branch. The deafault value is `false`.  | boolean  |                                       |
 
-#### Example
+#### Examples
+
+Update the project name:
 
 ```bash
 neonctl projects update muddy-wood-859533 --name dev_project_1
@@ -19212,6 +26509,28 @@ neonctl projects update muddy-wood-859533 --name dev_project_1
 ├───────────────────┼───────────────┼───────────────┼──────────────────────┤
 │ muddy-wood-859533 │ dev_project_1 │ aws-us-west-2 │ 2023-07-09T17:04:29Z │
 └───────────────────┴───────────────┴───────────────┴──────────────────────┘
+```
+
+Update the IP allowlist. Multiple values are specified as a list without a delimiter.
+
+```bash
+neonctl projects update withered-dream-91802149 --ip-allow 192.168.1.1 192.168.1.2 
+┌─────────────────────────┬───────────┬───────────────┬──────────────────────┐
+│ Id                      │ Name      │ Region Id     │ Created At           │
+├─────────────────────────┼───────────┼───────────────┼──────────────────────┤
+│ withered-dream-91802149 │ myproject │ aws-us-east-2 │ 2024-01-07T11:41:52Z │
+└─────────────────────────┴───────────┴───────────────┴──────────────────────┘
+```
+
+Apply the IP allowlist to the primary branch only:
+
+```bash
+neonctl projects update withered-dream-91802149 --ip-only-primary                 
+┌─────────────────────────┬───────────┬───────────────┬──────────────────────┐
+│ Id                      │ Name      │ Region Id     │ Created At           │
+├─────────────────────────┼───────────┼───────────────┼──────────────────────┤
+│ withered-dream-91802149 │ myproject │ aws-us-east-2 │ 2024-01-07T11:41:52Z │
+└─────────────────────────┴───────────┴───────────────┴──────────────────────┘
 ```
 
 ### delete
@@ -19255,7 +26574,11 @@ The `id` is the project ID, which you can obtain by listing your projects or fro
 
 #### Options
 
-Only [global options](/docs/reference/neon-cli#global-options) apply.
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `delete` subcommand supports this option:
+
+| Option       | Description   | Type   | Required  |
+| ------------ | ------------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
 
 #### Example
 
@@ -19271,13 +26594,156 @@ neonctl projects get muddy-wood-859533
 <NeedHelp/>
 
 
+# ip-allow
+
+---
+title: Neon CLI commands — ip-allow
+subtitle: Use the Neon CLI to manage Neon directly from the terminal
+enableTableOfContents: true
+updatedOn: '2024-02-09T17:53:20.589Z'
+---
+
+## Before you begin
+
+- Before running the `ip-allow` command, ensure that you have [installed the Neon CLI](/docs/reference/cli-install).
+- If you have not authenticated with the [neonctl auth](/docs/reference/cli-auth) command, running a Neon CLI command automatically launches the Neon CLI browser authentication process. Alternatively, you can specify a Neon API key using the `--api-key` option when running a command. See [Connect](/docs/reference/neon-cli#connect).
+
+For information about Neon's **IP Allow** feature, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+
+## The `ip-allow` command
+
+The `ip-allow` command allows you to perform `list`, `add`, `remove`, and `reset` actions on the IP allowlist for your Neon project. You can define an allowlist with individual IP addresses, IP ranges, or [CIDR notation](/docs/reference/glossary#cidr-notation).
+
+### Usage
+
+```bash
+neonctl ip-allow <subcommand> [options]
+```
+
+| Subcommand  | Description      |
+|---------|------------------|
+| [list](#list)    | List the IP allowlist    |
+| [add](#add)  | Add IP addresses to the IP allowlist |
+| [remove](#remove)  | Remove IP addresses from the IP allowlist |
+| [reset](#reset)  | Reset the IP allowlist |
+
+### list
+
+This subcommand allows you to list addresses in the IP allowlist.
+
+#### Usage
+
+```bash
+neonctl ip-allow list [options]
+```
+
+#### Options
+
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `list` subcommand supports these options:
+
+| Option        | Description | Type   | Required  |
+| ------------- | ----------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
+
+#### Examples
+
+```bash
+neonctl ip-allow list --project-id cold-grass-40154007
+```
+
+List the IP allowlist with the `--output` format set to `json`:
+
+```bash
+neonctl ip-allow list --project-id cold-grass-40154007 --output json
+```
+
+### add
+
+This subcommand allows you to add IP addresses to the IP allowlist for your Neon project.
+
+#### Usage
+
+```bash
+neonctl ip-allow add [ips ...] [options]
+```
+
+#### Options
+
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `add` subcommand supports these options:
+
+| Option        | Description | Type   | Required  |
+| ------------- | ----------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
+| `--primary-branch`  | If true, the list will be applied only to the primary branch. Use `--primary-branch false` to remove this setting. | string | |
+
+#### Example
+
+```bash shouldWrap
+neonctl ip-allow add 192.168.1.3 --project-id cold-grass-40154007
+```
+
+### remove
+
+This subcommand allows you to remove IP addresses from the IP allowlist for your project.
+
+#### Usage
+
+```bash
+neonctl ip-allow remove [ips ...] [options]
+```
+
+#### Options
+
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `remove` subcommand supports these options:
+
+| Option        | Description | Type   | Required  |
+| ------------- | ----------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
+
+#### Example
+
+```bash shouldWrap
+neonctl ip-allow remove 192.168.1.3 --project-id cold-grass-40154007
+```
+
+### reset
+
+This subcommand allows you to reset the list of IP addresses. You can reset to different IP addresses. If you specify no addresses, currently defined IP addresses are removed.
+
+#### Usage
+
+```bash
+neonctl ip-allow reset [ips ...] [options]
+```
+
+#### Options
+
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `reset` subcommand supports these options:
+
+| Option        | Description | Type   | Required  |
+| ------------- | ----------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
+
+#### Example
+
+```bash shouldWrap
+neonctl ip-allow reset 192.168.1.1 --project-id cold-grass-40154007
+```
+
+<NeedHelp/>
+
+
 # branches
 
 ---
 title: Neon CLI commands — branches
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-07T19:06:47.674Z'
+updatedOn: '2024-01-19T14:15:57.929Z'
 ---
 
 ## Before you begin
@@ -19318,11 +26784,13 @@ neonctl branches list [options]
 
 #### Options
 
-In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `list` subcommand supports this option:
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `list` subcommand supports these options:
 
 | Option       | Description   | Type   | Required  |
 | ------------ | ------------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
 | `--project-id` | Project ID    | string | Only if your Neon account has more than one project |
+
 
 #### Examples
 
@@ -19396,11 +26864,14 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option    | Description                                                    | Type    |   Required  |
 | :-------- | :------------------------------------------------------------- | :------ | :---------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
 | `--project-id` | Project ID    | string | Only if your Neon account has more than one project |
 | `--name`    | The branch name                                                | string  |             |
 | `--parent`  | Parent branch name, id, timestamp, or LSN. Defaults to the primary branch | string  |             |
 | `--compute`| Create a branch with or without a compute. By default, the branch is created with a read-write endpoint. The default value is `true`. To create a branch without a compute, use `--no-compute` | boolean |    |
-| `--type`| Type of compute to add. Choices are `read_write` (the default) or `read_only`. A branch with a read-only compute endpoint is also referred to as a [read replica](/docs/introduction/read-replicas).                                     | string |             |
+| `--type` | Type of compute to add. Choices are `read_write` (the default) or `read_only`. A branch with a read-only compute endpoint is also referred to as a [read replica](/docs/introduction/read-replicas).                                     | string |             |
+| `--suspend-timeout` | Duration of inactivity in seconds after which the compute endpoint is automatically suspended. The value `0` means use the global default. The value `-1` means never suspend. The default value is `300` seconds (5 minutes). The maximum value is `604800` seconds (1 week). | number |             |
+| `--psql` | Connect to a new branch via `psql`. `psql` must be installed to use this option. | boolean |             |
 
 #### Examples
 
@@ -19434,7 +26905,12 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 - Create a branch with the `--output` format of the command set to `json`. This output format returns all of the branch response data, whereas the default `table` output format (shown in the preceding example) is limited in the information it can display.
 
     ```bash
-    neonctl branches create --output json 
+    neonctl branches create --output json
+    ```
+
+    <details>
+    <summary>Example output</summary>
+    ```json 
     {
     "branch": {
         "id": "br-frosty-art-30264288",
@@ -19493,32 +26969,51 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
     ]
     }
     ```
+    </details>
 
 - Create a branch with a user-defined name:
 
-```bash
-neonctl branches create --name mybranch
-```
+    ```bash
+    neonctl branches create --name mybranch
+    ```
 
 - Create a branch with a read-only compute endpoint (a [read replica](/docs/introduction/read-replicas))
 
-```bash
-neonctl branches create --name my_read_replica_branch --type read_only
-```
+    ```bash
+    neonctl branches create --name my_read_replica_branch --type read_only
+    ```
 
 - Create a branch from a parent branch other than your `main` branch
 
-```bash
-neonctl branches create --name my_child_branch --parent mybranch
-```
+    ```bash
+    neonctl branches create --name my_child_branch --parent mybranch
+    ```
 
 - Create a point-in-time restore branch by specifying the `--parent` option with a timestamp:
 
-```bash
-neonctl branches create --name data_recovery --parent 2023-07-11T10:00:00Z
-```
+    ```bash
+    neonctl branches create --name data_recovery --parent 2023-07-11T10:00:00Z
+    ```
 
-The timestamp must be provided in ISO 8601 format. You can use this [timestamp converter](https://www.timestamp-converter.com/). For more information about point-in-time restore, see [Branching — Point-in-time restore (PITR)](/docs/guides/branching-pitr).
+    The timestamp must be provided in ISO 8601 format. You can use this [timestamp converter](https://www.timestamp-converter.com/). For more information about point-in-time restore, see [Branching — Point-in-time restore (PITR)](/docs/guides/branching-pitr).
+
+- Create a branch and connect to it with `psql`.
+
+    ```bash
+    neonctl branch create --psql
+    ```
+
+- Create a branch, connect to it with `psql`, and run an `.sql` file. 
+
+    ```bash
+    neonctl branch create --psql -- -f dump.sql
+    ```
+
+- Create a branch, connect to it with `psql`, and run a query.
+
+    ```bash
+    neonctl branch create --psql -- -c "SELECT version()"
+    ```
 
 ### reset
 
@@ -19535,11 +27030,14 @@ neonctl branches reset <id|name> --parent
 
 #### Options
 
-In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `reset` subcommand supports this option:
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `reset` subcommand supports these options:
 
 | Option        | Description | Type   | Required  |
 | ------------- | ----------- | ------ | :-----: |
-| --project-id  | Project ID  | string | Only if your Neon account has more than one project or context is not set|
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project or context is not set|
+| `--parent`  | Reset to a parent branch  | boolean |  |
+| `--preserve-under-name`  | The name under which to preserve the old branch | string |  |
 
 #### Example
 
@@ -19566,11 +27064,12 @@ neonctl branches rename <id|name> <new-name> [options]
 
 #### Options
 
-In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `rename` subcommand supports this option:
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `rename` subcommand supports these options:
 
 | Option        | Description | Type   | Required  |
 | ------------- | ----------- | ------ | :-----: |
-| --project-id  | Project ID  | string | Only if your Neon account has more than one project |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
 
 #### Example
 
@@ -19601,7 +27100,8 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option        | Description | Type   | Required  |
 | ------------- | ----------- | ------ | :-----: |
-| --project-id  | Project ID  | string | Only if your Neon account has more than one project |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
 
 #### Example
 
@@ -19632,6 +27132,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option        | Description | Type   | Required  |
 | ------------- | ----------- | ------ | :-----: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
 | `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
 | `--type`| Type of compute to add. Choices are `read_only` (the default) or `read_write`. A branch with a read-only compute endpoint is also referred to as a [read replica](/docs/introduction/read-replicas). A branch can have a single read-write and multiple read-only compute endpoints.                                     | string |             |
 
@@ -19664,7 +27165,8 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option        | Description | Type   | Required  |
 | ------------- | ----------- | ------ | :------: |
-| --project-id  | Project ID  | string | Only if your Neon account has more than one project |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
 
 #### Example
 
@@ -19695,7 +27197,8 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option        | Description | Type   | Required |
 | ------------- | ----------- | ------ | :------: |
-| --project-id  | Project ID  | string | Only if your Neon account has more than one project |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
 
 #### Examples
 
@@ -19738,7 +27241,7 @@ neonctl branches get main --output json
 title: Neon CLI commands — databases
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-01T19:05:09.474Z'
+updatedOn: '2024-02-08T15:20:54.296Z'
 ---
 
 ## Before you begin
@@ -19776,16 +27279,15 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option        | Description | Type   | Required  |
 | ------------- | ----------- | ------ | :------: |
-| --project-id  | Project ID  | string | Only if your Neon account has more than one project |
-| --branch   | Branch ID or name   | string |  |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
+| `--branch`   | Branch ID or name   | string |  |
 
 If a branch ID or name is not provided, the command lists databases for the primary branch of the project.
 
 #### Example
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 neonctl databases list --branch br-autumn-dust-190886
 ┌────────┬────────────┬──────────────────────┐
 │ Name   │ Owner Name │ Created At           │
@@ -19793,8 +27295,6 @@ neonctl databases list --branch br-autumn-dust-190886
 │ neondb │ daniel     │ 2023-06-19T18:27:19Z │
 └────────┴────────────┴──────────────────────┘
 ```
-
-</CodeBlock>
 
 ### create
 
@@ -19812,20 +27312,18 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option               | Description                          | Type   | Required  |
 | -------------------- | ------------------------------------ | ------ | :------: |
-| --project-id         | Project ID                           | string | Only if your Neon account has more than one project |
-| --branch             | Branch ID or name                    | string | |
-| --name               | The name of the database             | string | &check; |
-| --owner-name| The name of the role that owns the database | string |  |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`         | Project ID                           | string | Only if your Neon account has more than one project |
+| `--branch`             | Branch ID or name                    | string | |
+| `--name`               | The name of the database             | string | &check; |
+| `--owner-name` | The name of the role that owns the database | string |  |
 
 - If a branch ID or name is not provided, the command creates the database in the primary branch of the project.
 - If the `--owner-name` option is not specified, the current user becomes the database owner.
 
-
 #### Example
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 neonctl databases create --name mynewdb --owner-name john
 ┌─────────┬────────────┬──────────────────────┐
 │ Name    │ Owner Name │ Created At           │
@@ -19833,8 +27331,6 @@ neonctl databases create --name mynewdb --owner-name john
 │ mynewdb │ john       │ 2023-06-19T23:45:45Z │
 └─────────┴────────────┴──────────────────────┘
 ```
-
-</CodeBlock>
 
 ### delete
 
@@ -19854,16 +27350,15 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option           | Description  | Type   | Required  |
 | ---------------- | ------------ | ------ | :------: |
-| --project-id     | Project ID   | string | Only if your Neon account has more than one project |
-| --branch         | Branch ID or name    | string | |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`     | Project ID   | string | Only if your Neon account has more than one project |
+| `--branch`         | Branch ID or name    | string | |
 
 If a branch ID or name is not provided, it is assumed the database resides in the primary branch of the project.
 
 #### Example
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 neonctl databases delete mydb
 ┌─────────┬────────────┬──────────────────────┐
 │ Name    │ Owner Name │ Created At           │
@@ -19871,8 +27366,6 @@ neonctl databases delete mydb
 │ mydb    │ daniel     │ 2023-06-19T23:45:45Z │
 └─────────┴────────────┴──────────────────────┘
 ```
-
-</CodeBlock>
 
 <NeedHelp/>
 
@@ -19883,7 +27376,7 @@ neonctl databases delete mydb
 title: Neon CLI commands — roles
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-01T19:05:09.476Z'
+updatedOn: '2024-02-08T15:20:54.297Z'
 ---
 
 ## Before you begin
@@ -19925,8 +27418,9 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option        | Description | Type   | Required  |
 | ------------- | ----------- | ------ | :------: |
-| --project-id  | Project ID  | string | Only if your Neon account has more than one project |
-| --branch   | Branch ID   | string | |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID  | string | Only if your Neon account has more than one project |
+| `--branch`   | Branch ID or name   | string | |
 
 If a branch ID or name is not provided, the command lists roles for the primary branch of the project.
 
@@ -19971,17 +27465,16 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option               | Description                          | Type   | Required  |
 | -------------------- | ------------------------------------ | ------ | :------: |
-| --project-id         | Project ID                           | string | Only if your Neon account has more than one project |
-| --branch          | Branch ID                            | string | |
-| --name      | The role name. Cannot exceed 63 bytes in length.  | string | &check; |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`         | Project ID                           | string | Only if your Neon account has more than one project |
+| `--branch`          | Branch ID or name                           | string | |
+| `--name`      | The role name. Cannot exceed 63 bytes in length.  | string | &check; |
 
 If a branch ID or name is not provided, the command creates a role in the primary branch of the project.
 
 #### Example
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 neonctl roles create --name sally
 ┌───────┬──────────────────────┐
 │ Name  │ Created At           │
@@ -19989,8 +27482,6 @@ neonctl roles create --name sally
 │ sally │ 2023-06-20T00:43:17Z │
 └───────┴──────────────────────┘
 ```
-
-</CodeBlock>
 
 ### delete
 
@@ -20008,16 +27499,15 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option               | Description                          | Type   | Required  |
 | -------------------- | ------------------------------------ | ------ | :------: |
-| --project-id         | Project ID                           | string | Only if your Neon account has more than one project |
-| --branch          | Branch ID                            | string | |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`         | Project ID                           | string | Only if your Neon account has more than one project |
+| `--branch`          | Branch ID or name                          | string | |
 
 If a branch ID or name is not provided, the command assumes the role resides in the primary branch of the project.
 
 #### Example
 
-<CodeBlock shouldWrap>
-
-```bash
+```bash shouldWrap
 neonctl roles delete sally
 ┌───────┬──────────────────────┐
 │ Name  │ Created At           │
@@ -20025,8 +27515,6 @@ neonctl roles delete sally
 │ sally │ 2023-06-20T00:43:17Z │
 └───────┴──────────────────────┘
 ```
-
-</CodeBlock>
 
 <NeedHelp/>
 
@@ -20037,7 +27525,7 @@ neonctl roles delete sally
 title: Neon CLI commands — operations
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-01T19:05:09.475Z'
+updatedOn: '2024-01-10T17:27:58.303Z'
 ---
 
 ## Before you begin
@@ -20077,7 +27565,8 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 | Option       | Description | Type   | Required  |
 | ------------ | ----------- | ------ | :------: |
-| --project-id | Project ID  | string |  Only if your Neon account has more than one project |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id` | Project ID  | string |  Only if your Neon account has more than one project |
 
 #### Example
 
@@ -20103,7 +27592,7 @@ neonctl operations list
 title: Neon CLI commands — connection-string
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-19T08:49:51.605Z'
+updatedOn: '2024-02-08T15:20:54.296Z'
 ---
 
 ## Before you begin
@@ -20115,7 +27604,7 @@ For information about connecting to Neon, see [Connect from any application](/do
 
 ## The `connection-string` command
 
-This command constructs a Postgres connection string for connecting to a database in your Neon project. You can construct a connection string for any database in any branch. The connection string includes the password for the specified role.
+This command gets a Postgres connection string for connecting to a database in your Neon project. You can construct a connection string for any database in any branch. The connection string includes the password for the specified role.
 
 ### Usage
 
@@ -20127,50 +27616,60 @@ neonctl connection-string [branch] [options]
 
 ### Options
 
-In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `connect-string` command supports these options:
+In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `connection-string` command supports these options:
 
 | Option        | Description  | Type   | Required  |
 | ------------- | ------------ | ------ | :------: |
-| --project-id  | Project ID   | string |  Only if your Neon account has more than one project |
-| --role-name   | Role name    | string | Only if your branch has more than one role |
-| --database-name| Database name| string | Only if your branch has more than one database |
-| --pooled | Construct a pooled connection. The default is `false`. |boolean||
-| --prisma | Construct a connection string for use with Prisma. The default is `false`. |boolean||
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string | |
+| `--project-id`  | Project ID   | string |  Only if your Neon account has more than one project |
+| `--role-name`   | Role name    | string | Only if your branch has more than one role |
+| `--database-name` | Database name| string | Only if your branch has more than one database |
+| `--pooled` | Construct a pooled connection. The default is `false`. |boolean||
+| `--prisma` | Construct a connection string for use with Prisma. The default is `false`. |boolean||
+| `--endpoint-type` | The compute endpoint type. The default is `read-write`. The choise are `read_only` and `read_write`` |string||
+| `--extended` | Show extended information. The default is `false`. |boolean||
+| `--psql` | Connect to a database via psql using connection string. `psql` must be installed to use this option. |boolean||
 
 ### Examples
 
-- Generate a basic connection string for the current project, branch, and database:
+- Get a basic connection string for the current project, branch, and database:
 
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     neonctl connection-string mybranch
     postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
     ```
 
-    </CodeBlock>
+- Get a pooled connection string for the current project, branch, and database with the `--pooled` option. This option adds a `-pooler` flag to the host name which enables connection pooling for clients that use this connection string.
 
-- Generate a pooled connection string for the current project, branch, and database with the `--pooled` option. This option adds a `-pooler` flag to the host name which enables connection pooling for clients that use this connection string.
-
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     neonctl connection-string --pooled
     postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname
     ```
 
-    </CodeBlock>
+- Get a connection string for use with Prisma for the current project, branch, and database. The `--prisma` options adds `connect_timeout=30` option to the connection string to ensure that connections from Prisma Client do not timeout.
 
-- Generate a connection string for use with Prisma for the current project, branch, and database. The `--prisma` options adds `connect_timeout=30` option to the connection string to ensure that connections from Prisma Client do not timeout.
-
-    <CodeBlock shouldWrap>
-
-    ```bash
+    ```bash shouldWrap
     neonctl connection-string --prisma
    postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?connect_timeout=30
     ```
 
-    </CodeBlock>
+- Get a connection string and connect with `psql`.
+
+    ```bash
+    neonctl connection-string --psql
+    ```
+
+- Get a connection string, connect with `psql`, and run an `.sql` file.
+
+    ```bash
+    neonctl connection-string --psql -- -f dump.sql
+    ```
+
+- Get a connection string, connect with `psql`, and run a query.
+
+    ```bash
+    neonctl connection-string --psql -- -c "SELECT version()"
+    ```
 
 <NeedHelp/>
 
@@ -20181,7 +27680,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 title: Neon CLI commands — set-context
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2023-12-07T19:06:47.675Z'
+updatedOn: '2024-01-10T17:27:58.305Z'
 ---
 
 ## Before you begin
@@ -20219,6 +27718,7 @@ neonctl projects create --name <project_name> --set-context <your_context_file>
 ### Options
 
 The `set-context` command requires you set at least one of these options:
+
 | Option       | Description   | Type   | Required  |
 | ------------ | ------------- | ------ | :------: |
 | `--project-id` | Project ID    | string | Sets the identified project as the context until you reset or remove context-file |
@@ -20234,15 +27734,18 @@ Here are some examples of setting contexts to specific projects, then using them
 ### Using the default file
 
 Set the context to the default `.neon` file:
+
 ```bash
 neonctl set-context --project-id patient-frost-50125040
 ```
+
 List all branches for this project using `branches list`. You do not need to include `--project-id` even though multiple projects exist for this account:
 
 ```bash
 neonctl branches list
 ```
 The results show details for all branches in the `patient-frost-50125040` project:
+
 ```bash
 ┌──────────────────────────┬─────────────┬─────────┬──────────────────────┬──────────────────────┐
 │ Id                       │ Name        │ Primary │ Created At           │ Updated At           │
@@ -20256,14 +27759,19 @@ The results show details for all branches in the `patient-frost-50125040` projec
 ### Using a named `context-file`
 
 Set the context to the `context-file` of your choice:
+
 ```bash
 neonctl set-context --project-id plain-waterfall-84865553 --context-file Documents/MyContext
 ```
+
 List all branches using the `branches list` command. No need to specify the project since the context-file provides it.
+
 ```bash
 neonctl branches list --context-file Documents/MyContext
 ```
+
 The results show details for all branches in the `plain-waterfall-84865553` project:
+
 ```bash
 ┌─────────────────────────────┬─────────────┬─────────┬──────────────────────┬──────────────────────┐
 │ Id                          │ Name        │ Primary │ Created At           │ Updated At           │
@@ -20487,7 +27995,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2024-01-05T19:45:09.630Z'
+updatedOn: '2024-02-08T20:07:48.875Z'
 ---
 
 ## Access token
@@ -20496,7 +28004,7 @@ See [Token](#token).
 
 ## Active time
 
-The total amount of time, measured in hours, that your compute resources have been active within a given billing period. This includes all computes in your Neon project, but excludes time when computes are in an `Idle` state due to [auto-suspension](#auto-suspend-compute). The [Neon Free Tier](/docs/introduction/free-tier) has an [Active time](/docs/reference/glossary#active-time) limit of 100 hours per month, but that limit only affects non-primary branch compute usage. Active time on all computes is counted toward the limit, but when the limit is exceeded, only non-primary branch computes are subject to suspension. The primary branch compute always remains available regardless of the limit, ensuring that access to data on the primary branch is never interrupted. Neon Free Tier users can monitor _Active time_ on the **Usage** widget on the Neon **Dashboard**. The _Active time_ limit resets at the beginning of each month. For instance, if you enroll in the Neon Free Tier on January 15th, your _Active time_ limit will reset on February 1st.
+The total amount of time, measured in hours, that your compute resources have been active within a given billing period. This includes all computes in your Neon project, but excludes time when computes are in an `Idle` state due to [autosuspend](#autosuspend-compute). The [Neon Free Tier](/docs/introduction/free-tier) has an [Active time](/docs/reference/glossary#active-time) limit of 100 hours per month, but that limit only affects non-primary branch compute usage. Active time on all computes is counted toward the limit, but when the limit is exceeded, only non-primary branch computes are subject to suspension. The primary branch compute always remains available regardless of the limit, ensuring that access to data on the primary branch is never interrupted. Neon Free Tier users can monitor _Active time_ on the **Usage** widget on the Neon **Dashboard**. The _Active time_ limit resets at the beginning of each month. For instance, if you enroll in the Neon Free Tier on January 15th, your _Active time_ limit will reset on February 1st.
 
 ## Activity Monitor
 
@@ -20514,9 +28022,9 @@ A unique identifier used to authenticate a user or a calling program to an API. 
 
 A Neon Control Plane operation that applies a new configuration to a Neon object or resource. For example, creating, deleting, or updating Postgres users and databases initiates this operation. See [Operations](/docs/manage/operations) for more information.
 
-## Auto-suspend compute
+## Autosuspend compute
 
-A feature that suspends a compute endpoint after a specified period of inactivity (5 minutes, by default) to save on compute resources. This feature is also referred to as "scale to zero". When suspended, a compute endpoint is placed into an `Idle` state. Otherwise, the compute endpoint is in an `Active` state. Neon Pro Plan users can configure the _Auto-suspend_ feature. For example, you can increase the delay period to reduce the frequency of suspensions, or you can disable Auto-suspend completely to maintain an "always-active" compute endpoint. For more information, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
+A feature that suspends a compute endpoint after a specified period of inactivity (5 minutes, by default) to save on compute resources. This feature is also referred to as "scale to zero". When suspended, a compute endpoint is placed into an `Idle` state. Otherwise, the compute endpoint is in an `Active` state. Neon Pro Plan users can configure the _Autosuspend_ feature. For example, you can increase the delay period to reduce the frequency of suspensions, or you can disable autosuspend completely to maintain an "always-active" compute endpoint. For more information, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
 
 ## autoscaler-agent
 
@@ -20576,13 +28084,9 @@ A method of creating a pool of connections and caching those connections for reu
 
 A string containing details for connecting to a Neon database. The details include a user name (role), compute endpoint hostname, and database name; for example:
 
-<CodeBlock shouldWrap>
-
-```terminal
+```bash shouldWrap
 postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
 ```
-
-</CodeBlock>
 
 The compute endpoint hostname includes an `endpoint_id` (`ep-cool-darkness-123456`), a region slug (`us-east-2`), the cloud platform (`aws`), and Neon domain (`neon.tech`).
 
@@ -20696,9 +28200,13 @@ A feature provided by some hypervisors, such as QEMU, that allows the transfer o
 
 A layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute instance. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly.
 
+### Logical data size
+
+For a Postgres database, it is the size of the database, including all tables, indexes, views, and stored procedures. In Neon, a branch can have multiple databases. The logical data size for a branch is therefore equal to the total logical size of all databases on the branch.
+
 ## Logical replication
 
-A method of replicating data between databases or platforms, focusing on replicating transactional changes (like `INSERT`, `UPDATE`, `DELETE`) rather than the entire database, enabling selective replication of specific tables or rows. Neon supports logical replication of data to external destinations. See [Logical replication](/docs/guides/logical-replication-guide). 
+A method of replicating data between databases or platforms, focusing on replicating transactional changes (like `INSERT`, `UPDATE`, `DELETE`) rather than the entire database, enabling selective replication of specific tables or rows. Neon supports logical replication of data to external destinations. See [Logical replication](/docs/guides/logical-replication-guide).
 
 ## LSN
 
@@ -20778,7 +28286,7 @@ Older projects may have a `web-access` system role, used by the [SQL Editor](#sq
 
 ## Primary branch
 
-Each Neon project is created with a primary branch called `main`, but you can designate any branch as your project's primary branch. The advantage of the primary branch is that its compute endpoint remains accessible if you exceed your project's limits, ensuring uninterrupted access to data that resides on the primary branch. For more information, see [Primary branch](/docs/manage/branches#primary-branch).
+Each Neon project is created with a root branch called `main`, which is designated as your project's primary branch by default. The advantage of the primary branch is that its compute endpoint remains accessible if you exceed your project's limits, ensuring uninterrupted access to data that resides on the primary branch. For more information, see [Primary branch](/docs/manage/branches#primary-branch).
 
 ### Pro Plan
 
@@ -20824,13 +28332,17 @@ On the publisher database in a logical replication setup, replication slots trac
 
 Selling the Neon service as part of another service offering. Neon's Platform Partnership plan offers resale of the Neon service as an option. See [Neon plans](/docs/introduction/plans) for more information.
 
+## Root branch
+
+Each Neon project is created with a root branch called `main`, which cannot be deleted. This branch is designated as your project's [primary branch](#primary-branch) by default, but you can change your primary branch. You can change the name of your root branch, but you cannot designate another branch as your root branch. The root branch created with your project always remains your project's root branch.
+
 ## Safekeeper
 
 A Neon architecture component responsible for the durability of database changes. Postgres streams WAL records to Safekeepers. A quorum algorithm based on Paxos ensures that when a transaction is committed, it is stored on a majority of Safekeepers and can be recovered if a node is lost. Safekeepers are deployed in different availability zones to ensure high availability and durability.
 
 ## Scale-to-zero
 
-Scale-to-zero refers to Neon's _Auto-suspend compute_ feature, which places a compute endpoint into an `Idle` state when it is not being used. Neon suspends a compute after five minutes of inactivity, by default. See [Auto-suspend compute](#auto-suspend-compute).
+Scale-to-zero refers to Neon's Autosuspend feature, which places a compute endpoint into an `Idle` state when it is not being used. Neon suspends a compute after five minutes of inactivity, by default. See [Autosuspend compute](#autosuspend-compute).
 
 ## Serverless
 
@@ -20908,6 +28420,10 @@ Write-ahead logs in a specific LSN range.
 
 The stream of data written to the Write-Ahead Log (WAL) during transactional processing.
 
+## Working set
+
+A subset of frequently accessed or recently used data and indexes that ideally reside in memory (RAM) for quick access, allowing for better performance. See [how to size your compute](/docs/manage/endpoints#how-to-size-your-compute) to learn how to set your minimum compute to an adequate size to handle your working set.
+
 ## Write-Ahead Logging (WAL)
 
 A standard mechanism that ensures the durability of your data. Neon relies on WAL to separate storage and compute, and to support features such as branching and point-in-time restore.
@@ -20919,95 +28435,13 @@ In logical replication, the WAL records all changes to the data, serving as the 
 A billing metric that measures the total volume of data written from compute to storage within a given billing period, measured in gigibytes (GiB). Writing data from compute to storage ensures the durability and integrity of your data. See [Written data](/docs/introduction/billing#written-data).
 
 
-# Postgres compatibility
-
----
-title: Postgres compatibility
-enableTableOfContents: true
-redirectFrom:
-  - /docs/conceptual-guides/compatibility
-updatedOn: '2023-12-22T16:01:34.807Z'
----
-
-Neon is protocol and application-compatible with Postgres. However, when using the Neon cloud service, there are some limitations that you should be aware of.
-
-## Postgres versions
-
-Neon cloud service is currently compatible with Postgres 14, 15, and 16. You can select the Postgres version you want to use when creating a Neon project. Postgres 15 is selected, by default. For information about creating a Neon project, See [Manage projects](/docs/manage/projects).
-
-## Postgres extensions
-
-Neon supports numerous Postgres extensions, and we regularly add support for more. For a list of supported extensions, see [Postgres Extensions](/docs/extensions/pg-extensions). To request support for additional extensions, please post your request to the [Neon community forum](https://community.neon.tech/). [Neon Pro Plan](/docs/introduction/pro-plan) users can open a support ticket from the console. For more detail, see [Getting Support](/docs/introduction/support).
-
-## Roles and permissions
-
-Neon is a managed Postgres service, so you cannot access the host operating system, and you can't connect using the Postgres `superuser` account like you can in a standalone Postgres installation.
-
-Roles created in the Neon console, CLI, or API, including the default role created with a Neon project, are granted membership in the `neon_superuser` role. For information about the privileges associated with this role, see [The neon_superuser role](/docs/manage/roles#the-neonsuperuser-role).
-
-Roles created in Neon with SQL syntax, from a command-line tool like `psql` or the [Neon SQL Editor](/docs/connect/query-with-psql-editor), have the same privileges as newly created roles in a standalone Postgres installation. These roles are not granted membership in the `neon_superuser` role. You must grant these roles the privileges you want them to have. For more information, see [Manage roles with SQL](/docs/manage/roles#manage-roles-with-sql).
-
-Neon roles cannot access replication methods or install Postgres extensions other than those supported by Neon.
-
-<a id="default-parameters/"></a>
-
-## Neon Postgres parameter settings
-
-The following table lists Neon Postgres parameter settings that may differ from the expected default.
-
-| Parameter       | Value   | Note                                                                              |
-| --------------- | ------- | --------------------------------------------------------------------------------- |
-| fsync           | off     | Neon syncs data to the Neon Storage Engine to store your data safely and reliably |
-| max_connections |         | The value depends on compute size. Set to 100 for Neon.          |
-| shared_buffers  |         | The value depends on compute size                                                 |
-
-<Admonition type="note">
-You can use connection pooling in Neon to increase the number of supported connections. For more information, see [Connection pooling](/docs/connect/connection-pooling).
-</Admonition>
-
-## Unlogged tables
-
-Unlogged tables are maintained on Neon compute local storage. These tables do not survive compute restarts (including when a Neon compute instance is placed into an `Idle` state after a period of inactivity). This is unlike a standalone Postgres installation, where unlogged tables are only truncated in the event of abnormal process termination. Additionally, unlogged tables are limited by compute local storage size.
-
-## Spill and index build handling
-
-Certain queries in Postgres can generate large datasets that do not fit in memory. In such cases, storage spills the data. In Neon, the size of compute local storage limits the ability to create large indexes or execute certain queries that generate large datasets.
-
-## Temporary tables
-
-Temporary tables, which are stored in compute local storage, are limited by compute local storage size.
-
-## Session context
-
-The Neon cloud service automatically closes idle connections after a period of inactivity, as described in [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/). When connections are closed, anything defined within a session context is forgotten and must be recreated before being used again. For example, temporary tables, prepared statements, advisory locks, and notifications and listeners that were defined using the [NOTIFY](https://www.postgresql.org/docs/14/sql-notify.html)/[LISTEN](https://www.postgresql.org/docs/14/sql-listen.html) commands only exist for the duration of the current session and are lost when the session ends.
-
-## Statistics collection
-
-Statistics collected by the Postgres [cumulative statistics system](https://www.postgresql.org/docs/14/monitoring-stats.html) are currently not saved when the Neon compute node is placed into an `Idle` state due to inactivity or restarted. For information about the lifecycle of a Neon compute, see [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/).
-
-## Database encoding
-
-Neon does not currently support changing the database encoding. This feature will become available when we add support for creating databases using SQL, which is on our roadmap. Currently, creating a database is supported only in the Neon Console. See [Manage databases](/docs/manage/databases).
-
-## PostgreSQL documentation
-
-Neon provides a mirror of the official PostgreSQL documentation on the [Neon documentation site](https://neon.tech/docs/introduction) for the convenience of our users. As Neon is built on standard PostgreSQL, most information from the official PostgreSQL documentation applies to our platform. However, there are a few key differences to consider when referencing the official PostgreSQL docs:
-
-- As a managed Postgres service, certain aspects of the official PostgreSQL documentation like installation procedures do not apply to Neon.
-- Some features detailed in the official PostgreSQL documentation may not be relevant for Neon, such as those mentioned on this Postgres compatibility page.
-- Features requiring the PostgreSQL superuser privilege may not be supported. See [Roles and permissions](#roles-and-permissions) above.
-- Neon may not support all of the extensions mentioned in the official PostgreSQL documentation. See [Postgres extensions](#postgres-extensions) above.
-
-<NeedHelp/>
-
-
 # Community
 
 ---
 title: Neon community
 subtitle: Learn how to get involved in the Neon community
 enableTableOfContents: true
-updatedOn: '2023-12-07T17:00:43.490Z'
+updatedOn: '2024-01-11T14:49:37.558Z'
 ---
 
 Neon has an enthusiastic and dynamic user community worldwide. Here's how you can get involved:
@@ -21017,15 +28451,14 @@ Neon has an enthusiastic and dynamic user community worldwide. Here's how you ca
 There are a few ways you can contribute to the Neon community:
 
 - **Documentation**: Offer suggestions, or even write new guides, to assist users working with and integrating Neon. See our [Documentation Contribution Guide](/docs/community/contribution-guide) to get started.
-- **Examples and applications**: Support fellow developers by sharing new examples and applications that show how to integrate Neon with different tools and platforms. Share your examples by posting a link to the [Neon Discord Server](/discord) or [Neon Community Forum](https://community.neon.tech/).
+- **Examples and applications**: Support fellow developers by sharing new examples and applications that show how to integrate Neon with different tools and platforms. Share your examples by posting a link to our [Discord Server](https://discord.com/invite/92vNTzKDGp).
 - **Code contributions**: Learn about Neon's architecture by assisting with bug fixes, contributing code, or proposing new features in [Neon's GitHub repositories](https://github.com/neondatabase).
 
 ## Join the discussion
 
-Join the discussion and share your knowledge in the Neon Community Forum and on X (Twitter). Additionally, subscribe to the Neon YouTube channel for Neon videos and presentations.
+Join the discussion and share your knowledge on our Discord Server and on X (Twitter). Additionally, subscribe to the Neon YouTube channel for Neon videos and presentations.
 
 - [Neon Discord Server](/discord)
-- [Neon Community Forum](https://community.neon.tech/)
 - [X (Twitter)](https://twitter.com/neondatabase)
 - [Neon Youtube](https://www.youtube.com/@neondatabase)
 
@@ -21036,7 +28469,7 @@ Join the discussion and share your knowledge in the Neon Community Forum and on 
 title: Documentation Contribution Guide
 subtitle: Learn how to contribute to the Neon documentation
 enableTableOfContents: true
-updatedOn: '2023-11-09T19:24:28.538Z'
+updatedOn: '2024-02-08T15:20:54.273Z'
 ---
 
 This page provides guidelines for contributing to the Neon documentation. Our goal is to create an environment where our community has the information and knowledge required to confidently participate in improving the Neon documentation.
@@ -21084,7 +28517,7 @@ To use this feature, open the command palette (⌘ + ⇧ + V on Mac or Ctrl + Sh
 
 After you submit a contribution, the Neon documentation team reviews your changes, provides feedback, and merges the pull request when it's ready.
 
-Please reach out on the [Neon Community forum](https://community.neon.tech/) if you have any questions or need further assistance.
+Please reach out to us on our [Discord Server](https://discord.com/invite/92vNTzKDGp) if you have any questions or need further assistance.
 
 ## Documentation file structure
 
@@ -21233,11 +28666,9 @@ SELECT * FROM posts ORDER BY id;
 ```
 ````
 
-You can add language-specific highlighting to code blocks, as in the example above. See [Supported language highlighting for code blocks](https://prismjs.com/index.html#supported-languages).
+You can add language-specific highlighting to code blocks, as in the example above. See [Supported language highlighting for code blocks](https://shiki.matsu.io/languages).
 
-You can also wrap code blocks in `<CodeBlock></CodeBlock>` tags to show line numbers or wrap long strings.
-
-`<CodeBlock>` accepts the following options:
+Code block accepts the following options:
 
 - `showLineNumbers`: Shows the line numbers in the code block
 - `shouldWrap`: Enables code wrapping in the code block. This is useful for long commands or connection strings that would otherwise require the reader to scroll.
@@ -21245,13 +28676,11 @@ You can also wrap code blocks in `<CodeBlock></CodeBlock>` tags to show line num
 Example:
 
 ````md
-<CodeBlock shouldWrap>
 
-```bash
+```bash shouldWrap
 A really long line that scrolls off the page
 ```
 
-</CodeBlock>
 ````
 
 ## Code tabs
@@ -21451,8 +28880,6 @@ Commands, parameters, values, filenames, error messages, connection strings, and
 
 - "A connection string has this format: `postgres://[user]:[password]@[neon_hostname]/[dbname]`"
 
-## Questions?
-
-If you have questions or run into any issues, please reach out to us on the [Neon Community forum](https://community.neon.tech/).
+<NeedHelp/>
 
 
