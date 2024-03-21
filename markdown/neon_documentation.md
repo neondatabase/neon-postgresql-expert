@@ -2,7 +2,7 @@
 
 ---
 title: Neon documentation
-updatedOn: '2024-02-09T17:53:20.588Z'
+updatedOn: '2024-02-27T20:16:54.561Z'
 ---
 
 Neon is a fully managed serverless Postgres with a [generous free tier](https://console.neon.tech). Neon separates compute and storage to offer modern developer features such as autoscaling, branching, bottomless storage, and more.
@@ -28,7 +28,7 @@ Refer to our _Get started_ documentation to get up and running in just a few min
 
 <a href="/docs/introduction/branching" description="Learn to optimize development workflows with database branching" icon="split-branch">Branching</a>
 
-<a href="/docs/extensions/pg-extensions" description="Level up your database with our many supported Postgres extensions" icon="app-store">Postgres extensions</a>
+<a href="/docs/extensions/extensions-intro" description="Level up your database with our many supported Postgres extensions" icon="app-store">Postgres extensions</a>
 
 <a href="https://api-docs.neon.tech/reference/getting-started-with-neon-api" description="Manage Neon programmatically using the Neon API" icon="transactions">Neon API Reference</a>
 
@@ -52,6 +52,14 @@ Refer to our _Get started_ documentation to get up and running in just a few min
 
 <img src="/images/technology-logos/aws-lambda-logo.svg" width="36" height="36" alt="AWS Lambda" href="/docs/guides/aws-lambda" title="Connect from AWS Lambda to Neon" />
 
+<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Hyperdrive" href="/docs/guides/cloudflare-hyperdrive" title="Use Neon with Cloudflare Hyperdrive" />
+
+<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Pages" href="/docs/guides/cloudflare-pages" title="Use Neon with Cloudflare Pages" />
+
+<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Workers" href="/docs/guides/cloudflare-workers" title="Use Neon with Cloudflare Workers" />
+
+<img src="/images/technology-logos/deno-logo.svg" width="36" height="36" alt="Deno Deploy" href="/docs/guides/deno" title="Use Neon with Deno Deploy" />
+
 <img src="/images/technology-logos/django-logo.svg" width="29" height="36" alt="Django" href="/docs/guides/django" title="Connect a Django application to Neon" />
 
 <img src="/images/technology-logos/elixir-logo.svg" width="36" height="36" alt="Elixir" href="/docs/guides/elixir-ecto" title="Connect from Elixir with Ecto to Neon" />
@@ -69,6 +77,8 @@ Refer to our _Get started_ documentation to get up and running in just a few min
 <img src="/images/technology-logos/grafbase-logo.svg" width="36" height="36" alt="Grafbase" href="/docs/guides/grafbase" title="Use Grafbase Edge Resolvers with Neon" />
 
 <img src="/images/technology-logos/hasura-logo.svg" width="35" height="36" alt="Hasura" href="/docs/guides/hasura" title="Connect from Hasura Cloud to Neon" />
+
+<img src="/images/technology-logos/heroku-logo.svg" width="36" height="36" alt="Heroku" href="/docs/guides/heroku" title="Deploy Your App with Neon Postgres on Heroku" />
 
 <img src="/images/technology-logos/java-logo.svg" width="27" height="36" alt="Java" href="/docs/guides/java" title="Connect a Java application to Neon" />
 
@@ -94,7 +104,11 @@ Refer to our _Get started_ documentation to get up and running in just a few min
 
 <img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/ruby-on-rails" title="Connect a Rails application to Neon" />
 
+<img src="/images/technology-logos/railway-logo.svg" width="36" height="36" alt="Railway" href="/docs/guides/railway" title="Use Neon Postgres with Railway" />
+
 <img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
+
+<img src="/images/technology-logos/render-logo.svg" width="36" height="36" alt="Render" href="/docs/guides/render" title="Use Neon Postgres with Render" />
 
 <img src="/images/technology-logos/rust-logo.svg" width="36" height="36" alt="Rust" href="/docs/guides/rust" title="Connect a Rust application to Neon" />
 
@@ -173,7 +187,7 @@ redirectFrom:
   - /docs/reference/roadmap
 updatedOn: '2024-02-08T20:07:48.873Z'
 ---
-Our developers are focused on making Neon the default choice for serverless PostgreSQL. This roadmap describes committed features that are coming soon. We are as excited as you are to see new features in Neon, but their development, release, and timing are at our discretion.
+Our developers are focused on making Neon the default choice for serverless Postgres. This roadmap describes committed features that are coming soon. We are as excited as you are to see new features in Neon, but their development, release, and timing are at our discretion.
 
 As always, we are listening. If you see something you like, something you disagree with, or something you'd love for us to add, let us know in our Discord feedback channel.
 
@@ -192,23 +206,37 @@ Here's a snapshot of what we're working on now:
 
 ### Observability
 
-* **Autoscaling visualizations**
+* **Autoscaling charts in the Project Dashboard**
 
-    Adding dynamic charts, populated with real-time data, to help you visualize how autoscaling impacts CPU and RAM usage over time. See [Monitoring autoscaling](/docs/guides/autoscaling-guide#monitor-autoscaling) for a sneak peek.
+    Continuing with our improvements to monitoring and observability in Neon, our new [Autoscaling graphs](/docs/guides/autoscaling-guide#monitor-autoscaling) &#8212; available now when you edit a branch's compute instance &#8212; will soon be added to the Project Dashboard as well.
+
+* **New Monitoring page**
+
+   We are also working on adding a new Monitoring page to the Neon Console that will display key Postgres, connection, and resource usage metrics in a dashboard.
+
+* **For partners, a more granular Consumption API**
+
+  Our current Consumption API provides cumulative consumption metrics across all projects in your account for the selected billing period. We are expanding our APIs to also allow for daily consumption metrics.
 
 ### Developer workflows
 
-* **Branch restore with Time Travel Assist**
+* **Schema Diff**
 
-    Instantly restore a branch to an earlier state in its history. Use Time Travel Assist to run queries against historical data, making sure you are restoring to the right point in time.
-
-    We'll be adding the ability to restore to another branch as well soon after.
+    We are currently building a Schema Diff tool that lets you precisely compare database schemas between different branches to help streamline your integration process.
 
     If there are any new branching features that you think could help your development team's workflow, let us know in [Discord](https://discord.com/channels/1176467419317940276/1176788564890112042).
 
 * **Improvements to Vercel integration**
 
-    To ensure that users of the integration that access Neon from Vercel's serverless environment do not run out of connections, we're changing the database connection settings added to a Vercel project to pooled connections by default.
+    Some upcoming improvements to the Vercel integration include a method for removing old preview deployment branches, as well as new Neon actions and better error messaging to let you do more right from the Vercel integration drawer.
+
+* **Adding Time Travel Assist to the SQL Editor**
+
+   To help with data recovery workflows, we're making our Time Travel Assist feature available in the SQL Editor in the Neon Console. Time Travel Assist is available now on the **Restore** page, but it's a great feature and we want to make it more convenient for you to use, wherever you might need it in the console.
+
+* **Support for anonymizing data**
+
+   To help with workflows that require protecting personal information, we're adding support for anonymizing data. For example, if you derive your staging branch directly from production, you might want to anonymize the data on staging, which you can then use as the source for all of your development and testing branches.
 
 ### Account management
 
@@ -218,7 +246,7 @@ Here's a snapshot of what we're working on now:
 
 ### More regions
 
-*  We are currently evaluating new regions. Please reach out on Discord to let us know which region you would like to see next. 
+* We are currently evaluating new regions. Please reach out on Discord to let us know which region you would like to see next.
 
 ## A brief history of Neon
 
@@ -234,7 +262,7 @@ In the summer of 2023, we released the [Neon CLI](/docs/reference/neon-cli). New
 
 In the fall of 2023, we added [IP allowlisting](/docs/introduction/ip-allow), email signup, and [logical replication](/docs/introduction/logical-replication). We also announced [SOC 2 Type 2](https://neon.tech/blog/soc2-type2) compliance.
 
-In January of 2024, we added support for the Asia Pacific (Sydney) region.
+In the winter of 2024, we added support for the Asia Pacific (Sydney) region, [Branch Restore](/docs/guides/branch-restore) with Time Travel Assist, and new [Pricing](https://neon.tech/pricing) plans.
 
 ## Technical Preview
 
@@ -283,7 +311,7 @@ updatedOn: '2024-01-10T18:34:05.860Z'
 
 A compute node in Neon is a stateless Postgres process due to the separation of storage and compute. It has two main states: `Active` and `Idle`.
 
-`Active` means that Postgres is currently running. If there are no active queries for 5 minutes, your compute node is automatically placed into an `Idle` state to save on energy and resources. [Neon Pro Plan](/docs/introduction/pro-plan) users can disable this auto-suspension behavior so that a compute always remains active, or they can increase or decrease the amount of time after which a compute is placed into an `Idle` state. Auto-suspension behavior is controlled by an **Suspend compute after a period of inactivity** setting. For information about configuring this setting, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
+`Active` means that Postgres is currently running. If there are no active queries for 5 minutes, your compute node is automatically placed into an `Idle` state to save on energy and resources. Users on paid plans can disable this auto-suspension behavior so that a compute always remains active, or they can increase or decrease the amount of time after which a compute is placed into an `Idle` state. Auto-suspension behavior is controlled by an **Suspend compute after a period of inactivity** setting. For information about configuring this setting, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
 
 The _Autosuspend_ feature is conservative. It treats an "idle-in-transaction" connection as active to avoid breaking application logic that involves long-running transactions. Only connections that are truly inactive are closed after the defined period of inactivity.
 
@@ -315,7 +343,7 @@ enableTableOfContents: true
 updatedOn: '2024-01-10T18:34:05.859Z'
 ---
 
-Neon's _Autoscaling_ feature, available for [Neon Pro Plan](/docs/introduction/pro-plan) users, dynamically adjusts the amount of compute resources allocated to a Neon compute endpoint in response to the current load, eliminating the need for manual intervention.
+Neon's _Autoscaling_ feature, available to paying users, dynamically adjusts the amount of compute resources allocated to a Neon compute endpoint in response to the current load, eliminating the need for manual intervention.
 
 ## Autoscaling benefits
 
@@ -387,11 +415,11 @@ updatedOn: '2024-01-10T18:34:05.859Z'
 
 Neon's _Autosuspend_ feature controls when a Neon compute instance transitions to an `Idle` state (scales to zero) due to inactivity.
 
-By default, a Neon compute instance scales to zero after 300 seconds (5 minutes) of inactivity. For [Neon Free Tier](/docs/introduction/free-tier) users, this setting is fixed. [Neon Pro Plan](/docs/introduction/pro-plan) users can increase, decrease, or disable the autosuspend setting, controlling when or if a compute scales to zero.
+By default, a Neon compute instance scales to zero after 300 seconds (5 minutes) of inactivity. For [Neon Free Tier](/docs/introduction/plans#free-tier) users, this setting is fixed. Users on paid plans can increase, decrease, or disable the autosuspend setting, controlling when or if a compute scales to zero.
 
 Reasons for adjusting the autosuspend setting might include:
 
-- **Avoiding cold starts**. Restarting a compute from an `Idle` state can take anywhere from 500 ms to a few seconds (see [Compute lifecycle](/docs/introduction/compute-lifecycle)). You can turn off the _Autosuspend_ feature to avoid cold starts. For compute time cost information, see [Billing metrics](/docs/introduction/billing).
+- **Avoiding cold starts**. Restarting a compute from an `Idle` state can take anywhere from 500 ms to a few seconds (see [Compute lifecycle](/docs/introduction/compute-lifecycle)). You can turn off the _Autosuspend_ feature to avoid cold starts.
 - **Reducing the frequency of cold starts**. You can configure autosuspend to occur less frequently, keeping your compute active during busier hours while ensuring that it suspends when usage drops off.
 - **Suspending a compute more quickly to reduce compute usage**. Compute startup times can be as low as 500 ms, which may be sufficient for your purposes. In this case, you can suspend computes more frequently reduce compute usage.
 
@@ -493,19 +521,19 @@ Refer to the following guides for instructions.
 title: Branch reset and restore
 subtitle: Learn about the different branch reset and restore features in Neon
 enableTableOfContents: true
-updatedOn: '2024-01-26T18:19:19.806Z'
+updatedOn: '2024-02-19T18:57:12.560Z'
 ---
 
 Neon retains a history of changes for all branches. This shared history provides the basis for a variety of branch restore and reset operations: resetting a branch to its parent, restoring a branch to its history, creating a new branch from a selected point-in-time, and Time Travel queries against the shared history. You can use these features to reset a development branch to main, to recover lost data, as a database backup strategy, or to view the past state of your database.
 
 ## History retention
 
-The history retention period is 7 days, by default, but is configurable. The supported range is 0 to 7 days for [Neon Free Tier](/docs/introduction/free-tier) users, and 0 to 30 days for [Neon Pro Plan](/docs/introduction/pro-plan) users.
+The history retention limit is 24 hours for [Neon Free Tier](/docs/introduction/plans#free-tier) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users.
 
-You can configure the **History retention** setting in the Neon Console, under **Settings** > **Storage**. For further instructions, see [Configure history retention](/docs/manage/projects#configure-history-retention).
+You can configure the **History retention** setting in the Neon Console, under **Project settings** > **Storage**. For further instructions, see [Configure history retention](/docs/manage/projects#configure-history-retention).
 ![History retention configuration](/docs/relnotes/history_retention.png)
 
-Increasing the history retention period affects all branches in your Neon project and increases [project storage](/docs/introduction/billing#project-storage). You can scale **History retention** down to zero if reducing storage cost is more important than the ability to restore your data to a past state.
+Increasing the history retention period affects all branches in your Neon project and increases [project storage](/docs/introduction/usage-metrics#storage). You can scale **History retention** down to zero if reducing storage cost is more important than the ability to restore your data to a past state.
 
 History is retained in the form of Write-Ahead-Log (WAL) records. As WAL records age out of the retention period, they are evicted from storage and no longer count toward project storage.
 
@@ -568,7 +596,7 @@ Advantages of Neon's read replica feature include the following:
 
 ## Get started with read replicas
 
-The first step to leveraging Neon's read replica feature is to sign up for the [Neon Pro Plan](/docs/introduction/pro-plan). After subscribing, you will be able to create and configure read replicas. To get started, refer to the [Working with read replicas](/docs/guides/read-replica-guide) guide.
+The first step to leveraging Neon's read replica feature is to sign up for a paid plan. After subscribing, you will be able to create and configure read replicas. To get started, refer to the [Working with read replicas](/docs/guides/read-replica-guide) guide.
 
 
 # Logical replication
@@ -598,7 +626,7 @@ enableTableOfContents: true
 updatedOn: '2023-12-22T16:01:34.806Z'
 ---
 
-Neon's IP Allow feature, available with the [Neon Pro Plan](/docs/introduction/pro-plan), ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation). 
+Neon's IP Allow feature, available with the Neon [Scale](/docs/introduction/plans#scale) plan, ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation). 
 
 You can configure **IP Allow** in your Neon project's settings. To get started, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
@@ -615,7 +643,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/conceptual-guides/regions
-updatedOn: '2024-02-03T12:08:43.595Z'
+updatedOn: '2024-02-27T13:33:46.633Z'
 ---
 
 Neon supports project deployment in several regions. We recommended that you select the region closest to your application server to reduce latency between your Neon database and your application.
@@ -657,14 +685,58 @@ Neon Free Tier users are limited to a single project. In this case, you can expo
 
 Moving data to a new Neon project may require downtime if you are moving a production database, as the import procedure may take some time depending on the size of your data. To prevent the loss of data during the import operation, consider disabling writes from your applications before initiating the import operation. You can re-enable writes when the import is completed. Neon does not currently support disabling database writes. Writes must be disabled at the application level.
 
-To request support for additional regions, please sumbit a feature request on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
+Neon regularly reviews opportunities for expanding into new regions. We welcome your input regarding where you'd like to see us next. Please share your suggestions or express your interest in specific regions via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or in our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
 
 <NeedHelp/>
 
 
-# Plans
+# Billing
 
-# Overview
+---
+title: Billing
+enableTableOfContents: true
+subtitle: Learn about Neon's pricing plans and billing
+updatedOn: '2024-01-23T17:45:24.324Z'
+---
+
+Find all the information you need about Neon's pricing plans and how to manage your monthly bill.
+
+## Neon plans
+
+Start with an overview of Neon's pricing plans to learn about usage allowances and the features included with each plan.
+
+<DetailIconCards>
+
+<a href="/docs/introduction/plans" description="Learn about Neon's pricing plans and what's included" icon="chart-bar">Plans</a>
+
+</DetailIconCards>
+
+## Understand how billing works
+
+Find out how billing works and the metrics that affect your usage allowances.
+
+<DetailIconCards>
+
+<a href="/docs/introduction/how-billing-works" description="Learn about plan allowances, extra usage, and how to monitor usage" icon="chart-bar">How billing works</a>
+
+<a href="/docs/introduction/usage-metrics" description="Take a deep dive into the usage metrics behind plan allowances and extra usage" icon="trend-up">Usage metrics</a>
+
+</DetailIconCards>
+
+## Manage billing
+
+Find information about invoices, payment methods, changing your plan, and other actions around managing your bill. Plus a sample project showing how to select the right pricing plan in a model scenario.
+
+<DetailIconCards>
+
+<a href="/docs/introduction/manage-billing" description="View and manage your monthly bill and learn how to change your plan" icon="setup">Manage billing</a>
+
+<a href="/docs/introduction/billing-sample" description="See how to select the right plan for a sample project" icon="chart-bar">Sample project</a>
+
+</DetailIconCards>
+
+
+# Plans
 
 ---
 title: Neon plans
@@ -673,337 +745,504 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/introduction/billing#neon-plans
-updatedOn: '2024-01-23T17:45:24.329Z'
----
-
-<NewPricing/>
-
-Neon offers the following plans: **Free Tier**, **Pro**, and **Custom**. The Neon Pro Plan is _usage-based_, ensuring you never over-provision and only pay for what you use. **Custom** plans are volume-based, offering potential discounts. The table below provides an overview of plans offered by Neon. For more information about a particular plan, refer to the individual plan pages:
-
-- [Neon Free Tier](/docs/introduction/free-tier)
-- [Neon Pro Plan](/docs/introduction/pro-plan)
-- [Neon Custom plan](/docs/introduction/custom-plan)
-
-For information about how Neon bills for paid plans, please refer to our [Billing metrics](/docs/introduction/billing) page.
-
-## Neon plans
-
-|                                       | Free Tier                                                                                                                                                               | Pro (usage-based)                                          | Custom - Enterprise or Platform Partnership (volume-based)      |
-| :------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------- | :-------------------------------------------------------------- |
-| **Best for**                          | Prototyping and personal projects                                                                                                                                       | Small to medium teams, setups with 1 to 3 active databases | Medium to large teams, Database fleets, Resale                  |
-| **Projects**                          | 1                                                                                                                                                                       | Unlimited\*                                                | Unlimited                                                       |
-| **Branches**                          | 10                                                                                                                                                                      | Unlimited                                                  | Unlimited                                                       |
-| **Databases**                          | Unlimited                                                                                                                                                                      | Unlimited                                                  | Unlimited                                                       |
-| **Active time per month**             | 100 hours per month, affecting only [non-primary branch](/docs/reference/glossary#non-primary-branch) computes. **Your primary branch compute always remains available.** | Unlimited                                                  | Unlimited                                                       |
-| **Compute size**                      | 1 shared vCPU with 1 GB RAM                                                                                                                                             | Up to 7 vCPUs, each with 4 GB RAM                          | Custom                                                          |
-| **Storage**                           | 3 GiB per branch                                                                                                                                                         | Unlimited\*                                                | Unlimited                                                       |
-| **Dedicated resources**               | -                                                                                                                                                                       | -                                                          | &check;                                                         |
-| **Project sharing**                   | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
-| **Autosuspend compute**              | &check;                                                                                                                                                                 | &check;                                                    | &check;                                                         |
-| **Configurable autosuspend compute** | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
-| **Autoscaling**                       | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
-| **Logical replication**               | &check;                                                                                                                                                                 | &check;                                                    | &check;                                                         |
-| **Read replicas**                     | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
-| **IP Allow**                          | -                                                                                                                                                                       | &check;                                                    | &check;                                                         |
-| **Payment**                           | Free                                                                                                                                                                    | Credit Card, Pay As You Go with monthly invoicing          | Prepaid, Custom Contract, Volume Discounts                      |
-| **Support**                           | Community, support tickets                                                                                                                                              | Community, support tickets, video chat                     | Community, support tickets, video chat, resale customer support |
-
-**Notes:**
-
-- The Neon Pro Plan has default limits of 20 projects, 20 simultaneously active computes, and 200 GiB of logical data storage to protect against unintended usage. To increase these limits, please [open a support ticket](/docs/introduction/support). The simultaneously active compute limit does not affect the primary branch compute, which always remains available.
-- The Neon Free Tier has an [Active time](/docs/reference/glossary#active-time) limit of 100 hours per month, but that limit only affects non-primary branch compute usage. Active time on all computes is counted toward the limit, but when the limit is exceeded, only non-primary branch computes are subject to suspension. **Your primary branch compute always remains available regardless of the limit, ensuring that access to data on your primary branch is never interrupted.** You can monitor _Active time_ on the **Usage** widget on the Neon **Dashboard**. The _Active time_ limit resets at the beginning of each month. For instance, if you enroll in the Neon Free Tier on January 15th, your _Active time_ limit will reset on February 1st.
-
-## Support
-
-Support channels for the Neon Free Tier, Pro, and Custom plans are outlined on our [Support](/docs/introduction/support) page.
-
-
-# Free
-
----
-title: Neon Free Tier
-subtitle: Learn about Neon's Free Tier
-enableTableOfContents: true
-redirectFrom:
+  - /docs/introduction/billing-calculators
+  - /docs/introduction/billing-rates
+  - /docs/introduction/free-tier
+  - /docs/introduction/pro-plan
+  - /docs/introduction/custom-plan
   - /docs/reference/technical-preview-free-tier
-  - /docs/introduction/technical-preview-free-tier
-updatedOn: '2024-01-23T17:45:24.328Z'
+updatedOn: '2024-02-27T16:17:40.463Z'
 ---
 
-<NewPricing/>
+Neon's plans are designed to meet different user requirements, ranging from hobby projects to enterprise-level production workloads. We also offer custom enterprise plans with volume-based discounts for large teams or database fleets. Refer to our [pricing](https://neon.tech/pricing) page for an overview of our plans and pricing. 
 
-Neon is currently in Technical Preview. For information about how the Technical Preview fits within Neon's release plans, refer to the [Neon roadmap](/docs/reference/roadmap).
+This page provides additional information to help you understand our plans and find the one that's right for you.
 
-The Neon Free Tier is intended for personal projects, prototyping, or evaluating Neon's core features. It includes the following:
+## Pricing plans
 
-- One Neon project with up to 10 branches.
-- 3 GiB of storage per branch.
-- Unlimited Postgres databases
-- A shared compute with 1 GB of RAM for each branch.
-- 100 hours of _Active time_ per month, affecting non-primary branch compute usage only. Active time on all computes is counted toward the limit, but when the limit is exceeded, only non-primary branch computes are subject to suspension. **Your primary branch compute always remains available regardless of the limit, ensuring that access to data on your primary branch is never interrupted.** You can monitor _Active time_ on the **Usage** widget on the Neon **Dashboard**. The _Active time_ limit resets at the beginning of each month. For instance, if you enroll in the Neon Free Tier in the middle of the month, say on January 15th, your _Active time_ limit will reset on February 1st, the first day of the following month.
-- A point-in-time restore window of 7 days of _reasonable usage_.
+Neon offers four pricing plans: [Free Tier](#free-tier), [Launch](#launch), [Scale](#scale), and [Enterprise](#enterprise).
 
-For higher limits and access to advanced features like _Autoscaling_, _Unlimited storage_,  _Project sharing_, and _Read replicas_, upgrade to our **Pro** plan. For more information, see [Neon Pro Plan](/docs/introduction/pro-plan), or select **Upgrade to Pro** in the [Neon Console](https://console.neon.tech/).
+### Free Tier
 
-<Admonition type="note">
-Neon reserves the right to adjust Neon Free Tier limits, and to discontinue or limit compute usage in exceptional cases where misuse is identified, in order to protect the integrity of our platform and ensure a positive experience for all users.
+Neon's Free Tier plan is best for hobby projects, prototypes, and learning Neon. It includes the following usage:
+
+|                                         |                                                               |
+|-----------------------------------------|---------------------------------------------------------------|
+| **Projects**                            | 1 Neon project                                                |
+| **Branches**                            | 10 branches                                                   |
+| **Databases**                           | Unlimited                                                     |
+| **Storage**                             | 0.5 GiB                                                       |
+| **Compute**                             | Always-available primary branch compute, 5 compute hours (20 _active hours_)/month on branch computes. Free Tier computes have 0.25 vCPU with 1GB RAM. |
+
+In addition, Free Tier users have access to the following Neon features:
+
+- [Autosuspend](#autosuspend): Compute scales to zero after 5 minutes of inactivity.
+- [Region availabilty](#region-availability): The Free Tier is available in all supported regions.
+- [Project sharing](#project-sharing): Share your project with any Neon user account.
+- [Advanced Postgres features](#advanced-postgres-features): Connection pooling, logical replication, and 60+ Postgres extensions
+- [All additional features](#additional-features): Includes [point-in-time restore](#point-in-time-recovery) up to **24 hours** in the past, time travel connections, and more.
+- [Community support](/docs/introduction/support): Free Tier plan users have access to **Community** support on our [Neon Discord Server](/discord).
+
+<Admonition type="tip" title="Free Tier Compute Allowances">
+On the Free Tier, your primary branch compute is always available — it will never be suspended due to running out of compute hours, which means you can always access the data on the primary branch in your Neon project. Branch computes have 20 [active hours](/docs/reference/glossary#active-time) (5 [compute hours](/docs/reference/glossary#compute-hour)) per month. If your branch computes exceed this allowance, they are suspended until the allowance resets at the beginning of the month. You can monitor branch compute hours on the [Billing page](/docs/introduction/manage-billing#view-the-billing-page) in the Neon Console. The compute hour allowance for branch computes resets at the beginning of each month. For instance, if you enrolled in the Neon Free Tier in January, the allowance for branch computes resets on February 1st.
 </Admonition>
 
+### Launch
 
-# Pro
+The Launch plan provides all of the resources, features, and support you need to launch your application. It's ideal for startups and growing businesses or applications. It includes the following usage:
+
+|                                         |                                                               |
+|-----------------------------------------|---------------------------------------------------------------|
+| **Projects**                            | 10 Neon projects                                              |
+| **Branches**                            | 500                                                  |
+| **Databases**                           | Unlimited                                                     |
+| **Storage**                             | Up to 10 GiB of data storage                                  |
+| **Compute**                             | Up to  300 compute hours (1,200 _active hours_)/month for all computes in all projects |
+
+Launch plan users can access extra compute hours beyond the 300 compute hours/month included in the Launch plan. Extra compute hours are billed automatically.
+
+In addition, Launch plan users have access to the following Neon features:
+
+- [All compute features](#compute-features): Includes [compute sizes](#compute-size) up to 4 vCPUs and 16 GB RAM, _Autosuspend_ (**5 minutes+** or never).
+- [Advanced Postgres features](#advanced-postgres-features): Connection pooling, logical replication, and 60+ Postgres extensions.
+- [All additional features](#additional-features): Includes [point-in-time restore](#point-in-time-recovery) up to **7 days** in the past, time travel connections, and more.
+- [Extra usage](/docs/introduction/how-billing-works#extra-usage): Launch plan users can access extra compute and storage usage, which is billed automatically.
+- [Standard support](/docs/introduction/support): Launch plan users have access to **Standard** Neon support, which offers access to the Neon Support team via support tickets.
+
+### Scale
+
+The Scale plan provides full platform and support access and is designed for scaling production workloads. It includes the following usage:
+
+|                                         |                                                               |
+|-----------------------------------------|---------------------------------------------------------------|
+| **Projects**                            | Up to 50 Neon projects                                        |
+| **Branches**                            | 500                                                           |
+| **Databases**                           | Unlimited                                                     |
+| **Storage**                             | Up to 50 GiB of data storage                                  |
+| **Compute**                             | Up to 750 compute hours (3,000 _active hours_)/month for all computes in all projects |
+
+In addition, Scale plan users have access to the following Neon features:
+
+- [All compute features](#compute-features): Includes [compute sizes](#compute-size) up to 8 vCPUs and 32 GB RAM, _Autosuspend_ (**1 minute+** or never).
+- [All advanced Postgres features](#advanced-postgres-features): Connection pooling, logical replication, 60+ Postgres extensions, and customer-provided custom extensions.
+- [All additional features](#additional-features): Includes [point-in-time restore](#point-in-time-recovery) up to **30 days** in the past, time travel connections, and more.
+- [Extra usage](/docs/introduction/how-billing-works#extra-usage): Scale plan users can access extra compute and storage usage, which is billed automatically.
+- [Priority support](/docs/introduction/support): Scale plan users have access to **Priority** Neon support, which offers _priority_ access to the Neon Support team via support tickets.
+
+### Enterprise
+
+The Enterprise plan is a custom plan intended for large teams, enterprises requiring database fleets, or SaaS vendors interested in reselling Neon or integrating Neon into their service.
+
+Enterprise plan usage is entirely customizable and can support large data sizes.
+
+|                                         |                                                               |
+|-----------------------------------------|---------------------------------------------------------------|
+| **Projects**                            | Unlimited                                        |
+| **Branches**                            | Custom                                                           |
+| **Databases**                           | Unlimited                                                     |
+| **Storage**                             | Large data sizes                                  |
+| **Compute**                             | Custom |
+
+Additionally, the _Enterprise_ plan can be tailored to your specific requirements with:
+
+- Custom pricing with discounts
+- Higher resource allowances for projects, branches, storage, and compute
+- Customer-owned S3
+
+Enterprise plan users have access to **Enterprise** support, which includes everything offered with the **Priority** plan plus retail customer support, Customer Success Team support, and SLAs. For more information, Neon support plans are outlined on our [Support](/docs/introduction/support) page.
+
+If you are interested in exploring an _Enterprise_ plan with Neon, you can [request an enterprise trial](/enterprise#request-trial) or [get in touch with our sales team](/contact-sales).
+
+## Features
+
+This section describes the features available with one or more of the Neon plans outlined above. 
+
+### Compute features
+
+#### Compute size
+
+Neon supports compute sizes from 0.25 vCPU with 1 GB RAM up to 8 vCPU with 32 GB RAM.
+
+#### Read replicas
+
+Neon read replicas let you instantly scale your application by offloading read-only workloads to independent read-only compute instances. To learn more, see [Read replicas](/docs/introduction/read-replicas).
+
+#### Autoscaling
+
+Neon's _Autoscaling_ feature dynamically adjusts the amount of compute resources allocated to a Neon compute endpoint in response to the current workload, eliminating the need for manual intervention. For more information, refer to our [Autoscaling](/docs/introduction/autoscaling-guide) guide.
+
+#### Autosuspend
+
+Neon's _Autosuspend_ feature controls when a Neon compute instance transitions to an Idle state (scales to zero) due to inactivity. By default, a Neon compute instance scales to zero after 5 minutes of inactivity. For [Neon Free Tier](#free-tier) users, this setting is fixed. Users on paid plans can configure or disable the autosuspend setting, controlling when or if a compute scales to zero.
+
+#### Region availability
+
+Neon supports project deployment in several regions. All Neon users have access to all regions. To learn more, see [Regions](/docs/introduction/regions).
+
+#### Max concurrent connections
+
+Neon can support up to 10,000 concurrent connections. See [Connection pooling](/docs/connect/connection-pooling).
+
+#### Tenant isolation
+
+The Neon Enterprise plan offers tenant isolation, letting you segregate your data resources from other tenants. If you are interested in this feature, please contact [Sales](https://neon.tech/contact-sales).
+
+### Advanced Postgres features
+
+#### Connection pooling
+
+Neon uses [PgBouncer](https://www.pgbouncer.org/) to offer connection pooling support.
+
+#### Logical replication
+
+Logical replication enables replicating data from your Neon database to external destinations, allowing for Change Data Capture (CDC) and real-time analytics. Stream your data to data warehouses, analytical database services, messaging platforms, event-streaming platforms, external Postgres databases, and more. To learn more, see [Get started with logical replication](/docs/guides/logical-replication-guide).
+
+#### Postgres extensions
+
+Neon supports a large number of open-source Postgres extensions letting you extend the capabilities of Postgres. See [Supported extensions](/docs/extensions/pg-extensions).
+
+#### Custom extensions
+
+Neon supports custom-built Postgres extensions for exclusive use with your Neon account. See [Custom-built extensions](/docs/extensions/pg-extensions#custom-built-extensions).
+
+### Security features
+
+#### IP Allow
+
+Neon's _IP Allow_ feature ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation). To learn more, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+
+#### SOC 2 Report
+
+Paid plan users can request access to Neon's SOC 2 report on our [Neon Trust Center](https://trust.neon.tech/).
+
+#### Customer-owned S3
+
+The Neon Enterprise plan supports data storage on customer-owned S3. If you are interested in this feature, please [contact Sales](https://neon.tech/contact-sales).
+
+### Additional features
+
+#### Point-in-time restore
+
+Neon's _Point-in-time Restore_ capability lets you instantly restore your database to a point in time in the past. To learn more, see [Branch reset and restore](/docs/introduction/point-in-time-restore).
+
+#### Time Travel Assist
+
+Neon's Time Travel Assist feature lets you connect to any selected point in time within your history retention window and run queries against that connection, allowing you to query into the past. See [Time Travel Assist](/docs/guides/branch-restore#time-travel-assist).
+
+#### Web console
+
+Neon's easy-to-use web console allows you to manage Neon from your browser. 
+
+#### Neon CLI
+
+The Neon CLI is a command-line interface that lets you manage Neon directly from the terminal. See [The Neon CLI](/docs/reference/neon-cli).
+
+#### Management API
+
+The Neon API is a RESTful API that lets you manage Neon programmatically. See [Get started with the Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
+
+#### Project sharing
+
+All Neon plans support sharing your Neon project with other Neon users, giving them access to your Neon project from all supported interfaces, including the Neon Console, Neon API, and Neon CLI. To learn more, refer to our [Project sharing](/docs/guides/project-sharing-guide) guide.
+
+#### Branching
+
+Neon's branching feature lets you branch your data the same way you branch your code. You can instantly create full database copies for development, testing, or any other purpose. You can easily automate database branching using the Neon API, CLI, or GitHub Actions, enabling you to add database branching to your CI/CD pipeline. Branching is often used with deployment platforms such as Vercel to create a database branch for each preview deployment. To learn more, see [Get started with branching](/docs/guides/branching-intro).
+
+## Limits
+
+- The Neon Launch and Scale plans support up to 500 branches, but there is a soft limit of 100 branches to protect your account from unintended usage. To increase your soft limit, please submit a request to [Neon Support](/docs/introduction/support).
+- Paid plans have a default limit of 20 simultaneously active computes to protect against unintended usage. To increase this limit, please [open a support ticket](/docs/introduction/support). The simultaneously active compute limit does not affect the primary branch compute, which always remains available.
+
+
+
+
+# How billing works
 
 ---
-title: Neon Pro Plan
-subtitle: Learn about the advantages of upgrading to the Neon Pro Plan
+title: How billing works
 enableTableOfContents: true
-isDraft: false
-updatedOn: '2024-01-23T17:45:24.329Z'
+subtitle: 'Learn about plan allowances, extra usage, and monitoring usage'
+redirectFrom:
+  - /docs/introduction/billing-overview
+updatedOn: '2024-02-22T14:29:54.384Z'
 ---
 
-<NewPricing/>
+## Usage allowances
 
-The Neon Pro Plan plan is intended for users who have completed their evaluation of Neon on the Neon Free Tier and are ready to transition to a production-level plan with higher limits and advanced features.
+Each of Neon's plans includes **Storage**, **Compute**, and **Project** usage allowances in the base monthly fee as outlined in the following table.
 
-Because the Neon Pro Plan is usage-based, you never have to worry about over-provisioning. You only pay for what you use. Transitioning to the Neon Pro Plan has been designed to be as smooth and hassle-free as possible. However, we understand that the Neon Pro Plan might not be for everyone &mdash; so if it turns out to be more than you need, reverting to the Neon Free Tier is a simple process. There are no fixed contracts or obligations.
+|            | Free Tier                                                    | Launch          | Scale             | Enterprise       |
+|------------|--------------------------------------------------------------|-----------------|-------------------|------------------|
+| Monthly fee| $0/month                                                     | $19/month       | $69/month         | Custom           |
+| Storage allowance   | 512 MiB                                                      | 10 GiB          | 50 GiB            |  Larger sizes                |
+| Compute allowance   | Always-available primary branch compute and 5 compute hours (20 _active hours_)/month on branch computes. | 300 compute hours (1,200 _active hours_)/month | 750 compute hours (3,000 _active hours_)/month  |  Custom                |
+| Projects allowance  | 1                                                            | 10              | 50                |  Unlimited                |
 
-## What comes with the Neon Pro Plan?
 
-Upgrading to the Neon Pro Plan gives you higher limits, advanced features, and added support. Let's look at each of these items in more detail.
+The [Enterprise](/docs/introduction/plans#enterprise) plan is fully customizable with respect to allowances. Please contact [Sales](/contact-sales) for more information.
 
-### Higher limits
+<Admonition type="tip" title="What are active hours and compute hours?">
 
-- **More projects:** The Neon Pro Plan offers unlimited projects, while the Neon Free Tier offers only one. But what is a Neon project, and why would you need more than one? A project is a top-level container in Neon for your computes, branches, databases, and roles. Projects are a way to organize your resources and usage. If you are a company that develops data-driven applications, it might make sense to create a project for each client or each application. For information about objects that a project contains, see [The Neon object hierarchy](/docs/manage/overview).
-- **Unlimited storage:** The Neon Pro Plan supports any data size. There's a default logical data size limit of 200 GiB to protect your account from unintended use, but if you [open a support ticket](/docs/introduction/support), we can raise the limit to whatever you require.
-- **Unlimited branches:** With the Neon Pro Plan, there is no limit on branches. You can create as many branches as required to support your CI/CD pipeline. You can instantly and cost-effectively create a database branch for every preview deployment, client, or developer.
-- **Unlimited databases:** There is no limit on Postgres databases in any Neon plan. You can create as many databases as you need.
+- An **active hour** is a measure of the amount of time a compute is active. The time your compute is idle when suspended due to inactivity is not counted. In the table above, _active hours_ are based on a 0.25 vCPU compute size.
+- A **compute hour** is one _active hour_ for a compute with 1 vCPU. For a compute with .25 vCPU, it takes 4 _active hours_ to use 1 compute hour. On the other hand, if your compute has 4 vCPUs, it takes only 15 minutes to use 1 compute hour.
+- **Compute hours formula**
 
-<Admonition type="note">
-The Neon Pro Plan has default limit of 20 simultaneously active computes to protect against unintended usage. To request an increase this limit, please [open a support ticket](/docs/introduction/support). The simultaneously active compute limit does not affect the primary branch compute, which always remains available. If you encounter `Console request failed` errors, this may indicate that you have reached the active compute limit.
+  ```
+  compute hours = compute size * active hours
+  ```
+
 </Admonition>
 
-### Advanced features
+## Extra usage
 
-The Neon Pro Plan comes with the following advanced features, and we plan to add more.
+The [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans permit extra usage beyond the allowances included with the monthly fee. The extra usage types that are available differ by plan, as outlined below:  
 
-- **Autoscaling:** The _Autoscaling_ feature automatically adjusts compute size based on demand. You set a maximum and minimum compute size, and the Autoscaling feature automatically scales compute resources between those boundaries for optimum performance and cost-efficiency. No manual intervention is required to handle sudden usage spikes, and no downtime is required to reconfigure system resources. Neon Pro Plan users can enable and configure autoscaling in the Neon Console. For instructions, see [Autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
-- **Larger computes:** The Neon Pro Plan supports computes with up to **7 vCPUs and 28 GB of RAM**, providing the processing power  to handle any workload. By comparison, the Neon Free Tier provides .25 vCPUs and 1GB of RAM, which is great for prototyping and evaluation but less than needed at scale. For configuration instructions, see [Compute size configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
-- **Configurable Autosuspend:** The Neon Free Tier automatically suspends computes after 5 minutes of inactivity. With the Neon Neon Pro Plan, you can increase or decrease this time period, or you can disable the Autosuspend feature entirely. A shorter delay, such as 60 seconds, can potentially reduce compute costs. A longer delay keeps your compute active for longer intervals, reducing the number of cold starts. To prevent cold starts entirely, in cases where even a few seconds delay is too much, you can disable the Autosuspend feature entirely so that your compute is always active. The Autosuspend feature is configured in the Neon Console. For instructions, see [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
-- **Project sharing:** The _Project sharing_ feature lets you share your Neon projects with other Neon users. Project sharing is managed on the **Settings** page in the Neon Console. Simply add the email account of the user you want to share your project with. Projects can be shared with any Neon user, including Neon Free Tier users. Usage is applied to the project owner's Neon account. For instructions, see [Share a project](/docs/manage/projects#share-a-project).
-- **Read replicas:** Neon's read replica feature enhances scalability and performance by allowing you to create read-only compute instances that operate on the same data as your read-write computes. With this feature, you can offload analytics or reporting queries, efficiently distribute read requests to achieve higher throughput, or provide read-only data access to certain users or applications. For more information, see [Read replicas](/docs/introduction/read-replicas).
-- **IP Allow:** Control access to the branch where your database resides. Any IP address not on the allowlist is automatically blocked, ensuring that only authorized IP addresses can access your data. The allowlist can be applied to all branches (the default) or to your [primary branch](#primary-branch) only. For more information, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+|                | Launch   | Scale    |
+|----------------|----------|----------|
+| Extra Storage  | &check;  | &check;  |
+| Extra Compute  | &check;  | &check;  |
+| Extra Projects |          | &check;  |
 
-### Added support
+The Launch plan does not support extra projects. If you are on the Launch plan and require extra projects, you must upgrade to the Scale plan, which provides higher project allowances.
 
-In addition to our [Discord Server](https://discord.com/invite/92vNTzKDGp) and the ability to open support tickets, Neon Pro Plan users have access to Neon Support via video chat. Please [open a support ticket](/docs/introduction/support) to request a video chat.
+## How does extra usage work?
 
-## How does billing work?
+Taking advantage of extra usage requires no user action. Extra usage, if supported with your plan, is available by default. If you use more storage, compute, or projects than your monthly allowance provides, the extra usage is automatically added to your monthly bill. The following sections explain _extra usage_ in more detail.
 
-The Neon Pro Plan bills for usage monthly. Please refer to our [Billing metrics](/docs/introduction/billing) page for information about metrics and rates. To estimate monthly costs, try the [pricing calculator](https://neon.tech/calculator) or the [Pro Plan Cost Estimator](/docs/introduction/billing#pro-plan-cost-estimator) in the Neon Console. If you still have questions or need help estimating costs, please reach out to our [Sales](/contact-sales) team. We're ready to help.
+### Storage
 
-## How do I upgrade to Pro?
+Extra storage is available with the [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans:
+- On the Launch plan, extra storage is billed for in units of 2 GiB at $3.5 each
+- On the Scale plan, extra storage is billed for in units of 10 GiB at $15 each
 
-You can click on **Upgrade to Pro** in the Neon Console or click [here](https://console.neon.tech/app/projects?show_enroll_to_pro=true) to sign up.
+For example, the Launch plan includes an allowance of 10 GiB in the plan's monthly fee. If you exceed 10 GiB of storage, you are automatically billed for an extra storage unit of 2 GiB at $3.5 per unit. If you exceed 12 GiB, you are billed for 2 units of 2 GiB (an extra $7), and so on. It works the same way on the Storage plan, but with 10 GiB units of storage at $15 per unit.
 
-After upgrading to a Neon Pro Plan account, Neon Free Tier limits are lifted the next time your project's compute endpoint restarts.
+### Compute
 
-<Admonition type="note">
-If your compute was active before upgrading, it continues to be bound by Neon Free Tier limits until it restarts, which can result in limit-related errors such as this one if Neon Free Tier limits are exceeded:
+Extra compute usage is available with the [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans. Extra compute usage is billed by _compute hour_ at $0.04 per hour. For example, the Launch plan has an allowance of 300 compute hours included in the plan's monthly fee. If you use 100 additional compute hours over the billing period, you are billed an extra $4 (100 x $0.04).
 
-```text
-ERROR: could not extend file because cluster size limit (3072 MB) has been exceeded
-HINT: This limit is defined by neon.max_cluster_size GUC
+### Projects
+
+Extra project usage is available with the [Scale](/docs/introduction/plans##scale) plan. Extra projects are billed in units of 10. For example, the Scale plan has an allowance of 50 projects. If you use more than 50 projects, you are automatically billed for an extra package of 10 projects at $50 per package. For example, if you use 51 projects, you are billed for 1 package of 10 projects (an extra $50). If you use 61 projects, you are billed for 2 packages of 10 projects (an extra $100), and so on. 
+
+## Learn more about usage metrics
+
+To learn more about Neon **Compute**, **Storage**, and **Project** metrics, see [Usage metrics](/docs/introduction/usage-metrics).
+
+## Neon pricing estimation guide
+
+You can use this guide to estimate your monthly bill with Neon based on your selected plan and estimated usage.
+
+1. [Select your plan](#step-1-select-your-plan)
+2. [Monthly base fee](#step-2-monthly-base-fee)
+3. [Estimate your usage](#step-3-estimate-your-usage)
+4. [Calculate extra usage fees (if applicable)](#step-4-calculate-extra-usage-fees-if-applicable)
+5. [Total monthly estimate](#step-5-total-monthly-estimate)
+
+### Step 1: Select your plan
+
+First, select a plan that best fits your requirements. For **Storage**, **Compute**, and **Project** usage allowances, see [above](#usage-allowances), or refer to our [Pricing](https://neon.tech/pricing) page, which provides a detailed plan comparison and outlines the features included in each plan. The available plans are:
+
+- Free Tier: $0/month
+- Launch: $19/month
+- Scale: $69/month
+- Enterprise: Custom pricing (contact [Sales](/contact-sales) for pricing details)
+
+### Step 2: Monthly base fee
+
+Note the base monthly fee associated with your plan from the list above.
+
+### Step 3: Estimate your usage
+
+Estimate your monthly usage in the following areas to see if any "extra usage" is required beyond what's included in your plan.
+
+- **Storage (GiB)**: How much storage do you expect to use?  Storage includes the size of your data and a history of changes to support features like branching and point-in-time restore. For more information, see [Storage](/docs/introduction/usage-metrics#storage).
+- **Compute (Hours)**: How many compute hours will you require? A compute hour is 1 active hour on a compute with 1 vCPU. Neon supports compute sizes ranging from .25 vCPU to 8 vCPU. See [Compute](/docs/introduction/usage-metrics#compute) for a compute hour formula you can use to estimate your compute hour usage.
+- **Projects**: How many projects you will be running? Neon recommends a project per application or client.
+
+### Step 4: Calculate extra usage fees (if applicable)
+
+Each [plan](/docs/introduction/plans) comes with base allowances for **Storage**, **Compute**, and **Projects**. Based on the plan your usage estimates, calculate any extra fees for exceeding your plan's allowances.
+
+#### For the Launch plan:
+
+The Launch plan supports extra **Storage** and **Compute**. If you need extra projects, you'll need to move up to the Scale plan.
+
+- **Extra Storage**: If you exceed 10 GiB, extra storage is billed in units of 2 GiB at $3.5 per unit.
+- **Extra Compute**: If you exceed 300 compute hours, extra compute is billed at $0.04/hour.
+
+#### For the Scale plan:
+
+The Scale plan supports extra **Storage**, **Compute**, and **Projects**.
+
+- **Extra Storage**: If you exceed 50 GiB, extra storage is billed in increments of 10 GiB at $15 per increment.
+- **Extra Compute**: If you exceed 750 compute hours, extra compute is billed at $0.04/hour.
+- **Extra Projects**: If you exceed 50 projects, extra projects are billed in units of 10 projects at $50 per unit.
+
+### Step 5: Total monthly estimate
+
+Add up the base monthly fee and any applicable extra usage fees to estimate your total monthly bill.
+
+```
+Total Monthly Estimate = Monthly Base Fee + Extra Storage Fee + Extra Compute Fee + Extra Project Fee
 ```
 
-To force a restart of your compute endpoint, you can temporarily set your compute's **Suspend compute after a period of inactivity** setting to 1 second (the default is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions. Alternatively, you can issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. Please be aware that restarting a compute endpoint interrupts any connections currently using the compute endpoint.
+**Launch plan example**:
+
+- Base fee: $19
+- Storage usage: 14 GiB (4 GiB over the allowance)
+- Compute usage: 350 hours (50 hours over the allowance)
+- Extra storage fee: 2 * $3.5 = $7
+- Extra compute fee: 50 hours * $0.04 = $2
+
+_Total estimate_: $19 + $7 + $2 = $28 per month
+
+**Scale plan example**:
+
+- Base fee: $69
+- Storage usage: 60 GiB (10 GiB over the allowance)
+- Compute usage: 800 hours (50 hours over the allowance)
+- Project usage: 55 projects (5 projects over the allowance)
+- Extra storage fee: 1 * $15 = $15
+- Extra compute fee: 50 * $0.04 = $2
+- Extra project fee: 1 * $50 = $50
+
+_Total estimate_: $69 + $15 + $2 + $50 = $136 per month
+
+<Admonition type="note" title="Notes">
+- Adjust your usage estimates as needed to reflect your actual or projected usage.
+- For Enterprise plan users, please contact our [Sales](/contact-sales) team for an estimate based on your custom needs.
 </Admonition>
 
-## How do I downgrade?
+## Monitoring billing and usage
 
-If you find that the Neon Pro Plan isn't for you, you can downgrade in just a few clicks. Follow the steps described in [Downgrade your plan](/docs/introduction/manage-billing#downgrade-your-plan).
+You can monitor billing and usage for all projects in your Neon account from the **Billing** page in the Neon Console.
+
+1. Navigate to the Neon Console.
+1. Select your Profile.
+1. Select **Billing** from the menu.
+
+Here you will find the current bill and your current usage for all projects in your Neon account. Usage is reset to zero at the beginning of each month. For example, on the Launch plan, compute usage will be set back to **0/300h** at the beginning of each month.
+
+![Monitor billing and usage](/docs/introduction/monitor_billing_usage.png)
+
+### Monitor usage for a project
+
+You can monitor usage for a single project from the **Usage** widget on your project's **Dashboard** in the Neon Console.
+
+![Monitor usage widget](/docs/introduction/monitor_usage_widget.png)
+
+Here you will find storage and compute usage for the project among other usage metrics. 
+
+#### Interpreting usage
+
+**Compute** usage is tracked in **compute hours**. A compute hour is 1 active hour for a compute with 1 vCPU. For a compute with .25 vCPU, it takes 4 _active hours_ to use 1 compute hour. On the other hand, if your compute has 4 vCPUs, it takes only 15 minutes to use 1 compute hour. 
+
+<Admonition type="note">
+On the Free Tier, the primary branch compute is a 0.25 vCPU compute that is always available, so allowances do not apply. You can run your 0.25 vCPU compute on the Free Tier 24/7. Only branch computes on the Free Tier have an allowance, which is the 5 compute hour/month allowance that Free Tier users see on the **Billing** page. On the Free Tier, this is actually 20 hours of usage because Free Tier computes always have 0.25 vCPU. You cannot increase the compute size on the Free Tier.
+</Admonition>
+
+**Storage** includes your data size and history. Neon maintains a history of changes to support _point-in-time restore_. On the Free Tier, your default history retention period is 24 hours. The Launch plan supports up to 7 days of history retention, and the Scale plan supports up to 30 days. Keep in mind that history retention increases storage. More history requires more storage. To manage the amount of history you retain, you can configure the history retention setting for your project. See [Configure history retention](/docs/manage/projects#configure-history-retention).
+
+**What about extra usage?**
+
+The Launch plan supports extra compute usage. The Scale plan supports extra storage, compute, and project usage. Any extra usage allowance is automatically added (and billed for) when you exceed the allowances included in your plan's base fee. See [Extra usage](#extra-usage) for details. If extra usage occurs, it is reflected in your monthly allowance on the **Billing** page. For example, if you allocate an extra 10 GiB of storage when you exceed your 50 GiB storage allowance on the Scale plan, the extra 10 GiB is added to your **Storage** allowance on the **Billing** page.
+
+<NeedHelp/>
 
 
-# Custom
+# Usage metrics
 
 ---
-title: Neon Custom plan
-subtitle: Learn about customizing a Neon plan to meet your specific requirements
+title: Usage metrics
 enableTableOfContents: true
-isDraft: false
-updatedOn: '2023-10-24T18:56:54.988Z'
+redirectFrom:
+  - /docs/introduction/billing
+updatedOn: '2024-02-26T19:37:28.835Z'
 ---
 
-Neon offers a _Custom_ plan option, which is a volume-based plan for medium and large-size teams, enterprises requiring database fleets, or SaaS vendors interested in reselling Neon or integrating serverless Postgres into their own service.
+As described in [How billing works](/docs/introduction/how-billing-works), each of Neon's plans includes [Storage](#storage), [Compute](#compute), and [Project](#projects) usage allowances. The [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans permit extra usage.
 
-Our _Custom_ plan can be tailored to your specific requirements with:
+This topic describes Storage, Compute, and Project usage metrics in more detail so that you can better manage your plan allowances and extra usage. 
 
-- A custom contract
-- Volume-based discounts
-- Prepaid or integrated billing
-- Access to all Neon features available with the [Neon Pro Plan](/docs/introduction/pro-plan)
-- Tailored features and solutions
-- Custom support options
+## Storage
 
-If you are interested in exploring a _Custom_ plan with Neon, please reach out to our [Sales team](https://neon.tech/contact-sales).
+Storage is a combination of your data size plus the shared change history that is used to enable branching-related features like [point-in-time restore](/docs/introduction/point-in-time-restore), [query testing](/docs/guides/branching-test-queries), and [reset from parent](/docs/manage/branches#reset-a-branch-from-parent).
 
+The following table outlines data storage allowances per month for each Neon plan.
 
-# Billing
+| Plan       | Storage    |
+|------------|------------|
+| Free Tier  | 512 MiB    |
+| Launch     | 10 GiB     |
+| Scale      | 50 GiB     |
+| Enterprise | Larger sizes |
 
----
-title: Billing
-enableTableOfContents: true
-subtitle: Learn how Neon billing works to save you money
-updatedOn: '2024-01-23T17:45:24.324Z'
----
+Extra storage is available with the [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans:
+- On the Launch plan, extra storage is billed for in units of 2 GiB at $3.5 each
+- On the Scale plan, extra storage is billed for in units of 10 GiB at $15 each
 
-<NewPricing/>
+### Storage details
 
-Find all the documentation you need to understand, manage, and optimize the features and metrics that contribute to your monthly Neon bill.
+_Storage_ is the total volume of data and history stored in Neon, measured in gibibytes (GiB). It includes the following:
 
-## Pricing calculators and billing overview
+- **Data size**
 
-Start with our pricing calculators to get a sense of how different compute and storage sizes can affect your bill. Then get more detail about the underlying metrics.
+  The size of all databases in your Neon projects. You can think of this as a _snapshot_ of your data at a point in time.
 
-<DetailIconCards>
+- **History**
 
-<a href="/docs/introduction/billing-calculators" description="Our pricing calculator and cost estimator tools help you estimate your next Neon bill" icon="transactions">Pricing calculators</a>
+  Neon retains a history of changes for all branches to support _point-in-time restore_ and _branching_.
 
-<a href="/docs/introduction/billing-overview" description="Quick introduction to how billing works in Neon" icon="chart-bar">Billing overview</a>
+  - _Point-in-time restore_ is the ability to restore data to an earlier point in time. Neon retains a history of changes in the form of WAL records. You can configure the history retention period. See [Point-in-time restore](/docs/introduction/point-in-time-restore). WAL records that age out of the history retention period are evicted from storage and no longer count toward storage.
+  - A _branch_ is a virtual snapshot of your data at the point of branch creation combined with WAL records that capture the branch's data change history from that point forward.
+    When a branch is first created, it adds no storage. No data changes have been introduced yet, and the branch's virtual snapshot still exists in the parent branch's _history_, which means that it shares this data in common with the parent branch. A branch begins adding to storage when data changes are introduced or when the branch's virtual snapshot falls out of the parent branch's _history_, in which case the branch's data is no longer shared in common. In other words, branches add storage when you modify data or allow the branch to age out of the parent branch's _history_.
 
-</DetailIconCards>
+    Database branches can also share a _history_. For example, two branches created from the same parent at or around the same time share a _history_, which avoids additional storage. The same is true for a branch created from another branch. Wherever possible, Neon minimizes storage through shared history. Additionally, to keep storage to a minimum, Neon takes a new branch snapshot if the amount of data changes grows to the point that a new snapshot consumes less storage than retained WAL records.
 
-## Reference
+**Storage** is calculated in gibibytes (GiB), otherwise known as binary gigabytes. One gibibyte equals 2<sup>30</sup> or 1,073,741,824 bytes.
 
-Find detailed definitions of the metrics that make up your bill and a cost breakdown for compute, storage, and data transfer rates for your region.
+## Compute
 
-<DetailIconCards>
+The following table outlines compute allowances per month for each Neon plan.
 
-<a href="/docs/introduction/billing" description="Find detailed descriptions of the metrics that make up your bill" icon="trend-up">Billing metrics</a>
+| Plan       | Compute                                                                                                              |
+|------------|----------------------------------------------------------------------------------------------------------------------|
+| Free Tier  | Always-available primary branch compute, 5 compute hours (20 _active hours_)/month on branch computes           |
+| Launch     | 300 compute hours (1,200 _active hours_)/month                                                                                           |
+| Scale      | 750 compute hours (3,000 _active hours_)/month                                                                                            |
+| Enterprise | Custom                                                                                                            |
 
-<a href="/docs/introduction/billing-rates" description="Reference table of billing rates per region" icon="hourglass">Billing rates</a>
+Extra compute usage is available with the [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans. Extra compute usage is billed for at $0.04 per compute hour. For example, the Launch plan has an allowance of 300 compute hours included in the plan's monthly fee. If you use 100 additional compute hours over the monthly billing period, you are billed an extra $4 (100 x $0.04) for the month.
 
-</DetailIconCards>
+<Admonition type="tip" title="What are active hours and compute hours?">
 
-## Manage billing
+- An **active hour** is a measure of the amount of time a compute is active. The time your compute is idle when suspended due to inactivity is not counted. In the table above, _active hours_ are based on a 0.25 vCPU compute size.
+- A **compute hour** is one _active hour_ for a compute with 1 vCPU. For a compute with .25 vCPU, it takes 4 _active hours_ to use 1 compute hour. On the other hand, if your compute has 4 vCPUs, it takes only 15 minutes to use 1 compute hour.
+- **Compute hours formula**
 
-Find information about invoices, payment methods, and other actions around viewing and managing your bill. Plus a sample project that can help you understand how billing works in a model scenario.
+  ```
+  compute hours = compute size * active hours
+  ```
 
-<DetailIconCards>
+</Admonition>
 
-<a href="/docs/introduction/manage-billing" description="Manage your monthly bill" icon="setup">Manage billing</a>
+### How Neon compute features affect usage
 
-<a href="/docs/introduction/billing-sample" description="See how billing breaks down for a sample project" icon="chart-bar">Sample projects</a>
-
-</DetailIconCards>
-
-
-# Billing overview
-
----
-title: Billing overview
-enableTableOfContents: true
-subtitle: The basics about how billing works in Neon
-updatedOn: '2024-01-23T17:45:24.326Z'
----
-
-<NewPricing/>
-
-The largest part of your bill typically comes from compute costs &#8212; the size of your compute plus your level of activity. Storage costs make up the next largest part of your bill. The amount of data that you write, either to storage within Neon or data egress outside of Neon, also adds to your cost, though typically a small percentage per month.
-
-## Compute costs
-With key features like [autoscaling](/docs/guides/autoscaling-guide), [autosuspend](/docs/guides/auto-suspend-guide), minimum and max [compute sizes](/docs/manage/endpoints#compute-size-and-autoscaling-configuration) enabled, you can get a sense of how your compute costs might accrue in the following graph.
+Compute-hour usage in Neon is affected by [autosuspend](/docs/guides/auto-suspend-guide), [autoscaling](/docs/guides/autoscaling-guide), and your minimum and maximum [compute size](/docs/manage/endpoints#compute-size-and-autoscaling-configuration) configuration. With these features enabled, you can get a sense of how your compute usage might accrue in the following graph.
 
 ![Compute metrics graph](/docs/introduction/compute-metrics2.png)
 
-You can see how the compute time that you get billed for scales between your minimum and maximum CPU settings: compute time never rises above your max level, and it never drops below your minimum setting. With autosuspend, you are not charged at all during inactive periods. For projects with inconsistent demand, this can save significant compute costs.
+You can see how compute size scales between your minimum and maximum CPU settings, increasing and decreasing compute usage: compute size never rises above your max level, and it never drops below your minimum setting. With autosuspend, no compute time at all accrues during inactive periods. For projects with inconsistent demand, this can save significant compute usage.
 
-For a more detailed breakdown of compute cost metrics, see [compute time](/docs/introduction/billing#compute-time).
+### Compute usage details
 
-## Storage costs
+Compute hour usage is calculated by multiplying compute size by _active hours_. Neon measures compute size at regular intervals and averages those values to calculate your compute hour usage.
 
-Neon storage uses copy-on-write branching to keep storage size as small as possible. This can make it hard to visualize "how big is my database", since branches with a shared history don't immediately add to storage costs. Storage size is a combination of your total data plus the shared change history that is used to enable branching-related features like [point-in-time restore](/docs/introduction/point-in-time-restore), [query testing](/docs/guides/branching-test-queries), and [reset from parent](/docs/manage/branches#reset-a-branch-from-parent).
+_Active hours_ is the amount of time that your computes have been active. This includes all computes in your Neon project but excludes time when computes are in an `Idle` state due to [auto-suspension](/docs/reference/glossary#auto-suspend-compute) (scale-to-zero).
 
-Storage costs are based on the size of your project and how long it is stored.
-
-![Storage calculation](/docs/introduction/storage_calc.jpg)
-
-For a detailed explanation about storage costs, see [Project storage](/docs/introduction/billing#project-storage).
-
-## Data write and transfer costs
-
-The amount of data that you write to storage or transfer out of Neon (for example, to serve data requests from an external application, stream data to another service, or set up an offline database backup) also contributes to your costs. In typical projects, these costs add up to less than 5% per month.
-
-![Data write and transfer](/docs/introduction/neon_boundary.jpg)
-
-For more detail on these metrics, see [Written data](/docs/introduction/billing#written-data) and [Data transfer](/docs/introduction/billing#data-transfer).
-
-
-# Pricing calculators
-
----
-title: Pricing calculators
-enableTableOfContents: true
-subtitle: Get familiar with Neon billing using our pricing calculators
-updatedOn: '2024-01-19T14:14:18.726Z'
----
-
-If you already have a sense of your sizing and usage needs, we recommend that you try out the [Pricing Calculator](#pricing-calculator) on our website or our [Pro Plan Cost Estimator](#pro-plan-cost-estimator) in the Neon Console. These tools let you estimate monthly costs based on the billing metrics above.
-
-## Things to consider before using
-
-With autoscaling as the key to our pay-for-use model, you will ideally have some sense of what kind of usage your application requires before you try out our calculators. A few questions for you to consider:
-* _How active are your users_?
-* _What level of performance does your applciation require_?
-* _How much storage do you require_?
-
-These questions translate into the metrics [active time](/docs/introduction/billing#active-time), [compute size](/docs/manage/endpoints#compute-size-and-autoscaling-configuration), and [storage space](/docs/introduction/billing#project-storage).
-
-## Pricing calculator
-
-The Neon website provides a [pricing calculator](https://neon.tech/calculator) that allows you to estimate monthly costs based on usage amounts that you provide.
-
-![Pricing page calculator](/docs/introduction/pricing_page_calculator.png)
-
-## Pro Plan Cost Estimator
-
-The **Billing** page in the Neon Console provides a **Pro Plan Cost Estimator** tool, which estimates costs based on your current project usage. If you have ever wondered, "How much would my monthly cost be if I upgraded to the Neon Pro Plan?", this tool provides the answer. To access it, navigate to the **Billing** page via the sidebar of the Neon Console, and select **Open Cost Estimator**.
-
-To provide cost estimates, the **Pro Plan Cost Estimator** requires at least one month of project usage.
-
-![Pro Plan Cost Estimation tool](/docs/introduction/billing_page_calculator.png)
-
-
-# Billing metrics
-
----
-title: Billing metrics
-enableTableOfContents: true
-updatedOn: '2024-01-23T17:45:24.327Z'
----
-
-<NewPricing/>
-
-Neon [paid plans](/docs/introduction/plans#neon-plans) bill for usage based on the following metrics:
-
-- **Compute time**: The amount of compute resources used per hour.
-- **Project storage**: The volume of data and history stored in your Neon project.
-- **Written data**: The volume of data written from compute to storage.
-- **Data transfer**: The volume of data transferred out of Neon.
-
-The following sections describe each metric and the billing rates for each region. Billing in Neon is account-based.
-
-<Admonition type="note">
-_Compute time_ is typically The largest contributor to cost. _Written data_ and _Data transfer_ together usually account for only about 5% of your monthly bill.
-
-The **Project storage**, **Written data**, and **Data transfer** metrics are calculated in gibibytes (GiB), otherwise known as binary gigabytes. One gibibyte equals 2<sup>30</sup> or 1,073,741,824 bytes.
-</Admonition>
-
-## Compute time
-
-_Compute time_ is the amount of compute resources used per hour. It is calculated by multiplying compute size by _Active time_ hours. Neon measures compute size at regular intervals and averages those values to calculate _Compute time_.
-
-_Active time_ is the total amount of time that your computes have been active within a given billing period, measured in hours. This includes all computes in your Neon project but excludes time when computes are in an `Idle` state due to [auto-suspension](/docs/reference/glossary#auto-suspend-compute) (scale-to-zero). _Active time_ is not a billed metric. It is a factor of the _Compute time_ metric.
-
-Compute size is measured in _Compute Units (CUs)_. One CU has 1 vCPU and 4 GB of RAM. A Neon compute can have anywhere from .25 to 7 CUs, as outlined below:
+Compute size in Neon is measured in _Compute Units (CUs)_. One CU has 1 vCPU and 4 GB of RAM. A Neon compute can have anywhere from .25 to 7 CUs, as outlined below:
 
 | Compute Units | vCPU | RAM    |
 |:--------------|:-----|:-------|
@@ -1019,243 +1258,163 @@ Compute size is measured in _Compute Units (CUs)_. One CU has 1 vCPU and 4 GB of
 
 A connection from a client or application activates a compute. Activity on the connection keeps the compute in an `Active` state. A defined period of inactivity (5 minutes by default) places the compute into an `Idle` state.
 
-Factors that affect _Compute time_ include:
+Factors that affect _active hours_ include:
 
 - The number of active computes
 - The size of each compute
-- The _Autosuspend_ feature, which suspends a compute after 5 minutes of inactivity. [Neon Pro Plan](/docs/introduction/pro-plan) users can configure the autosuspend timeout or disable autosuspend entirely.
+- The _Autosuspend_ feature, which suspends a compute after 5 minutes of inactivity by default. Users on paid plans can configure the autosuspend timeout or disable it entirely.
 - The _Autoscaling_ feature, which allows you to set a minimum and maximum compute size. Compute size automatically scales up and down between these boundaries based on workload.
 
 <Admonition type="note">
-Neon uses a small amount of _Compute time_, included in your billed amount, to perform a periodic check to ensure that your computes can start and read and write data. See [Availability Checker](/docs/reference/glossary#availability-checker) for more information.
+Neon uses a small amount of compute time, included in your billed compute hours, to perform a periodic check to ensure that your computes can start and read and write data. See [Availability Checker](/docs/reference/glossary#availability-checker) for more information.
 </Admonition>
 
-The _Compute time_ cost calculation is as follows:
+The compute hours formula is as follows:
 
 ```text
-Compute time cost = Compute size * Active time * price per hour
+compute hours = compute size * active hours
 ```
 
-### Compute time cost estimates
+### Estimate your compute hour usage
 
-For an idea of _Compute time_ cost per month based on compute size and usage, refer to the following table. Compute size is measured in Compute Units (CUs).
-
-| Compute Units      | 730 hrs/mth (all hours) | 173 hrs/mth (working hours) | 87 hrs/mth (half of working hours) |
-| :----------------- | :---------------------- | :-------------------------- | :--------------------------------- |
-| 0.25               | $18.62                  | $4.41                       | $2.22                              |
-| 0.5                | $37.23                  | $8.82                       | $4.44                              |
-| 1                  | $74.46                  | $17.65                      | $8.87                              |
-
-<Admonition type="note">
-The prices in the table above are based on US East (Ohio) _Compute time_ rates.
-</Admonition>
-
-- Public-facing applications are assumed to be active for all hours in a month (730 hrs/mth).
-- Internal applications with consistent usage are assumed to be active during working hours (173 hrs/mth).
-- Internal applications with moderate usage are assumed to be active half of working hours (87 hrs/mth).
-
-### Estimate your compute time cost
-
-To estimate your own monthly _Compute time_ cost:
+To estimate what your compute hour usage might be per month:
 
 1. Determine the compute size you require, in Compute Units (CUs).
-1. Estimate the amount of _Active time_ per month for your compute(s).
-1. Find the _Compute-time_ price for your region. The [billing rates](#billing-rates) table shows _Compute-time_ prices by region.
-1. Input the values into the _Compute time_ cost formula:
+1. Estimate the amount of _active hours_ per month for your compute(s).
+1. Input the values into the compute hours formula:
 
    ```text
-   Compute time cost = Compute size * Active time * Compute-time price
+   compute hours = compute size * active hours
    ```
 
-   For example, this is the calculation for the smallest compute offered by Neon (.25 CUs), 730 hours, and a _Compute time_ price of $0.102:
+   For example, this is a calculation for a 2 vCPU compute that is active for all hours in a month (approx. 730 hours):
 
    ```text
-   .25 * 730 * 0.102 = $18.62
+   2 * 730 = 1460 compute hours
    ```
 
-<Admonition type="tip">
-Neon also provides calculators to help with cost estimates. See [Pricing calculators](/docs/introduction/billing-calculators).
-</Admonition>
+   This calculation is useful when trying to select the right Neon plan or when estimating the extra compute usage you might need.
 
-## Project storage
+   <Admonition type="note">
+   If you plan to use Neon's _Autoscaling_ feature, estimating **compute hours** is more challenging. Autoscaling adjusts the compute size based on demand within the defined minimum and maximum compute size thresholds. The best approach is to estimate an average compute size and modify the compute hours formula as follows:
 
-_Project storage_ is the total volume of data and history stored in your Neon project, measured in gibibyte hours (GiB-hours). It includes the following:
+   ```text
+   compute hours = average compute size * active hours
+   ```
 
-- **Current data size**
+   To estimate an average compute size, start with a minimum compute size that can hold your data or working set (see [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute)). Pick a maximum compute size that can handle your peak loads. Try estimating an average compute size between those thresholds based on your workload profile for a typical day.
 
-  The size of all databases in your Neon projects. You can think of this as a _snapshot_ of your data at a point in time.
+   </Admonition>
 
-- **History**
+## Projects
 
-  Neon retains a history of changes for all branches to support _point-in-time restore_.
+In Neon, everything starts with a project. A project is a container for your branches, databases, roles, and other resources and settings. A project also defines the region your data and resources reside in. We typically recommend creating a project for each application or each client. In addition to organizing objects, projects are a way to track storage and compute usage by application or client.
 
-  - _Point-in-time restore_ is the ability to restore data to an earlier point in time. Neon retains a history of changes in the form of WAL records. You can configure the history retention period. See [Point-in-time restore](/docs/introduction/point-in-time-restore). WAL records that age out of the history retention period are evicted from storage and no longer count toward project storage.
-  - A _database branch_ is a virtual snapshot of your data at the point of branch creation combined with WAL records that capture the branch's data change history from that point forward.
-    When a branch is first created, it adds no storage. No data changes have been introduced yet, and the branch's virtual snapshot still exists in the parent branch's _history_, which means that it shares this data in common with the parent branch. A branch begins adding to storage when data changes are introduced or when the branch's virtual snapshot falls out of the parent branch's _history_, in which case the branch's data is no longer shared in common. In other words, branches add storage when you modify data or allow the branch to age out of the parent branch's _history_.
+The following table outlines project allowances for each Neon plan.
 
-    Database branches can also share a _history_. For example, two branches created from the same parent at or around the same time share a _history_, which avoids additional storage. The same is true for a branch created from another branch. Wherever possible, Neon minimizes storage through shared history. Additionally, to keep storage to a minimum, Neon takes a new branch snapshot if the amount of data changes grows to the point that a new snapshot consumes less storage than retained WAL records.
+| Plan       | Projects |
+|------------|----------|
+| Free Tier  | 1        |
+| Launch     | 10       |
+| Scale      | 50       |
+| Enterprise | Unlimited |
 
-The cost calculation for _Project storage_ is as follows:
+- When you reach your limit on the [Free Tier](/docs/introduction/plans#free-tier) or [Launch](/docs/introduction/plans#launch) plan, you cannot create additional projects. Instead, you can upgrade to the [Launch](/docs/introduction/plans#launch) or [Scale](/docs/introduction/plans#scale) plan, which offer allowances of 10 and 50 projects, respectively.
+- Extra projects are available with the [Scale](/docs/introduction/plans#scale) plan in increments of 10 for $50 each. If you use more than 50 projects, you are automatically billed for an extra package of 10 projects. For example, if you use 51 projects during the billign period, you are billed for a package of 10 projects for the month($50). If you use 61 projects, you are billed for two packages of 10 projects ($100) for the month, and so on.
 
-```text
-Project storage (GiB) * (seconds stored / 3600) * price per hour
-```
-
-## Written data
-
-_Written data_ measures the total volume of data written from compute to storage within a given billing period, measured in gigibytes (GiB). Writing data from compute to storage ensures the durability and integrity of your data, as it reflects the data changes made by your computes.
-
-The cost calculation for _Written data_ is as follows:
-
-```text
-Written data (GiB) * price per GiB
-```
-
-## Data transfer
-
-_Data transfer_ measures the total volume of data transferred out of Neon (known as "egress") during a given billing period, measured in gigibytes (GiB). It includes data sent from your Neon project to external destinations. If your data transfer is high, contact [Sales](https://neon.tech/contact-sales) for custom solutions to minimize data transfer costs.
-
-The cost calculation for _Data transfer_ is as follows:
-
-```text
-Data transfer (GiB) * price per GiB
-```
-
-
-
-# Billing rates
-
----
-title: Billing rates
-enableTableOfContents: true
-subtitle: Billing rates by region
-updatedOn: '2024-02-01T14:45:11.347Z'
----
-
-Current billing rates for all relevant metrics by region.
-
-| Cloud provider | Region                   | Billing metric  | Price     | Unit           |
-| :------------- | :----------------------- | :-------------- | :-------- | :------------- |
-| AWS            | US East (N. Virginia)    | Compute time    | $0.102    | Compute-hour\* |
-| AWS            | US East (N. Virginia)    | Project storage | $0.000164 | GiB-hour       |
-| AWS            | US East (N. Virginia)    | Written data    | $0.09600  | GiB            |
-| AWS            | US East (N. Virginia)    | Data transfer   | $0.09000  | GiB            |
-|                |                          |                 |           |                |
-| AWS            | US East (Ohio)           | Compute time    | $0.102    | Compute-hour\* |
-| AWS            | US East (Ohio)           | Project storage | $0.000164 | GiB-hour       |
-| AWS            | US East (Ohio)           | Written data    | $0.09600  | GiB            |
-| AWS            | US East (Ohio)           | Data transfer   | $0.09000  | GiB            |
-|                |                          |                 |           |                |
-| AWS            | US West (Oregon)         | Compute time    | $0.102    | Compute-hour\* |
-| AWS            | US West (Oregon)         | Project storage | $0.000164 | GiB-hour       |
-| AWS            | US West (Oregon)         | Written data    | $0.09600  | GiB            |
-| AWS            | US West (Oregon)         | Data transfer   | $0.09000  | GiB            |
-|                |                          |                 |           |                |
-| AWS            | Europe (Frankfurt)       | Compute time    | $0.118    | Compute-hour\* |
-| AWS            | Europe (Frankfurt)       | Project storage | $0.00018  | GiB-hour       |
-| AWS            | Europe (Frankfurt)       | Written data    | $0.09600  | GiB            |
-| AWS            | Europe (Frankfurt)       | Data transfer   | $0.09000  | GiB            |
-|                |                          |                 |           |                |
-| AWS            | Asia Pacific (Singapore) | Compute time    | $0.121    | Compute-hour\* |
-| AWS            | Asia Pacific (Singapore) | Project storage | $0.00018  | GiB-hour       |
-| AWS            | Asia Pacific (Singapore) | Written data    | $0.09600  | GiB            |
-| AWS            | Asia Pacific (Singapore) | Data transfer   | $0.09000  | GiB            |
-|                |                          |                 |           |                |
-| AWS            | Asia Pacific (Sydney)    | Compute time    | $0.121    | Compute-hour\* |
-| AWS            | Asia Pacific (Sydney)    | Project storage | $0.00022  | GiB-hour       |
-| AWS            | Asia Pacific (Sydney)    | Written data    | $0.09600  | GiB            |
-| AWS            | Asia Pacific (Sydney)    | Data transfer   | $0.09000  | GiB            |
-|                |                          |                 |           |                |
-| AWS            | Israel (Tel Aviv)        | Compute time    | $0.121    | Compute-hour\* |
-| AWS            | Israel (Tel Aviv)        | Project storage | $0.00022  | GiB-hour       |
-| AWS            | Israel (Tel Aviv)        | Written data    | $0.09600  | GiB            |
-| AWS            | Israel (Tel Aviv)        | Data transfer   | $0.09000  | GiB            |
-
-\* A _Compute-hour_ is based on a compute size of 1 Compute Unit (CU), which is 1 vCPU and 4 GB of RAM. Neon's smallest compute size is .25 CU (.25 vCPU and 1GB of RAM), which would be billed at 1/4 of a _Compute-hour_. Neon supports compute sizes ranging from .25 CU (.25 vCPU and 1 GB of RAM) to 7 CUs (7 vCPU and 28 GB of RAM). If you require larger computes, contact [Sales](https://neon.tech/contact-sales).
+<NeedHelp/>   
 
 
 # Manage billing
 
 ---
 title: Manage billing
+subtitle: Invoices, payment methods, changing your plan, and other actions around managing your bill
 enableTableOfContents: true
 updatedOn: '2024-01-23T17:45:24.328Z'
 ---
 
-<NewPricing/>
+A Neon account can view and manage billing from the **Billing** page in the Neon Console. On the **Billing** page, you can:
 
-A Neon account subscribed to a paid plan can manage billing from the **Billing** page in the Neon Console. On the **Billing** page, you can:
-
-- View charges for the current month
-- Update your billing email
-- Update your payment method
+- View the details of your current plan
+- View your **Billing summary** if you are on a paid plan
+- Monitor your current usage
+- Update your billing information, including your payment method and billing email
+- Change your plan
 - View and download invoices
-- Downgrade your plan
-
-For Neon Free Tier accounts, the **Billing** page allows users to view [Neon Free Tier](/docs/introduction/free-tier) usage limits, learn about [Neon Pro Plan](/docs/introduction/pro-plan) features, and estimate monthly Neon Pro Plan cost based on your current usage.
 
 ## View the billing page
 
 To access your **Billing** page:
 
 1. Navigate to the Neon Console.
-1. Select **Billing** from the sidebar.
+1. Select your Profile.
+1. Select **Billing** from the menu.
 
 ## Update your payment method
 
 To update your payment method:
 
-1. Navigate to the **Billing** page in the Neon Console.
-2. Under **Payment method**, click **Edit**.
-3. Click **Select a saved payment method**.
-4. From the menu, select **Update card**.
-5. Update your payment method and click **Update**.
+1. Navigate to the Neon Console.
+1. Select your Profile.
+1. Select **Billing** from the menu.
+1. Select **Billing info**.
+1. Locate **Payment method** on the page and click **Edit**.
 
 If you are unable to update your payment method, please [open a support ticket](/docs/introduction/support).
 
-## Add a new payment method
-
-To add a new payment method:
-
-1. Navigate to the **Billing** page in the Neon Console.
-2. Under **Payment method**, click **Edit**.
-3. Click **Add a new payment method**.
-4. Enter your card details and click **Save Card**.
-
-If you are unable to add a payment method, please [open a support ticket](/docs/introduction/support).
-
 ### Missed payments
 
-If an auto-debit payment transaction fails, Neon sends a request to update your payment method. There is a grace period for missed payments followed by a delinquency period. Late fees and payment policies are described in Neon’s [Terms of Service](https://neon.tech/terms-of-service).
+If an auto-debit payment transaction fails, Neon sends a request to update your payment method. Late fees and payment policies are described in [Neon’s Terms of Service](https://neon.tech/terms-of-service).
+
+## Update your billing email
+
+To update your billing email:
+
+1. Navigate to the Neon Console.
+1. Select your Profile.
+1. Select **Billing** from the menu.
+1. Select **Billing info**.
+1. Locate **Billing email** on the page and click **Edit**.
+
+If you are unable to update your billing email, please [open a support ticket](/docs/introduction/support).
 
 ## Invoices
 
-A Neon invoice includes an **Amount due** for the billing period and a cost breakdown by project and [billing metric](/docs/introduction/billing).
+A Neon invoice includes the amount due for the billing period.
 
 ### Download invoices
 
 To download an invoice:
 
-1. Navigate to the **Billing** page in the Neon Console.
-1. Under **Latest invoices**, locate the invoice you want to download and click the PDF download icon.
+1. Navigate to the Neon Console.
+1. Select your Profile.
+1. Select **Billing** from the menu.
+1. Select **Invoices**.
+1. Click the download icon for the invoice you want to download.
 
-## Downgrade your plan
+## Change your plan
 
-To downgrade from the Neon Pro Plan to the Neon Free Tier:
+To change your plan:
 
-1. Navigate to the **Billing** page in the Neon Console.
-1. Click **Downgrade plan** at the bottom of the page.
-1. Follow the instructions on the **Downgrade** modal, and click **Downgrade**.
+1. Navigate to the Neon Console.
+1. Select your Profile.
+1. Select **Billing** from the menu.
+1. Select **Change plan**.
 
-Downgrading from the Neon Pro Plan transitions your account to the Neon Free Tier, which has lower usage limits that may affect the performance of your applications. To compare plan limits, see [Neon plans](/docs/introduction/plans#neon-plans).
+Changing your plan to one with lower usage allowances may affect the performance of your applications. To compare plan allowances, see [Neon plans](/docs/introduction/plans#neon-plans).
 
-You will be required to remove any projects, branches, or data that exceed [Neon Free Tier](/docs/introduction/free-tier) limits. The downgrade goes into effect within 30 minutes. You will receive your final bill at the beginning of the next billing period (the start of the month following the downgrade).
+If you are downgrading your plan, you will be required to remove any projects, branches, or data that exceed your new plan allowances.
 
-To downgrade from Enterprise or Platform Partnership plans, please contact [Sales](https://neon.tech/contact-sales). Cancellation of these plans is handled in accordance with the Master Subscription Agreement (MSA) outlined in the customer agreement.
+<Admonition type="note">
+Downgrading directly from [Scale](/docs/introduction/plans#scale) to [Launch](/docs/introduction/plans#launch) is currently not supported. You must downgrade to the Free Tier first, and then upgrade to Launch. This limitation will be removed in a future release.
+</Admonition>
+
+To downgrade from an [Enterprise](/docs/introduction/plans#enterprise) plan, please contact [Sales](https://neon.tech/contact-sales). Cancellation of an Enterprise plan is handled according to the Master Subscription Agreement (MSA) outlined in the customer agreement.
 
 ## Purchase Neon on AWS Marketplace
 
-As an alternative Neon billing, you can purchase Neon on the [AWS Marketplace](https://aws.amazon.com/marketplace/pp/prodview-o32z34khv4272?sr=0-1&applicationId=AWSMPContessa&utm_campaign=Developer%20Days&utm_source=hs_email&utm_medium=email&_hsenc=p2ANqtz-8U-1v7Sm5HHexFnV3Mkkwwsq5hnq9ThQnbQOqhuB11RT9cNwtAoalhaq98WMgL70rwfFhq) or through the [AWS Private Offers](https://docs.aws.amazon.com/marketplace/latest/userguide/private-offers-overview.html) program.
+As an alternative to Neon billing, you can purchase Neon on the [AWS Marketplace](https://aws.amazon.com/marketplace/pp/prodview-o32z34khv4272?sr=0-1&applicationId=AWSMPContessa&utm_campaign=Developer%20Days&utm_source=hs_email&utm_medium=email&_hsenc=p2ANqtz-8U-1v7Sm5HHexFnV3Mkkwwsq5hnq9ThQnbQOqhuB11RT9cNwtAoalhaq98WMgL70rwfFhq) or through the [AWS Private Offers](https://docs.aws.amazon.com/marketplace/latest/userguide/private-offers-overview.html) program.
 
 Purchasing Neon from the AWS Marketplace gives you consolidated billing, seamless provisioning, and the ability to use AWS credits on Neon.
 
@@ -1268,14 +1427,12 @@ If you have any questions about this billing option, please reach out to our [Sa
 title: Sample project billing
 enableTableOfContents: true
 subtitle: Practical example of how Neon pricing is calculated
-updatedOn: '2024-01-26T20:27:59.554Z'
+updatedOn: '2024-02-23T21:47:38.905Z'
 ---
-
-<NewPricing/>
 
 ## Generative AI example
 
-To give you a clearer sense of how billing works for Neon Pro users, let's explore a real-world example. Consider a simple image generation app that leverages Neon as the serverless database for storing user authentication details as well as records of image generation per user. Analyzing this usage over a monthly billing period can help you understand the nuances of Neon billing based on actual scenarios.
+To give you a clearer sense of how billing works, let's explore a real-world example. Consider a simple image generation app that leverages Neon as the serverless database for storing user authentication details as well as records of image generation per user. Analyzing this usage over a monthly billing period can help you understand the nuances of Neon billing based on actual scenarios and choose the right pricing plan.
 
 ## Overview: Costs by usage
 
@@ -1285,7 +1442,7 @@ Roughly six months since launch, this high-traffic application attracts about 80
 
 ### Tech stack (user management portion of the app):
 * **Authentication**: [NextAuth.JS](https://next-auth.js.org/) for authentication with OAuth
-* **Database**: Neon Serverless PostgreSQL to store user info and session detail
+* **Database**: Neon Serverless Postgres to store user info and session detail
 * **ORM**: [Prisma ORM](https://www.prisma.io/) for database interactions
 * **Deployment Region**: US East (Ohio)
 
@@ -1295,15 +1452,13 @@ Roughly six months since launch, this high-traffic application attracts about 80
 * **User activity.** Each user's usage is capped at 5 generations per month. This includes logging IDs of generated photos and the incremental number of generations, which are written to the relevant tables.
 
 <Admonition type="note">
-Given the high number of connections used by this application, [connection pooling](/docs/connect/connection-pooling) is essential. And since the database connection is managed through Prisma, the database connection string also requires the addition of `?pgbouncer=true` for proper performance (see [Use connection pooling with Prisma](/docs/guides/prisma#use-connection-pooling-with-prisma)). 
+Given the high number of connections used by this application, [connection pooling](/docs/connect/connection-pooling) is essential.
 </Admonition>
 
-### Compute, storage, data write and transfer:
+### Compute hours and storage:
 
-* **Compute time.** This metric refers to the size of CPU required to handle your interactions plus the length of time your compute is active. The average daily compute usage is 23.94 hours, totaling 718.35 hours for the sample month. This indicates steady but low-intensity database usage.
-* **Storage size.** The amount of database storage currently used by your project. It includes the total volume of data across all branches plus the shared history. The database is now over 25 GiB and growing steadily with new written data as the user base grows.
-* **Written data.** This metric shows the volume of data actively written to database storage. The daily average of 0.15 GB results in a total of 4.4 GB for the month.
-* **Data transfer.** This refers to the amount of data transferred out of Neon. Daily average is 0.09 GB with a monthly total of 2.7 GB.
+* **Compute hours.** This metric refers to the size of the CPU required to handle your interactions plus the length of time your compute is active (compute hours = compute size * active hours). The average daily compute usage is 23.94 hours, totaling 718.35 hours for the sample month. This indicates steady but low-intensity database usage.
+* **Storage.** The amount of database storage currently used by your project. It includes the total volume of data across all branches plus the shared history. The database is now over 25 GiB and growing steadily with new written data as the user base grows.
 
 ## Consumption breakdown for the month
 
@@ -1317,91 +1472,96 @@ Compute usage is steady at almost 24 compute hours per day across the month.
 
 Daily average of 23.94 compute hours leads to a total of 713.35 compute hours for the month.
 
-Compute cost calculation: 718.35 compute-hours * $0.102 per compute-hour = **$73.27** for this billing period
-
 ### Storage
 
 Project storage grew 4.4 GiB over the month, from 23.6 GiB to 28 GiB.
 
-Storage cost calculation: 28 GiB * $0.000164 per GiB-hour * 730 (1 month) = **$3.35** for this billing period
-
 ![Sample storage graph](/docs/introduction/billing_storage_graph.png)
-
-### Data throughput
-Written data to Neon storage and data transfer out of Neon are both minimal for the month. 
-
-**Written data calcuation**: 4.4 GiB * $0.09600 per Gib = **$0.42** for this billing period
-
-**Data transfer calculation**: 2.7 GiB * $0.09000 per GiB = **$0.24** for the billing period
-
-![Sample storage graph](/docs/introduction/billing_data_graph.png)
 
 ### Table view
 
-Here are the daily averages and monthly totals for the 3 key usage metrics that Neon uses to calculate your bill, plus the total current storage costs.
+Here are the daily averages and monthly totals for the 2 key usage metrics that Neon uses to calculate how much you are consuming within your selected plan.
 
 | Metric          | Daily Average | Monthly Total |
 |-----------------|---------------|---------------|
-| Compute Time    | 23.94 compute-hours      | 718.35 compute-hours    |
-| Written Data    | 0.15 GiB      | 4.4 GiB        |
-| Data Transfer   | 0.09 GiB       | 2.7 GiB        |
+| Compute hours    | 23.94 compute hours      | 718.35 compute hours    |
 
  Metric           | Start of billing period| End of billing period |
 |-----------------|---------------|---------------|
-| Data storage    | 23.6 GiB        | 28 GiB         |
+| Storage         | 23.6 GiB        | 28 GiB      |
 
-## Bill for the month
+### Which Neon pricing plan fits best?
 
-This table shows what the billing costs might look like with billing rates set to the region US-East (Ohio).
+At roughly 718 compute hours for the month with a compute size of 0.25 vCPU, this application is well under the 1,200 active hours/month allowance for the [Launch](/docs/introduction/plans##launch) plan and 3000 active hours/month allowance for the [Scale](/docs/introduction/plans#scale) plan. However, with a storage size of 25 GiB, the storage requirements for the application are over the Launch plan allowance of 10 GiB. You could go with the Launch plan which offers 10 GiB of storage plus extra storage at $3.5 per 2 GiB unit or the Scale plan which offers 50 GiB storage. Let's do that math to compare monthly bills:
 
-| Metric              | Month      | Rate                  | Amount    |
-|---------------------|------------|-----------------------|-----------|
-| Compute Time Cost   | 718.35 GiB | $0.102 per compute-hour        | $73.27    |
-| Data Storage Cost   | 28 GiB   | $0.000164 per GiB-hour| $3.35
-| Written Data Cost   | 4.4 GiB    | $0.09600 per Gib      | $0.42     |
-| Data Transfer Cost  | 2.7 GiB    | $0.09000 per GiB      | $0.24     |
-| **Total Bill**      |            |                       | **$77.28**|
+**Launch plan**:
 
+- Base fee: $19
+- Storage usage: 25 GiB (15 GiB over the allowance)
+- Compute usage: 718 hours (within the 1200 hour allowance)
+- Extra storage fee: 8 * $3.5 = $28
+- Extra compute fee: $0
+
+_Total estimate_: $19 + $28 = $47 per month
+
+**Scale plan**:
+
+- Base fee: $69
+- Storage usage: 25 GiB (within the 50 GiB allowance)
+- Compute usage: 718 hours (within the 3000 allowance)
+- Extra storage fee: $0
+- Extra compute fee: $0
+
+_Total estimate_: $69 per month
+
+The Launch plan is more economical in the short term, but you should consider upgrading to the [Scale](/docs/introduction/plans#scale) plan when purchasing extra storage on the Launch plan is no longer cheaper than the $69 per month Scale plan. The Scale plan has a higher monthly storage allowance (50 GiB) and a cheaper per-unit extra storage cost (10 GiB at $15 vs. 2 GiB at $3.5). The Scale plan also offers additional features and more projects, which may factor into your decision about when to upgrade.
 
 # Support
 
 ---
 title: Support
 enableTableOfContents: true
-updatedOn: '2024-01-11T14:49:37.566Z'
+updatedOn: '2024-02-20T01:33:01.123Z'
 ---
 
-Support channels for the Neon Free Tier, Pro, and Custom plans are outlined below.
+Neon's Community, Standard, Priority, and Enterprise support plans are outlined below.
 
-| Support channels                                     | Free Tier |   Pro   | Custom  |
-| :--------------------------------------------------- | :-------: | :-----: | :-----: |
-| Neon Discord Server                                  |  &check;  | &check; | &check; |
-| Neon Discourse Community                             |  &check;  | &check; | &check; |
-| Ability to open support tickets                      |     -     | &check; | &check; |
-| Video chat                                           |     -     | &check; | &check; |
-| Resale customer support                              |     -     |    -    | &check; |
+| Support channels                         | Community | Standard | Priority | Enterprise |
+| :--------------------------------------- | :-------: | :------: | :------: | :--------: |
+| Neon Discord Server                      |  &check;  | &check;  | &check;  | &check;    |
+| Neon Discourse Community                 |  &check;  | &check;  | &check;  | &check;    |
+| Support tickets                          |     -     | &check;  | &check;  | &check;    |
+| Prioritized supported tickets            |     -     |    -     | &check;  | &check;    |
+| Video chat                               |     -     |    -     | &check;  | &check;    |
+| Dedicated Customer Success Team          |     -     |    -     |          | &check;    |
+| SLAs                                     |     -     |    -     |          | &check;    |
 
-## Join the community
+## Community support
 
-All Neon users can join the [Neon Discord Server](/discord) or [Neon Discourse Community](https://community.neon.tech/) to ask questions or see what others are doing with Neon.
 
-## Open a support ticket
+Community support includes the [Neon Discord Server](/discord) or the [Neon Discourse Community](https://community.neon.tech/), where you can ask questions or see what others are doing with Neon. You will find Neon users and members of the Neon team actively engaged in both communities. 
 
-[Neon Pro Plan](/docs/introduction/pro-plan) and [Custom Plan](/docs/introduction/custom-plan) users can open a support ticket in the Neon Console. Look for the **Support** link in the sidebar. It opens the **Create Support Ticket** modal, where you can describe your issue. To access the modal directly, [click here](https://console.neon.tech/app/projects?modal=support).
+## Standard support
 
-![Support ticket modal](/docs/introduction/neon-support-modal.png)
+Standard support includes access to the Neon Support team via support tickets. 
+
+You can open support tickets in the Neon Console. Look for the **Support** link in the sidebar. It opens the **Create Support Ticket** modal, where you can describe your issue. To access the modal directly, [click here](https://console.neon.tech/app/projects?modal=support).
+
+![Support ticket modal](/docs/introduction/neon_support_modal.png)
 
 You can expect an initial response time of 2 business days, from 6am to 6pm Pacific Standard Time (UTC -8), Monday through Friday, excluding public holidays in the United States. For custom support solutions, please contact [Sales](https://neon.tech/contact-sales).
 
-Video chat requests and retail customer support inquiries can be submitted through a support ticket.
+## Priority support
 
-## Support email
+With priority support, your support tickets are given priority by the Neon Support team and you can request a video chat. Requests for video chat should be submitted via a support ticket.
 
-If you're unable to access Neon's primary support channels (e.g., the support ticket form in the Neon Console or our [Discord Server](https://discord.com/invite/92vNTzKDGp)), you can use the following email as a fallback:
+## Enterprise support
 
-**Email**: `support@neon.tech`
+With Enterprise Support, you have everything offered with the Priority plan plus dedicated Customer Success Team support, and SLAs.
 
-Response times might be longer than our primary channels, so we appreciate your patience.
+<Admonition type="note">
+If you are a Launch, Scale, or Enterprise user and are unable to access the support ticket form in the Neon Console, you can use the following email address as a fallback: `support@neon.tech`
+</Admonition>
 
 
 # Status
@@ -1426,22 +1586,133 @@ To view the Neon Status page, please click [here](https://neonstatus.com/).
 We strive to maintain the highest level of service availability and performance, but in the case of interruptions or maintenance, you'll be able to find the information you need promptly and accurately. Please remember to bookmark the link for easy access.
 
 
+# Monitoring
+
+---
+title: Monitoring in Neon
+subtitle: Available monitoring and observability tools and metrics in Neon
+enableTableOfContents: true
+updatedOn: '2024-02-22T14:29:54.385Z'
+---
+
+## Overview
+
+To find out what's going on with your Neon projects and databases, Neon offers several ways to visualize your usage and track your metrics:
+- [Project dashboard](#dashboard) &#8212; Find widgets that display the most recent usage metrics across your project
+- [Autoscaling graphs](#autoscaling-graphs) &#8212; a visualization of recent vCPU and RAM usage to help understand your sizing needs.
+- [Branch-specific metrics](#branch-specific-metrics) &#8212; View key metrics for all branches in your project on the **Branches** page.
+- [API metrics](#api-metrics) &#8212; Use the [Neon API](link) to gather a variety of usage metrics for your project.
+- [neon_utils](#the-neon_utils-extension) &#8212; A custom Postgres extension that helps you monitor how autoscaling allocates vCPU in response to workload.
+- [Other Postgres options](#other-postgres-options) &#8212; Other extensions and tools like [pg_stat_statements](https://neon.tech/docs/extensions/pg_stat_statements) and [PgHero](https://github.com/ankane/pghero) can provide details about SQL execution counts, totals, average execution time, and other insights into how your database is being used.
+
+## Dashboard
+
+When you open a project in the Neon console, the Dashboard gives you a snapshot view of the most recent usage metrics for that project:
+
+- **Branches** widget &#8212; Shows how much storage your main branch has currently used. It also lists a subset of other branches.
+- **Usage since...** widget  &#8212; Shows a snapshot of your current consumption metrics since your last billing date (the last day of the previous month).
+- **Project settings** widget &#8212; Shows current project settings like your compute size default and history retention window.
+- **Operations** widget &#8212; Lists a subset of the most recent [Neon operations](/docs/manage/operations) like `create_branch`, `start_compute`, and `suspend_compute`. If there are any critical issues or events, you should see these show up here.
+
+In any of these widgets, you can click the link in the top right corner to get more detail, a wider view, and take various actions.
+
+## Autoscaling graphs
+
+For Pro users, when you edit your compute from the **Branches** page, there is a graph showing your recent vCPU and RAM usage. This can help visualize whether your current minimum and maximum sizes are suitable for your current level of demand.
+
+See [Monitoring Autoscaling](/docs/guides/autoscaling-guide#monitoring-autoscaling) for details.
+
+## Branch-specific metrics
+
+The **Branches** page provides key usage metrics for all your branches, like active hours, compute hours, storage space used, and whether the branch includes a read-write compute, all organized into a table view that lets you scan your list of branches. You can also use search if your list of branches is quite long.
+
+## API metrics
+
+Using the Neon API, you can collect a variety of usage-based consumption metrics like  `data_storage_bytes_hour` and `compute_time_seconds`.
+
+Use this `GET` request to get details from an individual project.
+
+```curl
+curl --request GET \
+     --url https://console.neon.tech/api/v2/projects/[project_ID] \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" | jq
+```
+
+For more details, see [Retrieving details about a project](/docs/guides/partner-billing#retrieving-details-about-a-project).
+
+## The neon_utils extension
+
+The `neon_utils` extension provides a `num_cpus()` function you can use to monitor how Neon's Autoscaling feature allocates vCPU in response to workload. The function returns the current number of allocated vCPUs.
+
+For full details, see [neon_utils](/docs/extensions/neon-utils).
+
+## Other Postgres options
+
+Neon recommends a few tools from the Postgres community that can help you understand what is happening within your database:
+
+- [pg_stat_activity](#pg_stat_activity)
+- [pg_stat_statements](#pg_stat_statements)
+- [PgHero](#PgHero)
+
+### pg_stat_activity
+
+This system view built into Postgres provides real-time information on current database connections and queries being executed. A helpful for determining who is accessing your database.
+
+Try this query out in the Neon Console:
+
+```sql
+SELECT * FROM pg_stat_activity;
+```
+
+You should see a range of information about what's currently happening in the selected database. For details, see [pg_stat_activity](https://neon.tech/docs/postgres/monitoring-stats#MONITORING-PG-STAT-ACTIVITY-VIEW).
+
+### pg_stat_statements
+
+A Postgres extension that tracks information such as execution counts, total and average execution times, latency, and so on, which can help you analyze and optimize SQL query performance.
+
+Here are some typical queries that you might find helpful:
+
+- [Monitor slow queries](/docs/extensions/pg_stat_statements#monitor-slow-queries)
+- [Find the most frequently executed queries](/docs/extensions/pg_stat_statements#monitor-slow-queries)
+- [Find the most time-consuming queries](/docs/extensions/pg_stat_statements#monitor-slow-queries)
+
+For more information, see our [pg_stat_statements](/docs/extensions/pg_stat_statements) documentation page.
+
+<Admonition type="note">
+Currently, not all information within `pg_stats_statements` persists when a compute instance is autosuspended (scales-to-zero) due to inactivity. For example, the text of your queries may not survive the restart. Our teams are looking into making all `pg_stat_statements` data persistent across compute restarts.
+</Admonition>
+
+### PgHero
+
+[PgHero](https://github.com/pghero/pghero) is an open-source performance tool for Postgres that can help you find and fix data issues, using a dashboard interface.
+
+## Feedback and future improvements
+
+At Neon, we understand that observability and monitoring are critical for running successful applications.
+
+Check out our [roadmap](/docs/introduction/roadmap) to see what's coming next. And if you've got feature requests or feedback about what you'd like to see in Neon observability features, let us know via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or in our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
+
+
 # Get started
 
 # Sign up
 
 ---
-title: Sign up
+title: Sign up for a Neon account
 subtitle: Sign up for Neon in just a few seconds and start for free
+enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/console/
   - /docs/cloud/getting-started/
   - /docs/cloud/getting_started/
   - /docs/get-started-with-neon/setting-up-a-project
-updatedOn: '2024-02-09T14:18:56.793Z'
+updatedOn: '2024-02-16T18:37:19.445Z'
 ---
 
-You can sign up for free and upgrade to a paid plan when you are ready to scale. For information about what's included with the Neon Free Tier, see [Neon Free Tier](/docs/introduction/free-tier). For information about Neon's paid plan options, see [Neon plans](/docs/introduction/plans).
+You can sign up for free and upgrade to a paid plan when you are ready to scale. For information about what's included with the Neon Free Tier, see [Neon Free Tier](/docs/introduction/plans#free-tier). For information about Neon's paid plan options, see [Neon plans](/docs/introduction/plans).
+
+## Sign up
 
 Signing up for Neon is easy. Simply navigate to [https://console.neon.tech/signup](https://console.neon.tech/signup) and sign up with your email, Github, Google, or partner account.
 ![Neon console sign up](/docs/get-started-with-neon/neon_signup.png)
@@ -1463,6 +1734,18 @@ If you don't see an **Update Password** button, please sign out and sign back in
 </Admonition>
 
 You will be guided through a few steps, asking you to reauthenticate using your original social account, and then create your new password. After that, you are free to sign into your Neon account using either your social account or the email option.
+
+## Changing your email
+
+If you've signed up with a social or partner login and now want to change your email &#8212; for example, you previously signed up using a GitHub or Google account and now want to use your personal email &#8212; you can make this change under **Profile → Account Settings →  Personal Information**. Or follow this direct link: [change email](https://console.neon.tech/app/settings/profile?modal=change_email)
+
+After you make the change, you'll receive a notification at this new email address asking you to confirm. Once confirmed, you'll be logged out of Neon. Log back in with your new email, and use this email going forward.
+
+For Hasuara users, changing email is not yet supported.
+
+<Admonition type="note">
+It is important to note that changing your email will _unlink your existing social account_. After you make this change, you will only be able to use your new email to sign in.
+</Admonition>
 
 ## Next steps
 
@@ -1619,7 +1902,7 @@ Optimize your connections by enabling connection pooling.
 title: Connect from any application
 subtitle: Learn how to connect to Neon from any application
 enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.274Z'
+updatedOn: '2024-02-27T14:37:51.432Z'
 ---
 When connecting to Neon from an application or client, you connect to a database in your Neon project. In Neon, a database belongs to a branch, which may be the primary branch of your project (`main`) or a child branch.
 
@@ -1689,7 +1972,7 @@ See our [Framework, language, and platform guides](https://neon.tech/docs/guides
 
 ## Network protocol support
 
-Neon currently supports **IPv4**. Support for other network protocols, including IPv6, is **not available** at this time.
+Neon supports both [IPv4](https://en.wikipedia.org/wiki/Internet_Protocol_version_4) and [IPv6](https://en.wikipedia.org/wiki/IPv6) addresses.
 
 Additionally, Neon provides a serverless driver that supports both WebSocket and HTTP connections. For further information, refer to our [Neon serverless driver](/docs/serverless/serverless-driver) documentation.
 
@@ -1782,11 +2065,11 @@ Some applications require an Server Name Indication (SNI) workaround. Neon uses 
 | [ILLA Cloud](https://www.illacloud.com/) | |
 | [Luna Modeler](https://www.datensen.com/data-modeling/luna-modeler-for-relational-databases.html) | Requires enabling the SSL/TLS option |
 | [Metabase](https://www.metabase.com/) | |
-| [PopSQL](https://popsql.com/) | No SNI support. Use [SNI workaround D](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field). |
 | [Postico](https://eggerapps.at/postico2/) | SNI support since v1.5.21. For older versions, use [SNI workaround B](/docs/connect/connection-errors#b-use-libpq-keyvalue-syntax-in-the-database-field). Postico's [keep-connection-alive mechanism](https://eggerapps.at/postico/docs/v1.2/changelist.html), enabled by default, may prevent your compute from scaling to zero. |
 | [PostgreSQL VS Code Extension by Chris Kolkman](https://marketplace.visualstudio.com/items?itemName=ckolkman.vscode-postgres) | |
 | [pgAdmin 4](https://www.pgadmin.org/) | |
 | [Retool](https://retool.com/) | |
+| [Tableau](https://www.tableau.com/) | Use the PostgreSQL connector with the **Require SSL** option selected |
 | [TablePlus](https://tableplus.com/) | SNI support on macOS since build 436, and on Windows since build 202. No SNI support on Linux currently. For older versions, use [SNI workaround B](/docs/connect/connection-errors#b-use-libpq-keyvalue-syntax-in-the-database-field). |
 | [Segment](https://segment.com/) | Requires [SNI workaround D](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field) |
 | [Skyvia](https://skyvia.com/) | Requires setting the **SSL Mode** option to `Require`, and **SSL TLS Protocol** to 1.2. The other SSL fields are not required for **SSL Mode**: `Require`. |
@@ -2171,13 +2454,13 @@ This topic describes Neon's default connection limits, how connection pooling wo
 
 Each Postgres connection creates a new process in the operating system, which consumes resources. Postgres limits the number of open connections for this reason. The Postgres connection limit is defined by the `max_connections` parameter.
 
-In Neon, the size of your compute determines the `max_connections` setting. The formula used to calculate `max_connections` is `RAM in bytes / 9531392 bytes`. For a Neon Free Tier compute, which has 1 GB of RAM, this works out to approximately 100 connections. Larger computes offered with the [Neon Pro Plan](/docs/introduction/pro-plan) have more RAM and therefore support a larger number of connections. For example, a compute with 12 GB of RAM supports 1351 connections. You can check the `max_connections` limit for your compute by running the following query from the Neon SQL Editor or a client connected to Neon:
+In Neon, the size of your compute determines the `max_connections` setting. The formula used to calculate `max_connections` is `RAM in bytes / 9531392 bytes`. For a Neon Free Tier compute, which has 1 GB of RAM, this works out to approximately 100 connections. Larger computes offered with paid plans have more RAM and therefore support a larger number of connections. For example, a compute with 12 GB of RAM supports 1351 connections. You can check the `max_connections` limit for your compute by running the following query from the Neon SQL Editor or a client connected to Neon:
 
 ```sql
 SHOW max_connections;
 ```
 
-Even with the largest compute size, the `max_connections` limit may not be sufficient for some applications, such as those that use serverless functions. To increase the number of connections that Neon supports, you can use _connection pooling_. All Neon plans, including the [Neon Free Tier](/docs/introduction/free-tier), support connection pooling.
+Even with the largest compute size, the `max_connections` limit may not be sufficient for some applications, such as those that use serverless functions. To increase the number of connections that Neon supports, you can use _connection pooling_. All Neon plans, including the [Neon Free Tier](/docs/introduction/plans#free-tier), support connection pooling.
 
 ## Connection pooling
 
@@ -2362,6 +2645,12 @@ or
 endpoint=<endpoint_id>$<password>
 ```
 
+Example: 
+
+```txt
+postgres://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
 <Admonition type="note">
 Using a dollar sign (`$`) character as a separator may be required if a semicolon (`;`) is not a permitted character in a password field. For example, the [AWS Database Migration Service (DMS)](https://aws.amazon.com/dms/) does not permit a semicolon character in the **Password** field when defining connection details for database endpoints.
 </Admonition>
@@ -2456,7 +2745,7 @@ Prisma Migrate requires a direct connection to the database. It does not support
 
 The `terminating connection due to administrator command` error is typically encountered when running a query from a connection that has sat idle long enough for the compute endpoint to suspend due to inactivity. Neon automatically suspends a compute endpoint after 5 minutes of inactivity, by default. You can reproduce this error by connecting to your database from an application or client such as `psql`, letting the connection remain idle until the compute suspends, and then running a query from the same connection.
 
-If you encounter this error, you can try adjusting the timing of your query or reestablishing the connection before running the query. Alternatively, if you are a [Neon Pro Plan](/docs/introduction/pro-plan) user, you can disable autosuspend or configure a different suspension period. For instructions, see [Configuring Autosuspend for Neon computes](/docs/guides/auto-suspend-guide).  [Neon Free Tier](/docs/introduction/free-tier) users cannot modify the default 5 minute autosuspend setting.
+If you encounter this error, you can try adjusting the timing of your query or reestablishing the connection before running the query. Alternatively, if you are a paying user, you can disable autosuspend or configure a different suspension period. For instructions, see [Configuring Autosuspend for Neon computes](/docs/guides/auto-suspend-guide).  [Neon Free Tier](/docs/introduction/plans#free-tier) users cannot modify the default 5 minute autosuspend setting.
 
 ## Unsupported startup parameter
 
@@ -2507,7 +2796,7 @@ User actions that activate an idle compute include [connecting from a client suc
 The Neon API includes [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) and [Suspend endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) APIs for the specific purpose of activating and suspending a compute.
 </Admonition>
 
-You can try any of these methods and watch the status of your compute as it changes from an **Idle** to an **Active** state. By default, a compute is suspended after 300 seconds (5 minutes) of inactivity. [Neon Pro Plan](/docs/introduction/pro-plan) users can configure this delay period, which is described later in this topic.
+You can try any of these methods and watch the status of your compute as it changes from an **Idle** to an **Active** state. By default, a compute is suspended after 300 seconds (5 minutes) of inactivity. Users on paid plans can configure this delay period, which is described later in this topic.
 
 ## Strategies for managing latency and timeouts
 
@@ -2521,13 +2810,11 @@ Given the potential impact on application responsiveness, it's important to have
 
 ### Adjust your Autosuspend (scale to zero) configuration
 
-With the [Neon Pro Plan](/docs/introduction/pro-plan), you can configure the length of time that the system remains in an inactive state before Neon scales your compute down to zero. This lets you set the balance between performance (never scaling down) and cost (scaling to zero at reasonable intervals). The **Suspend compute after a period of inactivity** setting is set to 5 minutes by default. You can disable autosuspend entirely or set a custom period up to a maximum of 7 days. Limiting or disabling autosuspend can eliminate or reduce startup times, but it also increases compute usage. For configuration instructions, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
+Users on paid plans can configure the length of time that the system remains in an inactive state before Neon scales your compute down to zero. This lets you set the balance between performance (never scaling down) and cost (scaling to zero at reasonable intervals). The **Suspend compute after a period of inactivity** setting is set to 5 minutes by default. You can disable autosuspend entirely or set a custom period up to a maximum of 7 days. Limiting or disabling autosuspend can eliminate or reduce startup times, but it also increases compute usage. For configuration instructions, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
 
-Consider combining this strategy with Neon's _Autoscaling_ feature (available with the [Neon Pro Plan](/docs/introduction/pro-plan)), which allows you to run a compute with minimal resources and scale up on demand. For example, with autoscaling, you can configure a minimum compute size to reduce costs during off-peak times. In the image shown below, the **Suspend compute after a period of inactivity** is set to 1 hour so that your compute only suspends after an hour of inactivity, and autoscaling is configured with the 1/4 minimum compute size to keep costs low during periods of inactivity or light usage.
+Consider combining this strategy with Neon's _Autoscaling_ feature, which allows you to run a compute with minimal resources and scale up on demand. For example, with autoscaling, you can configure a minimum compute size to reduce costs during off-peak times. In the image shown below, the **Suspend compute after a period of inactivity** is set to 1 hour so that your compute only suspends after an hour of inactivity, and autoscaling is configured with the 1/4 minimum compute size to keep costs low during periods of inactivity or light usage.
 
 ![Connection warmup autosuspend and autoscaling configuration](/docs/connect/cold_start_compute_config.png)
-
-To determine what an "always-on" compute would cost per month, please refer to our [Billing](/docs/introduction/billing) documentation or the [pricing calculator](https://neon.tech/calculator).
 
 For autoscaling configuration instructions, see [Compute size and autoscaling configuration](https://neon.tech/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
 
@@ -2706,7 +2993,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/using-api-keys
   - /docs/get-started-with-neon/api-keys
-updatedOn: '2024-01-08T20:02:33.925Z'
+updatedOn: '2024-02-13T22:15:15.987Z'
 ---
 
 Most actions performed in the Neon Console can be performed using the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api). Using the Neon API requires an API key. This topic describes how to generate, revoke, and use API keys.
@@ -2720,7 +3007,7 @@ An API key (or token) is a randomly-generated 64-bit key that you must provide w
 To generate an API key:
 
 1. Log in to the [Neon Console](https://console.neon.tech).
-2. Click your account in the bottom left corner of the Neon Console, and select **Account**.
+2. Click your account in the bottom left corner of the Neon Console, and select **Profile**.
 3. Select **Developer Settings** and click **Generate new API Key**.
 4. Enter a name for the API key.
 5. Click **Create** and copy the generated key.
@@ -2733,7 +3020,7 @@ An API key that is no longer needed can be revoked. This action cannot be revers
 
 To revoke an API key:
 
-1. Click your account in the bottom left corner of the Neon Console and select **Account**.
+1. Click your account in the bottom left corner of the Neon Console and select **Profile**.
 2. Select **Developer Settings** to see a list of API keys.
 3. To revoke a key, click **Revoke**. The key is immediately revoked. Any request that uses the key now fails.
 
@@ -2915,10 +3202,10 @@ isDraft: false
 subtitle: Learn how to manage Neon projects from the Neon Console or the Neon API.
 redirectFrom:
   - /docs/get-started-with-neon/projects
-updatedOn: '2024-01-26T16:30:34.543Z'
+updatedOn: '2024-02-27T14:37:51.435Z'
 ---
 
-With Neon, everything starts with the project. It is the top-level object in the [Neon object hierarchy](/docs/manage/overview). A project can hold as many databases, and with the Neon Pro Plan, as many branches of those databases, as your application or workflow needs. However, [tier limits](/docs/introduction/plans) define how many projects you can create. The Neon Free Tier limits you to one project per Neon account.
+With Neon, everything starts with the project. It is the top-level object in the [Neon object hierarchy](/docs/manage/overview). A project can hold as many databases and branches as your application or workflow needs. However, [tier limits](/docs/introduction/plans) define how many projects you can create. The Neon Free Tier limits you to one project per Neon account.
 
 Learn more about projects and how to manage them in these sections:
 
@@ -2939,7 +3226,7 @@ When you add a new project, Neon creates the following resources by default:
 
 ## About the Settings page
 
-Once you open a project, you can use the **Settings** page to manage that particular project and configure any defaults.
+Once you open a project, you can use the **Project settings** page to manage that particular project and configure any defaults.
 
 ![Project Settings page](/docs/manage/settings_page.png)
 
@@ -2963,13 +3250,13 @@ Here are some basic actions you can take to add or manage projects:
 
 ### Create a project
 
-The following instructions describe how to create additional Neon projects. If you are creating your very first Neon project, refer to the instructions in [Sign up](/docs/get-started-with-neon/signing-up). Neon Free Tier users are limited to a single Neon project. Support for multiple projects is only available to [Neon Pro Plan](/docs/introduction/pro-plan) users.
+The following instructions describe how to create additional Neon projects. If you are creating your very first Neon project, refer to the instructions in [Sign up](/docs/get-started-with-neon/signing-up). Neon Free Tier users are limited to a single Neon project. Support for multiple projects is only available to users on paid plans.
 
 To create a Neon project:
 
 1. Navigate to the [Neon Console](https://console.neon.tech).
 2. Click **New Project**.
-3. Specify values for **Name**, **Postgres version**, and **Region**. Project names are limited to 64 characters. If you are a [Neon Pro Plan](/docs/introduction/pro-plan) user, you can specify **Compute size** settings when creating a project. The settings you specify become the default settings for compute endpoints that you add to your project when creating [branches](/docs/manage/branches#create-a-branch) or [read replicas](/docs/guides/read-replica-guide).
+3. Specify values for **Name**, **Postgres version**, and **Region**. Project names are limited to 64 characters. If you are a paying user, you can specify **Compute size** settings when creating a project. The settings you specify become the default settings for compute endpoints that you add to your project when creating [branches](/docs/manage/branches#create-a-branch) or [read replicas](/docs/guides/read-replica-guide).
 
     - Neon supports fixed size computes and autoscaling. For more information, see [Compute size and autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
     - The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. For more information, see [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration).
@@ -2994,7 +3281,7 @@ To edit a Neon project:
 
 1. Navigate to the [Neon Console](https://console.neon.tech).
 2. Select the project that you want to edit.
-3. Select **Settings**.
+3. Select **Project settings**.
 4. Select **General**.
 5. Make your changes and click **Save**.
 
@@ -3006,34 +3293,34 @@ To delete a project:
 
 1. Navigate to the [Neon Console](https://console.neon.tech).
 2. Select the project that you want to delete.
-3. Select **Settings**.
+3. Select **Project settings**.
 4. Select **Delete**.
 5. Click **Delete project.**
 6. On the confirmation dialog, click **Delete**.
 
 ### Share a project
 
-Project sharing is a Neon Pro Plan feature that allows you to share your project with other Neon accounts.
+Neon's project sharing feature allows you to share your project with other Neon accounts.
 
 To share a project:
 
 1. In the Neon Console, select a project.
-1. Select **Settings**.
+1. Select **Project settings**.
 1. Select **Sharing**.
 1. Under **Grant access to your project**, enter the email address of the account you want to share access with.
 1. Click **Grant access**.
 
-The email you specify is added to the list of **People who have access to the project**. The Neon account associated with that email address is granted full access to the project with the exception privileges required to delete the project. When that user logs in to Neon, the shared project is listed on their **Projects** page, under **Shared with me**.
+The email you specify is added to the list of **Users with access to the project**. The Neon account associated with that email address is granted full access to the project with the exception privileges required to delete the project. This account can also share the project with other Neon users. When that user logs in to Neon, the shared project is listed on their **Projects** page, under **Shared with me**.
 
-The costs associated with a shared project are charged to the Neon account that owns the project. For example, if you were to share your project with another Neon user account, any usage incurred by that user within your project is billed to your Neon account, not theirs.
+The costs associated with a shared project are charged to the Neon account that owns the project. For example, if you share your project with another Neon user account, any usage incurred by that user within your project is billed to your Neon account, not theirs.
 
 For additional information, refer to our [Project sharing guide](/docs/guides/project-sharing-guide).
 
 ## Advanced settings
 
-From the **Settings** page, you can also set defaults or apply bulk changes across your Neon objects:
+From the **Project settings** page, you can also set defaults or apply bulk changes across your Neon objects:
 
-- [Reset default compute size](#reset-the-default-compute-size) (Neon Pro Plan only)
+- [Reset default compute size](#reset-the-default-compute-size)
 - [Configure history retention range](#configure-history-retention)
 - [Enable logical replication](#enable-logical-replication)
 - [Configure IP Allow](#configure-ip-allow)
@@ -3042,11 +3329,11 @@ From the **Settings** page, you can also set defaults or apply bulk changes acro
 
 _Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute endpoint. The number of CUs determines the processing capacity of the compute endpoint. One CU is equal to 1 vCPU with 4 GB of RAM. Currently, a Neon compute endpoint can have anywhere from .25 CUs to 7 CUs. Larger compute sizes will be supported in a future release.
 
-For [Neon Free Tier](/docs/introduction/free-tier) users, Neon sets your compute size to a static shared 1 vCPU, with 1 GB of RAM for each branch (max 10 branches).
+For [Neon Free Tier](/docs/introduction/plans#free-tier) users, Neon sets your compute size to a static shared 1 vCPU, with 1 GB of RAM for each branch (max 10 branches).
 
-[Neon Pro Plan](/docs/introduction/pro-plan) users have the flexibility to choose a compute size for each branch's compute endpoint individually. By default, new branches inherit the compute endpoint size from your first branch (i.e., `main`). However, there may be times when you want to reset this default. For example, if you want to create a series of read-only replicas, where each replica typically requires less compute per branch.
+Users on paid plans have the flexibility to choose a compute size for each branch's compute endpoint individually. By default, new branches inherit the compute endpoint size from your first branch (i.e., `main`). However, there may be times when you want to reset this default. For example, if you want to create a series of read-only replicas, where each replica typically requires less compute per branch.
 
-To reset the default compute size, go to **Settings** > **Compute**.
+To reset the default compute size, go to **Project settings** > **Compute**.
 
 You can choose from two options:
 
@@ -3059,14 +3346,14 @@ _Example: default minimum and maximum autoscale settings_
 
 ### Configure history retention
 
-By default, Neon retains a 7-day history of changes for all branches in a Neon project, which allows you to create a branch that restores data to any point within the defined retention period. The supported range is 0 to 7 days for [Neon Free Tier](/docs/introduction/free-tier) users, and 0 to 30 days for [Neon Pro Plan](/docs/introduction/pro-plan) users. Please be aware that increasing the history retention period affects all branches in your project and increases [project storage](/docs/introduction/billing#project-storage).
+By default, Neon retains a history of changes for all branches in a Neon project, which allows you to create a branch that restores data to any point within the defined retention period. The supported limits are 24 hours for [Neon Free Tier](/docs/introduction/plans#free-tier) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users. Please be aware that increasing the history retention period affects all branches in your project and increases [project storage](/docs/introduction/usage-metrics#storage).
 
 To configure the history retention period for a project:
 
 1. Select a project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Storage**.
-    ![History retention configuration](/docs/relnotes/history_retention.png)
+    ![History retention configuration](/docs/manage/history_retention.png)
 4. Use the slider to select the history retention period.
 5. Click **Save**.
 
@@ -3081,7 +3368,7 @@ Enabling logical replication modifies the PostgreSQL `wal_level` configuration p
 To enable logical replication for your project:
 
 1. Select your project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Beta**.
 4. Click **Enable**.
 
@@ -3098,14 +3385,14 @@ After enabling logical replication, the next steps involve creating publications
 
 ### Configure IP Allow
 
-Available to [Neon Pro Plan](/docs/introduction/pro-plan) users, the IP Allow feature provides an added layer of security for your data, restricting access to the branch where your database resides to only those IP addresses that you specify. In Neon, the IP allowlist is applied to all branches by default. 
+Available to [Scale](/docs/introduction/plans#scale) plan users, the IP Allow feature provides an added layer of security for your data, restricting access to the branch where your database resides to only those IP addresses that you specify. In Neon, the IP allowlist is applied to all branches by default. 
 
 Optionally, you can allow unrestricted access to your project's [non-primary branches](/docs/manage/branches#non-primary-branch). For instance, you might want to restrict access to the primary branch to a handful of trusted IPs while allowing unrestricted access to your development branches.
 
 By default, Neon allows IP addresses from `0.0.0.0`, which means that Neon accepts connections from any IP address. Once you configure IP Allow by adding IP addresses or ranges, only those IP addresses will be allowed to access Neon.
 
 <Admonition type="note">
-Currently, Neon only supports [IPv4](https://en.wikipedia.org/wiki/Internet_Protocol_version_4).
+Neon supports both [IPv4](https://en.wikipedia.org/wiki/Internet_Protocol_version_4) and [IPv6](https://en.wikipedia.org/wiki/IPv6) addresses.
 </Admonition>
 
 <Tabs labels={["Neon Console", "CLI", "API"]}>
@@ -3115,7 +3402,7 @@ Currently, Neon only supports [IPv4](https://en.wikipedia.org/wiki/Internet_Prot
 To configure an allowlist:
 
 1. Select a project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **IP Allow**.
     ![IP Allow configuration](/docs/manage/ip_allow.png)
 4. Specify the IP addresses you want to permit. Separate multiple entries with commas.
@@ -3129,25 +3416,25 @@ To configure an allowlist:
 The [Neon CLI ip-allow command](/docs/reference/cli-ip-allow) supports IP Allow configuration. For example, the following `add` command adds IP addresses to the allowlist for an existing Neon project. Multiple entries are separated by a space. No delimiter is required.
 
 ```bash
-neonctl ip-allow add 192.168.1.1 192.168.1.2
+neonctl ip-allow add 203.0.113.0 203.0.113.1
 ┌─────────────────────┬─────────────────────┬──────────────┬─────────────────────┐
 │ Id                  │ Name                │ IP Addresses │ Primary Branch Only │
 ├─────────────────────┼─────────────────────┼──────────────┼─────────────────────┤
-│ wispy-haze-26469780 │ wispy-haze-26469780 │ 192.168.1.1  │ false               │
-│                     │                     │ 192.168.1.2  │                     │
+│ wispy-haze-26469780 │ wispy-haze-26469780 │ 203.0.113.0  │ false               │
+│                     │                     │ 203.0.113.1  │                     │
 └─────────────────────┴─────────────────────┴──────────────┴─────────────────────┘
 ```
 
 To apply an IP allowlist to the primary branch only, use the you can `--primary-only` option:
 
 ```bash
-neonctl ip-allow add 192.168.1.1 --primary-only
+neonctl ip-allow add 203.0.113.1 --primary-only
 ```
 
 To reverse that setting, use `--primary-only false`.
 
 ```bash
-neonctl ip-allow add 192.168.1.1 --primary-only false
+neonctl ip-allow add 203.0.113.1 --primary-only false
 ```
 
 </TabItem>
@@ -3169,7 +3456,7 @@ curl -X PATCH \
       "allowed_ips": {
         "primary_branch_only": true,
         "ips": [
-          "192.168.1.1", "192.168.1.2"
+          "203.0.113.0", "203.0.113.1"
         ]
       }
     }
@@ -3188,34 +3475,40 @@ You can define an allowlist with individual IP addresses, IP ranges, or [CIDR no
 - **Add individual IP addresses**: You can add individual IP addresses that you want to allow. This is useful for granting access to specific users or devices. This example represents a single IP address:
 
   ```text
-  192.168.1.15
+  192.0.2.1
   ```
 
-- **Define IP ranges**: For broader access control, you can define IP ranges. This is useful for allowing access from a company network or a range of known IPs. This example range includes all IP addresses from `192.168.1.20` to `192.168.1.30`: 
+- **Define IP ranges**: For broader access control, you can define IP ranges. This is useful for allowing access from a company network or a range of known IPs. This example range includes all IP addresses from `198.51.100.20` to `198.51.100.50`: 
 
   ```text
-  192.168.1.20-192.168.1.30
+  198.51.100.20-198.51.100.50
   ```
 
 - **Use CIDR notation**: For more advanced control, you can use [CIDR (Classless Inter-Domain Routing) notation](/docs/reference/glossary#cidr-notation). This is a compact way of defining a range of IPs and is useful for larger networks or subnets. Using CIDR notation can be advantageous when managing access to branches with numerous potential users, such as in a large development team or a company-wide network.
 
-  This CIDR notation example represents all 256 IP addresses from  `192.168.1.0` to `192.168.1.255`. 
+  This CIDR notation example represents all 256 IP addresses from  `203.0.113.0` to `203.0.113.255`. 
 
   ```text
-  192.168.1.0/24
+  203.0.113.0/24
+  ```
+
+- **Use IPv6 addresses**: Neon also supports specifying IPv6 addresses. For example:
+
+  ```text
+  2001:DB8:5432::/48
   ```
 
 A combined example using all three options above, specified as a comma-separated list, would appear similar to the following:
 
   ```text
-  192.168.1.15, 192.168.1.16, 192.168.1.20-192.168.1.30, 192.168.1.0/24S
+  192.0.2.1, 198.51.100.20-198.51.100.50, 203.0.113.0/24, 2001:DB8:5432::/48
   ```
 
-This list combines individual IP addresses, a range of IP addresses, and a CIDR block. It illustrates how different types of IP specifications can be used together in a single allowlist configuration, offering a flexible approach to access control.
+This list combines individual IP addresses, a range of IP addresses, a CIDR block, and an IPv6 address. It illustrates how different types of IP specifications can be used together in a single allowlist configuration, offering a flexible approach to access control.
 
 #### Update an IP Allow configuration
 
-You can update your IP Allow configuration via the Neon Console or API as described in [Configure IP Allow](#configure-ip-allow). Replace the current configuration with the new configuration. For example, if your IP Allow configuration currently allows access from IP address `192.168.1.1`, and you want to extend access to IP address `192.168.1.2`, specify both addresses in your new configuration: `192.168.1.1, 192.168.1.2`. You cannot append values to an existing configuration. You can only replace an existing configuration with a new one.
+You can update your IP Allow configuration via the Neon Console or API as described in [Configure IP Allow](#configure-ip-allow). Replace the current configuration with the new configuration. For example, if your IP Allow configuration currently allows access from IP address `192.0.2.1`, and you want to extend access to IP address `192.0.2.2`, specify both addresses in your new configuration: `192.0.2.1, 192.0.2.2`. You cannot append values to an existing configuration. You can only replace an existing configuration with a new one.
 
 The Neon CLI provides an `ip-allow` command with `add`, `reset`, and `remove` options that you can use to update your IP Allow configuration. For instructions, refer to [Neon CLI commands — ip-allow](/docs/reference/cli-ip-allow).
 
@@ -3228,7 +3521,7 @@ To remove an IP configuration entirely to go back to the default "no IP restrict
 <TabItem>
 
 1. Select a project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **IP Allow**.
 4. Clear the **Allowed IP addresses and ranges** field.
 5. If applicable, clear the **Apply to primary branch only** checkbox.
@@ -3289,7 +3582,7 @@ A Neon API request requires an API key. For information about obtaining an API k
 
 ### Create a project with the API
 
-The following Neon API method creates a project. The [Neon Free Tier](/docs/introduction/free-tier) permits one project per account. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/createproject).
+The following Neon API method creates a project. The [Neon Free Tier](/docs/introduction/plans#free-tier) permits one project per account. To view the API documentation for this method, refer to the [Neon API reference](https://api-docs.neon.tech/reference/createproject).
 
 ```http
 POST /projects
@@ -3564,7 +3857,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/get-started-with-neon/get-started-branching
-updatedOn: '2024-02-08T15:20:54.295Z'
+updatedOn: '2024-02-22T14:29:54.387Z'
 ---
 
 Data resides in a branch. Each Neon project is created with a [primary branch](#primary-branch) called `main`. You can create child branches from `main` or from previously created branches. A branch can contain multiple databases and roles. Tier limits define the number of branches you can create in a project and the amount of data you can store in a branch.
@@ -3582,15 +3875,15 @@ When working with branches, it is important to remove old and unused branches. B
 
 Each Neon project has a primary branch. In the Neon Console, your primary branch is identified by a `PRIMARY` tag. You can designate any branch as the primary branch for your project. The advantage of the primary branch is that its compute endpoint remains accessible if you exceed your project's limits, ensuring uninterrupted access to data that resides on the primary branch, which is typically the branch used in production.
 
-- For [Neon Free Tier](/docs/introduction/free-tier) users, the compute endpoint associated with the primary branch remains accessible if you exceed the _Active time_ limit of 100 hours per month.
-- For [Neon Pro Plan](/docs/introduction/pro-plan) users, the compute endpoint associated with the primary branch is exempt from the limit on simultaneously active computes, ensuring that it is always available. Neon has a default limit of 20 simultaneously active computes to protect your account from unintended usage.
+- For Neon Free Tier users, the compute endpoint associated with the primary branch is always available.
+- For users on paid plans, the compute endpoint associated with the primary branch is exempt from the limit on simultaneously active computes, ensuring that it is always available. Neon has a default limit of 20 simultaneously active computes to protect your account from unintended usage.
 
 ## Non-primary branch
 
 Any branch not designated as the primary branch is considered a non-primary branch. You can rename or delete non-primary branches.
 
-- For [Neon Free Tier](/docs/introduction/free-tier) users, compute endpoints associated with non-primary branches are suspended if you exceed the Neon Free Tier  _compute active time_ limit of 100 hours per month.
-- For [Neon Pro Plan](/docs/introduction/pro-plan) users, default limits prevent more than 20 simultaneously active compute endpoints. Beyond that limit, a compute endpoint associated with a non-primary branch remains suspended.
+- For Neon Free Tier users, compute endpoints associated with non-primary branches are suspended if you exceed the Neon Free Tier  _active hours_ limit of 20 hours per month.
+- For users on paid plans, default limits prevent more than 20 simultaneously active compute endpoints. Beyond that limit, a compute endpoint associated with a non-primary branch remains suspended.
 
 ## Create a branch
 
@@ -3608,7 +3901,7 @@ To create a branch:
     - **Specific Log Sequence Number**: Creates a branch with data up to a specific [Log Sequence Number (LSN)](/docs/reference/glossary#lsn) in the database log, allowing for precise point-in-time restore.
 
     <Admonition type="note">
-    The **Specific date and time** and the **Specific Log Sequence Number Data** options do not include data changes that occured after the specified date and time or LSN, which means the branch contains data as it existed previously, allowing for point-in-time restore. You can only specify a date and time or LSN value that falls within your history retention window, which is 7 days by default. See [Configure history retention](/docs/manage/projects#configure-history-retention).
+    The **Specific date and time** and the **Specific Log Sequence Number Data** options do not include data changes that occured after the specified date and time or LSN, which means the branch contains data as it existed previously, allowing for point-in-time restore. You can only specify a date and time or LSN value that falls within your history retention window. See [Configure history retention](/docs/manage/projects#configure-history-retention).
     </Admonition>
 
 8. Click **Create new branch** to create your branch.
@@ -3628,16 +3921,11 @@ Branch details shown on the branch page include:
 
 - **ID**: The branch ID. Branch IDs have a `br-` prefix.
 - **Created**: The date and time the branch was created.
-- **Current Data Size**: The current data size of the branch.
-- **Active Time**: The total amount of time that your branch compute has been active within the current billing period, measured in hours.
-- **Compute Time**: The computing capacity used by the branch within the current billing period, measured in Compute Unit (CU) hours.
-- **Written Data**: The total volume of data written from your branch compute to storage within the current billing period, measured in gibibytes (GiB).
-- **Data Transfer**: The total volume of data transferred out of Neon (known as "egress") within the current billing period, measured in (GiB).
+- **Active Time**: The total amount of active hours for your branch compute within the current billing period.
+- **Compute Time**: The compute hours used by the branch within the current billing period.
 - **Parent Branch**: The branch from which this branch was created (only visible for child branches).
-- **Date**: The date the parent branch was created (only displayed for branches created with the **Time** option).
-- **Time**: The time the parent branch was created (only displayed for branches created with the **Time** option).
-
-For more information about **Active Time**, **Compute Time**, **Written Data**, and **Data Transfer** usage metrics, refer to our [Billing](/docs/introduction/billing) page.
+- **Branching point**: The point in time, in terms of data, from which the branch was created.
+- **Last data reset**: The last time the branch was reset from the parent branch.
 
 The branch details page also includes details about the compute endpoint associated with the branch. For more information, see [View a compute endpoint](/docs/manage/endpoints#view-a-compute-endpoint).
 
@@ -3746,10 +4034,27 @@ Read more about performing branching actions from the CLI in [CLI - branches](/d
 </TabItem>
 
 <TabItem>
-Resetting from parent is not yet directly supported from the API. However, you can use the instructions on [Refreshing a branch](/docs/guides/branch-refresh) to perform a similar operation. It involves using the API to create a new branch, transfer the compute endpoint, deleting the old branch, and (optionally) renaming the new branch.
+To reset a branch to its parent using the API, use the branch restore endpoint, selecting the parent as the source:
+
+```bash
+POST /projects/{project_id}/branches/{branch_id_to_restore}/restore
+```
+
+For details, see [Branch Restore using the API](/docs/guides/branch-restore#how-to-use-branch-restore)
+
 </TabItem>
 
 </Tabs>
+
+## Restore a branch to its own or another branch's history
+
+There are several restore operations available using Neon's Branch Restore feature:
+
+- Restore a branch to its own history
+- Restore a branch to the head of another branch
+- Restore a branch to the history of another branch
+
+You can use the Neon Console, CLI, or API. For more detail, see [Branch Restore](/docs/guide/branch-restore).
 
 ## Delete a branch
 
@@ -3765,7 +4070,7 @@ To delete a branch:
 
 ## Check the data size
 
-Tier limits define the amount of data you can store in a branch. The [Neon Free Tier](/docs/introduction/free-tier) permits 3 GiB per branch. When creating a new branch, the child branch includes the data from the parent branch. For example, if you have a branch with 1 GiB of data, the child branch is created with the same 1 GiB of data.
+Tier limits define the amount of data you can store in a branch. The [Neon Free Tier](/docs/introduction/plans#free-tier) permits 3 GiB per branch. When creating a new branch, the child branch includes the data from the parent branch. For example, if you have a branch with 1 GiB of data, the child branch is created with the same 1 GiB of data.
 
 You can check the data size for a branch by viewing the `Database size` value on the branch details page (see [View branches](#view-branches)). Alternatively, you can run the following query from the Neon SQL Editor:
 
@@ -3827,7 +4132,7 @@ curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches' \
 }' | jq
 ```
 
-- The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
+- The `project_id` for a Neon project is found on the **Project settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
 - The `parent_id` can be obtained by listing the branches for your project. See [List branches](#list-branches-with-the-api). The `<parent_id>` is the `id` of the branch you are branching from. A branch `id` has a `br-` prefix. You can branch from your Neon project's primary branch or a previously created branch.
 
 The response body includes information about the branch, the branch's compute endpoint, and the `create_branch` and `start_compute` operations that were initiated.
@@ -3917,7 +4222,7 @@ curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches' \
   -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
-The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
+The `project_id` for a Neon project is found on the **Project settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
 
 The response body lists the project's primary branch and any child branches. The name of the primary branch in this example is `main`.
 
@@ -3971,7 +4276,7 @@ curl -X 'DELETE' \
   -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
-- The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
+- The `project_id` for a Neon project is found on the **Project settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
 - The `branch_id` can be found by listing the branches for your project. The `<branch_id>` is the `id` of a branch. A branch `id` has a `br-` prefix. See [List branches](#list-branches-with-the-api).
 
 The response body shows information about the branch being deleted and the `suspend_compute` and `delete_timeline` operations that were initiated.
@@ -4021,6 +4326,7 @@ The response body shows information about the branch being deleted and the `susp
 
 You can verify that a branch is deleted by listing the branches for your project. See [List branches](#list-branches-with-the-api). The deleted branch should no longer be listed.
 
+
 <NeedHelp/>
 
 
@@ -4030,7 +4336,7 @@ You can verify that a branch is deleted by listing the branches for your project
 title: Manage computes
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-08T21:09:24.094Z'
+updatedOn: '2024-02-26T11:23:38.243Z'
 ---
 
 A single read-write compute endpoint is created for your project's [primary branch](/docs/reference/glossary#primary-branch), by default.
@@ -4050,7 +4356,7 @@ Project
 
 Neon supports both read-write and read-only compute endpoints. Read-only compute endpoints are also referred to as [Read replicas](/docs/introduction/read-replicas). A branch can have a single read-write compute endpoint but supports multiple read-only compute endpoints.
 
-Tier limits define resources (vCPUs and RAM) available to a compute endpoint. The  [Neon Free Tier](/docs/introduction/free-tier) provides a shared vCPU and up to 1 GB of RAM per compute endpoint. The [Neon Pro Plan](/docs/introduction/pro-plan) supports larger compute sizes and autoscaling.
+Tier limits define resources (vCPUs and RAM) available to a compute endpoint. The  [Neon Free Tier](/docs/introduction/plans#free-tier) provides a shared vCPU and up to 1 GB of RAM per compute endpoint. Paid plans support larger compute sizes and autoscaling.
 
 ## View a compute endpoint
 
@@ -4061,13 +4367,13 @@ Compute endpoint details shown on the branch page include:
 - **Id**: The compute endpoint ID.
 -- **Type**: The type of compute endpoint. `R/W` (Read-write) or `R/O` (Read-only).
 - **Status**: The compute endpoint status (`Active`, `Idle`, or `Stopped`).
-- **Compute size**: The size of the compute endpoint. [Neon Pro Plan](/docs/introduction/pro-plan) users can configure the amount of vCPU and RAM for a compute endpoint when creating or editing a compute endpoint. Shows autoscaling minimum and maximum vCPU values if autoscaling is enabled.
+- **Compute size**: The size of the compute endpoint. Users on paid plans can configure the amount of vCPU and RAM for a compute endpoint when creating or editing a compute endpoint. Shows autoscaling minimum and maximum vCPU values if autoscaling is enabled.
 - **Auto-suspend delay**: The number of seconds of inactivity after which a compute endpoint is automatically suspended. The default is 300 seconds (5 minutes). For more information, see [Autosuspend configuration](#auto-suspend-configuration).
 - **Last active**: The date and time the compute was last active.
 
 ## Create a compute endpoint
 
-You can only create a read-write compute endpoint for a branch that does not have one, but a branch can have multiple read-only compute endpoints (referred to as "read replicas"). [Read replicas](/docs/guides/read-replica-guide) are a [Neon Pro Plan](/docs/introduction/pro-plan) feature.
+You can only create a read-write compute endpoint for a branch that does not have one, but a branch can have multiple read-only compute endpoints (referred to as "read replicas"). [Read replicas](/docs/guides/read-replica-guide) are a paid plan feature.
 
 To create an endpoint:
 
@@ -4104,9 +4410,9 @@ Some key points to understand about how your endpoint responds when you make cha
 
 ### Compute size and autoscaling configuration
 
-[Neon Pro Plan](/docs/introduction/pro-plan) users can change compute size settings when [editing a compute endpoint](#edit-a-compute-endpoint).
+Users on paid plans can change compute size settings when [editing a compute endpoint](#edit-a-compute-endpoint).
 
-_Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute endpoint. The number of CUs determines the processing capacity of the compute endpoint. One CU has 1 vCPU and 4 GB of RAM, 2 CUs have 2 vCPUs and 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the vCPUs, as shown in the table below. Currently, a Neon compute can have anywhere from 1/4 (.25) to 7 CUs.
+_Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute endpoint. The number of CUs determines the processing capacity of the compute endpoint. One CU has 1 vCPU and 4 GB of RAM, 2 CUs have 2 vCPUs and 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the vCPUs, as shown in the table below.
 
 | Compute size (in CUs)  | vCPU | RAM    |
 |:--------------|:-----|:-------|
@@ -4119,11 +4425,12 @@ _Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute e
 | 5             | 5    | 20 GB  |
 | 6             | 6    | 24 GB  |
 | 7             | 7    | 28 GB  |
+| 8             | 8    | 32 GB  |
 
 Neon supports fixed-size and autoscaling compute configurations.
 
-- **Fixed size:** You can use the slider to select a fixed compute size ranging from .25 CUs to 7 CUs. A fixed-size compute does not scale to meet workload demand.
-- **Autoscaling:** You can also use the slider to specify a minimum and maximum compute size. Neon scales the compute size up and down within the selected compute size boundaries to meet workload demand. _Autoscaling_ currently supports a range of 1/4 (.25) to 7 CUs. For information about how Neon implements the _Autoscaling_ feature, see [Autoscaling](/docs/introduction/autoscaling).
+- **Fixed size:** You can use the slider to select a fixed compute size. A fixed-size compute does not scale to meet workload demand.
+- **Autoscaling:** You can also use the slider to specify a minimum and maximum compute size. Neon scales the compute size up and down within the selected compute size boundaries to meet workload demand. For information about how Neon implements the _Autoscaling_ feature, see [Autoscaling](/docs/introduction/autoscaling).
 
 <Admonition type="info">
 The `neon_utils` extension provides a `num_cpus()` function you can use to monitor how the _Autoscaling_ feature allocates compute resources in response to workload. For more information, see [The neon_utils extension](/docs/extensions/neon-utils).
@@ -4150,38 +4457,18 @@ The following table outlines the vCPU, RAM, `shared_buffer` limit (50 % of RAM),
 | 5            | 5    | 20 GB | 10 GB          | 2253            |
 | 6            | 6    | 24 GB | 12 GB          | 2703            |
 | 7            | 7    | 28 GB | 14 GB          | 3154            |
+| 8            | 8    | 32 GB | 16 GB          | 3,604           |
 
 
 <Admonition type="note">
-Neon Pro Plan users can configure the size of their computes. The compute size for Free Tier users is set at .25 CU (.25 vCPU and 1 GB RAM).
+Users on paid plans can configure the size of their computes. The compute size for Free Tier users is set at .25 CU (.25 vCPU and 1 GB RAM).
 </Admonition> 
 
-When selecting a compute size, ideally, you want to keep as much of your dataset in memory as possible. This improves performance by reducing the amount of reads from storage. If your dataset is not too large, select a compute size that will hold the entire dataset in memory. For larger datasets that cannot be fully held in memory, select a compute size that can hold your [working set](/docs/reference/glossary#working-set). Selecting a compute size for a working set involves advanced steps, which are outlined below. See [Sizing your computed based on the working set](#sizing-your-computed-based-on-the-working-set).
+When selecting a compute size, ideally, you want to keep as much of your dataset in memory as possible. This improves performance by reducing the amount of reads from storage. If your dataset is not too large, select a compute size that will hold the entire dataset in memory. For larger datasets that cannot be fully held in memory, select a compute size that can hold your [working set](/docs/reference/glossary#working-set).
 
 Regarding connection limits, you'll want a compute size that can support your anticipated maximum number of concurrent connections. If you are using _Autoscaling_, it is important to remember that your `max_connections` setting is based on the _minimum compute size_ in your autoscaling configuration. The `max_connections` setting does not scale with your compute. To avoid the `max_connections` constraint, you can use a pooled connection with your application, which supports up to 10,000 concurrent user connections. See [Connection pooling](/docs/connect/connection-pooling).
 
-#### Sizing your computed based on the working set
 
-If it's not possible to hold your entire dataset in memory, the next best option is to ensure that your working set is in memory. A working set is a subset of frequently accessed or recently used data and indexes. To determine whether your working set is fully in memory, you can query the cache hit ratio for your workload. The cache hit ratio measures how many queries are serviced from memory compared to how many queries are received. Queries not serviced from memory must bypass the cache to retrieve data from disk. 
-
-For example, if you have 100 queries successfully served from memory, and two queries go to disk, your cache hit ratio is 100/102, which is 98%.
-
-You can use the following query to find your cache hit ratio:
-
-```sql
-SELECT 
-  sum(heap_blks_read) as heap_read,
-  sum(heap_blks_hit)  as heap_hit,
-  sum(heap_blks_hit) / (sum(heap_blks_hit) + sum(heap_blks_read)) as ratio
-FROM 
-  pg_statio_user_tables;
-```
-
-If this query does not return a cache hit ratio of 99%, your working set is not fully or adequately in memory. In this case, consider using a larger compute with more memory.
-
-<Admonition type="note">
-The cache hit ratio query is based on statistics that represent the lifetime of your compute instance, from the last time the compute started until the time you ran the query. Be aware that statistics are lost when your compute stops and gathered again from scratch when your compute restarts. You'll only want to run the cache hit ratio query after a representative workload has had time to run. For example, say that you increased your compute size after seeing a cache hit ratio below 99%. Changing the compute size restarts your compute, so you lose all of your current usage statistics. In this case, you should run a representative workload before you try the cache hit ratio query again to see if your cache hit ratio improved.
-</Admonition>
 
 #### Autoscaling considerations
 
@@ -4199,7 +4486,7 @@ The maximum **Suspend compute after a period of inactivity** setting is 7 days. 
 
 ## Restart a compute endpoint
 
-It is sometimes necessary to restart a compute endpoint. For example, if you upgrade to a Neon Pro Plan account, you may want to restart your compute endpoint to immediately apply your upgraded limits.
+It is sometimes necessary to restart a compute endpoint. For example, if you upgrade to a paid plan account, you may want to restart your compute endpoint to immediately apply your upgraded limits.
 
 <Admonition type="important">
 Please be aware that restarting a compute endpoint interrupts any connections currently using the compute endpoint.
@@ -4209,7 +4496,7 @@ You can restart a compute endpoint using one of the following methods:
 
 - Stop activity on your compute endpoint (stop running queries) and wait for your compute endpoint to suspend due to inactivity. By default, Neon suspends a compute after 5 minutes of inactivity. You can watch the status of your compute on the **Branches** page in the Neon console. Select your branch and monitor your compute's **Status** field. Wait for it to report an `Idle` status. The compute will restart the next time it's accessed, and the status will change to `Active`. 
 - Issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. You can do this directly from the [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api), using the **Try It!** feature. You'll need an [API key](https://neon.tech/docs/manage/api-keys#create-an-api-key).
-- Neon Pro Plan users can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second to initiate a restart (the default setting is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions.
+- Users on paid plans can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second to initiate a restart (the default setting is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions.
 
 ## Delete a compute endpoint
 
@@ -4519,7 +4806,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/manage/users
-updatedOn: '2024-02-09T17:53:20.589Z'
+updatedOn: '2024-02-16T18:37:19.449Z'
 ---
 
 In Neon, roles are Postgres roles. Each Neon project is created with a default Postgres role that takes its name from your Neon account (the email, GitHub, Google, or partner account that you registered with). This role owns the ready-to-use database (`neondb`) that is created in your Neon project's primary branch.
@@ -4550,10 +4837,13 @@ Roles created in the Neon console, CLI, or API, including the default role creat
 - `BYPASSRLS`: Provides the ability to bypass row-level security (RLS) policies. This attribute is only included in `neon_superuser` roles in projects created after the [August 15, 2023 release](/docs/changelog/2023-08-15-storage-and-compute).
 - `REPLICATION`: Provides the ability to connect to a Postgres server in replication mode and create or drop replication slots.
 - `NOLOGIN`: The role cannot be used to log in to the Postgres server. Neon is a managed Postgres service, so you cannot access the host operating system directly.
-- `pg_read_all_data`: A predefined role in Postgres that provides the ability to read all data (tables, views, sequences), as if having `SELECT` rights on those objects, and `USAGE` rights on all schemas.
-- `pg_write_all_data`: A predefined role in Postgres that provides the ability to write all data (tables, views, sequences), as if having `INSERT`, `UPDATE`, and `DELETE` rights on those objects, and `USAGE` rights on all schemas.
-- `pg_create_subscription`:	Allows users with `CREATE` permission on the database to issue `CREATE SUBSCRIPTION`. The `pg_create_subscription` role is only available as of Postgres 16. The `neon_superuser` role in Postgres 14 and 15 can issue `CREATE SUBSCRIPTION` with only `CREATE` permission on the database. 
+- `pg_read_all_data`: A predefined Postgres role provides the ability to read all data (tables, views, sequences), as if having `SELECT` rights on those objects, and `USAGE` rights on all schemas.
+- `pg_write_all_data`: A predefined Postgres role that provides the ability to write all data (tables, views, sequences), as if having `INSERT`, `UPDATE`, and `DELETE` rights on those objects, and `USAGE` rights on all schemas.
+- `pg_create_subscription`:	A predefined Postgres role that lets users with `CREATE` permission on the database issue `CREATE SUBSCRIPTION`. The `pg_create_subscription` role is only available as of Postgres 16. The `neon_superuser` role in Postgres 14 and 15 can issue `CREATE SUBSCRIPTION` with only `CREATE` permission on the database.
+- `pg_monitor`: A predefined Postgres role that provides read/execute privileges on various Postgres monitoring views and functions. The `neon_superuser` role also has `WITH ADMIN` on the `pg_monitor` role, which enables granting the `pg_monitor` to other Postgres roles.
 - `EXECUTE` privilege on the `pg_stat_statements_reset()` function that is part of the `pg_stat_statements` extension. This privilege was introduced with the January 12, 2024 release. If you installed the `pg_stat_statements` extension prior to this release, drop and recreate the `pg_stat_statements` extension to enable this privilege. See [Install an extension](/docs/extensions/pg-extensions#install-an-extension).
+- `GRANT ALL ON TABLES` and `WITH GRANT OPTION` on the `public` schema.
+- `GRANT ALL ON SEQUENCES` and `WITH GRANT OPTION` on the `public` schema.
 
 You can think of roles with `neon_superuser` privileges as administrator roles. If you require roles with limited privileges, such as a read-only role, you can create those roles from an SQL client. For more information, see [Manage database access](/docs/manage/database-access).
 
@@ -5649,9 +5939,10 @@ Possible operation `status` values include `running`, `finished`, `failed`, `sch
 title: Manage project access
 subtitle: Learn about granting access to your Neon project
 enableTableOfContents: true
+updatedOn: '2024-02-19T18:57:12.561Z'
 ---
 
-The [Neon Pro Plan](/docs/introduction/pro-plan) allows you to share a Neon project with other Neon users.
+You to share a Neon project with other Neon users.
 
 Users that you share a project with are able to perform any action you can perform in the project, with the exception of deleting the project. For example, users you share a project with are able to:
 
@@ -5667,7 +5958,7 @@ You can think of sharing a Neon project as granting administrator access to your
 
 ## How to share a project
 
-Sharing a project is performed from the **Settings** page in your Neon project.
+Sharing a project is performed from the **Project settings** page in your Neon project.
 
 <video autoPlay playsInline muted loop width="800" height="600">
   <source type="video/mp4" src="/docs/manage/project_sharing.mp4"/>
@@ -6015,7 +6306,7 @@ Neon does not yet provide support for configuring automated backups in the Neon 
 
 ## Built-in backups with Neon's point-in-time restore feature
 
-By default, Neon retains a 7-day history for all branches, allowing you to restore your data to a particular date and time or Log Sequence Number (LSN). The history retention period is configurable. The supported range is 0 to 7 days for [Neon Free Tier](/docs/introduction/free-tier) users, and 0 to 30 days for [Neon Pro Plan](/docs/introduction/pro-plan) users. With this backup option, no action or automation is required. You can restore your data to a past state at any time by creating a database branch, which is a near-instant operation. This feature is referred to [Point-in-time restore](/docs/introduction/point-in-time-restore).
+Neon retains a history for all branches, allowing you to restore your data to a particular date and time or Log Sequence Number (LSN). The history retention period is configurable. The supported limits are 24 hours for [Neon Free Tier](/docs/introduction/plans#free-tier) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users. With this backup option, no action or automation is required. You can restore your data to a past state at any time by creating a database branch, which is a near-instant operation. This feature is referred to as [Point-in-time restore](/docs/introduction/point-in-time-restore).
 
 For information about creating a point-in-time restore branch, see [Branching — Point-in-time restore](/docs/guides/branching-pitr).
 
@@ -6031,8 +6322,6 @@ This method dumps a single database in a single branch of your Neon project. If 
 
 To dump a database from your Neon project, please refer to the `pg_dump` instructions in our [Import from Postgres](/docs/import/import-from-postgres) guide.
 
-Please be aware that dumping data from Neon is considered "data transfer". For data transfer costs, please refer to our [Billing](/docs/introduction/billing) documentation.
-
 <NeedHelp/>
 
 
@@ -6045,8 +6334,10 @@ title: Postgres logical replication concepts
 subtitle: Learn about PostgreSQL logical replication concepts
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2023-12-21T15:11:12.215Z'
+updatedOn: '2024-02-19T18:57:12.556Z'
 ---
+
+<LRNotice/>
 
 Logical Replication is a method of replicating data between databases or between your database and other data services or platforms. It differs from physical replication in that it replicates transactional changes rather than copying the entire database byte-for-byte. This approach allows for selective replication, where users can choose specific tables or rows for replication. It works by capturing DML operations in the source database and applying these changes to the target, which could be another Postgres database or data platform. 
 
@@ -6067,7 +6358,7 @@ The Postgres logical replication architecture is very simple. It uses a _publish
 In Neon, you can enable logical replication from the Neon Console:
 
 1. Select your project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Replication**.
 4. Click **Enable**.
 
@@ -6140,6 +6431,10 @@ The `max_replication_slots` configuration parameter on Neon is set to `10` by de
 max_replication_slots = 10
 ```
 
+<Admonition type="important">
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
+</Admonition>
+
 ### Decoder plugins
 
 The Postgres replication architecture uses decoder plugins to decode WAL entries into a logical replication stream, making the data understandable for the subscriber. The default decoder plugin for PostgreSQL logical replication is `pgoutput`, and it's included in Postgres by default. You don't need to worry about installing it.
@@ -6188,15 +6483,17 @@ title: Manage logical replication in Neon
 subtitle: Learn how to manage logical replication in Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-09T17:53:20.587Z'
+updatedOn: '2024-02-19T18:57:12.558Z'
 ---
+
+<LRNotice/>
 
 This topic provides commands for managing publications, subscriptions, and replication slots. It also includes information about logical replication specific to Neon, including [known limitations](#known-limitations).
 
 For step-by-step setup instructions, refer to our [logical replication guides](/docs/guides/logical-replication-guide).
 
 <Admonition type="note">
-Logical replication in Neon is currently in Beta. We welcome your feedback to help improve this feature. You can provide feedback via the **Feedback** link in the Neon Console or by reaching out to us on [Discord](https://t.co/kORvEuCUpJ).
+Logical replication in Neon is currently in Beta. We welcome your feedback to help improve this feature. You can provide feedback via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or by reaching out to us on [Discord](https://t.co/kORvEuCUpJ).
 </Admonition>
 
 ## Publications
@@ -6339,6 +6636,10 @@ DROP SUBSCRIPTION my_subscription;
 
 Replication slots are created on the publisher database to track replication progress, ensuring that no data in the WAL is purged before the subscriber has successfully replicated it. This mechanism serves to maintain data consistency and prevent data loss in cases of network interruption or subscriber downtime.
 
+<Admonition type="important">
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](#unused-replication-slots) to learn more.
+</Admonition>
+
 ### Create a replication slot
 
 Replication slots are typically created automatically with new subscriptions, but they can be created manually using the `pg_create_logical_replication_slot` function. Some "subscriber" data services and platforms require that you create a dedicated replication slot. This is accomplished using the following syntax:
@@ -6403,7 +6704,7 @@ Once you enable logical replication in Neon, the setting cannot be reverted. Ena
 In Neon, logical replication is enabled from the console, by following these steps:
 
 1. Select your project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Replication**.
 4. Click **Enable**.
 
@@ -6520,12 +6821,35 @@ max_replication_slots = 10
 
 If you require different values for these parameters, please contact Neon support.
 
+### Unused replication slots
+
+To prevent storage bloat, **Neon automatically removes an _inactive_ replication slot if you have other _active_ replication slots**. Removal occurs after 75 minutes. 
+
+If you have only one replication slot, and that slot becomes inactive, it is not removed due to inactivity because a single replication slot does not bloat storage. If you find that your single replication slot has been removed, please contact [Neon Support](/docs/introduction/support).
+
+#### What causes a replication slot to become inactive? 
+
+An inactive replication slot is one that doesn't acknowledge `flush_lsn` progress for an extended period. This is the same `flush_lsn` value found in the `pg_stat_replication` view in your Neon database.
+
+An _inactive_ replication slot is often the result of a _dead subscriber_, where the replication slot is not dropped after a subscriber is deactivated or becomes unavailable. An inactive replication slot can also result from a replication delay configured on the subscriber. For example, some subscribers allow you to configure the replication frequency or set a replication delay to minimize usage.
+
+#### How to avoid removal of inactive replication slots
+
+To avoid having "inactive" replication slots removed, ensure that your subscriber reports `flush_lsn` progress regularly and that your replication connection doesn't disappear for more than 75 minutes. If the 75-minute limit is not sufficient for your replication setup, please contact [Neon Support](/docs/introduction/support) to discuss a limit extension.
+
+If using Debezium, ensure that [flush.lsn.source](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-flush-lsn-source) is set to `true` to allow WAL logs on the source to be cleared. For other subscriber platforms, check for an equivalent setting to make sure it's configured to acknowledge progress on the subscriber.
+
+#### What to do if your replication slot is removed
+
+If you find that a replication slot was removed and you need to add it back, please see [Create a replication slot](/docs/guides/logical-replication-neon#create-a-replication-slot) for instructions or refer to the replication slot creation instructions for your subscriber.
+
 ### Known limitations
 
 Neon is working toward removing the following limitations in future releases:
 
 - Only your default Neon Postgres role and roles created via the Neon Console, CLI, or API have the `REPLICATION` privilege. This privilege cannot be granted to other roles. You can expect this limitation to be lifted in a future release. Roles created via SQL do not have the `REPLICATION` privilege, and this privilege cannot be granted.
 - `max_slot_wal_keep_size` is set to 1 GB, limiting the maximum size of WAL files that replication slots are allowed to retain in the `pg_wal` directory. This is a temporary limit that will be removed in a future release. The limit avoids an accumulation of WAL data at the publisher due to a lagging subscriber, which could cause a slow compute start.
+- To avoid storage bloat, Neon automatically removes an _inactive_ replication slot if you have other _active_ replication slots. See [Unused replication slots](#unused-replication-slots).
 
 ## References
 
@@ -6550,7 +6874,7 @@ subtitle: 'Explore Neon framework, language, platform, and feature guides'
 enableTableOfContents: true
 redirectFrom:
   - /docs/integrations/integrations-list/
-updatedOn: '2024-01-16T20:50:14.111Z'
+updatedOn: '2024-02-27T20:16:54.558Z'
 ---
 
 Find detailed instructions for integration across various frameworks, languages, and platforms, or if exploring Neon's features, our guides are tailored to assist you.
@@ -6575,6 +6899,14 @@ Integrate your applications with Neon.
 
 <img src="/images/technology-logos/aws-lambda-logo.svg" width="36" height="36" alt="AWS Lambda" href="/docs/guides/aws-lambda" title="Connect from AWS Lambda to Neon" />
 
+<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Hyperdrive" href="/docs/guides/cloudflare-hyperdrive" title="Use Neon with Cloudflare Hyperdrive" />
+
+<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Pages" href="/docs/guides/cloudflare-pages" title="Use Neon with Cloudflare Pages" />
+
+<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Workers" href="/docs/guides/cloudflare-workers" title="Use Neon with Cloudflare Workers" />
+
+<img src="/images/technology-logos/deno-logo.svg" width="36" height="36" alt="Deno Deploy" href="/docs/guides/deno" title="Use Neon with Deno Deploy" />
+
 <img src="/images/technology-logos/django-logo.svg" width="29" height="36" alt="Django" href="/docs/guides/django" title="Connect a Django application to Neon" />
 
 <img src="/images/technology-logos/elixir-logo.svg" width="36" height="36" alt="Elixir" href="/docs/guides/elixir-ecto" title="Connect from Elixir with Ecto to Neon" />
@@ -6592,6 +6924,8 @@ Integrate your applications with Neon.
 <img src="/images/technology-logos/grafbase-logo.svg" width="36" height="36" alt="Grafbase" href="/docs/guides/grafbase" title="Use Grafbase Edge Resolvers with Neon" />
 
 <img src="/images/technology-logos/hasura-logo.svg" width="35" height="36" alt="Hasura" href="/docs/guides/hasura" title="Connect from Hasura Cloud to Neon" />
+
+<img src="/images/technology-logos/heroku-logo.svg" width="36" height="36" alt="Heroku" href="/docs/guides/heroku" title="Deploy Your App with Neon Postgres on Heroku" />
 
 <img src="/images/technology-logos/java-logo.svg" width="27" height="36" alt="Java" href="/docs/guides/java" title="Connect a Java application to Neon" />
 
@@ -6617,7 +6951,11 @@ Integrate your applications with Neon.
 
 <img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/ruby-on-rails" title="Connect a Rails application to Neon" />
 
+<img src="/images/technology-logos/railway-logo.svg" width="36" height="36" alt="Railway" href="/docs/guides/railway" title="Use Neon Postgres with Railway" />
+
 <img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
+
+<img src="/images/technology-logos/render-logo.svg" width="36" height="36" alt="Render" href="/docs/guides/render" title="Use Neon Postgres with Render" />
 
 <img src="/images/technology-logos/rust-logo.svg" width="36" height="36" alt="Rust" href="/docs/guides/rust" title="Connect a Rust application to Neon" />
 
@@ -6735,12 +7073,12 @@ title: Enable Autoscaling in Neon
 subtitle: Learn how to enable Neon's Autoscaling feature to automatically scale compute
   resources on demand
 enableTableOfContents: true
-updatedOn: '2024-02-08T21:31:43.906Z'
+updatedOn: '2024-02-21T13:17:01.633Z'
 ---
 
 Neon's _Autoscaling_ feature dynamically adjusts the amount of compute resources allocated to a Neon compute endpoint in response to the current workload, eliminating the need for manual intervention. This guide demonstrates how to enable autoscaling in your Neon project and how to [visualize](#monitor-autoscaling) your usage.
 
-_Autoscaling_ is a [Neon Pro Plan](/docs/introduction/pro-plan) feature. Neon Pro Plan users can enable autoscaling for a new project, for an existing project, or for an individual compute endpoint. Autoscaling is supported with both read-write and read-only compute endpoints. Read-only compute endpoints enable Neon's [Read replica](/docs/introduction/read-replicas) feature.
+_Autoscaling_ is a paid plan feature. Users on paid plans can enable autoscaling for a new project, for an existing project, or for an individual compute endpoint. Autoscaling is supported with both read-write and read-only compute endpoints. Read-only compute endpoints enable Neon's [Read replica](/docs/introduction/read-replicas) feature.
 
 ## Enable autoscaling for a new project
 
@@ -6767,7 +7105,7 @@ Configuring autoscaling for an existing project sets the project's default, whic
 To configure autoscaling default settings for an existing project:
 
 1. Select a project in the Neon console.
-1. On the Neon **Dashboard**, select **Settings**.
+1. On the Neon **Dashboard**, select **Project settings**.
 1. Select **Compute** and click **Change**.
 1. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
     ![Autoscaling](/docs/guides/autoscaling_existing_project.png)
@@ -6780,7 +7118,7 @@ To configure autoscaling default settings for an existing project:
 
 ## Enable autoscaling for a compute endpoint
 
-[Neon Pro Plan](/docs/introduction/pro-plan) users can edit an individual compute endpoint to alter the compute endpoint configuration, which includes autoscaling.
+Users on paid plans can edit an individual compute endpoint to alter the compute endpoint configuration, which includes autoscaling.
 
 To edit a compute endpoint:
 
@@ -6791,7 +7129,7 @@ To edit a compute endpoint:
 1. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
     ![Autoscaling edit settings](/docs/guides/autoscaling_edit_settings.png)
 
-    Neon scales the compute size up and down within the specified range to meet workload demand. Autoscaling currently supports a range of 1/4 (.25) to 7 vCPUs. One vCPU has 4 GB of RAM, 2 vCPUs have 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPUs.
+    Neon scales the compute size up and down within the specified range to meet workload demand. Autoscaling currently supports a range of 1/4 (.25) to 8 vCPUs. One vCPU has 4 GB of RAM, 2 vCPUs have 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPUs.
 
     <Admonition type="note">
     You can configure the autosuspend setting for your compute endpoint at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute endpoint is automatically suspended. This feature is also referred to as "scale-to-zero".
@@ -6800,13 +7138,9 @@ To edit a compute endpoint:
 
 ## Monitor autoscaling
 
-<Admonition type="comingSoon">
-The Autoscaling Graphs are available for select users and will be expanded to all paying users soon.
-</Admonition>
-
 From the Neon Console, you can view how your vCPU and RAM usage scales over time (last hour, day, and week). From the **Branches** page, open the branch you want to inspect, then open the **Edit** modal for its compute endpoint.
 
-![autoscaling graph example](/docs/guides/autoscaling_graphs_sample.png)
+![autoscaling graph example](/docs/guides/autoscaling_graphs_sample.png "no-border")
 
 Some key points about this Autoscaling view:
 
@@ -6816,7 +7150,11 @@ Some key points about this Autoscaling view:
 
 Place your cursor anywhere in the graph to get more usage detail about that particular point in time.
 
-![autoscaling graph detail](/docs/guides/autoscaling_graph_detail.png)
+![autoscaling graph detail](/docs/guides/autoscaling_graph_detail.png "no-border")
+
+<Admonition type="note">
+To refresh the graph, close the **Edit compute endpoint** drawer and reopen it.
+</Admonition>
 
 See below for some rules of thumb on actions you might want to take based on trends you see in this view.
 
@@ -6842,23 +7180,36 @@ title: Configuring Autosuspend for Neon computes
 subtitle: Learn how to configure Neon's Autosuspend feature to control when your compute
   scales to zero
 enableTableOfContents: true
-updatedOn: '2024-01-10T18:34:05.854Z'
+updatedOn: '2024-02-19T18:57:12.550Z'
 ---
 
-Neon's [Autosuspend](/docs/introduction/auto-suspend) feature controls when a Neon compute instance transitions to an `Idle` state (scales to zero) due to inactivity. This guide demonstrates how to configure the autosuspend setting in your Neon project.
+Neon's [Autosuspend](/docs/introduction/auto-suspend) feature controls when a Neon compute endpoint transitions to an `Idle` state (scales to zero) due to inactivity. For example, if your autosuspend setting is 5 minutes, your compute will "scale to zero" after it's been inactive for 5 minutes. Neon's paid plans allow you to configure this time period to keep your compute active for longer, suspend it more quickly, or disable autosuspension entirely, depending on your requirements. 
 
-[Neon Pro Plan](/docs/introduction/pro-plan) users can configure the autosuspend setting for a new project, for an existing project, or for an individual compute endpoint. Configuring the autosuspend setting for a new or existing project sets the project's default autosuspend setting, which is used from that point forward when creating new compute endpoints.
+This guide demonstrates how to configure the autosuspend setting for a new project, for an existing project, or for an individual compute endpoint.
+
+### Autosuspend limits
+
+The autosuspend limits differ by [Neon plan](/docs/introduction/plans). The limits for each plan are outlined below. The initial default setting for all plans is 5 minutes.
+
+
+| Plan       | Autosuspend delay                | Can be disabled? |
+|------------|----------------------------------|------------------|
+| Free Tier  | 5 minutes                        |                  |
+| Launch     | 5 minutes to 7 days              | &check;          |
+| Scale      | 1 minute to 7 days               | &check;          |
+| Enterprise | Fully configurable               | &check;          |
+
 
 ### Configure the autosuspend setting for a new project
 
-Configuring the autosuspend setting for a new project sets the project's default, which is applied to all compute endpoints created from that point forward. You can adjust this autosuspend default at any time, or configure the setting for individual compute endpoints later, as necessary.
+Configuring the autosuspend setting for a new project sets the project's default, which is applied to all computes created from that point forward. You can adjust this autosuspend default at any time, or configure the setting for individual compute endpoints later, as necessary.
 
 To configure the autosuspend default setting when you first create your project:
 
 1. Navigate to the [Neon Console](https://console.neon.tech).
 1. If you are creating your very first project, click **Create a project**. Otherwise, click **New Project**.
 1. Specify a name, a Postgres version, and a region.
-1. Under **Compute size**, select **Suspend compute after a period of inactivity** and specify your delay period (5 minutes or a custom period). The maximum setting is 7 days. Deselecting **Suspend compute after a period of inactivity** means the compute is always active.
+1. Under **Compute size**, select **Suspend compute after a period of inactivity** and specify your delay period. Deselecting **Suspend compute after a period of inactivity** disables autosuspend, meaning the compute is always active.
 
     <Admonition type="note">
     You can configure default **Compute size** settings at the same time.
@@ -6874,9 +7225,9 @@ Configuring the autosuspend setting for an existing project sets the project's d
 To configure the autosuspend default for an existing project:
 
 1. Select a project in the Neon console.
-1. On the Neon **Dashboard**, select **Settings**.
+1. On the Neon **Dashboard**, select **Project settings**.
 1. Select **Compute** and click **Change**.
-1. Select **Suspend compute after a period of inactivity** and specify your delay period (5 minutes or a custom period). The maximum setting is 7 days. Deselecting **Suspend compute after a period of inactivity** means the compute is always active.
+1. Select **Suspend compute after a period of inactivity** and specify your delay period. Deselecting **Suspend compute after a period of inactivity** disables autosuspend, meaning the compute is always active.
 
     <Admonition type="note">
     You can configure default **Compute size** settings at the same time.
@@ -6892,7 +7243,7 @@ To configure the autosuspend setting for an individual compute endpoint:
 1. Select a branch.
 1. Click the menu in the **Computes** table, and select **Edit**.
 ![Edit compute endpoint menu](/docs/guides/autoscaling_edit.png)
-1. Under **Compute size**, select **Suspend compute after a period of inactivity** and specify your delay period (5 minutes or a custom period). The maximum setting is 7 days. Deselecting **Suspend compute after a period of inactivity** means the compute is always active.
+1. Under **Compute size**, select **Suspend compute after a period of inactivity** and specify your delay period. The maximum setting is 7 days. Deselecting **Suspend compute after a period of inactivity** means the compute is always active.
 
     <Admonition type="note">
     You can configure **Compute size** settings for your compute endpoint at the same time.
@@ -6900,9 +7251,9 @@ To configure the autosuspend setting for an individual compute endpoint:
 
 1. Click **Save**.
 
-## Monitor auto-suspension
+## Monitor autosuspend
 
-You can monitor auto-suspension on the **Branches** page in the Neon Console. A compute reports either an **Active** or **Idle** status.
+You can monitor autosuspend on the **Branches** page in the Neon Console. A compute reports either an **Active** or **Idle** status.
 
 ![Compute endpoint status](/docs/connect/compute_endpoint_state.png)
 
@@ -6988,19 +7339,13 @@ Recover lost data or track down issues by restoring a branch to its history, or 
 
 <a href="/docs/guides/branch-restore" description="Learn how to revert changes or recover lost data using Neon Branch Restore with Time Travel Assist" icon="invert">Branch Restore with Time Travel Assist</a>
 
-<a href="/docs/guides/branching-pitr" description="Learn how to create point-in-time branches" icon="screen">Create a branch from the past</a>
-
-<a href="https://neon.tech/blog/time-travel-with-postgres" description="Blog: Time travel with database branching to recover lost data" icon="screen">Time Travel with Postgres</a>
-
 </DetailIconCards>
 
 ## Branching guides
 
-Learn how to refresh a branch or promote a branch to become your primary branch.
+Learn how to promote a branch to become your primary branch.
 
 <DetailIconCards>
-
-<a href="/docs/guides/branch-refresh" description="Learn how to refresh a branch with the latest data using the Neon API" icon="split-branch">Refresh a branch</a>
 
 <a href="/docs/guides/branch-promote" description="Promote a branch to the primary branch of your Neon project using the Neon API" icon="split-branch">Promote a branch</a>
 
@@ -7026,23 +7371,23 @@ title: Branch Restore
 subtitle: Learn how to revert changes or recover lost data using Neon Branch Restore
   with Time Travel Assist
 enableTableOfContents: true
-updatedOn: '2024-02-08T20:07:48.873Z'
+redirectFrom:
+ - /docs/guides/branching-pitr
+ - /docs/guides/branch-refresh
+updatedOn: '2024-02-21T19:34:16.273Z'
 ---
-<Admonition type="comingSoon">
-This feature is available for select users and will be expanded to all users soon.
-</Admonition>
 
-With Neon's branch restore capability, you can easily restore a branch to an earlier state in its history. You can also use Time Travel Assist to run read-only queries against any point in your history retention window to pinpoint the exact moment you need to restore to.
+With Neon's branch restore capability, you can easily restore a branch to an earlier state in its own or another branch's history. You can also use Time Travel Assist to connect to a specific point in your history retention window, where you can run read-only queries to pinpoint the exact moment you need to restore to.
 
 ## How branch restore works
 
 ### Restore from history
 
-The restore operation lets you revert the state of a selected branch to an earlier point in time. For example, you can revert to a state just before a data loss occurred.
+The restore operation lets you revert the state of a selected branch to an earlier point in time in its own or another branch's history, using time and date or Log Sequence Number (LSN). For example, you can revert to a state just before a data loss occurred.
 
 ![branch restore to timestamp](/docs/guides/branch-restore_feature.png)
 
-By default, the history retention for a Neon project is 7 days. You can revert a branch to any time within that configured [retention window](/docs/manage/projects#configure-history-retention), down to the millisecond.
+The default history retention for a Neon project differs by plan. You can revert a branch to any time within your configured [retention window](/docs/manage/projects#configure-history-retention), down to the millisecond.
 
 A few key points to keep in mind about the restore operation:
 
@@ -7097,15 +7442,15 @@ Similar to the manual restore operation using the Neon Console and API described
 
 ### Time Travel Assist
 
-To help troubleshoot your data's history, you can use Time Travel Assist to run read-only queries against any selected timestamp within your history retention window. It's a good idea to run this kind of query to make sure you've targeted the correct restore point before you restore a branch.
+To help troubleshoot your data's history, you can use Time Travel Assist to connect to any selected point in time within your history retention window and then run queries against that connection. It's a good idea to run this kind of query to make sure you've targeted the correct restore point before you restore a branch.
 
-The restore operation and Time Travel Assist are meant to work together. When you select a branch and timestamp, you are setting up Time Travel Assist to automatically query against that particular point in time.
+The restore operation and Time Travel Assist are meant to work together. When you select a branch and timestamp, you can either use that selection as your restore point or as the point in time connection to query against.
 
 ![Time travel assist](/docs/guides/branch_time_travel.png)
 
 #### Ephemeral endpoints
 
-Time travel queries leverage Neon's instant branching capability to create a temporary branch and compute endpoint at the selected point in time, which is automatically removed once you are done with your time travel querying. The compute endpoints are ephemeral: they are not listed on the **Branches** page or in a CLI or API list branches request.
+Time travel assist leverages Neon's instant branching capability to create a temporary branch and compute endpoint at the selected point in time, which is automatically removed once you are done querying against this point-in-time connection. The compute endpoints are ephemeral: they are not listed on the **Branches** page or in a CLI or API list branches request.
 
 However, you can see the history of operations related to the creation and deletion of the ephemeral branch on the **Operations** page:
 
@@ -7120,27 +7465,172 @@ The ephemeral endpoints are created according to your configured [default comput
 
 ## How to use branch restore
 
+You can use the Neon Console, CLI, or API to restore branches.
+
+<Tabs labels={["Console", "CLI", "API"]}>
+
+<TabItem>
+
 ### Restoring from history
 
-Use the **Restore** page to restore a branch to an earlier timestamp in its history. Choose your branch, pick your timestamp, and then click the **Restore branch** button.
+Use the **Restore** page to restore a branch to an earlier timestamp in its history.
+
+First, select the **Branch to restore**. This is the target branch for the restore operation.
 
 ![branch restore to timestamp](/docs/guides/branch_restore_timestamp.png)
+
+#### To restore a branch from its own history:
+
+1. Make sure the **From history** tab is selected. 
+1. Choose your timestamp or switch to LSN.
+ 1. Click **Next**.
+
+    A confirmation window opens giving you details about the pending restore operation. Review these details to make sure you've made the correct selections.
+
+1. Click **Restore** to complete the operation.
+
+#### To restore from another branch:
+
+ 1. Switch to the **From another branch** tab.
+ 1. Select the source branch that that you want to restore data from.
+ 1. By default, the operation pulls the latest data from the source branch. If you want to pull from an earlier point in time, disable **Restore from latest data (head)**.
+
+     The timestamp selector will appear.
+
+ 1. Choose your timestamp or switch to the LSN input.
+ 1. Click **Next**, confirm the details of the operation, then click **Restore** to complete.
 
 All databases on the selected branch are instantly updated with the data and schema from the chosen point in time. From the **Branches** page, you can now see a backup branch was created with the state of the branch at the restore point in time.
 
 ![branch restore backup branch](/docs/guides/branch_restore_backup_file.png)
 
+</TabItem>
+
+<TabItem>
+Using the CLI, you can restore a branch to an earlier point in its history or another branch's history using the following command:
+
+``` bash shouldWrap
+neonctl branches restore <target id|name> <source id|name @ timestamp|lsn>
+```
+
+In the `target id|name` field, specify the ID or name of the branch you want to restore. In the `source id|name timestamp|lsn` field, specify the source branch you want to restore from (mandatory), along with the point-in-time identifier (optional), which can be either an ISO 8601-formatted timestamp or the LSN. If you omit the point-in-time identifier, the operation defaults to the latest data (HEAD) for the source branch. Concatenate the source identifier and time identifier with `@`: for example, `dev/jordan@2023-12-12T12:00:00Z`.
+
+#### Restore a branch to its own history
+
+If you want to restore a branch to an earlier point in time, use the syntax `^self` in the `<source id|name>` field. For example:
+
+```bash shouldWrap
+neonctl branches restore dev/alex ^self@2024-01-01T00:00:00Z --preserve-under-name alex_old
+```
+
+This command resets the target branch `dev/alex` to its state at the start of 2024, saving the latest data in a backup called `alex_old` using the `preserve-under-name` parameter (mandatory when resetting to self).
+
+#### Restore from parent
+
+If you want to restore a target branch from its parent, you can use the special syntax `^parent` in the `<source id|name>` field. For example:
+
+``` bash
+neonctl branches restore dev/alex ^parent
+```
+
+This command will restore the target branch `dev/alex` to the latest data (HEAD) of its parent branch.
+
+#### Restore to another branch's history
+
+Here is an example of a command that restores a target branch to an earlier point in time of another branch's history:
+
+```bash shouldWrap
+neonctl branches restore dev/alex dev/jordan@0/12345
+```
+
+This command will restore the target branch `dev/alex` to an earlier point in time from the source branch `dev/jordan`, using the LSN `0/12345` to specify the point in time. If you left out the point-in-time identifier, the command would default to the latest data (HEAD) for the source branch `dev/jordan`.
+
+For full CLI documentation for `branches restore`, see [branches restore](/docs/reference/cli-branches#restore).
+</TabItem>
+
+<TabItem>
+To restore a branch using the API, use the endpoint:
+
+```bash
+POST /projects/{project_id}/branches/{branch_id_to_restore}/restore
+```
+
+This endpoint lets you restore a branch using the following request parameters:
+
+| Parameter              | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|------------------------|----------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **source_branch_id**   | `string` | Yes      | The ID of the branch you want to restore from.<br /><br />To restore to the latest data (head), omit `source_timestamp` and `source_lsn`.<br /><br />To restore a branch to its own history (`source_branch_id` equals branch's own Id), you must include:<br />- A time period: `source_timestamp` or `source_lsn`<br />- A backup branch: `preserve_under_name`                                                                                       |
+| **source_lsn**         | `string` | No       | A Log Sequence Number (LSN) on the source branch. The branch will be restored with data up to this LSN.                                                                                                                                                                                                                                                                                                                          |
+| **source_timestamp**   | `string` | No       | A timestamp indicating the point in time on the source branch to restore from. Use ISO 8601 format for the date-time string.                                                                                                                                                                                                                                                                                                     |
+| **preserve_under_name**| `string` | No       | If specified, a backup is created: the latest version of the branch's state is preserved under a new branch using the specified name.<br /><br />**Note:** This field is required if:<br />- The branch has children. All child branches will be moved to the newly created branch.<br />- You are restoring a branch to its own history (`source_branch_id` equals the branch's own ID).                                                               |
+
+#### Restoring a branch to its own history
+
+In the following example, we are restoring branch `br-twilight-river-31791249` to an earlier point in time, `2024-02-27T00:00:00Z`, with a new backup branch named `backup-before-restore`. Note that the branch id in the `url` matches the value for `source_branch_id`.
+
+```bash shouldWrap
+curl --request POST \ // [!code word:br-twilight-river-31791249]
+     --url https://console.neon.tech/api/v2/projects/floral-disk-86322740/branches/br-twilight-river-31791249/restore \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \
+     --data '
+{
+  "source_branch_id": "br-twilight-river-31791249",
+  "source_timestamp": "2024-02-27T00:00:00Z",
+  "preserve_under_name": "backup-before-restore"
+}
+' | jq
+```
+
+### Restoring to the latest data from another branch
+
+In this example, we are restoring a development branch `dev/alex` (branch ID `br-twilight-river-31791249`) to the latest data (head) of its parent branch `br-jolly-star-07007859`. Note that we don't include any time identifier or backup branch name; this is a straight reset of the branch to the head of its parent.
+
+```bash shouldWrap
+curl --request POST \ // [!code word:br-twilight-river-31791249]
+     --url https://console.neon.tech/api/v2/projects/floral-disk-86322740/branches/br-twilight-river-31791249/restore \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \
+     --header 'Content-Type: application/json' \ // [!code word:br-jolly-star-07007859]
+     --data '
+{ 
+  "source_branch_id": "br-jolly-star-07007859"}
+' | jq
+```
+
+### Restoring to the earlier state of another branch
+
+In this example, we are restoring branch `dev/jordan` (branch ID `br-damp-smoke-91135977`) to branch `dev/alex` (branch ID `br-twilight-river-31791249`) at the point in time of `Feb 26, 2024 12:00:00.000 AM`.
+
+```bash shouldWrap
+curl --request POST \ // [!code word:br-damp-smoke-91135977]
+     --url https://console.neon.tech/api/v2/projects/floral-disk-86322740/branches/br-damp-smoke-91135977/restore \
+     --header 'Accept: application/json' \
+     --header "Authorization: Bearer $NEON_API_KEY" \ //  [!code word:br-jolly-star-07007859]
+     --header 'Content-Type: application/json' \ 
+     --data '
+{ 
+  "source_branch_id": "br-jolly-star-07007859", 
+  "source_timestamp": "2024-02-26T12:00:00Z"
+}
+' | jq
+```
+
+</TabItem>
+</Tabs>
+
 To make sure you choose the right restore point, we encourage you to use Time Travel Assist _before_ running a restore job, but the backup branch is there if you need it.
 If you do need to revert your changes, you can [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent) since that is your branch's relationship to the restore point backup.
 
-### Performing time travel queries
+### Using Time Travel Assist
 
 Here is how to use the Time Travel Assist SQL editor:
 
 1. Select the branch you want to query against, then select a timestamp, the same as you would to [Restore a branch](#restore-a-branch-to-an-earlier-state).
 
-    This makes the selection for the Time Travel query. Notice the updated fields above the SQL editor show the **branch** and **timestamp** you just selected.
-    ![Time travel query](/docs/guides/time_travel_assist.png)
+    This makes the selection for Time Travel Assist. Notice the updated fields above the SQL editor show the **branch** and **timestamp** you just selected.
+    ![Time travel assist](/docs/guides/time_travel_assist.png)
   
 1. Check that you have the right database selected to run your query against. Use the database selector under the SQL editor to switch to a different database for querying against.
 1. Write your read-only query in the editor, then click **Query at timestamp** to run the query. You don't have to include time parameters in the query; the query is automatically targeted to your selected timestamp.
@@ -7164,7 +7654,7 @@ There are minimal impacts to billing from the branch restore and Time Travel Ass
 
 Restoring a branch to its own history adds to your number of branches &#8212; due to the restore_backup branch &#8212; but since they do not have any compute endpoint attached, they do not add to any consumption costs.
 
-### Time travel queries (billing)
+### Time travel Assist (billing)
 
 The ephemeral endpoints used to run your Time Travel Assist queries do contribute to your consumption usage totals for the billing period, like any other active endpoint that consumes resources.
 
@@ -7178,139 +7668,7 @@ A couple of details to note:
 - You cannot delete a backup branch without first removing the child branch.
 - Once you restore a branch, [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent) restores from the restore backup branch, not the original parent.
 
-
-# Branching — Point-in-time restore
-
----
-title: Branching — Point-in-time restore
-subtitle: Create a new point-in-time branch or restore your data to a previous state
-  using Neon's branching feature
-enableTableOfContents: true
-redirectFrom:
-  - /docs/tutorial/data-recovery
-  - /docs/guides/branching-data-recovery
-updatedOn: '2024-02-08T15:20:54.280Z'
----
-
-<Admonition type="comingSoon" title="New feature: Branch restore">
-A simpler one-click branch restore operation is available now for select users, coming soon to all users. Read more about it [here](/docs/guides/branch-restore). The restore procedure described on this page is still valid and might fit your specific use case.
-</Admonition>
-
-Neon retains a history of changes for all branches in a Neon project, which allows you to create a branch that restores data to any time within the defined history retention period. You can use this capability to recover lost data, which is a form of Point-in-time restore (PITR).
-
-The history retention period is configurable. The supported range is 0 to 7 days for [Neon Free Tier](/docs/introduction/free-tier) users, and 0 to 30 days for [Neon Pro Plan](/docs/introduction/pro-plan) users. For configuration instructions, see [Configure history retention](/docs/manage/projects#configure-history-retention).
-
-This guide shows how to recover your data to a point in time before a data loss occurred using Neon's branching feature.
-
-## Create a point-in-time branch
-
-Suppose that you have a table named `orders` that was accidentally deleted by a faulty query. If you know the time you ran the faulty query or when the data loss was first discovered, you can create a point-in-time branch with the data as it existed before the data loss occurred.
-
-To create a point-in-time branch:
-
-1. In the Neon Console, select a project.
-2. Select **Branches**.
-3. Click **New Branch** to open the branch creation dialog.
-![Create branch dialog](/docs/guides/create_data_recovery_branch.png)
-4. Enter a name for the branch.
-5. Select a parent branch.
-6. Under **Include data up to**, select the **Specific date and time** option, which creates a branch with data up to the specified date and time. For example, if the data loss occurred on Nov 26, 2023 at 5:01pm, select Nov 11, 2023, at 5:00pm, just before the faulty query was run.
-
-    <Admonition type="note">
-    The **Specific date and time** option does not include data changes that occurred after the specified date and time, which means the branch contains data as it existed previously. You can only specify a date and time that falls within your history retention window, which is 7 days by default. See [Configure history retention](/docs/manage/projects#configure-history-retention).
-    </Admonition>
-
-8. Click **Create new branch** to create your branch.
-
-You are directed to the **Branches** page where you are shown the details for your new branch.
-
-<Admonition type="tip">
-You can also create point-in-time branches using the [Neon CLI](/docs/reference/neon-cli). For example, you can perform the same action described above with the following CLI command:
-
-```bash
-neonctl branches create --name recovery_branch --parent 2023-07-11T10:00:00Z
-```
-
-The timestamp must be provided in ISO 8601 format. You can use this [timestamp converter](https://www.timestamp-converter.com/).
-
-</Admonition>
-
-## Connect to your branch
-
-Connecting to your newly created branch requires connecting via the branch's compute endpoint. The following steps describe how to connect using `psql` and a connection string obtained from the Neon Console.
-
-<Admonition type="note">
-You can also query the databases in a branch from the Neon SQL Editor. For instructions, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor).
-</Admonition>
-
-To connect to your branch:
-
-1. In the Neon Console, select your project.
-2. On the project **Dashboard**, under **Connection Details**, select your `recovery_branch`, the database, and the role you want to connect with.
-![Connection details widget recovery branch](/docs/guides/data_recovery_connection_details.png)
-3. Copy the connection string. A connection string includes your role name, password, compute endpoint hostname, and database name.
-4. Connect with `psql`.
-
-   ```bash shouldWrap
-   psql postgres://[user]:[password]@[neon_hostname]/[dbname]
-   ```
-
-## Verify the data
-
-Check to see if the lost data is now present. For instance, if you lost an `orders` table, you might run a query like this one to verify that the data is available in your newly created branch:
-
-```sql
-SELECT * FROM orders LIMIT 10;
-```
-
-## Change your primary branch
-
-You now have a production branch with lost data and a recovery branch with the data in the desired state. You could dump data from the recovery branch and load it into the production branch using dump and restore utilities like `pg_dump` and `pg_restore`, or you can make the recovery branch your new primary branch and use it for production.
-
-To make the recovery branch your new primary:
-
-1. In the Neon Console, select a project.
-2. Select **Branches** to view the branches for the project.
-3. Select your `recovery_branch` from the table.
-4. On the branch details page, select **Set as Primary**.
-
-Making a branch your primary branch ensures that access to data on the branch is never interrupted, even when you exceed project limits. For more information, see [Primary branch](/docs/manage/branches#primary-branch).
-
-<Admonition type="note">
-If your previous primary branch was your project's root branch (the initial branch created with your project), it cannot be deleted. Deleting a root branch is not yet supported. In the meantime, you can rename a root branch (perhaps adding an `OLD` or `DO_NOT_USE` prefix to its name) and remove data from it to ensure that it's not used accidentally or consuming storage space.
-</Admonition>
-
-## Update your connections
-
-To use your new primary branch with your applications, update your application connection details. To do so, replace your current connection details with the connection details for your new primary branch, which you retrieved earlier when connecting to your branch.
-
-Alternatively, if you do not want change connection details, you can move the compute endpoint from your old primary branch to the new branch. See [Reassign the compute endpoint](#reassign-the-compute-endpoint) for instructions.
-
-## Reassign the compute endpoint
-
-To avoid changing connection details in your application, you can reassign the compute endpoint from your old primary branch to your new branch. If you followed the steps above, you created a branch with a compute endpoint. In this case, you have to:
-
-1. **Remove the compute endpoint from the new branch**
-
-   For instructions, see [Delete a compute endpoint](/docs/manage/endpoints#delete-a-compute-endpoint).
-
-2. **Move the compute endpoint from the old primary branch to the new branch**
-
-   This action is currently only supported in the Neon API. See [Update a compute endpoint with the CLI](/docs/manage/endpoints#update-a-compute-endpoint-with-the-api) for instructions.
-
-## Examples
-
-- [Using Neon branching for instant point-in-time restore](https://neon.tech/blog/point-in-time-recovery). The blog post describes point-in-time restore and provides a script for creating a recovery branch, reassigning a compute endpoint, and setting the new branch as the primary.
-- [Time Travel with Serverless Postgres](https://neon.tech/blog/time-travel-with-postgres). This blog post (with video) describes a data recovery example that uses Neon's branching feature, the Neon API, and a bisect script to recover lost data.
-
-The following GitHub repositories are available for these examples:
-
-<DetailIconCards>
-<a href="https://github.com/neondatabase/restore-neon-branch" description="A script to restore a Neon branch to a previous state while preserving the same endpoint" icon="github">Restore a Neon database</a>
-<a href="https://github.com/kelvich/branching_demo_bisect" description="Use Neon branching, the Neon API, and a bisect script to recover lost data" icon="github">Neon branch bisect demo</a>
-</DetailIconCards>
-
-<NeedHelp/>
+  For example, let's say you have a `main` branch with a child development branch `dev/alex`. You are working on `dev/alex` and decide to restore to an earlier point in time to fix something during development. At this point, `dev/alex`'s parent switches from `main` to the backup `dev/alex_old_timestamp`. A day later, you want to refresh `dev/alex` with the latest data from `main`. You can't use **Reset from parent**, since the backup is now the parent. Instead, use **Branch Restore** and select the original parent `main` as the source. 
 
 
 # Branching — Testing queries
@@ -7535,6 +7893,16 @@ You do not need to specify the variable name explicitly when using a Neon CLI co
 
 This API key configuration ensures that the API key is kept secure while still providing a way to authenticate your CLI commands. Remember, you should handle your API key with the same level of security as your other credentials.
 
+## Restoring a branch to its own or another branch's history
+
+Using the CLI, you can restore a branch to an earlier point in its history or another branch's history using the following command:
+
+``` bash shouldWrap
+neonctl branches restore <target id|name> <source id|name @ timestamp|lsn>
+```
+
+For full details about the different restore options available with this command, see [Restoring using the CLI](/docs/guides/branch-restore#how-to-use-branch-restore).
+
 <NeedHelp/>
 
 
@@ -7544,7 +7912,7 @@ This API key configuration ensures that the API key is kept secure while still p
 title: Branching with the Neon API
 subtitle: Learn how to create and delete branches with the Neon API
 enableTableOfContents: true
-updatedOn: '2024-01-09T23:16:47.220Z'
+updatedOn: '2024-02-19T18:57:12.556Z'
 ---
 The examples in this guide demonstrate creating, viewing, and deleting branches using the Neon API. For other branch-related API methods, refer to the [Neon API reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
 
@@ -7589,7 +7957,7 @@ curl 'https://console.neon.tech/api/v2/projects/<project_id>/branches' \
 }' | jq
 ```
 
-- The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API. It is a generated value that looks something like this: `autumn-disk-484331`.
+- The `project_id` for a Neon project is found on the **Project settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API. It is a generated value that looks something like this: `autumn-disk-484331`.
 - The `endpoints` attribute creates a compute endpoint, which is required to connect to the branch. Neon supports `read_write` and `read_only` endpoint types. A branch can be created with or without a compute endpoint. You can specify `read_only` to create a [read replica](/docs/guides/read-replica-guide).
 - The `branch` attribute specifies the parent branch.
 - The `parent_id` can be obtained by listing the branches for your project. See [List branches](#list-branches-with-the-api). The `parent_id` is the `id` of the branch you are branching from. A branch `id` has a `br-` prefix. You can branch from your Neon project's primary branch or a non-primary branch.
@@ -7676,7 +8044,7 @@ curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches' \
   -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
-The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
+The `project_id` for a Neon project is found on the **Project settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
 
 The response lists the project's primary branch and any child branches. The name of the primary branch in this example is `main`.
 
@@ -7727,7 +8095,7 @@ curl -X 'DELETE' \
   -H "Authorization: Bearer $NEON_API_KEY" | jq
 ```
 
-- The `project_id` for a Neon project is found on the **Settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
+- The `project_id` for a Neon project is found on the **Project settings** page in the Neon Console, or you can find it by listing the projects for your Neon account using the Neon API.
 - The `branch_id` can be found by listing the branches for your project. The `<branch_id>` is the `id` of a branch. A branch `id` has a `br-` prefix. See [List branches](#list-branches-with-the-api).
 
 The response shows information about the branch being deleted and the `suspend_compute` and `delete_timeline` operations that were initiated.
@@ -7772,6 +8140,16 @@ The response shows information about the branch being deleted and the `suspend_c
 
 You can verify that a branch is deleted by listing the branches for your project. See [List branches](#list-branches-with-the-api). The deleted branch should no longer be listed.
 
+## Restoring a branch using the API
+
+To revert changes or recover lost data, you can use the branch restore endpoint in the Neon API.
+
+```bash
+POST /projects/{project_id}/branches/{branch_id_to_restore}/restore
+```
+
+For details on how to use this endpoint to restore a branch to its own or another branch's history, restore a branch to the head of its parent, and other restore options, see [Branch Restore using the API](/docs/guides/branch-restore#how-to-use-branch-restore).
+
 <NeedHelp/>
 
 
@@ -7781,7 +8159,7 @@ You can verify that a branch is deleted by listing the branches for your project
 title: Automate branching with GitHub Actions
 subtitle: Create and delete branches with GitHub Actions
 enableTableOfContents: true
-updatedOn: '2023-12-07T19:06:47.671Z'
+updatedOn: '2024-02-19T18:57:12.555Z'
 ---
 
 Neon provides the following GitHub Actions for working with Neon branches, which you can add to your CI workflows:
@@ -7802,7 +8180,7 @@ The source code for this action is available on [GitHub](https://github.com/neon
 
 - Using the action requires a Neon API key. For information about obtaining an API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
 - Add your Neon API key to your GitHub Secrets:
-    1. In your GitHub repository, go to **Settings** and locate **Secrets** at the bottom of the left sidebar.
+    1. In your GitHub repository, go to **Project settings** and locate **Secrets** at the bottom of the left sidebar.
     2. Click **Actions** > **New Repository Secret**.
     3. Name the secret `NEON_API_KEY` and paste your API key in the **Secret** field
     4. Click **Add Secret**.
@@ -7829,7 +8207,7 @@ jobs:
 
 ### Input variables
 
-- `project_id`: The ID of your Neon project. You can find this value in the Neon Console, on the **Settings** page.
+- `project_id`: The ID of your Neon project. You can find this value in the Neon Console, on the **Project settings** page.
 - `parent_branch_id`: The ID of the parent branch, typically the `main` branch of your project. You can find this value in the Neon Console. Select **Branches** from the sidebar, and then select the branch. A branch ID has a `br-` prefix.
 - `branch_name`: This is an optional parameter. If unspecified, the branch name will default to the same value as the `branch_id` of the newly created branch, which is a generated value that starts with a `br-` prefix.
 - `api_key`: An API key created in your Neon account. For instructions, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
@@ -7861,7 +8239,7 @@ The source code for this action is available on [GitHub](https://github.com/neon
 
 - Using the action requires a Neon API key. For information about obtaining an API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
 - Add your Neon API key to your GitHub Secrets:
-    1. In your GitHub repository, go to **Settings** and locate **Secrets** at the bottom of the left sidebar.
+    1. In your GitHub repository, go to **Project settings** and locate **Secrets** at the bottom of the left sidebar.
     2. Click **Actions** > **New Repository Secret**.
     3. Name the secret `NEON_API_KEY` and paste your API key in the **Secret** field
     4. Click **Add Secret**.
@@ -7885,7 +8263,7 @@ jobs:
 
 ### Input variables
 
-- `project_id`: The ID of your Neon project. You can find this value in the Neon Console, on the **Settings** page.
+- `project_id`: The ID of your Neon project. You can find this value in the Neon Console, on the **Project settings** page.
 - `branch:` The ID or name of the branch you want to delete. Select **Branches** from the sidebar, and then select the branch. A branch ID has a `br-` prefix.
 - `api_key`: An API key created in your Neon account. For instructions, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
 
@@ -7904,7 +8282,7 @@ This GitHub Action resets a child branch with the latest data from its parent br
 
 - Using this action requires a Neon API key. For information about obtaining an API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
 - Add your Neon API key to your GitHub Secrets:
-    1. In your GitHub repository, go to **Settings** and locate **Secrets** at the bottom of the left sidebar.
+    1. In your GitHub repository, go to **Project settings** and locate **Secrets** at the bottom of the left sidebar.
     2. Click **Actions** > **New Repository Secret**.
     3. Name the secret `NEON_API_KEY` and paste your API key in the **Secret** field.
     4. Click **Add Secret**.
@@ -7930,7 +8308,7 @@ jobs:
 
 ### Input variables
 
-- `project_id`: The ID of your Neon project. Find this value in the Neon Console on the **Settings** page.
+- `project_id`: The ID of your Neon project. Find this value in the Neon Console on the **Project settings** page.
 - `parent`: If specified, the branch will be reset to the latest (HEAD) of parent branch.
 - `branch`: The name or id of the branch to reset.
 - `api_key`: An API key created in your Neon account. See [Create an API key](/docs/manage/api-keys#create-an-api-key) for instructions.
@@ -7957,265 +8335,6 @@ The following example applications use GitHub Actions to create and delete branc
 <NeedHelp/>
 
 
-# Refresh a branch with the Neon API
-
----
-title: Refresh a branch
-subtitle: Learn how to refresh a Neon branch using the Neon API
-enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.280Z'
----
-
-When you create a branch in Neon, you create a copy-on-write clone that reflects the current state of the parent branch, but what do you do if your branch becomes stale? For example, changes are made to the data or schema on the parent branch that you would like reflected in your development branch, or your branch has aged out of the point-in-time restore window (the history shared with the parent branch) and is now taking up storage space. Ideally, you want to refresh your branch but keep the same compute endpoint, whose connection details may already be configured in your application or toolchain.
-
-There isn't a single command that refreshes a branch, but you can do so using a combination of Neon API calls. The procedure described below refreshes a branch by performing the following steps:
-
-1. [Creating a new up-to-date branch without a compute endpoint](#create-a-new-up-to-date-branch-without-a-compute-endpoint)
-2. [Moving the compute endpoint from your current branch to the new branch](#move-the-compute-endpoint-from-your-current-branch-to-the-new-branch)
-3. [Deleting the old branch](#delete-the-old-branch)
-4. [Renaming the new branch to the name of the old branch](#rename-the-new-branch-to-the-name-of-the-old-branch)
-
-<Admonition type="important">
-The branch refresh procedure does not preserve data or schema changes on your current branch. Do not perform this procedure if you need to maintain changes made to your branch. The procedure is best suited to branches used in a read-only capacity.
-</Admonition>
-
-## Prerequisites
-
-The following information is required to perform the procedure:
-
-- A Neon API key. For information about obtaining an API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
-- The `project_id` for your Neon project. You can obtain a `project_id` using the [List projects](https://api-docs.neon.tech/reference/listprojects) method, or you can find it on your project's **Settings** page in the Neon Console.
-- The `branch_id` of the current branch. You can obtain a `branch_id` using the [List branches](https://api-docs.neon.tech/reference/listprojectbranches) method, or you can find it on your project's **Branches** page in the Neon Console. A `branch_id` has a `br-` prefix.
-- The `endpoint_id` of the compute endpoint associated with the current branch. You can obtain an `endpoint_id` using the [List endpoints](https://api-docs.neon.tech/reference/listprojectendpoints) method, or you can find it on the **Branches** page in the Neon Console. An `endpoint_id` has an `ep-` prefix.
-
-## Create a new up-to-date branch without a compute endpoint
-
-The [Create branch](https://api-docs.neon.tech/reference/createprojectbranch) request shown below creates a branch without a compute endpoint. The only required parameter is your Neon `project_id`. The `project_id` value used in the example below is `dark-cell-12604300`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
-
-```bash
-curl --request POST \
-     --url https://console.neon.tech/api/v2/projects/dark-cell-12604300/branches \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY" \
-     --header 'Content-Type: application/json' \
-     --data '
-{
-  "branch": {
-    "name": "dev_branch_2"
-  }
-}
-'
-```
-
-The response body includes the `id` of your new branch. You will need this value (`br-falling-flower-15986510`) to move the compute endpoint in the next step.
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "branch": {
-    "id": "br-falling-flower-15986510",
-    "project_id": "dark-cell-12604300",
-    "parent_id": "br-bold-grass-13759798",
-    "parent_lsn": "0/1EAB620",
-    "name": "dev_branch_2",
-    "current_state": "init",
-    "pending_state": "ready",
-    "creation_source": "console",
-    "primary": false,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2023-09-05T17:02:37Z",
-    "updated_at": "2023-09-05T17:02:37Z"
-  },
-  "endpoints": [],
-  "operations": [
-    {
-      "id": "d67c531b-1b00-44e0-b3d7-4bf306b030c0",
-      "project_id": "dark-cell-12604300",
-      "branch_id": "br-falling-flower-15986510",
-      "action": "create_branch",
-      "status": "running",
-      "failures_count": 0,
-      "created_at": "2023-09-05T17:02:37Z",
-      "updated_at": "2023-09-05T17:02:37Z",
-      "total_duration_ms": 0
-    }
-  ],
-  "roles": [
-    {
-      "branch_id": "br-falling-flower-15986510",
-      "name": "daniel",
-      "protected": false,
-      "created_at": "2023-09-05T16:25:57Z",
-      "updated_at": "2023-09-05T16:25:57Z"
-    }
-  ],
-  "databases": [
-    {
-      "id": 5840511,
-      "branch_id": "br-falling-flower-15986510",
-      "name": "neondb",
-      "owner_name": "daniel",
-      "created_at": "2023-09-05T16:25:57Z",
-      "updated_at": "2023-09-05T16:25:57Z"
-    }
-  ]
-}
-```
-</details>
-
-## Move the compute endpoint from your current branch to the new branch
-
-The [Update endpoint](https://api-docs.neon.tech/reference/updateprojectendpoint) API request shown below moves the compute endpoint from your current branch to the new branch. The required parameters are the `project_id` and `endpoint_id` of your current branch, and the `branch_id` of your new branch. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
-
-```bash shouldWrap
-curl --request PATCH \
-     --url https://console.neon.tech/api/v2/projects/%20dark-cell-12604300/endpoints/ep-divine-violet-55990977 \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY" \
-     --header 'Content-Type: application/json' \
-     --data '
-{
-  "endpoint": {
-    "branch_id": "br-falling-flower-15986510"
-  }
-}
-' | jq
-```
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "endpoint": {
-    "host": "ep-divine-violet-55990977.us-east-2.aws.neon.tech",
-    "id": "ep-divine-violet-55990977",
-    "project_id": "dark-cell-12604300",
-    "branch_id": "br-falling-flower-15986510",
-    "autoscaling_limit_min_cu": 0.25,
-    "autoscaling_limit_max_cu": 0.25,
-    "region_id": "aws-us-east-2",
-    "type": "read_write",
-    "current_state": "idle",
-    "settings": {},
-    "pooler_enabled": false,
-    "pooler_mode": "transaction",
-    "disabled": false,
-    "passwordless_access": true,
-    "last_active": "2000-01-01T00:00:00Z",
-    "creation_source": "console",
-    "created_at": "2023-09-05T16:53:14Z",
-    "updated_at": "2023-09-05T17:07:26Z",
-    "proxy_host": "us-east-2.aws.neon.tech",
-    "suspend_timeout_seconds": 0,
-    "provisioner": "k8s-pod"
-  },
-  "operations": []
-}
-```
-</details>
-
-## Delete the old branch
-
-The [Delete branch](https://api-docs.neon.tech/reference/deleteprojectbranch) API request shown below deletes the old branch. The old branch will take up storage space, so it's recommended that you remove it. The required parameters are the `project_id` and `branch_id`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
-
-```bash shouldWrap
-curl --request DELETE \
-     --url https://console.neon.tech/api/v2/projects/dark-cell-12604300/branches/br-wandering-forest-45768684 \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY" | jq
-```
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "branch": {
-    "id": "br-wandering-forest-45768684",
-    "project_id": "dark-cell-12604300",
-    "parent_id": "br-bold-grass-13759798",
-    "parent_lsn": "0/1EAB620",
-    "name": "dev_branch_1",
-    "current_state": "ready",
-    "logical_size": 29679616,
-    "creation_source": "console",
-    "primary": false,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2023-09-05T16:53:14Z",
-    "updated_at": "2023-09-05T17:09:19Z"
-  },
-  "operations": [
-    {
-      "id": "d5e39417-c35f-43df-b248-e2ee5c7f04e3",
-      "project_id": "dark-cell-12604300",
-      "branch_id": "br-wandering-forest-45768684",
-      "action": "delete_timeline",
-      "status": "running",
-      "failures_count": 0,
-      "created_at": "2023-09-05T17:09:19Z",
-      "updated_at": "2023-09-05T17:09:19Z",
-      "total_duration_ms": 0
-    }
-  ]
-}
-```
-</details>
-
-## Rename the new branch to the name of the old branch
-
-Optionally, you can rename the new branch to the name of the old branch. The [Update branch](https://api-docs.neon.tech/reference/updateprojectbranch) API request shown below renames the new branch from `dev_branch_2` to `dev_branch_1`.
-
-```bash shouldWrap
-curl --request PATCH \
-     --url https://console.neon.tech/api/v2/projects/dark-cell-12604300/branches/br-falling-flower-15986510 \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY" \
-     --header 'Content-Type: application/json' \
-     --data '
-{
-  "branch": {
-    "name": "dev_branch_1"
-  }
-}
-'
-```
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "branch": {
-    "id": "br-falling-flower-15986510",
-    "project_id": "dark-cell-12604300",
-    "parent_id": "br-bold-grass-13759798",
-    "parent_lsn": "0/1EAB620",
-    "name": "dev_branch_1",
-    "current_state": "ready",
-    "creation_source": "console",
-    "primary": false,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2023-09-05T17:02:37Z",
-    "updated_at": "2023-09-05T17:14:47Z"
-  },
-  "operations": []
-}
-```
-
-</details>
-
-
 # Promote a branch with the Neon API
 
 ---
@@ -8223,7 +8342,7 @@ title: Promote a branch
 subtitle: Learn how to promote a branch to the primary branch of your Neon project using
   the Neon API
 enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.280Z'
+updatedOn: '2024-02-19T18:57:12.554Z'
 ---
 
 This guide describes how to create a new branch and promote it to the primary branch of your Neon project in the context of a data recovery scenario. It also describes how to move the compute endpoint from your existing primary branch to the new branch to avoid having to reconfigure your application's database connection details.
@@ -8232,8 +8351,8 @@ This guide describes how to create a new branch and promote it to the primary br
 
 Each Neon project has a primary branch. In the Neon Console, your primary branch is identified on the **Branches** page by a `PRIMARY` tag. You can designate any branch as the primary branch. The advantage of the primary branch is that its compute endpoint remains accessible if you exceed your project's limits, ensuring uninterrupted access to data that resides on the primary branch, which is typically the branch used in production.
 
-- For [Neon Free Tier](/docs/introduction/free-tier) users, the compute endpoint associated with the primary branch remains accessible if you exceed the _Active time_ limit of 100 hours per month.
-- For [Neon Pro Plan](/docs/introduction/pro-plan) users, the compute endpoint associated with the primary branch is exempt from the limit on simultaneously active computes, ensuring that it is always available. Neon has a default limit of 20 simultaneously active computes to protect your account from unintended usage.
+- For [Neon Free Tier](/docs/introduction/plans#free-tier) users, the compute endpoint associated with the primary branch is always available.
+- For users on paid plans, the compute endpoint associated with the primary branch is exempt from the limit on simultaneously active computes, ensuring that it is always available. Neon has a default limit of 20 simultaneously active computes to protect your account from unintended usage.
 
 ## Why promote a branch to primary?
 
@@ -8252,7 +8371,7 @@ The procedure described below creates a new branch and promotes it to the primar
 The following information is required to perform the procedure:
 
 - A Neon API key. For information about obtaining an API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
-- The `project_id` for your Neon project. You can obtain a `project_id` using the [List projects](https://api-docs.neon.tech/reference/listprojects) method, or you can find it on your project's **Settings** page in the Neon Console.
+- The `project_id` for your Neon project. You can obtain a `project_id` using the [List projects](https://api-docs.neon.tech/reference/listprojects) method, or you can find it on your project's **Project settings** page in the Neon Console.
 - The `branch_id` of the current primary branch. You can obtain a `branch_id` using the [List branches](https://api-docs.neon.tech/reference/listprojectbranches) method, or you can find it on the your project's **Branches** page in the Neon Console. A `branch_id` has a `br-` prefix.
 - The `endpoint_id` of the compute endpoint associated with the current primary branch. You can obtain an `endpoint_id` using the [List endpoints](https://api-docs.neon.tech/reference/listprojectendpoints) method, or you can find it on the **Branches** page in the Neon Console. An `endpoint_id` has an `ep-` prefix.
 
@@ -8557,8 +8676,10 @@ updatedOn: '2024-01-05T19:45:09.628Z'
 ---
 
 <Admonition type="note">
-Logical replication in Neon is currently in Beta. We welcome your feedback to help improve this feature. You can provide feedback via the **Feedback** link in the Neon Console or by reaching out to us on [Discord](https://t.co/kORvEuCUpJ).
+Logical replication in Neon is currently in Beta. We welcome your feedback to help improve this feature. You can provide feedback via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or by reaching out to us on [Discord](https://t.co/kORvEuCUpJ).
 </Admonition>
+
+<LRNotice/>
 
 Logical replication enables replicating data from your Neon database to external destinations, allowing for Change Data Capture (CDC) and real-time analytics. Stream your data to data warehouses, analytical database services, messaging platforms, event-streaming platforms, external Postgres databases, and more.
 
@@ -8606,8 +8727,10 @@ title: Replicate data with Airbyte
 subtitle: Learn how to replicate data from Neon with Airbyte
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-08T15:20:54.284Z'
+updatedOn: '2024-02-19T18:57:12.556Z'
 ---
+
+<LRNotice/>
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
 
@@ -8629,7 +8752,7 @@ Enabling logical replication modifies the Postgres `wal_level` configuration par
 To enable logical replication in Neon:
 
 1. Select your project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Beta**.
 4. Click **Enable** to enable logical replication.
 
@@ -8715,6 +8838,10 @@ SELECT pg_create_logical_replication_slot('airbyte_slot', 'pgoutput');
 ```
 
 `airbyte_slot` is the name assigned to the replication slot. You will need to provide this name when you set up your Airbyte source.
+
+<Admonition type="important">
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
+</Admonition>
 
 ## Create a publication
 
@@ -8804,8 +8931,10 @@ title: Replicate data with Fivetran
 subtitle: Learn how to replicate data from Neon with Fivetran
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-08T15:20:54.284Z'
+updatedOn: '2024-02-19T18:57:12.557Z'
 ---
+
+<LRNotice/>
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
 
@@ -8827,7 +8956,7 @@ Enabling logical replication modifies the Postgres `wal_level` configuration par
 To enable logical replication in Neon:
 
 1. Select your project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Beta**.
 4. Click **Enable** to enable logical replication.
 
@@ -8926,6 +9055,10 @@ SELECT pg_create_logical_replication_slot('fivetran_pgoutput_slot', 'pgoutput');
 
 The name assigned to the replication slot is `fivetran_pgoutput_slot`. You will need to provide this name when you set up your Fivetran source.
 
+<Admonition type="important">
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
+</Admonition>
+
 ## Create a Postgres source in Fivetran
 
 1. Log in to your [Fivetran](https://fivetran.com/) account.
@@ -8995,8 +9128,10 @@ title: Replicate data with Kafka (Confluent) and Debezium
 subtitle: Learn how to replicate data from Neon with Kafka (Confluent) and Debezium
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-08T15:20:54.285Z'
+updatedOn: '2024-02-19T18:57:12.557Z'
 ---
+
+<LRNotice/>
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
 
@@ -9022,7 +9157,7 @@ Enabling logical replication modifies the PostgreSQL `wal_level` configuration p
 To enable logical replication in Neon:
 
 1. Select your project in the [Neon Console](https://console.neon.tech/app/projects).
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Beta**.
 4. Click **Enable** to enable logical replication.
 
@@ -9131,6 +9266,10 @@ SELECT pg_create_logical_replication_slot('debezium', 'pgoutput');
 
 - `debezium` is the name assigned to the replication slot. You will need to provide the slot name when you set up your source connector in Confluent.
 - `pgoutput` is the logical decoder plugin used in this example. Neon supports both `pgoutput` and `wal2json` decoder plugins.
+
+<Admonition type="important">
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
+</Admonition>
 
 ## Set up a Kafka cluster in Confluent Cloud
 
@@ -9273,8 +9412,10 @@ title: Replicate data to Materialize
 subtitle: Learn how to replicate data from Neon to Materialize
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-08T15:20:54.285Z'
+updatedOn: '2024-02-19T18:57:12.558Z'
 ---
+
+<LRNotice/>
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
 
@@ -9288,6 +9429,10 @@ In this guide, you will learn how to stream data from your Neon Postgres databas
 - A [Neon account](https://console.neon.tech/)
 - Optionally, you can install the [psql](https://www.postgresql.org/docs/current/logical-replication.html) command line utility for running commands in both Neon and Materialize. Alternatively, you can run commands from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) and Materialize **SQL Shell**, which require no installation or setup.
 
+<Admonition type="important">
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
+</Admonition>
+
 ## Enable logical replication
 
 <Admonition type="important">
@@ -9297,7 +9442,7 @@ Enabling logical replication modifies the PostgreSQL `wal_level` configuration p
 To enable logical replication in Neon:
 
 1. Select your project in the [Neon Console](https://console.neon.tech/app/projects).
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Beta**.
 4. Click **Enable** to enable logical replication.
 
@@ -9598,12 +9743,18 @@ title: Replicate data to an external Postgres instance
 subtitle: Learn how to replicate data from Neon to an external Postgres instance
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-01-12T19:25:22.357Z'
+updatedOn: '2024-02-19T18:57:12.559Z'
 ---
+
+<LRNotice/>
 
 Neon's logical replication feature allows you to replicate data from Neon to external subscribers. This guide shows you how to stream data from a Neon Postgres database to an external Postgres database.
 
 You will learn how to enable logical replication in Neon, create a publication, and configure an external Postgres database as a subscriber.
+
+<Admonition type="important">
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
+</Admonition>
 
 ## Enable logical replication
 
@@ -9614,7 +9765,7 @@ Enabling logical replication modifies the PostgreSQL `wal_level` configuration p
 To enable logical replication in Neon:
 
 1. Select your project in the Neon console.
-2. On the Neon **Dashboard**, select **Settings**.
+2. On the Neon **Dashboard**, select **Project settings**.
 3. Select **Beta**.
 4. Click **Enable**.
 
@@ -9797,14 +9948,14 @@ First, generate some changes in the `users` table on the publisher database to s
 title: Project sharing
 subtitle: Learn how to share your Neon project with others
 enableTableOfContents: true
-updatedOn: '2023-11-23T13:58:00.338Z'
+updatedOn: '2024-02-19T18:57:12.559Z'
 ---
 
-The [Neon Pro Plan](/docs/introduction/pro-plan) lets you share your Neon project with other users, giving them access to your Neon project from all supported Neon interfaces, including the Neon Console, Neon API, and Neon CLI. Follow this guide to learn how.
+You can share a Neon project with other users, giving them access to your Neon project from all supported Neon interfaces, including the Neon Console, Neon API, and Neon CLI. Follow this guide to learn how.
 
 ## Set up Neon accounts
 
-You can share your Neon project with anyone. The only requirement is that the user has a Neon account. The account can be a Neon Free Tier account or Neon Pro Plan account.
+You can share your Neon project with anyone. The only requirement is that the user has a Neon account. The account can be a Neon Free Tier account or a paid plan account.
 
 1. If the user does not have a Neon account, ask them to sign up. You can provide your users with the following instructions: [Sign up](/docs/get-started-with-neon/signing-up).
 2. Request the email address the user signed up with. If the user signed up with a Google or GitHub account, ask for the email address associated with that account.
@@ -9817,14 +9968,14 @@ To share your project:
 
 1. Navigate to the [Neon Console](https://console.neon.tech/app/projects).
 2. Select the project you want to share.
-1. On the Neon **Dashboard**, select **Settings** from the sidebar.
-1. On the **Settings** page, select **Sharing**.
+1. On the Neon **Dashboard**, select **Project settings** from the sidebar.
+1. On the **Project settings** page, select **Sharing**.
 1. Under **Grant access to your project**, enter the email address of the account you want to share your project with.
     ![Grant access to a project](/docs/guides/sharing_grant_access.png)
-1. Click **Grant access**. The email you specify is added to the list of **People who have access to the project**.
+1. Click **Grant access**. The email you specify is added to the list of **Users with access to the project**.
     ![People with access](/docs/guides/sharing_people_with_access.png)
 
-    The Neon account associated with the email address is granted full access to the project with the exception privileges required to delete the project. When the user logs in to Neon, the shared project is listed on their **Projects** page, under **Shared with me**.
+    The Neon account associated with the email address is granted full access to the project with the exception privileges required to delete the project. This account can also share the project with other Neon users. When the user logs in to Neon, the shared project is listed on their **Projects** page, under **Shared with me**.
 
     ![Project shared with me](/docs/guides/shared_with_me.png)
 
@@ -9832,15 +9983,15 @@ To share your project:
 
 ## Shared project limits
 
-The users you share a project with operate within your Neon Pro Plan project limits rather than their Neon Free Tier project limits when using your project. For example, a Neon Free Tier user is limited to 10 branches in their own project. When using your project, there is no such restriction. For an overview of plan limits, see [Neon plans](/docs/introduction/plans#neon-plans).
+The users you share a project with operate within your project allowances rather than their Neon Free Tier project allowances when using your project. For example, a Neon Free Tier user is limited to 10 branches in their own project. When using your project, there is no such restriction. For an overview of plan limits, see [Neon plans](/docs/introduction/plans#neon-plans).
 
 ## Access to a shared project via the Neon API or CLI
 
-The users you share a project with are able to access the project from all supported Neon interfaces, including the Neon Console, [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api), and [Neon CLI](/docs/reference/neon-cli).
+The users you share a project with can access the project from all supported Neon interfaces, including the Neon Console, [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api), and [Neon CLI](/docs/reference/neon-cli).
 
 Users can access a shared project via the Neon API using an API key from their own Neon account. For information about obtaining an API key, see [Manage API keys](/docs/manage/api-keys).
 
-When using the Neon CLI, users authenticate as they would normally. Users are able able to access their own Neon projects as well as shared projects. See [Neon CLI — Connect](/docs/reference/cli-install#connect) for authentication instructions.
+When using the Neon CLI, users authenticate as they would normally. Users are able to access their own Neon projects as well as shared projects. See [Neon CLI — Connect](/docs/reference/cli-install#connect) for authentication instructions.
 
 ## Shared project billing
 
@@ -9858,7 +10009,7 @@ enableTableOfContents: true
 updatedOn: '2024-01-10T18:34:05.858Z'
 ---
 
-[Read replicas](/docs/introduction/read-replicas) are supported with the [Neon Pro Plan](/docs/introduction/pro-plan). This guide will lead you through the process of creating and managing read replicas.
+[Read replicas](/docs/introduction/read-replicas) are supported with the Neon paid plans. This guide will lead you through the process of creating and managing read replicas.
 
 The general methodology of using read replicas to segregate read-only work from your production database operations can be applied to a variety of uses cases, such as:
 
@@ -9871,7 +10022,7 @@ Regardless of the application, the steps for creating, configuring, and connecti
 
 ## Prerequisites
 
-- A [Neon Pro Plan](/docs/introduction/pro-plan) account.
+- A Neon paid plan account
 - A [Neon project](/docs/manage/projects#create-a-project).
 
 ## Create a read replica
@@ -9887,9 +10038,9 @@ To create a read replica from the Neon Console:
 2. Select the branch where your database resides.
 3. Click **Add compute**.
 4. On the **Create Compute Endpoint** dialog, select **Read-only** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes. You can set this value up 7 days.
+5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes.
     <Admonition type="note">
-    The compute size configuration determines the processing power of your database. More vCPU and memory means more processing power but also higher compute costs. For information about compute costs, see [Billing metrics](/docs/introduction/billing).
+    The compute size configuration determines the processing power of your database.
     </Admonition>
 6. When you have finished making your selections, click **Create**.
 
@@ -10101,9 +10252,9 @@ Creating a read replica involves adding a read-only compute endpoint to a branch
 2. Select the branch where your database resides.
 3. Click **Add compute**.
 4. On the **Create Compute Endpoint** dialog, select **Read-only** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a fixed size compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size using the slider. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your compute automatically suspends due to inactivity. The default setting is 5 minutes. You can set this value up to 7 days.
+5. Specify the **Compute size** options. You can configure a fixed size compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size using the slider. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your compute automatically suspends due to inactivity. The default setting is 5 minutes.
     <Admonition type="note">
-    The compute size configuration determines the processing power of your database. More vCPU and memory means more processing power but also higher compute costs. For information about compute costs, see [Billing metrics](/docs/introduction/billing).
+    The compute size configuration determines the processing power of your database.
     </Admonition>
 6. When you finish making your selections, click **Create**.
 
@@ -10213,7 +10364,7 @@ In this guide, we'll show you how you can leverage Neon read replicas to efficie
 ## Prerequisites
 
 - An application that uses Prisma with a Neon database.
-- A [Neon Pro Plan](/docs/introduction/pro-plan) account. Read replicas are a Neon Pro Plan feature.
+- A paid plan account. Read replicas are a paid plan feature.
 
 ## Create a read replica
 
@@ -10223,7 +10374,7 @@ You can create one or more read replicas for any branch in your Neon project. Cr
 2. Select the branch where your database resides.
 3. Click **Add compute**.
 4. On the **Create Compute Endpoint** dialog, select **Read-only** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes. You can set this value up to 7 days.
+5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after a period of inactivity** setting, which is the amount of idle time after which your read-only compute is automatically suspended. The default setting is 5 minutes.
    <Admonition type="note">
    The compute size configuration determines the processing power of your database. More vCPU and memory means more processing power but also higher compute costs. For information about compute costs, see [Billing metrics](/docs/introduction/billing).
    </Admonition>
@@ -10342,6 +10493,244 @@ This example demonstrates how to use the [@prisma/extension-read-replicas](https
 
 # Frameworks
 
+# Astro
+
+---
+title: Connect an Astro site or application to Neon Postgres
+subtitle: Set up a Neon project in seconds and connect to your Postgres database from an
+  Astro site or application
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.279Z'
+---
+
+Astro builds fast content sites, powerful web applications, dynamic server APIs, and everything in-between. This guide describes how to create a Neon Postgres database and access it from an Astro site or application.
+
+To create a Neon project and access it from an Astro site or application:
+
+1. [Create a Neon project](#create-a-neon-project)
+2. [Create an Astro project and add dependencies](#create-an-astro-project-and-add-dependencies)
+3. [Configure a Postgres client](#configure-the-postgres-client)
+4. [Run the app](#run-the-app)
+
+## Create a Neon project
+
+If you do not have one already, create a Neon project. Save your connection details including your password. They are required when defining connection settings.
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+## Create an Astro project and add dependencies
+
+1. Create an Astro project if you do not have one. For instructions, see [Getting Started](https://docs.astro.build/en/getting-started/), in the Astro documentation.
+
+2. Add project dependencies using one of the following commands:
+
+    <CodeTabs labels={["node-postgres", "postgres.js", "Neon serverless driver"]}>
+
+      ```shell
+      npm install pg
+      ```
+
+      ```shell
+      npm install postgres
+      ```
+
+      ```shell
+      npm install @neondatabase/serverless
+      ```
+
+    </CodeTabs>
+
+## Store your Neon credentials
+
+Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+```shell shouldWrap
+DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]
+```
+
+## Configure the Postgres client
+
+From your `.astro` files, add the following code snippet to connect to your Neon database:
+
+<CodeTabs labels={["node-postgres", "postgres.js", "Neon serverless driver"]}>
+
+```javascript
+---
+import { Pool } from 'pg';
+
+const pool = new Pool({
+  connectionString: import.meta.env.DATABASE_URL,
+  ssl: true
+});
+
+const client = await pool.connect();
+
+let data = null;
+
+try {
+  const response = await client.query('SELECT version()');
+  console.log(response.rows[0]);
+  data = response.rows[0]
+} finally {
+  client.release();
+}
+---
+```
+
+```javascript
+---
+import postgres from 'postgres';
+
+const sql = postgres(import.meta.env.DATABASE_URL, { ssl: 'require' });
+
+const response = await sql`SELECT version()`;
+console.log(response);
+---
+```
+
+```javascript
+---
+import { neon } from '@neondatabase/serverless';
+
+const sql = neon(import.meta.env.DATABASE_URL);
+
+const response = await sql`SELECT version()`;
+console.log(response);
+---
+```
+
+</CodeTabs>
+
+## Run the app
+
+When you run `npm run dev` you can expect to see one of the following in your terminal output:
+
+```shell shouldWrap
+# node-postgres & Neon serverless driver 
+
+{
+  version: 'PostgreSQL 16.0 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit'
+}
+
+# postgres.js
+
+Result(1) [
+  {
+    version: 'PostgreSQL 16.0 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit'
+  }
+]
+```
+
+
+<NeedHelp/>
+
+
+# Django
+
+---
+title: Connect a Django application to Neon
+subtitle: Set up a Neon project in seconds and connect from a Django application
+enableTableOfContents: true
+redirectFrom:
+  - /docs/integrations/
+  - /docs/quickstart/django/
+  - /docs/cloud/integrations/django/
+updatedOn: '2024-01-04T14:34:43.419Z'
+---
+
+To connect to Neon from a Django application:
+
+1. [Create a Neon project](#create-a-neon-project)
+2. [Configure Django connection settings](#configure-django-connection-settings)
+
+## Create a Neon project
+
+If you do not have one already, create a Neon project. Save your connection details including your password. They are required when defining connection settings.
+
+To create a Neon project:
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+## Configure Django connection settings
+
+Connecting to Neon requires configuring database connection settings in your Django project's `settings.py` file.
+
+<Admonition type="note">
+To avoid the `endpiont ID is not specified` connection issue described [here](#connection-issues), be sure that you are using an up-to-date driver.
+</Admonition>
+
+In your Django project, navigate to the `DATABASES` section of your `settings.py` file and modify the connection details as shown:
+
+```python
+# Add these at the top of your settings.py
+from os import getenv
+from dotenv import load_dotenv
+
+# Replace the DATABASES section of your settings.py with this
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': getenv('PGDATABASE'),
+    'USER': getenv('PGUSER'),
+    'PASSWORD': getenv('PGPASSWORD'),
+    'HOST': getenv('PGHOST'),
+    'PORT': getenv('PGPORT', 5432),
+    'OPTIONS': {
+      'sslmode': 'require',
+    },
+    'DISABLE_SERVER_SIDE_CURSORS': True,
+  }
+}
+```
+
+<Admonition type="note">
+Neon places computes into an `Idle` state and closes connections after 5 minutes of inactivity (see [Compute lifecycle](https://neon.tech/docs/introduction/compute-lifecycle/)). To avoid connection errors, you can set the Django [CONN_MAX_AGE](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-CONN_MAX_AGE) setting to 0 to close database connections at the end of each request so that your application does not attempt to reuse connections that were closed by Neon. From Django 4.1, you can use a higher `CONN_MAX_AGE` setting in combination with the [CONN_HEALTH_CHECKS](https://docs.djangoproject.com/en/4.1/ref/settings/#conn-health-checks) setting to enable connection reuse while preventing errors that might occur due to closed connections. For more information about these configuration options, see [Connection management](https://docs.djangoproject.com/en/4.1/ref/databases#connection-management), in the _Django documentation_.
+</Admonition>
+
+You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+For additional information about Django project settings, see [Django Settings: Databases](https://docs.djangoproject.com/en/4.0/ref/settings#databases), in the Django documentation.
+
+## Connection issues
+
+Django uses the `psycopg2` driver as the default adapter for Postgres. If you have an older version of that driver, you may encounter an `Endpoint ID is not specified` error when connecting to Neon. This error occurs if the client library used by your driver does not support the Server Name Indication (SNI) mechanism in TLS, which Neon uses to route incoming connections. The `psycopg2` driver uses the `libpq` client library, which supports SNI as of v14. You can check your `psycopg2` and `libpq` versions by starting a Django shell in your Django project and running the following commands:
+
+```bash
+# Start a Django shell
+python3 manage.py shell
+
+# Check versions
+import psycopg2
+print("psycopg2 version:", psycopg2.__version__)
+print("libpq version:", psycopg2._psycopg.libpq_version())
+```
+
+The version number for `libpq` is presented in a different format, for example, version 14.1 will be shown as 140001. If your `libpq` version is less than version 14, you can either upgrade your `psycopg2` driver to get a newer `libpq` version or use one of the workarounds described in our [Connection errors](https://neon.tech/docs/connect/connection-errors#the-endpoint-id-is-not-specified) documentation. Upgrading your `psycopg2` driver may introduce compatibility issues with your Django or Python version, so you should test your application thoroughly.
+
+## Django application blog post and sample application
+
+Learn how to use Django with Neon Postgres with this blog post and the accompanying sample application.
+
+<DetailIconCards>
+<a href="https://neon.tech/blog/python-django-and-neons-serverless-postgres" description="Learn how to build a Django application with Neon Postgres" icon="import">Blog Post: Using Django with Neon</a>
+
+<a href="https://github.com/evanshortiss/django-neon-quickstart" description="Django with Neon Postgres" icon="github">Django sample application</a>
+</DetailIconCards>
+
+## Video course: Micro eCommerce with Django and Neon
+
+Watch Justin Mitchel's video course, _Micro eCommerce with Python, Django, Neon Serverless Postgres, Stripe, TailwindCSS and more_, to learn how to connect a Django application to Neon.
+
+<YoutubeIframe embedId="qx9nshX9CQQ?start=1569" />
+
+
+<NeedHelp/>
+
+
 # Next.js
 
 ---
@@ -10351,7 +10740,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/vercel
   - /docs/integrations/vercel
-updatedOn: '2024-02-08T15:20:54.285Z'
+updatedOn: '2024-02-20T13:24:36.616Z'
 ---
 
 Next.js by Vercel is an open-source web development framework that enables React-based web applications. This topic describes how to create a Neon project and access it from a Next.js application.
@@ -10414,7 +10803,7 @@ From your server functions using the App Router, add the following code snippet 
 ```javascript
 import { Pool } from 'pg';
 
-const pool = new Pool({
+const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
   ssl: true
 });
@@ -10705,136 +11094,229 @@ Result(1) [
 <NeedHelp/>
 
 
-# Astro
+# Quarkus (JDBC)
 
 ---
-title: Connect an Astro site or application to Neon Postgres
-subtitle: Set up a Neon project in seconds and connect to your Postgres database from an
-  Astro site or application
+title: Connect Quarkus (JDBC) to Neon
+subtitle: Learn how to connect to Neon from Quarkus using JDBC
 enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.279Z'
+updatedOn: '2024-02-08T15:20:54.288Z'
 ---
 
-Astro builds fast content sites, powerful web applications, dynamic server APIs, and everything in-between. This guide describes how to create a Neon Postgres database and access it from an Astro site or application.
+[Quarkus](https://quarkus.io/) is a Java framework optimized for cloud environments. This guide shows how to connect to Neon from a Quarkus project using the PostgreSQL JDBC driver.
 
-To create a Neon project and access it from an Astro site or application:
+To connect to Neon from a Quarkus application using the Postgres JDBC Driver:
 
-1. [Create a Neon project](#create-a-neon-project)
-2. [Create an Astro project and add dependencies](#create-an-astro-project-and-add-dependencies)
-3. [Configure a Postgres client](#configure-the-postgres-client)
-4. [Run the app](#run-the-app)
+1. [Create a Neon Project](#create-a-neon-project)
+2. [Create a Quarkus project and add dependencies](#create-a-quarkus-project)
+3. [Configure a PostgreSQL data source](#configure-a-postgresql-data-source)
+4. [Use the PostgreSQL JDBC Driver](#use-the-postgresql-jdbc-driver)
+5. [Run the application](#run-the-application)
 
 ## Create a Neon project
 
-If you do not have one already, create a Neon project. Save your connection details including your password. They are required when defining connection settings.
+If you do not have one already, create a Neon project.
 
 1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
 2. Click **New Project**.
 3. Specify your project settings and click **Create Project**.
 
-## Create an Astro project and add dependencies
+## Create a Quarkus project
 
-1. Create an Astro project if you do not have one. For instructions, see [Getting Started](https://docs.astro.build/en/getting-started/), in the Astro documentation.
+Create a Quarkus project using the [Quarkus CLI](https://quarkus.io/guides/cli-tooling):
 
-2. Add project dependencies using one of the following commands:
+```shell
+quarkus create app neon-with-quarkus-jdbc \
+--name neon-with-quarkus-jdbc \
+--package-name com.neon.tech \
+--extensions jdbc-postgresql,quarkus-agroal,resteasy-reactive
+```
 
-    <CodeTabs labels={["node-postgres", "postgres.js", "Neon serverless driver"]}>
+You now have a Quarkus project in a folder named `neon-with-quarkus-jdbc` with the PostgreSQL JDBC driver, Agroal datasource implementation, and RESTEasy Reactive extensions installed.
 
-      ```shell
-      npm install pg
-      ```
+## Configure a PostgreSQL data source
 
-      ```shell
-      npm install postgres
-      ```
-
-      ```shell
-      npm install @neondatabase/serverless
-      ```
-
-    </CodeTabs>
-
-## Store your Neon credentials
-
-Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+Create a `.env` file in the root of your Quarkus project directory. Configure a JDBC data source using the components of your Neon database connection string and specifying the database kind as shown:
 
 ```shell shouldWrap
-DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]
+QUARKUS_DATASOURCE_DB_KIND=postgresql
+QUARKUS_DATASOURCE_USERNAME=[user]
+QUARKUS_DATASOURCE_PASSWORD=[password]
+# Note that "jdbc" is prepended, and that "?sslmode=require" is appended to the connection string
+QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://[neon_hostname]/[dbname]?sslmode=require
 ```
 
-## Configure the Postgres client
+<Admonition type="note">
+You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+</Admonition>
 
-From your `.astro` files, add the following code snippet to connect to your Neon database:
+## Use the PostgreSQL JDBC Driver
 
-<CodeTabs labels={["node-postgres", "postgres.js", "Neon serverless driver"]}>
+Create a `PostgresResource.java` file in the same directory as the `GreetingResource.java` that was generated by Quarkus during project creation. Paste the following content into the `PostgresResource.java` file:
 
-```javascript
----
-import { Pool } from 'pg';
+```java
+package com.neon.tech;
 
-const pool = new Pool({
-  connectionString: import.meta.env.DATABASE_URL,
-  ssl: true
-});
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import javax.sql.DataSource;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
-const client = await pool.connect();
+@Path("/postgres")
+public class PostgresResource {
+    @Inject
+    DataSource dataSource;
 
-let data = null;
+    @GET
+    @Path("/version")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getVersion() {
+        try (Connection connection = dataSource.getConnection();
+                Statement statement = connection.createStatement()) {
 
-try {
-  const response = await client.query('SELECT version()');
-  console.log(response.rows[0]);
-  data = response.rows[0]
-} finally {
-  client.release();
+            ResultSet resultSet = statement.executeQuery("SELECT version()");
+
+            if (resultSet.next()) {
+                return resultSet.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
----
 ```
 
-```javascript
----
-import postgres from 'postgres';
+This code defines a HTTP endpoint that will query the database version and return it as a response to incoming requests.
 
-const sql = postgres(import.meta.env.DATABASE_URL, { ssl: 'require' });
+## Run the application
 
-const response = await sql`SELECT version()`;
-console.log(response);
----
+Start the application in development mode using the Quarkus CLI from the root of the project directory:
+
+```shell
+quarkus dev
 ```
 
-```javascript
----
-import { neon } from '@neondatabase/serverless';
+Visit [localhost:8080/postgres/version](http://localhost:8080/postgres/version) in your web browser. Your Neon database's Postgres version will be returned. For example:
 
-const sql = neon(import.meta.env.DATABASE_URL);
-
-const response = await sql`SELECT version()`;
-console.log(response);
----
+```
+PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
 ```
 
-</CodeTabs>
+<NeedHelp/>
 
-## Run the app
 
-When you run `npm run dev` you can expect to see one of the following in your terminal output:
+# Quarkus (Reactive)
+
+---
+title: Connect Quarkus (Reactive) to Neon
+subtitle: Learn how to connect to Neon from Quarkus using a Reactive SQL Client
+enableTableOfContents: true
+updatedOn: '2024-02-08T15:20:54.289Z'
+---
+
+[Quarkus](https://quarkus.io/) is a Java framework optimized for cloud environments. This guide shows how to connect to Neon from a Quarkus project using a Reactive SQL Client.
+
+To connect to Neon from a Quarkus application:
+
+1. [Create a Neon Project](#create-a-neon-project)
+2. [Create a Quarkus project and add dependencies](#create-a-quarkus-project)
+3. [Configure a PostgreSQL data source](#configure-a-postgresql-data-source)
+4. [Use the Reactive PostgreSQL client](#use-the-reactive-postgresql-client)
+5. [Run the application](#run-the-application)
+
+## Create a Neon project
+
+If you do not have one already, create a Neon project.
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+## Create a Quarkus project
+
+Create a Quarkus project using the [Quarkus CLI](https://quarkus.io/guides/cli-tooling):
+
+```shell
+quarkus create app neon-with-quarkus \
+--name neon-with-quarkus \
+--package-name com.neon.tech \
+--extensions reactive-pg-client,resteasy-reactive
+```
+
+You now have a Quarkus project in a folder named `neon-with-quarkus` with the Reactive Postgres client and RESTEasy Reactive extensions installed.
+
+## Configure a PostgreSQL data source
+
+Create a `.env` file in the root of your Quarkus project directory. Configure a reactive data source using your Neon database connection string and specifying the database kind as shown:
 
 ```shell shouldWrap
-# node-postgres & Neon serverless driver 
-
-{
-  version: 'PostgreSQL 16.0 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit'
-}
-
-# postgres.js
-
-Result(1) [
-  {
-    version: 'PostgreSQL 16.0 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit'
-  }
-]
+# Note that "?sslmode=require" is appended to the Neon connection string
+QUARKUS_DATASOURCE_REACTIVE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
 ```
 
+<Admonition type="note">
+You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+</Admonition>
+
+## Use the Reactive PostgreSQL client
+
+Create a `PostgresResource.java` file in the same directory as the `GreetingResource.java` that was generated by Quarkus during project creation. Paste the following content into the `PostgresResource.java` file:
+
+```java
+package com.neon.tech;
+
+import jakarta.inject.Inject;
+import io.smallrye.mutiny.Multi;
+import io.vertx.mutiny.sqlclient.Row;
+import io.vertx.mutiny.sqlclient.RowSet;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+
+@Path("/postgres")
+public class PostgresResource {
+    @Inject
+    io.vertx.mutiny.pgclient.PgPool client;
+
+    @GET
+    @Path("/version")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Multi<String> getVersion() {
+        return client.query("SELECT version()")
+                .execute()
+                .onItem().transformToMulti(this::extractVersion);
+    }
+
+    private Multi<String> extractVersion(RowSet<Row> rowSet) {
+        return Multi.createFrom().iterable(rowSet)
+                .map(r -> r.getValue(0).toString());
+    }
+}
+```
+
+This code defines a HTTP endpoint that will query the database version and return it as a response to incoming requests.
+
+## Run the application
+
+Start the application in development mode using the Quarkus CLI from the root of the project directory:
+
+```shell
+quarkus dev
+```
+
+Visit [localhost:8080/postgres/version](http://localhost:8080/postgres/version) in your web browser. Your Neon database's Postgres version will be returned. For example:
+
+```
+PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+```
 
 <NeedHelp/>
 
@@ -11436,233 +11918,6 @@ You can find all of the connection details listed above in the **Connection Deta
 
 # Java
 
-# Quarkus (JDBC)
-
----
-title: Connect Quarkus (JDBC) to Neon
-subtitle: Learn how to connect to Neon from Quarkus using JDBC
-enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.288Z'
----
-
-[Quarkus](https://quarkus.io/) is a Java framework optimized for cloud environments. This guide shows how to connect to Neon from a Quarkus project using the PostgreSQL JDBC driver.
-
-To connect to Neon from a Quarkus application using the Postgres JDBC Driver:
-
-1. [Create a Neon Project](#create-a-neon-project)
-2. [Create a Quarkus project and add dependencies](#create-a-quarkus-project)
-3. [Configure a PostgreSQL data source](#configure-a-postgresql-data-source)
-4. [Use the PostgreSQL JDBC Driver](#use-the-postgresql-jdbc-driver)
-5. [Run the application](#run-the-application)
-
-## Create a Neon project
-
-If you do not have one already, create a Neon project.
-
-1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
-2. Click **New Project**.
-3. Specify your project settings and click **Create Project**.
-
-## Create a Quarkus project
-
-Create a Quarkus project using the [Quarkus CLI](https://quarkus.io/guides/cli-tooling):
-
-```shell
-quarkus create app neon-with-quarkus-jdbc \
---name neon-with-quarkus-jdbc \
---package-name com.neon.tech \
---extensions jdbc-postgresql,quarkus-agroal,resteasy-reactive
-```
-
-You now have a Quarkus project in a folder named `neon-with-quarkus-jdbc` with the PostgreSQL JDBC driver, Agroal datasource implementation, and RESTEasy Reactive extensions installed.
-
-## Configure a PostgreSQL data source
-
-Create a `.env` file in the root of your Quarkus project directory. Configure a JDBC data source using the components of your Neon database connection string and specifying the database kind as shown:
-
-```shell shouldWrap
-QUARKUS_DATASOURCE_DB_KIND=postgresql
-QUARKUS_DATASOURCE_USERNAME=[user]
-QUARKUS_DATASOURCE_PASSWORD=[password]
-# Note that "jdbc" is prepended, and that "?sslmode=require" is appended to the connection string
-QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://[neon_hostname]/[dbname]?sslmode=require
-```
-
-<Admonition type="note">
-You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
-</Admonition>
-
-## Use the PostgreSQL JDBC Driver
-
-Create a `PostgresResource.java` file in the same directory as the `GreetingResource.java` that was generated by Quarkus during project creation. Paste the following content into the `PostgresResource.java` file:
-
-```java
-package com.neon.tech;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import javax.sql.DataSource;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-
-@Path("/postgres")
-public class PostgresResource {
-    @Inject
-    DataSource dataSource;
-
-    @GET
-    @Path("/version")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getVersion() {
-        try (Connection connection = dataSource.getConnection();
-                Statement statement = connection.createStatement()) {
-
-            ResultSet resultSet = statement.executeQuery("SELECT version()");
-
-            if (resultSet.next()) {
-                return resultSet.getString(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-}
-```
-
-This code defines a HTTP endpoint that will query the database version and return it as a response to incoming requests.
-
-## Run the application
-
-Start the application in development mode using the Quarkus CLI from the root of the project directory:
-
-```shell
-quarkus dev
-```
-
-Visit [localhost:8080/postgres/version](http://localhost:8080/postgres/version) in your web browser. Your Neon database's Postgres version will be returned. For example:
-
-```
-PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
-```
-
-<NeedHelp/>
-
-
-# Quarkus (Reactive)
-
----
-title: Connect Quarkus (Reactive) to Neon
-subtitle: Learn how to connect to Neon from Quarkus using a Reactive SQL Client
-enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.289Z'
----
-
-[Quarkus](https://quarkus.io/) is a Java framework optimized for cloud environments. This guide shows how to connect to Neon from a Quarkus project using a Reactive SQL Client.
-
-To connect to Neon from a Quarkus application:
-
-1. [Create a Neon Project](#create-a-neon-project)
-2. [Create a Quarkus project and add dependencies](#create-a-quarkus-project)
-3. [Configure a PostgreSQL data source](#configure-a-postgresql-data-source)
-4. [Use the Reactive PostgreSQL client](#use-the-reactive-postgresql-client)
-5. [Run the application](#run-the-application)
-
-## Create a Neon project
-
-If you do not have one already, create a Neon project.
-
-1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
-2. Click **New Project**.
-3. Specify your project settings and click **Create Project**.
-
-## Create a Quarkus project
-
-Create a Quarkus project using the [Quarkus CLI](https://quarkus.io/guides/cli-tooling):
-
-```shell
-quarkus create app neon-with-quarkus \
---name neon-with-quarkus \
---package-name com.neon.tech \
---extensions reactive-pg-client,resteasy-reactive
-```
-
-You now have a Quarkus project in a folder named `neon-with-quarkus` with the Reactive Postgres client and RESTEasy Reactive extensions installed.
-
-## Configure a PostgreSQL data source
-
-Create a `.env` file in the root of your Quarkus project directory. Configure a reactive data source using your Neon database connection string and specifying the database kind as shown:
-
-```shell shouldWrap
-# Note that "?sslmode=require" is appended to the Neon connection string
-QUARKUS_DATASOURCE_REACTIVE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
-```
-
-<Admonition type="note">
-You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
-</Admonition>
-
-## Use the Reactive PostgreSQL client
-
-Create a `PostgresResource.java` file in the same directory as the `GreetingResource.java` that was generated by Quarkus during project creation. Paste the following content into the `PostgresResource.java` file:
-
-```java
-package com.neon.tech;
-
-import jakarta.inject.Inject;
-import io.smallrye.mutiny.Multi;
-import io.vertx.mutiny.sqlclient.Row;
-import io.vertx.mutiny.sqlclient.RowSet;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.MediaType;
-
-@Path("/postgres")
-public class PostgresResource {
-    @Inject
-    io.vertx.mutiny.pgclient.PgPool client;
-
-    @GET
-    @Path("/version")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Multi<String> getVersion() {
-        return client.query("SELECT version()")
-                .execute()
-                .onItem().transformToMulti(this::extractVersion);
-    }
-
-    private Multi<String> extractVersion(RowSet<Row> rowSet) {
-        return Multi.createFrom().iterable(rowSet)
-                .map(r -> r.getValue(0).toString());
-    }
-}
-```
-
-This code defines a HTTP endpoint that will query the database version and return it as a response to incoming requests.
-
-## Run the application
-
-Start the application in development mode using the Quarkus CLI from the root of the project directory:
-
-```shell
-quarkus dev
-```
-
-Visit [localhost:8080/postgres/version](http://localhost:8080/postgres/version) in your web browser. Your Neon database's Postgres version will be returned. For example:
-
-```
-PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
-```
-
-<NeedHelp/>
-
-
 # JDBC
 
 ---
@@ -11918,7 +12173,7 @@ redirectFrom:
   - /docs/integrations/prisma
   - /docs/guides/prisma-guide
   - /docs/guides/prisma-migrate
-updatedOn: '2024-02-08T15:20:54.287Z'
+updatedOn: '2024-02-23T20:32:29.800Z'
 ---
 
 Prisma is an open-source, next-generation ORM that lets you to manage and interact with your database. This guide covers the following topics:
@@ -11961,20 +12216,18 @@ If you plan to use Prisma Client from a serverless function, see [Use connection
 
 ## Use connection pooling with Prisma
 
-Serverless functions can end up requiring a large number of database connections as demand increases. If you use serverless functions in your application, it is recommended that you use a pooled Neon connection string with the `pgbouncer=true` option, as shown:
+Serverless functions can require a large number of database connections as demand increases. If you use serverless functions in your application, we recommend that you use a pooled Neon connection string, as shown:
 
 ```ini shouldWrap
 # Pooled Neon connection string
-DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require&pgbouncer=true"
+DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require"
 ```
 
-- A pooled Neon connection string adds `-pooler` to the endpoint ID, which tells Neon to use a pooled connection. You can add `-pooler` to your connection string manually or copy a pooled connection string from the **Connection Details** widget on the Neon **Dashboard**. Use the **Pooled connection** checkbox to add the `-pooler` suffix.
-- Neon uses PgBouncer to provide [connection pooling](/docs/connect/connection-pooling). Prisma requires the `pgbouncer=true` flag when using Prisma Client with PgBouncer, as described in the [Prisma documentation](https://www.prisma.io/docs/guides/performance-and-optimization/connection-management/configure-pg-bouncer#add-pgbouncer-to-the-connection-url).
-- Both the pooled Neon connection string and the `pgbouncer=true` flag are required to use Noen's connection pooler with Prisma. See the example above.
+A pooled Neon connection string adds `-pooler` to the endpoint ID, which tells Neon to use a pooled connection. You can add `-pooler` to your connection string manually or copy a pooled connection string from the **Connection Details** widget on the Neon **Dashboard**. Use the **Pooled connection** checkbox to add the `-pooler` suffix.
 
 ### Connection pooling with Prisma Migrate
 
-You cannot use a pooled connection for certain operations in Prisma that require a direct connection to the database; for example, schema migration with Prisma Migrate. Attempting to run Prisma Migrate commands, such as `prisma migrate dev`, with a pooled connection causes the following error:
+Prior to Prisma ORM 5.10, attempting to run Prisma Migrate commands, such as `prisma migrate dev`, with a pooled connection caused the following error:
 
 ```text
 Error undefined: Database error
@@ -11982,7 +12235,9 @@ Error querying the database: db error: ERROR: prepared statement
 "s0" already exists
 ```
 
-To avoid this issue, make sure you are using a direct connection to the database for Prisma Migrate. Neon supports both pooled and direct connections to the same database.
+To avoid this issue, you can define a direct connection to the database for Prisma Migrate or you can upgrade Prisma ORM to 5.10 or higher.
+
+#### Using a direct connection to the database 
 
 You can configure a direct connection while allowing applications to use Prisma Client with a pooled connection by adding a `directUrl` property to the datasource block in your `schema.prisma` file. For example:
 
@@ -12007,10 +12262,31 @@ When you finish updating your `.env` file, your variable settings should appear 
 
 ```ini shouldWrap
 # Pooled Neon connection string
-DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require&pgbouncer=true"
+DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require"
 
 # Unpooled Neon connection string
 DIRECT_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require"
+```
+
+#### Using a pooled connection with Prisma Migrate
+
+With Prisma ORM 5.10 or higher, you can use a pooled Neon connection string with Prisma Migrate. In this case, you only need to define the pooled connection string in your `schema.prisma` file. Adding a `directUrl` property to the datasource block in your `schema.prisma` file and defining a `DIRECT_URL` setting in your environment file are not required. Your complete configuration will look like this:
+
+`schema.prisma` file:
+
+```typescript
+datasource db {
+  provider = "postgresql"
+  url   = env("DATABASE_URL")
+}
+```
+
+`.env` file:
+
+
+```ini
+# Pooled Neon connection string
+DATABASE_URL="postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require"
 ```
 
 ## Use the Neon serverless driver with Prisma
@@ -12125,6 +12401,7 @@ For additional information about connecting from Prisma, refer to the following 
 - [Database connection issues](https://www.prisma.io/dataguide/managing-databases/database-troubleshooting#database-connection-issues)
 - [PostgreSQL database connector](https://www.prisma.io/docs/concepts/database-connectors/postgresql)
 - [Increasing the pool timeout](https://www.prisma.io/docs/guides/performance-and-optimization/connection-management#increasing-the-pool-timeout)
+- [Schema migration with Neon Postgres and Prisma ORM](/docs/guides/prisma-migrations)
 
 <NeedHelp/>
 
@@ -12137,7 +12414,7 @@ For additional information about connecting from Prisma, refer to the following 
 title: Connect from Laravel to Neon
 subtitle: Set up a Neon project in seconds and connect from a Laravel application
 enableTableOfContents: true
-updatedOn: '2023-11-24T11:25:06.753Z'
+updatedOn: '2024-02-16T12:33:54.234Z'
 ---
 
 Laravel is a web application framework with expressive, elegant syntax. Connecting to Neon from Laravel is the same as connecting to a standalone Postgres installation from Laravel. Only the connection details differ.
@@ -12170,6 +12447,30 @@ DB_SSLMODE=require
 ```
 
 You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+## Connection issues
+
+With older Postgres clients/drivers, including older PDO_PGSQL drivers, you may receive the following error when attempting to connect to Neon:
+
+```txt shouldWrap
+ERROR: The endpoint ID is not specified. Either upgrade the Postgres client library (libpq) for SNI support or pass the endpoint ID (the first part of the domain name) as a parameter: '&options=endpoint%3D'. See [https://neon.tech/sni](https://neon.tech/sni) for more information.
+```
+
+If you run into this error, please see the following documentation for an explanation of the issue and workarounds: [The endpoint ID is not specified](/docs/connect/connection-errors#the-endpoint-id-is-not-specified).
+
+-  If using a connection string to connect to your database, try [Workaround A. Pass the endpoint ID as an option](https://neon.tech/docs/connect/connection-errors#a-pass-the-endpoint-id-as-an-option). For example:
+
+    ```text
+    postgres://[user]:[password]@[neon_hostname]/[dbname]?options=endpoint%3D[endpoint-id]
+    ```
+
+    Replace `[endpoint_id]` with your compute's endpoint ID, which you can find in your Neon connection string. It looks similar to this: `ep-cool-darkness-123456`.
+
+- If using database connection parameters, as shown above, try [Workaround D. Specify the endpoint ID in the password field](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field). For example:
+
+    ```text
+    DB_PASSWORD=endpoint=<endpoint_id>$<password>
+    ```
 
 <NeedHelp/>
 
@@ -12216,93 +12517,6 @@ You can find all of the connection details listed above in the **Connection Deta
 
 
 # Python
-
-# Django
-
----
-title: Connect a Django application to Neon
-subtitle: Set up a Neon project in seconds and connect from a Django application
-enableTableOfContents: true
-redirectFrom:
-  - /docs/integrations/
-  - /docs/quickstart/django/
-  - /docs/cloud/integrations/django/
-updatedOn: '2024-01-04T14:34:43.419Z'
----
-
-To connect to Neon from a Django application:
-
-1. [Create a Neon project](#create-a-neon-project)
-2. [Configure Django connection settings](#configure-django-connection-settings)
-
-## Create a Neon project
-
-If you do not have one already, create a Neon project. Save your connection details including your password. They are required when defining connection settings.
-
-To create a Neon project:
-
-1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
-2. Click **New Project**.
-3. Specify your project settings and click **Create Project**.
-
-## Configure Django connection settings
-
-Connecting to Neon requires configuring database connection settings in your Django project's `settings.py` file.
-
-In your Django project, navigate to the `DATABASES` section of your `settings.py` file and modify the connection details as shown:
-
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '[dbname]',
-        'USER': '[user]',
-        'PASSWORD': '[password]',
-        'HOST': '[hostname]',
-        'PORT': '[port]',
-         'OPTIONS': {
-             'sslmode': 'require',
-        }
-    }
-}
-```
-
-<Admonition type="note">
-Neon places computes into an `Idle` state and closes connections after 5 minutes of inactivity (see [Compute lifecycle](https://neon.tech/docs/introduction/compute-lifecycle/)). To avoid connection errors, you can set the Django [CONN_MAX_AGE](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-CONN_MAX_AGE) setting to 0 to close database connections at the end of each request so that your application does not attempt to reuse connections that were closed by Neon. From Django 4.1, you can use a higher `CONN_MAX_AGE` setting in combination with the [CONN_HEALTH_CHECKS](https://docs.djangoproject.com/en/4.1/ref/settings/#conn-health-checks) setting to enable connection reuse while preventing errors that might occur due to closed connections. For more information about these configuration options, see [Connection management](https://docs.djangoproject.com/en/4.1/ref/databases#connection-management), in the _Django documentation_.
-</Admonition>
-
-You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
-
-For additional information about Django project settings, see [Django Settings: Databases](https://docs.djangoproject.com/en/4.0/ref/settings#databases), in the Django documentation.
-
-<Admonition type="note">
-Running Django tests is currently not supported. The Django test runner must be able to create a database for tests, which is not yet supported by Neon.
-</Admonition>
-
-## Connection issues
-
-Django uses the `psycopg2` driver as the default adapter for Postgres. If you have an older version of that driver, you may encounter a `Endpoint ID is not specified` error when connecting to Neon. This error occurs if the client library used by your driver does not support the Server Name Indication (SNI) mechanism in TLS, which Neon uses to route incoming connections. The `psycopg2` driver uses the `libpq` client library, which supports SNI as of v14. You can check your `psycopg2` and `libpq` versions by starting a Django shell in your Django project and running the following commands:
-
-```bash
-# Start a Django shell
-python3 manage.py shell
-
-# Check versions
-import psycopg2
-print("psycopg2 version:", psycopg2.__version__)
-print("libpq version:", psycopg2._psycopg.libpq_version())
-```
-
-The version number for `libpq` is presented in a different format, for example, version 14.1 will be shown as 140001. If your `libpq` version is less than version 14, you can either upgrade your `psycopg2` driver to get a newer `libpq` version or use one of the workarounds described in our [Connection errors](https://neon.tech/docs/connect/connection-errors#the-endpoint-id-is-not-specified) documentation. Upgrading your `psycopg2` driver may introduce compatibility issues with your Django or Python version, so you should test your application thoroughly.
-
-## Video course: Micro eCommerce with Django and Neon
-
-Watch Justin Mitchel's video course, _Micro eCommerce with Python, Django, Neon Serverless Postgres, Stripe, TailwindCSS and more_, to learn how to connect a Django application to Neon.
-
-<YoutubeIframe embedId="qx9nshX9CQQ?start=1569" />
-
-<NeedHelp/>
-
 
 # Psycopg
 
@@ -12540,7 +12754,7 @@ subtitle: Set up a Neon project in seconds and connect from a Rust application
 redirectFrom:
   - /docs/quickstart/rust
   - /docs/integrations/rust
-updatedOn: '2023-11-24T11:25:06.755Z'
+updatedOn: '2024-02-23T00:24:06.826Z'
 ---
 
 This guide describes how to create a Neon project and connect to it from a Rust application.
@@ -12559,6 +12773,10 @@ To create a Neon project:
 3. Specify your project settings and click **Create Project**.
 
 ## Configure the connection
+
+<Admonition type="note">
+To run the Rust solution below you have to install the required dependencies. You can do this by running `cargo add postgres postgres_openssl openssl`.
+</Admonition>
 
 Add the Neon connection details to your `main.rs` file, as in the following example:
 
@@ -13231,7 +13449,7 @@ title: Use StepZen with Neon
 subtitle: Learn how to use StepZen to build a GraphQL API for your Neon database
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-08T15:20:54.291Z'
+updatedOn: '2024-02-19T18:57:12.560Z'
 ---
 
 _This guide was contributed by Roy Derks from StepZen_
@@ -13332,7 +13550,7 @@ configurationset:
       uri: YOUR_NEON_DSN?user=YOUR_NEON_USERNAME&password=YOUR_NEON_PASSWORD&options=project=YOUR_NEON_PROJECT_ID&sslmode=require
 ```
 
-As shown above, you need to append `&options=project=YOUR_NEON_PROJECT_ID` to the `uri` connection string. This is needed to establish a secure connection to the Neon database. The `project` option is the ID of the project in Neon. You can find the project ID in the Neon Console under **Settings** or in the URL of your project.
+As shown above, you need to append `&options=project=YOUR_NEON_PROJECT_ID` to the `uri` connection string. This is needed to establish a secure connection to the Neon database. The `project` option is the ID of the project in Neon. You can find the project ID in the Neon Console under **Project settings** or in the URL of your project.
 
 The next section explores the GraphQL API to see how the connection between the Neon Postgres database and StepZen works.
 
@@ -13826,6 +14044,414 @@ If you had trouble with any of the steps outlined above, refer to the video guid
 
 
 # Schema migration
+
+# Drizzle
+
+---
+title: Schema migration with Neon Postgres and Drizzle ORM
+subtitle: Set up Neon Postgres and run migrations for your TypeScript project using Drizzle ORM
+enableTableOfContents: true
+updatedOn: '2024-02-21T10:15:00.000Z'
+---
+
+[Drizzle](https://orm.drizzle.team/) is a TypeScript-first ORM that connects to all major databases and works across most Javascript runtimes. It provides a simple way to define database schemas and queries in an SQL-like dialect and tools to generate and run migrations. 
+
+This guide shows how to use `Drizzle` with the `Neon` Postgres database in a Typescript project. We'll create a simple Node.js application with `Hono.js` and demonstrate the full workflow of setting up and working with your database using `Drizzle`.
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and test the application locally. 
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+1. Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+2. Select a project or click the `New Project` button to create a new one. 
+
+### Retrieve your Neon database connection string
+
+Navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Setting up the TypeScript application
+
+### Create a new Hono.js project
+
+We'll create a simple catalog, with API endpoints that query the database for authors and a list of their books. Run the following command in your terminal to set up a new project using `Hono.js`:
+
+```bash
+npm create hono@latest neon-drizzle-guide
+```
+
+This initiates an interactive CLI prompt to set up a new project. To follow along with this guide, you can use the following settings:
+
+```bash
+Need to install the following packages:
+create-hono@0.5.0
+Ok to proceed? (y) y
+
+create-hono version 0.5.0
+✔ Using target directory … neon-drizzle-guide
+✔ Which template do you want to use? › nodejs
+cloned honojs/starter#main to ./repos/javascript/neon-drizzle-guide
+✔ Do you want to install project dependencies? … yes
+✔ Which package manager do you want to use? › npm
+```
+
+To use Drizzle and connect to the Neon database, we also add the `drizzle-orm` and `drizzle-kit` packages to our project, along with the `Neon serverless` driver library.
+
+```bash
+cd neon-drizzle-guide && touch .env
+npm install drizzle-orm @neondatabase/serverless
+npm install -D drizzle-kit dotenv
+```
+
+Add the `DATABASE_URL` environment variable to your `.env` file, which you'll use to connect to our Neon database. Use the connection string that you obtained from the Neon console earlier:
+
+```bash
+# .env
+DATABASE_URL=NEON_DATABASE_CONNECTION_STRING
+```
+
+Test that the starter `Hono.js` application works by running `npm run dev` in the terminal. You should see the `Hello, Hono!` message when you navigate to `http://localhost:3000` in your browser.
+
+### Set up the database schema
+
+Now, we will define the schema for the application using the `Drizzle` ORM. Create a new `schema.ts` file in your `src` directory and add the following code: 
+
+```typescript
+// src/schema.ts
+
+import { pgTable, integer, serial, text, timestamp } from "drizzle-orm/pg-core";
+
+export const authors = pgTable("authors", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  bio: text("bio"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const books = pgTable("books", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  authorId: integer("author_id").references(() => authors.id),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
+```
+
+The code defines two tables: `authors`, which will contain the list of all the authors, and `books`, which will contain the list of books written by the authors. Each book is associated with an author using the `authorId` field.
+
+To generate a migration to create these tables in the database, we'll use the `drizzle-kit` command. Add the following script to the `package.json` file at the root of your project:
+
+```json
+{
+  "scripts": {
+    "db:generate": "drizzle-kit generate:pg --schema src/schema.ts --out ./drizzle",
+  }
+}
+```
+
+Then, run the following command in your terminal to generate the migration files:
+
+```bash
+npm run db:generate
+```
+
+This command generates a new folder named `drizzle` containing the migration files for the `authors` and `books` tables. 
+
+### Run the migration
+
+The generated migration file is written in SQL and contains the necessary commands to create the tables in the database. To apply these migrations, we'll use the [Neon serverless driver](/docs/serverless/serverless-driver) and helper functions provided by the `drizzle-orm` library. 
+
+Create a new `migrate.ts` in your `src` directory and add the following code:
+
+```typescript
+// src/migrate.ts
+
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { migrate } from "drizzle-orm/neon-http/migrator";
+import { config } from "dotenv";
+
+config({ path: ".env" });
+
+const sql = neon(process.env.DATABASE_URL!);
+const db = drizzle(sql);
+
+const main = async () => {
+  try {
+    await migrate(db, { migrationsFolder: "drizzle" });
+    console.log("Migration completed");
+  } catch (error) {
+    console.error("Error during migration:", error);
+    process.exit(1);
+  }
+};
+
+main();
+```
+
+The `drizzle-orm` package comes with an integration for `Neon`, which allows us to run the migrations using the `migrate` function. Add a new script to the `package.json` file that executes the migration.
+
+```json
+{
+  "scripts": {
+    "db:migrate": "tsx ./src/migrate.ts"
+  }
+}
+```
+
+You can now run the migration script using the following command:
+
+```bash
+npm run db:migrate
+```
+
+You should see the `Migration completed` message in the terminal, indicating that the migration was successful.
+
+### Seed the database
+
+To test the application works, we need to add some example data to our tables. Create a new file at `src/seed.ts` and add the following code to it:
+
+```typescript
+// src/seed.ts
+
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { authors, books } from "./schema";
+import { config } from "dotenv";
+
+config({ path: ".env" });
+
+const sql = neon(process.env.DATABASE_URL!);
+const db = drizzle(sql);
+
+async function seed() {
+  await db.insert(authors).values([
+    {
+      name: "J.R.R. Tolkien",
+      bio: "The creator of Middle-earth and author of The Lord of the Rings.",
+    },
+    {
+      name: "George R.R. Martin",
+      bio: "The author of the epic fantasy series A Song of Ice and Fire.",
+    },
+    {
+      name: "J.K. Rowling",
+      bio: "The creator of the Harry Potter series.",
+    },
+  ]);
+
+  const authorRows = await db.select().from(authors);
+  const authorIds = authorRows.map((row) => row.id);
+
+  await db.insert(books).values([
+    {
+      title: "The Fellowship of the Ring",
+      authorId: authorIds[0],
+    },
+    {
+      title: "The Two Towers",
+      authorId: authorIds[0],
+    },
+    {
+      title: "The Return of the King",
+      authorId: authorIds[0],
+    },
+    {
+      title: "A Game of Thrones",
+      authorId: authorIds[1],
+    },
+    {
+      title: "A Clash of Kings",
+      authorId: authorIds[1],
+    },
+    {
+      title: "Harry Potter and the Philosopher's Stone",
+      authorId: authorIds[2],
+    },
+    {
+      title: "Harry Potter and the Chamber of Secrets",
+      authorId: authorIds[2],
+    },
+  ]);
+}
+
+async function main() {
+  try {
+    await seed();
+    console.log("Seeding completed");
+  } catch (error) {
+    console.error("Error during seeding:", error);
+    process.exit(1);
+  }
+}
+
+main();
+```
+
+This script inserts some seed data into the `authors` and `books` tables. Add a new script to the `package.json` file that runs the seeding program. 
+
+```json
+{
+  "scripts": {
+    "db:seed": "tsx ./src/seed.ts"
+  }
+}
+```
+
+Run the seed script using the following command:
+
+```bash
+npm run db:seed
+```
+
+You should see the `Seeding completed` message in the terminal, indicating that the seed data was inserted into the database. 
+
+### Implement the API endpoints
+
+Now that the database is set up and populated with data, we can implement the API to query the authors and their books. Replace the existing `src/index.ts` file with the following code:
+
+```typescript
+// src/index.ts
+
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import { env } from "hono/adapter";
+import { config } from "dotenv";
+
+import { eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/neon-http";
+import { neon } from "@neondatabase/serverless";
+import { authors, books } from "./schema";
+
+config({ path: ".env" });
+const app = new Hono();
+
+app.get("/", (c) => {
+  return c.text("Hello, this is a catalog of books!");
+});
+
+app.get("/authors", async (c) => {
+  const { DATABASE_URL } = env<{ DATABASE_URL: string }>(c);
+  const sql = neon(DATABASE_URL);
+  const db = drizzle(sql);
+
+  const output = await db.select().from(authors);
+  return c.json(output);
+});
+
+app.get("/books/:authorId", async (c) => {
+  const { DATABASE_URL } = env<{ DATABASE_URL: string }>(c);
+  const sql = neon(DATABASE_URL);
+  const db = drizzle(sql);
+
+  const authorId = c.req.param("authorId");
+  const output = await db
+    .select()
+    .from(books)
+    .where(eq(books.authorId, Number(authorId)));
+  return c.json(output);
+});
+
+const port = 3000;
+console.log(`Server is running on port ${port}`);
+
+serve({
+  fetch: app.fetch,
+  port,
+});
+```
+
+This code sets up a simple API with two endpoints: `/authors` and `/books/:authorId`. The `/authors` endpoint returns a list of all the authors, and the `/books/:authorId` endpoint returns a list of books written by the specific author with the given `authorId`. 
+
+Run the application using the following command:
+
+```bash
+npm run dev
+```
+
+This will start a `Hono.js` server at `http://localhost:3000`. Navigate to `http://localhost:3000/authors` and `http://localhost:3000/books/1` in your browser to check that the API works as expected. 
+
+## Migration after a schema change
+
+To demonstrate how to execute a schema change, we'll add a new column to the `authors` table, listing the country of origin for each author. 
+
+### Generate the new migration
+
+Modify the code in the `src/schema.ts` file to add the new column to the `authors` table:
+
+```typescript
+// src/schema.ts
+
+import { pgTable, integer, serial, text, timestamp } from "drizzle-orm/pg-core";
+
+export const authors = pgTable("authors", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  bio: text("bio"),
+  country: text("country"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const books = pgTable("books", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  authorId: integer("author_id").references(() => authors.id),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
+```
+
+Now, we can run the following command to generate a new migration file:
+
+```bash
+npm run db:generate
+```
+
+This command generates a new migration file in the `drizzle` folder, with the SQL command to add the new column to the `authors` table. 
+
+### Run the migration
+
+Run the migration script using the following command:
+
+```bash
+npm run db:migrate
+```
+
+You should see the `Migration completed` message in the terminal, indicating it was successful.
+
+### Verify the schema change
+
+To verify that the schema change was successful, run the application using the following command:
+
+```bash
+npm run dev
+```
+
+You can navigate to `http://localhost:3000/authors` in your browser to check that each author entry has a `country` field, currently set to `null`. 
+
+## Conclusion
+
+In this guide, we set up a new TypeScript project using `Hono.js` and `Drizzle` ORM and connected it to a `Neon` Postgres database. We created a schema for the database, generated and ran migrations, and implemented API endpoints to query the database. 
+
+## Resources
+
+For more information on the tools used in this guide, refer to the following resources:
+
+- [Drizzle ORM](https://orm.drizzle.team/)
+- [Hono.js](https://hono.dev/)
+
+<NeedHelp/>
+
 
 # Flyway
 
@@ -14983,6 +15609,656 @@ When you run a changeset for the first time on the source database, you will fin
 - [Liquibase Developer Workflow](https://www.liquibase.org/get-started/developer-workflow)
 
 
+# Prisma
+
+---
+title: Schema migration with Neon Postgres and Prisma ORM
+subtitle: Set up Neon Postgres and run migrations for your Javascript project using Prisma ORM
+enableTableOfContents: true
+updatedOn: '2024-03-06T10:15:00.000Z'
+---
+
+[Prisma](https://www.prisma.io/) is an open-source ORM for Node.js and Typescript, known for its ease of use and focus on type safety. It supports many databases, including Postgres, and provides a robust system for managing database schemas and migrations.
+
+This guide walks you through using `Prisma` ORM with a `Neon` Postgres database in a Javascript project. We'll create a Node.js application, set up Prisma, and show how to run migrations using Prisma.
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and test the application locally. 
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+1. Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+2. Select an existing project or click the `New Project` button to create a new one. 
+
+### Retrieve your Neon database connection string
+
+Navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use. 
+
+## Setting Up the Node application
+
+### Create a new Node project
+
+We'll create a simple catalog, with API endpoints that query the database for authors and a list of their books. Run the following command in your terminal to set up a new project using `Express.js`:
+
+```bash
+mkdir neon-prisma-guide && cd neon-prisma-guide
+npm init -y && touch .env index.js 
+npm pkg set type="module" && npm pkg set scripts.start="node index.js"
+npm install express
+```
+
+To use the Prisma ORM for making queries, install the `@prisma/client` package and the Prisma CLI. The CLI is only needed as a development dependency to generate the Prisma Client for the given schema. 
+
+```bash
+npm install @prisma/client && npm install prisma --save-dev
+npx prisma init
+```
+
+These commands create a new `prisma` folder in your project with a `schema.prisma` file, where we will define the database schema for our application. 
+
+### Configure Prisma to Use Neon Database
+
+Open the `prisma/schema.prisma` file and update the `datasource db` block with your Neon database connection details:
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+Add the `DATABASE_URL` environment variable to your `.env` file, which you'll use to connect to your Neon database. Use the connection string that you obtained from the Neon console earlier:
+
+```bash
+# .env
+DATABASE_URL=NEON_DATABASE_CONNECTION_STRING
+```
+
+### Define the Database schema
+
+In the `prisma/schema.prisma` file, add the following model definitions:
+
+```prisma
+model Author {
+  @@map("authors")
+  
+  id        Int      @id @default(autoincrement())
+  name      String
+  bio       String?
+  createdAt DateTime @default(now()) @map("created_at")
+  books     Book[]
+}
+
+model Book {
+  @@map("books")
+  
+  id        Int      @id @default(autoincrement())
+  title     String
+  authorId  Int      @map("author_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  author    Author   @relation(fields: [authorId], references: [id])
+}
+```
+
+Two models are defined above: `Author`, which contains information about authors, and `Book`, for details about published books. The `Book` model includes a foreign key that references the `Author` model.
+
+### Generate Prisma client and run migrations
+
+To create and apply migrations based on your schema, run the following command in the terminal:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+This command generates migration files written in SQL corresponding to our schema definitions and applies them to create the tables in your Neon database. We used the `--name` flag to name the migration. 
+
+The command also generates a Prisma Client that is aware of our schemas:
+
+```javascript
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+```
+
+We'll use this client later to interact with the database.
+
+### Seed the Database
+
+To test that the application works, we need to add some example data to our tables. Create a `seed.js` file in your project and add the following code to it:
+
+```javascript
+// seed.js
+
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+
+const seed = async () => {
+  const authors = [
+    {
+      name: "J.R.R. Tolkien",
+      bio: "The creator of Middle-earth and author of The Lord of the Rings.",
+      books: {
+        create: [
+          { title: "The Hobbit" },
+          { title: "The Fellowship of the Ring" },
+          { title: "The Two Towers" },
+          { title: "The Return of the King" }
+        ]
+      }
+    },
+    {
+      name: "George R.R. Martin",
+      bio: "The author of the epic fantasy series A Song of Ice and Fire.",
+      books: {
+        create: [
+          { title: "A Game of Thrones" },
+          { title: "A Clash of Kings" }
+        ]
+      }
+    },
+    {
+      name: "J.K. Rowling",
+      bio: "The creator of the Harry Potter series.",
+      books: {
+        create: [
+          { title: "Harry Potter and the Philosopher's Stone" },
+          { title: "Harry Potter and the Chamber of Secrets" }
+        ]
+      }
+    }
+  ];
+
+  for (const author of authors) {
+    await prisma.author.create({
+      data: author,
+    });
+  }
+}
+
+async function main() {
+  try {
+    await seed();
+    console.log("Seeding completed");
+  } catch (error) {
+    console.error("Error during seeding:", error);
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect()
+  }
+}
+
+main();
+```
+
+Run the seed script to populate the database with the initial data:
+
+```bash
+node seed.js
+```
+
+You should see the `Seeding completed` message in the terminal, indicating that the seed data was inserted into the database. 
+
+### Implementing the API Endpoints
+
+Now that the database is set up and populated with data, we can implement the API to query the authors and their books. We'll use [Express](https://expressjs.com/), which is a minimal web application framework for Node.js. 
+
+Create an `index.ts` file at the project root, and add the following code to set up your Express server:
+
+```javascript
+import express from "express";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get("/", async (req, res) => {
+  res.send("Hello World! This is a book catalog.");
+});
+
+app.get("/authors", async (req, res) => {
+  const authors = await prisma.author.findMany();
+  res.json(authors);
+});
+
+app.get("/books/:author_id", async (req, res) => {
+  const authorId = parseInt(req.params.author_id);
+  const books = await prisma.book.findMany({
+    where: {
+      authorId: authorId
+    }
+  });
+  res.json(books);
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+This code sets up a simple API with two endpoints: `/authors` and `/books/:authorId`. The `/authors` endpoint returns a list of all the authors, and the `/books/:authorId` endpoint returns a list of books written by the specific author with the given `authorId`. 
+
+Run the application using the following command:
+
+```bash
+npm run start
+```
+
+This will start the server at `http://localhost:3000`. Navigate to `http://localhost:3000/authors` and `http://localhost:3000/books/1` in your browser to check that the API works as expected.
+
+## Migration after a schema change
+
+To demonstrate how to execute a schema change, we'll add a new column to the `authors` table, listing the country of origin for each author. 
+
+### Update the Prisma model
+
+Modify the `Author` model in the `prisma/schema.prisma` file to add the new `country` field:
+
+```prisma
+
+model Author {
+  @@map("authors")
+  
+  id        Int      @id @default(autoincrement())
+  name      String
+  bio       String?
+  country   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  books     Book[]
+}
+```
+
+### Generate and apply the migration
+
+Run the following command to generate a new migration and apply it to the database:
+
+```bash
+npx prisma migrate dev --name add-country
+```
+
+This command generates a new migration file to add the new field and applies it to the database. It also updates the Prisma client to reflect the change in the schema. 
+
+### Verify the migration
+
+To verify the migration, run the application again:
+
+```bash
+npm run start
+```
+
+You can navigate to `http://localhost:3000/authors` in your browser to check that each author entry has a `country` field, currently set to `null`. 
+
+## Conclusion
+
+In this guide, we set up a new Javascript project using `Express.js` and `Prisma` ORM and connected it to a `Neon` Postgres database. We created a schema for the database, generated and ran migrations, and implemented API endpoints to query the database. 
+
+## Resources
+
+For more information on the tools used in this guide, refer to the following resources:
+
+- [Prisma ORM](https://www.prisma.io/)
+- [Express.js](https://expressjs.com/)
+
+<NeedHelp/>
+
+
+# Sequelize
+
+---
+title: Schema migration with Neon Postgres and Sequelize
+subtitle: Set up Neon Postgres and run migrations for your Javascript project using Sequelize ORM
+enableTableOfContents: true
+updatedOn: '2024-03-06T10:15:00.000Z'
+---
+
+[Sequelize](https://sequelize.org/) is a promise-based Node.js ORM that supports multiple relational databases. In this guide, we'll explore how to use `Sequelize` ORM with a Neon Postgres database in a JavaScript project. 
+
+We'll create a Node.js application, configure `Sequelize`, and show how to set up and run migrations with `Sequelize`.
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and test the application locally. 
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+1. Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+2. Select an existing project or click the `New Project` button to create a new one. 
+
+### Retrieve your Neon database connection string
+
+Navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use. 
+
+## Setting Up the Node application
+
+### Create a new Node project
+
+We'll create a simple catalog with API endpoints that query the database for authors and a list of their books. Run the following commands in your terminal to set up a new project using `Express.js`:
+
+```bash
+mkdir neon-sequelize-guide && cd neon-sequelize-guide
+npm init -y && touch .env index.js 
+npm install express dotenv
+```
+
+Add the `DATABASE_URL` environment variable to the `.env` file, which you'll use to connect to your Neon database. Use the connection string that you obtained from the Neon console earlier:
+
+```bash
+# .env
+DATABASE_URL=NEON_DATABASE_CONNECTION_STRING
+```
+
+To use the `Sequelize` ORM to run queries, we need to install the `sequelize` package and the `pg` driver to connect to Postgres from Node.js. We also need to install the `sequelize-cli` package to manage data models and run migrations. Run the following commands to install the required packages:
+
+```bash
+npm install sequelize pg pg-hstore
+npm install sequelize-cli --save-dev
+```
+
+### Configure Sequelize
+
+Run the following command to initialize the `sequelize` configuration:
+
+```bash
+npx sequelize init
+```
+
+This command creates `config`, `migrations`, `models`, and `seeders` directories at the project root. 
+
+The `config` directory contains the `config.json` file, which holds the database configuration. We want to have the database URL read as an environment variable, so we replace it with a `config.js` file. Create a `config.js` file in your `config/` directory and add the following code:
+
+```javascript
+// config/config.js
+
+const dotenv = require('dotenv');
+dotenv.config();
+
+module.exports = {
+  development: {
+    url: process.env.DATABASE_URL,
+    dialect: 'postgres',
+    dialectOptions: { ssl: { require: true } }
+  }
+};
+```
+
+To make the `sequelize` CLI aware of the path to the new configuration file, we need to create a `.sequelizerc` file at the project root and add the following code: 
+
+```javascript
+// .sequelizerc
+
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('config', 'config.js')
+};
+```
+
+### Create models and set up migrations
+
+We'll create an `Author` and a `Book` model to represent the tables in our database. Run the following commands to create the models:
+
+```bash
+npx sequelize model:generate --name Author --attributes name:string,bio:string
+npx sequelize model:generate --name Book --attributes title:string
+```
+
+Sequelize creates a new file for each model in the `models/` directory and a corresponding migration file in the `migrations/` directory. Sequelize automatically adds an `id` field as the primary key for each model, and `createdAt` and `updatedAt` fields to track the creation and update times of each record. 
+
+We still need to define the relationships between the `Author` and `Book` models. Update the `book.js` file with the following code:
+
+```javascript
+// models/book.js
+
+'use strict';
+const { Model } = require('sequelize');
+
+module.exports = (sequelize, DataTypes) => {
+  class Book extends Model {
+    static associate(models) {
+      Book.belongsTo(models.Author, {
+        foreignKey: 'authorId',
+        as: 'author',
+        onDelete: 'CASCADE'
+      });
+    }
+  }
+  Book.init({
+    title: { type: DataTypes.STRING, allowNull: false },
+    authorId: { type: DataTypes.INTEGER, allowNull: false },
+  }, {
+    sequelize,
+    modelName: 'Book',
+  });
+  return Book;
+};
+```
+
+Sequelize does not automatically regenerate the migration files when you update the models. So, we need to manually update the migration files to add the foreign key constraint. 
+
+Update the migration file corresponding to the `Book` model with the following code:
+
+```javascript
+'use strict';
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('Books', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      title: {
+        type: Sequelize.STRING
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      authorId: {
+        type: Sequelize.INTEGER,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Authors',
+          key: 'id',
+        }
+      }
+    });
+  },
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('Books');
+  }
+};
+```
+
+Run the following command to apply the migrations and create the tables in the database:
+
+```bash
+npx sequelize db:migrate
+```
+
+If `Sequlize` successfully connects to the database and runs the migrations, you should see a success message in the terminal. 
+
+### Add sample data to the database
+
+We'll add some sample data to the database using the `Sequelize` ORM. Create a new file named `seed.js` at the project root and add the following code:
+
+```javascript
+// seed.js
+
+const { Sequelize, DataTypes } = require("sequelize");
+const { config } = require("dotenv");
+
+config();
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set");
+}
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialectOptions: {
+    ssl: {
+      require: true
+    }
+  }
+});
+
+const Author = require('./models/author')(sequelize, DataTypes);
+const Book = require('./models/book')(sequelize, DataTypes);
+
+const seedDatabase = async () => {
+  const author = await Author.create(
+    { name: 'J.K. Rowling', bio: 'The creator of the Harry Potter series' }
+  );
+  await Book.create({ title: 'Harry Potter and the Philosopher\'s Stone', authorId: author.id });
+  await Book.create({ title: 'Harry Potter and the Chamber of Secrets', authorId: author.id });
+
+  const author2 = await Author.create(
+    { name: 'J.R.R. Tolkien', bio: 'The creator of Middle-earth and author of The Lord of the Rings.' }
+  );
+  await Book.create({ title: 'The Hobbit', authorId: author2.id });
+  await Book.create({ title: 'The Fellowship of the Ring', authorId: author2.id });
+  await Book.create({ title: 'The Two Towers', authorId: author2.id });
+  await Book.create({ title: 'The Return of the King', authorId: author2.id });
+
+  const author3 = await Author.create(
+    { name: 'George R.R. Martin', bio: 'The author of the epic fantasy series A Song of Ice and Fire.' }
+  );
+  await Book.create({ title: 'A Game of Thrones', authorId: author3.id });
+  await Book.create({ title: 'A Clash of Kings', authorId: author3.id });
+
+  await sequelize.close();
+};
+
+seedDatabase();
+```
+
+Run the following command to seed the database with the sample data:
+
+```bash
+node seed.js
+```
+
+Sequelize will print logs to the terminal as it connects to the database and adds the sample data.
+
+### Create API endpoints
+
+Now that the database is set up and populated with data, we can implement the API to query the authors and their books. We'll use [Express](https://expressjs.com/), which is a minimal web application framework for Node.js. 
+
+Create an `index.js` file at the project root, and add the following code to set up your Express server:
+
+```javascript
+// index.js
+
+const express = require("express");
+const { Sequelize, DataTypes } = require("sequelize");
+const { config } = require("dotenv");
+
+config();
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set");
+}
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialectOptions: { ssl: { require: true } }
+});
+
+// Set up the models
+const Author = require('./models/author')(sequelize, DataTypes);
+const Book = require('./models/book')(sequelize, DataTypes);
+
+// Create a new Express application
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get("/", async (req, res) => {
+  res.send("Hello World! This is a book catalog.");
+});
+
+app.get("/authors", async (req, res) => {
+  try {
+    const authors = await Author.findAll();
+    res.json(authors);
+  } catch (error) {
+    console.error("Error fetching authors:", error);
+    res.status(500).send("Error fetching authors");
+  }
+});
+
+app.get("/books/:author_id", async (req, res) => {
+  const authorId = parseInt(req.params.author_id);
+  try {
+    const books = await Book.findAll({
+      where: {
+        authorId: authorId
+      }
+    });
+    res.json(books);
+  } catch (error) {
+    console.error("Error fetching books for author:", error);
+    res.status(500).send("Error fetching books for author");
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+This code sets up a simple API with two endpoints: `/authors` and `/books/:authorId`. The `/authors` endpoint returns a list of all the authors, and the `/books/:authorId` endpoint returns a list of books written by the specific author for the given `authorId`. 
+
+Run the application using the following command:
+
+```bash
+node index.js
+```
+
+This will start the server at `http://localhost:3000`. Navigate to `http://localhost:3000/authors` and `http://localhost:3000/books/1` in your browser to check that the API works as expected. 
+
+## Conclusion
+
+In this guide, we set up a new Javascript project using `Express.js` and the `Sequelize` ORM, and connected it to a `Neon` Postgres database. We created a schema for the database, generated and ran migrations, and implemented API endpoints to query the database. 
+
+## Resources
+
+For more information on the tools used in this guide, refer to the following resources:
+
+- [Sequelize](https://sequelize.org/)
+- [Express.js](https://expressjs.com/)
+
+<NeedHelp/>
+
+
 # Serverless
 
 # Neon serverless driver
@@ -14991,14 +16267,14 @@ When you run a changeset for the first time on the source database, you will fin
 title: Neon serverless driver
 enableTableOfContents: true
 subtitle: Connect to Neon from serverless environments over HTTP or WebSockets
-updatedOn: '2024-02-09T17:53:20.590Z'
+updatedOn: '2024-02-21T23:59:47.049Z'
 ---
 
 The [Neon serverless driver](https://github.com/neondatabase/serverless) is a low-latency Postgres driver for JavaScript and TypeScript that allows you to query data from serverless and edge environments over **HTTP** or **WebSockets** in place of TCP. The driver's low-latency capability is due to [message pipelining and other optimizations](https://neon.tech/blog/quicker-serverless-postgres).
 
 When to query over HTTP vs WebSockets:
 
-- **HTTP**: Querying over an HTTP [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) request is faster for single, non-interactive transactions, also referred to as "one-shot queries". Issuing [multiple queries](#issue-multiple-queries-with-the-transaction-function) via a single, non-interactive transaction is also supported. See [Use the driver over HTTP](#how-to-use-the-driver-over-http).
+- **HTTP**: Querying over an HTTP [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) request is faster for single, non-interactive transactions, also referred to as "one-shot queries". Issuing [multiple queries](#issue-multiple-queries-with-the-transaction-function) via a single, non-interactive transaction is also supported. See [Use the driver over HTTP](#use-the-driver-over-http).
 - **WebSockets**: If you require session or interactive transaction support or compatibility with [node-postgres](https://node-postgres.com/) (the popular **npm** `pg` package), use WebSockets. See [Use the driver over WebSockets](#use-the-driver-over-websockets).
 
 <Admonition type="note">
@@ -15029,15 +16305,15 @@ The examples that follow assume that your database connection string is assigned
 
 The Neon serverless driver uses the [neon](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#neon-function) function for queries over HTTP.
 
-You can use raw SQL queries or tools such as [Drizzle-ORM](https://orm.drizzle.team/docs/quick-postgresql/neon), [kysely](https://github.com/kysely-org/kysely), [Zapatos](https://jawj.github.io/zapatos/), and others for type safety. Please note that [Drizzle Kit](https://orm.drizzle.team/kit-docs/overview) does not support the Neon serverless driver — you'll have to use a standard Postgres driver with Drizzle Kit, like `node-postgres` or `postgres.js`.
+You can use raw SQL queries or tools such as [Drizzle-ORM](https://orm.drizzle.team/docs/quick-postgresql/neon), [kysely](https://github.com/kysely-org/kysely), [Zapatos](https://jawj.github.io/zapatos/), and others for type safety.
 
 <CodeTabs labels={["Node.js", "Drizzle-ORM", "Vercel Edge Function", "Vercel Serverless Function"]}>
 
 ```javascript
 import { neon } from '@neondatabase/serverless';
 
-const sql = neon(process.env.DATABASE_URL!);
-const {rows: [post]} = await sql('SELECT * FROM posts WHERE id =$1', [postId]);
+const sql = neon(process.env.DATABASE_URL);
+const posts = await sql('SELECT * FROM posts WHERE id = $1', [postId]);
 // `post` is now [{ id: 12, title: 'My post', ... }] (or undefined)
 ```
 
@@ -15060,8 +16336,8 @@ export default async () => {
 import { neon } from '@neondatabase/serverless';
 
 export default async (req: Request) => {
-  const sql = neon(process.env.DATABASE_URL!);
-  const {rows: [post]} = await sql('SELECT * FROM posts WHERE id = $1', [postId]);
+  const sql = neon(process.env.DATABASE_URL);
+  const posts = await sql('SELECT * FROM posts WHERE id = $1', [postId]);
   return new Response(JSON.stringify(post));
 }
 
@@ -15079,7 +16355,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const sql = neon(process.env.DATABASE_URL!);
-  const {rows: [post]} = await sql('SELECT * FROM posts WHERE id = $1', [postId]);
+  const posts = await sql('SELECT * FROM posts WHERE id = $1', [postId]);
  
   return res.status(500).send(post);
 }
@@ -15247,21 +16523,6 @@ Note that options **cannot** be supplied for individual queries within a transac
 
 For additional details, see [transaction(...) function](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#transaction-function).
 
-### Experimental connection caching
-
-Connection caching provides server-side connection pooling so that a new connection does not have to be set up for each query over HTTP. You can enable it by setting `fetchConnectionCache` to `true` using the [neonConfig](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#neonconfig-configuration) object.
-
-```javascript
-import { neonConfig } from '@neondatabase/serverless';
-
-// Enable connection cache (pool) on the server for HTTP fetch queries
-neonConfig.fetchConnectionCache = true
-```
-
-<Admonition type="note">
-This experimental option is currently only recommended for use with a non-pooled Neon connection string. For information about pooled and non-pooled Neon connections, see [Connection pooling](/docs/connect/connection-pooling).
-</Admonition>
-
 ### Advanced configuration options
 
 For advanced configuration options, see [neonConfig configuration](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#neonconfig-configuration), in the Neon serverless driver GitHub readme.
@@ -15278,7 +16539,7 @@ Consider using the driver with `Pool` or `Client` in the following scenarios:
 - You are writing a new code base and want to use a package that expects a `node-postgres-compatible` driver.
 - Your backend service uses sessions / interactive transactions with multiple queries per connection.
 
-You can use the Neon serverless driver in the same way you would use `node-postgres` with `Pool` and `Client`. Where you usually import `pg`, import `@neondatabase/serverless` instead. Please note that [Drizzle Kit](https://orm.drizzle.team/kit-docs/overview) does not support the Neon serverless driver — you'll have to use a standard Postgres driver with Drizzle Kit, like `node-postgres` or `postgres.js`.
+You can use the Neon serverless driver in the same way you would use `node-postgres` with `Pool` and `Client`. Where you usually import `pg`, import `@neondatabase/serverless` instead.
 
 <CodeTabs labels={["Node.js", "Prisma", "Drizzle-ORM", "Vercel Edge Function", "Vercel Serverless Function"]}>
 
@@ -15286,7 +16547,7 @@ You can use the Neon serverless driver in the same way you would use `node-postg
 import { Pool } from '@neondatabase/serverless';
 
 const pool = new Pool({connectionString: process.env.DATABASE_URL});
-const {rows: [post]} = await pool.query('SELECT * FROM posts WHERE id =$1', [postId]);
+const posts = await pool.query('SELECT * FROM posts WHERE id =$1', [postId]);
 pool.end();
 ```
 
@@ -15338,7 +16599,7 @@ export default async (req: Request, ctx: any) => {
   const pool = new Pool({connectionString: process.env.DATABASE_URL});
   await pool.connect();
 
-  const {rows: [post]} = await pool.query('SELECT * FROM posts WHERE id = $1', [postId]);
+  const posts = await pool.query('SELECT * FROM posts WHERE id = $1', [postId]);
   
   ctx.waitUntil(pool.end());
 
@@ -15361,7 +16622,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   const pool = new Pool({connectionString: process.env.DATABASE_URL});
-  const {rows: [post]} = await pool.query('SELECT * FROM posts WHERE id = $1', [postId]);
+  const posts = await pool.query('SELECT * FROM posts WHERE id = $1', [postId]);
   
   await pool.end();
 
@@ -15425,10 +16686,12 @@ The GitHub repository and [changelog](https://github.com/neondatabase/serverless
 - [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 - [node-postgres](https://node-postgres.com/)
 - [Drizzle-ORM](https://orm.drizzle.team/docs/quick-postgresql/neon)
+- [Schema migration with Neon Postgres and Drizzle ORM](/docs/guides/drizzle-migrations)
 - [kysely](https://github.com/kysely-org/kysely)
 - [Zapatos](https://jawj.github.io/zapatos/)
 - [Vercel Edge Functions](https://vercel.com/docs/functions/edge-functions)
 - [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- [Use Neon with Cloudflare Workers](/docs/guides/cloudflare-workers)
 
 <NeedHelp/>
 
@@ -15874,6 +17137,785 @@ For more information about using PolyScale and how it works, refer to the [PolyS
 
 # Deployment platforms
 
+# Cloudflare
+
+# Cloudflare Hyperdrive
+
+---
+title: Use Neon with Cloudflare Hyperdrive
+subtitle: Connect Cloudflare Hyperdrive to your Neon Postgres database for faster
+  queries
+enableTableOfContents: true
+updatedOn: '2024-02-21T23:59:47.044Z'
+---
+
+[Cloudflare Hyperdrive](https://developers.cloudflare.com/hyperdrive/) is a serverless application that proxies queries to your database and accelerates them. It works by maintaining a globally distributed pool of database connections, and routing queries to the closest available connection. 
+
+This is specifically useful for serverless applications that cannot maintain a persistent database connection and need to establish a new connection for each request. Hyperdrive can significantly reduce the latency of these queries for your application users.
+
+This guide demonstrates how to configure a Hyperdrive service to connect to your Neon Postgres database. It demonstrates how to implement a regular `Workers` application that connects to Neon directly and then replace that connection with a `Hyperdrive` connection to achieve performance improvements. 
+
+## Prerequisites
+
+To follow along with this guide, you require:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+
+- A Cloudflare account. If you do not have one, sign up for [Cloudflare Workers](https://workers.cloudflare.com/) to get started. 
+
+    **NOTE**: You need to be on Cloudflare Workers' paid subscription plan to use Hyperdrive.
+
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and deploy our Workers application. 
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+1. Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+
+2. Click the **New Project** button to create a new project.
+
+3. From your project dashboard, navigate to the **SQL Editor** from the sidebar, and run the following SQL command to create a new table in your database:
+
+    ```sql
+    CREATE TABLE books_to_read (
+        id SERIAL PRIMARY KEY,
+        title TEXT,
+        author TEXT
+    );
+    ```
+
+    Next, we insert some sample data into the `books_to_read` table, so we can query it later:
+
+    ```sql
+    INSERT INTO books_to_read (title, author)
+    VALUES
+        ('The Way of Kings', 'Brandon Sanderson'),
+        ('The Name of the Wind', 'Patrick Rothfuss'),
+        ('Coders at Work', 'Peter Seibel'),
+        ('1984', 'George Orwell');
+    ```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Setting up your Cloudflare Workers application
+
+### Create a new Worker project
+
+Run the following command in a terminal window to set up a new Cloudflare Workers project:
+
+```bash
+npm create cloudflare@latest
+```
+
+This initiates an interactive CLI prompt to generate a new project. To follow along with this guide, you can use the following settings:
+```bash
+├ In which directory do you want to create your application?
+│ dir ./neon-hyperdrive-guide
+│
+├ What type of application do you want to create?
+│ type "Hello World" Worker
+│
+├ Do you want to use TypeScript?
+│ no typescript
+```
+
+When asked if you want to deploy your application, select `no`. We'll develop and test the application locally before deploying it to the Cloudflare Workers platform.
+
+The `create-cloudflare` CLI also installs the `Wrangler` tool to manage the full workflow of testing and managing your Worker applications. To emulate the Node environment in the Workers runtime, we need to add the following entry to the `wrangler.toml` file. 
+
+```toml
+node_compat=true
+```
+
+### Implement the Worker script
+
+We'll use the `node-postgres` library to connect to the Postgres database (directly to Neon first, later we will connect to the Hyperdrive service), so you need to install it as a dependency. Navigate to the project directory and run the following command:
+
+```bash
+npm install pg
+```
+
+Now, you can update the `src/index.js` file in the project directory with the following code:
+
+```javascript
+import pkg from 'pg';
+
+const { Client } = pkg;
+
+export default {
+	async fetch(request, env, ctx) {
+		const client = new Client({ connectionString: env.DATABASE_URL });
+		await client.connect();
+		const { rows } = await client.query('SELECT * FROM books_to_read;');
+		return new Response(JSON.stringify(rows));
+	},
+};
+```
+
+The `fetch` handler defined above gets called when the worker receives an HTTP request. It will query the Neon database to fetch the full list of books in our to-read list. 
+
+### Test the worker application locally
+
+First, you need to configure the `DATABASE_URL` environment variable to point to the Neon database. You can do this by creating a `.dev.vars` file at the root of the project directory with the following content:
+
+```text
+DATABASE_URL=YOUR_NEON_CONNECTION_STRING
+```
+
+Now, to test the worker application locally, you can use the `wrangler` CLI which comes with the Cloudflare project setup.
+
+```bash
+npx wrangler dev
+```
+
+This command starts a local server and simulates the Cloudflare Workers environment. You can visit the printed URL in your browser to test the worker application. It should return a JSON response with the list of books from the `books_to_read` table. 
+
+## Setting up Cloudflare Hyperdrive
+
+With our Workers application able to query the Neon database, we will now set up Cloudflare Hyperdrive to connect to Neon and accelerate the database queries. 
+
+### Create a new Hyperdrive service
+
+You can use the `Wrangler` CLI to create a new Hyperdrive service, using your Neon database connection string from earlier:
+
+```bash
+npx wrangler hyperdrive create neon-guide-drive --connection-string=$NEON_DATABASE_CONNECTION_STRING
+```
+
+This command creates a new Hyperdrive service named `neon-guide-drive` and outputs its configuration details. Copy the `id` field from the output, which we will use next. 
+
+### Bind the Worker project to Hyperdrive
+
+Cloudflare workers uses `Bindings` to interact with other resources on the Cloudflare platform. We will update the `wrangler.toml` file in the project directory to bind our Worker project to the Hyperdrive service. 
+
+Add the following lines to the `wrangler.toml` file. This lets us access the Hyperdrive service from our Worker application using the `HYPERDRIVE` binding. 
+
+```toml
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = $id-from-previous-step
+```
+
+### Update the Worker script to use Hyperdrive
+
+Now, you can update the `src/index.js` file in the project directory to query the Neon database, through the Hyperdrive service. 
+
+```javascript
+import pkg from 'pg';
+
+const { Client } = pkg;
+
+export default {
+    async fetch(request, env, ctx) {
+        // We replace the direct database connection with the Hyperdrive service
+        const client = new Client({ connectionString: env.HYPERDRIVE.connectionString });
+        await client.connect();
+        const { rows } = await client.query('SELECT * FROM books_to_read;');
+        return new Response(JSON.stringify(rows));
+  }
+}
+```
+
+### Deploy the updated Worker 
+
+Now that we have updated the Worker script to use the Hyperdrive service, we can deploy the updated Worker to the Cloudflare Workers platform:
+
+```bash
+npx wrangler deploy
+```
+
+This command uploads the updated Worker script to the Cloudflare Workers platform and makes it available at a public URL. You can visit the URL in your browser to test that the application works. 
+
+## Removing the example application and Neon project
+
+To delete your Worker project, you can use the Cloudflare dashboard or run `wrangler delete` from your project directory, specifying your project name. Refer to the [Wrangler documentation](https://developers.cloudflare.com/workers/wrangler/commands/#delete-3) for more details.
+
+To delete your Neon project, follow the steps outlined in the Neon documentation under [Delete a project](/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [Cloudflare Hyperdrive](https://developers.cloudflare.com/hyperdrive/)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
+- [Neon](https://neon.tech)
+
+<NeedHelp/>
+
+
+# Cloudflare Pages
+
+---
+title: Use Neon with Cloudflare Pages
+subtitle: Connect a Neon Postgres database to your Cloudflare Pages web application
+enableTableOfContents: true
+updatedOn: '2024-02-21T23:59:47.047Z'
+---
+
+`Cloudflare Pages` is a modern web application hosting platform that allows you to build, deploy, and scale your web applications. While it is typically used to host static websites, you can also use it to host interactive web applications by leveraging `functions` to run server-side code. Internally, Cloudflare functions are powered by `Cloudflare Workers`, a serverless platform that allows you to run JavaScript code on Cloudflare's edge network.
+
+This guide demonstrates how to connect to a Neon Postgres database from your Cloudflare Pages application. We'll create a simple web application using `React` that tracks our reading list using the database and provides a form to add new books to it.
+
+We'll use the [Neon serverless driver](https://neon.tech/docs/serverless/serverless-driver) to connect to the database and make queries.
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- A Cloudflare account. If you do not have one, sign up for [Cloudflare Pages](https://pages.cloudflare.com/) to get started.
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and deploy our `Pages` application.
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+1. Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+
+2. Click the **New Project** button to create a new project.
+
+3. From your project dashboard, navigate to the **SQL Editor** from the sidebar, and run the following SQL command to create a new table in your database:
+
+    ```sql
+    CREATE TABLE books_to_read (
+        id SERIAL PRIMARY KEY,
+        title TEXT,
+        author TEXT
+    );
+    ```
+
+    Next, we insert some sample data into the `books_to_read` table, so we can query it later:
+
+    ```sql
+    INSERT INTO books_to_read (title, author)
+    VALUES
+        ('The Way of Kings', 'Brandon Sanderson'),
+        ('The Name of the Wind', 'Patrick Rothfuss'),
+        ('Coders at Work', 'Peter Seibel'),
+        ('1984', 'George Orwell');
+    ```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Setting up your Cloudflare Pages project
+
+### Create a new project
+
+We will create a simple React application using the Vite bundler framework. Run the following command in a terminal window to set up a new Vite project:
+
+```bash
+npm create vite@latest
+```
+
+This initiates an interactive CLI prompt to generate a new project. To follow along with this guide, you can use the following settings:
+
+```bash
+✔ Project name: … my-neon-page
+✔ Select a framework: › React
+✔ Select a variant: › JavaScript
+
+Scaffolding project in /Users/ishananand/repos/javascript/my-neon-page...
+
+Done. Now run:
+
+  cd my-neon-page
+  npm install
+  npm run dev
+```
+
+We set up a template React configured to be built using Vite.
+
+### Implement the application frontend
+
+Navigate to the `my-neon-page` directory and open the `src/App.jsx` file. Replace the contents of this file with the following code:
+
+```jsx
+// src/App.jsx
+
+import React, { useState, useEffect } from "react";
+
+function App() {
+  const [books, setBooks] = useState([]);
+  const [bookName, setBookName] = useState("");
+  const [authorName, setAuthorName] = useState("");
+
+  // Function to fetch books
+  const fetchBooks = async () => {
+    try {
+      const response = await fetch("/books");
+      const data = await response.json();
+      setBooks(data);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const response = await fetch("/books/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ title: bookName, author: authorName }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Success:", data);
+        setBooks([...books, { title: bookName, author: authorName }]);
+      } else {
+        console.error("Error adding book:", data.error);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    // Reset form fields
+    setBookName("");
+    setAuthorName("");
+  };
+
+  return (
+    <div className="App">
+      <h1>Book List</h1>
+      <ul>
+        {books.map((book, index) => (
+          <li key={index}>
+            {book.title} by {book.author}
+          </li>
+        ))}
+      </ul>
+
+      <h2>Add a Book</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Book Name:
+          <input
+            type="text"
+            value={bookName}
+            onChange={(e) => setBookName(e.target.value)}
+          />
+        </label>
+        <label>
+          Author Name:
+          <input
+            type="text"
+            value={authorName}
+            onChange={(e) => setAuthorName(e.target.value)}
+          />
+        </label>
+        <button type="submit">Add Book</button>
+      </form>
+    </div>
+  );
+}
+
+export default App;
+```
+
+The `App` component fetches the list of books from the server and displays them. It also provides a form to add new books to the list. `Cloudflare` Pages allows us to define the API endpoints as serverless functions, which we'll implement next.
+
+### Implement the serverless functions
+
+We'll use the [Neon serverless driver](https://neon.tech/docs/serverless/serverless-driver) to connect to the Neon database, so we first need to install it as a dependency:
+
+```bash
+npm install @neondatabase/serverless
+```
+
+Next, we'll create two serverless functions for the application. In a `Cloudflare Pages` project, these must be defined in the `functions` directory at the root of the project. For further details, refer to the [Cloudflare Pages - Functions documentation](https://developers.cloudflare.com/pages/functions/).
+
+#### Function to fetch list of books from the database
+
+Create a new file named `functions/books/index.js` in the project directory with the following content:
+
+```js
+import { Client } from '@neondatabase/serverless';
+
+export async function onRequestGet(context) {
+  const client = new Client(context.env.DATABASE_URL);
+  await client.connect();
+
+  // Logic to fetch books from your database
+  const { rows } = await client.query('SELECT * FROM books_to_read;');
+  return new Response(JSON.stringify(rows));
+}
+```
+
+This function fetches the list of books from the `books_to_read` table in the database and returns it as a JSON response.
+
+#### Function to add a new book to the database
+
+Create another file named `functions/books/add.js` in the project directory with the following content:
+
+```js
+import { Client } from "@neondatabase/serverless";
+
+export async function onRequestPost(context) {
+  const client = new Client(context.env.DATABASE_URL);
+  await client.connect();
+
+  // Extract the book details from the request body
+  const book = await context.request.json();
+
+  // Logic to insert a new book into your database
+  const resp = await client.query(
+    "INSERT INTO books_to_read (title, author) VALUES ($1, $2); ",
+    [data.title, data.author],
+  );
+
+  // Check if insert query was successful
+  if (resp.rowCount === 1) {
+    return new Response(
+      JSON.stringify({ success: true, error: null, data: book }),
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  } else {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: "Failed to insert book",
+        data: book,
+      }),
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 500,
+      },
+    );
+  }
+}
+```
+
+This function extracts the book details from the request body and inserts it into the `books_to_read` table in the database. It returns a JSON response indicating the success or failure of the operation.
+
+### Test the application locally
+
+Our application is now ready to be tested locally. However, we first need to configure the `DATABASE_URL` environment variable to point to our Neon database.
+
+We can do this by creating a `.dev.vars` file at the root of the project directory with the following content:
+
+```text
+DATABASE_URL=YOUR_NEON_CONNECTION_STRING
+```
+
+Now, to test the `Pages` application locally, we can use the `wrangler` CLI tool used to manage Cloudflare projects. We can use it using the `npx` command as:
+
+```bash
+npx wrangler pages dev -- npm run dev
+```
+
+This command starts a local server simulating the Cloudflare environment. The function endpoints are run by the Wrangler tool while requests to the root URL are proxied to the Vite development server.
+
+```bash
+❯ npx wrangler pages dev -- npm run dev
+Running npm run dev...
+.
+.
+.
+.
+-------------------
+Using vars defined in .dev.vars
+Your worker has access to the following bindings:
+- Vars:
+  - DATABASE_URL: "(hidden)"
+⎔ Starting local server...
+[wrangler:inf] Ready on http://localhost:8788
+```
+
+Visit the printed localhost URL in your browser to interact with the application. You should see the list of books fetched from the database and a form to add new books.
+
+## Deploying your application with Cloudflare Pages
+
+### Authenticate Wrangler with your Cloudflare account
+
+Run the following command to link the Wrangler tool to your Cloudflare account:
+
+```bash
+npx wrangler login
+```
+
+This command will open a browser window and prompt you to log into your Cloudflare account. After logging in and approving the access request for `Wrangler`, you can close the browser window and return to your terminal.
+
+### Publish your Pages application and verify the deployment
+
+Now, you can deploy your application to `Cloudflare Pages` by running the following command:
+
+```bash
+npm run build
+npx wrangler pages deploy dist --project-name <NAME_OF_YOUR_PROJECT>
+```
+
+Give a unique name to your `Cloudflare Pages` project above. The Wrangler CLI will output the URL of your application hosted on the Cloudflare platform. Visit this URL in your browser to interact with it.
+
+```bash
+✨ Compiled Worker successfully
+🌍  Uploading... (4/4)
+
+✨ Success! Uploaded 0 files (4 already uploaded) (0.72 sec)
+
+✨ Uploading Functions bundle
+✨ Deployment complete! Take a peek over at https://21ea2a57.my-neon-page.pages.dev
+```
+
+### Add your Neon connection string as an environment variable
+
+The Cloudflare production deployment doesn't have access to the `DATABASE_URL` environment variable yet. Hence, we need to navigate to the Cloudflare dashboard and add it manually. 
+
+Navigate to the dashboard and select the `Settings` section in your project. Go to the **Environment Variables** tab and add a new environment variable named `DATABASE_URL` with the value of your Neon database connection string.
+
+To make sure the environment variable is available to the serverless functions, go back to the terminal and redeploy the project using the `wrangler` CLI:
+
+```bash
+npx wrangler pages deploy dist --project-name <NAME_OF_YOUR_PROJECT>
+```
+
+Now, visit the URL of your `Cloudflare Pages` application to interact with it. You should see the list of books fetched from the Neon database and a form to add new books.
+
+## Removing the example application and Neon project
+
+To delete your `Cloudflare Pages` application, you can use the Cloudflare dashboard. Refer to the [Pages documentation](https://developers.cloudflare.com/pages) for more details.
+
+To delete your Neon project, follow the steps outlined in the Neon documentation under [Delete a project](/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Cloudflare Pages](https://pages.cloudflare.com/)
+- [Cloudflare Pages - Documentation](https://developers.cloudflare.com/pages/)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
+- [Neon](https://neon.tech)
+
+<NeedHelp/>
+
+
+# Cloudflare Workers
+
+---
+title: Use Neon with Cloudflare Workers
+subtitle: Connect a Neon Postgres database to your Cloudflare Workers application
+enableTableOfContents: true
+updatedOn: '2024-02-21T23:59:47.048Z'
+---
+
+[Cloudflare Workers](https://workers.cloudflare.com/) is a serverless platform allowing you to deploy your applications globally across Cloudflare's network. It supports running JavaScript, TypeScript, and WebAssembly, making it a great choice for high-performance, low-latency web applications.
+
+This guide demonstrates how to connect to a Neon Postgres database from your Cloudflare Workers application. We'll use the [Neon serverless driver](https://neon.tech/docs/serverless/serverless-driver) to connect to the database and make queries.
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- A Cloudflare account. If you do not have one, sign up for [Cloudflare Workers](https://workers.cloudflare.com/) to get started.
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and deploy the Workers application.
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+
+1. Click the **New Project** button to create a new project.
+
+2. From the Neon **Dashboard**, navigate to the **SQL Editor** from the sidebar, and run the following SQL command to create a new table in your database:
+
+    ```sql
+    CREATE TABLE books_to_read (
+        id SERIAL PRIMARY KEY,
+        title TEXT,
+        author TEXT
+    );
+    ```
+
+    Next, insert some sample data into the `books_to_read` table so that you can query it later:
+
+    ```sql
+    INSERT INTO books_to_read (title, author)
+    VALUES
+        ('The Way of Kings', 'Brandon Sanderson'),
+        ('The Name of the Wind', 'Patrick Rothfuss'),
+        ('Coders at Work', 'Peter Seibel'),
+        ('1984', 'George Orwell');
+    ```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. Select the **Pooled connection** option to add the `-pooler` option to your connection string. A pooled connection is recommended for serverless environments. For more information, see [Connection pooling](/docs/connect/connection-pooling).
+
+Your pooled connection string should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Setting up your Cloudflare Workers project
+
+### Create a new Worker project
+
+Run the following command in a terminal window to set up a new Cloudflare Workers project:
+
+```bash
+npm create cloudflare@latest
+```
+
+This initiates an interactive CLI prompt to generate a new project. To follow along with this guide, you can use the following settings:
+```bash
+├ In which directory do you want to create your application?
+│ dir ./my-neon-worker
+│
+├ What type of application do you want to create?
+│ type "Hello World" Worker
+│
+├ Do you want to use TypeScript?
+│ no typescript
+```
+
+When asked if you want to deploy your application, select `no`. We'll develop and test the application locally before deploying it to Cloudflare Workers platform.
+
+The `create-cloudflare` CLI installs the `Wrangler` tool to manage the full workflow of testing and managing your Worker applications.
+
+### Implement the Worker script
+
+We'll use the [Neon serverless driver](https://neon.tech/docs/serverless/serverless-driver) to connect to the Neon database, so you need to install it as a dependency:
+
+```bash
+npm install @neondatabase/serverless
+```
+
+Now, you can update the `src/index.js` file in the project directory with the following code:
+
+```js
+import { Client } from '@neondatabase/serverless';
+
+export default {
+  async fetch(request, env, ctx) {
+    const client = new Client(env.DATABASE_URL);
+    await client.connect();
+    const { rows } = await client.query('SELECT * FROM books_to_read;');
+    return new Response(JSON.stringify(rows));
+  }
+}
+```
+
+The `fetch` handler defined above gets called when the worker receives an HTTP request. It will query the Neon database to fetch the full list of books in our to-read list.
+
+### Test the worker application locally
+
+You first need to configure the `DATABASE_URL` environment variable to point to our Neon database. You can do this by creating a `.dev.vars` file at the root of the project directory with the following content:
+
+```text
+DATABASE_URL=YOUR_NEON_CONNECTION_STRING
+```
+
+Now, to test the worker application locally, you can use the `wrangler` CLI which comes with the Cloudflare project setup.
+
+```bash
+npx wrangler dev
+```
+
+This command starts a local server and simulates the Cloudflare Workers environment.
+
+```bash
+❯ npx wrangler dev
+ ⛅️ wrangler 3.28.1
+-------------------
+Using vars defined in .dev.vars
+Your worker has access to the following bindings:
+- Vars:
+  - DATABASE_URL: "(hidden)"
+⎔ Starting local server...
+[wrangler:inf] Ready on http://localhost:8787
+```
+
+You can visit `http://localhost:8787` in your browser to test the worker application. It should return a JSON response with the list of books from the `books_to_read` table.
+
+```
+[{"id":1,"title":"The Way of Kings","author":"Brandon Sanderson"},{"id":2,"title":"The Name of the Wind","author":"Patrick Rothfuss"},{"id":3,"title":"Coders at Work","author":"Peter Seibel"},{"id":4,"title":"1984","author":"George Orwell"}]
+```
+
+## Deploying your application with Cloudflare Workers
+
+### Authenticate Wrangler with your Cloudflare account
+
+Run the following command to link the Wrangler tool to your Cloudflare account:
+
+```bash
+npx wrangler login
+```
+
+This command will open a browser window and prompt you to log into your Cloudflare account. After logging in and approving the access request for `Wrangler`, you can close the browser window and return to your terminal.
+
+### Add your Neon connection string as a secret
+
+Use Wrangler to add your Neon database connection string as a secret to your Worker:
+
+```bash
+npx wrangler secret put DATABASE_URL
+```
+
+When prompted, paste your Neon connection string.
+
+### Publish your Worker application and verify the deployment
+
+Now, you can deploy your application to Cloudflare Workers by running the following command:
+
+```bash
+npx wrangler deploy
+```
+
+The Wrangler CLI will output the URL of your Worker hosted on the Cloudflare platform. Visit this URL in your browser or use `curl` to verify the deployment works as expected.
+
+```text
+❯ npx wrangler deploy
+ ⛅️ wrangler 3.28.1
+-------------------
+Total Upload: 189.98 KiB / gzip: 49.94 KiB
+Uploaded my-neon-worker (4.03 sec)
+Published my-neon-worker (5.99 sec)
+  https://my-neon-worker.anandishan2.workers.dev
+Current Deployment ID: de8841dd-46e4-436d-b2c4-569e91f54c72
+```
+
+## Removing the example application and Neon project
+
+To delete your Worker, you can use the Cloudflare dashboard or run `wrangler delete` from your project directory, specifying your project name. Refer to the [Wrangler documentation](https://developers.cloudflare.com/workers/wrangler/commands/#delete-3) for more details.
+
+To delete your Neon project, follow the steps outlined in the Neon documentation under [Delete a project](/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/)
+- [Neon](https://neon.tech)
+
+<NeedHelp/>
+
+
 # Deno
 
 ---
@@ -15926,7 +17968,6 @@ Next, create the `server.ts` script on your local machine.
 ```ts
 // server.ts
 
-import { serve } from "https://deno.land/std@0.214.0/http/server.ts";
 import * as postgres from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 
 const databaseUrl = Deno.env.get("DATABASE_URL")!;
@@ -15962,14 +18003,13 @@ try {
   connection.release();
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   const url = new URL(req.url);
   if (url.pathname !== "/books") {
     return new Response("Not Found", { status: 404 });
   }
 
   const connection = await pool.connect();
-
   try {
     switch (req.method) {
       case "GET": {
@@ -16130,7 +18170,203 @@ To delete your Neon project, refer to [Delete a project](/docs/manage/projects#d
 - [Deno Deploy](https://deno.com/deploy)
 - [Deno Runtime Quickstart](https://docs.deno.com/runtime/manual)
 - [Deno Deploy Quickstart](https://docs.deno.com/deploy/manual/)
-- [demo-postgres driver](https://deno.land/x/postgres@ls)
+- [deno-postgres driver](https://deno.land/x/postgres@ls)
+
+<NeedHelp/>
+
+
+# Heroku
+
+---
+title: Deploy Your Node.js App with Neon Postgres on Heroku
+subtitle: A step-by-step guide to deploying a Node application with a Neon Postgres
+  database on Heroku
+enableTableOfContents: true
+updatedOn: '2024-02-22T00:06:09.652Z'
+---
+
+[Heroku](https://heroku.com) is a popular platform as a service (PaaS) that enables developers to build, run, and operate applications entirely in the cloud. It simplifies the deployment process, making it a favorite among developers for its ease of use and integration capabilities.
+
+This guide walks you through deploying a simple Node.js application connected to a Neon Postgres database, on Heroku.
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- A Heroku account. Sign up at [Heroku](https://signup.heroku.com/) to get started. 
+- Git installed on your local machine. Heroku uses Git for version control and deployment. 
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and test the application locally. 
+
+## Setting Up Your Neon Database
+
+### Initialize a New Project
+
+1. Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/projects) section.
+
+2. Click **New Project** to create a new project.
+
+3. In your project dashboard, go to the **SQL Editor** and run the following SQL command to create a new table:
+
+    ```sql
+    CREATE TABLE music_albums (
+        album_id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        artist VARCHAR(255) NOT NULL
+    );
+
+    INSERT INTO music_albums (title, artist)
+    VALUES
+        ('Rumours', 'Fleetwood Mac'),
+        ('Abbey Road', 'The Beatles'),
+        ('Dark Side of the Moon', 'Pink Floyd'),
+        ('Thriller', 'Michael Jackson');
+    ```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Implementing the Node.js Application
+
+We'll create a simple Express application that connects to our Neon database and retrieves the list of music albums. Run the following commands in your terminal to set it up:
+
+```bash
+mkdir neon-heroku-example && cd neon-heroku-example
+npm init -y && npm pkg set type="module" && npm pkg set scripts.start="node index.js"
+npm install express pg
+touch .env
+```
+
+We use the `npm pkg set type="module"` command to enable ES6 module support in our project. We'll also create a new `.env` file to store the `DATABASE_URL` environment variable, which we'll use to connect to our Neon database. Lastly, we install the `pg` library which is the Postgres driver we use to connect to our database. 
+
+In the `.env` file, store your Neon database connection string:
+
+```bash
+# .env
+DATABASE_URL=NEON_DATABASE_CONNECTION_STRING
+```
+
+Now, create a new file named `index.js` and add the following code:
+
+```javascript
+import express from "express";
+import pkg from "pg";
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Parse JSON bodies for this app
+app.use(express.json());
+
+// Create a new pool using your Neon database connection string
+const { Pool } = pkg;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+app.get("/", async (req, res) => {
+  try {
+    // Fetch the list of music albums from your database using the postgres connection
+    const { rows } = await pool.query("SELECT * FROM music_albums;");
+    res.json(rows);
+  } catch (error) {
+    console.error("Failed to fetch albums", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+This code sets up an Express server that listens for requests on port 3000. When a request is made to the `URL`, the server queries the `music_albums` table in your Neon database and returns the results as JSON. 
+
+We can test this application locally by running:
+
+```bash
+node --env-file=.env index.js
+```
+
+Now, navigate to `http://localhost:3000/` in your browser to check it returns the sample data from the `music_albums` table. 
+
+## Deploying to Heroku
+
+### Create a New Heroku App
+
+We will use the `Heroku CLI` to deploy our application to Heroku manually. You can install it on your machine by following the instructions [here](https://devcenter.heroku.com/articles/heroku-cli). Once installed, log in to your Heroku account using:
+
+```bash
+❯ heroku login
+ ›   Warning: Our terms of service have changed:
+ ›   https://dashboard.heroku.com/terms-of-service
+heroku: Press any key to open up the browser to login or q to exit:
+Opening browser to https://cli-auth.heroku.com/auth/cli/browser/...
+```
+
+You will be prompted to log in to your Heroku account in the browser. After logging in, you can close the browser and return to your terminal. 
+
+Before creating the Heroku application, we need to initialize a new Git repository in our project folder:
+
+```bash
+git init && echo "node_modules" > .gitignore && echo ".env" >> .gitignore
+git branch -M main
+git add . && git commit -m "Initial commit"
+```
+
+Next, we can create a new app on Heroku using the following command. This creates a new Heroku app with the name `neon-heroku-example`, and sets up a new Git remote for the app called `heroku`.
+
+```bash
+heroku create neon-heroku-example
+```
+
+You'll also need to set the `DATABASE_URL` on Heroku to your Neon database connection string:
+
+```bash
+heroku config:set DATABASE_URL='NEON_DATABASE_CONNECTION_STRING' -a neon-heroku-example
+```
+
+### Deploy Your Application
+
+To deploy your application to Heroku, use the following command to push your code to the `heroku` remote. Heroku will automatically detect that your application is a Node.js application, install the necessary dependencies and deploy it.
+
+```bash
+> git push heroku main
+.
+.
+.
+remote: -----> Launching...
+remote:        Released v4
+remote:        https://neon-heroku-example-fda03f6acbbe.herokuapp.com/ deployed to Heroku
+remote:
+remote: Verifying deploy... done.
+remote: 2024/02/21 07:26:49 Rollbar error: empty token
+To https://git.heroku.com/neon-heroku-example.git
+remote: Verifying deploy... done. 
+```
+
+Once the deployment is complete, you should see a message with the URL of your deployed application. Navigate to this URL in your browser to see your application live on Heroku. 
+
+You've now successfully deployed a Node.js application on Heroku that connects to a Neon Postgres database. For further customization and scaling options, you can explore the Heroku and Neon documentation. 
+
+## Removing Your Application and Neon Project
+
+To remove your application from Heroku, select the app from your [Heroku dashboard](https://dashboard.heroku.com/apps). Navigate to the `Settings` tab and scroll down to the end to find the "Delete App" option. 
+
+To delete your Neon project, follow the steps outlined in the Neon documentation under [Delete a project](/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Heroku Documentation](https://devcenter.heroku.com/)
+- [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+- [Neon](https://neon.tech/docs)
+- [Import data from Heroku Postgres to Neon](/docs/import/import-from-heroku)
 
 <NeedHelp/>
 
@@ -16275,6 +18511,583 @@ To delete the example application on Koyeb to avoid incurring any charges, follo
 To delete your Neon project, refer to [Delete a project](/docs/manage/projects#delete-a-project).
 
 
+# Netlify Functions
+
+---
+title: Use Neon with Netlify Functions
+subtitle: Connect a Neon Postgres database to your Netlify Functions application
+enableTableOfContents: true
+updatedOn: '2024-02-20T16:06:07.067Z'
+---
+
+[Netlify Functions](https://www.netlify.com/products/functions/) provide a serverless execution environment for building and deploying backend functionality without managing server infrastructure. It's integrated with Netlify's ecosystem, making it ideal for augmenting web applications with server-side logic, API integrations, and data processing tasks in a scalable way.
+
+This guide will show you how to connect to a Neon Postgres database from your Netlify Functions project. We'll use the [Neon serverless driver](https://neon.tech/docs/serverless/serverless-driver) to connect to the database and make queries. 
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- A Netlify account for deploying your site with `Functions`. Sign up at [Netlify](https://netlify.com) if necessary. While Netlify can deploy directly from a Github repository, we'll use the `Netlify` CLI tool to deploy our project manually. 
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed locally for developing and deploying your Functions. 
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+After logging into the Neon console, proceed to the [Projects](https://console.neon.tech/app/projects) section.
+
+1. Click `New Project` to start a new one.
+
+2. In the Neon **Dashboard**, use the `SQL Editor` from the sidebar to execute the SQL command below, creating a new table for coffee blends:
+
+    ```sql
+    CREATE TABLE favorite_coffee_blends (
+        id SERIAL PRIMARY KEY,
+        name TEXT,
+        notes TEXT
+    );
+    ```
+
+    Populate the table with some initial data:
+
+    ```sql
+    INSERT INTO favorite_coffee_blends (name, origin, notes)
+    VALUES
+        ('Morning Joy', 'Citrus, Honey, Floral'),
+        ('Dark Roast Delight', 'Rich, Chocolate, Nutty'),
+        ('Arabica Aroma', 'Smooth, Caramel, Fruity'),
+        ('Robusta Revolution', 'Strong, Bold, Bitter');
+    ```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Setting up your Netlify Functions project
+
+We'll use the Netlify CLI to create a new project and add functions to it. To install the CLI, run:
+
+```bash
+npm install netlify-cli -g
+```
+
+To authenticate the CLI with your Netlify account, run:
+
+```bash
+netlify login
+```
+
+This command opens a browser window to authenticate your terminal session with Netlify. After logging in, you can close the browser window and interact with your Netlify account from the terminal.
+
+### Create a new Netlify project
+
+We will create a simple HTML webpage that fetches the coffee blends from the Neon database using a Netlify Function and displays them. To create a new `Netlify Site` project, run:
+
+```bash
+mkdir neon-netlify-example && cd neon-netlify-example
+netlify sites:create
+```
+
+You will be prompted to select a team and site name. Choose a unique name for your site. This command then links the current directory to a `Site` project in your Netlify account. 
+
+```
+❯ netlify sites:create
+? Team: Ishan Anand’s team
+? Site name (leave blank for a random name; you can change it later): neon-netlify-example
+
+Site Created
+
+Admin URL: https://app.netlify.com/sites/neon-netlify-example
+URL:       https://neon-netlify-example.netlify.app
+Site ID:   ed43ba05-ff6e-40a9-9a68-8f58b9ad9937
+
+Linked to neon-netlify-example
+```
+
+### Implement the function
+
+We'll create a new function to fetch the coffee blends from the Neon database. To set up the function entrypoint script, you can run the command below and use the settings provided:
+
+```bash
+❯ netlify functions:create get_coffee_blends
+
+? Select the type of function you'd like to create Serverless function (Node/Go/Rust)
+? Select the language of your function JavaScript
+? Pick a template javascript-hello-world
+◈ Creating function get_coffee_blends
+◈ Created ./netlify/functions/get_coffee_blends/get_coffee_blends.js
+
+Function created!
+```
+
+This command creates a new directory `netlify/functions/get_coffee_blends` with a `get_coffee_blends.js` file inside it. We are using the ES6 `import` syntax to implement the request handler, so we will change the script extension to `.mjs` for the runtime to recognize it.
+
+We also install the `Neon serverless` driver as a dependency to connect to the Neon database and fetch the data. 
+
+```bash
+mv netlify/functions/get_coffee_blends/get_coffee_blends.js netlify/functions/get_coffee_blends/get_coffee_blends.mjs
+npm install @neondatabase/serverless
+```
+
+Now, replace the contents of the function script with the following code:
+
+```javascript
+// netlify/functions/get_coffee_blends/get_coffee_blends.mjs
+import { neon } from "@neondatabase/serverless";
+
+export async function handler(event) {
+  const sql = neon(process.env.DATABASE_URL);
+  try {
+    const rows = await sql("SELECT * FROM favorite_coffee_blends;");
+    return {
+      statusCode: 200,
+      body: JSON.stringify(rows),
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message }),
+    };
+  }
+}
+```
+
+This function connects to your Neon database and fetches the list of your favorite coffee blends. 
+
+### Implement the frontend
+
+To make use of the `Function` implemented above, we will create a simple HTML page that fetches and displays the coffee information by calling the function. 
+
+Create a new file `index.html` at the root of your project with the following content:
+
+```html
+<!doctype html>
+<html>
+    <head>
+        <title>Coffee Blends</title>
+    </head>
+    <body>
+        <h1>My favourite coffee blends</h1>
+        <ul id="blends"></ul>
+        <script>
+            (async () => {
+                try {
+                    const response = await fetch(
+                        "/.netlify/functions/get_coffee_blends",
+                    );
+                    const blends = await response.json();
+                    const blendsList = document.getElementById("blends");
+                    blends.forEach((blend) => {
+                        const li = document.createElement("li");
+                        li.innerText = `${blend.name} - ${blend.notes}`;
+                        blendsList.appendChild(li);
+                    });
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            })();
+        </script>
+    </body>
+</html>
+```
+
+### Test the site locally
+
+Set the `DATABASE_URL` environment variable in a `.env` file at the root of your project:
+
+```text
+DATABASE_URL=YOUR_NEON_CONNECTION_STRING
+```
+
+We are now ready to test our Netlify site project locally. Run the following command to start a local development server:
+
+```bash
+netlify dev
+```
+
+The Netlify CLI will print the local server URL where your site is running. Open the URL in your browser to see the coffee blends fetched from your Neon database.
+
+### Deploying your Netlify Site and Function
+
+Deploying is straightforward with the Netlify CLI. However, we need to set the `DATABASE_URL` environment variable for the Netlify deployed site too. You can use the CLI to set it. 
+
+```bash
+netlify env:set DATABASE_URL "YOUR_NEON_CONNECTION_STRING"
+```
+
+Now, to deploy your site and function, run the following command. When asked to provide a publish directory, enter `.` to deploy the entire project. 
+
+```bash
+netlify deploy --prod
+```
+
+The CLI will build and deploy your site and functions to Netlify. After deployment, Netlify provides a URL for your live function. Navigate to the URL in your browser to check that the deployment was successful.
+
+## Removing the example application and Neon project
+
+For cleanup, delete your Netlify site and functions via the Netlify dashboard or CLI. Consult the [Netlify documentation](https://docs.netlify.com/) for detailed instructions.
+
+To remove your Neon project, follow the deletion steps in Neon's documentation under [Manage Projects](https://neon.tech/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Netlify Functions](https://www.netlify.com/products/functions/)
+- [Netlify CLI](https://docs.netlify.com/cli/get-started/)
+- [Neon](https://neon.tech)
+
+<NeedHelp/>
+
+
+# Railway
+
+---
+title: Use Neon Postgres with Railway
+subtitle: Connect a Neon Postgres database to your Node application deployed with
+  Railway
+enableTableOfContents: true
+updatedOn: '2024-02-20T15:33:30.391Z'
+---
+
+[Railway](https://railway.app) is an application deployment platform that allows users to develop web applications locally, provision infrastructure and then deploy to the cloud. Railway integrates with GitHub for continuous deployment and supports a variety of programming languages and frameworks. 
+
+This guide shows how to deploy a simple Node.js application connected to a Neon Postgres database on Railway. 
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- A Railway account. If you do not have one, sign up at [Railway](https://railway.app) to get started. 
+- A GitHub account. Railway integrates with Gitub for continuous deployment. So, you'd need a GitHub account to upload your application code. 
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and test the application locally. 
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+1. Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+
+2. Click the `New Project` button to create a new project.
+
+3. From your project dashboard, navigate to the `SQL Editor` from the sidebar, and run the following SQL command to create a new table in your database:
+
+    ```sql
+    CREATE TABLE plant_care_log (
+        id SERIAL PRIMARY KEY,
+        plant_name VARCHAR(255) NOT NULL,
+        care_date DATE NOT NULL
+    );
+    ```
+
+    Next, we insert some sample data into the `plant_care_log` table, so we can query it later:
+
+    ```sql
+    INSERT INTO plant_care_log (plant_name, care_date)
+    VALUES
+        ('Monstera', '2024-01-10'),
+        ('Fiddle Leaf Fig', '2024-01-15'),
+        ('Snake Plant', '2024-01-20'),
+        ('Spider Plant', '2024-01-25'),
+        ('Pothos', '2024-01-30');
+    ```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Implementing the Node.js application
+
+We'll create a simple Express application that connects to our Neon database and retrieves the list of plants tended to within the last month. Run the following commands in a terminal to set it up. 
+
+```bash
+mkdir neon-railway-example && cd neon-railway-example
+npm init -y && npm pkg set type="module"
+npm install express pg
+touch .env
+```
+
+We use the `npm pkg set type="module"` command to enable ES6 module support in our project. We also create a new `.env` file to store the `DATABASE_URL` environment variable, which we'll use to connect to our Neon database. Lastly, we install the `pg` library which is the Postgres driver we use to connect to our database. 
+
+```bash
+# .env 
+DATABASE_URL=NEON_DATABASE_CONNECTION_STRING
+```
+
+Now, create a new file named `index.js` and add the following code:
+
+```javascript
+import express from "express";
+import pkg from "pg";
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Parse JSON bodies for this app
+app.use(express.json());
+
+// Create a new pool using your Neon database connection string
+const { Pool } = pkg;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+app.get("/", async (req, res) => {
+  try {
+    // Fetch the list of plants from your database using the postgres connection
+    const { rows } = await pool.query("SELECT * FROM plant_care_log;");
+    res.json(rows);
+  } catch (error) {
+    console.error("Failed to fetch plants", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+This code sets up an Express server that listens for requests on port 3000. When a request is made to the `URL`, the server queries the `plant_care_log` table in your Neon database and returns the results as JSON. 
+
+We can test this application locally by running:
+
+```bash
+node --env-file=.env index.js
+```
+
+Now, navigate to `http://localhost:3000/` in your browser to check it returns the sample data from the `plant_care_log` table.
+
+## Push Your application to GitHub
+
+To deploy your application to Railway, you need to push your code to a GitHub repository. Create a new repository on GitHub by navigating to [GitHub - New Repo](https://github.com/new). You can then push your code to the new repository using the following commands:
+
+```bash
+echo "node_modules/" > .gitignore && echo ".env" >> .gitignore
+echo "# neon-railway-example" >> README.md
+git init && git add . && git commit -m "Initial commit"
+git branch -M main
+git remote add origin YOUR_GITHUB_REPO_URL
+git push -u origin main
+```
+
+You can visit the GitHub repository to verify that your code has been pushed successfully.
+
+## Deploying to Railway
+
+### Creating a new Railway project
+
+Log in to your Railway account and navigate to the dashboard. Click on the `New Project` button and select the `Deploy from Github repo` option. Pick the repository you created above, which sets off a Railway deployment. 
+
+Railway automatically figures out the type of application you're deploying and sets up the necessary build and start commands. However, we still need to add the `DATABASE_URL` environment variable to connect to our Neon database. 
+
+Select the project and navigate to the `Variables` tab. Add a new variable named `DATABASE_URL` and set its value to your Neon database connection string. You can redeploy the project by clicking on `Redeploy` from the context menu of the latest deployment. 
+
+### Verify Deployment
+
+Once the deployment completes and is marked as `ACTIVE`, Railway provides a public URL for accessing the web service. Visit the provided URL to verify that your application is running and can connect to your Neon database. 
+
+Whenever you update your code and push it to your GitHub repository, Railway will automatically build and deploy the changes to your web service.
+
+## Removing Your Application and Neon Project
+
+To remove your application from Railway, select the project and navigate to the `Settings` tab. Scroll down to the end to find the "Delete Service" option. 
+
+To delete your Neon project, follow the steps outlined in the Neon documentation under [Delete a project](/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Railway platform](https://railway.app/)
+- [Neon](https://neon.tech)
+
+<NeedHelp/>
+
+
+# Render
+
+---
+title: Use Neon Postgres with Render
+subtitle: Connect a Neon Postgres database to your Node application deployed with Render
+enableTableOfContents: true
+updatedOn: '2024-02-20T01:33:01.121Z'
+---
+
+[Render](https://render.com) is a comprehensive cloud service that provides hosting for web applications and static sites, with PR previews, zero-downtime deployments, and more. Render supports full-stack applications, offering both web services and background workers.
+
+This guide shows how to deploy a simple Node.js application connected to a Neon Postgres database on Render. 
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). Your Neon project comes with a ready-to-use Postgres database named `neondb`. We'll use this database in the following examples.
+- A Render account. If you do not have one, sign up at [Render](https://render.com) to get started. 
+- A GitHub account. Render integrates with public Github providers for continuous deployment. So, you'd need a GitHub account to upload your application code. 
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and test the application locally. 
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+Log in to the Neon console and navigate to the [Projects](https://console.neon.tech/app/projects) section.
+
+- Click the `New Project` button to create a new project.
+
+- From your project dashboard, navigate to the `SQL Editor` from the sidebar, and run the following SQL command to create a new table in your database:
+
+    ```sql
+    CREATE TABLE books_to_read (
+        id SERIAL PRIMARY KEY,
+        title TEXT,
+        author TEXT
+    );
+    ```
+
+    Next, we insert some sample data into the `books_to_read` table, so we can query it later:
+
+    ```sql
+    INSERT INTO books_to_read (title, author)
+    VALUES
+        ('The Way of Kings', 'Brandon Sanderson'),
+        ('The Name of the Wind', 'Patrick Rothfuss'),
+        ('Coders at Work', 'Peter Seibel'),
+        ('1984', 'George Orwell');
+    ```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Keep your connection string handy for later use.
+
+## Implementing the Node.js application
+
+We'll create a simple Express application that connects to our Neon database and retrieve the sample data from the `books_to_read` table. Run the following commands in a terminal to set it up. 
+
+```bash
+mkdir neon-render-example && cd neon-render-example
+npm init -y && npm pkg set type="module"
+npm install express pg
+touch .env
+```
+
+We use the `npm pkg set type="module"` command to enable ES6 module support in our project. We also create a new `.env` file to store the `DATABASE_URL` environment variable, which we'll use to connect to our Neon database. Lastly, we install the `pg` library which is the Postgres driver we use to connect to our database. 
+
+```bash
+# .env 
+DATABASE_URL=NEON_DATABASE_CONNECTION_STRING
+```
+
+Now, create a new file named `index.js` and add the following code:
+
+```javascript
+import express from "express";
+import pkg from "pg";
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Parse JSON bodies for this app
+app.use(express.json());
+
+// Create a new pool using your Neon database connection string
+const { Pool } = pkg;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+app.get("/", async (req, res) => {
+  try {
+    // Fetch books from your database using the postgres connection
+    const { rows } = await pool.query("SELECT * FROM books_to_read;");
+    res.json(rows);
+  } catch (error) {
+    console.error("Failed to fetch books", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+This code sets up an Express server that listens for requests on port 3000. When a request is made to the `URL`, the server queries the `books_to_read` table in your Neon database and returns the results as JSON. 
+
+We can test this application locally by running:
+
+```bash
+node --env-file=.env index.js
+```
+
+Now, navigate to `http://localhost:3000/` in your browser to check that it returns the sample data from the `books_to_read` table.
+
+## Push Your application to GitHub
+
+To deploy your application to Render, you need to push your code to a GitHub repository. Create a new repository on GitHub by navigating to [GitHub - New Repo](https://github.com/new). You can then push your code to the new repository using the following commands:
+
+```bash
+echo "node_modules/" > .gitignore && echo ".env" >> .gitignore
+echo "# neon-render-example" >> README.md
+git init && git add . && git commit -m "Initial commit"
+git branch -M main
+git remote add origin YOUR_GITHUB_REPO_URL
+git push -u origin main
+```
+
+You can visit the GitHub repository to verify that your code has been pushed successfully.
+
+## Deploying to Render
+
+### Create a New Web Service on Render
+
+Log in to your Render account and navigate to the dashboard. Click on the `New +` button and select "Web Service". Pick the option to `build and deploy` from a Git repository. 
+
+Next, choose the GitHub repository hosting the Node.js application we created above. Configure your web service as follows:
+    - **Environment**: Select "Node".
+    - **Build Command**: Enter `npm install`.
+    - **Start Command**: Enter `node index.js`.
+    - **Environment Variables**: Add your Neon database connection string from earlier as an environment variable:
+        - Name: `DATABASE_URL`
+        - Value: `{NEON_DATABASE_CONNECTION_STRING}`
+
+Click "Create Web Service" to finish. Render will automatically deploy your application and redirect you to the service dashboard, showing the deployment progress and the logs. 
+
+### Verify Deployment
+
+Once the deployment completes, Render provides a public URL for accessing the web service. Visit the provided URL to verify that your application is running and can connect to your Neon database. 
+
+Whenever you update your code and push it to your GitHub repository, Render will automatically build and deploy the changes to your web service.
+
+## Removing Your Application and Neon Project
+
+To remove your application from Render, navigate to the dashboard, select `Settings` for the deployed application, and scroll down to find the "Delete Web Service" option.
+
+To delete your Neon project, follow the steps outlined in the Neon documentation under [Delete a project](/docs/manage/projects#delete-a-project).
+
+## Resources
+
+- [Render platform](https://render.com/)
+- [Neon](https://neon.tech)
+
+<NeedHelp/>
+
+
 # Vercel
 
 # Overview
@@ -16343,14 +19156,11 @@ title: Connect with the Neon Vercel Integration
 subtitle: Learn how to connect your Vercel project to Neon using the Neon Vercel
   Integration
 enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.291Z'
+updatedOn: '2024-02-23T20:32:29.800Z'
 ---
 
-This guide describes how to connect using the [Neon Vercel Integration](https://vercel.com/integrations/neon) from the Vercel marketplace. The integration connects your Vercel project to a Neon database and enables creating a database branch for each preview deployment.
+This guide describes how to connect using the [Neon Vercel Integration](https://vercel.com/integrations/neon) from the Vercel marketplace. The integration connects your Vercel project to a Neon database and creates a database branch for each preview deployment.
 
-<Admonition type="note">
-This is a Beta version of the Neon Vercel Integration. For assistance or to suggest improvements, please reach out to us on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
-</Admonition>
 
 ## About the Neon Vercel Integration
 
@@ -16374,7 +19184,7 @@ When you push changes to the repository associated with your Vercel project, tri
 This section describes how to add the Neon Vercel Integration to your Vercel project.
 
 <Admonition type="note" title="Notes">
-- Please be aware that the Neon Vercel Integration connects one Vercel project to one Neon project. It does not support connecting multiple Vercel projects to one Neon project or connecting multiple Neon projects to one Vercel project.
+- The Neon Vercel Integration can be used with more than one Vercel project, but it can only connect one Vercel project to one Neon project. It does not support connecting multiple Vercel projects to one Neon project or connecting multiple Neon projects to one Vercel project.
 - The Neon Vercel Integration is supported with GitHub, GitLab, and Bitbucket source code repositories.
 </Admonition>
 
@@ -16382,15 +19192,15 @@ Prerequisites:
 
 - A [Vercel account](https://vercel.com).
 - A Vercel project. If you do not have one, see [Creating a project](https://vercel.com/docs/concepts/projects/overview#creating-a-project), in the _Vercel documentation_.
-- The integration initially sets the `DATABASE_URL` environment variable for your Vercel **Production** and **Development** environments. When you create a preview deployment, the integration will also set this variable for your **Preview** environment. Make sure this variable does not already exist in your Vercel project settings. To use different Postgres variables with the Neon integration, see [Manage Vercel environment variables](#manage-vercel-environment-variables). 
+- The integration initially sets the `DATABASE_URL` and `DATABASE_URL_UNPOOLED`environment variables for your Vercel **Production** and **Development** environments. When you create a preview deployment, the integration will also set these variables for your **Preview** environment. Variables of the same name will be overwritten. To use different Postgres variables with the Neon integration, see [Manage Vercel environment variables](#manage-vercel-environment-variables). 
 
 To add the integration:
 
 1. Navigate to the [Neon Vercel Integration page](https://vercel.com/integrations/neon), and click **Add integration**.
    ![Add integration](/docs/guides/vercel_add_integration.png)
 1. Select a **Vercel Account** to add the integration to.
-1. Select the Vercel projects to add the integration to. You can select **All Projects** or **Specific Projects** but be aware that you can only connect one Vercel project to one Neon project and vice versa. By selecting **All projects**, you are simply making the integration available to use with all of your Vercel projects.
-1. Review the permissions required by the integration, and click **Add Integration**.
+1. Select the Vercel projects to add the integration to. You can select **All Projects** or **Specific Projects** but be aware that you can only connect one Vercel project to one Neon project and vice versa. By selecting **All projects**, you are simply [making the integration available to other Vercel projects](#make-the-integration-available-to-other-vercel-projects).
+1. Review the permissions required by the integration, and click **Install**.
 1. In the **Integrate Neon** dialog:
     1. Select a Vercel project.
       ![Select a Vercel project](/docs/guides/vercel_select_project.png)
@@ -16399,7 +19209,7 @@ To add the integration:
 
           The **Create a branch for your development environment** option creates a branch named `vercel-dev` and sets Vercel development environment variables for it. The `vercel-dev` branch is a clone of your project's primary branch (`main`) that you can modify without affecting data on your primary branch.
          <Admonition type="note">
-         Branches created for preview deployments are created from the [primary branch](/docs/reference/glossary#primary-branch) of your Neon project. Earlier versions of the integration created branches from the initial [root branch](/docs/reference/glossary#root-branch) of your Neon project, which is designated as the primary branch by default. Neon lets you [change the primary branch](/docs/manage/branches#set-a-branch-as-primary). If you have an older version of the integration that creates branches from your project's root branch, and you want branches created from your primary branch instead, you can upgrade your integration by reinstalling it from the Vercel Marketplace.
+         Branches created for preview deployments are created from the [primary branch](/docs/reference/glossary#primary-branch) of your Neon project. Earlier versions of the integration created branches from the initial [root branch](/docs/reference/glossary#root-branch) of your Neon project, which is designated as the primary branch by default. Neon lets you [change the primary branch](/docs/manage/branches#set-a-branch-as-primary). If you have an older version of the integration that creates branches from your project's root branch, and you want branches created from your primary branch instead, you can upgrade your integration by reinstalling it from the [Vercel Marketplace](https://vercel.com/integrations/neon).
          </Admonition>
 
           When you finish making selections, click **Continue**.
@@ -16410,7 +19220,7 @@ To add the integration:
       ![Confirm integration settings](/docs/guides/vercel_confirm_settings.png)
     1. Click **Connect** to confirm and proceed with the integration. If you encounter a connection error, see [Troubleshoot connection issues](#troubleshoot-connection-issues).
 
-        After the settings are configured, you are presented with a **Success!** dialog.
+        After the settings are configured, you are presented with a **Success** dialog.
         ![Vercel integration success](/docs/guides/vercel_success.png)
     1. Click **Done** to complete the installation.
 1. To view the results of the integration in Neon:
@@ -16423,18 +19233,22 @@ To add the integration:
     1. Navigate to [Vercel](https://vercel.com/).
     1. Select the Vercel project you added the integration to.
     1. Select **Settings** > **Environment Variables**.
-       You should see the `DATABASE_URL` variable settings added by the integration.
+       You should see the `DATABASE_URL` and `DATABASE_URL_UNPOOLED` variable settings added by the integration.
        ![Vercel environment variables](/docs/guides/vercel_env_variables.png)
+
+   <Admonition type="note">
+   The `DATABASE_URL` variable set by the integration is set to a pooled Neon database connection string. The `DATABASE_URL_UNPOOLED` variable is set to an unpooled connection string for tools or applications that require a direct connection to the database. For more information, see [Manage Vercel environment variables](#manage-vercel-environment-variables).
+   </Admonition>
 
 ## Use the Neon Vercel Integration
 
-After you add the Neon Vercel Integration to a Vercel project, Neon creates a database branch for each preview deployment. The branch is created when you push commits made on your local branch to your application's source code repository. To see the integration in action, follow these steps:
+After you add the integration to a Vercel project, Neon creates a database branch for each preview deployment. The branch is created when you push commits made on your local branch to your application's source code repository. To see the integration in action, follow these steps:
 
 1. Create a branch in your local source code repository.
 
    ```bash
    cd myapp
-   git checkout -b myapp-update
+   git checkout -b patch-1
    ```
 
 2. Make changes to your application on the local branch.
@@ -16454,56 +19268,116 @@ After you add the Neon Vercel Integration to a Vercel project, Neon creates a da
 
    - The commit triggers a preview deployment in Vercel, as would occur without the Neon integration.
      ![Neon preview deployment branch](/docs/guides/vercel_deployments.png)
-   - The integration creates a branch in Neon. This branch is an isolated copy-on-write clone of your root branch, with its own dedicated compute endpoint. The branch is created with the same name as your `git` branch.
+   - The integration creates a branch in Neon. This branch is an isolated copy-on-write clone of your primary branch, with its own dedicated compute endpoint. The branch is created with the same name as your `git` branch.
      ![Neon preview deployment branch](/docs/guides/vercel_neon_app_update.png)
    - The integration sets Vercel preview environment variables to connect the preview deployment to the new branch.
      ![Vercel preview settings](/docs/guides/vercel_preview_settings.png)
 
-<Admonition type="note">
-The Neon Free Tier lets you create up to 10 branches. To avoid running out of branches for new preview deployments, remove old branches regularly. See [Delete a branch](/docs/manage/branches#delete-a-branch) for instructions.
-</Admonition>
+## Manage branches created by the integration
 
-## Manage Vercel environment variables
+The Neon Vercel Integration creates a branch for each preview deployment, but it does not remove those branches automatically. To avoid using up your storage allowances or hitting branch limits, you should remove old or obsolete branches regularly.
 
-The Neon Vercel Integration initially sets the `DATABASE_URL` environment variable for your Vercel **Production** and **Development** environments. When you create a preview deployment, the integration also sets this variable for your **Preview** environment. If you want to use different Postgres environment variables, the Neon Vercel Integration also supports these variables for defining your database connection:
-
-- `PGHOST`
-- `PGUSER`
-- `PGDATABASE`
-- `PGPASSWORD`
-
-You can enable these variables from the Neon Console:
+To remove branches created by the integration:
 
 1. In the Neon Console, select your project.
 2. Select the **Integrations** page.
 3. Find the Vercel integration under the **Manage** heading, and click **Manage**.
-4. In the **Vercel integration** drawer, select the environment variables you require. The selected variables will be set in your Vercel project with your next push. 
+4. In the **Vercel integration** drawer, select the **Branches** tab.
+5. Remove individual preview branches by clicking on the delete icon, or select **Delete all** to remove all preview branches.
+
+You can also remove branches from your Neon project using the Console, CLI, or API. See [Delete a branch](/docs/manage/branches#delete-a-branch).
+
+<Admonition type="note">
+The latest version of the Neon integration displays a message on the **Deployment Details** page in Vercel under **Running checks** if you exceed the branch limit for your Neon project.
+
+![Vercel branch limit](/docs/guides/vercel_branch_limit.png)
+</Admonition>
+
+## Manage integration settings
+
+You can manage Vercel environment variables as well as the default database and role used by the integration from the Neon Console.
+
+### Configure environment variables
+
+The Neon Vercel Integration automatically sets the environment variables `DATABASE_URL` (pooled connection) and `DATABASE_URL_UNPOOLED` (direct connection)  for your Vercel **Production** and **Development** environments. See [Connection pooling](/docs/connect/connection-pooling) for more information. When you create a preview deployment, the integration also sets these same variables for the Vercel **Preview**  environment. If you want to define your database connection using different Postgres environment variables, the integration also supports the following:
+
+- `PGHOST` (set to a pooled Neon database connection string)
+- `PGHOST_UNPOOLED` (set to a direct Neon database connection string)
+- `PGUSER`
+- `PGDATABASE`
+- `PGPASSWORD`
+
+You can choose the variables you want to use from the Neon Console:
+
+1. In the Neon Console, select your project.
+2. Select the **Integrations** page.
+3. Find the Vercel integration under the **Manage** heading, and click **Manage**.
+4. In the **Vercel integration** drawer, select the **Settings** tab.
+5. Select the environment variables you need. 
+6. Click **Save changes**. Your variable selection is saved to your Vercel project and will be applied on your next deployment. Existing variables of the same name in Vercel will be overwritten. Viewing your new variable selection in Vercel may require refreshing your project's **Environment Variables** page. 
 
 <Admonition type="note" title="Notes">
-- Clicking **Redeploy** in Vercel does not apply variable changes made in Neon to your Vercel project. This only occurs with your next push.
-- The integration appends the `sslmode=require` option to the Neon connection string that it sets for the `DATABASE_URL` environment variable in Vercel.
+- Clicking **Redeploy** in Vercel does not apply variable changes made in Neon to your Vercel project. This only occurs with your next deployment.
+- The integration appends the `sslmode=require` option to all Neon connection strings.
 </Admonition> 
 
 ![Select Vercel variables](/docs/guides/vercel_select_variables.png)
+
+### Change the database and role for preview branches
+
+When you install the integration, you select a database and role for your Neon project. These details are used to define the database connection details in the Vercel environment variables mentioned [above](#configure-environment-variables). From the Vercel integration drawer in the Neon Console, you can choose a different database and role for new preview deployment branches.
+
+To change the database and role for new preview deployment branches:
+
+1. In the Neon Console, select your project.
+2. Select the **Integrations** page.
+3. Find the Vercel integration under the **Manage** heading, and click **Manage**.
+3. In the **Vercel integration** drawer, select the **Settings** tab.
+4. Under **Default database and role**, select a new **Database** and **Role**.
+
+Your change will be reflected in your Vercel **Preview** environment variables on the next preview deployment.
+
+## Disconnect the integration
+
+If you want to disconnect the Neon Vercel Integration from your Vercel project, you can do so from the Neon Console. Disconnecting stops the integration from creating preview branches and setting environment variables for those branches in Vercel. It does not remove the integration from your Vercel project. To fully remove the integration from your Vercel project, you must do so in Vercel. See [Manage the Neon Postgres integration in Vercel](#manage-the-integration-in-vercel) for instructions.
+
+To disconnect the Neon integration from your Vercel project:
+
+1. In the Neon Console, select your project.
+2. Select the **Integrations** page.
+3. Find the Vercel integration under the **Manage** heading, and click **Manage**.
+3. In the **Vercel integration** drawer, select the **Disconnect** tab.
+4. Click **Disconnect**.
 
 ## Make the integration available to other Vercel projects
 
 If you added the Neon Vercel Integration to a single Vercel project but would like to make it available for use with your other Vercel projects, complete the steps outlined below.
 
 <Admonition type="important">
-Please be aware that the Neon Vercel Integration connects one Vercel project to one Neon project. It does not support connecting multiple Vercel projects to one Neon project, nor does it support connecting multiple Neon projects to one Vercel project. The steps below outline how to make the integration available to other Vercel projects to use with their own separate and dedicated Neon project.
+The Neon Vercel Integration can be used with more than one Vercel project, but it can only connect one Vercel project to one Neon project. It does not support connecting multiple Vercel projects to one Neon project or connecting multiple Neon projects to one Vercel project. The steps below outline how to make the integration available to other Vercel projects to use with their own separate and dedicated Neon project.
 </Admonition>
 
 1. Make sure the Neon Vercel Integration that you added previously has access to the Vercel project that you want to use with the Neon Vercel Integration.
    1. On the Vercel Dashboard, select **Integrations**.
    1. Find the Neon Postgres integration, and select **Manage**.
    1. On the Neon Postgres integration page, select **Manage Access**.
-   1. On the **Manage Access for Neon Postgres** modal, make sure that the Neon Postgres integration has access to the Vercel project. You can do so by selecting **Specific Projects** and choosing a Vercel project, or by granting access to **All Projects**. If you previously granted access to **All Projects**, no change is necessary.
+   1. On the **Manage Access for Neon Postgres** modal, make sure that the Neon Postgres integration has access to the Vercel project. You can do so by selecting **Specific Projects** and choosing a Vercel project or by granting access to **All Projects**. If you previously granted access to **All Projects**, no change is necessary.
    1. Click **Save**.
 1. Navigate to this URL: [https://vercel.com/integrations/neon/new](https://vercel.com/integrations/neon/new).
-1. Follow the prompts. When you reach the **Integrate Neon** dialog, select the Vercel project that you want to add the integration to. Vercel projects that are already integrated with Neon are identified as `CONNECTED`, so you'll have to select a different Vercel project.
+1. Follow the prompts. When you reach the **Integrate Neon** dialog, select the Vercel project you want to add the integration to. Vercel projects that are already integrated with Neon are identified as `CONNECTED`.
    ![Confirm integration settings](/docs/guides/vercel_add_new_project.png)
-1. Continue following the prompts to complete the setup. These are the same steps described above, in [Add the Neon integration](#add-the-neon-vercel-integration). When you select a Neon project to connect to, be sure to select one that is not already connected to a Vercel project, as you cannot connect one Vercel project to multiple Neon projects or vice versa.
+1. Continue following the prompts to complete the setup. These are the same steps described above, in [Add the Neon integration](#add-the-neon-vercel-integration). When you select a Neon project to connect to, make sure to select one that is not already connected to a Vercel project, as you cannot connect a Vercel project to multiple Neon projects or vice versa.
+
+## Manage the integration in Vercel
+
+To view permissions, manage which Vercel projects your integration has access to, or uninstall the Neon integration from Vercel:
+
+1. On the Vercel dashboard, select **Settings** > **Integrations**.
+1. Find the **Neon** integration and select **Configure**.
+
+   <Admonition type="note">
+   Removing the Neon Vercel Integration removes the Vercel environment variables set by the integration. It does not remove Neon branches created by the integration. To remove Neon branches, see [Delete a branch](/docs/manage/branches#delete-a-branch).
+   </Admonition>
 
 ## Troubleshoot connection issues
 
@@ -16526,7 +19400,7 @@ In this case, you can remove or rename the existing environment variables in you
    Alternatively, you can remove the conflicting integration, assuming it is no longer required. This may be a previous Neon integration or another integration. Removing the integration removes the variables set by the integration.
    </Admonition>
 
-3. Try adding the Neon integration again. See [Add the Neon Vercel Integration](#add-the-neon-vercel-integration).
+3. Try adding the integration again. See [Add the Neon Vercel Integration](#add-the-neon-vercel-integration).
 
 ### DATABASE_URL not set on first preview deployment
 
@@ -16534,16 +19408,6 @@ In earlier versions of the integration, the preview environment `DATABASE_URL` i
 
 To avoid this issue, you can reinstall the integration to update to the latest version. Alternatively, a workaround is to redeploy your preview deployment in Vercel. The preview environment `DATABASE_URL` is set on the next deployment. For redeploy instructions, see [Managing Deployments](https://vercel.com/docs/deployments/managing-deployments), in the _Vercel documentation_.
 
-## Manage the Neon Postgres integration in Vercel
-
-To view permissions, manage which Vercel projects your integration has access to, or uninstall the Neon integration:
-
-1. On the Vercel dashboard, select **Settings** > **Integrations**.
-1. Find the **Neon** integration and select **Configure**.
-
-   <Admonition type="note">
-   Removing the Neon Vercel Integration removes the Vercel environment variables set by the integration. It does not remove Neon branches created by the integration. To remove Neon branches, see [Delete a branch](/docs/manage/branches#delete-a-branch).
-   </Admonition>
 
 <NeedHelp/>
 
@@ -16835,7 +19699,7 @@ title: Manage billing with consumption limits
 subtitle: Learn how to set usage quotas per project with the Neon API
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-02-08T15:20:54.287Z'
+updatedOn: '2024-02-22T14:29:54.382Z'
 ---
 
 When setting up your billing solution with Neon, you may want to impose some hard limits on how much storage or compute resources a given project can consume. For example, you may want to cap how much usage your free tier users can consume versus pro or enterprise users. With the Neon API, you can use the `quota` key to set usage limits for a variety of consumption metrics. These limits act as thresholds after which all active computes for a project are [suspended](#suspending-active-computes).
@@ -16863,7 +19727,7 @@ There is an additional value that you also might want to track: `logical_size`, 
 
 Neon updates all metrics every 15 minutes but it could take up to 1 hour before they are reportable.
 
-To find the current usage level for any of these metrics, see [retrieving details about a project](#retrieving-details-about-a-project). You can read more about these metrics and how they impact billing [here](/docs/introduction/billing).
+To find the current usage level for any of these metrics, see [retrieving details about a project](#retrieving-details-about-a-project). You can read more about these metrics and how they impact billing [here](/docs/introduction/usage-metrics).
 
 ### Corresponding quotas
 
@@ -16889,7 +19753,7 @@ Let's say you want to set limits for an application with two tiers, Trial and Pr
 | Parameter (project)  | Trial (.25 vCPU)                 | Pro (max 4 vCPU)                                 |
 | -------------------- | -------------------------------- | ------------------------------------------------ |
 | active_time_seconds  | 633,600 (business month 22 days) | 2,592,000 (30 days)                              |
-| compute_time_seconds | 158,400 (approx 44 hours)        | 10,368,000 (4 times the active time for 4 vCPUs) |
+| compute_time_seconds | 158,400 (approx 44 hours)        | 10,368,000 (4 times the active hours for 4 vCPUs) |
 | written_data_bytes   | 1,000,000,000 (approx. 1 GiB)    | 50,000,000,000 (approx. 50 GiB)                  |
 | data_transfer_bytes  | 500,000,000 (approx. 500 MiB)    | 10,000,000,000 (approx. 10 GiB)                  |
 
@@ -19091,6 +21955,274 @@ Notice that the `serial_id` column hints at the number of rows already present i
 
 # Extensions
 
+---
+title: Postgres extensions
+enableTableOfContents: true
+---
+
+Explore supported Postgres extensions by category. Also see:
+
+- [List view of supported extensions and versions](/docs/extensions/pg-extensions)
+- [Install an extension](/docs/extensions/pg-extensions#install-an-extension)
+- [Update an extension](/docs/extensions/pg-extensions#update-an-extension-version)
+- [Request extension support](/docs/extensions/pg-extensions#request-extension-support)
+
+## AI / Machine Learning
+
+<DetailIconCards>
+
+<a href="/docs/extensions/pg_tiktoken" description="Tokenize data in Postgres using the OpenAI tiktoken library" icon="app-store" icon="app-store">pg_tiktoken</a>
+
+<a href="/docs/extensions/pgvector" description="Store vector embeddings and perform vector similarity search in Postgres" icon="app-store" icon="app-store">pgvector</a>
+
+</DetailIconCards>
+
+## Analytics
+
+<DetailIconCards>
+
+<a href="https://github.com/citusdata/postgresql-hll" description="Implements a HyperLogLog data structure as a native data type for efficient and tunable distinct value counting" icon="app-store" icon="app-store">hll</a>
+
+<a href="/docs/extensions/timescaledb" description="Enables Postgres as a time-series database for efficient storage and retrieval of time-series data" icon="app-store">timescaledb</a>
+
+</DetailIconCards>
+
+## Auditing / Logging
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Implements a trigger that stores the current user's name into a text field, useful for tracking who modified a particular row within a table" icon="app-store">insert_username</a>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Implements a trigger that automatically updates a timestamp column to the current timestamp whenever a row is modified" icon="app-store">moddatetime</a>
+
+<a href="https://www.postgresql.org/docs/16/pgrowlocks.html" description="Provides a function that shows row locking information for a specified table, useful in concurrency and deadlock debugging" icon="app-store">pgrowlocks</a>
+
+<a href="https://www.postgresql.org/docs/16/tcn.html" description="Provides a trigger function to notify listeners of changes to a table, allowing applications to respond to changes in the database" icon="app-store">tcn</a>
+
+</DetailIconCards>
+
+## Data / Transformations
+
+<DetailIconCards>
+
+<a href="https://postgis.net/docs/Extras.html#Address_Standardizer" description="A single-line address parser that takes an input address and normalizes it based on a set of rules" icon="app-store">address_standardizer</a>
+
+<a href="https://postgis.net/docs/Extras.html#Address_Standardizer_Tables" description="Provides data for standardizing US addresses, for use with the address_standardizer extension" icon="app-store">address_standardizer_data_us</a>
+
+<a href="/docs/extensions/citext" description="Provides a case-insensitive character string type that internally calls lower when comparing values in Postgres" icon="app-store">citext</a>
+
+<a href="https://www.postgresql.org/docs/16/cube.html" description="Implements the cube data type for representing multidimensional cubes in Postgres" icon="app-store">cube</a>
+
+<a href="https://www.postgresql.org/docs/16/earthdistance.html" description="Provides cube-based and point-based approaches to calculating great circle distances on the surface of the Earth" icon="app-store">earthdistance</a>
+
+<a href="/docs/extensions/hstore" description="Implements an hstore data type for storing and manipulating sets of key-value pairs within a single Postgres value" icon="app-store">hstore</a>
+
+<a href="https://www.postgresql.org/docs/16/intagg.html" description="Provides an integer aggregator and enumerator for Postgres" icon="app-store">intagg</a>
+
+<a href="https://www.postgresql.org/docs/16/intarray.html" description="Offers functions and operators for manipulating and searching arrays of integers within Postgres" icon="app-store">intarray</a>
+
+<a href="https://www.postgresql.org/docs/16/isn.html" description="Implements data types for international product numbering standards: EAN13, UPC, ISBN (books), ISMN (music), and ISSN (serials)" icon="app-store">isn</a>
+
+<a href="https://www.postgresql.org/docs/16/ltree.html" description="Provides data types for representing labels of data stored in a hierarchical tree-like structure and facilities for searching through label trees" icon="app-store">ltree</a>
+
+<a href="https://github.com/supabase/pg_graphql" description="Adds GraphQL support to Postgres, allowing you to query your database via GraphQL" icon="app-store">pg_graphql</a>
+
+<a href="https://github.com/iCyberon/pg_hashids" description="Enables the generation of short, unique hash ids from integers, useful for obfuscating internal ids" icon="app-store">pg_hashids</a>
+
+<a href="https://github.com/supabase/pg_jsonschema" description="Provides support for JSON schema validation on json and jsonb data types" icon="app-store">pg_jsonschema</a>
+
+<a href="https://github.com/fboulnois/pg_uuidv7" description="Enables creating valid UUID Version 7 values in Postgres, enabling globally unique identifiers with temporal ordering" icon="app-store">pg_uuidv7</a>
+
+<a href="https://github.com/pksunkara/pgx_ulid" description="A full-featured extension for generating and working with ULID (Universally Unique Lexicographically Sortable Identifiers)" icon="app-store">pgx_ulid</a>
+
+<a href="https://www.postgresql.org/docs/16/seg.html" description="Implements the seg data type for storage and manipulation of line segments or floating-point ranges, useful for geometric and scientific applications" icon="app-store">seg</a>
+
+<a href="https://www.postgresql.org/docs/16/tablefunc.html" description="Contains functions that return tables (multiple rows), including crosstab, which can pivot row data into columns dynamically" icon="app-store">tablefunc</a>
+
+<a href="https://www.postgresql.org/docs/16/unaccent.html" description="A text search dictionary that removes accents from characters, simplifying text search in Postgres" icon="app-store">unaccent</a>
+
+<a href="https://github.com/df7cb/postgresql-unit" description="Implements a data type for SI units, plus byte, for storage, manipulation, and calculation of scientific units" icon="app-store">unit</a>
+
+<a href="https://www.postgresql.org/docs/16/uuid-ossp.html" description="Provides functions to generate universally unique identifiers (UUIDs) in Postgres, supporting various UUID standards" icon="app-store">uuid-ossp</a>
+
+<a href="https://www.postgresql.org/docs/current/xml2.html" description="Enables XPath queries and XSLT functionality directly within Postgres, enabling XML data processing" icon="app-store">xml2</a>
+
+</DetailIconCards>
+
+## Debugging
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Automatically updates a timestamp column to the current timestamp whenever a row is modified in Postgres" icon="app-store">moddatetime</a>
+
+<a href="https://www.postgresql.org/docs/16/pgrowlocks.html" description="Provides a function that shows row locking information for a specified table, which can aid in concurrency and deadlock debugging" icon="app-store">pgrowlocks</a>
+
+<a href="https://pgtap.org/documentation.html" description="A unit testing framework for Postgres, enabling sophisticated testing of database queries and functions" icon="app-store">pgTap</a>
+
+<a href="https://pgxn.org/dist/plpgsql_check/" description="Provides a linter and debugger for PL/pgSQL code, helping identify errors and optimize PL/pgSQL functions" icon="app-store">plpgsql_check</a>
+
+</DetailIconCards>
+
+## Geospatial
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/cube.html" description="Implements a data type for representing multidimensional cubes in Postgres" icon="app-store">cube</a>
+
+<a href="https://www.postgresql.org/docs/16/earthdistance.html" description="Provides cube-based and point-based approaches to calculating great circle distances on the surface of the Earth" icon="app-store">earthdistance</a>
+
+<a href="https://github.com/zachasme/h3-pg/blob/main/docs/api.md" description="Integrates Uber's H3 geospatial indexing system that combines the benefits of a hexagonal grid with S2's hierarchical subdivisions" icon="app-store">h3</a>
+
+<a href="https://github.com/zachasme/h3-pg/blob/main/docs/api.md" description="A PostGIS extension for H3, enabling advanced spatial analysis and indexing" icon="app-store">h3_postgis</a>
+
+<a href="https://docs.pgrouting.org/" description="Extends PostGIS/Postgres databases, providing geospatial routing and other network analysis functionality" icon="app-store">pgrouting</a>
+
+<a href="/docs/extensions/postgis" description="Extends Postgres to allow GIS (Geographic Information Systems) objects to be stored in the database, enabling spatial queries directly in SQL" icon="app-store">postgis</a>
+
+<a href="https://postgis.net/docs/RT_reference.html" description="Adds support for raster data to PostGIS, enabling advanced geospatial analysis on raster images" icon="app-store">postgis_raster</a>
+
+<a href="https://postgis.net/docs/reference.html#reference_sfcgal" description="Provides support for advanced 3D geometries in PostGIS, based on the SFCGAL library" icon="app-store">postgis_sfcgal</a>
+
+<a href="https://postgis.net/docs/Extras.html#Tiger_Geocoder" description="Enables geocoding and reverse geocoding capabilities in PostGIS using TIGER/Line data" icon="app-store">postgis_tiger_geocoder</a>
+
+<a href="https://www.postgis.net/docs/Topology.html" description="Extends PostGIS with support for topological data types and functions, facilitating the analysis of spatial relationships" icon="app-store">postgis_topology</a>
+
+</DetailIconCards>
+
+## Index / Table optimization
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/bloom.html" description="Provides an index access method for Postgres based on Bloom filters" icon="app-store">bloom</a>
+
+<a href="https://www.postgresql.org/docs/16/btree-gin.html" description="Provides GIN operator classes that implement B-tree equivalent behavior" icon="app-store">btree_gin</a>
+
+<a href="https://www.postgresql.org/docs/16/btree-gist.html" description="Provides GiST index operator classes that implement B-tree equivalent behavior" icon="app-store">btree_gist</a>
+
+<a href="https://github.com/RhodiumToad/ip4r" description="Provides a range index type and functions for efficiently storing and querying IPv4 and IPv6 ranges and addresses in Postgres" icon="app-store">ip4r</a>
+
+<a href="https://github.com/sraoss/pg_ivm" description="Provides an Incremental View Maintenance (IVM) feature for Postgres" icon="app-store">pg_ivm</a>
+
+<a href="/docs/extensions/pg_prewarm" description="Allows manual preloading of relation data into the Postgres buffer cache, reducing access times for frequently queried tables" icon="app-store">pg_prewarm</a>
+
+<a href="https://github.com/ChenHuajun/pg_roaringbitmap" description="Implements Roaring Bitmaps in Postgres for efficient storage and manipulation of bit sets" icon="app-store">pg_roaringbitmap</a>
+
+<a href="https://github.com/postgrespro/rum" description="Provides an access method to work with a RUM index, designed to speed up full-text searches" icon="app-store">rum</a>
+
+</DetailIconCards>
+
+## Metrics
+
+<DetailIconCards>
+
+<a href="/docs/extensions/neon" description="Provides functions and views designed to gather Neon-specific metrics" icon="app-store">neon</a>
+
+<a href="/docs/extensions/pg_stat_statements" description="Tracks planning and execution statistics for all SQL statements executed, aiding in performance analysis and tuning" icon="app-store">pg_stat_statements</a>
+
+<a href="https://www.postgresql.org/docs/16/pgstattuple.html" description="Offers functions to show tuple-level statistics for tables, helping identify bloat and efficiency opportunities" icon="app-store">pgstattuple</a>
+
+<a href="https://www.postgresql.org/docs/16/tsm-system-rows.html" description="Provides a table sampling method that selects a fixed number of table rows randomly" icon="app-store">tsm_system_rows</a>
+
+<a href="https://www.postgresql.org/docs/16/tsm-system-time.html" description="Offers a table sampling method based on system time, enabling consistent sample data retrieval over time" icon="app-store">tsm_system_time</a>
+
+</DetailIconCards>
+
+## Orchestration
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/tcn.html" description="Provides a trigger function to notify listeners of changes to a table, allowing applications to respond to changes in the database" icon="app-store">tcn</a>
+
+</DetailIconCards>
+
+## Procedural languages
+
+<DetailIconCards>
+
+<a href="https://coffeescript.org/" description="Enables writing functions in CoffeeScript, a Javascript dialect with a syntax similar to Ruby" icon="app-store">plcoffee</a>
+
+<a href="https://livescript.net/" description="Enables writing functions in LiveScript, a Javascript dialect that serves as a more powerful successor to CoffeeScript" icon="app-store">plls</a>
+
+<a href="https://github.com/plv8/plv8/" description="A Postgres procedural language powered by V8 Javascript Engine for writing functions in Javascript that are callable from SQL" icon="app-store">plv8</a>
+
+<a href="https://www.postgresql.org/docs/16/plpgsql.html" description="The default procedural language for Postgres, enabling the creation of complex functions and triggers" icon="app-store">plpgsql</a>
+
+</DetailIconCards>
+
+## Query optimization
+
+<DetailIconCards>
+
+<a href="https://hypopg.readthedocs.io/en/rel1_stable/" description="Provides the ability to create hypothetical (virtual) indexes in Postgres for performance testing" icon="app-store">hypopg</a>
+
+<a href="https://github.com/ossc-db/pg_hint_plan" description="Allows developers to influence query plans with hints in SQL comments, improving performance and control over query execution" icon="app-store">pg_hint_plan</a>
+
+</DetailIconCards>
+
+## Scientific computing
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/cube.html" description="Implements the cube data type for representing multidimensional cubes in Postgres" icon="app-store">cube</a>
+
+<a href="https://github.com/rdkit/rdkit" description="Integrates the RDKit cheminformatics toolkit with Postgres, enabling chemical informatics operations directly in the database" icon="app-store">rdkit</a>
+
+<a href="https://www.postgresql.org/docs/16/seg.html" description="Implements the seg data type for storage and manipulation of line segments or floating-point intervals, useful for representing laboratory measurements" icon="app-store">seg</a>
+
+<a href="https://github.com/df7cb/postgresql-unit" description="Implements a data type for SI units, plus byte, for storage, manipulation, and calculation of scientific units" icon="app-store">unit</a>
+
+
+</DetailIconCards>
+
+## Search
+
+<DetailIconCards>
+
+<a href="/docs/extensions/citext" description="Provides a case-insensitive character string type that internally calls lower when comparing values in Postgres" icon="app-store">citext</a>
+
+<a href="https://www.postgresql.org/docs/16/dict-int.html" description="Provides a text search dictionary template for indexing integer data in Postgres" icon="app-store">dict_int</a>
+
+<a href="https://www.postgresql.org/docs/16/fuzzystrmatch.html" description="Provides several functions to determine similarities and distance between strings in Postgres" icon="app-store">fuzzystrmatch</a>
+
+<a href="/docs/extensions/pg_trgm" description="Provides functions and operators for determining the similarity of alphanumeric text based on trigram matching, and index operator classes for fast string similarity search" icon="app-store">pg_trgm</a>
+
+<a href="https://github.com/dimitri/prefix" description="A prefix range module that supports efficient queries on text columns with prefix-based searching and matching capabilities" icon="app-store">prefix</a>
+
+<a href="https://www.postgresql.org/docs/16/unaccent.html" description="A text search dictionary that removes accents from characters, simplifying text search in Postgres" icon="app-store">unaccent</a>
+
+</DetailIconCards>
+
+## Security
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/pgcrypto.html" description="Offers cryptographic functions, allowing for encryption and hashing of data within Postgres" icon="app-store">pgcrypto</a>
+
+<a href="https://github.com/michelp/pgjwt" description="Implements JSON Web Tokens (JWT) in Postgres, allowing for secure token creation and verification" icon="app-store">pgjwt</a>
+
+</DetailIconCards>
+
+## Tooling / Admin
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Provides an autoinc() function that stores the next value of a sequence into an integer field" icon="app-store">autoinc</a>
+
+<a href="https://hypopg.readthedocs.io/en/rel1_stable/" description="Provides the ability to create hypothetical (virtual) indexes in Postgres for performance testing" icon="app-store">hypopg</a>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Automatically inserts the username of the person executing an insert operation into a specified table in Postgres" icon="app-store">insert_username</a>
+
+<a href="https://www.postgresql.org/docs/16/lo.html" description="Provides support for managing large objects (LOBs) in Postgres, including a data type lo and a trigger lo_manage" icon="app-store">lo</a>
+
+<a href="/docs/extensions/neon-utils" description="Provides a function for monitoring how Neon's Autoscaling feature allocates vCPU in response to workload" icon="app-store">neon_utils</a>
+
+<a href="https://pgtap.org/documentation.html" description="A unit testing framework for Postgres, enabling sophisticated testing of database queries and functions" icon="app-store">pgtap</a>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Provides functions for maintaining foreign key constraints" icon="app-store">refint</a>
+
+</DetailIconCards>
+
+
 # Supported extensions
 
 ---
@@ -19098,7 +22230,7 @@ title: Supported Postgres extensions
 enableTableOfContents: true
 redirectFrom:
   - /docs/reference/pg-extensions
-updatedOn: '2024-02-09T17:53:20.585Z'
+updatedOn: '2024-02-21T13:43:18.729Z'
 ---
 
 Neon supports the Postgres extensions shown in the following table. The supported version of the extension sometimes differs by Postgres version.
@@ -19108,7 +22240,7 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | Extension                | PG14                               | PG15  | PG16                              |Notes                                                                                                                |
 | :------------------------| --------------------------------------------------------------: | ----------------------------------------------------------------:| ----------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------|
 | [address_standardizer](https://postgis.net/docs/Extras.html#Address_Standardizer)     | 3.3.3  | 3.3.3  |    3.3.3  |                                                                                                          |
-| [address_standardizer_data_us](https://postgis.net/docs/Extras.html#Address_Standardizer)      | 3.3.3        | 3.3.3 | 3.3.3 |                                                                                                 |
+| [address_standardizer_data_us](https://postgis.net/docs/Extras.html#Address_Standardizer_Tables)      | 3.3.3        | 3.3.3 | 3.3.3 |                                                                                                 |
 | [autoinc (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)             | 1.0 | 1.0  |   1.0  |                                                                                                                 |
 | [bloom](https://www.postgresql.org/docs/16/bloom.html)                     | 1.0            | 1.0             |   1.0             |                                                                                                                  |
 | [btree_gin](https://www.postgresql.org/docs/16/btree-gin.html)                | 1.3        | 1.3         |      1.3         |                                                                                                              |
@@ -19119,7 +22251,7 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | [earthdistance](https://www.postgresql.org/docs/16/earthdistance.html)            | 1.1    | 1.1     |  1.1     |                                                                                                                   |
 | [fuzzystrmatch](https://www.postgresql.org/docs/16/fuzzystrmatch.html)            | 1.1    | 1.1     |   1.1     |                                                                                                                 |
 | [h3](https://github.com/zachasme/h3-pg/blob/main/docs/api.md)                       | 4.1.3| 4.1.3 | 4.1.3 | Some components have been split out into the `h3_postgis` extension. Install both the `h3` and `h3_postgis` extensions.                                                                                                                   |
-| [h3_postgis](https://github.com/zachasme/h3-pg/blob/main/docs/api.md)               | 4.1.2| 4.1.3 |  4.1.2 | Install with `CREATE EXTENSION h3_postgis CASCADE;` (requires `postgis` and `postgis_raster`)                                                                 |
+| [h3_postgis](https://github.com/zachasme/h3-pg/blob/main/docs/api.md)               | 4.1.2| 4.1.3 |  4.1.3 | Install with `CREATE EXTENSION h3_postgis CASCADE;` (requires `postgis` and `postgis_raster`)                                                                 |
 | [hll](https://github.com/citusdata/postgresql-hll)                      | 2.18             | 2.18              |  2.18              |                                                                                                                   |
 | [hstore](/docs/extensions/hstore)                   | 1.8           | 1.8            | 1.8            |                                                                                                                   |
 | [hypopg](https://hypopg.readthedocs.io/en/rel1_stable/)                   | 1.4.0          | 1.4.0           |  1.4.0           |                                                                                                                  |
@@ -19130,14 +22262,15 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | [isn](https://www.postgresql.org/docs/16/isn.html)                      | 1.2              | 1.2              |   1.2              |                                                                                                                   |
 | [lo](https://www.postgresql.org/docs/16/lo.html)                       | 1.1               | 1.1               |  1.1               |                                                                                                                     |
 | [ltree](https://www.postgresql.org/docs/16/ltree.html)                    | 1.2            | 1.2           |   1.2           |                                                                                                                  |
-| [moddattime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)         | 1.0 | 1.0  |   1.0  |                                                                                                                  |
+| [moddatetime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)         | 1.0 | 1.0  |   1.0  |                                                                                                                  |
 | [neon](/docs/extensions/neon)               | 1.1                               | 1.1                               |     1.1              |                                                                                                                   |
 | [neon_utils](/docs/extensions/neon-utils)               | 1.0                              | 1.0                               |     1.0              |                                                                                                                   |
 | [pg_graphql](https://github.com/supabase/pg_graphql)               | 1.4.0                 | 1.4.0                  |  1.4.0                  |                                                                                                                   |
 | [pg_hashids](https://github.com/iCyberon/pg_hashids)                | 1.2.1                | 1.2.1                  |  1.2.1                  |                                                                                                                  |
 | [pg_hint_plan](https://github.com/ossc-db/pg_hint_plan)             | 1.4.1                  | 1.5.0                  |  1.6.0                  |                                                                                                                   |
+| [pg_ivm](https://github.com/sraoss/pg_ivm)             | 1.7                  | 1.7                  |  1.7                  |                                                                                                                   |
 | [pg_jsonschema](https://github.com/supabase/pg_jsonschema)            | 0.2.0              | 0.2.0               | 0.2.0               |                                                                                                                  |
-| [pg_prewarm](https://www.postgresql.org/docs/16/pgprewarm.html)              | 1.2        | 1.2         |   1.2         |                                                                                                                  |
+| [pg_prewarm](/docs/extensions/pg_prewarm)              | 1.2        | 1.2         |   1.2         |                                                                                                                  |
 | [pg_roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)          | 0.5          | 0.5         |  0.5         |                                                                                                                  | Install with `CREATE EXTENSION roaringbitmap;`
 | [pg_stat_statements](/docs/extensions/pg_stat_statements)       | 1.9 | 1.10 | 1.10 |
 | [pg_tiktoken](/docs/extensions/pg_tiktoken)              | 0.0.1                 | 0.0.1                  |  0.0.1                  |                                                                                                                  | The [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role has `EXECUTE` privilege on the `pg_stat_statements_reset()` function.
@@ -19145,26 +22278,25 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | [pg_uuidv7](https://github.com/fboulnois/pg_uuidv7)                | 1.0                   | 1.0                  |    1.0                  |                                                                                                                  |
 | [pgcrypto](https://www.postgresql.org/docs/16/pgcrypto.html)                 | 1.3         | 1.3          |    1.3          |                                                                                                                   |
 | [pgjwt](https://github.com/michelp/pgjwt)                    | 0.2.0                       | 0.2.0                       |   0.2.0                       |                                                                                                                   |
-| [pgrouting](https://docs.pgrouting.org/3.4/en/index.html)                 | 3.4.2          | 3.4.2            | 3.4.2            | The PostGIS extension must be installed first.
+| [pgrouting](https://docs.pgrouting.org/)                 | 3.4.2          | 3.4.2            | 3.4.2            | The PostGIS extension must be installed first.
 | [pgrowlocks](https://www.postgresql.org/docs/16/pgrowlocks.html)               | 1.2       | 1.2        |   1.2        |                                                                                                                 |
 | [pgstattuple](https://www.postgresql.org/docs/16/pgstattuple.html)              | 1.5      | 1.5       |  1.5       |                                                                                                                  |
 | [pgtap](https://pgtap.org/documentation.html)                    | 1.2.0                   | 1.2.0       |   1.2.0       |                                                                                                                    |
-| [pgvector](/docs/extensions/pgvector)                 | 0.6.0                   | 0.6.0  | 0.6.0                  | Install with `CREATE EXTENSION vector;`                                                                                                                    |
+| [pgvector](/docs/extensions/pgvector)                 | 0.5.1                   | 0.5.1  | 0.5.1                  | Install with `CREATE EXTENSION vector;`                                                                                                                    |
 | [pgx_ulid](https://github.com/pksunkara/pgx_ulid)                 | 0.1.3                   | 0.1.3  | 0.1.3                                 | Install with `CREATE EXTENSION ulid;`                                                                                                                    |
-| [plcoffee](https://github.com/plv8/plv8/)                 | 3.1.5                          | 3.1.5  | 3.1.8                         |                                                                                                                    |
-| [plls](https://github.com/plv8/plv8/)                     | 3.1.5                          | 3.1.5 | 3.1.8                          |                                                                                                                    |  
+| [plcoffee](https://coffeescript.org/)                 | 3.1.5                          | 3.1.5  | 3.1.8                         |                                                                                                                    |
+| [plls](https://livescript.net/)                     | 3.1.5                          | 3.1.5 | 3.1.8                          |                                                                                                                    |  
 | [plpgsql](https://www.postgresql.org/docs/16/plpgsql.html)                  | 1.0          | 1.0   | 1.0        | Pre-installed with Postgres.                                                                                     |
 | [plpgsql_check](https://pgxn.org/dist/plpgsql_check/)            | 2.5.3                   | 2.5.3  | 2.5.3                      |                                                                                      |
-| [plv8](https://plv8.github.io/)                  | 3.1.10                                | 3.1.10  | 3.1.10                                |                                                                                                                    |
+| [plv8](https://github.com/plv8/plv8)                  | 3.1.10                                | 3.1.10  | 3.1.10                                |                                                                                                                    |
 | [postgis](/docs/extensions/postgis)                  | 3.3.3                                   | 3.3.3     | 3.3.3                                |                                                                                                                    |
 | [postgis_raster](https://postgis.net/docs/RT_reference.html)           | 3.3.3             | 3.3.3  | 3.3.3              |                                                                                                                    |
-| [postgis_sfcgal](https://oslandia.gitlab.io/SFCGAL/)           | 3.3.3                    | 3.3.3  | 3.3.3                    |                                                                                                                    |
+| [postgis_sfcgal](https://postgis.net/docs/reference.html#reference_sfcgal)           | 3.3.3                    | 3.3.3  | 3.3.3                    |                                                                                                                    |
 | [postgis_tiger_geocoder](https://postgis.net/docs/Extras.html#Tiger_Geocoder)   | 3.3.3    | 3.3.3 | 3.3.3    | Cannot be installed using the Neon SQL Editor. Use your `psql` user credentials to install this extension.         |
 | [postgis_topology](https://www.postgis.net/docs/Topology.html)          | 3.3.3            | 3.3.3   | 3.3.3            |                                                                                                                    |
 | [prefix](https://github.com/dimitri/prefix)                   | 1.2.0                     | 1.2.0   | 1.2.0                      |                                                                                                                    |
 | [rdkit](https://github.com/rdkit/rdkit)                    | 4.3.0                           | 4.3.0  | 4.3.0  |                                                                                                                   |
 | [refint (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)             | 1.0 | 1.0  |  1.0  |                                                                                                                  |
-| [roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)             | 0.5 | 0.5  |  0.5  |
 | [rum](https://github.com/postgrespro/rum)                      | 1.3          | 1.3           |   1.3           |                                                                                                                  |
 | [seg](https://www.postgresql.org/docs/16/seg.html)                      | 1.4              | 1.4               |   1.4               |                                                                                                                   |
 | [tablefunc](https://www.postgresql.org/docs/16/tablefunc.html)                | 1.0        | 1.0         |     1.0         |                                                                                                                 |
@@ -19202,7 +22334,7 @@ You can update an extension to the latest version using `ALTER EXTENSION <extens
   ```
 
 <Admonition type="important">
-When Neon releases a new extension or new extension version, a compute restart is required to make the new extension or extension version available for installation or update. A compute restart may occur on its own due to Neon's default [Autosuspend](/docs/introduction/auto-suspend) behavior. However, if your compute never restarts because you disabled Autosuspend or because your compute is constantly active, you may need force a restart. To force a restart, Neon Pro Plan users can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second (the default is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions. Alternatively, all Neon users can issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. Please be aware that restarting a compute endpoint temporarily interrupts any connections currently using the compute.
+When Neon releases a new extension or new extension version, a compute restart is required to make the new extension or extension version available for installation or update. A compute restart may occur on its own due to Neon's default [Autosuspend](/docs/introduction/auto-suspend) behavior. However, if your compute never restarts because you disabled Autosuspend or because your compute is constantly active, you may need to force a restart. To force a restart, users on paid plans can temporarily set a compute's **Suspend compute after a period of inactivity** setting to 1 second (the default is 5 minutes). See [Autosuspend configuration](/docs/manage/endpoints#auto-suspend-configuration) for instructions. After doing so, check the **Operations** page in the Neon Console to see if your compute endpoint restarted. Look for `suspend_compute` and `start_compute` actions. Alternatively, all Neon users can issue [Suspend endpoint](https://api-docs.neon.tech/reference/suspendprojectendpoint) and [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API calls. Please be aware that restarting a compute endpoint temporarily interrupts any connections currently using the compute.
 </Admonition>
 
 ## Extension support notes
@@ -19214,11 +22346,11 @@ When Neon releases a new extension or new extension version, a compute restart i
 
 ## Request extension support
 
-To request support for a Postgres extension, paid plan users can [open a support ticket](https://console.neon.tech/app/projects?modal=support). Free plan users can submit a request via the **feedback** channel on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
+To request support for a Postgres extension, paid plan users can [open a support ticket](https://console.neon.tech/app/projects?modal=support). Free plan users can submit a request via the **feedback** channel on our [Discord Server](https://neon.tech/discord).
 
 ### Custom-built extensions
 
-Neon supports custom-built Postgres extensions for exclusive use with your Neon account. If you developed your own Postgres extension and want to use it with Neon, please reach out to us as described above. Please include the following information in your request:
+On [Scale](/docs/introduction/plans#scale) and [Enterprise](/docs/introduction/plans#enterprise) plans, Neon supports custom-built Postgres extensions for exclusive use with your Neon account. If you developed your own Postgres extension and want to use it with Neon, please reach out to us as described above. Please include the following information in your request:
 
 - A repository link or archive file containing the source code for your extension
 - A description of what the extension does, instructions for compiling it, and any prerequisites
@@ -19896,6 +23028,251 @@ Always consider your compute instance's memory resources when adjusting this par
 ## Resources
 
 `pgvector` source code: [https://github.com/pgvector/pgvector](https://github.com/pgvector/pgvector)
+
+<NeedHelp/>
+
+
+# pg_prewarm
+
+---
+title: The pg_prewarm extension
+subtitle: Load data into Postgres shared buffers with the pg_prewarm extension
+enableTableOfContents: true
+updatedOn: '2024-02-22T00:55:50.952Z'
+---
+
+You can use the `pg_prewarm` extension to preload data into the Postgres buffer cache after a restart. Doing so improves query response times by ensuring that your data is readily available in memory. Otherwise, data must be loaded into the buffer cache from disk on-demand, which can result in slower query response times.
+
+<CTA />
+
+In this guide, we'll explore the `pg_prewarm` extension, how to enable it, and how to use it to prewarm your Postgres buffer cache. 
+
+<Admonition type="note">
+The `pg_prewarm` extension is open-source and can be installed on any Postgres setup. Detailed information about the extension is available in the [PostgreSQL Documentation](https://www.postgresql.org/docs/current/pgprewarm.html).
+</Admonition>
+
+**Version availability**
+
+Please refer to the [list of extensions](https://neon.tech/docs/extensions/pg-extensions) available in Neon for information about the version of `pg_prewarm` that Neon supports. 
+
+## Enable the `pg_prewarm` extension
+
+Enable the `pg_prewarm` extension by running the `CREATE EXTENSION` statement in your Postgres client:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_prewarm;
+```
+
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Basic usage
+
+To prewarm a specific table, simply use the `pg_prewarm` function with the name of the table you want to cache.
+
+```sql
+SELECT pg_prewarm('table_name');
+```
+
+Replace `table_name` with the actual name of your table.
+
+The output of `SELECT pg_prewarm()` is the number of blocks from the specified table that was loaded into the Postgres buffer cache. The default block size in Postgres is 8192 bytes (8KB).
+
+The `pg_prewarm` function does not support specifying multiple table names in a single command. It's designed to work with a single table at a time. If you want to prewarm multiple tables, you would need to call `pg_prewarm` separately for each.
+
+## Running pg_prewarm on indexes
+
+Running `pg_prewarm` on frequently-used indexes can help improve query performance after a Postgres restart. You might also run `pg_prewarm` on indexes that are not frequently used but will be involved in upcoming heavy read operations.
+
+Running `pg_prewarm` on an index is similar to running it on a table, but you specify the index's fully qualified name (schema name plus index name) or OID (Object Identifier) instead. 
+
+Here's an example that demonstrates how to use `pg_prewarm` to preload an index into memory:
+
+```sql
+SELECT pg_prewarm('schema_name.index_name');
+```
+
+Replace `schema_name.index_name` with the actual schema and index name you want to prewarm. If you're not sure about the index name or want to list all indexes for a specific table, you can use the `pg_indexes` view to find out. Here's how you might query for index names:
+
+```sql
+SELECT indexname FROM pg_indexes WHERE tablename = 'your_table_name';
+```
+Replace `your_table_name` with the name of the table whose indexes you're interested in. Once you have the index name, you can then use `pg_prewarm` as shown above.
+
+Additionally, if you prefer to use the index's OID, you can find it using the `pg_class` system catalog. Here's how to find an index's OID:
+
+```sql
+SELECT oid FROM pg_class WHERE relname = 'index_name';
+```
+
+Then, you can use the OID with `pg_prewarm` like so:
+
+```sql
+SELECT pg_prewarm(your_index_oid);
+```
+
+## Check the proportion of a table loaded into cache
+
+In this example, you create a table, check its data size, run `pg_prewarm`, and then check to see how much of the table's data was loaded into memory.
+
+1. First, create a table and populate it with some data:
+
+    ```sql
+    CREATE TABLE t_test AS
+    SELECT * FROM generate_series(1, 1000000) AS id;
+    ```
+
+2. Check the size of the table:
+
+    ```sql
+    SELECT pg_size_pretty(pg_relation_size('t_test')) AS table_size_pretty,
+        pg_relation_size('t_test') AS table_size_bytes;
+    ```
+
+    This command returns the size of the table in both MB and bytes.
+
+    ```sql
+     table_size_pretty | table_size_bytes 
+    -------------------+------------------
+    35 MB              |         36700160
+    ```
+
+3. Load the table data into the Postgres buffer cache using `pg_prewarm`:
+
+    ```sql
+    SELECT pg_prewarm('public.t_test') AS blocks_loaded;
+    ```
+
+    This will output the number of blocks that were loaded:
+
+    ```sql
+    blocks_loaded 
+    ---------------
+            4480
+    ```
+
+4. To understand the calculation that follows, check the block size of your Postgres instance:
+
+    ```sql
+    SHOW block_size;
+    ```
+
+    The default block size in Postgres is 8192 bytes (8KB). We'll use this value in the next step.
+
+    ```sql
+    block_size 
+    ------------
+    8192
+    ```
+
+5. Calculate the total size of the data loaded into the cache using the block size and the number of blocks loaded:
+
+    ```sql
+    -- Assuming 4480 blocks were loaded (replace with your actual number from pg_prewarm output)
+    SELECT 4480 * 8192 AS loaded_data_bytes;
+    ```
+
+    You can now compare this value with the size of your table.
+
+    ```sql
+     loaded_data_bytes 
+    -------------------
+            36700160
+    ```
+
+    <Admonition type="note">
+    The values for the size of the table and the size of the data loaded into the buffer cache as shown in the example above match exactly, which is an ideal scenario. However, there are cases where these values might not match, indicating that not all the data was loaded into the buffer cache; for example, this can happen if `pg_prewarm` only partially loads the table into the buffer cache due to lack of memory availability. Concurrent data modifications could also cause sizes to differ.
+
+    To understand how much memory is available to your Postgres instance on Neon, see [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
+    </Admonition>  
+
+## Demonstrating the effect of pg_prewarm
+
+This example shows how preloading data can improve query performance. We'll create two tables with the same data, preload one table, and then run `EXPLAIN ANALYZE` to compare execution time results.
+
+1. Create two sample tables with the same data for comparison:
+
+    ```sql
+    CREATE TABLE tbl_transactions_1
+    (
+        tran_id_ SERIAL,
+        transaction_date TIMESTAMPTZ,
+        transaction_name TEXT
+    );
+
+    INSERT INTO tbl_transactions_1
+    (transaction_date, transaction_name)
+    SELECT x, 'dbrnd' 
+    FROM generate_series('2010-01-01 00:00:00'::timestamptz, '2018-02-01 00:00:00'::timestamptz, '1 minutes'::interval) a(x);
+    ```
+
+    ```sql
+    CREATE TABLE tbl_transactions_2
+    (
+        tran_id_ SERIAL,
+        transaction_date TIMESTAMPTZ,
+        transaction_name TEXT
+    );
+
+    INSERT INTO tbl_transactions_2
+    (transaction_date, transaction_name)
+    SELECT x, 'dbrnd' 
+    FROM generate_series('2010-01-01 00:00:00'::timestamptz, '2018-02-01 00:00:00'::timestamptz, '1 minutes'::interval) a(x);
+    ```
+
+2. Restart your Postgres instance to clear the buffer cache. On Neon, you can do this by [restarting your compute](/docs/manage/endpoints#restart-a-compute-endpoint).
+
+2. Prewarm the first sample table:
+
+    ```sql
+    SELECT pg_prewarm('tbl_transactions_1') AS blocks_loaded;
+    ```
+
+    This will output the number of blocks that were loaded into the cache:
+
+    ```sql
+    blocks_loaded 
+    ---------------
+            27805
+    ```
+
+3. Now, compare the execution plan of the prewarmed table vs. a non-prewarmed table to see the performance improvement.
+
+    ```sql
+    EXPLAIN ANALYZE SELECT * FROM tbl_transactions_1;
+    ```
+
+    ```sql
+    EXPLAIN ANALYZE SELECT * FROM tbl_transactions_2;
+    ```
+
+    The execution time for the prewarmed table should be significantly lower than for the table that has not been prewarmed, as shown here:
+
+    ```sql
+    EXPLAIN ANALYZE SELECT * FROM tbl_transactions_1;
+                                                          QUERY PLAN                                                           
+    -------------------------------------------------------------------------------------------------------------------------------
+    Seq Scan on tbl_transactions_1  (cost=0.00..69608.21 rows=4252321 width=18) (actual time=0.017..228.995 rows=4252321 loops=1)
+    Planning Time: 1.134 ms
+    Execution Time: 344.028 ms
+    (3 rows)
+
+    EXPLAIN ANALYZE SELECT * FROM tbl_transactions_2;
+                                                            QUERY PLAN                                                            
+    ---------------------------------------------------------------------------------------------------------------------------------
+    Seq Scan on tbl_transactions_2  (cost=0.00..69608.21 rows=4252321 width=18) (actual time=2.251..11859.232 rows=4252321 loops=1)
+    Planning Time: 0.216 ms
+    Execution Time: 11994.066 ms
+    (3 rows)
+    ```
+
+## Conclusion
+
+Prewarming your table data and indexes can help improve read performance, especially after a database restart or for indexes that are not frequently used but will be involved in upcoming heavy read operations. However, it's important to use this feature cautiously, especially on systems with limited memory, to avoid potential negative impacts on overall performance.
+
+## Resources
+
+- [PostgreSQL pg_prewarm documentation](https://www.postgresql.org/docs/current/pgprewarm.html)
+- [How to size your compute in Neon](/docs/manage/endpoints#how-to-size-your-compute)
 
 <NeedHelp/>
 
@@ -20758,7 +24135,7 @@ These examples provide a quick introduction to handling and analyzing spatial da
 title: The timescaledb extension
 subtitle: Work with time-series data in Postgres with the timescaledb extension
 enableTableOfContents: true
-updatedOn: '2024-02-08T15:20:54.278Z'
+updatedOn: '2024-02-23T20:32:29.796Z'
 ---
 
 `timescaledb` enables the efficient storage and retrieval of time-series data. Time-series data is a sequential collection of observations or measurements recorded over time. For example, IoT devices continuously generate data points with timestamps, representing measurements or events. `timescaledb` is designed to handle large volumes of time-stamped data and provides SQL capabilities on top of a time-oriented data model such as IoT data, sensor readings, financial market data, and other time-series datasets.
@@ -21094,7 +24471,7 @@ To automatically run this deletion periodically, you can setup a cron task. For 
 ```
 
 <Admonition type="note">
-Please be aware that Noen's [Autosuspend](/docs/guides/auto-suspend-guide) feature may affect the running of scheduled jobs. It may be necessary to start the compute before running a job.
+Please be aware that Neon's [Autosuspend](/docs/guides/auto-suspend-guide) feature may affect the running of scheduled jobs. It may be necessary to start the compute before running a job.
 </Admonition>
 
 This will help ensure the hypertable size is managed by deleting old unneeded data. Tune the interval passed to drop_chunks and the cron schedule based on your data retention needs.
@@ -24413,28 +27790,28 @@ title: Postgres compatibility
 enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/compatibility
-updatedOn: '2024-01-11T14:49:37.566Z'
+updatedOn: '2024-02-16T12:00:44.905Z'
 ---
 
-Neon is protocol and application-compatible with Postgres. However, when using the Neon cloud service, there are some limitations that you should be aware of.
+**Neon is Postgres**. However, as a managed Postgres service, there are some differences you should be aware of.
 
 ## Postgres versions
 
-Neon cloud service is currently compatible with Postgres 14, 15, and 16. You can select the Postgres version you want to use when creating a Neon project. Postgres 15 is selected, by default. For information about creating a Neon project, See [Manage projects](/docs/manage/projects).
+Neon supports Postgres 14, 15, and 16. You can select the Postgres version you want to use when creating a Neon project. Postgres 16 is selected by default. For information about creating a Neon project, See [Manage projects](/docs/manage/projects). Minor Postgres point releases are rolled out by Neon after extensive validation as part of regular platform maintenance.  
 
 ## Postgres extensions
 
-Neon supports numerous Postgres extensions, and we regularly add support for more. For a list of supported extensions, see [Postgres Extensions](/docs/extensions/pg-extensions). To request support for additional extensions, please reach out to us on our [Discord Server](https://discord.com/invite/92vNTzKDGp).
+Neon supports numerous Postgres extensions, and we regularly add support for more. For the extensions that Neon supports, see [Postgres Extensions](/docs/extensions/pg-extensions). To request support for additional extensions, please reach out to us on our [Discord Server](https://discord.com/invite/92vNTzKDGp). Please keep in mind that privilege requirements, local file system access, and functionality that is incompatible with Neon features such as Autoscaling and Autosuspend may prevent Neon from being able to offer support for certain extensions.
 
 ## Roles and permissions
 
-Neon is a managed Postgres service, so you cannot access the host operating system, and you can't connect using the Postgres `superuser` account like you can in a standalone Postgres installation.
+Neon is a managed Postgres service, so you cannot access the host operating system, and you can't connect using the Postgres `superuser` account. In place of the Postgres superuser role, Neon provides a `neon_superuser` role.
 
 Roles created in the Neon console, CLI, or API, including the default role created with a Neon project, are granted membership in the `neon_superuser` role. For information about the privileges associated with this role, see [The neon_superuser role](/docs/manage/roles#the-neonsuperuser-role).
 
 Roles created in Neon with SQL syntax, from a command-line tool like `psql` or the [Neon SQL Editor](/docs/connect/query-with-psql-editor), have the same privileges as newly created roles in a standalone Postgres installation. These roles are not granted membership in the `neon_superuser` role. You must grant these roles the privileges you want them to have. For more information, see [Manage roles with SQL](/docs/manage/roles#manage-roles-with-sql).
 
-Neon roles cannot access replication methods or install Postgres extensions other than those supported by Neon.
+Neon roles cannot install Postgres extensions other than those supported by Neon.
 
 <a id="default-parameters/"></a>
 
@@ -24445,20 +27822,24 @@ The following table lists Neon Postgres parameter settings that may differ from 
 | Parameter       | Value   | Note                                                                              |
 | --------------- | ------- | --------------------------------------------------------------------------------- |
 | fsync           | off     | Neon syncs data to the Neon Storage Engine to store your data safely and reliably |
-| max_connections |         | The value depends on compute size. Set to 100 for Neon.          |
+| max_connections |         | The value depends on compute size.          |
 | shared_buffers  |         | The value depends on compute size                                                 |
 
 <Admonition type="note">
 You can use connection pooling in Neon to increase the number of supported connections. For more information, see [Connection pooling](/docs/connect/connection-pooling).
 </Admonition>
 
+## Postgres server logs
+
+Currently, Postgres server logs can only be accessed Neon Support team. Should you require information from the Postgres server logs for troubleshooting purposes, please contact [Neon Support](/docs/introduction/support).
+
 ## Unlogged tables
 
 Unlogged tables are maintained on Neon compute local storage. These tables do not survive compute restarts (including when a Neon compute instance is placed into an `Idle` state after a period of inactivity). This is unlike a standalone Postgres installation, where unlogged tables are only truncated in the event of abnormal process termination. Additionally, unlogged tables are limited by compute local storage size.
 
-## Spill and index build handling
+## Memory
 
-Certain queries in Postgres can generate large datasets that do not fit in memory. In such cases, storage spills the data. In Neon, the size of compute local storage limits the ability to create large indexes or execute certain queries that generate large datasets.
+SQL queries and index builds can generate large volumes of data that may not fit in memory. In Neon, the size of your compute determines the amount of memory that is available. For information about compute size and available memory, see [How to size your compute](https://neon.tech/docs/manage/endpoints#how-to-size-your-compute).
 
 ## Temporary tables
 
@@ -24466,15 +27847,40 @@ Temporary tables, which are stored in compute local storage, are limited by comp
 
 ## Session context
 
-The Neon cloud service automatically closes idle connections after a period of inactivity, as described in [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/). When connections are closed, anything defined within a session context is forgotten and must be recreated before being used again. For example, temporary tables, prepared statements, advisory locks, and notifications and listeners that were defined using the [NOTIFY](https://www.postgresql.org/docs/14/sql-notify.html)/[LISTEN](https://www.postgresql.org/docs/14/sql-listen.html) commands only exist for the duration of the current session and are lost when the session ends.
+The Neon cloud service automatically closes idle connections after a period of inactivity, as described in [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/). When connections are closed, anything that exists within a session context is forgotten and must be recreated before being used again. For example, in-memory statistics, temporary tables, prepared statements, advisory locks, and notifications and listeners defined using [NOTIFY](https://www.postgresql.org/docs/14/sql-notify.html)/[LISTEN](https://www.postgresql.org/docs/14/sql-listen.html) commands only exist for the duration of the current session and are lost when the session ends.
 
 ## Statistics collection
 
-Statistics collected by the Postgres [cumulative statistics system](https://www.postgresql.org/docs/14/monitoring-stats.html) are currently not saved when the Neon compute node is placed into an `Idle` state due to inactivity or restarted. For information about the lifecycle of a Neon compute, see [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/).
+Statistics collected by the Postgres [cumulative statistics system](https://www.postgresql.org/docs/current/monitoring-stats.html) are currently not saved when the Neon compute node is placed into an `Idle` state due to inactivity or restarted. For information about the lifecycle of a Neon compute, see [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/).
 
 ## Database encoding
 
-Neon does not currently support changing the database encoding. This feature will become available when we add support for creating databases using SQL, which is on our roadmap. Currently, creating a database is supported only in the Neon Console. See [Manage databases](/docs/manage/databases).
+Neon does not currently support changing the database encoding. However, Neon does support [ICU Custom Collations](https://www.postgresql.org/docs/current/collation.html#ICU-CUSTOM-COLLATIONS), which lets you define collation objects using ICU as the collation provider. For example:
+
+```sql
+CREATE COLLATION german (provider = icu, locale = 'de');
+CREATE TABLE books (id int, title text COLLATE "german");
+``` 
+
+or 
+
+```sql
+CREATE COLLATION arabic (provider = icu, locale = 'ar');
+CREATE TABLE books (id int, title text COLLATE "arabic");
+```
+
+## Event triggers
+
+Postgres [event triggers](/docs/current/event-triggers.html), which require Postgres superuser privileges, are currently not supported. Unlike regular triggers, which are attached to a single table and capture only DML events, event triggers are global to a particular database and are capable of capturing DDL events.
+
+Attempting to create an event trigger will produce errors similar to these:
+
+```sql
+ERROR: permission denied to create event trigger "your_trigger_name" (SQLSTATE 42501)
+
+ERROR:  permission denied to create event trigger "your_trigger_name"
+HINT:  Must be superuser to create an event trigger.
+```
 
 ## PostgreSQL documentation
 
@@ -24515,6 +27921,8 @@ Find instructions for importing data from Postgres, CSV, other Neon projects, an
 
 <a href="/docs/import/import-sample-data" description="Load one of several sample datasets for exploration and testing" icon="import">Load sample data</a>
 
+<a href="/docs/import/migrate-mysql" description="Learn how to migrate your MySQL database to Neon Postgres using pgloader." icon="import">Migrate from MySQL</a>
+
 </DetailIconCards>
 
 
@@ -24532,7 +27940,7 @@ updatedOn: '2024-02-08T15:20:54.293Z'
 This topic describes migrating data from another Postgres database to Neon using the `pg_dump` and `pg_restore` command line utilities.
 
 <Admonition type="important">
-Avoid using `pg_dump` over a [pooled Neon connection](https://neon.tech/docs/connect/connection-pooling) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an unpooled connection instead.
+Avoid using `pg_dump` over a [pooled connection string](/docs/reference/glossary#pooled-connection-string) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an [unpooled connection string](/docs/reference/glossary#unpooled-connection-string) instead.
 </Admonition>
 
 Repeat the `pg_dump` and `pg_restore` process for each database you want to migrate.
@@ -24651,13 +28059,13 @@ The `pg_dump` and `pg_restore` commands provide numerous advanced options, some 
 - `-Z`: Defines the compression level to use when using a compressible format. 0 means no compression, while 9 means maximum compression. In general, we recommend a setting of 1. A higher compression level slows the dump and restore process but also uses less disk space.
 - `--lock-wait-timeout=20s`: Error out early in the dump process instead of waiting for an unknown amount of time if there is lock contention.
 Do not wait forever to acquire shared table locks at the beginning of the dump. Instead fail if unable to lock a table within the specified timeout.`
-- `-j <njobs>`: Consider this option for large databases to dump tables in parallel. Set `<njobs>` to the number of available CPUs. Refer to the [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) documentation for more information. In Neon, this option only make sense for Neon Pro Plan users who can configure computes with >1 vCPU.
+- `-j <njobs>`: Consider this option for large databases to dump tables in parallel. Set `<njobs>` to the number of available CPUs. Refer to the [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) documentation for more information. In Neon, this option only make sense for Neon paid plan users who can configure computes with >1 vCPU.
 - `--no-blobs`: Excludes large objects from your dump. See [Data migration notes](#data-migration-notes).
 
 ### pg_restore options
 
 - `-c --if-exists`: Drop database objects before creating them if they already exist. If you had a failed migration, you can use these options to drop objects created by the previous migration to avoid errors when retrying the migration.
-- `-j <njobs>`: Consider this option for large databases to run the restore process in parallel. Set `<njobs>` to the number of available vCPUs. Refer to the [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) documentation for more information. In Neon, this option only makes sense for Neon Pro Plan users who can configure computes with >1 vCPU. It cannot be used together with `--single-transaction`.
+- `-j <njobs>`: Consider this option for large databases to run the restore process in parallel. Set `<njobs>` to the number of available vCPUs. Refer to the [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) documentation for more information. In Neon, this option only makes sense for Neon paid plan users who can configure computes with >1 vCPU. It cannot be used together with `--single-transaction`.
 - `--single-transaction`: Forces the operation to run as an atomic transaction, which ensures that no data is left behind when a restore operation fails. Retrying an import operation after a failed attempt that leaves data behind may result in "duplicate key value" errors.
 - `--no-tablespaces`: Do not output commands to select tablespaces. See [Data migration notes](#data-migration-notes).
 - `-t <table_name>`: Allows you to restore individual tables from a custom-format database dump. Individual tables can also be imported from a CSV file. See [Import from CSV](/docs/import/import-from-csv).
@@ -25122,6 +28530,145 @@ This section contains notes from our experience using AWS DMS to migrate data to
     The replication instance, which was created in the private subnet where the source database resided, could not access the Neon database, which resides outside of the VPC. To allow the replication instance to access the Neon database, we added a NAT Gateway to the public subnet, allocated an Elastic IP address, and modified the **Route Table** associated with the private subnet to add a route via the NAT Gateway.
 
 
+# Migrate from MySQL to Postgres
+
+---
+title: Migrate your MySQL database to Neon Postgres
+enableTableOfContents: true
+isDraft: false
+---
+
+This topic describes how to migrate your MySQL database to Neon Postgres using [pgloader](https://pgloader.readthedocs.io/en/latest/intro.html).
+
+The `pgloader` utility transforms data to a Postgres-compatible format as it is read from your MySQL database. It uses the `COPY` Postgres protocol to stream the data into your Postgres database.
+
+## Before you begin
+
+Before you begin, make sure that you have the following:
+
+- A Neon account and a project. See [Sign up](/docs/get-started-with-neon/signing-up).
+- A properly named database. For example, if you are migrating a database named `sakila`, you might want to create a database of the same name in Neon. See [Create a database](/docs/manage/databases#create-a-database) for instructions.
+- Neon's Free Tier supports 500 MiB of data. If your data size is more than 500 MiB, you'll need to upgrade to one of Neon's paid plans. See [Neon plans](/docs/introduction/plans) for more information.
+
+Also, a close review of the [Pgloader MySQL to Postgres Guide](https://pgloader.readthedocs.io/en/latest/ref/mysql.html) guide is recommended before you start. This guide will provide you with a good understanding of `pgloader` capabilities and how to configure your `pgloader` configuration file, if necessary.
+
+## Retrieve Your MySQL database credentials
+
+Before starting the migration process, collect your MySQL database credentials:
+
+1. Log into your MySQL database provider.
+2. Identify and record the following details or grab your MySQL database connection string.
+   - Hostname or IP address
+   - Database name
+   - Username
+   - Password
+
+Keep your MySQL database connection details handy for later use.
+
+## Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section on the **Dashboard** to find your Postgres database connection string. It should look similar to this:
+
+```bash shouldWrap
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Now, modify the connection string as follows to pass your **endpoint ID** (`ep-cool-darkness-123456` in this example) to Neon with your password using the `endpoint` keyword, as shown here:
+
+```bash shouldWrap
+postgres://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require // [!code word:endpoint=ep-cool-darkness-123456;AbC123dEf]
+```
+
+<Admonition type="note">
+Passing the `endpoint ID` with your password is a required workaround for some Postgres drivers, including the one used by `pgloader`. For more information about this workaround and why it's required, refer to our [connection workaround](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field) documentation. 
+</Admonition>
+
+Keep your Neon connection string handy for later use.
+
+### Install pgloader
+
+Here's how you can set up `pgloader` for your database migration:
+
+1. Install the `pgloader` utility using your preferred installation method. Debian (apt), RPM package, and Docker methods are supported, as well as Homebrew for macOS (`brew install pgloader`). If your macOS has an ARM processor, use the Homebrew installation method. 
+
+   See [Installing pgloader](https://pgloader.readthedocs.io/en/latest/install.html) for Debian (apt), RPM package, and Docker installation instructions. 
+2. Create a `pgloader` configuration file (e.g., `config.load`). Use your MySQL database credentials to define the connection string for your database source. Use the Neon database connection string you retrieved and modified in the previous step as the destination.
+
+   <Admonition type="note">
+   If you need to specify an SSL mode in your connection string, the following format is recommended: `sslmode=require`. Other formats may not work.
+   </Admonition>
+
+   Example configuration in `config.load`:
+   
+   ```plaintext
+   load database
+     from mysql://user:password@host/source_db?sslmode=require
+     into postgres://alex:endpoint=ep-cool-darkness-123456:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require;
+   ```
+
+## Run the migration with pgloader
+
+To initiate the migration process, run:
+
+```shell
+pgloader config.load
+```
+
+The command output will look similar to this:
+
+```bash
+LOG report summary reset
+             table name     errors       rows      bytes      total time
+-----------------------  ---------  ---------  ---------  --------------
+        fetch meta data          0          2                     0.727s
+         Create Schemas          0          0                     0.346s
+       Create SQL Types          0          0                     0.178s
+          Create tables          0          2                     0.551s
+         Set Table OIDs          0          1                     0.094s
+-----------------------  ---------  ---------  ---------  --------------
+    "db-test".dbname             0          1     0.0 kB          0.900s
+-----------------------  ---------  ---------  ---------  --------------
+COPY Threads Completion          0          4                     0.905s
+ Index Build Completion          0          1                     0.960s
+         Create Indexes          0          1                     0.257s
+        Reset Sequences          0          0                     1.083s
+           Primary Keys          0          1                     0.263s
+    Create Foreign Keys          0          0                     0.000s
+        Create Triggers          0          0                     0.169s
+        Set Search Path          0          1                     0.427s
+       Install Comments          0          0                     0.000s
+-----------------------  ---------  ---------  ---------  --------------
+      Total import time          ✓          1     0.0 kB          4.064s
+```
+
+## SSL verify error
+
+If you encounter an `SSL verify error: 20 X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY` error while attempting the instructions described above using `pgloader` from a Docker container, try the solution identified in this [GitHub issue](https://github.com/dimitri/pgloader/issues/768#issuecomment-693390290), which involves specifying `sslmode=allow` in the Postgres connection string and using the `--no-ssl-cert-verification` option with `pgloader`. 
+
+The following configuration file and Docker command were verified to work with Docker on Windows but may apply generally when using `pgloader` in a Docker container. In your `pgloader` config file, replace the MySQL and Postgres connection string values with your own. In the Docker command, specify the path to your `pgloader` config file, and replace the container ID value (the long alphanumeric string) with your own.
+
+`pgloader` config.load file: 
+
+```plaintext
+load database
+  from mysql://user:password@host/source_db?sslmode=require
+  into postgresql://alex:endpoint=ep-cool-darkness-123456:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=allow;
+``````
+
+Docker command:
+
+```plaintext
+docker run -v C:\path\to\config.load:/config.load d183dc100d3af5e703bd867b3b7826c117fa16b7ee2cd360af591dc895b121dc pgloader --no-ssl-cert-verification /config.load
+```
+
+## References
+
+- [Installing pgloader](https://pgloader.readthedocs.io/en/latest/install.html)
+- [Pgloader Tutorial: Migrating from MySQL to PostgreSQL](https://pgloader.readthedocs.io/en/latest/tutorial/tutorial.html#migrating-from-mysql-to-postgresql)
+- [Pgloader MySQL to Postgres Guide](https://pgloader.readthedocs.io/en/latest/ref/mysql.html)
+- [How to Migrate from MySQL to PostgreSQL RDBMS: An Enterprise Approach](https://jfrog.com/community/data-science/how-to-migrate-from-mysql-to-postgresql-rdbms-an-enterprise-approach/)
+
+
 # Sample data
 
 ---
@@ -25312,7 +28859,7 @@ A dataset containing information about movies and tv shows on Netflix.
 3. Navigate to the directory where you downloaded the source file, and run the following command:
 
     ```bash
-    psql -d "postgres://[user]:[password]@[neon_hostname]/netflix" -f netflix_shows.sql
+    psql -d "postgres://[user]:[password]@[neon_hostname]/netflix" -f netflix.sql
     ```
 
 4. Connect to the `netflix` database:
@@ -25704,7 +29251,7 @@ In addition, Neon requires a 60-bit entropy password for all PostgreSQL roles. T
 
 ## IP allowlist support
 
-Neon's IP Allow feature, available with the [Neon Pro Plan](/docs/introduction/pro-plan), ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation). To learn more, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+Neon's IP Allow feature, available with the [Scale](/docs/introduction/plans#scale) plan, ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation). To learn more, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
 ## Data-at-rest encryption
 
@@ -25786,7 +29333,7 @@ The **SOC 2 Type 2 Compliance** audit assessed the operational effectiveness of 
 Achieving SOC 2 Type 1 and Type 2 compliance underscores Neon's ongoing commitment to safeguarding customer data and maintaining a high level of security. We will continue to invest in regular audits and adhere to industry best practices to ensure the security, integrity, and privacy of the data you entrust us with.
 
 <Admonition type="note">
-If you would like to review our SOC 2 audit reports, you can request those documents through our [Trust Center](https://trust.neon.tech/). If you have other security questions or concerns, please contact us at [security@neon.tech](mailto:security@neon.tech).
+Neon [Scale](/docs/introduction/plans#scale) plan users can request SOC 2 audit reports through our [Trust Center](https://trust.neon.tech/). If you have other security questions or concerns, please contact us at [security@neon.tech](mailto:security@neon.tech).
 </Admonition>
 
 
@@ -25849,7 +29396,7 @@ You agree to abide by this Acceptable Use Policy by using Neon's resources. Your
 title: Neon CLI
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-02-09T17:53:20.590Z'
+updatedOn: '2024-02-21T19:34:16.277Z'
 ---
 
 The Neon CLI is a command-line interface that lets you manage Neon directly from the terminal. This documentation references all commands and options available in the Neon CLI.
@@ -25894,7 +29441,7 @@ Global options:
 | [me](/docs/reference/cli-me)                                         |                                        | Show current user         |
 | [projects](/docs/reference/cli-projects)                             | `list`, `create`, `update`, `delete`, `get` | Manage projects           |
 | [ip-allow](/docs/reference/cli-ip-allow)                             | `list`, `add`, `remove`, `reset`       | Manage IP Allow           |
-| [branches](/docs/reference/cli-branches)                             | `list`, `create`, `reset`, `rename`, `add-compute`, `set-primary`, `delete`, `get` | Manage branches           |
+| [branches](/docs/reference/cli-branches)                             | `list`, `create`, `reset`, `restore`, `rename`, `add-compute`, `set-primary`, `delete`, `get` | Manage branches           |
 | [databases](/docs/reference/cli-databases)                           | `list`, `create`, `delete`             | Manage databases          |
 | [roles](/docs/reference/cli-roles)                                   | `list`, `create`,  `delete`            | Manage roles              |
 | [operations](/docs/reference/cli-operations)                         | `list`                                 | Manage operations         |
@@ -26287,7 +29834,7 @@ neonctl me -o json
 title: Neon CLI commands — projects
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-01-19T14:15:57.931Z'
+updatedOn: '2024-02-27T14:37:51.437Z'
 ---
 
 ## Before you begin
@@ -26352,7 +29899,7 @@ neonctl projects list
 
 This subcommand allows you to create a Neon project.
 
-The [Neon Free Tier](../introduction/free-tier) supports creating a single project. The [Neon Pro Plan](../introduction/pro-plan) allows creating multiple projects.
+The [Neon Free Tier](../introduction/free-tier) supports creating a single project. Paid plans allow multiple projects.
 
 #### Usage
 
@@ -26485,7 +30032,7 @@ This subcommand allows you to update a Neon project.
 neonctl projects update <id> [options]
 ```
 
-The `id` is the project ID, which you can obtain by listing your projects or from the **Settings** page in the Neon console.
+The `id` is the project ID, which you can obtain by listing your projects or from the **Project settings** page in the Neon console.
 
 #### Options
 
@@ -26514,7 +30061,7 @@ neonctl projects update muddy-wood-859533 --name dev_project_1
 Update the IP allowlist. Multiple values are specified as a list without a delimiter.
 
 ```bash
-neonctl projects update withered-dream-91802149 --ip-allow 192.168.1.1 192.168.1.2 
+neonctl projects update withered-dream-91802149 --ip-allow 192.0.2.1 192.0.2.2 
 ┌─────────────────────────┬───────────┬───────────────┬──────────────────────┐
 │ Id                      │ Name      │ Region Id     │ Created At           │
 ├─────────────────────────┼───────────┼───────────────┼──────────────────────┤
@@ -26541,7 +30088,7 @@ This subcommand allows you to delete a Neon project.
 neonctl projects delete <id> [options]
 ```
 
-The `id` is the project ID, which you can obtain by listing your projects or from the **Settings** page in the Neon console.
+The `id` is the project ID, which you can obtain by listing your projects or from the **Project settings** page in the Neon console.
 
 #### Options
 
@@ -26570,7 +30117,7 @@ This subcommand allows you to retrieve details about a Neon project.
 neonctl projects get <id> [options]
 ```
 
-The `id` is the project ID, which you can obtain by listing your projects or from the **Settings** page in the Neon console.
+The `id` is the project ID, which you can obtain by listing your projects or from the **Project settings** page in the Neon console.
 
 #### Options
 
@@ -26600,7 +30147,7 @@ neonctl projects get muddy-wood-859533
 title: Neon CLI commands — ip-allow
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-02-09T17:53:20.589Z'
+updatedOn: '2024-02-27T14:37:51.436Z'
 ---
 
 ## Before you begin
@@ -26681,7 +30228,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 #### Example
 
 ```bash shouldWrap
-neonctl ip-allow add 192.168.1.3 --project-id cold-grass-40154007
+neonctl ip-allow add 192.0.2.3 --project-id cold-grass-40154007
 ```
 
 ### remove
@@ -26706,7 +30253,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 #### Example
 
 ```bash shouldWrap
-neonctl ip-allow remove 192.168.1.3 --project-id cold-grass-40154007
+neonctl ip-allow remove 192.0.2.3 --project-id cold-grass-40154007
 ```
 
 ### reset
@@ -26731,7 +30278,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 #### Example
 
 ```bash shouldWrap
-neonctl ip-allow reset 192.168.1.1 --project-id cold-grass-40154007
+neonctl ip-allow reset 192.0.2.1 --project-id cold-grass-40154007
 ```
 
 <NeedHelp/>
@@ -26743,7 +30290,7 @@ neonctl ip-allow reset 192.168.1.1 --project-id cold-grass-40154007
 title: Neon CLI commands — branches
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-01-19T14:15:57.929Z'
+updatedOn: '2024-02-21T19:34:16.276Z'
 ---
 
 ## Before you begin
@@ -26755,7 +30302,7 @@ updatedOn: '2024-01-19T14:15:57.929Z'
 
 The `branches` command allows you to list, create, rename, delete, and retrieve information about branches in your Neon project. It also permits setting a branch as the primary branch and adding a compute endpoint to a branch. You can create a [read replica](/docs/introduction/read-replicas) by adding a read-only compute endpoint.
 
-### Usage
+## Usage
 
 ```bash
 neonctl branches <subcommand> [options]
@@ -26766,13 +30313,14 @@ neonctl branches <subcommand> [options]
 | [list](#list)    | List branches    |
 | [create](#create)  | Create a branch |
 | [reset](#reset)   | Reset data to parent
+| [restore](#restore) | Restore a branch to a selected point in time
 | [rename](#rename)   | Rename a branch |
 | [set-primary](#set-primary)   | Set a primary branch |
 | [add-compute](#add-compute)   | Add replica to a branch |
 | [delete](#delete)  | Delete a branch |
 | [get](#get)     | Get a branch    |
 
-### list
+## list
 
 This subcommand allows you to list branches in a Neon project.
 
@@ -26848,7 +30396,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
     ]
     ```
 
-### create
+## create
 
 This subcommand allows you to create a branch in a Neon project.
 
@@ -27015,7 +30563,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
     neonctl branch create --psql -- -c "SELECT version()"
     ```
 
-### reset
+## reset
 
 This command resets a child branch to the latest data from its parent.
 
@@ -27049,8 +30597,108 @@ neonctl branches reset mybranch --parent
 │ br-raspy-meadow-26349337 │ development │ false   │ 2023-11-28T19:19:11Z │ 2023-11-28T19:29:26Z │
 └──────────────────────────┴─────────────┴─────────┴──────────────────────┴──────────────────────┘
 ```
+## restore
 
-### rename
+This command restores a branch to a specified point in time in its own or another branch's history.
+
+#### Usage
+
+```bash
+neonctl branches restore <target-id|name> <source>[@(timestamp|lsn)]
+```
+
+`<target-id|name>` specifies the ID or name of the branch that you want to restore.
+
+`<source>` specifies the source branch you want to restore from. Options are:
+- `^self` &#8212; restores the selected branch to an earlier point in its own history. You must select a timestamp or LSN for this option (restoring to head is not an option). You also need to include a name for the backup branch using the parameter `preserve-under-name`.
+-  `^parent` &#8212; restores the target branch to its parent. By default the target is restored the latest (head) of its parent. Append `@timestamp` or `@lsn` to restore to an earlier point in the parent's history.
+- `source branch ID` or `source branch name` &#8212; restores the target branch to the selected source branch. It restores the latest (head) by default. Append `@timestamp` or `@lsn` to restore to an earlier point in the source branch's history.
+
+#### Options
+
+In addition to the Neon CLI global options, the `restore` subcommand supports these options:
+
+| Option                | Description                                                                   | Type   | Required |
+|-----------------------|-------------------------------------------------------------------------------|--------|:--------:|
+| `--context-file`      | Context file path and file name                                               | string |          |
+| `--project-id`        | Project ID                                                                    | string | Only if your Neon account has more than one project or context is not set |
+| `--preserve-under-name` | Name for the backup created during restore.                                   | string |  When restoring to `^self`    |
+
+#### Examples
+
+Examples of the different kinds of restore operations you can do:
+
+- [Restoring a branch to an earlier point in its history](#restoring-a-branch-to-an-earlier-point-in-its-own-history-with-backup)
+- [Restoring to another branch's head](#restoring-a-branch-target-to-the-head-of-another-branch-source)
+- [Restoring a branch to its parent](#restoring-a-branch-to-its-parent-at-an-earlier-point-in-time)
+
+#### Restoring a branch to an earlier point in its own history (with backup)
+
+This command restores the branch `dev/alex` to an earlier timestamp, saving to a backup branch called `restore_backup_2024-02-20`
+
+```bash shouldWrap
+neonctl branches restore dev/alex ^self@2024-02-21T10:00:00.000Z --preserve-under-name restore_backup_2024-02-20
+```
+
+Results of the operation:
+
+```bash shouldWrap
+INFO: Restoring branch br-restless-frost-69810125 to the branch br-restless-frost-69810125 timestamp 2024-02-21T10:00:00.000Z
+Restored branch
+┌────────────────────────────┬──────────┬──────────────────────┐
+│ Id                         │ Name     │ Last Reset At        │
+├────────────────────────────┼──────────┼──────────────────────┤
+│ br-restless-frost-69810125 │ dev/alex │ 2024-02-21T15:48:05Z │
+└────────────────────────────┴──────────┴──────────────────────┘
+Backup branch
+┌───────────────────────────┬───────────────────────────┐
+│ Id                        │ Name                      │
+├───────────────────────────┼───────────────────────────┤
+│ br-patient-union-a5s838zf │ restore_backup_2024-02-20 │
+└───────────────────────────┴───────────────────────────┘
+```
+
+#### Restoring a branch (target) to the head of another branch (source)
+
+This command restores the target branch `dev/alex` to latest data (head) from the source branch `main`.
+
+```bash shouldWrap
+neonctl branches restore dev/alex main  
+```
+
+Results of the operation:
+
+```bash shouldWrap
+INFO: Restoring branch br-restless-frost-69810125 to the branch br-curly-bar-82389180 head
+Restored branch
+┌────────────────────────────┬──────────┬──────────────────────┐
+│ Id                         │ Name     │ Last Reset At        │
+├────────────────────────────┼──────────┼──────────────────────┤
+│ br-restless-frost-69810125 │ dev/alex │ 2024-02-21T15:42:34Z │
+└────────────────────────────┴──────────┴──────────────────────┘
+```
+
+#### Restoring a branch to its parent at an earlier point in time
+
+This command restores the branch `dev/alex` to a selected point in time from its parent branch.
+
+```bash shouldWrap
+neonctl branches restore dev/alex ^parent@2024-02-21T10:30:00.000Z
+```
+
+Results of the operation:
+
+```bash shouldWrap
+INFO: Restoring branch br-restless-frost-69810125 to the branch br-patient-union-a5s838zf timestamp 2024-02-21T10:30:00.000Z
+Restored branch
+┌────────────────────────────┬──────────┬──────────────────────┐
+│ Id                         │ Name     │ Last Reset At        │
+├────────────────────────────┼──────────┼──────────────────────┤
+│ br-restless-frost-69810125 │ dev/alex │ 2024-02-21T15:55:04Z │
+└────────────────────────────┴──────────┴──────────────────────┘
+```
+
+## rename
 
 This subcommand allows you to update a branch in a Neon project.
 
@@ -27082,7 +30730,7 @@ neonctl branches rename mybranch teambranch
 └───────────────────────┴────────────┴──────────────────────┴──────────────────────┘
 ```
 
-### set-primary
+## set-primary
 
 This subcommand allows you to set a branch as the primary branch in your Neon project.
 
@@ -27114,7 +30762,7 @@ neonctl branches set-primary mybranch
 └────────────────────┴──────────┴─────────┴──────────────────────┴──────────────────────┘
 ```
 
-### add-compute
+## add-compute
 
 This subcommand allows you to add a compute endpoint to an existing branch in your Neon project.
 
@@ -27147,7 +30795,7 @@ neonctl branches add-compute mybranch --type read_only
 └─────────────────────┴──────────────────────────────────────────────────┘
 ```
 
-### delete
+## delete
 
 This subcommand allows you to delete a branch in a Neon project.
 
@@ -27179,7 +30827,7 @@ neonctl branches delete br-rough-sky-158193
 └─────────────────────┴─────────────────┴──────────────────────┴──────────────────────┘
 ```
 
-### get
+## get
 
 This subcommand allows you to retrieve details about a branch.
 
@@ -27995,16 +31643,16 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2024-02-08T20:07:48.875Z'
+updatedOn: '2024-02-27T14:37:51.437Z'
 ---
 
 ## Access token
 
 See [Token](#token).
 
-## Active time
+## Active hours
 
-The total amount of time, measured in hours, that your compute resources have been active within a given billing period. This includes all computes in your Neon project, but excludes time when computes are in an `Idle` state due to [autosuspend](#autosuspend-compute). The [Neon Free Tier](/docs/introduction/free-tier) has an [Active time](/docs/reference/glossary#active-time) limit of 100 hours per month, but that limit only affects non-primary branch compute usage. Active time on all computes is counted toward the limit, but when the limit is exceeded, only non-primary branch computes are subject to suspension. The primary branch compute always remains available regardless of the limit, ensuring that access to data on the primary branch is never interrupted. Neon Free Tier users can monitor _Active time_ on the **Usage** widget on the Neon **Dashboard**. The _Active time_ limit resets at the beginning of each month. For instance, if you enroll in the Neon Free Tier on January 15th, your _Active time_ limit will reset on February 1st.
+A usage metric that tracks the amount of time a compute is active, rather than idle when suspended due to inactivity. The time that your compute is idle is not counted toward compute usage.
 
 ## Activity Monitor
 
@@ -28024,7 +31672,7 @@ A Neon Control Plane operation that applies a new configuration to a Neon object
 
 ## Autosuspend compute
 
-A feature that suspends a compute endpoint after a specified period of inactivity (5 minutes, by default) to save on compute resources. This feature is also referred to as "scale to zero". When suspended, a compute endpoint is placed into an `Idle` state. Otherwise, the compute endpoint is in an `Active` state. Neon Pro Plan users can configure the _Autosuspend_ feature. For example, you can increase the delay period to reduce the frequency of suspensions, or you can disable autosuspend completely to maintain an "always-active" compute endpoint. For more information, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
+A feature that suspends a compute endpoint after a specified period of inactivity (5 minutes, by default) to save on compute resources. This feature is also referred to as "scale to zero". When suspended, a compute endpoint is placed into an `Idle` state. Otherwise, the compute endpoint is in an `Active` state. Users on paid plans can configure the _Autosuspend_ feature. For example, you can increase the delay period to reduce the frequency of suspensions, or you can disable autosuspend completely to maintain an "always-active" compute endpoint. For more information, see [Edit a compute endpoint](/docs/manage/endpoints#edit-a-compute-endpoint).
 
 ## autoscaler-agent
 
@@ -28062,7 +31710,7 @@ Continuous integration and continuous delivery or continuous deployment.
 
 ## CIDR notation
 
-CIDR (Classless Inter-Domain Routing) notation is a method used to define ranges of IP addresses in network management. It is presented in the format of an IP address, followed by a slash, and then a number (e.g., 192.168.1.0/24). The number after the slash represents the size of the address block, providing a compact way to specify a large range of IP addresses. In Neon's IP Allow feature, CIDR notation allows for efficiently specifying a block of IP addresses, especially useful for larger networks or subnets. This can be advantageous when managing access to branches with numerous potential users, such as in a large development team or a company-wide network. For related information, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+CIDR (Classless Inter-Domain Routing) notation is a method used to define ranges of IP addresses in network management. It is presented in the format of an IP address, followed by a slash, and then a number (e.g., 203.0.113.0/24). The number after the slash represents the size of the address block, providing a compact way to specify a large range of IP addresses. In Neon's IP Allow feature, CIDR notation allows for efficiently specifying a block of IP addresses, especially useful for larger networks or subnets. This can be advantageous when managing access to branches with numerous potential users, such as in a large development team or a company-wide network. For related information, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
 ## cgroups
 
@@ -28100,9 +31748,17 @@ The number of Compute Units (CU) assigned to a Neon compute. One CU is defined a
 
 A unit that measures the processing power of a Neon compute. A Neon compute can have anywhere from .25 CUs to 7 CUs.
 
-## Compute time
+## Compute hour
 
-A billing metric that measures the amount of computing capacity used within a given billing period. See [Compute time](/docs/introduction/billing#comput-time).
+A usage metric for tracking compute usage. 1 compute hour is equal to one _active hour_ for a compute with 1 vCPU. If you have a compute with .25 vCPU, as you would on the Neon Free Tier, it would require 4 _active hours_ to use 1 compute hour. On the other hand, if you have a compute with 4 vCPU, it would only take 15 minutes to use 1 compute hour.
+
+To calculate compute hour usage, you would use the following formula:
+
+```
+compute hours = active hours x compute size
+```
+
+For more information, see [Compute](/docs/introduction/usage-metrics#compute).
 
 ## Console
 
@@ -28130,7 +31786,7 @@ A method of storing inactive data that converts plaintext data into a coded form
 
 ## Data transfer
 
-A billing metric that measures the total volume of data transferred out of Neon (known as "egress") during a given billing period. See [Data transfer](/docs/introduction/billing#data-transfer).
+A usage metric that measures the total volume of data transferred out of Neon (known as "egress") during a given billing period.
 
 ## Database
 
@@ -28168,9 +31824,13 @@ A custom volume-based paid plan offered by Neon. See [Neon plans](/docs/introduc
 
 See [Neon Free Tier](#neon-free-tier).
 
+## History
+
+The history of data changes for all branches in your Neon project. A history is maintained to support _point-in-time restore_. For more information, see [Storage details](/docs/introduction/usahe-metrics#storage-details).
+
 ## IP allowlist
 
-An IP allowlist is a security measure used in network and database management. It specifies a list of IP addresses that are permitted to access a certain resource. Any IP address not on the list is automatically blocked, ensuring that only authorized users or systems can gain access. In Neon, **IP Allow** is a [Neon Pro Plan](/docs/introduction/pro-plan) feature that can be used to control access to the branch where your database resides. The allowlist can be applied to all branches (the default) or the [primary branch](#primary-branch) only. For more information, see [Configure the IP Allow list](/docs/manage/projects#configure-tip-allow).
+An IP allowlist is a security measure used in network and database management. It specifies a list of IP addresses that are permitted to access a certain resource. Any IP address not on the list is automatically blocked, ensuring that only authorized users or systems can gain access. In Neon, **IP Allow** is a Scale plan feature that can be used to control access to the branch where your database resides. The allowlist can be applied to all branches (the default) or the [primary branch](#primary-branch) only. For more information, see [Configure the IP Allow list](/docs/manage/projects#configure-tip-allow).
 
 ## Kubernetes
 
@@ -28230,11 +31890,7 @@ A browser-based graphical interface for managing Neon projects and resources.
 
 ## Neon Free Tier
 
-A Neon service tier for which there are no usage charges. For information about the Neon Free Tier and associated limits, see [Neon Free Tier](/docs/introduction/free-tier).
-
-## Neon Pro Plan
-
-A usage-based paid plan offered by Neon. See [Neon plans](/docs/introduction/plans).
+A Neon service tier for which there are no usage charges. For information about the Neon Free Tier and associated limits, see [Neon Free Tier](/docs/introduction/plans#free-tier).
 
 ## Neon user
 
@@ -28258,7 +31914,7 @@ An 8KB unit of data, which is the smallest unit that Postgres uses for storing r
 
 ## Pageserver
 
-A Neon architecture component that reads WAL records from Safekeepers to identify modified pages. The Pageserver accumulates and indexes incoming WAL records in memory and writes them to disk in batches. Each batch is written to an immutable file that is never modified after creation. Using these files, the Pageserver can quickly reconstruct any version of a page dating back to the defined history retention period. Neon retains a history for all branches. The default history retention period is 7 days.
+A Neon architecture component that reads WAL records from Safekeepers to identify modified pages. The Pageserver accumulates and indexes incoming WAL records in memory and writes them to disk in batches. Each batch is written to an immutable file that is never modified after creation. Using these files, the Pageserver can quickly reconstruct any version of a page dating back to the defined history retention period. Neon retains a history for all branches.
 
 The Pageserver uploads immutable files to cloud storage, which is the final, highly durable destination for data. After a file is successfully uploaded to cloud storage, the corresponding WAL records can be removed from the Safekeepers.
 
@@ -28272,7 +31928,19 @@ A custom volume-based paid plan offered by Neon that includes support for resale
 
 ## Point-in-time restore
 
-Restoration of data to a state that existed at an earlier time. Neon retains a history of changes in the form of Write-Ahead-Log (WAL) records, which allows you to restore data to an earlier time. A point-in-time restore is performed by creating a branch using the **Time** or **LSN** option. By default, Neon retains a 7-day history of changes for all branches in a project. The supported range is 0 to 7 days for [Neon Free Tier](/docs/introduction/free-tier) users, and 0 to 30 days for [Neon Pro Plan](/docs/introduction/pro-plan) users. For more information about this feature, see [Branching — Point-in-time restore](https://neon.tech/docs/guides/branching-pitr).
+Restoration of data to a state that existed at an earlier time. Neon retains a history of changes in the form of Write-Ahead-Log (WAL) records, which allows you to restore data to an earlier time. A point-in-time restore is performed by creating a branch using the **Time** or **LSN** option. By default, Neon retains a history of changes for all branches in a project. The supported limits are 24 hours for [Neon Free Tier](/docs/introduction/plans#free-tier) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users. For more information about this feature, see [Branching — Point-in-time restore](https://neon.tech/docs/guides/branching-pitr).
+
+## pooled connection string
+
+A pooled connection string in Neon includes a `-pooler` option, which directs your connection to a pooled connection port at the Neon Proxy. This is an example of a pooled connection:
+
+```text
+postgres://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname
+```
+
+A pooled connection can support a high number of concurrent users and is recommended for use with serverless and edge functions. For more information, see [Connection pooling](/docs/connect/connection-pooling).
+
+You can obtain a pooled connection string for your database from the **Connection Details** widget on the Neon Dashboard. Select the **Pooled connection** option to add the `-pooler` option to the connection string. For further instructions, see [Enable connection pooling](/docs/connect/connection-pooling#enable-connection-pooling).
 
 ## PostgreSQL
 
@@ -28288,10 +31956,6 @@ Older projects may have a `web-access` system role, used by the [SQL Editor](#sq
 
 Each Neon project is created with a root branch called `main`, which is designated as your project's primary branch by default. The advantage of the primary branch is that its compute endpoint remains accessible if you exceed your project's limits, ensuring uninterrupted access to data that resides on the primary branch. For more information, see [Primary branch](/docs/manage/branches#primary-branch).
 
-### Pro Plan
-
-See [Neon Pro Plan](#neon-pro-plan).
-
 ## Project
 
 A collection of branches, databases, roles, and other project resources and settings. A project contains a compute with a Postgres server and storage for the project data.
@@ -28302,7 +31966,7 @@ A feature that allows you to share Neon projects with other Neon users. See [Sha
 
 ## Project storage
 
-The total volume of data stored in your Neon project. Also, a billing metric that measures the total volume of data and history, in GiB-hours, stored in your Neon project. See [Project storage](/docs/introduction/billing#project-storage).
+The total volume of data stored in your Neon project. Also, a billing metric that measures the total volume of data and history, in GiB-hours, stored in your Neon project. See [Storage](/docs/introduction/usage-metrics#storage).
 
 ## Proxy
 
@@ -28364,6 +32028,8 @@ A Neon Control Plane operation that starts a compute endpoint when there is an e
 
 Where data is recorded and stored. Neon storage consists of Pageservers, which store hot data, and a cloud object store, such as Amazon S3, that stores cold data for cost optimization and durability.
 
+Also, a usage metric that tracks the total volume of data and [history](#history) stored in Neon. For more information, see [Storage](/docs/introduction/usage-metrics#storage).
+
 ## Subscriber
 
 The database or platform receiving changes from the publisher in a logical replication setup. It applies changes received from the publisher to its own data set. Currently, a Neon database can only act as a publisher in a logical replication setup. See [Logical replication](/docs/guides/logical-replication-guide). 
@@ -28387,6 +32053,16 @@ An encrypted access token that enables you to authenticate with Neon using the N
 ## tmpfs
 
 A temporary file storage system that uses a portion of a system's RAM to store files, improving performance by reducing disk usage.
+
+## unpooled connection string
+
+An unpooled connection string connects to your Neon database directly. It does not use [connection pooling](#connection-pooling), and it looks similar to this:
+
+```text
+postgres://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
+```
+
+You can obtain an unpooled connection string for your database from the **Connection Details** widget on the Neon Dashboard. Ensure that the **Pooled connection** option is **not** selected. A direct connection is subject to the `max_connections` limit for your compute. For more information, see [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
 
 ## User
 
@@ -28432,7 +32108,7 @@ In logical replication, the WAL records all changes to the data, serving as the 
 
 ## Written data
 
-A billing metric that measures the total volume of data written from compute to storage within a given billing period, measured in gigibytes (GiB). Writing data from compute to storage ensures the durability and integrity of your data. See [Written data](/docs/introduction/billing#written-data).
+A usage metric that measures the total volume of data written from compute to storage within a given billing period, measured in gigibytes (GiB). Writing data from compute to storage ensures the durability and integrity of your data.
 
 
 # Community
@@ -28841,7 +32517,7 @@ Generally, feature names should be lowercase.
 
 Capitalize names of:
 
-- Neon tiers and plans. For example, Neon Free Tier, Neon Pro Plan.
+- Neon tiers and plans. For example, "Neon Free Tier".
 - Third-party organizations, software, and products. Kubernetes, Git, and Vercel.
 - Methods or methodologies. Continuous Integration, Continuous Deployment, etc.
 

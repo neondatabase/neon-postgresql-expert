@@ -76,19 +76,15 @@ We're using the following approach to make it work:
 
 For details see [`approved-for-ci-run.yml`](.github/workflows/approved-for-ci-run.yml)
 
-## How do I add the "pinned" tag to an buildtools image?
-We use the `pinned` tag for `Dockerfile.buildtools` build images in our CI/CD setup, currently adding the `pinned` tag is a manual operation.
+## How do I make build-tools image "pinned"
 
-You can call it from GitHub UI: https://github.com/neondatabase/neon/actions/workflows/update_build_tools_image.yml,
-or using GitHub CLI:
+It's possible to update the `pinned` tag of the `build-tools` image using the `pin-build-tools-image.yml` workflow.
 
 ```bash
-gh workflow -R neondatabase/neon run update_build_tools_image.yml \
-            -f from-tag=6254913013 \
-            -f to-tag=pinned \
-
-# Default `-f to-tag` is `pinned`, so the parameter can be omitted.
+gh workflow -R neondatabase/neon run pin-build-tools-image.yml \
+            -f from-tag=cc98d9b00d670f182c507ae3783342bd7e64c31e
 ```
+
 
 # Content from file ../neon/README.md:
 
@@ -99,7 +95,7 @@ gh workflow -R neondatabase/neon run update_build_tools_image.yml \
 Neon is a serverless open-source alternative to AWS Aurora Postgres. It separates storage and compute and substitutes the PostgreSQL storage layer by redistributing data across a cluster of nodes.
 
 ## Quick start
-Try the [Neon Free Tier](https://neon.tech/docs/introduction/technical-preview-free-tier/) to create a serverless Postgres instance. Then connect to it with your preferred Postgres client (psql, dbeaver, etc) or use the online [SQL Editor](https://neon.tech/docs/get-started-with-neon/query-with-neon-sql-editor/). See [Connect from any application](https://neon.tech/docs/connect/connect-from-any-app/) for connection instructions.
+Try the [Neon Free Tier](https://neon.tech/github) to create a serverless Postgres instance. Then connect to it with your preferred Postgres client (psql, dbeaver, etc) or use the online [SQL Editor](https://neon.tech/docs/get-started-with-neon/query-with-neon-sql-editor/). See [Connect from any application](https://neon.tech/docs/connect/connect-from-any-app/) for connection instructions.
 
 Alternatively, compile and run the project [locally](#running-local-installation).
 
@@ -324,7 +320,21 @@ postgres=# select * from t;
 > cargo neon stop
 ```
 
+More advanced usages can be found at [Control Plane and Neon Local](./control_plane/README.md).
+
+#### Handling build failures
+
+If you encounter errors during setting up the initial tenant, it's best to stop everything (`cargo neon stop`) and remove the `.neon` directory. Then fix the problems, and start the setup again.
+
 ## Running tests
+
+### Rust unit tests
+
+We are using [`cargo-nextest`](https://nexte.st/) to run the tests in Github Workflows.
+Some crates do not support running plain `cargo test` anymore, prefer `cargo nextest run` instead.
+You can install `cargo-nextest` with `cargo install cargo-nextest`.
+
+### Integration tests
 
 Ensure your dependencies are installed as described [here](https://github.com/neondatabase/neon#dependency-installation-notes).
 
@@ -342,6 +352,22 @@ testing locally, it is convenient to run just one set of permutations, like this
 ```sh
 DEFAULT_PG_VERSION=15 BUILD_TYPE=release ./scripts/pytest
 ```
+
+## Flamegraphs
+
+You may find yourself in need of flamegraphs for software in this repository.
+You can use [`flamegraph-rs`](https://github.com/flamegraph-rs/flamegraph) or the original [`flamegraph.pl`](https://github.com/brendangregg/FlameGraph). Your choice!
+
+>[!IMPORTANT]
+> If you're using `lld` or `mold`, you need the `--no-rosegment` linker argument.
+> It's a [general thing with Rust / lld / mold](https://crbug.com/919499#c16), not specific to this repository.
+> See [this PR for further instructions](https://github.com/neondatabase/neon/pull/6764).
+
+## Cleanup
+
+For cleaning up the source tree from build artifacts, run `make clean` in the source directory.
+
+For removing every artifact from build and configure steps, run `make distclean`, and also consider removing the cargo binaries in the `target` directory, as well as the database in the `.neon` directory. Note that removing the `.neon` directory will remove your database, with all data in it. You have been warned!
 
 ## Documentation
 
@@ -413,6 +439,29 @@ compute_ctl -D /var/db/postgres/compute \
             -b /usr/local/bin/postgres
 ```
 
+## State Diagram
+
+Computes can be in various states. Below is a diagram that details how a
+compute moves between states.
+
+```mermaid
+%% https://mermaid.js.org/syntax/stateDiagram.html
+stateDiagram-v2
+  [*] --> Empty : Compute spawned
+  Empty --> ConfigurationPending : Waiting for compute spec
+  ConfigurationPending --> Configuration : Received compute spec
+  Configuration --> Failed : Failed to configure the compute
+  Configuration --> Running : Compute has been configured
+  Empty --> Init : Compute spec is immediately available
+  Empty --> TerminationPending : Requested termination
+  Init --> Failed : Failed to start Postgres
+  Init --> Running : Started Postgres
+  Running --> TerminationPending : Requested termination
+  TerminationPending --> Terminated : Terminated compute
+  Failed --> [*] : Compute exited
+  Terminated --> [*] : Compute exited
+```
+
 ## Tests
 
 Cargo formatter:
@@ -465,6 +514,36 @@ And finally run `cargo build`:
 ```sh
 CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=x86_64-unknown-linux-gnu-gcc cargo build --target=x86_64-unknown-linux-gnu --release
 ```
+
+
+# Content from file ../neon/control_plane/README.md:
+
+# Control Plane and Neon Local
+
+This crate contains tools to start a Neon development environment locally. This utility can be used with the `cargo neon` command.
+
+## Example: Start with Postgres 16
+
+To create and start a local development environment with Postgres 16, you will need to provide `--pg-version` flag to 3 of the start-up commands.
+
+```shell
+cargo neon init --pg-version 16
+cargo neon start
+cargo neon tenant create --set-default --pg-version 16
+cargo neon endpoint create main --pg-version 16
+cargo neon endpoint start main
+```
+
+## Example: Create Test User and Database
+
+By default, `cargo neon` starts an endpoint with `cloud_admin` and `postgres` database. If you want to have a role and a database similar to what we have on the cloud service, you can do it with the following commands when starting an endpoint.
+
+```shell
+cargo neon endpoint create main --pg-version 16 --update-catalog true
+cargo neon endpoint start main --create-test-user true
+```
+
+The first command creates `neon_superuser` and necessary roles. The second command creates `test` user and `neondb` database. You will see a connection string that connects you to the test user after running the second command.
 
 
 # Content from file ../neon/docs/SUMMARY.md:
@@ -630,6 +709,9 @@ Should only be used e.g. for status check/tenant creation/list.
 Should only be used e.g. for status check.
 Currently also used for connection from any pageserver to any safekeeper.
 
+"generations_api": Provides access to the upcall APIs served by the storage controller or the control plane.
+
+"admin": Provides access to the control plane and admin APIs of the storage controller.
 
 ### CLI
 CLI generates a key pair during call to `neon_local init` with the following commands:
@@ -3033,7 +3115,7 @@ keeps track of WAL records which are not synced to S3 yet.
 
 # Content from file ../neon/docs/rfcs/002-storage.md:
 
-# Zenith storage node — alternative
+# Neon storage node — alternative
 
 ## **Design considerations**
 
@@ -3225,7 +3307,7 @@ Chunk replication may be done by cloning page ranges with respect to some lsn fr
 
 # Command line interface (end-user)
 
-Zenith CLI as it is described here mostly resides on the same conceptual level as pg_ctl/initdb/pg_recvxlog/etc and replaces some of them in an opinionated way. I would also suggest bundling our patched postgres inside zenith distribution at least at the start.
+Neon CLI as it is described here mostly resides on the same conceptual level as pg_ctl/initdb/pg_recvxlog/etc and replaces some of them in an opinionated way. I would also suggest bundling our patched postgres inside neon distribution at least at the start.
 
 This proposal is focused on managing local installations. For cluster operations, different tooling would be needed. The point of integration between the two is storage URL: no matter how complex cluster setup is it may provide an endpoint where the user may push snapshots.
 
@@ -3233,40 +3315,40 @@ The most important concept here is a snapshot, which can be created/pushed/pulle
 
 # Possible usage scenarios
 
-## Install zenith, run a postgres
+## Install neon, run a postgres
 
 ```
-> brew install pg-zenith 
-> zenith pg create # creates pgdata with default pattern pgdata$i
-> zenith pg list
+> brew install pg-neon 
+> neon pg create # creates pgdata with default pattern pgdata$i
+> neon pg list
 ID            PGDATA        USED    STORAGE            ENDPOINT
-primary1      pgdata1       0G      zenith-local       localhost:5432
+primary1      pgdata1       0G      neon-local       localhost:5432
 ```
 
-## Import standalone postgres to zenith
+## Import standalone postgres to neon
 
 ```
-> zenith snapshot import --from=basebackup://replication@localhost:5432/ oldpg
+> neon snapshot import --from=basebackup://replication@localhost:5432/ oldpg
 [====================------------] 60% | 20MB/s
-> zenith snapshot list
+> neon snapshot list
 ID          SIZE        PARENT
 oldpg       5G          -
 
-> zenith pg create --snapshot oldpg
+> neon pg create --snapshot oldpg
 Started postgres on localhost:5432
 
-> zenith pg list
+> neon pg list
 ID            PGDATA        USED    STORAGE            ENDPOINT
-primary1      pgdata1       5G      zenith-local       localhost:5432
+primary1      pgdata1       5G      neon-local       localhost:5432
 
-> zenith snapshot destroy oldpg
+> neon snapshot destroy oldpg
 Ok
 ```
 
 Also, we may start snapshot import implicitly by looking at snapshot schema
 
 ```
-> zenith pg create --snapshot basebackup://replication@localhost:5432/
+> neon pg create --snapshot basebackup://replication@localhost:5432/
 Downloading snapshot... Done.
 Started postgres on localhost:5432
 Destroying snapshot... Done.
@@ -3277,39 +3359,39 @@ Destroying snapshot... Done.
 Since we may export the whole snapshot as one big file (tar of basebackup, maybe with some manifest) it may be shared over conventional means: http, ssh, [git+lfs](https://docs.github.com/en/github/managing-large-files/about-git-large-file-storage).
 
 ```
-> zenith pg create --snapshot http://learn-postgres.com/movies_db.zenith movies
+> neon pg create --snapshot http://learn-postgres.com/movies_db.neon movies
 ```
 
 ## Create snapshot and push it to the cloud
 
 ```
-> zenith snapshot create pgdata1@snap1
-> zenith snapshot push --to ssh://stas@zenith.tech pgdata1@snap1
+> neon snapshot create pgdata1@snap1
+> neon snapshot push --to ssh://stas@neon.tech pgdata1@snap1
 ```
 
 ## Rollback database to the snapshot
 
-One way to rollback the database is just to init a new database from the snapshot and destroy the old one. But creating a new database from a snapshot would require a copy of that snapshot which is time consuming operation. Another option that would be cool to support is the ability to create the copy-on-write database from the snapshot without copying data, and store updated pages in a separate location, however that way would have performance implications. So to properly rollback the database to the older state we have `zenith pg checkout`.
+One way to rollback the database is just to init a new database from the snapshot and destroy the old one. But creating a new database from a snapshot would require a copy of that snapshot which is time consuming operation. Another option that would be cool to support is the ability to create the copy-on-write database from the snapshot without copying data, and store updated pages in a separate location, however that way would have performance implications. So to properly rollback the database to the older state we have `neon pg checkout`.
 
 ```
-> zenith pg list
+> neon pg list
 ID            PGDATA        USED    STORAGE            ENDPOINT
-primary1      pgdata1       5G      zenith-local       localhost:5432
+primary1      pgdata1       5G      neon-local       localhost:5432
 
-> zenith snapshot create pgdata1@snap1
+> neon snapshot create pgdata1@snap1
 
-> zenith snapshot list
+> neon snapshot list
 ID                    SIZE        PARENT
 oldpg                 5G          -
 pgdata1@snap1         6G          -
 pgdata1@CURRENT       6G          -
 
-> zenith pg checkout pgdata1@snap1
+> neon pg checkout pgdata1@snap1
 Stopping postgres on pgdata1.
 Rolling back pgdata1@CURRENT to pgdata1@snap1.
 Starting postgres on pgdata1.
 
-> zenith snapshot list
+> neon snapshot list
 ID                    SIZE        PARENT
 oldpg                 5G          -
 pgdata1@snap1         6G          -
@@ -3324,7 +3406,7 @@ Some notes: pgdata1@CURRENT -- implicit snapshot representing the current state 
 PITR area acts like a continuous snapshot where you can reset the database to any point in time within this area (by area I mean some TTL period or some size limit, both possibly infinite).
 
 ```
-> zenith pitr create --storage s3tank --ttl 30d --name pitr_last_month
+> neon pitr create --storage s3tank --ttl 30d --name pitr_last_month
 ```
 
 Resetting the database to some state in past would require creating a snapshot on some lsn / time in this pirt area.
@@ -3333,29 +3415,29 @@ Resetting the database to some state in past would require creating a snapshot o
 
 ## storage
 
-Storage is either zenith pagestore or s3. Users may create a database in a pagestore and create/move *snapshots* and *pitr regions* in both pagestore and s3. Storage is a concept similar to `git remote`. After installation, I imagine one local storage is available by default.
+Storage is either neon pagestore or s3. Users may create a database in a pagestore and create/move *snapshots* and *pitr regions* in both pagestore and s3. Storage is a concept similar to `git remote`. After installation, I imagine one local storage is available by default.
 
-**zenith storage attach** -t [native|s3] -c key=value -n name
+**neon storage attach** -t [native|s3] -c key=value -n name
 
-Attaches/initializes storage. For --type=s3, user credentials and path should be provided. For --type=native we may support --path=/local/path and --url=zenith.tech/stas/mystore. Other possible term for native is 'zstore'.
+Attaches/initializes storage. For --type=s3, user credentials and path should be provided. For --type=native we may support --path=/local/path and --url=neon.tech/stas/mystore. Other possible term for native is 'zstore'.
 
 
-**zenith storage list**
+**neon storage list**
 
 Show currently attached storages. For example:
 
 ```
-> zenith storage list
+> neon storage list
 NAME            USED    TYPE                OPTIONS          PATH
-local           5.1G    zenith-local                         /opt/zenith/store/local
-local.compr     20.4G   zenith-local        compression=on    /opt/zenith/store/local.compr
-zcloud          60G     zenith-remote                        zenith.tech/stas/mystore
+local           5.1G    neon-local                         /opt/neon/store/local
+local.compr     20.4G   neon-local        compression=on    /opt/neon/store/local.compr
+zcloud          60G     neon-remote                        neon.tech/stas/mystore
 s3tank          80G     S3
 ```
 
-**zenith storage detach**
+**neon storage detach**
 
-**zenith storage show**
+**neon storage show**
 
 
 
@@ -3365,29 +3447,29 @@ Manages postgres data directories and can start postgres instances with proper c
 
 Pg is a term for a single postgres running on some data. I'm trying to avoid separation of datadir management and postgres instance management -- both that concepts bundled here together.
 
-**zenith pg create** [--no-start --snapshot --cow] -s storage-name -n pgdata
+**neon pg create** [--no-start --snapshot --cow] -s storage-name -n pgdata
 
 Creates (initializes) new data directory in given storage and starts postgres. I imagine that storage for this operation may be only local and data movement to remote location happens through snapshots/pitr.
 
 --no-start: just init datadir without creating 
 
---snapshot snap: init from the snapshot. Snap is a name or URL (zenith.tech/stas/mystore/snap1)
+--snapshot snap: init from the snapshot. Snap is a name or URL (neon.tech/stas/mystore/snap1)
 
 --cow: initialize Copy-on-Write data directory on top of some snapshot (makes sense if it is a snapshot of currently running a database)
 
-**zenith pg destroy**
+**neon pg destroy**
 
-**zenith pg start** [--replica] pgdata
+**neon pg start** [--replica] pgdata
 
 Start postgres with proper extensions preloaded/installed.
 
-**zenith pg checkout**
+**neon pg checkout**
 
 Rollback data directory to some previous snapshot. 
 
-**zenith pg stop** pg_id
+**neon pg stop** pg_id
 
-**zenith pg list**
+**neon pg list**
 
 ```
 ROLE                 PGDATA        USED    STORAGE            ENDPOINT
@@ -3398,7 +3480,7 @@ primary              my_pg2        3.2G    local.compr        localhost:5435
 -                    my_pg3        9.2G    local.compr        -
 ```
 
-**zenith pg show**
+**neon pg show**
 
 ```
 my_pg:
@@ -3419,7 +3501,7 @@ my_pg:
 
 ```
 
-**zenith pg start-rest/graphql** pgdata
+**neon pg start-rest/graphql** pgdata
 
 Starts REST/GraphQL proxy on top of postgres master. Not sure we should do that, just an idea.
 
@@ -3428,35 +3510,35 @@ Starts REST/GraphQL proxy on top of postgres master. Not sure we should do that,
 
 Snapshot creation is cheap -- no actual data is copied, we just start retaining old pages. Snapshot size means the amount of retained data, not all data. Snapshot name looks like pgdata_name@tag_name. tag_name is set by the user during snapshot creation. There are some reserved tag names: CURRENT represents the current state of the data directory; HEAD{i} represents the data directory state that resided in the database before i-th checkout.
 
-**zenith snapshot create** pgdata_name@snap_name
+**neon snapshot create** pgdata_name@snap_name
 
 Creates a new snapshot in the same storage where pgdata_name exists.
 
-**zenith snapshot push** --to url pgdata_name@snap_name
+**neon snapshot push** --to url pgdata_name@snap_name
 
-Produces binary stream of a given snapshot. Under the hood starts temp read-only postgres over this snapshot and sends basebackup stream. Receiving side should start `zenith snapshot recv` before push happens. If url has some special schema like zenith:// receiving side may require auth start `zenith snapshot recv` on the go.
+Produces binary stream of a given snapshot. Under the hood starts temp read-only postgres over this snapshot and sends basebackup stream. Receiving side should start `neon snapshot recv` before push happens. If url has some special schema like neon:// receiving side may require auth start `neon snapshot recv` on the go.
 
-**zenith snapshot recv**
+**neon snapshot recv**
 
 Starts a port listening for a basebackup stream, prints connection info to stdout (so that user may use that in push command), and expects data on that socket.
 
-**zenith snapshot pull** --from url or path
+**neon snapshot pull** --from url or path
 
-Connects to a remote zenith/s3/file and pulls snapshot. The remote site should be zenith service or files in our format.
+Connects to a remote neon/s3/file and pulls snapshot. The remote site should be neon service or files in our format.
 
-**zenith snapshot import** --from basebackup://<...>  or path
+**neon snapshot import** --from basebackup://<...>  or path
 
 Creates a new snapshot out of running postgres via basebackup protocol or basebackup files.
 
-**zenith snapshot export**
+**neon snapshot export**
 
-Starts read-only postgres over this snapshot and exports data in some format (pg_dump, or COPY TO on some/all tables). One of the options may be zenith own format which is handy for us (but I think just tar of basebackup would be okay).
+Starts read-only postgres over this snapshot and exports data in some format (pg_dump, or COPY TO on some/all tables). One of the options may be neon own format which is handy for us (but I think just tar of basebackup would be okay).
 
-**zenith snapshot diff** snap1 snap2
+**neon snapshot diff** snap1 snap2
 
 Shows size of data changed between two snapshots. We also may provide options to diff schema/data in tables. To do that start temp read-only postgreses.
 
-**zenith snapshot destroy**
+**neon snapshot destroy**
 
 ## pitr
 
@@ -3464,7 +3546,7 @@ Pitr represents wal stream and ttl policy for that stream
 
 XXX: any suggestions on a better name?
 
-**zenith pitr create** name
+**neon pitr create** name
 
 --ttl = inf | period
 
@@ -3472,22 +3554,22 @@ XXX: any suggestions on a better name?
 
 --storage = storage_name
 
-**zenith pitr extract-snapshot** pitr_name --lsn xxx
+**neon pitr extract-snapshot** pitr_name --lsn xxx
 
 Creates a snapshot out of some lsn in PITR area. The obtained snapshot may be managed with snapshot routines (move/send/export)
 
-**zenith pitr gc** pitr_name
+**neon pitr gc** pitr_name
 
 Force garbage collection on some PITR area.
 
-**zenith pitr list**
+**neon pitr list**
 
-**zenith pitr destroy**
+**neon pitr destroy**
 
 
 ## console
 
-**zenith console**
+**neon console**
 
 Opens browser targeted at web console with the more or less same functionality as described here.
 
@@ -3502,7 +3584,7 @@ When do we consider the WAL record as durable, so that we can
 acknowledge the commit to the client and be reasonably certain that we
 will not lose the transaction?
 
-Zenith uses a group of WAL safekeeper nodes to hold the generated WAL.
+Neon uses a group of WAL safekeeper nodes to hold the generated WAL.
 A WAL record is considered durable, when it has been written to a
 majority of WAL safekeeper nodes. In this document, I use 5
 safekeepers, because I have five fingers. A WAL record is durable,
@@ -3716,26 +3798,26 @@ Primary node startup:
 
 # Content from file ../neon/docs/rfcs/005-zenith_local.md:
 
-# Zenith local
+# Neon local
 
-Here I list some objectives to keep in mind when discussing zenith-local design and a proposal that brings all components together.  Your comments on both parts are very welcome.
+Here I list some objectives to keep in mind when discussing neon-local design and a proposal that brings all components together.  Your comments on both parts are very welcome.
 
 #### Why do we need it?
 - For distribution - this easy to use binary will help us to build adoption among developers.
 - For internal use - to test all components together.
 
-In my understanding, we consider it to be just a mock-up version of zenith-cloud.
+In my understanding, we consider it to be just a mock-up version of neon-cloud.
 > Question: How much should we care about durability and security issues for a local setup?
 
 
 #### Why is it better than a simple local postgres?
 
-- Easy one-line setup. As simple as `cargo install zenith && zenith start`
+- Easy one-line setup. As simple as `cargo install neon && neon start`
 
 - Quick and cheap creation of compute nodes over the same storage.
 > Question: How can we describe a use-case for this feature?
 
-- Zenith-local can work with S3 directly. 
+- Neon-local can work with S3 directly. 
 
 - Push and pull images (snapshots) to remote S3 to exchange data with other users.
 
@@ -3749,50 +3831,50 @@ Ideally, just one binary that incorporates all elements we need.
 
 #### Components:
 
-- **zenith-CLI** - interface for end-users.  Turns commands to REST requests and handles responses to show them in a user-friendly way.  
-CLI proposal is here https://github.com/libzenith/rfcs/blob/003-laptop-cli.md/003-laptop-cli.md
-WIP code is here: https://github.com/libzenith/postgres/tree/main/pageserver/src/bin/cli
+- **neon-CLI** - interface for end-users.  Turns commands to REST requests and handles responses to show them in a user-friendly way.  
+CLI proposal is here https://github.com/neondatabase/rfcs/blob/003-laptop-cli.md/003-laptop-cli.md
+WIP code is here: https://github.com/neondatabase/postgres/tree/main/pageserver/src/bin/cli
 
-- **zenith-console** - WEB UI with same functionality as CLI.
+- **neon-console** - WEB UI with same functionality as CLI.
 >Note: not for the first release.
 
-- **zenith-local** - entrypoint. Service that starts all other components and handles REST API requests. See REST API proposal below.
-    > Idea: spawn all other components as child processes, so that we could shutdown everything by stopping zenith-local.
+- **neon-local** - entrypoint. Service that starts all other components and handles REST API requests. See REST API proposal below.
+    > Idea: spawn all other components as child processes, so that we could shutdown everything by stopping neon-local.
 
-- **zenith-pageserver** - consists of a storage and WAL-replaying service (modified PG in current implementation).
+- **neon-pageserver** - consists of a storage and WAL-replaying service (modified PG in current implementation).
 > Question: Probably, for local setup we should be able to bypass page-storage and interact directly with S3 to avoid double caching in shared buffers and page-server?
 
-WIP code is here: https://github.com/libzenith/postgres/tree/main/pageserver/src
+WIP code is here: https://github.com/neondatabase/postgres/tree/main/pageserver/src
 
-- **zenith-S3** - stores base images of the database and WAL in S3 object storage. Import and export images from/to zenith.
+- **neon-S3** - stores base images of the database and WAL in S3 object storage. Import and export images from/to neon.
 > Question: How should it operate in a local setup? Will we manage it ourselves or ask user to provide credentials for existing S3 object storage (i.e. minio)?
 > Question: Do we use it together with local page store or they are interchangeable?
 
 WIP code is ???
 
-- **zenith-safekeeper** - receives WAL from postgres, stores it durably, answers to Postgres that "sync" is succeed.
+- **neon-safekeeper** - receives WAL from postgres, stores it durably, answers to Postgres that "sync" is succeed.
 > Question: How should it operate in a local setup? In my understanding it should push WAL directly to S3 (if we use it) or store all data locally (if we use local page storage). The latter option seems meaningless (extra overhead and no gain), but it is still good to test the system.
 
-WIP code is here: https://github.com/libzenith/postgres/tree/main/src/bin/safekeeper
+WIP code is here: https://github.com/neondatabase/postgres/tree/main/src/bin/safekeeper
 
-- **zenith-computenode** - bottomless PostgreSQL, ideally upstream, but for a start - our modified version. User can quickly create and destroy them and work with it as a regular postgres database.
+- **neon-computenode** - bottomless PostgreSQL, ideally upstream, but for a start - our modified version. User can quickly create and destroy them and work with it as a regular postgres database.
  
- WIP code is in main branch and here: https://github.com/libzenith/postgres/commits/compute_node
+ WIP code is in main branch and here: https://github.com/neondatabase/postgres/commits/compute_node
 
 #### REST API:
 
 Service endpoint: `http://localhost:3000`
 
 Resources:
-- /storages - Where data lives: zenith-pageserver or zenith-s3
-- /pgs - Postgres - zenith-computenode
+- /storages - Where data lives: neon-pageserver or neon-s3
+- /pgs - Postgres - neon-computenode
 - /snapshots - snapshots **TODO**
 
->Question: Do we want to extend this API to manage zenith components? I.e. start page-server, manage safekeepers and so on? Or they will be hardcoded to just start once and for all?
+>Question: Do we want to extend this API to manage neon components? I.e. start page-server, manage safekeepers and so on? Or they will be hardcoded to just start once and for all?
 
 Methods and their mapping to CLI:
 
-- /storages - zenith-pageserver or zenith-s3
+- /storages - neon-pageserver or neon-s3
 
 CLI  | REST API
 ------------- | -------------
@@ -3802,7 +3884,7 @@ storage list | GET /storages
 storage show -n name | GET /storages/:storage_name 
 
 
-- /pgs - zenith-computenode
+- /pgs - neon-computenode
 
 CLI  | REST API
 ------------- | -------------
@@ -3823,48 +3905,48 @@ CLI  | REST API
 
 # Content from file ../neon/docs/rfcs/006-laptop-cli-v2-CLI.md:
 
-Zenith CLI allows you to operate database clusters (catalog clusters) and their commit history locally and in the cloud. Since ANSI calls them catalog clusters and cluster is a loaded term in the modern infrastructure we will call it "catalog".
+Neon CLI allows you to operate database clusters (catalog clusters) and their commit history locally and in the cloud. Since ANSI calls them catalog clusters and cluster is a loaded term in the modern infrastructure we will call it "catalog".
 
 # CLI v2 (after chatting with Carl)
 
-Zenith introduces the notion of a repository.
+Neon introduces the notion of a repository.
 
 ```bash
-zenith init
-zenith clone zenith://zenith.tech/piedpiper/northwind -- clones a repo to the northwind directory
+neon init
+neon clone neon://neon.tech/piedpiper/northwind -- clones a repo to the northwind directory
 ```
 
 Once you have a cluster catalog you can explore it
 
 ```bash
-zenith log -- returns a list of commits
-zenith status -- returns if there are changes in the catalog that can be committed
-zenith commit -- commits the changes and generates a new commit hash
-zenith branch experimental <hash> -- creates a branch called testdb based on a given commit hash
+neon log -- returns a list of commits
+neon status -- returns if there are changes in the catalog that can be committed
+neon commit -- commits the changes and generates a new commit hash
+neon branch experimental <hash> -- creates a branch called testdb based on a given commit hash
 ```
 
 To make changes in the catalog you need to run compute nodes
 
 ```bash
 -- here is how you a compute node
-zenith start /home/pipedpiper/northwind:main -- starts a compute instance
-zenith start zenith://zenith.tech/northwind:main -- starts a compute instance in the cloud
+neon start /home/pipedpiper/northwind:main -- starts a compute instance
+neon start neon://neon.tech/northwind:main -- starts a compute instance in the cloud
 -- you can start a compute node against any hash or branch
-zenith start /home/pipedpiper/northwind:experimental --port 8008 -- start another compute instance (on different port)
+neon start /home/pipedpiper/northwind:experimental --port 8008 -- start another compute instance (on different port)
 -- you can start a compute node against any hash or branch
-zenith start /home/pipedpiper/northwind:<hash> --port 8009 -- start another compute instance (on different port)
+neon start /home/pipedpiper/northwind:<hash> --port 8009 -- start another compute instance (on different port)
 
 -- After running some DML you can run 
--- zenith status and see how there are two WAL streams one on top of 
+-- neon status and see how there are two WAL streams one on top of 
 -- the main branch
-zenith status 
+neon status 
 -- and another on top of the experimental branch
-zenith status -b experimental
+neon status -b experimental
 
 -- you can commit each branch separately
-zenith commit main
+neon commit main
 -- or
-zenith commit -c /home/pipedpiper/northwind:experimental
+neon commit -c /home/pipedpiper/northwind:experimental
 ```
 
 Starting compute instances against cloud environments
@@ -3872,20 +3954,20 @@ Starting compute instances against cloud environments
 ```bash
 -- you can start a compute instance against the cloud environment
 -- in this case all of the changes will be streamed into the cloud
-zenith start https://zenith:tech/pipedpiper/northwind:main
-zenith start https://zenith:tech/pipedpiper/northwind:main
-zenith status -c https://zenith:tech/pipedpiper/northwind:main
-zenith commit -c https://zenith:tech/pipedpiper/northwind:main
-zenith branch -c https://zenith:tech/pipedpiper/northwind:<hash> experimental
+neon start https://neon:tecj/pipedpiper/northwind:main
+neon start https://neon:tecj/pipedpiper/northwind:main
+neon status -c https://neon:tecj/pipedpiper/northwind:main
+neon commit -c https://neon:tecj/pipedpiper/northwind:main
+neon branch -c https://neon:tecj/pipedpiper/northwind:<hash> experimental
 ```
 
 Pushing data into the cloud
 
 ```bash
 -- pull all the commits from the cloud
-zenith pull
+neon pull
 -- push all the commits to the cloud
-zenith push
+neon push
 ```
 
 
@@ -3893,15 +3975,15 @@ zenith push
 
 # Repository format
 
-A Zenith repository is similar to a traditional PostgreSQL backup
+A Neon repository is similar to a traditional PostgreSQL backup
 archive, like a WAL-G bucket or pgbarman backup catalogue. It holds
 multiple versions of a PostgreSQL database cluster.
 
-The distinguishing feature is that you can launch a Zenith Postgres
+The distinguishing feature is that you can launch a Neon Postgres
 server directly against a branch in the repository, without having to
-"restore" it first. Also, Zenith manages the storage automatically,
+"restore" it first. Also, Neon manages the storage automatically,
 there is no separation between full and incremental backups nor WAL
-archive. Zenith relies heavily on the WAL, and uses concepts similar
+archive. Neon relies heavily on the WAL, and uses concepts similar
 to incremental backups and WAL archiving internally, but it is hidden
 from the user.
 
@@ -3912,15 +3994,15 @@ efficient. Just something to get us started.
 
 The repository directory looks like this:
 
-    .zenith/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/wal/
-    .zenith/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/snapshots/<lsn>/
-    .zenith/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/history
+    .neon/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/wal/
+    .neon/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/snapshots/<lsn>/
+    .neon/timelines/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c/history
     
-    .zenith/refs/branches/mybranch
-    .zenith/refs/tags/foo
-    .zenith/refs/tags/bar
+    .neon/refs/branches/mybranch
+    .neon/refs/tags/foo
+    .neon/refs/tags/bar
     
-    .zenith/datadirs/<timeline uuid>
+    .neon/datadirs/<timeline uuid>
 
 ### Timelines
 
@@ -3932,7 +4014,7 @@ All WAL is generated on a timeline. You can launch a read-only node
 against a tag or arbitrary LSN on a timeline, but in order to write,
 you need to create a timeline.
 
-Each timeline is stored in a directory under .zenith/timelines. It
+Each timeline is stored in a directory under .neon/timelines. It
 consists of a WAL archive, containing all the WAL in the standard
 PostgreSQL format, under the wal/ subdirectory.
 
@@ -3959,18 +4041,18 @@ contains the UUID of the timeline (and LSN, for tags).
 
 ### Datadirs
 
-.zenith/datadirs contains PostgreSQL data directories. You can launch
+.neon/datadirs contains PostgreSQL data directories. You can launch
 a Postgres instance on one of them with:
 
 ```
-  postgres -D .zenith/datadirs/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c
+  postgres -D .neon/datadirs/4543be3daeab2ed4e58a285cbb8dd1fce6970f8c
 ```
 
 All the actual data is kept in the timeline directories, under
-.zenith/timelines. The data directories are only needed for active
+.neon/timelines. The data directories are only needed for active
 PostgreQSL instances. After an instance is stopped, the data directory
-can be safely removed. "zenith start" will recreate it quickly from
-the data in .zenith/timelines, if it's missing.
+can be safely removed. "neon start" will recreate it quickly from
+the data in .neon/timelines, if it's missing.
 
 ## Version 2
 
@@ -3996,14 +4078,14 @@ more advanced. The exact format is TODO. But it should support:
 
 ### Garbage collection
 
-When you run "zenith gc", old timelines that are no longer needed are
+When you run "neon gc", old timelines that are no longer needed are
 removed. That involves collecting the list of "unreachable" objects,
 starting from the named branches and tags.
 
 Also, if enough WAL has been generated on a timeline since last
 snapshot, a new snapshot or delta is created.
 
-### zenith push/pull
+### neon push/pull
 
 Compare the tags and branches on both servers, and copy missing ones.
 For each branch, compare the timeline it points to in both servers. If
@@ -4016,7 +4098,7 @@ every time you start up an instance? Then you would detect that the
 timelines have diverged. That would match with the "epoch" concept
 that we have in the WAL safekeeper
 
-### zenith checkout/commit
+### neon checkout/commit
 
 In this format, there is no concept of a "working tree", and hence no
 concept of checking out or committing. All modifications are done on
@@ -4027,9 +4109,9 @@ You can easily fork off a temporary timeline to emulate a "working tree".
 You can later remove it and have it garbage collected, or to "commit",
 re-point the branch to the new timeline.
 
-If we want to have a worktree and "zenith checkout/commit" concept, we can
+If we want to have a worktree and "neon checkout/commit" concept, we can
 emulate that with a temporary timeline. Create the temporary timeline at
-"zenith checkout", and have "zenith commit" modify the branch to point to
+"neon checkout", and have "neon commit" modify the branch to point to
 the new timeline.
 
 
@@ -4041,27 +4123,27 @@ How it works now
 1. Create repository, start page server on it
 
 ```
-$ zenith init
+$ neon init
 ...
 created main branch
-new zenith repository was created in .zenith
+new neon repository was created in .neon
 
-$ zenith pageserver start
-Starting pageserver at '127.0.0.1:64000' in .zenith
+$ neon pageserver start
+Starting pageserver at '127.0.0.1:64000' in .neon
 Page server started
 ```
 
 2. Create a branch, and start a Postgres instance on it
 
 ```
-$ zenith branch heikki main
+$ neon branch heikki main
 branching at end of WAL: 0/15ECF68
 
-$ zenith pg create heikki
+$ neon pg create heikki
 Initializing Postgres on timeline 76cf9279915be7797095241638e64644...
-Extracting base backup to create postgres instance: path=.zenith/pgdatadirs/pg1 port=55432
+Extracting base backup to create postgres instance: path=.neon/pgdatadirs/pg1 port=55432
 
-$ zenith pg start pg1
+$ neon pg start pg1
 Starting postgres node at 'host=127.0.0.1 port=55432 user=heikki'
 waiting for server to start.... done
 server started
@@ -4089,20 +4171,20 @@ serverless on your laptop, so that the workflow becomes just:
 1. Create repository, start page server on it (same as before)
 
 ```
-$ zenith init
+$ neon init
 ...
 created main branch
-new zenith repository was created in .zenith
+new neon repository was created in .neon
 
-$ zenith pageserver start
-Starting pageserver at '127.0.0.1:64000' in .zenith
+$ neon pageserver start
+Starting pageserver at '127.0.0.1:64000' in .neon
 Page server started
 ```
 
 2. Create branch
 
 ```
-$ zenith branch heikki main
+$ neon branch heikki main
 branching at end of WAL: 0/15ECF68
 ```
 
@@ -4141,22 +4223,22 @@ Here is a proposal about implementing push/pull mechanics between pageservers. W
 The origin represents connection info for some remote pageserver. Let's use here same commands as git uses except using explicit list subcommand (git uses `origin -v` for that).
 
 ```
-zenith origin add <name> <connection_uri>
-zenith origin list
-zenith origin remove <name>
+neon origin add <name> <connection_uri>
+neon origin list
+neon origin remove <name>
 ```
 
 Connection URI a string of form `postgresql://user:pass@hostname:port` (https://www.postgresql.org/docs/13/libpq-connect.html#id-1.7.3.8.3.6). We can start with libpq password auth and later add support for client certs or require ssh as transport or invent some other kind of transport.
 
-Behind the scenes, this commands may update toml file inside .zenith directory.
+Behind the scenes, this commands may update toml file inside .neon directory.
 
 ## Push
 
 ### Pushing branch
 
 ```
-zenith push mybranch cloudserver # push to eponymous branch in cloudserver
-zenith push mybranch cloudserver:otherbranch # push to a different branch in cloudserver
+neon push mybranch cloudserver # push to eponymous branch in cloudserver
+neon push mybranch cloudserver:otherbranch # push to a different branch in cloudserver
 ```
 
 Exact mechanics would be slightly different in the following situations:
@@ -4206,7 +4288,7 @@ While working on export/import commands, I understood that they fit really well 
 
 We may think about backups as snapshots in a different format (i.e plain pgdata format, basebackup tar format, WAL-G format (if they want to support it) and so on). They use same storage API, the only difference is the code that packs/unpacks files.
 
-Even if zenith aims to maintains durability using it's own snapshots, backups will be useful for uploading data from postgres to zenith.
+Even if neon aims to maintains durability using it's own snapshots, backups will be useful for uploading data from postgres to neon.
 
 So here is an attempt to design consistent CLI for different usage scenarios:
 
@@ -4220,8 +4302,8 @@ Save`storage_dest` and other parameters in config.
 Push snapshots to `storage_dest` in background.
 
 ```
-zenith init --storage_dest=S3_PREFIX
-zenith start
+neon init --storage_dest=S3_PREFIX
+neon start
 ```
 
 #### 2. Restart pageserver (manually or crash-recovery).
@@ -4229,7 +4311,7 @@ Take `storage_dest` from pageserver config, start pageserver from latest snapsho
 Push snapshots to `storage_dest` in background.
 
 ```
-zenith start
+neon start
 ```
 
 #### 3. Import.
@@ -4239,22 +4321,22 @@ Do not save `snapshot_path` and `snapshot_format` in config, as it is a one-time
 Save`storage_dest` parameters in config.
 Push snapshots to `storage_dest` in background.
 ```
-//I.e. we want to start zenith on top of existing $PGDATA and use s3 as a persistent storage.
-zenith init --snapshot_path=FILE_PREFIX --snapshot_format=pgdata --storage_dest=S3_PREFIX
-zenith start
+//I.e. we want to start neon on top of existing $PGDATA and use s3 as a persistent storage.
+neon init --snapshot_path=FILE_PREFIX --snapshot_format=pgdata --storage_dest=S3_PREFIX
+neon start
 ```
 How to pass credentials needed for `snapshot_path`?
 
 #### 4. Export.
 Manually push snapshot to `snapshot_path` which differs from `storage_dest`
-Optionally set `snapshot_format`, which can be plain pgdata format or zenith format.
+Optionally set `snapshot_format`, which can be plain pgdata format or neon format.
 ```
-zenith export --snapshot_path=FILE_PREFIX --snapshot_format=pgdata
+neon export --snapshot_path=FILE_PREFIX --snapshot_format=pgdata
 ```
 
 #### Notes and questions
 - safekeeper s3_offload should use same (similar) syntax for storage. How to set it in UI?
-- Why do we need `zenith init` as a separate command? Can't we init everything at first start?
+- Why do we need `neon init` as a separate command? Can't we init everything at first start?
 - We can think of better names for all options.
 - Export to plain postgres format will be useless, if we are not 100% compatible on page level.
 I can recall at least one such difference - PD_WAL_LOGGED flag in pages.
@@ -4941,7 +5023,7 @@ receival and this might lag behind `term`; safekeeper switches to epoch `n` when
 it has received all committed log records from all `< n` terms. This roughly
 corresponds to proposed in
 
-https://github.com/zenithdb/rfcs/pull/3/files
+https://github.com/neondatabase/rfcs/pull/3/files
 
 
 This makes our biggest our difference from Raft. In Raft, every log record is
@@ -5083,7 +5165,7 @@ pros/cons:
 
 # Safekeeper gossip
 
-Extracted from this [PR](https://github.com/zenithdb/rfcs/pull/13)
+Extracted from this [PR](https://github.com/neondatabase/rfcs/pull/13)
 
 ## Motivation
 
@@ -5307,7 +5389,7 @@ https://www.cs.utexas.edu/~rak/papers/sosp17-pebblesdb.pdf
 
 Created on 19.01.22
 
-Initially created [here](https://github.com/zenithdb/rfcs/pull/16) by @kelvich.
+Initially created [here](https://github.com/neondatabase/rfcs/pull/16) by @kelvich.
 
 That it is an alternative to (014-safekeeper-gossip)[]
 
@@ -5597,7 +5679,7 @@ But with an etcd we are in a bit different situation:
 1. We don't need persistency and strong consistency guarantees for the data we store in the etcd
 2. etcd uses Grpc as a protocol, and messages are pretty simple
 
-So it looks like implementing in-mem store with etcd interface is straightforward thing _if we will want that in future_. At the same time, we can avoid implementing it right now, and we will be able to run local zenith installation with etcd running somewhere in the background (as opposed to building and running console, which in turn requires Postgres).
+So it looks like implementing in-mem store with etcd interface is straightforward thing _if we will want that in future_. At the same time, we can avoid implementing it right now, and we will be able to run local neon installation with etcd running somewhere in the background (as opposed to building and running console, which in turn requires Postgres).
 
 
 # Content from file ../neon/docs/rfcs/016-connection-routing.md:
@@ -10859,6 +10941,901 @@ However, let's have a safety check for this constraint (error or assertion) beca
 For example, `KeySpace` is not broken up by shard stripe, so if someone naively converted the compaction code to issue a vectored get for a keyspace range it would violate this constraint.
 
 
+# Content from file ../neon/docs/rfcs/031-sharding-static.md:
+
+# Sharding Phase 1: Static Key-space Sharding
+
+## Summary
+
+To enable databases with sizes approaching the capacity of a pageserver's disk,
+it is necessary to break up the storage for the database, or _shard_ it.
+
+Sharding in general is a complex area. This RFC aims to define an initial
+capability that will permit creating large-capacity databases using a static configuration
+defined at time of Tenant creation.
+
+## Motivation
+
+Currently, all data for a Tenant, including all its timelines, is stored on a single
+pageserver. The local storage required may be several times larger than the actual
+database size, due to LSM write inflation.
+
+If a database is larger than what one pageserver can hold, then it becomes impossible
+for the pageserver to hold it in local storage, as it must do to provide service to
+clients.
+
+### Prior art
+
+In Neon:
+
+- Layer File Spreading: https://www.notion.so/neondatabase/One-Pager-Layer-File-Spreading-Konstantin-21fd9b11b618475da5f39c61dd8ab7a4
+- Layer File SPreading: https://www.notion.so/neondatabase/One-Pager-Layer-File-Spreading-Christian-eb6b64182a214e11b3fceceee688d843
+- Key Space partitioning: https://www.notion.so/neondatabase/One-Pager-Key-Space-Partitioning-Stas-8e3a28a600a04a25a68523f42a170677
+
+Prior art in other distributed systems is too broad to capture here: pretty much
+any scale out storage system does something like this.
+
+## Requirements
+
+- Enable creating a large (for example, 16TiB) database without requiring dedicated
+  pageserver nodes.
+- Share read/write bandwidth costs for large databases across pageservers, as well
+  as storage capacity, in order to avoid large capacity databases acting as I/O hotspots
+  that disrupt service to other tenants.
+- Our data distribution scheme should handle sparse/nonuniform keys well, since postgres
+  does not write out a single contiguous ranges of page numbers.
+
+_Note: the definition of 'large database' is arbitrary, but the lower bound is to ensure that a database
+that a user might create on a current-gen enterprise SSD should also work well on
+Neon. The upper bound is whatever postgres can handle: i.e. we must make sure that the
+pageserver backend is not the limiting factor in the database size_.
+
+## Non Goals
+
+- Independently distributing timelines within the same tenant. If a tenant has many
+  timelines, then sharding may be a less efficient mechanism for distributing load than
+  sharing out timelines between pageservers.
+- Distributing work in the LSN dimension: this RFC focuses on the Key dimension only,
+  based on the idea that separate mechanisms will make sense for each dimension.
+
+## Impacted Components
+
+pageserver, control plane, postgres/smgr
+
+## Terminology
+
+**Key**: a postgres page number, qualified by relation. In the sense that the pageserver is a versioned key-value store,
+the page number is the key in that store. `Key` is a literal data type in existing code.
+
+**LSN dimension**: this just means the range of LSNs (history), when talking about the range
+of keys and LSNs as a two dimensional space.
+
+## Implementation
+
+### Key sharding vs. LSN sharding
+
+When we think of sharding across the two dimensional key/lsn space, this is an
+opportunity to think about how the two dimensions differ:
+
+- Sharding the key space distributes the _write_ workload of ingesting data
+  and compacting. This work must be carefully managed so that exactly one
+  node owns a given key.
+- Sharding the LSN space distributes the _historical read_ workload. This work
+  can be done by anyone without any special coordination, as long as they can
+  see the remote index and layers.
+
+The key sharding is the harder part, and also the more urgent one, to support larger
+capacity databases. Because distributing historical LSN read work is a relatively
+simpler problem that most users don't have, we defer it to future work. It is anticipated
+that some quite simple P2P offload model will enable distributing work for historical
+reads: a node which is low on space can call out to peer to ask it to download and
+serve reads from a historical layer.
+
+### Key mapping scheme
+
+Having decided to focus on key sharding, we must next decide how we will map
+keys to shards. It is proposed to use a "wide striping" approach, to obtain a good compromise
+between data locality and avoiding entire large relations mapping to the same shard.
+
+We will define two spaces:
+
+- Key space: unsigned integer
+- Shard space: integer from 0 to N-1, where we have N shards.
+
+### Key -> Shard mapping
+
+Keys are currently defined in the pageserver's getpage@lsn interface as follows:
+
+```
+pub struct Key {
+    pub field1: u8,
+    pub field2: u32,
+    pub field3: u32,
+    pub field4: u32,
+    pub field5: u8,
+    pub field6: u32,
+}
+
+
+fn rel_block_to_key(rel: RelTag, blknum: BlockNumber) -> Key {
+    Key {
+        field1: 0x00,
+        field2: rel.spcnode,
+        field3: rel.dbnode,
+        field4: rel.relnode,
+        field5: rel.forknum,
+        field6: blknum,
+    }
+}
+```
+
+_Note: keys for relation metadata are ignored here, as this data will be mirrored to all
+shards. For distribution purposes, we only care about user data keys_
+
+The properties we want from our Key->Shard mapping are:
+
+- Locality in `blknum`, such that adjacent `blknum` will usually map to
+  the same stripe and consequently land on the same shard, even though the overall
+  collection of blocks in a relation will be spread over many stripes and therefore
+  many shards.
+- Avoid the same blknum on different relations landing on the same stripe, so that
+  with many small relations we do not end up aliasing data to the same stripe/shard.
+- Avoid vulnerability to aliasing in the values of relation identity fields, such that
+  if there are patterns in the value of `relnode`, these do not manifest as patterns
+  in data placement.
+
+To accomplish this, the blknum is used to select a stripe, and stripes are
+assigned to shards in a pseudorandom order via a hash. The motivation for
+pseudo-random distribution (rather than sequential mapping of stripe to shard)
+is to avoid I/O hotspots when sequentially reading multiple relations: we don't want
+all relations' stripes to touch pageservers in the same order.
+
+To map a `Key` to a shard:
+
+- Hash the `Key` field 4 (relNode).
+- Divide field 6 (`blknum`) field by the stripe size in pages, and combine the
+  hash of this with the hash from the previous step.
+- The total hash modulo the shard count gives the shard holding this key.
+
+Why don't we use the other fields in the Key?
+
+- We ignore `forknum` for key mapping, because it distinguishes different classes of data
+  in the same relation, and we would like to keep the data in a relation together.
+- We would like to use spcNode and dbNode, but cannot. Postgres database creation operations can refer to an existing database as a template, such that the created
+  database's blocks differ only by spcNode and dbNode from the original. To enable running
+  this type of creation without cross-pageserver communication, we must ensure that these
+  blocks map to the same shard -- we do this by excluding spcNode and dbNode from the hash.
+
+### Data placement examples
+
+For example, consider the extreme large databases cases of postgres data layout in a system with 8 shards
+and a stripe size of 32k pages:
+
+- A single large relation: `blknum` division will break the data up into 4096
+  stripes, which will be scattered across the shards.
+- 4096 relations of of 32k pages each: each relation will map to exactly one stripe,
+  and that stripe will be placed according to the hash of the key fields 4. The
+  data placement will be statistically uniform across shards.
+
+Data placement will be more uneven on smaller databases:
+
+- A tenant with 2 shards and 2 relations of one stripe size each: there is a 50% chance
+  that both relations land on the same shard and no data lands on the other shard.
+- A tenant with 8 shards and one relation of size 12 stripes: 4 shards will have double
+  the data of the other four shards.
+
+These uneven cases for small amounts of data do not matter, as long as the stripe size
+is an order of magnitude smaller than the amount of data we are comfortable holding
+in a single shard: if our system handles shard sizes up to 10-100GB, then it is not an issue if
+a tenant has some shards with 256MB size and some shards with 512MB size, even though
+the standard deviation of shard size within the tenant is very high. Our key mapping
+scheme provides a statistical guarantee that as the tenant's overall data size increases,
+uniformity of placement will improve.
+
+### Important Types
+
+#### `ShardIdentity`
+
+Provides the information needed to know whether a particular key belongs
+to a particular shard:
+
+- Layout version
+- Stripe size
+- Shard count
+- Shard index
+
+This structure's size is constant. Note that if we had used a differnet key
+mapping scheme such as consistent hashing with explicit hash ranges assigned
+to each shard, then the ShardIdentity's size would grow with the shard count: the simpler
+key mapping scheme used here enables a small fixed size ShardIdentity.
+
+### Pageserver changes
+
+#### Structural
+
+Everywhere the Pageserver currently deals with Tenants, it will move to dealing with
+`TenantShard`s, which are just a `Tenant` plus a `ShardIdentity` telling it which part
+of the keyspace it owns. An un-sharded tenant is just a `TenantShard` whose `ShardIdentity`
+covers the whole keyspace.
+
+When the pageserver writes layers and index_part.json to remote storage, it must
+include the shard index & count in the name, to avoid collisions (the count is
+necessary for future-proofing: the count will vary in time). These keys
+will also include a generation number: the [generation numbers](025-generation-numbers.md) system will work
+exactly the same for TenantShards as it does for Tenants today: each shard will have
+its own generation number.
+
+#### Storage Format: Keys
+
+For tenants with >1 shard, layer files implicitly become sparse: within the key
+range described in the layer name, the layer file for a shard will only hold the
+content relevant to stripes assigned to the shard.
+
+For this reason, the LayerFileName within a tenant is no longer unique: different shards
+may use the same LayerFileName to refer to different data. We may solve this simply
+by including the shard number in the keys used for layers.
+
+The shard number will be included as a prefix (as part of tenant ID), like this:
+
+`pageserver/v1/tenants/<tenant_id>-<shard_number><shard_count>/timelines/<timeline id>/<layer file name>-<generation>`
+
+`pageserver/v1/tenants/<tenant_id>-<shard_number><shard_count>/timelines/<timeline id>/index_part.json-<generation>`
+
+Reasons for this particular format:
+
+- Use of a prefix is convenient for implementation (no need to carry the shard ID everywhere
+  we construct a layer file name), and enables efficient listing of index_parts within
+  a particular shard-timeline prefix.
+- Including the shard _count_ as well as shard number means that in future when we implement
+  shard splitting, it will be possible for a parent shard and one of its children to write
+  the same layer file without a name collision. For example, a parent shard 0_1 might split
+  into two (0_2, 1_2), and in the process of splitting shard 0_2 could write a layer or index_part
+  that is distinct from what shard 0_1 would have written at the same place.
+
+In practice, we expect shard counts to be relatively small, so a `u8` will be sufficient,
+and therefore the shard part of the path can be a fixed-length hex string like `{:02X}{:02X}`,
+for example a single-shard tenant's prefix will be `0001`.
+
+For backward compatibility, we may define a special `ShardIdentity` that has shard_count==0,
+and use this as a cue to construct paths with no prefix at all.
+
+#### Storage Format: Indices
+
+In the phase 1 described in this RFC, shards only reference layers they write themselves. However,
+when we implement shard splitting in future, it will be useful to enable shards to reference layers
+written by other shards (specifically the parent shard during a split), so that shards don't
+have to exhaustively copy all data into their own shard-prefixed keys.
+
+To enable this, the `IndexPart` structure will be extended to store the (shard number, shard count)
+tuple on each layer, such that it can construct paths for layers written by other shards. This
+naturally raises the question of who "owns" such layers written by ancestral shards: this problem
+will be addressed in phase 2.
+
+For backward compatibility, any index entry without shard information will be assumed to be
+in the legacy shardidentity.
+
+#### WAL Ingest
+
+In Phase 1, all shards will subscribe to the safekeeper to download WAL content. They will filter
+it down to the pages relevant to their shard:
+
+- For ordinary user data writes, only retain a write if it matches the ShardIdentity
+- For metadata describing relations etc, all shards retain these writes.
+
+The pageservers must somehow give the safekeeper correct feedback on remote_consistent_lsn:
+one solution here is for the 0th shard to periodically peek at the IndexParts for all the other shards,
+and have only the 0th shard populate remote_consistent_lsn. However, this is relatively
+expensive: if the safekeeper can be made shard-aware then it could be taught to use
+the max() of all shards' remote_consistent_lsns to decide when to trim the WAL.
+
+#### Compaction/GC
+
+No changes needed.
+
+The pageserver doesn't have to do anything special during compaction
+or GC. It is implicitly operating on the subset of keys that map to its ShardIdentity.
+This will result in sparse layer files, containing keys only in the stripes that this
+shard owns. Where optimizations currently exist in compaction for spotting "gaps" in
+the key range, these should be updated to ignore gaps that are due to sharding, to
+avoid spuriously splitting up layers ito stripe-sized pieces.
+
+### Compute Endpoints
+
+Compute endpoints will need to:
+
+- Accept a vector of connection strings as part of their configuration from the control plane
+- Route pageserver requests according to mapping the hash of key to the correct
+  entry in the vector of connection strings.
+
+Doing this in compute rather than routing requests via a single pageserver is
+necessary to enable sharding tenants without adding latency from extra hops.
+
+### Control Plane
+
+Tenants, or _Projects_ in the control plane, will each own a set of TenantShards (this will
+be 1 for small tenants). Logic for placement of tenant shards is just the same as the current logic for placing
+tenants.
+
+Tenant lifecycle operations like deletion will require fanning-out to all the shards
+in the tenant. The same goes for timeline creation and deletion: a timeline should
+not be considered created until it has been created in all shards.
+
+#### Selectively enabling sharding for large tenants
+
+Initially, we will explicitly enable sharding for large tenants only.
+
+In future, this hint mechanism will become optional when we implement automatic
+re-sharding of tenants.
+
+## Future Phases
+
+This section exists to indicate what will likely come next after this phase.
+
+Phases 2a and 2b are amenable to execution in parallel.
+
+### Phase 2a: WAL fan-out
+
+**Problem**: when all shards consume the whole WAL, the network bandwidth used
+for transmitting the WAL from safekeeper to pageservers is multiplied by a factor
+of the shard count.
+
+Network bandwidth is not our most pressing bottleneck, but it is likely to become
+a problem if we set a modest shard count (~8) on a significant number of tenants,
+especially as those larger tenants which we shard are also likely to have higher
+write bandwidth than average.
+
+### Phase 2b: Shard Splitting
+
+**Problem**: the number of shards in a tenant is defined at creation time and cannot
+be changed. This causes excessive sharding for most small tenants, and an upper
+bound on scale for very large tenants.
+
+To address this, a _splitting_ feature will later be added. One shard can split its
+data into a number of children by doing a special compaction operation to generate
+image layers broken up child-shard-wise, and then writing out an `index_part.json` for
+each child. This will then require external coordination (by the control plane) to
+safely attach these new child shards and then move them around to distribute work.
+The opposite _merging_ operation can also be imagined, but is unlikely to be implemented:
+once a Tenant has been sharded, the marginal efficiency benefit of merging is unlikely to justify
+the risk/complexity of implementing such a rarely-encountered scenario.
+
+### Phase N (future): distributed historical reads
+
+**Problem**: while sharding based on key is good for handling changes in overall
+database size, it is less suitable for spiky/unpredictable changes in the read
+workload to historical layers. Sudden increases in historical reads could result
+in sudden increases in local disk capacity required for a TenantShard.
+
+Example: the extreme case of this would be to run a tenant for a year, then create branches
+with ancestors at monthly intervals. This could lead to a sudden 12x inflation in
+the on-disk capacity footprint of a TenantShard, since it would be serving reads
+from all those disparate historical layers.
+
+If we can respond fast enough, then key-sharding a tenant more finely can help with
+this, but splitting may be a relatively expensive operation and the increased historical
+read load may be transient.
+
+A separate mechanism for handling heavy historical reads could be something like
+a gossip mechanism for pageservers to communicate
+about their workload, and then a getpageatlsn offload mechanism where one pageserver can
+ask another to go read the necessary layers from remote storage to serve the read. This
+requires relativly little coordination because it is read-only: any node can service any
+read. All reads to a particular shard would still flow through one node, but the
+disk capactity & I/O impact of servicing the read would be distributed.
+
+## FAQ/Alternatives
+
+### Why stripe the data, rather than using contiguous ranges of keyspace for each shard?
+
+When a database is growing under a write workload, writes may predominantly hit the
+end of the keyspace, creating a bandwidth hotspot on that shard. Similarly, if the user
+is intensively re-writing a particular relation, if that relation lived in a particular
+shard then it would not achieve our goal of distributing the write work across shards.
+
+### Why not proxy read requests through one pageserver, so that endpoints don't have to change?
+
+1. This would not achieve scale-out of network bandwidth: a busy tenant with a large
+   database would still cause a load hotspot on the pageserver routing its read requests.
+2. The additional hop through the "proxy" pageserver would add latency and overall
+   resource cost (CPU, network bandwidth)
+
+### Layer File Spreading: use one pageserver as the owner of a tenant, and have it spread out work on a per-layer basis to peers
+
+In this model, there would be no explicit sharding of work, but the pageserver to which
+a tenant is attached would not hold all layers on its disk: instead, it would call out
+to peers to have them store some layers, and call out to those peers to request reads
+in those layers.
+
+This mechanism will work well for distributing work in the LSN dimension, but in the key
+space dimension it has the major limitation of requiring one node to handle all
+incoming writes, and compactions. Even if the write workload for a large database
+fits in one pageserver, it will still be a hotspot and such tenants may still
+de-facto require their own pageserver.
+
+
+# Content from file ../neon/docs/rfcs/032-shard-splitting.md:
+
+# Shard splitting
+
+## Summary
+
+This RFC describes a new pageserver API for splitting an existing tenant shard into
+multiple shards, and describes how to use this API to safely increase the total
+shard count of a tenant.
+
+## Motivation
+
+In the [sharding RFC](031-sharding-static.md), a mechanism was introduced to scale
+tenants beyond the capacity of a single pageserver by breaking up the key space
+into stripes, and distributing these stripes across many pageservers. However,
+the shard count was defined once at tenant creation time and not varied thereafter.
+
+In practice, the expected size of a database is rarely known at creation time, and
+it is inefficient to enable sharding for very small tenants: we need to be
+able to create a tenant with a small number of shards (such as 1), and later expand
+when it becomes clear that the tenant has grown in size to a point where sharding
+is beneficial.
+
+### Prior art
+
+Many distributed systems have the problem of choosing how many shards to create for
+tenants that do not specify an expected size up-front. There are a couple of general
+approaches:
+
+- Write to a key space in order, and start a new shard when the highest key advances
+  past some point. This doesn't work well for Neon, because we write to our key space
+  in many different contiguous ranges (per relation), rather than in one contiguous
+  range. To adapt to this kind of model, we would need a sharding scheme where each
+  relation had its own range of shards, which would be inefficient for the common
+  case of databases with many small relations.
+- Monitor the system, and automatically re-shard at some size threshold. For
+  example in Ceph, the [pg_autoscaler](https://github.com/ceph/ceph/blob/49c27499af4ee9a90f69fcc6bf3597999d6efc7b/src/pybind/mgr/pg_autoscaler/module.py)
+  component monitors the size of each RADOS Pool, and adjusts the number of Placement
+  Groups (Ceph's shard equivalent).
+
+## Requirements
+
+- A configurable capacity limit per-shard is enforced.
+- Changes in shard count do not interrupt service beyond requiring postgres
+  to reconnect (i.e. milliseconds).
+- Human being does not have to choose shard count
+
+## Non Goals
+
+- Shard splitting is always a tenant-global operation: we will not enable splitting
+  one shard while leaving others intact.
+- The inverse operation (shard merging) is not described in this RFC. This is a lower
+  priority than splitting, because databases grow more often than they shrink, and
+  a database with many shards will still work properly if the stored data shrinks, just
+  with slightly more overhead (e.g. redundant WAL replication)
+- Shard splitting is only initiated based on capacity bounds, not load. Splitting
+  a tenant based on load will make sense for some medium-capacity, high-load workloads,
+  but is more complex to reason about and likely is not desirable until we have
+  shard merging to reduce the shard count again if the database becomes less busy.
+
+## Impacted Components
+
+pageserver, storage controller
+
+(the _storage controller_ is the evolution of what was called `attachment_service` in our test environment)
+
+## Terminology
+
+**Parent** shards are the shards that exist before a split. **Child** shards are
+the new shards created during a split.
+
+**Shard** is synonymous with _tenant shard_.
+
+**Shard Index** is the 2-tuple of shard number and shard count, written in
+paths as {:02x}{:02x}, e.g. `0001`.
+
+## Background
+
+In the implementation section, a couple of existing aspects of sharding are important
+to remember:
+
+- Shard identifiers contain the shard number and count, so that "shard 0 of 1" (`0001`) is
+  a distinct shard from "shard 0 of 2" (`0002`). This is the case in key paths, local
+  storage paths, and remote index metadata.
+- Remote layer file paths contain the shard index of the shard that created them, and
+  remote indices contain the same index to enable building the layer file path. A shard's
+  index may reference layers that were created by another shard.
+- Local tenant shard directories include the shard index. All layers downloaded by
+  a tenant shard are stored in this shard-prefixed path, even if those layers were
+  initially created by another shard: tenant shards do not read and write one anothers'
+  paths.
+- The `Tenant` pageserver type represents one tenant _shard_, not the whole tenant.
+  This is for historical reasons and will be cleaned up in future, but the existing
+  name is used here to help comprehension when reading code.
+
+## Implementation
+
+Note: this section focuses on the correctness of the core split process. This will
+be fairly inefficient in a naive implementation, and several important optimizations
+are described in a later section.
+
+There are broadly two parts to the implementation:
+
+1. The pageserver split API, which splits one shard on one pageserver
+2. The overall tenant split proccess which is coordinated by the storage controller,
+   and calls into the pageserver split API as needed.
+
+### Pageserver Split API
+
+The pageserver will expose a new API endpoint at `/v1/tenant/:tenant_shard_id/shard_split`
+that takes the new total shard count in the body.
+
+The pageserver split API operates on one tenant shard, on one pageserver. External
+coordination is required to use it safely, this is described in the later
+'Split procedure' section.
+
+#### Preparation
+
+First identify the shard indices for the new child shards. These are deterministic,
+calculated from the parent shard's index, and the number of children being created (this
+is an input to the API, and validated to be a power of two). In a trivial example, splitting
+0001 in two always results in 0002 and 0102.
+
+Child shard indices are chosen such that the childrens' parts of the keyspace will
+be subsets of the parent's parts of the keyspace.
+
+#### Step 1: write new remote indices
+
+In remote storage, splitting is very simple: we may just write new index_part.json
+objects for each child shard, containing exactly the same layers as the parent shard.
+
+The children will have more data than they need, but this avoids any exhausive
+re-writing or copying of layer files.
+
+The index key path includes a generation number: the parent shard's current
+attached generation number will also be used for the child shards' indices. This
+makes the operation safely retryable: if everything crashes and restarts, we may
+call the split API again on the parent shard, and the result will be some new remote
+indices for the child shards, under a higher generation number.
+
+#### Step 2: start new `Tenant` objects
+
+A new `Tenant` object may be instantiated for each child shard, while the parent
+shard still exists. When calling the tenant_spawn function for this object,
+the remote index from step 1 will be read, and the child shard will start
+to ingest WAL to catch up from whatever was in the remote storage at step 1.
+
+We now wait for child shards' WAL ingestion to catch up with the parent shard,
+so that we can safely tear down the parent shard without risking an availability
+gap to clients reading recent LSNs.
+
+#### Step 3: tear down parent `Tenant` object
+
+Once child shards are running and have caught up with WAL ingest, we no longer
+need the parent shard. Note that clients may still be using it -- when we
+shut it down, any page_service handlers will also shut down, causing clients
+to disconnect. When the client reconnects, it will re-lookup the tenant,
+and hit the child shard instead of the parent (shard lookup from page_service
+should bias toward higher ShardCount shards).
+
+Note that at this stage the page service client has not yet been notified of
+any split. In the trivial single split example:
+
+- Shard 0001 is gone: Tenant object torn down
+- Shards 0002 and 0102 are running on the same pageserver where Shard 0001 used to live.
+- Clients will continue to connect to that server thinking that shard 0001 is there,
+  and all requests will work, because any key that was in shard 0001 is definitely
+  available in either shard 0002 or shard 0102.
+- Eventually, the storage controller (not the pageserver) will decide to migrate
+  some child shards away: at that point it will do a live migration, ensuring
+  that the client has an updated configuration before it detaches anything
+  from the original server.
+
+#### Complete
+
+When we send a 200 response to the split request, we are promising the caller:
+
+- That the child shards are persistent in remote storage
+- That the parent shard has been shut down
+
+This enables the caller to proceed with the overall shard split operation, which
+may involve other shards on other pageservers.
+
+### Storage Controller Split procedure
+
+Splitting a tenant requires calling the pageserver split API, and tracking
+enough state to ensure recovery + completion in the event of any component (pageserver
+or storage controller) crashing (or request timing out) during the split.
+
+1. call the split API on all existing shards. Ensure that the resulting
+   child shards are pinned to their pageservers until _all_ the split calls are done.
+   This pinning may be implemented as a "split bit" on the tenant shards, that
+   blocks any migrations, and also acts as a sign that if we restart, we must go
+   through some recovery steps to resume the split.
+2. Once all the split calls are done, we may unpin the child shards (clear
+   the split bit). The split is now complete: subsequent steps are just migrations,
+   not strictly part of the split.
+3. Try to schedule new pageserver locations for the child shards, using
+   a soft anti-affinity constraint to place shards from the same tenant onto different
+   pageservers.
+
+Updating computes about the new shard count is not necessary until we migrate
+any of the child shards away from the parent's location.
+
+### Recovering from failures
+
+#### Rolling back an incomplete split
+
+An incomplete shard split may be rolled back quite simply, by attaching the parent shards to pageservers,
+and detaching child shards. This will lose any WAL ingested into the children after the parents
+were detached earlier, but the parents will catch up.
+
+No special pageserver API is needed for this. From the storage controllers point of view, the
+procedure is:
+
+1. For all parent shards in the tenant, ensure they are attached
+2. For all child shards, ensure they are not attached
+3. Drop child shards from the storage controller's database, and clear the split bit on the parent shards.
+
+Any remote storage content for child shards is left behind. This is similar to other cases where
+we may leave garbage objects in S3 (e.g. when we upload a layer but crash before uploading an
+index that references it). Future online scrub/cleanup functionality can remove these objects, or
+they will be removed when the tenant is deleted, as tenant deletion lists all objects in the prefix,
+which would include any child shards that were rolled back.
+
+If any timelines had been created on child shards, they will be lost when rolling back. To mitigate
+this, we will **block timeline creation during splitting**, so that we can safely roll back until
+the split is complete, without risking losing timelines.
+
+Rolling back an incomplete split will happen automatically if a split fails due to some fatal
+reason, and will not be accessible via an API:
+
+- A pageserver fails to complete its split API request after too many retries
+- A pageserver returns a fatal unexpected error such as 400 or 500
+- The storage controller database returns a non-retryable error
+- Some internal invariant is violated in the storage controller split code
+
+#### Rolling back a complete split
+
+A complete shard split may be rolled back similarly to an incomplete split, with the following
+modifications:
+
+- The parent shards will no longer exist in the storage controller database, so these must
+  be re-synthesized somehow: the hard part of this is figuring the parent shards' generations. This
+  may be accomplished either by probing in S3, or by retaining some tombstone state for deleted
+  shards in the storage controller database.
+- Any timelines that were created after the split complete will disappear when rolling back
+  to the tenant shards. For this reason, rolling back after a complete split should only
+  be done due to serious issues where loss of recently created timelines is acceptable, or
+  in cases where we have confirmed that no timelines were created in the intervening period.
+- Parent shards' layers must not have been deleted: this property will come "for free" when
+  we first roll out sharding, by simply not implementing deletion of parent layers after
+  a split. When we do implement such deletion (see "Cleaning up parent-shard layers" in the
+  Optimizations section), it should apply a TTL to layers such that we have a
+  defined walltime window in which rollback will be possible.
+
+The storage controller will expose an API for rolling back a complete split, for use
+in the field if we encounter some critical bug with a post-split tenant.
+
+#### Retrying API calls during Pageserver Restart
+
+When a pageserver restarts during a split API call, it may witness on-disk content for both parent and
+child shards from an ongoing split. This does not intrinsically break anything, and the
+pageserver may include all these shards in its `/re-attach` request to the storage controller.
+
+In order to support such restarts, it is important that the storage controller stores
+persistent records of each child shard before it calls into a pageserver, as these child shards
+may require generation increments via a `/re-attach` request.
+
+The pageserver restart will also result in a failed API call from the storage controller's point
+of view. Recall that if _any_ pageserver fails to split, the overall split operation may not
+complete, and all shards must remain pinned to their current pageserver locations until the
+split is done.
+
+The pageserver API calls during splitting will retry on transient errors, so that
+short availability gaps do not result in a failure of the overall operation. The
+split in progress will be automatically rolled back if the threshold for API
+retries is reached (e.g. if a pageserver stays offline for longer than a typical
+restart).
+
+#### Rollback on Storage Controller Restart
+
+On startup, the storage controller will inspect the split bit for tenant shards that
+it loads from the database. If any splits are in progress:
+
+- Database content will be reverted to the parent shards
+- Child shards will be dropped from memory
+- The parent and child shards will be included in the general startup reconciliation that
+  the storage controller does: any child shards will be detached from pageservers because
+  they don't exist in the storage controller's expected set of shards, and parent shards
+  will be attached if they aren't already.
+
+#### Storage controller API request failures/retries
+
+The split request handler will implement idempotency: if the [`Tenant`] requested to split
+doesn't exist, we will check for the would-be child shards, and if they already exist,
+we consider the request complete.
+
+If a request is retried while the original request is still underway, then the split
+request handler will notice an InProgress marker in TenantManager, and return 503
+to encourage the client to backoff/retry. This is the same as the general pageserver
+API handling for calls that try to act on an InProgress shard.
+
+#### Compute start/restart during a split
+
+If a compute starts up during split, it will be configured with the old sharding
+configuration. This will work for reads irrespective of the progress of the split
+as long as no child hards have been migrated away from their original location, and
+this is guaranteed in the split procedure (see earlier section).
+
+#### Pageserver fails permanently during a split
+
+If a pageserver permanently fails (i.e. the storage controller availability state for it
+goes to Offline) while a split is in progress, the splitting operation will roll back, and
+during the roll back it will skip any API calls to the offline pageserver. If the offline
+pageserver becomes available again, any stale locations will be cleaned up via the normal reconciliation process (the `/re-attach` API).
+
+### Handling secondary locations
+
+For correctness, it is not necessary to split secondary locations. We can simply detach
+the secondary locations for parent shards, and then attach new secondary locations
+for child shards.
+
+Clearly this is not optimal, as it will result in re-downloads of layer files that
+were already present on disk. See "Splitting secondary locations"
+
+### Conditions to trigger a split
+
+The pageserver will expose a new API for reporting on shards that are candidates
+for split: this will return a top-N report of the largest tenant shards by
+physical size (remote size). This should exclude any tenants that are already
+at the maximum configured shard count.
+
+The API would look something like:
+`/v1/top_n_tenant?shard_count_lt=8&sort_by=resident_size`
+
+The storage controller will poll that API across all pageservers it manages at some appropriate interval (e.g. 60 seconds).
+
+A split operation will be started when the tenant exceeds some threshold. This threshold
+should be _less than_ how large we actually want shards to be, perhaps much less. That's to
+minimize the amount of work involved in splitting -- if we want 100GiB shards, we shouldn't
+wait for a tenant to exceed 100GiB before we split anything. Some data analysis of existing
+tenant size distribution may be useful here: if we can make a statement like "usually, if
+a tenant has exceeded 20GiB they're probably going to exceed 100GiB later", then we might
+make our policy to split a tenant at 20GiB.
+
+The finest split we can do is by factors of two, but we can do higher-cardinality splits
+too, and this will help to reduce the overhead of repeatedly re-splitting a tenant
+as it grows. An example of a very simple heuristic for early deployment of the splitting
+feature would be: "Split tenants into 8 shards when their physical size exceeds 64GiB": that
+would give us two kinds of tenant (1 shard and 8 shards), and the confidence that once we had
+split a tenant, it will not need re-splitting soon after.
+
+## Optimizations
+
+### Flush parent shard to remote storage during split
+
+Any data that is in WAL but not remote storage at time of split will need
+to be replayed by child shards when they start for the first time. To minimize
+this work, we may flush the parent shard to remote storage before writing the
+remote indices for child shards.
+
+It is important that this flush is subject to some time bounds: we may be splitting
+in response to a surge of write ingest, so it may be time-critical to split. A
+few seconds to flush latest data should be sufficient to optimize common cases without
+running the risk of holding up a split for a harmful length of time when a parent
+shard is being written heavily. If the flush doesn't complete in time, we may proceed
+to shut down the parent shard and carry on with the split.
+
+### Hard linking parent layers into child shard directories
+
+Before we start the Tenant objects for child shards, we may pre-populate their
+local storage directories with hard links to the layer files already present
+in the parent shard's local directory. When the child shard starts and downloads
+its remote index, it will find all those layer files already present on local disk.
+
+This avoids wasting download capacity and makes splitting faster, but more importantly
+it avoids taking up a factor of N more disk space when splitting 1 shard into N.
+
+This mechanism will work well in typical flows where shards are migrated away
+promptly after a split, but for the general case including what happens when
+layers are evicted and re-downloaded after a split, see the 'Proactive compaction'
+section below.
+
+### Filtering during compaction
+
+Compaction, especially image layer generation, should skip any keys that are
+present in a shard's layer files, but do not match the shard's ShardIdentity's
+is_key_local() check. This avoids carrying around data for longer than necessary
+in post-split compactions.
+
+This was already implemented in https://github.com/neondatabase/neon/pull/6246
+
+### Proactive compaction
+
+In remote storage, there is little reason to rewrite any data on a shard split:
+all the children can reference parent layers via the very cheap write of the child
+index_part.json.
+
+In local storage, things are more nuanced. During the initial split there is no
+capacity cost to duplicating parent layers, if we implement the hard linking
+optimization described above. However, as soon as any layers are evicted from
+local disk and re-downloaded, the downloaded layers will not be hard-links any more:
+they'll have real capacity footprint. That isn't a problem if we migrate child shards
+away from the parent node swiftly, but it risks a significant over-use of local disk
+space if we do not.
+
+For example, if we did an 8-way split of a shard, and then _didn't_ migrate 7 of
+the shards elsewhere, then churned all the layers in all the shards via eviction,
+then we would blow up the storage capacity used on the node by 8x. If we're splitting
+a 100GB shard, that could take the pageserver to the point of exhausting disk space.
+
+To avoid this scenario, we could implement a special compaction mode where we just
+read historic layers, drop unwanted keys, and write back the layer file. This
+is pretty expensive, but useful if we have split a large shard and are not going to
+migrate the child shards away.
+
+The heuristic conditions for triggering such a compaction are:
+
+- A) eviction plus time: if a child shard
+  has existed for more than a time threshold, and has been requested to perform at least one eviction, then it becomes urgent for this child shard to execute a proactive compaction to reduce its storage footprint, at the cost of I/O load.
+- B) resident size plus time: we may inspect the resident layers and calculate how
+  many of them include the overhead of storing pre-split keys. After some time
+  threshold (different to the one in case A) we still have such layers occupying
+  local disk space, then we should proactively compact them.
+
+### Cleaning up parent-shard layers
+
+It is functionally harmless to leave parent shard layers in remote storage indefinitely.
+They would be cleaned up in the event of the tenant's deletion.
+
+As an optimization to avoid leaking remote storage capacity (which costs money), we may
+lazily clean up parent shard layers once no child shards reference them.
+
+This may be done _very_ lazily: e.g. check every PITR interval. The cleanup procedure is:
+
+- list all the key prefixes beginning with the tenant ID, and select those shard prefixes
+  which do not belong to the most-recently-split set of shards (_ancestral shards_, i.e. `shard*count < max(shard_count) over all shards)`, and those shard prefixes which do have the latest shard count (_current shards_)
+- If there are no _ancestral shard_ prefixes found, we have nothing to clean up and
+  may drop out now.
+- find the latest-generation index for each _current shard_, read all and accumulate the set of layers belonging to ancestral shards referenced by these indices.
+- for all ancestral shards, list objects in the prefix and delete any layer which was not
+  referenced by a current shard.
+
+If this cleanup is scheduled for 1-2 PITR periods after the split, there is a good chance that child shards will have written their own image layers covering the whole keyspace, such that all parent shard layers will be deletable.
+
+The cleanup may be done by the scrubber (external process), or we may choose to have
+the zeroth shard in the latest generation do the work -- there is no obstacle to one shard
+reading the other shard's indices at runtime, and we do not require visibility of the
+latest index writes.
+
+Cleanup should be artificially delayed by some period (for example 24 hours) to ensure
+that we retain the option to roll back a split in case of bugs.
+
+### Splitting secondary locations
+
+We may implement a pageserver API similar to the main splitting API, which does a simpler
+operation for secondary locations: it would not write anything to S3, instead it would simply
+create the child shard directory on local disk, hard link in directories from the parent,
+and set up the in memory (TenantSlot) state for the children.
+
+Similar to attached locations, a subset of secondary locations will probably need re-locating
+after the split is complete, to avoid leaving multiple child shards on the same pageservers,
+where they may use excessive space for the tenant.
+
+## FAQ/Alternatives
+
+### What should the thresholds be set to?
+
+Shard size limit: the pre-sharding default capacity quota for databases was 200GiB, so this could be a starting point for the per-shard size limit.
+
+Max shard count:
+
+- The safekeeper overhead to sharding is currently O(N) network bandwidth because
+  the un-filtered WAL is sent to all shards. To avoid this growing out of control,
+  a limit of 8 shards should be temporarily imposed until WAL filtering is implemented
+  on the safekeeper.
+- there is also little benefit to increasing the shard count beyond the number
+  of pageservers in a region.
+
+### Is it worth just rewriting all the data during a split to simplify reasoning about space?
+
+
 # Content from file ../neon/docs/rfcs/README.md:
 
 This directory contains Request for Comments documents, or RFCs, for
@@ -12402,6 +13379,17 @@ compute node is also known as the WAL proposer, and the safekeeper is also known
 as the acceptor. Those are the standard terms in the Paxos algorithm.
 
 
+# Content from file ../neon/libs/desim/README.md:
+
+# Discrete Event SIMulator
+
+This is a library for running simulations of distributed systems. The main idea is borrowed from [FoundationDB](https://www.youtube.com/watch?v=4fFDFbi3toc).
+
+Each node runs as a separate thread. This library was not optimized for speed yet, but it's already much faster than running usual intergration tests in real time, because it uses virtual simulation time and can fast-forward time to skip intervals where all nodes are doing nothing but sleeping or waiting for something.
+
+The original purpose for this library is to test walproposer and safekeeper implementation working together, in a scenarios close to the real world environment. This simulator is determenistic and can inject failures in networking without waiting minutes of wall-time to trigger timeout, which makes it easier to find bugs in our consensus implementation compared to using integration tests.
+
+
 # Content from file ../neon/libs/postgres_ffi/README.md:
 
 This module contains utilities for working with PostgreSQL file
@@ -12493,6 +13481,61 @@ To run a specific file:
 
 To run a specific function:
 `cargo bench --bench bench_layer_map -- real_map_uniform_queries`
+
+
+# Content from file ../neon/pageserver/compaction/TODO.md:
+
+# TODO
+
+- If the key space can be perfectly partitioned at some key, perform planning on each
+  partition separately. For example, if we are compacting a level with layers like this:
+
+  ```
+              :
+  +--+ +----+ :  +------+
+  |  | |    | :  |      |
+  +--+ +----+ :  +------+
+              :
+  +-----+ +-+ : +--------+
+  |     | | | : |        |
+  +-----+ +-+ : +--------+
+              :
+  ```
+
+  At the dotted line, there is a natural split in the key space, such that all
+  layers are either on the left or the right of it. We can compact the
+  partitions separately.  We could choose to create image layers for one
+  partition but not the other one, for example.
+
+- All the layers don't have to be exactly the same size, we can choose to cut a
+  layer short or stretch it a little larger than the target size, if it helps
+  the overall system. We can help perfect partitions (see previous bullet point)
+  to happen more frequently, by choosing the cut points wisely. For example, try
+  to cut layers at boundaries of underlying image layers. And "snap to grid",
+  i.e. don't cut layers at any key, but e.g. only when key % 10000 = 0.
+
+- Avoid rewriting layers when we'd just create an identical layer to an input
+  layer.
+
+- Parallelism. The code is already split up into planning and execution, so that
+  we first split up the compaction work into "Jobs", and then execute them.
+  It would be straightforward to execute multiple jobs in parallel.
+
+- Materialize extra pages in delta layers during compaction. This would reduce
+  read amplification. There has been the idea of partial image layers. Materializing
+  extra pages in the delta layers achieve the same goal, without introducing a new
+  concept.
+
+## Simulator
+
+- Expand the simulator for more workloads
+- Automate a test suite that runs the simluator with different workloads and
+  spits out a table of results
+- Model read amplification
+- More sanity checking. One idea is to keep a reference count of each
+  MockRecord, i.e. use Arc<MockRecord> instead of plain MockRecord, and panic if
+  a MockRecord that is newer than PITR horizon is completely dropped. That would
+  indicate that the record was lost.
 
 
 # Content from file ../neon/pgxn/hnsw/README.md:
@@ -13445,6 +14488,698 @@ improve application performance with jemalloc.
 
 
 # Content from file ../neon/target/debug/build/tikv-jemalloc-sys-d9194a83ad93cbe6/out/build/doc_internal/PROFILING_INTERNALS.md:
+
+# jemalloc profiling
+This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
+
+Note: this document is markdown with embedded LaTeX; different markdown renderers may not produce the expected output.  Viewing with `pandoc -s PROFILING_INTERNALS.md -o PROFILING_INTERNALS.pdf` is recommended.
+
+## Some tricks in our implementation toolbag
+
+### Sampling
+Recording our metadata is quite expensive; we need to walk up the stack to get a stack trace. On top of that, we need to allocate storage to record that stack trace, and stick it somewhere where a profile-dumping call can find it. That call might happen on another thread, so we'll probably need to take a lock to do so. These costs are quite large compared to the average cost of an allocation. To manage this, we'll only sample some fraction of allocations. This will miss some of them, so our data will be incomplete, but we'll try to make up for it. We can tune our sampling rate to balance accuracy and performance.
+
+### Fast Bernoulli sampling
+Compared to our fast paths, even a `coinflip(p)` function can be quite expensive. Having to do a random-number generation and some floating point operations would be a sizeable relative cost. However (as pointed out in [[Vitter, 1987](https://dl.acm.org/doi/10.1145/23002.23003)]), if we can orchestrate our algorithm so that many of our `coinflip` calls share their parameter value, we can do better. We can sample from the geometric distribution, and initialize a counter with the result. When the counter hits 0, the `coinflip` function returns true (and reinitializes its internal counter).
+This can let us do a random-number generation once per (logical) coinflip that comes up heads, rather than once per (logical) coinflip. Since we expect to sample relatively rarely, this can be a large win.
+
+### Fast-path / slow-path thinking
+Most programs have a skewed distribution of allocations. Smaller allocations are much more frequent than large ones, but shorter lived and less common as a fraction of program memory. "Small" and "large" are necessarily sort of fuzzy terms, but if we define "small" as "allocations jemalloc puts into slabs" and "large" as the others, then it's not uncommon for small allocations to be hundreds of times more frequent than large ones, but take up around half the amount of heap space as large ones. Moreover, small allocations tend to be much cheaper than large ones (often by a factor of 20-30): they're more likely to hit in thread caches, less likely to have to do an mmap, and cheaper to fill (by the user) once the allocation has been returned.
+
+## An unbiased estimator of space consumption from (almost) arbitrary sampling strategies
+Suppose we have a sampling strategy that meets the following criteria:
+
+  - One allocation being sampled is independent of other allocations being sampled.
+  - Each allocation has a non-zero probability of being sampled.
+
+We can then estimate the bytes in live allocations through some particular stack trace as:
+
+$$ \sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]} $$
+
+where the sum ranges over some index variable of live allocations from that stack, $S_i$ is the size of the $i$'th allocation, and $I_i$ is an indicator random variable for whether or not the $i'th$ allocation is sampled. $S_i$ and $\mathrm{E}[I_i]$ are constants (the program allocations are fixed; the random variables are the sampling decisions), so taking the expectation we get
+
+$$ \sum_i S_i \mathrm{E}[I_i] \frac{1}{\mathrm{E}[I_i]}.$$
+
+This is of course $\sum_i S_i$, as we want (and, a similar calculation could be done for allocation counts as well).
+This is a fairly general strategy; note that while we require that sampling decisions be independent of one another's outcomes, they don't have to be independent of previous allocations, total bytes allocated, etc. You can imagine strategies that:
+
+  - Sample allocations at program startup at a higher rate than subsequent allocations
+  - Sample even-indexed allocations more frequently than odd-indexed ones (so long as no allocation has zero sampling probability)
+  - Let threads declare themselves as high-sampling-priority, and sample their allocations at an increased rate.
+
+These can all be fit into this framework to give an unbiased estimator.
+
+## Evaluating sampling strategies
+Not all strategies for picking allocations to sample are equally good, of course. Among unbiased estimators, the lower the variance, the lower the mean squared error. Using the estimator above, the variance is:
+
+$$
+\begin{aligned}
+& \mathrm{Var}[\sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]}]  \\
+=& \sum_i \mathrm{Var}[S_i I_i \frac{1}{\mathrm{E}[I_i]}] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{E}[I_i](1 - \mathrm{E}[I_i]) \\
+=& \sum_i S_i^2 \frac{1 - \mathrm{E}[I_i]}{\mathrm{E}[I_i]}.
+\end{aligned}
+$$
+
+We can use this formula to compare various strategy choices. All else being equal, lower-variance strategies are better.
+
+## Possible sampling strategies
+Because of the desire to avoid the fast-path costs, we'd like to use our Bernoulli trick if possible. There are two obvious counters to use: a coinflip per allocation, and a coinflip per byte allocated.
+
+### Bernoulli sampling per-allocation
+An obvious strategy is to pick some large $N$, and give each allocation a $1/N$ chance of being sampled. This would let us use our Bernoulli-via-Geometric trick. Using the formula from above, we can compute the variance as:
+
+$$ \sum_i S_i^2 \frac{1 - \frac{1}{N}}{\frac{1}{N}}  = (N-1) \sum_i S_i^2.$$
+
+That is, an allocation of size $Z$ contributes a term of $(N-1)Z^2$ to the variance.
+
+### Bernoulli sampling per-byte
+Another option we have is to pick some rate $R$, and give each byte a $1/R$ chance of being picked for sampling (at which point we would sample its contained allocation). The chance of an allocation of size $Z$ being sampled, then, is
+
+$$1-(1-\frac{1}{R})^{Z}$$
+
+and an allocation of size $Z$ contributes a term of
+
+$$Z^2 \frac{(1-\frac{1}{R})^{Z}}{1-(1-\frac{1}{R})^{Z}}.$$
+
+In practical settings, $R$ is large, and so this is well-approximated by
+
+$$Z^2 \frac{e^{-Z/R}}{1 - e^{-Z/R}} .$$
+
+Just to get a sense of the dynamics here, let's look at the behavior for various values of $Z$. When $Z$ is small relative to $R$, we can use $e^z \approx 1 + x$, and conclude that the variance contributed by a small-$Z$ allocation is around
+
+$$Z^2 \frac{1-Z/R}{Z/R} \approx RZ.$$
+
+When $Z$ is comparable to $R$, the variance term is near $Z^2$ (we have $\frac{e^{-Z/R}}{1 - e^{-Z/R}} = 1$ when $Z/R = \ln 2 \approx 0.693$). When $Z$ is large relative to $R$, the variance term goes to zero.
+
+## Picking a sampling strategy
+The fast-path/slow-path dynamics of allocation patterns point us towards the per-byte sampling approach:
+
+  - The quadratic increase in variance per allocation in the first approach is quite costly when heaps have a non-negligible portion of their bytes in those allocations, which is practically often the case.
+  - The Bernoulli-per-byte approach shifts more of its samples towards large allocations, which are already a slow-path.
+  - We drive several tickers (e.g. tcache gc) by bytes allocated, and report bytes-allocated as a user-visible statistic, so we have to do all the necessary bookkeeping anyways.
+
+Indeed, this is the approach we use in jemalloc. Our heap dumps record the size of the allocation and the sampling rate $R$, and jeprof unbiases by dividing by $1 - e^{-Z/R}$.  The framework above would suggest dividing by $1-(1-1/R)^Z$; instead, we use the fact that $R$ is large in practical situations, and so $e^{-Z/R}$ is a good approximation (and faster to compute).  (Equivalently, we may also see this as the factor that falls out from viewing sampling as a Poisson process directly).
+
+## Consequences for heap dump consumers
+Using this approach means that there are a few things users need to be aware of.
+
+### Stack counts are not proportional to allocation frequencies
+If one stack appears twice as often as another, this by itself does not imply that it allocates twice as often. Consider the case in which there are only two types of allocating call stacks in a program. Stack A allocates 8 bytes, and occurs a million times in a program. Stack B allocates 8 MB, and occurs just once in a program. If our sampling rate $R$ is about 1MB, we expect stack A to show up about 8 times, and stack B to show up once. Stack A isn't 8 times more frequent than stack B, though; it's a million times more frequent.
+
+### Aggregation must be done after unbiasing samples
+Some tools manually parse heap dump output, and aggregate across stacks (or across program runs) to provide wider-scale data analyses. When doing this aggregation, though, it's important to unbias-and-then-sum, rather than sum-and-then-unbias. Reusing our example from the previous section: suppose we collect heap dumps of the program from a million machines. We then have 8 million occurs of stack A (each of 8 bytes), and a million occurrences of stack B (each of 8 MB). If we sum first, we'll attribute 64 MB to stack A, and 8 TB to stack B. Unbiasing changes these numbers by an infinitesimal amount, so that sum-then-unbias dramatically underreports the amount of memory allocated by stack A.
+
+## An avenue for future exploration
+While the framework we laid out above is pretty general, as an engineering decision we're only interested in fairly simple approaches (i.e. ones for which the chance of an allocation being sampled depends only on its size). Our job is then: for each size class $Z$, pick a probability $p_Z$ that an allocation of that size will be sampled. We made some handwave-y references to statistical distributions to justify our choices, but there's no reason we need to pick them that way. Any set of non-zero probabilities is a valid choice.
+The real limiting factor in our ability to reduce estimator variance is that fact that sampling is expensive; we want to make sure we only do it on a small fraction of allocations. Our goal, then, is to pick the $p_Z$ to minimize variance given some maximum sampling rate $P$. If we define $a_Z$ to be the fraction of allocations of size $Z$, and $l_Z$ to be the fraction of allocations of size $Z$ still alive at the time of a heap dump, then we can phrase this as an optimization problem over the choices of $p_Z$:
+
+Minimize
+
+$$ \sum_Z Z^2 l_Z \frac{1-p_Z}{p_Z} $$
+
+subject to
+
+$$ \sum_Z a_Z p_Z \leq P $$
+
+Ignoring a term that doesn't depend on $p_Z$, the objective is minimized whenever
+
+$$ \sum_Z Z^2 l_Z \frac{1}{p_Z} $$
+
+is. For a particular program, $l_Z$ and $a_Z$ are just numbers that can be obtained (exactly) from existing stats introspection facilities, and we have a fairly tractable convex optimization problem (it can be framed as a second-order cone program). It would be interesting to evaluate, for various common allocation patterns, how well our current strategy adapts. Do our actual choices for $p_Z$ closely correspond to the optimal ones? How close is the variance of our choices to the variance of the optimal strategy?
+You can imagine an implementation that actually goes all the way, and makes $p_Z$ selections a tuning parameter. I don't think this is a good use of development time for the foreseeable future; but I do wonder about the answers to some of these questions.
+
+## Implementation realities
+
+The nice story above is at least partially a lie. Initially, jeprof (copying its logic from pprof)  had the sum-then-unbias error described above.  The current version of jemalloc does the unbiasing step on a per-allocation basis internally, so that we're always tracking what the unbiased numbers "should" be.  The problem is, actually surfacing those unbiased numbers would require a breaking change to jeprof (and the various already-deployed tools that have copied its logic). Instead, we use a little bit more trickery. Since we know at dump time the numbers we want jeprof to report, we simply choose the values we'll output so that the jeprof numbers will match the true numbers.  The math is described in `src/prof_data.c` (where the only cleverness is a change of variables that lets the exponentials fall out).
+
+This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
+
+
+# Content from file ../neon/target/release/build/tikv-jemalloc-sys-9322c3f4617e737e/out/build/INSTALL.md:
+
+Building and installing a packaged release of jemalloc can be as simple as
+typing the following while in the root directory of the source tree:
+
+    ./configure
+    make
+    make install
+
+If building from unpackaged developer sources, the simplest command sequence
+that might work is:
+
+    ./autogen.sh
+    make
+    make install
+
+You can uninstall the installed build artifacts like this:
+
+    make uninstall
+
+Notes:
+ - "autoconf" needs to be installed
+ - Documentation is built by the default target only when xsltproc is
+available.  Build will warn but not stop if the dependency is missing.
+
+
+## Advanced configuration
+
+The 'configure' script supports numerous options that allow control of which
+functionality is enabled, where jemalloc is installed, etc.  Optionally, pass
+any of the following arguments (not a definitive list) to 'configure':
+
+* `--help`
+
+    Print a definitive list of options.
+
+* `--prefix=<install-root-dir>`
+
+    Set the base directory in which to install.  For example:
+
+        ./configure --prefix=/usr/local
+
+    will cause files to be installed into /usr/local/include, /usr/local/lib,
+    and /usr/local/man.
+
+* `--with-version=(<major>.<minor>.<bugfix>-<nrev>-g<gid>|VERSION)`
+
+    The VERSION file is mandatory for successful configuration, and the
+    following steps are taken to assure its presence:
+    1) If --with-version=<major>.<minor>.<bugfix>-<nrev>-g<gid> is specified,
+       generate VERSION using the specified value.
+    2) If --with-version is not specified in either form and the source
+       directory is inside a git repository, try to generate VERSION via 'git
+       describe' invocations that pattern-match release tags.
+    3) If VERSION is missing, generate it with a bogus version:
+       0.0.0-0-g0000000000000000000000000000000000000000
+
+    Note that --with-version=VERSION bypasses (1) and (2), which simplifies
+    VERSION configuration when embedding a jemalloc release into another
+    project's git repository.
+
+* `--with-rpath=<colon-separated-rpath>`
+
+    Embed one or more library paths, so that libjemalloc can find the libraries
+    it is linked to.  This works only on ELF-based systems.
+
+* `--with-mangling=<map>`
+
+    Mangle public symbols specified in <map> which is a comma-separated list of
+    name:mangled pairs.
+
+    For example, to use ld's --wrap option as an alternative method for
+    overriding libc's malloc implementation, specify something like:
+
+      --with-mangling=malloc:__wrap_malloc,free:__wrap_free[...]
+
+    Note that mangling happens prior to application of the prefix specified by
+    --with-jemalloc-prefix, and mangled symbols are then ignored when applying
+    the prefix.
+
+* `--with-jemalloc-prefix=<prefix>`
+
+    Prefix all public APIs with <prefix>.  For example, if <prefix> is
+    "prefix_", API changes like the following occur:
+
+      malloc()         --> prefix_malloc()
+      malloc_conf      --> prefix_malloc_conf
+      /etc/malloc.conf --> /etc/prefix_malloc.conf
+      MALLOC_CONF      --> PREFIX_MALLOC_CONF
+
+    This makes it possible to use jemalloc at the same time as the system
+    allocator, or even to use multiple copies of jemalloc simultaneously.
+
+    By default, the prefix is "", except on OS X, where it is "je_".  On OS X,
+    jemalloc overlays the default malloc zone, but makes no attempt to actually
+    replace the "malloc", "calloc", etc. symbols.
+
+* `--without-export`
+
+    Don't export public APIs.  This can be useful when building jemalloc as a
+    static library, or to avoid exporting public APIs when using the zone
+    allocator on OSX.
+
+* `--with-private-namespace=<prefix>`
+
+    Prefix all library-private APIs with <prefix>je_.  For shared libraries,
+    symbol visibility mechanisms prevent these symbols from being exported, but
+    for static libraries, naming collisions are a real possibility.  By
+    default, <prefix> is empty, which results in a symbol prefix of je_ .
+
+* `--with-install-suffix=<suffix>`
+
+    Append <suffix> to the base name of all installed files, such that multiple
+    versions of jemalloc can coexist in the same installation directory.  For
+    example, libjemalloc.so.0 becomes libjemalloc<suffix>.so.0.
+
+* `--with-malloc-conf=<malloc_conf>`
+
+    Embed `<malloc_conf>` as a run-time options string that is processed prior to
+    the malloc_conf global variable, the /etc/malloc.conf symlink, and the
+    MALLOC_CONF environment variable.  For example, to change the default decay
+    time to 30 seconds:
+
+      --with-malloc-conf=decay_ms:30000
+
+* `--enable-debug`
+
+    Enable assertions and validation code.  This incurs a substantial
+    performance hit, but is very useful during application development.
+
+* `--disable-stats`
+
+    Disable statistics gathering functionality.  See the "opt.stats_print"
+    option documentation for usage details.
+
+* `--enable-prof`
+
+    Enable heap profiling and leak detection functionality.  See the "opt.prof"
+    option documentation for usage details.  When enabled, there are several
+    approaches to backtracing, and the configure script chooses the first one
+    in the following list that appears to function correctly:
+
+    + libunwind      (requires --enable-prof-libunwind)
+    + libgcc         (unless --disable-prof-libgcc)
+    + gcc intrinsics (unless --disable-prof-gcc)
+
+* `--enable-prof-libunwind`
+
+    Use the libunwind library (http://www.nongnu.org/libunwind/) for stack
+    backtracing.
+
+* `--disable-prof-libgcc`
+
+    Disable the use of libgcc's backtracing functionality.
+
+* `--disable-prof-gcc`
+
+    Disable the use of gcc intrinsics for backtracing.
+
+* `--with-static-libunwind=<libunwind.a>`
+
+    Statically link against the specified libunwind.a rather than dynamically
+    linking with -lunwind.
+
+* `--disable-fill`
+
+    Disable support for junk/zero filling of memory.  See the "opt.junk" and
+    "opt.zero" option documentation for usage details.
+
+* `--disable-zone-allocator`
+
+    Disable zone allocator for Darwin.  This means jemalloc won't be hooked as
+    the default allocator on OSX/iOS.
+
+* `--enable-utrace`
+
+    Enable utrace(2)-based allocation tracing.  This feature is not broadly
+    portable (FreeBSD has it, but Linux and OS X do not).
+
+* `--enable-xmalloc`
+
+    Enable support for optional immediate termination due to out-of-memory
+    errors, as is commonly implemented by "xmalloc" wrapper function for malloc.
+    See the "opt.xmalloc" option documentation for usage details.
+
+* `--enable-lazy-lock`
+
+    Enable code that wraps pthread_create() to detect when an application
+    switches from single-threaded to multi-threaded mode, so that it can avoid
+    mutex locking/unlocking operations while in single-threaded mode.  In
+    practice, this feature usually has little impact on performance unless
+    thread-specific caching is disabled.
+
+* `--disable-cache-oblivious`
+
+    Disable cache-oblivious large allocation alignment by default, for large
+    allocation requests with no alignment constraints.  If this feature is
+    disabled, all large allocations are page-aligned as an implementation
+    artifact, which can severely harm CPU cache utilization.  However, the
+    cache-oblivious layout comes at the cost of one extra page per large
+    allocation, which in the most extreme case increases physical memory usage
+    for the 16 KiB size class to 20 KiB.
+
+* `--disable-syscall`
+
+    Disable use of syscall(2) rather than {open,read,write,close}(2).  This is
+    intended as a workaround for systems that place security limitations on
+    syscall(2).
+
+* `--disable-cxx`
+
+    Disable C++ integration.  This will cause new and delete operator
+    implementations to be omitted.
+
+* `--with-xslroot=<path>`
+
+    Specify where to find DocBook XSL stylesheets when building the
+    documentation.
+
+* `--with-lg-page=<lg-page>`
+
+    Specify the base 2 log of the allocator page size, which must in turn be at
+    least as large as the system page size.  By default the configure script
+    determines the host's page size and sets the allocator page size equal to
+    the system page size, so this option need not be specified unless the
+    system page size may change between configuration and execution, e.g. when
+    cross compiling.
+
+* `--with-lg-hugepage=<lg-hugepage>`
+
+    Specify the base 2 log of the system huge page size.  This option is useful
+    when cross compiling, or when overriding the default for systems that do
+    not explicitly support huge pages.
+
+* `--with-lg-quantum=<lg-quantum>`
+
+    Specify the base 2 log of the minimum allocation alignment.  jemalloc needs
+    to know the minimum alignment that meets the following C standard
+    requirement (quoted from the April 12, 2011 draft of the C11 standard):
+
+    >  The pointer returned if the allocation succeeds is suitably aligned so
+      that it may be assigned to a pointer to any type of object with a
+      fundamental alignment requirement and then used to access such an object
+      or an array of such objects in the space allocated [...]
+
+    This setting is architecture-specific, and although jemalloc includes known
+    safe values for the most commonly used modern architectures, there is a
+    wrinkle related to GNU libc (glibc) that may impact your choice of
+    <lg-quantum>.  On most modern architectures, this mandates 16-byte
+    alignment (<lg-quantum>=4), but the glibc developers chose not to meet this
+    requirement for performance reasons.  An old discussion can be found at
+    <https://sourceware.org/bugzilla/show_bug.cgi?id=206> .  Unlike glibc,
+    jemalloc does follow the C standard by default (caveat: jemalloc
+    technically cheats for size classes smaller than the quantum), but the fact
+    that Linux systems already work around this allocator noncompliance means
+    that it is generally safe in practice to let jemalloc's minimum alignment
+    follow glibc's lead.  If you specify `--with-lg-quantum=3` during
+    configuration, jemalloc will provide additional size classes that are not
+    16-byte-aligned (24, 40, and 56).
+
+* `--with-lg-vaddr=<lg-vaddr>`
+
+    Specify the number of significant virtual address bits.  By default, the
+    configure script attempts to detect virtual address size on those platforms
+    where it knows how, and picks a default otherwise.  This option may be
+    useful when cross-compiling.
+
+* `--disable-initial-exec-tls`
+
+    Disable the initial-exec TLS model for jemalloc's internal thread-local
+    storage (on those platforms that support explicit settings).  This can allow
+    jemalloc to be dynamically loaded after program startup (e.g. using dlopen).
+    Note that in this case, there will be two malloc implementations operating
+    in the same process, which will almost certainly result in confusing runtime
+    crashes if pointers leak from one implementation to the other.
+
+* `--disable-libdl`
+
+    Disable the usage of libdl, namely dlsym(3) which is required by the lazy
+    lock option.  This can allow building static binaries.
+
+The following environment variables (not a definitive list) impact configure's
+behavior:
+
+* `CFLAGS="?"`
+* `CXXFLAGS="?"`
+
+    Pass these flags to the C/C++ compiler.  Any flags set by the configure
+    script are prepended, which means explicitly set flags generally take
+    precedence.  Take care when specifying flags such as -Werror, because
+    configure tests may be affected in undesirable ways.
+
+* `EXTRA_CFLAGS="?"`
+* `EXTRA_CXXFLAGS="?"`
+
+    Append these flags to CFLAGS/CXXFLAGS, without passing them to the
+    compiler(s) during configuration.  This makes it possible to add flags such
+    as -Werror, while allowing the configure script to determine what other
+    flags are appropriate for the specified configuration.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.  Note that CFLAGS is not passed to
+    'cpp' when 'configure' is looking for include files, so you must use
+    CPPFLAGS instead if you need to help 'configure' find header files.
+
+* `LD_LIBRARY_PATH="?"`
+
+    'ld' uses this colon-separated list to find libraries.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    'configure' uses this to find programs.
+
+In some cases it may be necessary to work around configuration results that do
+not match reality.  For example, Linux 4.5 added support for the MADV_FREE flag
+to madvise(2), which can cause problems if building on a host with MADV_FREE
+support and deploying to a target without.  To work around this, use a cache
+file to override the relevant configuration variable defined in configure.ac,
+e.g.:
+
+    echo "je_cv_madv_free=no" > config.cache && ./configure -C
+
+
+## Advanced compilation
+
+To build only parts of jemalloc, use the following targets:
+
+    build_lib_shared
+    build_lib_static
+    build_lib
+    build_doc_html
+    build_doc_man
+    build_doc
+
+To install only parts of jemalloc, use the following targets:
+
+    install_bin
+    install_include
+    install_lib_shared
+    install_lib_static
+    install_lib_pc
+    install_lib
+    install_doc_html
+    install_doc_man
+    install_doc
+
+To clean up build results to varying degrees, use the following make targets:
+
+    clean
+    distclean
+    relclean
+
+
+## Advanced installation
+
+Optionally, define make variables when invoking make, including (not
+exclusively):
+
+* `INCLUDEDIR="?"`
+
+    Use this as the installation prefix for header files.
+
+* `LIBDIR="?"`
+
+    Use this as the installation prefix for libraries.
+
+* `MANDIR="?"`
+
+    Use this as the installation prefix for man pages.
+
+* `DESTDIR="?"`
+
+    Prepend DESTDIR to INCLUDEDIR, LIBDIR, DATADIR, and MANDIR.  This is useful
+    when installing to a different path than was specified via --prefix.
+
+* `CC="?"`
+
+    Use this to invoke the C compiler.
+
+* `CFLAGS="?"`
+
+    Pass these flags to the compiler.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    Use this to search for programs used during configuration and building.
+
+
+## Development
+
+If you intend to make non-trivial changes to jemalloc, use the 'autogen.sh'
+script rather than 'configure'.  This re-generates 'configure', enables
+configuration dependency rules, and enables re-generation of automatically
+generated source files.
+
+The build system supports using an object directory separate from the source
+tree.  For example, you can create an 'obj' directory, and from within that
+directory, issue configuration and build commands:
+
+    autoconf
+    mkdir obj
+    cd obj
+    ../configure --enable-autogen
+    make
+
+
+## Documentation
+
+The manual page is generated in both html and roff formats.  Any web browser
+can be used to view the html manual.  The roff manual page can be formatted
+prior to installation via the following command:
+
+    nroff -man -t doc/jemalloc.3
+
+
+# Content from file ../neon/target/release/build/tikv-jemalloc-sys-9322c3f4617e737e/out/build/TUNING.md:
+
+This document summarizes the common approaches for performance fine tuning with
+jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
+reasonably well in practice, and most applications should not have to tune any
+options. However, in order to cover a wide range of applications and avoid
+pathological cases, the default setting is sometimes kept conservative and
+suboptimal, even for many common workloads.  When jemalloc is properly tuned for
+a specific application / workload, it is common to improve system level metrics
+by a few percent, or make favorable trade-offs.
+
+
+## Notable runtime options for performance tuning
+
+Runtime options can be set via
+[malloc_conf](http://jemalloc.net/jemalloc.3.html#tuning).
+
+* [background_thread](http://jemalloc.net/jemalloc.3.html#background_thread)
+
+    Enabling jemalloc background threads generally improves the tail latency for
+    application threads, since unused memory purging is shifted to the dedicated
+    background threads.  In addition, unintended purging delay caused by
+    application inactivity is avoided with background threads.
+
+    Suggested: `background_thread:true` when jemalloc managed threads can be
+    allowed.
+
+* [metadata_thp](http://jemalloc.net/jemalloc.3.html#opt.metadata_thp)
+
+    Allowing jemalloc to utilize transparent huge pages for its internal
+    metadata usually reduces TLB misses significantly, especially for programs
+    with large memory footprint and frequent allocation / deallocation
+    activities.  Metadata memory usage may increase due to the use of huge
+    pages.
+
+    Suggested for allocation intensive programs: `metadata_thp:auto` or
+    `metadata_thp:always`, which is expected to improve CPU utilization at a
+    small memory cost.
+
+* [dirty_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.dirty_decay_ms) and
+  [muzzy_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.muzzy_decay_ms)
+
+    Decay time determines how fast jemalloc returns unused pages back to the
+    operating system, and therefore provides a fairly straightforward trade-off
+    between CPU and memory usage.  Shorter decay time purges unused pages faster
+    to reduces memory usage (usually at the cost of more CPU cycles spent on
+    purging), and vice versa.
+
+    Suggested: tune the values based on the desired trade-offs.
+
+* [narenas](http://jemalloc.net/jemalloc.3.html#opt.narenas)
+
+    By default jemalloc uses multiple arenas to reduce internal lock contention.
+    However high arena count may also increase overall memory fragmentation,
+    since arenas manage memory independently.  When high degree of parallelism
+    is not expected at the allocator level, lower number of arenas often
+    improves memory usage.
+
+    Suggested: if low parallelism is expected, try lower arena count while
+    monitoring CPU and memory usage.
+
+* [percpu_arena](http://jemalloc.net/jemalloc.3.html#opt.percpu_arena)
+
+    Enable dynamic thread to arena association based on running CPU.  This has
+    the potential to improve locality, e.g. when thread to CPU affinity is
+    present.
+    
+    Suggested: try `percpu_arena:percpu` or `percpu_arena:phycpu` if
+    thread migration between processors is expected to be infrequent.
+
+Examples:
+
+* High resource consumption application, prioritizing CPU utilization:
+
+    `background_thread:true,metadata_thp:auto` combined with relaxed decay time
+    (increased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:30000,muzzy_decay_ms:30000`).
+
+* High resource consumption application, prioritizing memory usage:
+
+    `background_thread:true,tcache_max:4096` combined with shorter decay time
+    (decreased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:5000,muzzy_decay_ms:5000`), and lower arena count
+    (e.g. number of CPUs).
+
+* Low resource consumption application:
+
+    `narenas:1,tcache_max:1024` combined with shorter decay time (decreased
+    `dirty_decay_ms` and / or `muzzy_decay_ms`,e.g.
+    `dirty_decay_ms:1000,muzzy_decay_ms:0`).
+
+* Extremely conservative -- minimize memory usage at all costs, only suitable when
+allocation activity is very rare:
+
+    `narenas:1,tcache:false,dirty_decay_ms:0,muzzy_decay_ms:0`
+
+Note that it is recommended to combine the options with `abort_conf:true` which
+aborts immediately on illegal options.
+
+## Beyond runtime options
+
+In addition to the runtime options, there are a number of programmatic ways to
+improve application performance with jemalloc.
+
+* [Explicit arenas](http://jemalloc.net/jemalloc.3.html#arenas.create)
+
+    Manually created arenas can help performance in various ways, e.g. by
+    managing locality and contention for specific usages.  For example,
+    applications can explicitly allocate frequently accessed objects from a
+    dedicated arena with
+    [mallocx()](http://jemalloc.net/jemalloc.3.html#MALLOCX_ARENA) to improve
+    locality.  In addition, explicit arenas often benefit from individually
+    tuned options, e.g. relaxed [decay
+    time](http://jemalloc.net/jemalloc.3.html#arena.i.dirty_decay_ms) if
+    frequent reuse is expected.
+
+* [Extent hooks](http://jemalloc.net/jemalloc.3.html#arena.i.extent_hooks)
+
+    Extent hooks allow customization for managing underlying memory.  One use
+    case for performance purpose is to utilize huge pages -- for example,
+    [HHVM](https://github.com/facebook/hhvm/blob/master/hphp/util/alloc.cpp)
+    uses explicit arenas with customized extent hooks to manage 1GB huge pages
+    for frequently accessed data, which reduces TLB misses significantly.
+
+* [Explicit thread-to-arena
+  binding](http://jemalloc.net/jemalloc.3.html#thread.arena)
+
+    It is common for some threads in an application to have different memory
+    access / allocation patterns.  Threads with heavy workloads often benefit
+    from explicit binding, e.g. binding very active threads to dedicated arenas
+    may reduce contention at the allocator level.
+
+
+# Content from file ../neon/target/release/build/tikv-jemalloc-sys-9322c3f4617e737e/out/build/doc_internal/PROFILING_INTERNALS.md:
 
 # jemalloc profiling
 This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
