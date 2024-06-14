@@ -88,7 +88,9 @@ gh workflow -R neondatabase/neon run pin-build-tools-image.yml \
 
 # Content from file ../neon/README.md:
 
-[![Neon](https://user-images.githubusercontent.com/13738772/236813940-dcfdcb5b-69d3-449b-a686-013febe834d4.png)](https://neon.tech)
+[![Neon](https://github.com/neondatabase/neon/assets/11527560/f15a17f0-836e-40c5-b35d-030606a6b660)](https://neon.tech)
+
+
 
 # Neon
 
@@ -1466,18 +1468,18 @@ We can capture state of compute node buffer cache and send bulk request for this
 
 Currently we build two main images:
 
-- [neondatabase/neon](https://hub.docker.com/repository/docker/zenithdb/zenith) — image with pre-built `pageserver`, `safekeeper` and `proxy` binaries and all the required runtime dependencies. Built from [/Dockerfile](/Dockerfile).
-- [neondatabase/compute-node](https://hub.docker.com/repository/docker/zenithdb/compute-node) — compute node image with pre-built Postgres binaries from [neondatabase/postgres](https://github.com/neondatabase/postgres).
+- [neondatabase/neon](https://hub.docker.com/repository/docker/neondatabase/neon) — image with pre-built `pageserver`, `safekeeper` and `proxy` binaries and all the required runtime dependencies. Built from [/Dockerfile](/Dockerfile).
+- [neondatabase/compute-node-v16](https://hub.docker.com/repository/docker/neondatabase/compute-node-v16) — compute node image with pre-built Postgres binaries from [neondatabase/postgres](https://github.com/neondatabase/postgres). Similar images exist for v15 and v14.
 
 And additional intermediate image:
 
 - [neondatabase/compute-tools](https://hub.docker.com/repository/docker/neondatabase/compute-tools) — compute node configuration management tools.
 
-## Building pipeline
+## Build pipeline
 
 We build all images after a successful `release` tests run and push automatically to Docker Hub with two parallel CI jobs
 
-1. `neondatabase/compute-tools` and `neondatabase/compute-node`
+1. `neondatabase/compute-tools` and `neondatabase/compute-node-v16` (and -v15 and -v14)
 
 2. `neondatabase/neon`
 
@@ -1496,12 +1498,12 @@ You can see a [docker compose](https://docs.docker.com/compose/) example to crea
 1. create containers
 
 You can specify version of neon cluster using following environment values.
-- PG_VERSION: postgres version for compute (default is 14)
-- TAG: the tag version of [docker image](https://registry.hub.docker.com/r/neondatabase/neon/tags) (default is latest), which is tagged in [CI test](/.github/workflows/build_and_test.yml)
+- PG_VERSION: postgres version for compute (default is 16 as of this writing)
+- TAG: the tag version of [docker image](https://registry.hub.docker.com/r/neondatabase/neon/tags), which is tagged in [CI test](/.github/workflows/build_and_test.yml). Default is 'latest'
 ```
 $ cd docker-compose/
 $ docker-compose down   # remove the containers if exists
-$ PG_VERSION=15 TAG=2937 docker-compose up --build -d  # You can specify the postgres and image version
+$ PG_VERSION=16 TAG=latest docker-compose up --build -d  # You can specify the postgres and image version
 Creating network "dockercompose_default" with the default driver
 Creating docker-compose_storage_broker_1       ... done
 (...omit...)
@@ -1509,29 +1511,31 @@ Creating docker-compose_storage_broker_1       ... done
 
 2. connect compute node
 ```
-$ echo "localhost:55433:postgres:cloud_admin:cloud_admin" >> ~/.pgpass
-$ chmod 600 ~/.pgpass
-$ psql -h localhost -p 55433 -U cloud_admin
+$ psql postgresql://cloud_admin:cloud_admin@localhost:55433/postgres
+psql (16.3)
+Type "help" for help.
+
 postgres=# CREATE TABLE t(key int primary key, value text);
 CREATE TABLE
-postgres=# insert into t values(1,1);
+postgres=# insert into t values(1, 1);
 INSERT 0 1
 postgres=# select * from t;
- key | value
+ key | value 
 -----+-------
    1 | 1
 (1 row)
+
 ```
 
 3. If you want to see the log, you can use `docker-compose logs` command.
 ```
 # check the container name you want to see
 $ docker ps
-CONTAINER ID   IMAGE                                              COMMAND                  CREATED         STATUS         PORTS                                                                                                                                  NAMES
-d6968a5ae912   dockercompose_compute                              "/shell/compute.sh"      5 minutes ago   Up 5 minutes   0.0.0.0:3080->3080/tcp, 0.0.0.0:55433->55433/tcp                                                                                       dockercompose_compute_1
+CONTAINER ID   IMAGE                                              COMMAND                  CREATED         STATUS         PORTS                                                                                      NAMES
+3582f6d76227   docker-compose_compute                             "/shell/compute.sh"      2 minutes ago   Up 2 minutes   0.0.0.0:3080->3080/tcp, :::3080->3080/tcp, 0.0.0.0:55433->55433/tcp, :::55433->55433/tcp   docker-compose_compute_1
 (...omit...)
 
-$ docker logs -f dockercompose_compute_1
+$ docker logs -f docker-compose_compute_1
 2022-10-21 06:15:48.757 GMT [56] LOG:  connection authorized: user=cloud_admin database=postgres application_name=psql
 2022-10-21 06:17:00.307 GMT [56] LOG:  [NEON_SMGR] libpagestore: connected to 'host=pageserver port=6400'
 (...omit...)
@@ -13876,9 +13880,114 @@ PGSSLROOTCERT=./server.crt psql 'postgres://my-cluster-42.localtest.me:1234?sslm
 ```
 
 
-# Content from file ../neon/s3_scrubber/README.md:
+# Content from file ../neon/scripts/sk_cleanup_tenants/readme.md:
 
-# Neon S3 scrubber
+# Cleanup script for safekeeper
+
+This script can be used to remove tenant directories on safekeepers for projects which do not longer exist (deleted in console).
+
+To run this script you need to upload it to safekeeper (i.e. with SSH), and run it with python3. Ansible can be used to run this script on multiple safekeepers.
+
+NOTE: Console queries to check that project is deleted are slow and inefficient.
+If you want to run this script on safekeeper with many tenants, consider
+making PR to console repo to make projects search by tenant_id faster.
+
+## How to run on a single node
+
+```
+zsh nsh safekeeper-0.us-east-2.aws.neon.build
+
+ls /storage/safekeeper/data/ | grep -v safekeeper > tenants.txt
+
+mkdir -p /storage/neon-trash/2023-01-01--cleanup
+
+ export CONSOLE_API_TOKEN=
+python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME --dry-run
+
+cat tenants.txt | python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME --dry-run
+
+cat tenants.txt | python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME |& tee logs.txt
+```
+
+## How to use ansible (staging)
+
+```
+cd ~/neon/.github/ansible
+
+export AWS_DEFAULT_PROFILE=dev
+
+ansible-playbook -i staging.us-east-2.hosts.yaml -e @ssm_config ../../scripts/sk_cleanup_tenants/remote.yaml
+
+# add --extra-vars "api_token=" to set console api token
+```
+
+## How to use ansible (prod)
+
+- Change `endpoint` in `script.py` to "https://console.neon.tech/api"
+
+```
+cd ~/neon/.github/ansible
+
+export AWS_DEFAULT_PROFILE=prod
+
+ansible-playbook -i prod.us-east-2.hosts.yaml -e @ssm_config ../../scripts/sk_cleanup_tenants/remote.yaml
+
+# add --extra-vars "api_token=" to set console api token
+```
+
+
+> Heavily inspired with script for pageserver cleanup: https://gist.github.com/problame/bafb6ca6334f0145757238e61380c3f1/9bef1845a8291ebfa1f3a51eb79c01d12498b2b5
+
+# Content from file ../neon/scripts/sk_collect_dumps/readme.md:
+
+# Collect /v1/debug_dump from all safekeeper nodes
+
+3. Issue admin token (add/remove .stage from url for staging/prod and setting proper API key):
+```
+# staging:
+AUTH_TOKEN=$(curl https://console-stage.neon.build/regions/console/api/v1/admin/issue_token -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer $NEON_STAGING_KEY" -X POST -d '{"ttl_seconds": 43200, "scope": "safekeeperdata"}' 2>/dev/null | jq --raw-output '.jwt')
+# prod:
+AUTH_TOKEN=$(curl https://console.neon.tech/regions/console/api/v1/admin/issue_token -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer $NEON_PROD_KEY" -X POST -d '{"ttl_seconds": 43200, "scope": "safekeeperdata"}' 2>/dev/null | jq --raw-output '.jwt')
+# check
+echo $AUTH_TOKEN
+```
+2. Run ansible playbooks to collect .json dumps from all safekeepers and store them in `./result` directory.
+
+There are two ways to do that, with ssm or tsh. ssm:
+```
+# in aws repo, cd .github/ansible and run e.g. (adjusting profile and region in vars and limit):
+AWS_DEFAULT_PROFILE=dev ansible-playbook -i inventory_aws_ec2.yaml -i staging.us-east-2.vars.yaml -e @ssm_config -l 'safekeeper:&us_east_2' -e "auth_token=${AUTH_TOKEN}" ~/neon/neon/scripts/sk_collect_dumps/remote.yaml
+```
+It will put the results to .results directory *near the playbook*.
+
+tsh:
+
+Update the inventory, if needed, selecting .build/.tech and optionally region:
+```
+rm -f hosts && echo '[safekeeper]' >> hosts
+# staging:
+tsh ls | awk '{print $1}' | grep safekeeper | grep "neon.build" | grep us-east-2 >> hosts
+# prod:
+tsh ls | awk '{print $1}' | grep safekeeper | grep "neon.tech" | grep us-east-2 >> hosts
+```
+
+Test ansible connection:
+```
+ansible all -m ping -v
+```
+
+Download the dumps:
+```
+mkdir -p result && rm -f result/*
+ansible-playbook -e "auth_token=${AUTH_TOKEN}" remote.yaml
+```
+
+3. Run `DB_CONNSTR=... ./upload.sh prod_feb30` to upload dumps to `prod_feb30` table in specified postgres database.
+
+
+# Content from file ../neon/storage_scrubber/README.md:
+
+# Neon Storage Scrubber
 
 This tool directly accesses the S3 buckets used by the Neon `pageserver`
 and `safekeeper`, and does housekeeping such as cleaning up objects for tenants & timelines that no longer exist.
@@ -13986,111 +14095,6 @@ Note that some tenants/timelines could be marked as deleted in console, but cons
 
 When all IDs are collected, manually go to every pageserver and detach/delete the tenant/timeline.
 In future, the cleanup tool may access pageservers directly, but now it's only console and S3 it has access to.
-
-
-# Content from file ../neon/scripts/sk_cleanup_tenants/readme.md:
-
-# Cleanup script for safekeeper
-
-This script can be used to remove tenant directories on safekeepers for projects which do not longer exist (deleted in console).
-
-To run this script you need to upload it to safekeeper (i.e. with SSH), and run it with python3. Ansible can be used to run this script on multiple safekeepers.
-
-NOTE: Console queries to check that project is deleted are slow and inefficient.
-If you want to run this script on safekeeper with many tenants, consider
-making PR to console repo to make projects search by tenant_id faster.
-
-## How to run on a single node
-
-```
-zsh nsh safekeeper-0.us-east-2.aws.neon.build
-
-ls /storage/safekeeper/data/ | grep -v safekeeper > tenants.txt
-
-mkdir -p /storage/neon-trash/2023-01-01--cleanup
-
- export CONSOLE_API_TOKEN=
-python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME --dry-run
-
-cat tenants.txt | python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME --dry-run
-
-cat tenants.txt | python3 script.py --trash-dir /storage/neon-trash/2023-01-01--cleanup --safekeeper-id $(cat /storage/safekeeper/data/safekeeper.id) --safekeeper-host $HOSTNAME |& tee logs.txt
-```
-
-## How to use ansible (staging)
-
-```
-cd ~/neon/.github/ansible
-
-export AWS_DEFAULT_PROFILE=dev
-
-ansible-playbook -i staging.us-east-2.hosts.yaml -e @ssm_config ../../scripts/sk_cleanup_tenants/remote.yaml
-
-# add --extra-vars "api_token=" to set console api token
-```
-
-## How to use ansible (prod)
-
-- Change `endpoint` in `script.py` to "https://console.neon.tech/api"
-
-```
-cd ~/neon/.github/ansible
-
-export AWS_DEFAULT_PROFILE=prod
-
-ansible-playbook -i prod.us-east-2.hosts.yaml -e @ssm_config ../../scripts/sk_cleanup_tenants/remote.yaml
-
-# add --extra-vars "api_token=" to set console api token
-```
-
-
-> Heavily inspired with script for pageserver cleanup: https://gist.github.com/problame/bafb6ca6334f0145757238e61380c3f1/9bef1845a8291ebfa1f3a51eb79c01d12498b2b5
-
-# Content from file ../neon/scripts/sk_collect_dumps/readme.md:
-
-# Collect /v1/debug_dump from all safekeeper nodes
-
-3. Issue admin token (add/remove .stage from url for staging/prod and setting proper API key):
-```
-# staging:
-AUTH_TOKEN=$(curl https://console-stage.neon.build/regions/console/api/v1/admin/issue_token -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer $NEON_STAGING_KEY" -X POST -d '{"ttl_seconds": 43200, "scope": "safekeeperdata"}' 2>/dev/null | jq --raw-output '.jwt')
-# prod:
-AUTH_TOKEN=$(curl https://console.neon.tech/regions/console/api/v1/admin/issue_token -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer $NEON_PROD_KEY" -X POST -d '{"ttl_seconds": 43200, "scope": "safekeeperdata"}' 2>/dev/null | jq --raw-output '.jwt')
-# check
-echo $AUTH_TOKEN
-```
-2. Run ansible playbooks to collect .json dumps from all safekeepers and store them in `./result` directory.
-
-There are two ways to do that, with ssm or tsh. ssm:
-```
-# in aws repo, cd .github/ansible and run e.g. (adjusting profile and region in vars and limit):
-AWS_DEFAULT_PROFILE=dev ansible-playbook -i inventory_aws_ec2.yaml -i staging.us-east-2.vars.yaml -e @ssm_config -l 'safekeeper:&us_east_2' -e "auth_token=${AUTH_TOKEN}" ~/neon/neon/scripts/sk_collect_dumps/remote.yaml
-```
-It will put the results to .results directory *near the playbook*.
-
-tsh:
-
-Update the inventory, if needed, selecting .build/.tech and optionally region:
-```
-rm -f hosts && echo '[safekeeper]' >> hosts
-# staging:
-tsh ls | awk '{print $1}' | grep safekeeper | grep "neon.build" | grep us-east-2 >> hosts
-# prod:
-tsh ls | awk '{print $1}' | grep safekeeper | grep "neon.tech" | grep us-east-2 >> hosts
-```
-
-Test ansible connection:
-```
-ansible all -m ping -v
-```
-
-Download the dumps:
-```
-mkdir -p result && rm -f result/*
-ansible-playbook -e "auth_token=${AUTH_TOKEN}" remote.yaml
-```
-
-3. Run `DB_CONNSTR=... ./upload.sh prod_feb30` to upload dumps to `prod_feb30` table in specified postgres database.
 
 
 # Content from file ../neon/target/debug/build/tikv-jemalloc-sys-25369abf4ac5b73f/out/build/INSTALL.md:
@@ -15766,6 +15770,21 @@ def test_foobar(neon_env_builder: NeonEnvBuilder):
     ...
 ```
 
+The env includes a default tenant and timeline. Therefore, you do not need to create your own
+tenant/timeline for testing.
+
+```python
+def test_foobar2(neon_env_builder: NeonEnvBuilder):
+    env = neon_env_builder.init_start() # Start the environment
+    with env.endpoints.create_start("main") as endpoint:
+        # Start the compute endpoint
+    client = env.pageserver.http_client() # Get the pageserver client
+
+    tenant_id = env.initial_tenant
+    timeline_id = env.initial_timeline
+    client.timeline_detail(tenant_id=tenant_id, timeline_id=timeline_id)
+```
+
 For more information about pytest fixtures, see https://docs.pytest.org/en/stable/fixture.html
 
 At the end of a test, all the nodes in the environment are automatically stopped, so you
@@ -15847,6 +15866,64 @@ RUST_BACKTRACE=1 NEON_ENV_BUILDER_USE_OVERLAYFS_FOR_SNAPSHOTS=1 DEFAULT_PG_VERSI
     ./scripts/pytest test_runner/performance/pageserver/pagebench/test_pageserver_max_throughput_getpage_at_latest_lsn.py
 ````
 
+
+# Content from file ../neon/test_runner/performance/pgvector/README.md:
+
+# Source of the dataset for pgvector tests
+
+This readme was copied from https://huggingface.co/datasets/Qdrant/dbpedia-entities-openai3-text-embedding-3-large-1536-1M
+
+## Download the parquet files
+
+```bash
+brew install git-lfs
+git-lfs clone https://huggingface.co/datasets/Qdrant/dbpedia-entities-openai3-text-embedding-3-large-1536-1M
+```
+
+## Load into postgres:
+
+see loaddata.py in this directory
+
+## Rest of dataset card as on huggingface
+
+---
+dataset_info:
+  features:
+  - name: _id
+    dtype: string
+  - name: title
+    dtype: string
+  - name: text
+    dtype: string
+  - name: text-embedding-3-large-1536-embedding
+    sequence: float64
+  splits:
+  - name: train
+    num_bytes: 12679725776
+    num_examples: 1000000
+  download_size: 9551862565
+  dataset_size: 12679725776
+configs:
+- config_name: default
+  data_files:
+  - split: train
+    path: data/train-*
+license: mit
+task_categories:
+- feature-extraction
+language:
+- en
+size_categories:
+- 1M<n<10M
+---
+
+
+1M OpenAI Embeddings: text-embedding-3-large 1536 dimensions
+
+- Created: February 2024. 
+- Text used for Embedding: title (string) + text (string)
+- Embedding Model: OpenAI text-embedding-3-large
+- This dataset was generated from the first 1M entries of https://huggingface.co/datasets/BeIR/dbpedia-entity, extracted by @KShivendu_
 
 # Content from file ../neon/test_runner/pg_clients/README.md:
 
