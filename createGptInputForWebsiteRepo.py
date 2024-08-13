@@ -7,8 +7,15 @@ def read_markdown_file(filepath):
 def process_items(items):
     combined_markdown = ''
     for item in items:
-        title = item['title']
-        slug = item.get('slug', '')
+        title = 'noname'
+        if 'title' in item:
+            title = item['title']
+
+        if 'section' in item:
+            title = item['section']
+
+        slug = item['slug'] if 'slug' in item else None       
+
         full_path = f"../website/content/docs/{slug}.md" if slug else ''
 
         # Add the title as an H1 heading
@@ -16,8 +23,13 @@ def process_items(items):
 
         # Add content from the corresponding Markdown file, if a slug is provided
         if slug:
-            markdown_content = read_markdown_file(full_path)
-            combined_markdown += f"{markdown_content}\n\n"
+            try:
+                markdown_content = read_markdown_file(full_path)
+                combined_markdown += f"{markdown_content}\n\n"
+            except FileNotFoundError:
+                print(f"Markdown file not found: {full_path}")
+                # Skip the combined_markdown step if the file is not found
+                pass
 
         # Process any nested items recursively
         if 'items' in item:
