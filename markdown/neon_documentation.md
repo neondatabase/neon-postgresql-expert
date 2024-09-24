@@ -4,24 +4,24 @@
 
 ---
 title: Neon documentation
-updatedOn: '2024-08-06T15:23:10.952Z'
+updatedOn: '2024-09-17T16:30:56.930Z'
 ---
 
 Neon is a serverless Postgres platform designed to help you build reliable and scalable applications faster. We separate compute and storage to offer modern developer features such as autoscaling, branching, point-in-time restore, and more. Get started today with our [generous free plan](https://console.neon.tech).
 
-<CTA title="Branch your data like code" description="Learn how Neon's database branching can help you integrate Postgres into your development workflow." buttonText="Read our primer" buttonUrl="/docs/get-started-with-neon/workflow-primer" />
+<CTA title="Did you know?" description="Neon's database branching can help you integrate Postgres into your development workflow. Branch your data like code. <a href='/docs/get-started-with-neon/workflow-primer'>Read our primer</a> to learn&nbsp;how." isIntro></CTA>
 
 ## Get started
 
-<DetailIconCards withBorderWrapper>
+<DetailIconCards withNumbers>
 
-<a href="/docs/get-started-with-neon/signing-up" description="Sign up for free and learn the basics of database branching with Neon" icon="user"><span>1 </span>- Playing with Neon</a>
+<a href="/docs/get-started-with-neon/signing-up" description="Sign up for free and learn the basics of database branching with Neon">Playing with Neon</a>
 
-<a href="/docs/get-started-with-neon/connect-neon" description="Connect Neon to the platform, language, ORM and other tools in your tech stack" icon="audio-jack"><span>2 </span>- Connect Neon to your stack</a>
+<a href="/docs/get-started-with-neon/connect-neon" description="Connect Neon to the platform, language, ORM and other tools in your tech stack">Connect Neon to your stack</a>
 
-<a href="/docs/get-started-with-neon/workflow-primer" description="Add branching to your CI/CD automation" icon="split-branch"><span>3 </span>- Branching workflows</a>
+<a href="/docs/get-started-with-neon/workflow-primer" description="Add branching to your CI/CD automation">Branching workflows</a>
 
-<a href="/docs/get-started-with-neon/production-checklist" description="Key features to get you production ready" icon="laptop"><span>4 </span>- Get ready for production</a>
+<a href="/docs/get-started-with-neon/production-checklist" description="Key features to get you production ready">Get ready for production</a>
 
 </DetailIconCards>
 
@@ -29,43 +29,43 @@ Neon is a serverless Postgres platform designed to help you build reliable and s
 
 <TechnologyNavigation>
 
-<img src="/images/technology-logos/nextjs-logo.svg" width="36" height="36" alt="Next.js" href="/docs/guides/nextjs" title="Connect a Next.js application to Neon" />
+<a href="/docs/guides/prisma" title="Prisma" description="Easily add secure, beautiful, and fast authentication to Prisma with Neon." icon="prisma"></a>
 
-<img src="/images/technology-logos/nodejs-logo.svg" width="33" height="36" alt="Node.js" href="/docs/guides/node" title="Connect a Node.js application to Neon" />
+<a href="/docs/guides/react" title="React" description="Build powerful and interactive user interfaces with React using Neon as your database." icon="react"></a>
 
-<img src="/images/technology-logos/neon-logo.svg"  width="42" height="36" alt="Neon" href="/docs/serverless/serverless-driver" title="Connect with the Neon serverless driver" />
+<a href="/docs/guides/node" title="Node.js" description="Quickly add authentication and user management to your Node.js application." icon="node-js"></a>
 
-<img src="/images/technology-logos/prisma-logo.svg" width="30" height="36" alt="Prisma" href="/docs/guides/prisma" title="Connect from Prisma to Neon" />
+<a href="/docs/guides/nextjs" title="Next.js" description="Connect a Next.js application to Neon" icon="next-js"></a>
 
-<img src="/images/technology-logos/astro-logo.svg" width="36" height="36" alt="Astro" href="/docs/guides/astro" title="Connect an Astro site or app to Neon" />
+<a href="/docs/serverless/serverless-driver" title="Neon" description="Connect with the Neon serverless driver" icon="neon"></a>
 
-<img src="/images/technology-logos/django-logo.svg" width="29" height="36" alt="Django" href="/docs/guides/django" title="Connect a Django application to Neon" />
+<a href="/docs/guides/astro" title="Astro" description="Connect an Astro site or app to Neon" icon="astro"></a>
 
-<img src="/images/technology-logos/elixir-logo.svg" width="36" height="36" alt="Elixir" href="/docs/guides/elixir-ecto" title="Connect from Elixir with Ecto to Neon" />
+<a href="/docs/guides/django" title="Django" description="Connect a Django application to Neon" icon="django"></a>
 
-<img src="/images/technology-logos/go-logo.svg" width="80" height="36" alt="Go" href="/docs/guides/go" title="Connect a Go application to Neon" />
+<a href="/docs/guides/elixir-ecto" title="Elixir" description="Connect from Elixir with Ecto to Neon" icon="elixir"></a>
 
-<img src="/images/technology-logos/java-logo.svg" width="27" height="36" alt="Java" href="/docs/guides/java" title="Connect a Java application to Neon" />
+<a href="/docs/guides/go" title="Go" description="Connect a Go application to Neon" icon="go"></a>
 
-<img src="/images/technology-logos/laravel-logo.svg" width="35" height="36" alt="Laravel" href="/docs/guides/laravel" title="Connect from Laravel to Neon" />
+<a href="/docs/guides/java" title="Java" description="Connect a Java application to Neon" icon="java"></a>
 
-<img src="/images/technology-logos/python-logo.svg" width="33" height="36" alt="Python" href="/docs/guides/python" title="Connect a Python application to Neon" />
+<a href="/docs/guides/laravel" title="Laravel" description="Connect from Laravel to Neon" icon="laravel"></a>
 
-<img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-jdbc" title="Connect Quarkus (JDBC) to Neon" />
+<a href="/docs/guides/python" title="Python" description="Connect a Python application to Neon" icon="python"></a>
 
-<img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-reactive" title="Connect Quarkus (Reactive) to Neon" />
+<a href="/docs/guides/quarkus-jdbc" title="Quarkus" description="Connect Quarkus (JDBC) to Neon" icon="quarkus"></a>
 
-<img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/ruby-on-rails" title="Connect a Rails application to Neon" />
+<a href="/docs/guides/quarkus-reactive" title="Quarkus" description="Connect Quarkus (Reactive) to Neon" icon="quarkus"></a>
 
-<img src="/images/technology-logos/react-logo.svg" width="36" height="36" alt="React" href="/docs/guides/react" title="Connect a React application to Neon" />
+<a href="/docs/guides/ruby-on-rails" title="Rails" description="Connect a Rails application to Neon" icon="rails"></a>
 
-<img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
+<a href="/docs/guides/remix" title="Remix" description="Connect a Remix application to Neon" icon="remix"></a>
 
-<img src="/images/technology-logos/rust-logo.svg" width="36" height="36" alt="Rust" href="/docs/guides/rust" title="Connect a Rust application to Neon" />
+<a href="/docs/guides/rust" title="Rust" description="Connect a Rust application to Neon" icon="rust"></a>
 
-<img src="/images/technology-logos/sqlalchemy-logo.svg" width="102" height="36" alt="SQLAlchemy" href="/docs/guides/sqlalchemy" title="Connect an SQLAlchemy application to Neon" />
+<a href="/docs/guides/sqlalchemy" title="SQLAlchemy" description="Connect an SQLAlchemy application to Neon" icon="sqlalchemy"></a>
 
-<img src="/images/technology-logos/symfony-logo.svg" width="36" height="36" alt="Symfony" href="/docs/guides/symfony" title="Connect from Symfony with Doctrine to Neon" />
+<a href="/docs/guides/symfony" title="Symfony" description="Connect from Symfony with Doctrine to Neon" icon="symfony"></a>
 
 </TechnologyNavigation>
 
@@ -98,8 +98,6 @@ If you have questions about Neon or Postgres, reach out to Neon community member
 
 # Why Neon?
 
-# Our mission
-
 ---
 title: Why Neon?
 subtitle: Neon is Serverless Postgres built for the cloud
@@ -107,7 +105,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/cloud/about
   - /docs/introduction/about
-updatedOn: '2024-08-07T21:36:52.644Z'
+updatedOn: '2024-08-29T10:48:38.730Z'
 ---
 
 Looking back at Neon's debut blog post, [SELECT ’Hello, World’](https://neon.tech/blog/hello-world), the fundamental reasons for **Why Neon** remain the same:
@@ -142,11 +140,129 @@ From its beginning as a [DARPA-sponsored project at Berkeley](https://www.postgr
 
 **A serverless architecture built for performance, reliability, manageability, and cost efficiency**
 
-Neon's [architecture](/docs/introduction/architecture-overview) separates compute from storage, which enables serverless features like [Autoscaling](/docs/get-started-with-neon/production-readiness#autoscaling) and [Autosuspend](/docs/get-started-with-neon/production-readiness##scale-to-zero).
+Neon's [architecture](/docs/introduction/architecture-overview) separates compute from storage, which enables serverless features like instant provisioning, [autoscaling](/docs/get-started-with-neon/production-readiness#autoscaling), [autosuspend](/docs/get-started-with-neon/production-readiness##scale-to-zero), and more.
 
 Separating compute from storage refers to an architecture where the database computation processes (queries, transactions, etc.) are handled by one set of resources (compute), while the data itself is stored on a separate set of resources (storage). This design contrasts with traditional architectures where compute and storage are tightly coupled on the same server. In Neon, Postgres runs on a compute, and data (except for what's cached in memory) resides on Neon's storage layer.
 
 Separation of compute and storage enables scalability as these resources can be scaled independently. You can adjust for processing power or storage capacity as needed without affecting the other. This approach is also cost-efficient. The ability to scale resources independently means you can benefit from the lower cost of storage compared to compute or avoid paying for additional storage when you only require extra processing power. Decoupling compute and storage also improves availability and durability, as data remains accessible and safe even if a compute fails.
+
+[Read more about the benefits of Neon's serverless architecture](/docs/introduction/serverless) and how it supports database-per-user architectures, variable workloads, and database branching workflows.
+
+## Neon is fully managed
+
+**Leave the database administrative, maintenance, and scaling burdens to us.**
+
+Being a fully managed service means that Neon provides high availability without requiring users to handle administrative, maintenance, or scaling burdens associated with managing a database system. This approach allows developers to focus more on developing applications and less on the operational aspects of database management. Neon takes care of the complexities of scaling, backups, maintenance, and ensuring availability, enabling developers to manage their data without worrying about the underlying infrastructure.
+
+## Neon is open source
+
+**Neon is developed under an Apache 2.0 license.**
+
+Neon is not the first to offer separation of storage and compute for Postgres. AWS Aurora is probably the most famous example; however, it is proprietary and tied to AWS’s internal infrastructure.
+
+We believe we have an opportunity to define the standard for cloud Postgres. We carefully designed our storage, focusing on cloud independence, performance, manageability, DevX, and cost. We chose the most permissive open-source license, Apache 2.0, and invited the world to participate. You can already build and run your own self-hosted instance of Neon. Check out our [neon GitHub repository](https://github.com/neondatabase) and the [#self-hosted](https://discord.com/channels/1176467419317940276/1184894814769127464) channel on our Discord server.
+
+## Neon doesn't lock you in
+
+**As a true Postgres platform, there's no lock-in with Neon.**
+
+Building on Neon is building on Postgres. If you are already running Postgres, getting started is easy. [Import your data](https://neon.tech/docs/import/import-intro) and [connect](https://neon.tech/docs/connect/connect-intro). Migrating from other databases like MySQL or MongoDB is just as easy.
+
+If you need to move data, you won't have to tear apart your application to remove proprietary application layers. Neon is pro-ecosystem and pro-integration. We encourage you to build with the frameworks, platforms, and services that best fit your requirements. Neon works to enable that. Check out our ever-expanding collection of [framework](/docs/get-started-with-neon/frameworks), [language](/docs/get-started-with-neon/languages), and [integration](/docs/guides/integrations) guides.
+
+## Who should use Neon?
+
+**You. And we're ready to help you get started.**
+
+Neon is designed for a wide range of users, from individual developers to enterprises, seeking modern, serverless Postgres capabilities. It caters to those who need a fully managed, scalable, and cost-effective database solution. Key users include:
+
+- **Individual developers** looking for a fast and easy way to set up a Postgres database without the hassle of installation or configuration. Neon's Free Plan makes it easy to get started. [Free Plan](/docs/introduction/plans#free-plan) users get access to all regions and features like connection pooling, project sharing, and branching. When you are ready to scale, you can easily upgrade your account to a paid plan for more computing power, storage, and advanced features.
+
+  <Admonition type="tip" title="Neon's Free Plan is here to stay">
+  Neon's Free Plan is a fundamental part of our commitment to users. Our architecture, which separates storage and compute, enables a sustainable Free Plan. You can build your personal project or PoC with confidence, knowing that our Free Plan is here to stay. [Learn more about our Free Plan from Neon's CEO](https://twitter.com/nikitabase/status/1758639571414446415).
+  </Admonition>
+
+- **Teams and organizations** that aim to enhance their development workflows with the ability to create database branches for testing new features or updates, mirroring the branching process used in code version control.
+- **Enterprises** requiring scalable, high-performance database solutions with advanced features like autoscaling, autosuspend, point-in-time restore, and logical replication. Enterprises can benefit from custom pricing, higher resource allowances, and enterprise-level support to meet their specific requirements.
+
+In summary, Neon is built for anyone who requires a Postgres database and wants to benefit from the scalability, ease of use, cost savings, and advanced DevX capabilities provided by Neon's serverless architecture.
+
+## Neon makes it easy to get started with Postgres
+
+**Set up your Postgres database in seconds.**
+
+1. [Log in](https://console.neon.tech/signup) with an email address, Google, or GitHub account.
+2. Provide a project name and database name, and select a region.
+3. Click **Create Project**.
+
+Neon's architecture allows us to spin up a Postgres database almost instantly and provide you with a database URL, which you can plug into your application or database client.
+
+```sql
+postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
+```
+
+Additionally, after signing up, we land you on your project dashboard, where you'll find connection snippets for various frameworks, languages, and platforms.
+
+![Next.js connection snippet from the Connection details widget on the Neon Dashboard](/docs/get-started-with-neon/connection_snippet.png)
+
+If you are not quite ready to hook up an application, you can explore Neon from the console. Create the `playing_with_neon` table using the Neon [SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), run some queries, or create a database branch.
+
+Initially, you'll be signed up for Neon's [Free Plan](/docs/introduction/plans#free-plan), but you can easily upgrade to one of our [paid plans](/docs/introduction/plans) when you're ready.
+
+<CTA title="Are you ready?" description="After signing up, remember to join our active Discord community, where you'll find Neon users and team members ready to help." buttonText="Sign up" buttonUrl="https://console.neon.tech/signup" />
+
+
+# Our mission
+
+---
+title: Why Neon?
+subtitle: Neon is Serverless Postgres built for the cloud
+enableTableOfContents: true
+redirectFrom:
+  - /docs/cloud/about
+  - /docs/introduction/about
+updatedOn: '2024-08-29T10:48:38.730Z'
+---
+
+Looking back at Neon's debut blog post, [SELECT ’Hello, World’](https://neon.tech/blog/hello-world), the fundamental reasons for **Why Neon** remain the same:
+
+- **To build the best Postgres experience in the cloud**
+
+  This is still our core mission today. It was clear to us then, as it is now, that database workloads are shifting into the cloud &#8212; and no one wants to manage a database themselves.
+
+- **In an ever-changing technology stack, we believe Postgres is here to stay**
+
+  Just like the Linux operating system or Git version control, we believe Postgres is the default choice for a relational database system. That’s why all of the major platforms like AWS, Azure, Google Cloud, Digital Ocean, and many newcomers to this space offer Postgres as a service.
+
+- **An idea that a modern Postgres cloud service can be designed differently**
+
+  We call this approach _separation of storage and compute_, which lets us architect the service around performance, reliability, manageability, and cost-efficiency.
+
+- **The belief that our architecture can provide a better Developer Experience (DevX)**
+
+  Features such as autoscaling, branching, time travel, and instant databases, backups, and restore improve the developer experience by allowing quick environment setup, efficient developer workflows, and immediate database availability.
+
+These are Neon's reasons, but given the many _database-as-a-service_ options available today, let's take a look at the reasons why **you** should choose Neon:
+
+## Neon is Postgres
+
+**Postgres is the world's most popular open-source database.**
+
+From its beginning as a [DARPA-sponsored project at Berkeley](https://www.postgresql.org/docs/current/history.html), Postgres has fostered an ever-growing community and is a preferred database among developers because of its performance, reliability, extensibility, and support for features like ACID transactions, advanced SQL, and NoSQL/JSON. Neon supports all of the latest Postgres versions and numerous [Postgres extensions](/docs/extensions/extensions-intro).
+
+**If your application runs on Postgres, it runs on Neon**. If it doesn't run on Postgres, [sign up](https://console.neon.tech/signup) for a Free Plan account, join our [Discord server](https://discord.gg/92vNTzKDGp), and start the journey with us.
+
+## Neon is serverless
+
+**A serverless architecture built for performance, reliability, manageability, and cost efficiency**
+
+Neon's [architecture](/docs/introduction/architecture-overview) separates compute from storage, which enables serverless features like instant provisioning, [autoscaling](/docs/get-started-with-neon/production-readiness#autoscaling), [autosuspend](/docs/get-started-with-neon/production-readiness##scale-to-zero), and more.
+
+Separating compute from storage refers to an architecture where the database computation processes (queries, transactions, etc.) are handled by one set of resources (compute), while the data itself is stored on a separate set of resources (storage). This design contrasts with traditional architectures where compute and storage are tightly coupled on the same server. In Neon, Postgres runs on a compute, and data (except for what's cached in memory) resides on Neon's storage layer.
+
+Separation of compute and storage enables scalability as these resources can be scaled independently. You can adjust for processing power or storage capacity as needed without affecting the other. This approach is also cost-efficient. The ability to scale resources independently means you can benefit from the lower cost of storage compared to compute or avoid paying for additional storage when you only require extra processing power. Decoupling compute and storage also improves availability and durability, as data remains accessible and safe even if a compute fails.
+
+[Read more about the benefits of Neon's serverless architecture](/docs/introduction/serverless) and how it supports database-per-user architectures, variable workloads, and database branching workflows.
 
 ## Neon is fully managed
 
@@ -1064,7 +1180,7 @@ Make sure that your development team is always working from the latest schema an
 title: Connecting Neon to your stack
 subtitle: Learn how to integrate Neon into your application
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.643Z'
+updatedOn: '2024-09-20T19:10:25.305Z'
 ---
 
 Using Neon as the serverless database in your tech stack means configuring connections. Whether it’s a direct connection string from your language or framework, setting environment variables for your deployment platform, connecting to ORMs like Prisma, or configuring deployment settings for CI/CD workflows, it starts with the connection.
@@ -1243,7 +1359,7 @@ func main() {
 
 </CodeTabs>
 
-## Obtaining Connection Details
+## Obtaining connection details
 
 When connecting to Neon from an application or client, you connect to a database in your Neon project. In Neon, a database belongs to a branch, which may be the default branch of your project (`main`) or a child branch.
 
@@ -1267,7 +1383,7 @@ postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbna
 The hostname includes the ID of the compute, which has an `ep-` prefix: `ep-cool-darkness-123456`. For more information about Neon connection strings, see [Connection string](/docs/reference/glossary#connection-string).
 </Admonition>
 
-## Using Connection Details
+## Using connection details
 
 You can use the details from the connection string or the connection string itself to configure a connection. For example, you might place the connection details in an `.env` file, assign the connection string to a variable, or pass the connection string on the command-line.
 
@@ -1307,13 +1423,13 @@ It's included in your Neon connection string, which you can find on the Neon **D
 
 Neon uses the default Postgres port, `5432`.
 
-## Network Protocol Support
+## Network protocol support
 
 Neon supports both [IPv4](https://en.wikipedia.org/wiki/Internet_Protocol_version_4) and [IPv6](https://en.wikipedia.org/wiki/IPv6) addresses.
 
 Additionally, Neon provides a serverless driver that supports both WebSocket and HTTP connections. For further information, refer to our [Neon serverless driver](/docs/serverless/serverless-driver) documentation.
 
-## Connection Notes
+## Connection notes
 
 - Some older client libraries and drivers, including older `psql` executables, are built without [Server Name Indication (SNI)](/docs/reference/glossary#sni) support and require a workaround. For more information, see [Connection errors](/docs/connect/connection-errors).
 - Some Java-based tools that use the pgJDBC driver for connecting to Postgres, such as DBeaver, DataGrip, and CLion, do not support including a role name and password in a database connection string or URL field. When you find that a connection string is not accepted, try entering the database name, role, and password values in the appropriate fields in the tool's connection UI
@@ -1522,7 +1638,7 @@ You can create test branches from the same date and time or Log Sequence Number 
 title: Getting ready for production
 subtitle: Explore the features that will help you prepare for production with Neon
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.643Z'
+updatedOn: '2024-09-23T19:07:35.840Z'
 ---
 
 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -1560,9 +1676,10 @@ In a development environment, your application may function perfectly with a sma
 
 In Neon, your compute size determines the amount of vCPU and memory your database has to work with. Neon supports computes up to 10 Compute Units (CUs) in size. Larger computes provide more memory. The compute sizes that are available to you depend on your [Neon plan](/docs/introduction/plans):
 
-- **Free Plan**: 0.25 CUs (0.25 vCPU, 1 GB RAM)
+- **Free Plan**: Starting at a fixed 0.25 CU (0.25 vCPU, 1 GB RAM), up to 2 CU (2 vCPU, 8 GRM RAM) with autoscaling enabled
 - **Launch**: Up to 4 CUs (4 vCPU, 16 GB RAM)
-- **Scale**: Up to 10 CUs (10 vCPU, 40 GB RAM)
+- **Scale**: Up to 8 CUs (8 vCPU, 32 GB RAM)
+- **Business**: Up to 10 CUs (10 vCPU, 40 GB RAM)
 - **Enterprise**: Larger sizes
 
 You should start with a compute size that can hold your data or at least your most frequently accessed data (your [working set](/docs/reference/glossary#working-set)) in memory. If you are using Neon's _Autoscaling_ feature, we recommend the same for your **minimum compute size** setting (see [Configure Autoscaling](#configure-autoscaling)).
@@ -1598,23 +1715,23 @@ The Postgres `max_connections` setting defines your basic maximum simultaneous c
 postgresql://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require
 ```
 
-The `-pooler` flag directs connections to a connection pooling port at the Neon proxy. Unless you have a specific reason to avoid connection pooling, we recommend using it in production. You can copy a pooled connection string for your database from the **Connectin Details** widget on your project's **Dashboard** in the Neon Console. Select the **Pooled connection** option. For more information, see [Connection pooling](/docs/connect/connection-pooling).
+The `-pooler` flag directs connections to a connection pooling port at the Neon proxy. Unless you have a specific reason to avoid connection pooling, we recommend using it in production. You can copy a pooled connection string for your database from the **Connection Details** widget on your project's **Dashboard** in the Neon Console. Select the **Pooled connection** option. For more information, see [Connection pooling](/docs/connect/connection-pooling).
 
 ## Configure your history retention period
 
-Neon retains a history of changes for all branches. This history enables point-in-time restore and time travel queries among other development-focussed features. Keeping a history enables recovering lost data or viewing the past state of your database, which is helpful when trying to determine when an issue occurred or find a restore point. Neon's history can also function as a database backup strategy.
+Neon retains a history of changes for all branches. This history enables point-in-time restore and time travel queries, among other development-focused features. Keeping a history enables recovering lost data or viewing the past state of your database, which is helpful when trying to determine when an issue occurred or find a restore point. Neon's history can also function as a database backup strategy.
 
-The history retention limit is 24 hours for Neon Free Plan users, 7 days for Launch plan users, and 30 days for Scale plan users. Before going into production, select a history retention period that suits your operational requirements.
+By default, Neon's history retention window is set to **1 day** across all plans to help you avoid unexpected storage costs.
+
+If you choose to extend your retention window beyond the default &#8212; to take full advantage of the features that this history enables &#8212; keep in mind that this will increase your storage usage and may lead to higher costs, especially if you have many active branches. Make sure you select a history retention period that aligns with your goals.
 
 ![History retention setting](/docs/get-started-with-neon/history_retention_setting.png)
-
-A longer history retention period expands your point-in-time restore and time travel query horizons at the cost of increased storage usage.
 
 For more, see [Branch reset and restore](/docs/introduction/point-in-time-restore).
 
 ## Configure IP Allow
 
-Neon's IP Allow feature, available with the Neon [Scale](/docs/introduction/plans#scale) plan, ensures that only trusted IP addresses can connect to your database, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation).
+Neon's IP Allow feature, available with the Neon [Business](/docs/introduction/plans#business) plans, ensures that only trusted IP addresses can connect to your database, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation).
 
 ![IP allow setting settings](/docs/get-started-with-neon/ip_allow_settings.png)
 
@@ -1646,7 +1763,7 @@ To learn more about monitoring resources and metrics in Neon, check out our [Mon
 
 ## Create staging or test branches
 
-With Neon branching, you can easily create an isolated copy of your production database for est schema changes and application updates before deploying to production. To get an idea of how easily you can create a branch for testing, see our [Branching — Testing queries](/docs/guides/branching-test-queries) guide.
+With Neon branching, you can easily create an isolated copy of your production database for test schema changes and application updates before deploying to production. To get an idea of how easily you can create a branch for testing, see our [Branching — Testing queries](/docs/guides/branching-test-queries) guide.
 
 The [Neon CLI](/docs/reference/neon-cli) and [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) enable you to automate testing and build CI/CD pipelines to streamline your testing processes.
 
@@ -1663,22 +1780,22 @@ subtitle: Find detailed instructions for connecting to Neon from various languag
 enableTableOfContents: true
 redirectFrom:
   - /docs/guides/guides-intro
-updatedOn: '2024-07-03T10:49:43.703Z'
+updatedOn: '2024-08-15T17:23:10.555Z'
 ---
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/elixir-logo.svg" width="36" height="36" alt="Elixir" href="/docs/guides/elixir-ecto" title="Connect from Elixir with Ecto to Neon" />
+<a href="/docs/guides/elixir-ecto" title="Elixir" description="Connect from Elixir with Ecto to Neon" icon="elixir"></a>
 
-<img src="/images/technology-logos/go-logo.svg" width="36" height="36" alt="Go" href="/docs/guides/go" title="Connect a Go application to Neon" />
+<a href="/docs/guides/go" title="Go" description="Connect a Go application to Neon" icon="go"></a>
 
-<img src="/images/technology-logos/java-logo.svg" width="27" height="36" alt="Java" href="/docs/guides/java" title="Connect a Java application to Neon" />
+<a href="/docs/guides/java" title="Java" description="Connect a Java application to Neon" icon="java"></a>
 
-<img src="/images/technology-logos/javascript-logo.svg" width="33" height="36" alt="JavaScript" href="/docs/guides/javascript" title="Connect a JavaScript application to Neon" />
+<a href="/docs/guides/javascript" title="JavaScript" description="Connect a JavaScript application to Neon" icon="javascript"></a>
 
-<img src="/images/technology-logos/python-logo.svg" width="33" height="36" alt="Python" href="/docs/guides/python" title="Connect a Python application to Neon" />
+<a href="/docs/guides/python" title="Python" description="Connect a Python application to Neon" icon="python"></a>
 
-<img src="/images/technology-logos/rust-logo.svg" width="36" height="36" alt="Rust" href="/docs/guides/rust" title="Connect a Rust application to Neon" />
+<a href="/docs/guides/rust" title="Rust" description="Connect a Rust application to Neon" icon="rust"></a>
 
 </TechnologyNavigation>
 
@@ -2022,7 +2139,7 @@ Refer to the [Connect with JDBC](#connect-with-jdbc) section above for informati
 title: Connect a JavaScript application to Neon
 subtitle: Set up a Neon project in seconds and connect from a JavaScript application
 enableTableOfContents: true
-updatedOn: '2024-07-03T10:49:43.704Z'
+updatedOn: '2024-08-15T17:23:10.557Z'
 ---
 
 Neon Postgres should be accessed from the server-side in JavaScript applications. Using the following JavaScript frameworks, you can easily configure a server-side connection to a Neon Postgres database.
@@ -2033,9 +2150,9 @@ Find detailed instructions for connecting to Neon from various JavaScript framew
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/nodejs-logo.svg" width="36" height="36" alt="Node.js" href="/docs/guides/node" title="Connect a Node.js application to Neon" />
+<a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
 
-<img src="/images/technology-logos/deno-logo.svg" width="36" height="36" alt="Deno" href="/docs/guides/deno" title="Connect a Deno application to Neon" />
+<a href="/docs/guides/deno" title="Deno" description="Connect a Deno application to Neon" icon="deno"></a>
 
 </TechnologyNavigation>
 
@@ -2306,45 +2423,45 @@ You can find all of the connection details listed above in the **Connection Deta
 ---
 title: Neon framework guides
 subtitle: Find detailed instructions for connecting to Neon from various frameworks
-enableTableOfContents: true
-updatedOn: '2024-08-02T19:37:20.077Z'
+enableTableOfContents: false
+updatedOn: '2024-08-15T17:23:10.552Z'
 ---
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/nodejs-logo.svg" width="33" height="36" alt="Node.js" href="/docs/guides/node" title="Connect a Node.js application to Neon" />
+<a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
 
-<img src="/images/technology-logos/nextjs-logo.svg" width="36" height="36" alt="Next.js" href="/docs/guides/nextjs" title="Connect a Next.js application to Neon" />
+<a href="/docs/guides/nextjs" title="Next.js" description="Connect a Next.js application to Neon" icon="next-js"></a>
 
-<img src="/images/technology-logos/nestjs-logo.svg" width="36" height="36" alt="NestJS" href="/docs/guides/nestjs" title="Connect a NestJS application to Neon" />
+<a href="/docs/guides/nestjs" title="NestJS" description="Connect a NestJS application to Neon" icon="nest-js"></a>
 
-<img src="/images/technology-logos/astro-logo.svg" width="36" height="36" alt="Astro" href="/docs/guides/astro" title="Connect an Astro site or app to Neon" />
+<a href="/docs/guides/astro" title="Astro" description="Connect an Astro site or app to Neon" icon="astro"></a>
 
-<img src="/images/technology-logos/django-logo.svg" width="33" height="36" alt="Django" href="/docs/guides/django" title="Connect a Django application to Neon" />
+<a href="/docs/guides/django" title="Django" description="Connect a Django application to Neon" icon="django"></a>
 
-<img src="/images/technology-logos/laravel-logo.svg" width="33" height="36" alt="Laravel" href="/docs/guides/laravel" title="Connect a Laravel application to Neon" />
+<a href="/docs/guides/laravel" title="Laravel" description="Connect a Laravel application to Neon" icon="laravel"></a>
 
-<img src="/images/technology-logos/oauth-logo.svg" width="36" height="36" alt="OAuth" href="/docs/guides/oauth-integration" title="Integrate with Neon using OAuth" />
+<a href="/docs/guides/oauth-integration" title="OAuth" description="Integrate with Neon using OAuth" icon="oauth"></a>
 
-<img src="/images/technology-logos/phoenix-logo.svg" width="36" height="36" alt="Phoenix" href="/docs/guides/phoenix" title="Connect a Phoenix site or app to Neon" />
+<a href="/docs/guides/phoenix" title="Phoenix" description="Connect a Phoenix site or app to Neon" icon="phoenix"></a>
 
-<img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-jdbc" title="Connect Quarkus (JDBC) to Neon" />
+<a href="/docs/guides/quarkus-jdbc" title="Quarkus" description="Connect Quarkus (JDBC) to Neon" icon="quarkus"></a>
 
-<img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-reactive" title="Connect Quarkus (Reactive) to Neon" />
+<a href="/docs/guides/quarkus-reactive" title="Quarkus" description="Connect Quarkus (Reactive) to Neon" icon="quarkus"></a>
 
-<img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/ruby-on-rails" title="Connect a Rails application to Neon" />
+<a href="/docs/guides/ruby-on-rails" title="Rails" description="Connect a Rails application to Neon" icon="rails"></a>
 
-<img src="/images/technology-logos/react-logo.svg" width="36" height="36" alt="React" href="/docs/guides/react" title="Connect a React application to Neon" />
+<a href="/docs/guides/react" title="React" description="Connect a React application to Neon" icon="react"></a>
 
-<img src="/images/technology-logos/reflex-logo.svg" width="100" height="36" alt="Reflex" href="/docs/guides/reflex" title="Build Python Apps with Reflex and Neon" />
+<a href="/docs/guides/reflex" title="Reflex" description="Build Python Apps with Reflex and Neon" icon="reflex"></a>
 
-<img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
+<a href="/docs/guides/remix" title="Remix" description="Connect a Remix application to Neon" icon="remix"></a>
 
-<img src="/images/technology-logos/sqlalchemy-logo.svg" width="36" height="36" alt="SQLAlchemy" href="/docs/guides/sqlalchemy" title="Connect a SQLAlchemy application to Neon" />
+<a href="/docs/guides/sqlalchemy" title="SQLAlchemy" description="Connect a SQLAlchemy application to Neon" icon="sqlalchemy"></a>
 
-<img src="/images/technology-logos/symfony-logo.svg" width="36" height="36" alt="Symfony" href="/docs/guides/symfony" title="Connect from Symfony with Doctrine to Neon" />
+<a href="/docs/guides/symfony" title="Symfony" description="Connect from Symfony with Doctrine to Neon" icon="symfony"></a>
 
-<img src="/images/technology-logos/solid-logo.svg" width="36" height="36" alt="SolidStart" href="/docs/guides/solid-start" title="Connect a SolidStart site or app to Neon" />
+<a href="/docs/guides/solid-start" title="SolidStart" description="Connect a SolidStart site or app to Neon" icon="solid"></a>
 
 </TechnologyNavigation>
 
@@ -2356,7 +2473,7 @@ title: Connect an Astro site or application to Neon Postgres
 subtitle: Set up a Neon project in seconds and connect to your Postgres database from an
   Astro site or application
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.645Z'
+updatedOn: '2024-08-24T10:00:34.195Z'
 ---
 
 Astro builds fast content sites, powerful web applications, dynamic server APIs, and everything in-between. This guide describes how to create a Neon Postgres database and access it from an Astro site or application.
@@ -2501,7 +2618,7 @@ export async function GET() {
   } finally {
     client.release();
   }
-  return new Response(JSON.stringiify(data), { headers: { 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
 }
 ```
 
@@ -2513,7 +2630,7 @@ import postgres from 'postgres';
 export async function GET() {
   const sql = postgres(import.meta.env.DATABASE_URL, { ssl: 'require' });
   const response = await sql`SELECT version()`;
-  return new Response(JSON.stringiify(response[0]), {
+  return new Response(JSON.stringify(response[0]), {
     headers: { 'Content-Type': 'application/json' },
   });
 }
@@ -2527,7 +2644,7 @@ import { neon } from '@neondatabase/serverless';
 export async function GET() {
   const sql = neon(import.meta.env.DATABASE_URL);
   const response = await sql`SELECT version()`;
-  return new Response(JSON.stringiify(response[0]), {
+  return new Response(JSON.stringify(response[0]), {
     headers: { 'Content-Type': 'application/json' },
   });
 }
@@ -2568,7 +2685,7 @@ redirectFrom:
   - /docs/integrations/
   - /docs/quickstart/django/
   - /docs/cloud/integrations/django/
-updatedOn: '2024-08-12T16:22:43.605Z'
+updatedOn: '2024-09-23T22:33:41.223Z'
 ---
 
 To connect to Neon from a Django application:
@@ -2628,19 +2745,26 @@ For additional information about Django project settings, see [Django Settings: 
 
 ## Connection issues
 
-Django uses the `psycopg2` driver as the default adapter for Postgres. If you have an older version of that driver, you may encounter an `Endpoint ID is not specified` error when connecting to Neon. This error occurs if the client library used by your driver does not support the Server Name Indication (SNI) mechanism in TLS, which Neon uses to route incoming connections. The `psycopg2` driver uses the `libpq` client library, which supports SNI as of v14. You can check your `psycopg2` and `libpq` versions by starting a Django shell in your Django project and running the following commands:
+- Django uses the `psycopg2` driver as the default adapter for Postgres. If you have an older version of that driver, you may encounter an `Endpoint ID is not specified` error when connecting to Neon. This error occurs if the client library used by your driver does not support the Server Name Indication (SNI) mechanism in TLS, which Neon uses to route incoming connections. The `psycopg2` driver uses the `libpq` client library, which supports SNI as of v14. You can check your `psycopg2` and `libpq` versions by starting a Django shell in your Django project and running the following commands:
 
-```bash
-# Start a Django shell
-python3 manage.py shell
+  ```bash
+  # Start a Django shell
+  python3 manage.py shell
 
-# Check versions
-import psycopg2
-print("psycopg2 version:", psycopg2.__version__)
-print("libpq version:", psycopg2._psycopg.libpq_version())
-```
+  # Check versions
+  import psycopg2
+  print("psycopg2 version:", psycopg2.__version__)
+  print("libpq version:", psycopg2._psycopg.libpq_version())
+  ```
 
-The version number for `libpq` is presented in a different format, for example, version 14.1 will be shown as 140001. If your `libpq` version is less than version 14, you can either upgrade your `psycopg2` driver to get a newer `libpq` version or use one of the workarounds described in our [Connection errors](https://neon.tech/docs/connect/connection-errors#the-endpoint-id-is-not-specified) documentation. Upgrading your `psycopg2` driver may introduce compatibility issues with your Django or Python version, so you should test your application thoroughly.
+  The version number for `libpq` is presented in a different format, for example, version 14.1 will be shown as 140001. If your `libpq` version is less than version 14, you can either upgrade your `psycopg2` driver to get a newer `libpq` version or use one of the workarounds described in our [Connection errors](https://neon.tech/docs/connect/connection-errors#the-endpoint-id-is-not-specified) documentation. Upgrading your `psycopg2` driver may introduce compatibility issues with your Django or Python version, so you should test your application thoroughly.
+
+- If you encounter an `SSL SYSCALL error: EOF detected` when connecting to the database, this typically occurs because the application is trying to reuse a connection after the Neon compute has been suspended due to inactivity. To resolve this issue, try one of the following options:
+
+  - Set your Django [`CONN_MAX_AGE`](https://docs.djangoproject.com/en/5.1/ref/settings/#conn-max-age) setting to a value less than or equal to the autosuspend setting configured for your compute.
+  - Enable [`CONN_HEALTH_CHECKS`](https://docs.djangoproject.com/en/5.1/ref/settings/#conn-health-checks) by setting it to `true`. This forces a health check to verify that the connection is alive before executing a query.
+
+  For information configuring Neon's Autosuspend setting, see [Configuring Autosuspend for Neon computes](/docs/guides/auto-suspend-guide).
 
 ## Schema migration with Django
 
@@ -2915,8 +3039,7 @@ For schema migration with Laravel, see our guide:
 title: Connect a NestJS application to Neon
 subtitle: Set up a Neon project in seconds and connect from a NestJS application
 enableTableOfContents: true
-tag: new
-updatedOn: '2024-08-07T21:36:52.660Z'
+updatedOn: '2024-09-08T12:44:00.903Z'
 ---
 
 NestJS is a framework for building efficient, scalable Node.js server-side applications<sup><a target="_blank" href="https://docs.nestjs.com/">1</a></sup>. This guide explains how to connect NestJS with Neon using a secure server-side request.
@@ -4096,7 +4219,7 @@ PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1
 title: Connect a React application to Neon
 subtitle: Set up a Neon project in seconds and connect from a React application
 enableTableOfContents: true
-updatedOn: '2024-07-02T18:04:04.917Z'
+updatedOn: '2024-08-15T17:23:10.558Z'
 ---
 
 React by Facebook is an open-source front-end JavaScript library for building user interfaces based on components.
@@ -4109,9 +4232,9 @@ Find detailed instructions for connecting to Neon from various React meta-framew
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/nextjs-logo.svg" width="36" height="36" alt="Next.js" href="/docs/guides/nextjs" title="Connect a Next.js application to Neon" />
+<a href="/docs/guides/nextjs" title="Next.js" description="Connect a Next.js application to Neon" icon="next-js"></a>
 
-<img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
+<a href="/docs/guides/remix" title="Remix" description="Connect a Remix application to Neon" icon="remix"></a>
 
 </TechnologyNavigation>
 
@@ -4124,8 +4247,7 @@ Find detailed instructions for connecting to Neon from various React meta-framew
 title: Build a Python App with Reflex and Neon
 subtitle: Learn how to build a Python Full Stack application with Reflex and Neon
 enableTableOfContents: true
-updatedOn: '2024-07-02T09:17:55.465Z'
-tag: new
+updatedOn: '2024-09-08T12:44:00.904Z'
 ---
 
 [Reflex](https://reflex.dev/) is a Python web framework that allows you to build full-stack applications with Python.
@@ -4651,8 +4773,7 @@ For schema migration with Ruby on Rails, see our guide:
 title: Connect a SolidStart application to Neon
 subtitle: Set up a Neon project in seconds and connect from a SolidStart application
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.665Z'
-tag: new
+updatedOn: '2024-09-08T12:44:00.904Z'
 ---
 
 SolidStart is an open-source meta-framework designed to integrate the components that make up a web application.<sup><a target="_blank" href="https://docs.solidjs.com/solid-start#overview">1</a></sup>. This guide explains how to connect SolidStart with Neon using a secure server-side request.
@@ -4870,7 +4991,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/sqlalchemy
   - /docs/integrations/sqlalchemy
-updatedOn: '2023-11-24T11:25:06.755Z'
+updatedOn: '2024-09-23T22:33:41.224Z'
 ---
 
 SQLAlchemy is a Python SQL toolkit and Object Relational Mapper (ORM) that provides application developers with the full power and flexibility of SQL. This guide describes how to create a Neon project and connect to it from SQLAlchemy.
@@ -4961,6 +5082,16 @@ For additional information about connecting from SQLAlchemy, refer to the follow
 
 - [Establishing Connectivity - the Engine](https://docs.sqlalchemy.org/en/14/tutorial/engine.html)
 - [Connecting to PostgreSQL with SQLAlchemy](https://docs.sqlalchemy.org/en/14/core/engines.html#postgresql)
+
+## SQLAlchemy connection errors
+
+- SQLAlchemy versions prior to 2.0.33 may reuse idle connections, leading to connection errors. If this occurs, you could encounter an `SSL connection has been closed unexpectedly` error. To resolve this, upgrade to SQLAlchemy 2.0.33 or later. For more details, see the [SQLAlchemy 2.0.33 changelog](https://docs.sqlalchemy.org/en/20/changelog/changelog_20.html#change-2.0.33-postgresql).
+- If you encounter an `SSL SYSCALL error: EOF detected` when connecting to the database, this typically happens because the application is trying to reuse a connection after the Neon compute has been suspended due to inactivity. To resolve this issue, try one of the following options:
+
+  - Set the SQLAlchemy `pool_recycle` parameter to a value less than or equal to the autosuspend setting configured for your compute.
+  - Set the SQLAlchemy `pool_pre_ping` parameter to `true`. This ensures that your engine checks if the connection is alive before executing a query.
+
+  For more details on the `pool_recycle` and `pool_pre_ping` parameters, refer to [SQLAlchemy: Connection Pool Configuration](https://docs.sqlalchemy.org/en/20/core/pooling.html#connection-pool-configuration) and [Dealing with Disconnects](https://docs.sqlalchemy.org/en/20/core/pooling.html#connection-pool-configuration). For information on configuring Neon's autosuspend setting, see [Configuring Autosuspend for Neon computes](/docs/guides/auto-suspend-guide).
 
 ## Schema migration with SQLAlchemy
 
@@ -5103,7 +5234,7 @@ Optimize your connections by enabling connection pooling.
 title: Choosing your driver and connection type
 subtitle: How to select the right driver and connection type for your application
 enableTableOfContents: true
-updatedOn: '2024-08-09T17:57:28.403Z'
+updatedOn: '2024-09-08T12:44:00.894Z'
 ---
 
 When setting up your application’s connection to your Neon Postgres database, you need to make two main choices:
@@ -5147,11 +5278,11 @@ We are working on automatic switching between HTTP and WebSocket as needed. Chec
 
 ### Next, choose your connection type: direct or pooled
 
-You then need to decide whether to use direct connections or pooled connections (using PgBouncer for application-side pooling):
+You then need to decide whether to use direct connections or pooled connections (using PgBouncer for Neon-side pooling):
 
 - **In general, use pooled connections whenever you can**
 
-  Pooled connections can efficiently manage high numbers of concurrent client connections, up to 10,000. This 10K ceiling works best for serverless applications and application-side connection pools that have many open connections, but infrequent and/or short transactions.
+  Pooled connections can efficiently manage high numbers of concurrent client connections, up to 10,000. This 10K ceiling works best for serverless applications and Neon-side connection pools that have many open connections, but infrequent and/or short transactions.
 
 - **Use direct (unpooled) connections if you need persistent connections**
 
@@ -5171,8 +5302,7 @@ For more information on these choices, see:
 Here are some key points to help you navigate potential issues.
 | Issue | Description |
 |----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Double pooling | **Application-side pooling** uses PgBouncer to manage connections between your application and Postgres.<br /><br /> **Client-side pooling** occurs within the client library before connections are passed to PgBouncer.<br /><br />If you're using a pooled Neon connection (supported by PgBouncer), it's best to avoid client-side pooling. Let Neon handle the pooling to prevent retaining unused connections on the client side. If you must use client-side pooling, make sure that connections are released back to the pool promptly to avoid conflicts with PgBouncer. |
-| Double pooling | **Application-side pooling** refers to using PgBouncer to manage connections between the application and PostgreSQL.<br /><br /> **Client-side pooling** happens within the client library itself before connections are passed to PgBouncer.<br /><br />Avoid using client-side pooling if you're using a pooled Neon connection (supported by PgBouncer). Just let Neon handle the pooling to prevent retaining unused connections on the client side. If you must use client-side pooling, make sure connections are released back to the client-side pool early enough to avoid conflicts with PgBouncer. |
+| Double pooling | **Neon-side pooling** uses PgBouncer to manage connections between your application and Postgres.<br /><br /> **Client-side pooling** occurs within the client library before connections are passed to PgBouncer.<br /><br />If you're using a pooled Neon connection (supported by PgBouncer), it's best to avoid client-side pooling. Let Neon handle the pooling to prevent retaining unused connections on the client side. If you must use client-side pooling, make sure that connections are released back to the pool promptly to avoid conflicts with PgBouncer. |
 | Understanding limits | Don't confuse `max_connections` with `default_pool_size`.<br /><br />`max_connections` is the maximum number of concurrent connections allowed by Postgres and is determined by your [Neon compute size](/docs/connect/connection-pooling#connection-limits-without-connection-pooling).<br /><br />`default_pool_size` is the maximum number of backend connections or transactions that PgBouncer supports per user/database pair, which is set to 64 by default.<br /><br />Simply increasing your compute to get more `max_connections` may not improve performance if the bottleneck is actually on your `default_pool_size`. To increase your `default_pool_size`, contact [Support](/docs/introduction/support). |
 | Use request handlers | In serverless environments such as Vercel Edge Functions or Cloudflare Workers, WebSocket connections can't outlive a single request. That means Pool or Client objects must be connected, used and closed within a single request handler. Don't create them outside a request handler; don't create them in one handler and try to reuse them in another; and to avoid exhausting available connections, don't forget to close them. See [Pool and Client](https://github.com/neondatabase/serverless?tab=readme-ov-file#pool-and-client) for details.|
 
@@ -5763,7 +5893,7 @@ subtitle: Query your database from the Neon Console using the Neon SQL Editor
 enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/tutorials
-updatedOn: '2024-07-19T15:46:08.348Z'
+updatedOn: '2024-09-18T16:25:02.707Z'
 ---
 
 The Neon SQL Editor allows you to run queries on your Neon databases directly from the Neon Console. In addition, the editor keeps a query history, permits saving queries, and provides [**Explain**](https://www.postgresql.org/docs/current/sql-explain.html) and [**Analyze**](https://www.postgresql.org/docs/current/using-explain.html#USING-EXPLAIN-ANALYZE) features.
@@ -5809,11 +5939,15 @@ To save a query:
 
 The query is added to the **Saved** list in the left pane of the SQL Editor. You can rerun a query by selecting it from the **Saved** list.
 
-You can rename or delete a saved query by selecting **Rename** or **Delete** from the kebab menu associated with the saved query.
+You can rename or delete a saved query by selecting **Rename** or **Delete** from the more options menu associated with the saved query.
 
 ## View the query history
 
 The SQL Editor maintains a query history for the project. To view your query history, select **History** in the left pane of the SQL Editor. You can click an item in the **History** list to view the query that was run.
+
+<Admonition type="note">
+Queries saved to **History** are limited to 9 KB in length. While you can execute longer queries from the SQL Editor, any query exceeding 9 KB will be truncated when saved. A `-- QUERY TRUNCATED` comment is added at the beginning of these queries to indicate truncation. Additionally, if you input a query longer than 9 KB in the Neon SQL Editor, a warning similar to the following will appear: `This query will still run, but the last 1234 characters will be truncated from query history`.
+</Admonition>
 
 ## Explain and Analyze
 
@@ -6140,7 +6274,7 @@ The system root certificate locations listed above may differ depending on the v
 title: Connect a GUI application
 subtitle: Learn how to connect a GUI application to Neon
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.639Z'
+updatedOn: '2024-09-17T11:22:14.657Z'
 ---
 
 This topic describes how to connect to a Neon database from a GUI application or IDE. Most GUI applications and IDEs that support connecting to a Postgres database also support connecting to Neon.
@@ -6208,6 +6342,7 @@ Some applications require an Server Name Indication (SNI) workaround. Neon uses 
 | [DBeaver](https://dbeaver.io/)                                                                                                |                                                                                                                                                                                                                                                                                                                                                                         |
 | [dbForge](https://www.devart.com/dbforge/)                                                                                    |                                                                                                                                                                                                                                                                                                                                                                         |
 | [DbVisualizer](https://www.dbvis.com/)                                                                                        |                                                                                                                                                                                                                                                                                                                                                                         |
+| [DBX](https://getdbx.com/)                                                                                                    |                                                                                                                                                                                                                                                                                                                                                                         |
 | [DronaHQ hosted cloud version](https://www.dronahq.com/)                                                                      | Requires selecting **Connect using SSL** when creating a connector                                                                                                                                                                                                                                                                                                      |
 | [Forest Admin](https://www.forestadmin.com/)                                                                                  | The database requires at least one table                                                                                                                                                                                                                                                                                                                                |
 | [Grafana](https://grafana.com/docs/grafana/latest/datasources/postgres/)                                                      | Requires `sslmode=verify-full`. See [SNI workaround C](/docs/connect/connection-errors#c-set-verify-full-for-golang-based-clients).                                                                                                                                                                                                                                     |
@@ -6438,7 +6573,7 @@ subtitle: Learn how connection pooling works in Neon
 enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/connection-pooling
-updatedOn: '2024-08-09T17:57:28.406Z'
+updatedOn: '2024-09-23T22:33:41.221Z'
 ---
 
 Neon uses [PgBouncer](https://www.pgbouncer.org/) to support connection pooling, enabling up to 10,000 concurrent connections. PgBouncer is a lightweight connection pooler for Postgres.
@@ -6485,7 +6620,7 @@ SHOW max_connections;
 ```
 
 <Admonition type="note">
-Four connections are reserved for the Neon-managed Postgres `superuser` account. For example, for a 0.25 compute size, 4/112 connections are reserved, so you would only have 108 available connections. If you are running queries from the Neon SQL Editor, that will also use a connection. To view the currently open connections, you can run the following query:
+Seven connections are reserved for the Neon-managed Postgres `superuser` account. For example, for a 0.25 compute size, 7/112 connections are reserved, so you would only have 105 available connections. If you are running queries from the Neon SQL Editor, that will also use a connection. To view connections that are currently open, you can run the following query:
 
 ```sql
 SELECT usename FROM pg_stat_activity WHERE datname = '<database_name>';
@@ -6497,29 +6632,28 @@ Even with the largest compute size, the `max_connections` limit may not be suffi
 
 ## Connection pooling
 
-Some applications open numerous connections, with most eventually becoming inactive. This behavior can often be attributed to database driver limitations, running many instances of an application, or applications with serverless functions. With regular Postgres, new connections are rejected when reaching the `max_connections` limit. To overcome this limitation, Neon supports connection pooling using [PgBouncer](https://www.pgbouncer.org/), which allows Neon to support up to 10,000 concurrent connections through the -pooler endpoint.
+Some applications open numerous connections, with most eventually becoming inactive. This behavior can often be attributed to database driver limitations, running many instances of an application, or applications with serverless functions. With regular Postgres, new connections are rejected when reaching the `max_connections` limit. To overcome this limitation, Neon supports connection pooling using [PgBouncer](https://www.pgbouncer.org/), which allows Neon to support up to 10,000 concurrent connections to the pooler endpoint.
 
-The use of connection pooling, however, is not a magic bullet: As the name implies, connections to the pooler endpoint together share a pool of connections to the normal PostgreSQL endpoint, so they still consume some connections to the main Postgres instance.
+The use of connection pooling, however, is not a magic bullet: As the name implies, connections to the pooler endpoint together share a pool of connections to the normal Postgres endpoint, so they still consume some connections to the main Postgres instance.
 
-To ensure that direct access to Postgres is still possible for e.g. administrative tasks, the pooler is configured to only open up to [64 connections](#neon-pgbouncer-configuration-settings) to Postgres for each user to each database. I.e., there can be only 64 active connections by `john` to the `neondb` database through the pooler. All other connections by `john` to the `neondb` database will have to wait for one of those 64 active connections to complete their transactions before the next connection's work is started.  
-At the same time, a user `mike` will also be able to connect to the `neondb` database through the pooler and have up to 64 concurrent active transactions across 64 connections, assuming the endpoint started with a high enough `minCU` setting to be configured with a high enough `max_connections` setting to support those 128 concurrent connections from those two users.  
-Similarly, even if the user `john` has 64 concurrently active transactions through the pooler to the `neondb` database, that user can still start up to 64 concurrent transactions in the `john_db` database when connected through the pooler; but again, only if Postgres' `max_connections` limit has the capacity for the connections that are managed by the pooler.
+To ensure that direct access to Postgres is still possible for administrative tasks or similar, the pooler is configured to only open up to [64 connections](#neon-pgbouncer-configuration-settings) to Postgres for each user to each database. For example, there can be only 64 active connections from role `alex` to the `neondb` database through the pooler. All other connections by `alex` to the `neondb` database will have to wait for one of those 64 active connections to complete their transactions before the next connection's work is started.  
+At the same time, role `dana` will also be able to connect to the `neondb` database through the pooler and have up to 64 concurrent active transactions across 64 connections, assuming the endpoint started with a high enough minimum Neon compute size to have a high enough `max_connections` setting to support those 128 concurrent connections from the two roles.
+
+Similarly, even if role `alex` has 64 concurrently active transactions through the pooler to the `neondb` database, that role can still start up to 64 concurrent transactions in the `alex_db` database (a different database) when connected through the pooler; but again, only if the Postgres `max_connections` limit can support the number of connections managed by the pooler.
 
 For further information, see [PgBouncer](#pgbouncer).
 
 <Admonition type="important">
-You will not be able to get interactive results from all 10,000 connections at the same time. Connections to the pooler endpoint still consume some connections on the main endpoint: PgBouncer forwards operations from the user's connections through its own pool of connnections to Postgres, and adaptively adds more connections to PostgreSQL as and when needed by more concurrently active user connections. The 10,000 connection limit is therefore most useful for "serverless" applications and application-side connection pools that have many open connections, but infrequent and/or short [transactions](https://neon.tech/docs/postgresql/query-reference#transactions).
+You will not be able to get interactive results from all 10,000 connections at the same time. Connections to the pooler endpoint still consume  connections on the main Postgres endpoint: PgBouncer forwards operations from a role's connections through its own pool of connections to Postgres, and adaptively adds more connections to Postgres as needed by other concurrently active role connections. The 10,000 connection limit is therefore most useful for "serverless" applications and application-side connection pools that have many open connections but infrequent and short [transactions](https://neon.tech/docs/postgresql/query-reference#transactions).
 </Admonition>
 
 ## PgBouncer
 
 PgBouncer is an open-source connection pooler for Postgres. When an application needs to connect to a database, PgBouncer provides a connection from the pool. Connections in the pool are routed to a smaller number of actual Postgres connections. When a connection is no longer required, it is returned to the pool and is available to be used again. Maintaining a pool of available connections improves performance by reducing the number of connections that need to be created and torn down to service incoming requests. Connection pooling also helps avoid rejected connections. When all connections in the pool are being used, PgBouncer queues a new request until a connection from the pool becomes available.
 
-Neon uses `PgBouncer` in `transaction mode`. For limitations associated with `transaction mode`, see [Connection pooling notes and limitations](#connection-pooling-notes). For more information about `PgBouncer`, refer to [https://www.pgbouncer.org/](https://www.pgbouncer.org/).
-
 ## Neon PgBouncer configuration settings
 
-Neon's PgBouncer configuration is shown below. The settings are not user-configurable, but if you are a paid plan user and require a different setting, please contact [Neon Support](/docs/introduction/support).
+Neon's PgBouncer configuration is shown below. The settings are not user-configurable, but if you are a paid plan user and require a different setting, please contact [Neon Support](/docs/introduction/support). For example, Neon sometimes raises the `default_pool_size` setting for users who support a large number of concurrent connections and repeatedly hit PgBouncer's pool size limit.
 
 ```ini
 [pgbouncer]
@@ -6540,7 +6674,8 @@ The following list describes each setting. For a full explanation of each parame
 
 ## Connection pooling notes
 
-Neon uses PgBouncer in _transaction mode_, which limits some functionality in Postgres. For a complete list of limitations, refer to the "_SQL feature map for pooling modes_" section in the [pgbouncer.org Features](https://www.pgbouncer.org/features.html) documentation.
+- Neon uses PgBouncer in _transaction mode_, which limits some functionality in Postgres. For a complete list of limitations, refer to the "_SQL feature map for pooling modes_" section in the [pgbouncer.org Features](https://www.pgbouncer.org/features.html) documentation.
+- We recommend using a direct (non-pooled) connection string when performing migrations using Object Relational Mappers (ORMs). With the exception of recent versions of [Prisma ORM, which supports using a pooled connection string with Neon](https://neon.tech/docs/guides/prisma#using-a-pooled-connection-with-prisma-migrate), using a pooled connection string for migrations can be prone to errors.
 
 ## Optimize queries with PgBouncer and prepared statements
 
@@ -6811,12 +6946,10 @@ title: Connection latency and timeouts
 subtitle: Learn about strategies to manage connection latencies and timeouts
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-07T21:36:52.640Z'
+updatedOn: '2024-09-12T09:31:33.883Z'
 ---
 
-Neon's _Autosuspend_ feature ('scale to zero') is designed to minimize costs by automatically scaling a compute resource down to zero after a period of inactivity. By default, Neon scales a compute to zero after 5 minutes of inactivity. A characteristic of this feature is the concept of a "cold start". During this process, a compute transitions from an idle state to an active state to process requests. Currently, activating a Neon compute from an idle state takes anywhere from 500 ms to a few seconds not counting other factors that can add to latencies such as the physical distance between your application and database or startup times of other services that participate in your connection process.
-
-Cold-start times are fastest in the `US East (Ohio) — aws-us-east-2` region, which hosts the Neon Control Plane. The Neon Control plane will be deployed regionally in future Neon releases, bringing the same millesecond cold-start times to all supported regions.
+Neon's _Autosuspend_ feature ('scale to zero') is designed to minimize costs by automatically scaling a compute resource down to zero after a period of inactivity. By default, Neon scales a compute to zero after 5 minutes of inactivity. A characteristic of this feature is the concept of a "cold start". During this process, a compute transitions from an idle state to an active state to process requests. Currently, activating a Neon compute from an idle state typically takes a few hundred milliseconds not counting other factors that can add to latencies such as the physical distance between your application and database or startup times of other services that participate in your connection process.
 
 <Admonition type="note">
 Services you integrate with Neon may also have startup times, which can add to connection latencies. This topic does not address latencies of other vendors, but if your application connects to Neon via another service, remember to consider startup times for those services as well.
@@ -6830,7 +6963,7 @@ You can check the current status of a compute on the **Branches** page in the Ne
 
 You can also view compute state transitions in the **Branches** widget on the Neon **Dashboard**.
 
-User actions that activate an idle compute include [connecting from a client such as psql](/docs/connect/query-with-psql-editor), running a query on your database from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), or accessing the compute via the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
+User actions that activate an idle compute include connecting from a client or application, running a query on your database from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), or accessing the compute via the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
 
 <Admonition type="info">
 The Neon API includes [Start endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) and [Suspend endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) APIs for the specific purpose of activating and suspending a compute.
@@ -6840,7 +6973,7 @@ You can try any of these methods and watch the status of your compute as it chan
 
 ## Strategies for managing latency and timeouts
 
-Given the potential impact on application responsiveness, it's important to have strategies in place for managing connection latencies and timeouts. Here are some methods you can implement:
+Given the potential impact on application responsiveness, it's important to have strategies in place to manage connection latencies and timeouts. Here are some methods you can implement:
 
 - [Adjust your Autosuspend (scale to zero) configuration](#adjust-your-auto-suspend-scale-to-zero-configuration)
 - [Place your application and database in the same region](#place-your-application-and-database-in-the-same-region)
@@ -6856,7 +6989,7 @@ Users on paid plans can configure the length of time that the system remains in 
 If you disable autosuspension entirely or your compute is never idle long enough to be automatically suspended, you will have to manually restart your compute to pick up the latest updates to Neon's compute images. Neon typically releases compute-related updates weekly. Not all releases contain critical updates, but a weekly compute restart is recommended to ensure that you do not miss anything important. For how to restart a compute, see [Restart a compute](https://neon.tech/docs/manage/endpoints#restart-a-compute). 
 </Admonition>
 
-Consider combining this strategy with Neon's _Autoscaling_ feature, which allows you to run a compute with minimal resources and scale up on demand. For example, with autoscaling, you can configure a minimum compute size to reduce costs during off-peak times. In the image shown below, the **Suspend compute after a period of inactivity** is set to 1 hour so that your compute only suspends after an hour of inactivity, and autoscaling is configured with the 1/4 minimum compute size to keep costs low during periods of inactivity or light usage.
+Consider combining this strategy with Neon's _Autoscaling_ feature, which allows you to run a compute with minimal resources and scale up on demand. For example, with autoscaling, you can configure a minimum compute size to reduce costs during off-peak times. In the image shown below, the **Suspend compute after a period of inactivity** is set to 1 hour so that your compute only suspends after an hour of inactivity, and autoscaling is configured with a minimum compute size that keep costs low during periods of light usage.
 
 ![Connection warmup autosuspend and autoscaling configuration](/docs/connect/cold_start_compute_config.png)
 
@@ -6864,7 +6997,7 @@ For autoscaling configuration instructions, see [Compute size and autoscaling co
 
 ### Place your application and database in the same region
 
-A key strategy for reducing connection latency is ensuring that your application and database are hosted in the same region, or as close as possible, geographically. For the regions supported by Neon, see [Regions](/docs/introduction/regions). For information about moving your database to a different region, see [Import data from another Neon project](/docs/import/import-from-neon).
+A key strategy for reducing connection latency is ensuring that your application and database are hosted in the same region, or as close as possible, geographically. For the regions supported by Neon, see [Regions](/docs/introduction/regions). For information about moving your database to a different region, see [Import data from another Neon project](/docs/import/migrate-from-neon).
 
 ### Increase your connection timeout
 
@@ -6977,6 +7110,11 @@ The randomize option adds a degree of randomness to the delay to prevent a large
 
 However, this example is a simplification. In a production application, you might want to use a more sophisticated strategy. For example, you could initially attempt to reconnect quickly in the event of a transient network issue, then fall back to slower retries if the problem persists.
 
+### Connection retry references
+
+- [SQL Alchemy: Dealing with disconnects](https://arc.net/l/quote/nojcaewr)
+- [Fast API blog post: Recycling connections for Neon's autosuspend](https://neon.tech/blog/deploy-a-serverless-fastapi-app-with-neon-postgres-and-aws-app-runner-at-any-scale)
+
 ### Use application-level caching
 
 Implement a caching system like [Redis](https://redis.io/) to store frequently accessed data, which can be rapidly served to users. This approach can help reduce occurrences of latency, but only if the data requested is available in the cache. Challenges with this strategy include cache invalidation due to frequently changing data, and cache misses when queries request uncached data. This strategy will not avoid latency entirely, but you may be able to combine it with other strategies to improve application responsiveness overall.
@@ -6986,52 +7124,87 @@ Implement a caching system like [Redis](https://redis.io/) to store frequently a
 With the right strategies, you can optimize your system to handle connection latencies and timeouts, ensuring your application delivers a consistently high level of performance. The best solution often involves a combination of strategies, so experiment and find the right configuration for your specific use case.
 
 
-# Import data
+# Migrate to Neon
 
 ---
-title: Neon data import guides
-subtitle: Learn how to import data from different sources or load sample data
+title: Neon data migration guides
+subtitle: Learn how to migrate data to Neon Postgres from different database providers and sources
+redirectFrom:
+  - /docs/import/import-intro
 enableTableOfContents: true
-updatedOn: '2024-06-13T20:09:36.713Z'
+updatedOn: '2024-09-17T19:00:39.119Z'
 ---
 
-Find instructions for importing data from Postgres, CSV, other Neon projects, and more. Additionally, if you're new to Neon and want to try it out, our sample data guide provides datasets for exploration and testing.
+Find instructions for migrating data from Postgres, CSV, other Neon projects, and other database providers. For near-zero downtime data migrations from other Postgres providers, consider using logical replication. Additionally, if you're new to Neon and want to try it out, our sample data guide provides datasets for exploration and testing.
 
 ## Data import guides
 
 <DetailIconCards>
 
-<a href="/docs/import/import-from-postgres" description="Import data from another Postgres database using pg_dump and pg_restore" icon="postgres">Import with pg_dump and pg_restore</a>
+<a href="/docs/import/migrate-from-postgres" description="Migrate data from another Postgres database using pg_dump and pg_restore" icon="postgres">MIgrate with pg_dump and pg_restore</a>
 
-<a href="/docs/import/import-from-postgres-pg-import" description="Easily import data from another Postgres database with the @neondatabase/pg-import CLI" icon="postgres">Import with @neondatabase/pg-import</a>
+<a href="/docs/import/migrate-from-postgres-pg-import" description="Easily migrate data from another Postgres database with the @neondatabase/pg-import CLI" icon="postgres">Migrate with @neondatabase/pg-import</a>
 
-<a href="/docs/import/import-from-neon" description="Import data from another Neon project for Postgres version upgrades or region migration" icon="neon">Import from a Neon project</a>
+<a href="/docs/import/migrate-from-neon" description="Migrate data from another Neon project for Postgres version, region, or account migration" icon="neon">Migrate from another Neon project</a>
+
+<a href="/docs/import/migrate-schema-only" description="Migrate only the schema from a Postgres database with pg_dump and pg_restore" icon="neon">Migrate schema only</a>
 
 <a href="/docs/import/import-from-csv" description="Import data from a CSV file using the psql command-line utility" icon="csv">Import data from CSV</a>
 
-<a href="/docs/import/import-from-heroku" description="Import data from a Heroku Postgres database to a Neon Postgres database" icon="heroku">Import from Heroku</a>
+<a href="/docs/import/migrate-from-firebase" description="Migrate data from Firebase Firestore to Neon Postgres using a custom Python script" icon="import">Migrate from Firebase Firestore</a>
+
+<a href="/docs/import/migrate-from-heroku" description="Migrate data from a Heroku Postgres database to Neon Postgres using the Heroku CLI" icon="heroku">Migrate from Heroku</a>
 
 <a href="/docs/import/migrate-aws-dms" description="Migrate data from another database source to Neon using the AWS Data Migration Service" icon="aws">Migrate with AWS DMS</a>
 
-<a href="/docs/import/import-sample-data" description="Load one of several sample datasets for exploration and testing" icon="download">Load sample data</a>
+<a href="/docs/import/migrate-from-azure-postgres" description="Migrate from an Azure Database for PostgreSQL to Neon Postgres" icon="import">Migrate from Azure</a>
 
-<a href="/docs/import/migrate-mysql" description="Learn how to migrate your MySQL database to Neon Postgres using pgloader." icon="sql">Migrate from MySQL</a>
+<a href="/docs/import/migrate-from-digital-ocean" description="Migrate data from Digital Ocean Postgres to Neon Postgres with pg_dump and pg_restore" icon="aws">Migrate from Digital Ocean</a>
+
+<a href="/docs/import/import-sample-data" description="Import one of several sample datasets for exploration and testing" icon="download">Import sample data</a>
+
+<a href="/docs/import/migrate-mysql" description="Migrate your MySQL data to Neon Postgres using pgloader." icon="sql">Migrate from MySQL</a>
+
+<a href="/docs/import/migrate-from-render" description="Migrate data from Render to Neon Postgres with pg_dump and pg_restore" icon="sql">Migrate from Render</a>
+
+<a href="/docs/import/migrate-from-supabase" description="MIgrate data from Supabase to Neon Postgres with pg_dump and pg_restore" icon="sql">Migrate from Supabase</a>
 
 </DetailIconCards>
 
+## Use logical replication for near-zero downtime data migrations
 
-# Import from Postgres with pg_dump and pg_restore
+Postgres logical replication in Neon provides an efficient way to migrate data from other Postgres providers with minimal downtime. By replicating data in real-time, this method allows you to transition your applications to Neon without interrupting your services. Please refer to our logical replication guides for instructions.
+
+<TechnologyNavigation open>
+
+<a href="/docs/guides/logical-replication-alloydb" title="AlloyDB" description="Replicate data from AlloyDB to Neon" icon="alloydb"></a>
+
+<a href="/docs/guides/logical-replication-aurora-to-neon" title="Aurora" description="Replicate data from Aurora to Neon" icon="aws-rds"></a>
+
+<a href="/docs/guides/logical-replication-cloud-sql" title="Cloud SQL" description="Replicate data from Cloud SQL to Neon" icon="google-cloud-sql"></a>
+
+<a href="/docs/guides/logical-replication-postgres-to-neon" title="PostgreSQL to Neon" description="Replicate data from PostgreSQL to Neon" icon="postgresql"></a>
+
+<a href="/docs/guides/logical-replication-rds-to-neon" title="AWS RDS" description="Replicate data from AWS RDS PostgreSQL to Neon" icon="aws-rds"></a>
+
+</TechnologyNavigation>
+
+
+# Import utilities
+
+# Migrate from Postgres with pg_dump and pg_restore
 
 ---
-title: Import data from Postgres with pg_dump and pg_restore
+title: Migrate data from Postgres with pg_dump and pg_restore
 enableTableOfContents: true
 redirectFrom:
   - /docs/cloud/tutorials
   - /docs/how-to-guides/import-an-existing-database
-updatedOn: '2024-08-07T21:36:52.669Z'
+  - /docs/import/import-from-postgres
+updatedOn: '2024-09-23T22:07:20.572Z'
 ---
 
-This topic describes migrating data from another Postgres database to Neon using the `pg_dump` and `pg_restore`.
+This topic describes migrating data from one Postgres database to another using the `pg_dump` and `pg_restore`.
 
 <Admonition type="important">
 Avoid using `pg_dump` over a [pooled connection string](/docs/reference/glossary#pooled-connection-string) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an [unpooled connection string](/docs/reference/glossary#unpooled-connection-string) instead.
@@ -7041,7 +7214,8 @@ Repeat the `pg_dump` and `pg_restore` process for each database you want to migr
 
 ## Before you begin
 
-- Neon supports PostgreSQL 14, 15, and 16. We recommend that clients are the same version as source Postgres instance. To check the version of `pg_dump` or `pg_restore`, use the `-V` option. For example: `pg_dump -V`.
+- We recommended that you use the `pg_dump` and `pg_restore` programs from the latest version of Postgres, to take advantage of enhancements that might have been made in these programs. To check the version of `pg_dump` or `pg_restore`, use the `-V` option. For example: `pg_dump -V`.
+- Neon supports PostgreSQL 14, 15, and 16. We recommend that clients are the same version as source Postgres instance.
 - Retrieve the connection parameters or connection string for your source Postgres database. The instructions below use a [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), but you can use the connection format you prefer. If you are logged in to a local Postgres instance, you may only need to provide the database name. Refer to the [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) documentation for information about connection parameters.
 - Optionally, create a role in Neon to perform the restore operation. The role that performs the restore operation becomes the owner of restored database objects. For example, if you want role `sally` to own database objects, create `role` sally in Neon and perform the restore operation as `sally`.
 - If you have assigned database object ownership to different roles in your source database, read [Database object ownership considerations](#database-object-ownership-considerations). You may want to add the `-O, --no-owner` option to your `pg_restore` command to avoid errors.
@@ -7162,7 +7336,7 @@ The `pg_dump` and `pg_restore` commands provide numerous advanced options, some 
 - `-j <njobs>`: Consider this option for large databases to run the restore process in parallel. Set `<njobs>` to the number of available vCPUs. Refer to the [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html) documentation for more information. In Neon, this option only makes sense for Neon paid plan users who can configure computes with >1 vCPU. It cannot be used together with `--single-transaction`.
 - `--single-transaction`: Forces the operation to run as an atomic transaction, which ensures that no data is left behind when a restore operation fails. Retrying an import operation after a failed attempt that leaves data behind may result in "duplicate key value" errors.
 - `--no-tablespaces`: Do not output commands to select tablespaces. See [Data migration notes](#data-migration-notes).
-- `-t <table_name>`: Allows you to restore individual tables from a custom-format database dump. Individual tables can also be imported from a CSV file. See [Import from CSV](/docs/import/import-from-csv).
+- `-t <table_name>`: Allows you to restore individual tables from a custom-format database dump. Individual tables can also be imported from a CSV file. See [Import from CSV](/docs/import/migrate-from-csv).
 
 ## Run a test migration
 
@@ -7178,7 +7352,7 @@ Some Postgres clients offer backup and restore capabilities. These include [pgAd
 
 ### Table-level data migration
 
-Table-level data migration (using CSV files, for example) does not preserve database schemas, constraints, indexes, types, or other database features. You will have to create these separately. Table-level migration is simple but could result in significant downtime depending on the size of your data and the number of tables. For instructions, see [Import data from CSV](/docs/import/import-from-csv).
+Table-level data migration (using CSV files, for example) does not preserve database schemas, constraints, indexes, types, or other database features. You will have to create these separately. Table-level migration is simple but could result in significant downtime depending on the size of your data and the number of tables. For instructions, see [Import data from CSV](/docs/import/migrate-from-csv).
 
 ## Data migration notes
 
@@ -7198,15 +7372,17 @@ For information about the Postgres client utilities referred to in this topic, r
 <NeedHelp/>
 
 
-# Import from Postgres with pg-import
+# Migrate from Postgres with pg-import
 
 ---
-title: Import data from Postgres with the @neondatabase/pg-import CLI
+title: Migrate data from Postgres with the @neondatabase/pg-import CLI
+redirectFrom:
+  - /docs/how-to-guides/import-from-firebase
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.669Z'
+updatedOn: '2024-09-02T13:42:56.657Z'
 ---
 
-This topic describes migrating data from another Postgres database to Neon using the `@neondatabase/pg-import` CLI. This tool is built on top of the Postgres `pg_dump` and `pg_restore` client utilities. It is intended to simplify data migrations for smaller, less complex databases compared to using the `pg_dump` and `pg_restore` client utilities directly, as described in [Import data from Postgres](/docs/import/import-from-postgres).
+This topic describes migrating data from another Postgres database to Neon using the `@neondatabase/pg-import` CLI. This tool is built on top of the Postgres `pg_dump` and `pg_restore` client utilities. It is intended to simplify data migrations for smaller, less complex databases compared to using the `pg_dump` and `pg_restore` client utilities directly, as described in [Import data from Postgres](/docs/import/migrate-from-postgres).
 
 <Admonition type="important">
 The `@neondatabase/pg-import` CLI is experimental. There may be bugs, and the API is subject to change.
@@ -7216,7 +7392,7 @@ The`@neondatabase/pg-import` utility supports all Neon Postgres versions.
 
 ## Before you begin
 
-- Make sure your Neon plan supports your database size. The Neon Free Plan offers 0.5 GiB of storage. For larger data sizes, upgrade to the Launch or Scale plan. See Neon plans. If you are on the Neon Launch or Scale plan, you can optimize for the migration by configuring a larger compute size or enabling [autoscaling](/docs/guides/autoscaling-guide) for additional CPU and RAM. See [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
+- Make sure your Neon plan supports your database size. The Neon Free Plan offers 0.5 GiB of storage. For larger data sizes, upgrade to one of our paid plans: Launch, Scale, or Business. See Neon [plans](/docs/introduction/plans). If you are on a Neon paid plan, you can optimize for the migration by configuring a larger compute size or enabling [autoscaling](/docs/guides/autoscaling-guide) for additional CPU and RAM. See [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
 - Retrieve the [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING) for your source Postgres database.
 - Optionally, [create a role in Neon](/docs/manage/roles#manage-roles-in-the-neon-console) to perform the restore operation. The role that performs the restore operation becomes the owner of restored database objects. For example, if you want role `sally` to own database objects, create `role` sally in Neon and perform the restore operation as `sally`.
 - Create the target database in Neon. For example, if you are migrating a database named `pagila`, create a database named `pagila` in Neon. For instructions, see [Create a database](/docs/manage/databases#create-a-database).
@@ -7234,7 +7410,7 @@ The`@neondatabase/pg-import` utility supports all Neon Postgres versions.
   - `CREATE EVENT TRIGGER` statements
   - Any statement requiring the PostgreSQL superuser privilege or a privilege not held by the role running the migration.
 
-  `ALTER OWNER` warnings can be ignored (see [Database object ownership considerations](/docs/import/import-from-postgres#database-object-ownership-considerations)). `CREATE EVENT TRIGGER` or other statements requiring a privilege not held by the role performing the restore operation may require that you exclude those statements from the dump file.
+  `ALTER OWNER` warnings can be ignored (see [Database object ownership considerations](/docs/import/migrate-from-postgres#database-object-ownership-considerations)). `CREATE EVENT TRIGGER` or other statements requiring a privilege not held by the role performing the restore operation may require that you exclude those statements from the dump file.
 
 ## Export data with @neondatabase/pg-import
 
@@ -7303,12 +7479,14 @@ After migrating your data, update your applications to connect to your new datab
 <NeedHelp/>
 
 
-# Import from a Neon project
+# Migrate from a Neon project
 
 ---
-title: Import data from another Neon project
+title: Migrate data from another Neon project
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.669Z'
+redirectFrom:
+  - /docs/import/import-from-neon
+updatedOn: '2024-08-20T23:55:48.551Z'
 ---
 
 This guide describes how to migrate a database from one Neon project to another by piping data from `pg_dump` to `pg_restore`. Use these instructions to:
@@ -7316,11 +7494,15 @@ This guide describes how to migrate a database from one Neon project to another 
 - Import a database from a Neon project created in one region to a project created in another region.
 - Import a database from a Neon project created with one Postgres version to a Neon project created with another Postgres version.
 
+<Admonition type="tip">
+You can also use **logical replication** to move your data from one Neon project to another. See [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
+</Admonition>
+
 ## Important considerations
 
 - **Upgrading the Postgres version**: When upgrading to a new version of Postgres, always test thoroughly before migrating your production systems or applications. We also recommend familiarizing yourself with the changes in the new version of Postgres, especially those affecting compatibility. For information about those changes, please refer to the official Postgres [Release 15](https://www.postgresql.org/docs/release/15.0/) or [Release 16](https://www.postgresql.org/docs/16/release-16.html) documentation.
-- **Piping considerations**: Piping is not recommended for large datasets, as it is susceptible to failures during lengthy migration operations (see [Pipe pg_dump to pg_restore](/docs/import/import-from-postgres#pipe-pgdump-to-pgrestore) for more information). If your dataset is large, we recommend performing the dump and restore as separate operations. For instructions, see [Import data from Postgres](/docs/import/import-from-postgres).
-- **Neon Free Plan project limit**: The Neon Free Plan has a limit of one project per user, which means a Neon Free Plan user cannot have two projects simultaneously. To move your data from a Neon Free Plan project, dump your database first, delete your Neon project, create a new Neon project with the desired region or Postgres version, and import your data into the new project. For the dump and restore procedure, refer to [Import from Postgres](/docs/import/import-from-postgres).
+- **Piping considerations**: Piping is not recommended for large datasets, as it is susceptible to failures during lengthy migration operations (see [Pipe pg_dump to pg_restore](/docs/import/migrate-from-postgres#pipe-pgdump-to-pgrestore) for more information). If your dataset is large, we recommend performing the dump and restore as separate operations. For instructions, see [Import data from Postgres](/docs/import/migrate-from-postgres).
+- **Neon Free Plan project limit**: The Neon Free Plan has a limit of one project per user, which means a Neon Free Plan user cannot have two projects simultaneously. To move your data from a Neon Free Plan project, dump your database first, delete your Neon project, create a new Neon project with the desired region or Postgres version, and import your data into the new project. For the dump and restore procedure, refer to [Migrate from Postgres](/docs/import/migrate-from-postgres).
 
 ## Import data from another project
 
@@ -7366,79 +7548,604 @@ To import your data from another Neon project:
 <NeedHelp/>
 
 
-# Import from CSV
+# Migrate schema only
 
 ---
-title: Import data from CSV
+title: Migrate a database schema
+subtitle: Perform a schema-only migration with pg_dump and pg_restore
+redirectFrom:
+  - /docs/import/import-schema-only
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.667Z'
+updatedOn: '2024-09-04T18:53:01.156Z'
 ---
 
-This topic describes how to import data into a Neon database table from a CSV file.
+This topic shows how to perform a schema-only migration using the `pg_dump` and `pg_restore` Postgres utilities.
 
-The instructions require a working installation of [psql](https://www.postgresql.org/download/). The `psql` client is the native command-line client for Postgres. It provides an interactive session for sending commands to Postgres. For more information about `psql`, refer to the [psql reference](https://www.postgresql.org/docs/current/app-psql.html), in the _PostgreSQL Documentation_.
+A schema-only migration may be necessary in certain scenarios. For example, when replicating data between two Postgres instances, the tables defined in your publication on the source database must also exist in the destination database, and they must have the same table names and columns. A schema dump and reload in this case may be faster than trying to manually create the required schema on the destination database.
 
-The following example uses the ready-to-use `neondb` database that is created with your Neon project, a table named `customer`, and a data file named `customer.csv`. Data is loaded from the `customer.csv` file into the `customer` table.
+## Dump the schema
 
-1. Connect to the `neondb` database using `psql`. For example:
+To dump only the schema from a database, you can run a `pg_dump` command similar to the following to create an `.sql` dump file with the schema only:
 
-   ```bash shouldWrap
-   psql postgresql://[user]:[password]@[neon_hostname]/[dbname]
-   ```
+```sql
+pg_dump --schema-only \
+	--no-privileges \
+	"postgresql://role:password@hostname:5432/dbname" \
+	> schema_dump.sql
+```
 
-   <Admonition type="note">
-   For more information about connecting to Neon with `psql`, see [Connect with psql](/docs/connect/query-with-psql-editor).
-   </Admonition>
+- With the the `--schema-only` option, only object definitions are dumped. Data is excluded.
+- The `--no-privileges` option prevents dumping privileges. Neon may not support the privileges you've defined elsewhere, or if dumping a schema from Neon, there maybe Neon-specific privileges that cannot be restored to another database.
 
-2. Create the `customer` table.
+<Admonition type="tip" title="tips">
+- When you're dumping or restoring on Neon, you can input your Neon connection string in place of `postgresql://role:password@hostname:5432/dbname`. You can find your connection string on the **Connection Details** widget on the Neon Project Dashboard.
+- If you are replicating a large dataset, consider removing any `CREATE INDEX` statements from the resulting dump file to avoid creating indexes when loading the schema on the destination database (the subscriber). Taking indexes out of the equation can substantially reduce the time required for initial data load performed when starting logical replication. Save the `CREATE INDEX` statements that you remove. You can add the indexes back after the initial data copy is completed.
+</Admonition>
+
+## Review and modify the dumped schema
+
+After dumping a schema to an `.sql` file, review it for statements that you don't want to replicate or that won't be supported on your destination database, and comment them out. For example, when dumping a schema from AlloyDB, you might see some statements like these, which you can comment out if you're loading the schema into Neon, where they won't be supported:
+
+```sql
+- ALTER SCHEMA public OWNER TO alloydbsuperuser;
+
+- CREATE EXTENSION IF NOT EXISTS google_columnar_engine WITH SCHEMA public;
+
+- CREATE EXTENSION IF NOT EXISTS google_db_advisor WITH SCHEMA public;
+```
+
+## Load the schema
+
+After making any necessary modifications, load the dumped schema using `pg_restore`:
+
+```sql
+psql \
+	"postgresql://role:password@hostname:5432/dbname" \
+	< schema_dump.sql
+```
+
+After you've loaded the schema, you can view the result with this `psql` command:
+
+```sql
+\dt
+```
+
+
+# Migrate from Digital Ocean
+
+---
+title: Migrate from Digital Ocean Postgres to Neon
+subtitle: Learn how to migrate your Postgres database from Digital Ocean to Neon using
+  pg_dump and pg_restore
+tag: new
+redirectFrom:
+  - /docs/import/import-from-digital-ocean
+enableTableOfContents: true
+updatedOn: '2024-09-23T22:07:20.569Z'
+---
+
+This guide describes how to migrate a Postgres database from Digital Ocean to Neon using the `pg_dump` and `pg_restore` utilities, which are part of the Postgres client toolset. `pg_dump` works by dumping both the schema and data in a custom format that is compressed and suitable for input into `pg_restore` to rebuild the database.
+
+## Prerequisites
+
+- A Digital Ocean Postgres database containing the data you want to migrate.
+- A Neon project to move the data to.
+  For detailed information on creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project). Make sure to create a project with the same Postgres version as your Digital Ocean deployment.
+- `pg_dump` and `pg_restore` utilities installed on your local machine. These typically come with a Postgres installation.
+
+  We recommended that you use the `pg_dump` and `pg_restore` programs from the latest version of Postgres, to take advantage of enhancements that might have been made in these programs. To check the version of `pg_dump` or `pg_restore`, use the `-V` option. For example: `pg_dump -V`.
+
+- Review our guide on [Importing data from Postgres](/docs/import/migrate-from-postgres) for more comprehensive information on using `pg_dump` and `pg_restore`.
+
+## Prepare your Digital Ocean database
+
+This section describes how to prepare your Digital Ocean database for exporting data.
+
+To illustrate the migration workflow, we populate the Digital Ocean database with the [LEGO dataset](https://neon.tech/docs/import/import-sample-data#lego-database). This database contains information about LEGO sets, parts, and themes.
+
+### Retrieve Digital Ocean connection details
+
+1. Log in to your Digital Ocean account and navigate to the Databases section.
+2. Select your Postgres database.
+3. In the **Connection Details** section under the **Overview** tab, you'll find the following information:
+   - Host
+   - Port
+   - Database name
+   - Username
+   - Password (you may need to reset it if you don't have it)
+
+You'll need these details to construct the connection string for `pg_dump`. Alternatively, you can toggle to the `Connection string` option to get the `postgresql://` connection string, which can be used directly with postgres CLI tools.
+
+## Export data with pg_dump
+
+Now that you have the Digital Ocean connection details, you can export your data using `pg_dump`:
+
+```bash shouldWrap
+pg_dump -Fc -v -d postgresql://[username]:[password]@[host]:[port]/[database] -f digitalocean_dump.bak
+```
+
+Replace `[username]`, `[password]`, `[host]`, `[port]`, and `[database]` with your Digital Ocean connection details.
+
+This command includes these arguments:
+
+- `-Fc`: Outputs the dump in custom format, which is compressed and suitable for input into `pg_restore`.
+- `-v`: Runs `pg_dump` in verbose mode, allowing you to monitor the dump operation.
+- `-d`: Specifies the connection string for your Digital Ocean database.
+- `-f`: Specifies the output file name.
+
+If the command was successful, you'll see output similar to the following:
+
+```bash
+pg_dump: saving encoding = UTF8
+pg_dump: saving standard_conforming_strings = on
+pg_dump: saving search_path =
+pg_dump: saving database definition
+pg_dump: dumping contents of table "public.lego_colors"
+pg_dump: dumping contents of table "public.lego_inventories"
+pg_dump: dumping contents of table "public.lego_inventory_parts"
+pg_dump: dumping contents of table "public.lego_inventory_sets"
+pg_dump: dumping contents of table "public.lego_part_categories"
+pg_dump: dumping contents of table "public.lego_parts"
+pg_dump: dumping contents of table "public.lego_sets"
+pg_dump: dumping contents of table "public.lego_themes"
+```
+
+<Admonition type="important">
+Avoid using `pg_dump` over a [pooled connection string](/docs/reference/glossary#pooled-connection-string) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an [unpooled connection string](/docs/reference/glossary#unpooled-connection-string) instead.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database to receive the imported data.
+
+### Create the Neon database
+
+Each Neon project comes with a default database named `neondb`. To maintain consistency with your Digital Ocean setup, create a new database with the same name.
+
+1. Connect to your Neon project using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or a Postgres client like `psql`.
+
+2. Create a new database. For example, if your Digital Ocean database was named `lego`, run:
 
    ```sql
-   CREATE TABLE customer (
-     id SERIAL,
-     first_name VARCHAR(50),
-     last_name VARCHAR(50),
-     email VARCHAR(255),
-     PRIMARY KEY (id)
-   )
+   CREATE DATABASE lego;
    ```
 
-   <Admonition type="tip">
-   You can also create tables using the **SQL Editor** in the Neon Console. See [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor).
-   </Admonition>
+For more information, see [Create a database](/docs/manage/databases#create-a-database).
 
-3. Prepare a `customer.csv` file with the following data:
+### Retrieve Neon connection details
 
-   ```text
-   First Name,Last Name,Email
-   1,Casey,Smith,casey.smith@example.com
-   2,Sally,Jones,sally.jones@example.com
+1. In the Neon Console, go to your project dashboard.
+2. Find the **Connection Details** widget.
+3. Copy the connection string. It will look similar to this:
+
+   ```
+   postgresql://[user]:[password]@[neon_hostname]/[dbname]
    ```
 
-4. From your `psql` prompt, load the data from the `customer.csv` file using the `\copy` option.
+## Restore data to Neon with pg_restore
 
-   ```bash
-   \copy customer FROM '/path/to/customer.csv' DELIMITER ',' CSV HEADER
+Now you can restore your data to the Neon database using `pg_restore`:
+
+```bash
+pg_restore -d <neon-connection-string> -v --no-owner --no-acl digitalocean_dump.bak
+```
+
+Replace `<neon-connection-string>` with your Neon connection details.
+
+This command includes these arguments:
+
+- `-d`: Specifies the connection string for your Neon database.
+- `-v`: Runs `pg_restore` in verbose mode.
+- `--no-owner`: Skips setting the ownership of objects as in the original database.
+- `--no-acl`: Skips restoring access privileges for objects as in the original database.
+
+We recommend using the `--no-owner` and `--no-acl` options to skip restoring these settings, as they may not be compatible between Digital Ocean and Neon. After migrating the data, review and configure the appropriate roles and privileges for all objects, as needed.
+
+If the command was successful, you'll see output similar to the following:
+
+```bash
+pg_restore: connecting to database for restore
+pg_restore: creating SCHEMA "public"
+pg_restore: creating TABLE "public.lego_colors"
+pg_restore: creating SEQUENCE "public.lego_colors_id_seq"
+pg_restore: creating SEQUENCE OWNED BY "public.lego_colors_id_seq"
+pg_restore: creating TABLE "public.lego_inventories"
+pg_restore: creating SEQUENCE "public.lego_inventories_id_seq"
+...
+```
+
+## Verify the migration
+
+After the restore process completes, you should verify that your data has been successfully migrated:
+
+1. Connect to your Neon database using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or `psql`.
+
+2. Run some application queries to check your data. For example, if you're using the `LEGO` database, you can run the following:
+
+   ```sql shouldWrap
+   SELECT is_trans AS is_transparent, COUNT(*) FROM lego_colors GROUP BY is_trans;
+   SELECT * FROM lego_sets ORDER BY num_parts DESC LIMIT 5;
    ```
 
-   If the command runs successfully, it returns the number of records copied to the database:
+3. Compare the results with those from running the same queries on your Digital Ocean database to ensure data integrity.
 
-   ```bash
-   COPY 2
-   ```
+## Clean up
 
-   For more information about the `\copy` option, refer to the [psql reference](https://www.postgresql.org/docs/current/app-psql.html), in the _PostgreSQL Documentation_.
+After successfully migrating and verifying your data on Neon, you can update your application's connection strings to point to your new Neon database. We recommend that you keep your Digital Ocean database dump file (`digitalocean_dump.bak`) as a backup until you've verified that the migration was successful.
+
+## Other migration options
+
+While this guide focuses on using `pg_dump` and `pg_restore`, there are other migration options available:
+
+- **Logical replication**
+
+  For larger databases or scenarios where you need to minimize downtime, you might consider using logical replication. See our guide on [Logical replication](/docs/guides/logical-replication-guide) for more information.
+
+- **CSV export/import**
+
+  For smaller datasets or specific tables, you might consider exporting to CSV from Digital Ocean and then importing to Neon. See [Import data from CSV](/docs/import/import-from-csv) for more details on this method.
+
+## Reference
+
+For more information on the Postgres utilities used in this guide, refer to the following documentation:
+
+- [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
+- [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html)
+- [Migrating data to Neon](https://neon.tech/docs/import/migrate-from-postgres)
 
 <NeedHelp/>
 
 
-# Import from Heroku
+# Migrate from Firebase
 
 ---
-title: Import data from Heroku
+title: Migrate from Firebase Firestore to Neon Postgres
+subtitle: Learn how to migrate your data from Firebase Firestore to Neon Postgres using
+  a custom Python script
+tag: new
+redirectFrom:
+  - /docs/import/import-from-firebase
+enableTableOfContents: true
+updatedOn: '2024-09-18T09:52:58.425Z'
+---
+
+This guide describes how to migrate data from Firebase Firestore to Neon Postgres.
+
+We'll use a custom Python script to export data from Firestore to a local file, and then import the data into Neon Postgres. This approach allows us to handle Firestore's document-based structure and convert it into the relational database format suitable for Postgres.
+
+## Prerequisites
+
+- A Firebase project containing the Firestore data you want to migrate.
+
+- A Neon project to move the data to.
+
+  For detailed information on creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+
+- Python 3.10 or later installed on your local machine. Additionally, add the following packages to your Python virtual environment: `firebase_admin`, which is Google's python SDK for Firebase and `psycopg`, which is used to connect to Neon Postgres database.
+
+  You can install them using `pip`:
+
+  ```bash
+  pip install firebase-admin "psycopg[binary,pool]"
+  ```
+
+## Retrieve Firebase credentials
+
+This section describes how to fetch the credentials to connect to your Firebase Firestore database.
+
+1. Log in to your Firebase Console and navigate to your project.
+2. Go to **Project settings** (the gear icon next to "Project Overview" in the left sidebar).
+3. Under the **Service Accounts** tab, click **Generate new private key**. This will download a JSON file containing your credentials.
+4. Save this JSON file securely on your local machine. We'll use it in our Python script.
+
+For more information, please consult the [Firebase documentation](https://firebase.google.com/docs/admin/setup#initialize_the_sdk_in_non-google_environments).
+
+## Export data from Firestore
+
+In this step, we will use a Python script to export data from Firestore. This script will:
+
+1. Connect to Firestore
+2. Retrieve all collections and documents
+3. Save the Firestore documents to a format suitable for ingesting into Postgres later
+
+Here's the Python script:
+
+```python
+import argparse
+import json
+import os
+from collections import defaultdict
+
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+
+def download_from_firebase(db, output_dir):
+    # Create output directory if it doesn't exist
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # Initialize a defaultdict to store documents for each collection
+    output: dict[str, list[dict]] = defaultdict(list)
+
+    def _download_collection(collection_ref):
+        print(f"Downloading from collection: {collection_ref.id}")
+
+        # Determine the parent path for the current collection
+        if collection_ref.parent:
+            parent_path = collection_ref.parent.path
+        else:
+            parent_path = None
+
+        # Iterate through all documents in the collection
+        for doc in collection_ref.get():
+            # Add document data to the output dictionary
+            output[collection_ref.id].append(
+                {
+                    "id": doc.reference.path,
+                    "parent_id": parent_path,
+                    "data": doc.to_dict(),
+                }
+            )
+
+            # Recursively handle subcollections
+            for subcoll in doc.reference.collections():
+                _download_collection(subcoll)
+
+    # Start the download process with top-level collections
+    for collection in db.collections():
+        _download_collection(collection)
+
+    # Save all (sub)collections to corresponding files
+    for collection_id, docs in output.items():
+        with open(os.path.join(output_dir, f"{collection_id}.json"), "w") as f:
+            for doc in docs:
+                f.write(json.dumps(doc) + "\n")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Download data from Firebase Firestore"
+    )
+    parser.add_argument(
+        "--credentials", required=True, help="Path to Firebase credentials JSON file"
+    )
+    parser.add_argument(
+        "--output",
+        default="firestore_data",
+        help="Output directory for downloaded data",
+    )
+
+    args = parser.parse_args()
+
+    # Initialize Firebase app
+    cred = credentials.Certificate(args.credentials)
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+
+    # Download data from Firebase
+    download_from_firebase(db, args.output)
+    print(f"Firestore data downloaded to {args.output}")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Save this script as `firebase-download.py`. To run the script, you need to provide the path to your Firebase credentials JSON file and the output directory for the downloaded data. Run the following command in your terminal:
+
+```bash shouldWrap
+python firebase-download.py --credentials path/to/your/firebase-credentials.json --output firestore_data
+```
+
+For each unique collection id, this script creates a line-delimited JSON file, and all documents in that collection (spanning different top-level documents) are saved to it. For example, if you have a collection with the following structure:
+
+```
+/users
+  /user1
+    /orders
+      /order1
+      /order2
+        /items
+          /item1
+          /item2
+  /user2
+    /orders
+      /order3
+```
+
+The script will create the following files:
+
+- `users.json`: Contains all user documents, i.e., `user1`, `user2`.
+- `orders.json`: Contains all order documents across all users - `order1`, `order2`, `order3`.
+- `items.json`: Contains all item documents across all orders - `item1`, `item2`.
+
+Each file contains a JSON object for each document. To illustrate, `order1` gets saved to `orders.json` in the following format:
+
+```json
+{
+  "id": "users/user1/orders/order1",
+  "parent_id": "users/user1",
+  "data": {
+    "order_date": "2023-06-15",
+    "total_amount": 99.99
+  }
+}
+```
+
+This structure allows for easy reconstruction of the hierarchical relationships between users, orders, and items, while also providing a flat file structure that's easy to process and import into other systems.
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database to receive the imported data.
+
+### Create the Neon database
+
+1. In the Neon Console, go to your project dashboard.
+2. In the sidebar, click on **Databases**.
+3. Click the **New Database** button.
+4. Enter a name for your database and click **Create**.
+
+For more information, see [Create a database](/docs/manage/databases#create-a-database).
+
+### Retrieve Neon connection details
+
+1. In the Neon Console, go to your project dashboard.
+2. Find the **Connection Details** widget, and toggle to the correct `Database` option.
+3. Copy the connection string. It will look similar to this:
+
+   ```
+   postgresql://[user]:[password]@[neon_hostname]/[dbname]
+   ```
+
+## Import data into Neon
+
+We use another python script to import the firestore data we previously downloaded into Neon.
+
+```python
+import argparse
+import json
+import os
+
+import psycopg
+from psycopg.types.json import Jsonb
+
+
+def upload_to_postgres(input_dir, conn_string):
+    # Connect to the Postgres database
+    conn = psycopg.connect(conn_string)
+
+    # Iterate through all JSON files in the input directory
+    for filename in os.listdir(input_dir):
+        cur = conn.cursor()
+        if filename.endswith(".json"):
+            table_name = filename[:-5]  # Remove .json extension
+            print("Writing to table: ", table_name)
+
+            # Create table for the collection if it doesn't exist
+            create_table_query = f"""
+            CREATE TABLE IF NOT EXISTS {table_name} (
+                id TEXT PRIMARY KEY,
+                parent_id TEXT,
+                data JSONB
+            )
+            """
+            cur.execute(create_table_query)
+
+            # Read and insert data from the JSON file
+            with open(os.path.join(input_dir, filename), "r") as f:
+                insert_query = f"""
+                INSERT INTO {table_name} (id, parent_id, data)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (id) DO UPDATE
+                SET parent_id = EXCLUDED.parent_id, data = EXCLUDED.data
+                """
+                batch = []
+                for line in f:
+                    doc = json.loads(line)
+                    batch.append((doc["id"], doc["parent_id"], Jsonb(doc["data"])))
+                    if len(batch) == 20:
+                        cur.executemany(insert_query, batch)
+                        batch = []
+
+                # Commit changes
+                conn.commit()
+
+    # Close the cursor and connection
+    cur.close()
+    conn.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Upload data to Postgres")
+    parser.add_argument(
+        "--input",
+        default="firestore_data",
+        help="Input directory containing JSON files",
+    )
+    parser.add_argument("--postgres", required=True, help="Postgres connection string")
+
+    args = parser.parse_args()
+
+    # Upload data to Postgres
+    upload_to_postgres(args.input, args.postgres)
+    print(f"Data from {args.input} uploaded to Postgres")
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Save this script as `neon-import.py`. To run the script, you need to provide the path to the input directory containing the JSON files and the Neon connection string. Run the following command in your terminal:
+
+```bash shouldWrap
+python neon-import.py --input firestore_data --postgres "<neon-connection-string>"
+```
+
+This script iterates over each JSON file in the input directory, creates a table in the Neon database for each collection, and inserts the data into the table. It also handles conflicts by updating the existing data with the new data.
+
+## Verify the migration
+
+After running both the Firestore export and the Neon import scripts, you should verify that your data has been successfully migrated:
+
+1. Connect to your Neon database using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or `psql`.
+
+2. List all tables in your database:
+
+   ```sql
+   \dt
+   ```
+
+3. Run some sample queries to check that the data has been successfully imported. For example, the following query fetches all orders made by the first two customers:
+
+   ```sql
+   SELECT data FROM orders
+   WHERE parent_id IN (
+       SELECT id FROM customers
+       LIMIT 2
+   )
+   ```
+
+   Compare the results with those from your Firestore database to ensure data integrity. Note that using the `parent_id` field, we can navigate through the hierarchical structure of the original data.
+
+## Other migration options
+
+While this guide focuses on using a custom Python script, there are other migration options available:
+
+- **Firestore managed export/import**
+
+  If you have a large volume of data to migrate, you can use the [Google Cloud Firestore managed export and import service](https://firebase.google.com/docs/firestore/manage-data/export-import). It allows you to export your Firestore data to a Google Cloud Storage bucket, from where you can download and ingest it into Neon.
+
+- **Open source utilities**
+
+  There are also a number of open source utilities available that can help export data from Firestore to local files.
+
+  - [firestore-import-export](https://github.com/dalenguyen/firestore-import-export)
+  - [firestore-backup-restore](https://github.com/dalenguyen/firestore-backup-restore)
+
+  However, these utilities are not as robust as the managed export/import service. If your data size is not big, we recommend using the sample code provided above or adapting it to your specific needs.
+
+## Reference
+
+For more information on the tools and libraries used in this guide, refer to the following documentation:
+
+- [Migrating data to Neon](https://neon.tech/docs/import/migrate-intro)
+- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup)
+- [Cloud Firestore API](https://cloud.google.com/python/docs/reference/firestore/latest/index.html)
+- [psycopg](https://www.psycopg.org/docs/)
+
+<NeedHelp/>
+
+
+# Migrate from Heroku
+
+---
+title: Migrate from Heroku to Neon Postgres
 enableTableOfContents: true
 redirectFrom:
   - /docs/how-to-guides/hasura-heroku-migration
   - /docs/how-to-guides/import-from-heroku
+  - /docs/import/import-from-heroku
 updatedOn: '2024-08-07T21:36:52.668Z'
 ---
 
@@ -7589,7 +8296,2232 @@ heroku-cli: Pulling complete.
 <NeedHelp/>
 
 
-# Migrate data with AWS DMS
+# Migrate from MySQL
+
+---
+title: Migrate from MySQL to Neon Postgres
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-08-07T21:36:52.670Z'
+---
+
+This topic describes how to migrate your MySQL database to Neon Postgres using [pgloader](https://pgloader.readthedocs.io/en/latest/intro.html).
+
+The `pgloader` utility transforms data to a Postgres-compatible format as it is read from your MySQL database. It uses the `COPY` Postgres protocol to stream the data into your Postgres database.
+
+## Before you begin
+
+Before you begin, make sure that you have the following:
+
+- A Neon account and a project. See [Sign up](/docs/get-started-with-neon/signing-up).
+- A properly named database. For example, if you are migrating a database named `sakila`, you might want to create a database of the same name in Neon. See [Create a database](/docs/manage/databases#create-a-database) for instructions.
+- Neon's Free Plan supports 500 MiB of data. If your data size is more than 500 MiB, you'll need to upgrade to one of Neon's paid plans. See [Neon plans](/docs/introduction/plans) for more information.
+
+Also, a close review of the [Pgloader MySQL to Postgres Guide](https://pgloader.readthedocs.io/en/latest/ref/mysql.html) guide is recommended before you start. This guide will provide you with a good understanding of `pgloader` capabilities and how to configure your `pgloader` configuration file, if necessary.
+
+## Retrieve Your MySQL database credentials
+
+Before starting the migration process, collect your MySQL database credentials:
+
+1. Log into your MySQL database provider.
+2. Identify and record the following details or grab your MySQL database connection string.
+   - Hostname or IP address
+   - Database name
+   - Username
+   - Password
+
+Keep your MySQL database connection details handy for later use.
+
+## Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section on the **Dashboard** to find your Postgres database connection string. It should look similar to this:
+
+```bash shouldWrap
+postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Now, modify the connection string as follows to pass your **endpoint ID** (`ep-cool-darkness-123456` in this example) to Neon with your password using the `endpoint` keyword, as shown here:
+
+```bash shouldWrap
+postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+<Admonition type="note">
+Passing the `endpoint ID` with your password is a required workaround for some Postgres drivers, including the one used by `pgloader`. For more information about this workaround and why it's required, refer to our [connection workaround](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field) documentation. 
+</Admonition>
+
+Keep your Neon connection string handy for later use.
+
+### Install pgloader
+
+Here's how you can set up `pgloader` for your database migration:
+
+1. Install the `pgloader` utility using your preferred installation method. Debian (apt), RPM package, and Docker methods are supported, as well as Homebrew for macOS (`brew install pgloader`). If your macOS has an ARM processor, use the Homebrew installation method.
+
+   See [Installing pgloader](https://pgloader.readthedocs.io/en/latest/install.html) for Debian (apt), RPM package, and Docker installation instructions.
+
+2. Create a `pgloader` configuration file (e.g., `config.load`). Use your MySQL database credentials to define the connection string for your database source. Use the Neon database connection string you retrieved and modified in the previous step as the destination.
+
+   <Admonition type="note">
+   If you need to specify an SSL mode in your connection string, the following format is recommended: `sslmode=require`. Other formats may not work.
+   </Admonition>
+
+   Example configuration in `config.load`:
+
+   ```plaintext
+   load database
+     from mysql://user:password@host/source_db?sslmode=require
+     into postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require;
+   ```
+
+## Run the migration with pgloader
+
+To initiate the migration process, run:
+
+```shell
+pgloader config.load
+```
+
+The command output will look similar to this:
+
+```bash
+LOG report summary reset
+             table name     errors       rows      bytes      total time
+-----------------------  ---------  ---------  ---------  --------------
+        fetch meta data          0          2                     0.727s
+         Create Schemas          0          0                     0.346s
+       Create SQL Types          0          0                     0.178s
+          Create tables          0          2                     0.551s
+         Set Table OIDs          0          1                     0.094s
+-----------------------  ---------  ---------  ---------  --------------
+    "db-test".dbname             0          1     0.0 kB          0.900s
+-----------------------  ---------  ---------  ---------  --------------
+COPY Threads Completion          0          4                     0.905s
+ Index Build Completion          0          1                     0.960s
+         Create Indexes          0          1                     0.257s
+        Reset Sequences          0          0                     1.083s
+           Primary Keys          0          1                     0.263s
+    Create Foreign Keys          0          0                     0.000s
+        Create Triggers          0          0                     0.169s
+        Set Search Path          0          1                     0.427s
+       Install Comments          0          0                     0.000s
+-----------------------  ---------  ---------  ---------  --------------
+      Total import time          ✓          1     0.0 kB          4.064s
+```
+
+## SSL verify error
+
+If you encounter an `SSL verify error: 20 X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY` error while attempting the instructions described above using `pgloader` from a Docker container, try the solution identified in this [GitHub issue](https://github.com/dimitri/pgloader/issues/768#issuecomment-693390290), which involves specifying `sslmode=allow` in the Postgres connection string and using the `--no-ssl-cert-verification` option with `pgloader`.
+
+The following configuration file and Docker command were verified to work with Docker on Windows but may apply generally when using `pgloader` in a Docker container. In your `pgloader` config file, replace the MySQL and Postgres connection string values with your own. In the Docker command, specify the path to your `pgloader` config file, and replace the container ID value (the long alphanumeric string) with your own.
+
+`pgloader` config.load file:
+
+```plaintext
+load database
+  from mysql://user:password@host/source_db?sslmode=require
+  into postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=allow;
+```
+
+Docker command:
+
+```plaintext
+docker run -v C:\path\to\config.load:/config.load d183dc100d3af5e703bd867b3b7826c117fa16b7ee2cd360af591dc895b121dc pgloader --no-ssl-cert-verification /config.load
+```
+
+## References
+
+- [Installing pgloader](https://pgloader.readthedocs.io/en/latest/install.html)
+- [Pgloader Tutorial: Migrating from MySQL to PostgreSQL](https://pgloader.readthedocs.io/en/latest/tutorial/tutorial.html#migrating-from-mysql-to-postgresql)
+- [Pgloader MySQL to Postgres Guide](https://pgloader.readthedocs.io/en/latest/ref/mysql.html)
+- [How to Migrate from MySQL to PostgreSQL RDBMS: An Enterprise Approach](https://jfrog.com/community/data-science/how-to-migrate-from-mysql-to-postgresql-rdbms-an-enterprise-approach/)
+
+
+# Migrate from MSSQL
+
+---
+title: Migrate from Microsoft SQL Server to Neon Postgres
+subtitle: Learn how to migrate a Microsoft SQL Server database to Neon Postgres using
+  pgloader
+tag: new
+enableTableOfContents: true
+updatedOn: '2024-09-18T09:52:58.427Z'
+---
+
+This guide describes how to migrate your database from a Microsoft SQL Server (MSSQL) database to Neon Postgres using [pgloader](https://pgloader.readthedocs.io/en/latest/intro.html).
+
+The `pgloader` utility transforms data to a Postgres-compatible format as it reads from your MSSQL database. It uses the Postgres `COPY` protocol to stream the data into your Postgres database.
+
+## Prerequisites
+
+- An MSSQL instance containing the data you want to migrate.
+
+  For this guide, we use `Azure SQL`, which is a managed cloud-based offering of Microsoft SQL server. We set up an Azure SQL Database and populate it with the [Northwind sample dataset](https://github.com/microsoft/sql-server-samples/tree/master/samples/databases/northwind-pubs). This dataset contains sales data corresponding to a fictional company that imports and exports food products, organized across multiple tables.
+
+- A Neon project to move the data to.
+
+  For detailed information on creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+
+- Neon's Free Plan supports 500 MiB of data. If your data size is more than 500 MiB, you'll need to upgrade to one of Neon's paid plans. See [Neon plans](/docs/introduction/plans) for more information.
+
+- Review the [Pgloader MSSQL to Postgres Guide](https://pgloader.readthedocs.io/en/latest/ref/mssql.html) guide. It will provide you with a good understanding of `pgloader` capabilities and how to configure your `pgloader` configuration file, if necessary.
+
+- See [Pgloader configuration](#pgloader-configuration) for a `pgloader` configuration file update that may be required to connect to MSSQL from `pgloader`.
+
+## Prepare your MSSQL database
+
+### Retrieve Your MSSQL database credentials
+
+Before starting the migration process, collect your MSSQL database credentials. If you are using Azure SQL, you can use the following steps to retrieve them:
+
+1. Log into the Azure portal and navigate to your Azure SQL Database resource.
+2. Navigate to the **Connection strings** tab under the `Settings` section and identify the connection string for your database. Make note of the following details:
+   - Server
+   - Database
+   - User
+   - Password (Not displayed in the Azure portal)
+
+Keep the database connection details handy for later use.
+
+### Allow inbound traffic from Neon
+
+If you are using Azure SQL, you need to allow inbound traffic from your local machine, so `pgloader` can connect to your database. To do this, follow these steps:
+
+1. Log into the Azure portal and navigate to your Azure SQL Server resource.
+
+2. Click on the **Networking** option under the `Settings` section in the sidebar. Navigate to the **Firewall Rules** section under the `Public access` tab.
+
+3. Click on the `Add your Client IPv4 address` option, which will automatically create a new rule with the IP address of your local machine. If you are running `pgloader` elsewhere, replace both the `Start IP` and `End IP` fields with the IP address of that machine.
+
+4. CLick `Save` at the bottom to make sure all changes are saved.
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon PostgreSQL database to receive the migrated data.
+
+### Create the Neon database
+
+To maintain parity with the MSSQL deployment, you might want to create a new database in Neon with the same name. Refer to the [Create a database](/docs/manage/databases#create-a-database) guide for more information.
+
+For this example, we will create a new database named `Northwind` in the Neon project. Use `psql` to connect to your Neon project (alternatively, you can use the `Query editor` in the Neon console) and run the following query:
+
+```sql
+CREATE DATABASE "Northwind";
+```
+
+### Retrieve your Neon database connection string
+
+Log in to the Neon Console and navigate to the **Connection Details** section on the **Dashboard** to find your Postgres database connection string. It should look similar to this:
+
+```bash shouldWrap
+postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Now, modify the connection string as follows to pass your **endpoint ID** (`ep-cool-darkness-123456` in this example) to Neon with your password using the `endpoint` keyword, as shown here:
+
+```bash shouldWrap
+postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+<Admonition type="note">
+Passing the `endpoint ID` with your password is a required workaround for some Postgres drivers, including the one used by `pgloader`. For more information about this workaround and why it's required, refer to our [connection workaround](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field) documentation. 
+</Admonition>
+
+Keep your Neon connection string handy for later use.
+
+## Install pgloader
+
+Here's how you can set up `pgloader` for your database migration:
+
+1. Install the `pgloader` utility using your preferred installation method. Debian (apt), RPM package, and Docker methods are supported, as well as Homebrew for macOS (`brew install pgloader`). If your macOS has an ARM processor, use the Homebrew installation method.
+
+   See [Installing pgloader](https://pgloader.readthedocs.io/en/latest/install.html) for Debian (apt), RPM package, and Docker installation instructions.
+
+2. Create a `pgloader` configuration file (e.g., `mssql_to_neon.load`). Use your MSSQL database credentials to define the connection string for your database source. Use the Neon database connection string as the destination.
+
+   Example configuration in `mssql_to_neon.load`:
+
+   ```plaintext
+   LOAD DATABASE
+        FROM mssql://migration_user:password@host:port/AdventureWorks
+        INTO postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+   ```
+
+   Make sure to replace the connection string values with your own MSSQL and Neon credentials.
+
+## Run the migration with pgloader
+
+To initiate the migration process, run:
+
+```shell
+pgloader mssql_to_neon.load
+```
+
+The command output will show the progress of the migration, including any errors encountered and the total time taken. For our sample dataset, the output looks similar to this:
+
+```plaintext
+2024-09-12T10:46:54.307953Z LOG report summary reset
+              table name     errors       read   imported      bytes      total time       read      write
+------------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+         fetch meta data          0         65         65                     0.280s
+          Create Schemas          0          0          0                     0.116s
+        Create SQL Types          0          0          0                     0.232s
+           Create tables          0         26         26                     9.120s
+          Set Table OIDs          0         13         13                     0.120s
+------------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+dbo.customercustomerdemo          0          0          0                     1.300s     0.124s
+          dbo.categories          0          8          8    64.4 kB          1.224s     0.144s     0.004s
+           dbo.customers          0         91         91    11.3 kB          2.520s     0.140s
+dbo.customerdemographics          0          0          0                     2.152s     0.088s
+           dbo.employees          0          9          9    76.0 kB          3.088s     0.136s     0.004s
+ dbo.employeeterritories          0         49         49     0.4 kB          3.112s     0.096s
+              dbo.orders          0        830        830   118.5 kB          3.656s     1.380s     0.060s
+     dbo."Order Details"          0       2155       2155    44.0 kB          3.268s     1.372s     0.008s
+              dbo.region          0          4          4     0.2 kB          2.832s     0.132s
+            dbo.products          0         77         77     4.2 kB          2.660s     0.132s
+           dbo.suppliers          0         29         29     3.9 kB          3.508s     0.120s
+            dbo.shippers          0          3          3     0.1 kB          2.892s     0.104s
+         dbo.territories          0         53         53     3.1 kB          3.568s     0.108s
+------------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+ COPY Threads Completion          0          4          4                     5.576s
+          Create Indexes          0         39         39                    14.252s
+  Index Build Completion          0         39         39                     3.072s
+         Reset Sequences          0          6          6                     1.500s
+            Primary Keys          0         13         13                     5.024s
+     Create Foreign Keys          0         13         13                     5.016s
+         Create Triggers          0          0          0                     0.256s
+        Install Comments          0          0          0                     0.000s
+------------------------  ---------  ---------  ---------  ---------  --------------  ---------  ---------
+       Total import time          ✓       3308       3308   326.0 kB         34.696s
+2024-09-12T10:46:54.339953Z INFO Stopping monitor
+```
+
+## Verify the migration
+
+After the migration is complete, connect to your Neon database and run some queries to verify that the data has been transferred correctly. For example:
+
+```sql
+SELECT productname, unitprice, unitsinstock
+FROM dbo.products
+WHERE discontinued = false
+ORDER BY unitprice DESC
+LIMIT 5;
+```
+
+This query returns the following result:
+
+```plaintext
+      productname       | unitprice | unitsinstock
+------------------------+-----------+--------------
+ Côte de Blaye          |     263.5 |           17
+ Sir Rodney's Marmalade |      81.0 |           40
+ Carnarvon Tigers       |      62.5 |           42
+ Raclette Courdavault   |      55.0 |           79
+ Manjimup Dried Apples  |      53.0 |           20
+(5 rows)
+```
+
+Compare the results with the same queries run on your MSSQL database to ensure data integrity.
+
+## Clean up
+
+After successfully migrating and verifying your data on Neon:
+
+1. Consider backing up your MSSQL database before decommissioning it.
+
+2. Update your application code to make SQL queries using the Postgres dialect.
+
+3. Update your application's connection strings to point to your new Neon database.
+
+## Other migration options
+
+While this guide focuses on using `pgloader`, you might need more manual adjustments to ensure:
+
+- There are no unintended changes to the application behavior. For example, all MSSQL data types don't translate one-to-one to Postgres data types.
+- The application code is compatible with Neon Postgres.
+
+For complex migrations or when you need more control over the migration process, you might consider developing a custom Extract, Transform, Load (ETL) process using tools like Python with SQLAlchemy.
+
+## Pgloader configuration
+
+- `Pgloader` automatically detects table schemas, indexes, and constraints, but depending on the input table schemas, you might need to specify manual overrides in the configuration file. Refer to the [Command clauses](https://pgloader.readthedocs.io/en/latest/command.html#common-clauses) section of the `pgloader` documentation for more information.
+
+- With Azure SQL database, `pgloader` often runs into connection errors. To solve them, you might need to manually specify the FreeTDS driver configuration (which `pgloader` uses to connect to MSSQL). Please refer to the related issues in the [PGLoader GitHub repository](https://github.com/dimitri/pgloader/) for more information.
+
+  Below is the section required to make `pgloader` work, at the time of writing. Replace the values with your own Azure SQL database credentials.
+
+  ```plaintext
+  # /etc/freetds/freetds.conf
+
+  ...
+
+  [host-name]
+  tds version = 7.4
+  client charset = UTF-8
+  encrypt = require
+  host = ...
+  port = 1433
+  database = ...
+  ```
+
+## Reference
+
+For more information on `pgloader` and database migration, refer to the following resources:
+
+- [pgloader documentation - MSSQL to Postgres](https://pgloader.readthedocs.io/en/latest/ref/mssql.html)
+- [Neon documentation](https://neon.tech/docs/introduction)
+
+<NeedHelp/>
+
+
+# Migrate from Render
+
+---
+title: Migrate from Render to Neon Postgres
+subtitle: Learn how to migrate your database from Render to Neon Postgres using pg_dump
+  and pg_restore
+tag: new
+redirectFrom:
+  - /docs/import/import-from-render
+enableTableOfContents: true
+updatedOn: '2024-09-23T22:07:20.573Z'
+---
+
+This guide describes how to migrate a database from Render to Neon Postgres.
+
+We use the `pg_dump` and `pg_restore` utilities, which are part of the Postgres client toolset. `pg_dump` works by dumping both the schema and data in a custom format that is compressed and suitable for input into `pg_restore` to rebuild the database.
+
+## Prerequisites
+
+- A Render project containing the Postgres database you want to migrate.
+
+- A Neon project to move the data to.
+
+  For detailed information on creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project). Make sure to create a project with the same Postgres version as your Render deployment.
+
+- `pg_dump` and `pg_restore` utilities installed on your local machine. These typically come with a Postgres installation.
+
+  We recommended that you use the `pg_dump` and `pg_restore` programs from the latest version of Postgres, to take advantage of enhancements that might have been made in these programs. To check the version of `pg_dump` or `pg_restore`, use the `-V` option. For example: `pg_dump -V`.
+
+- Review our guide on [Migrating data from Postgres](/docs/import/migrate-from-postgres) for more comprehensive information on using `pg_dump` and `pg_restore`.
+
+## Prepare your Render database
+
+This section describes how to prepare your Render database for exporting data.
+
+To illustrate the migration workflow, we use the [LEGO Database](https://neon.tech/docs/import/import-sample-data#lego-database). This database contains information about LEGO sets, parts, and themes. We load the LEGO database into Render using the [psql](/docs/connect/query-with-psql-editor) command-line tool.
+
+### Retrieve Render connection details
+
+1. Log in to your Render account and navigate to your project dashboard.
+2. From the overview page, select the service (of the type `PostgreSQL`) corresponding to your database.
+3. From the left sidebar, click on **Info** and under the **Connections** section, you'll find the connection parameters in different formats.
+4. Copy the value for the `External Database URL` field.
+
+You'll need this connection string for `pg_dump` to connect to the Render database.
+
+## Export data with pg_dump
+
+Now that you have your Render connection details, you can export your data using `pg_dump`:
+
+```bash shouldWrap
+pg_dump -Fc -v -d <render_external_database_url> --schema=public -f render_dump.bak
+```
+
+Replace `<render_external_database_url>` with your Render External Database URL.
+
+This command includes these arguments:
+
+- `-Fc`: Outputs the dump in custom format, which is compressed and suitable for input into `pg_restore`.
+- `-v`: Runs `pg_dump` in verbose mode, allowing you to monitor the dump operation.
+- `-d`: Specifies the connection string for your Render database.
+- `-f`: Specifies the output file name.
+- `--schema=public`: Specifies the schema to dump. In this case, we only want to back up tables in the `public` schema.
+
+If the command was successful, you'll see output similar to the following:
+
+```bash
+
+...
+pg_dump: saving encoding = UTF8
+pg_dump: saving standard_conforming_strings = on
+pg_dump: saving search_path =
+pg_dump: saving database definition
+pg_dump: dumping contents of table "public.lego_colors"
+pg_dump: dumping contents of table "public.lego_inventories"
+pg_dump: dumping contents of table "public.lego_inventory_parts"
+pg_dump: dumping contents of table "public.lego_inventory_sets"
+pg_dump: dumping contents of table "public.lego_part_categories"
+pg_dump: dumping contents of table "public.lego_parts"
+pg_dump: dumping contents of table "public.lego_sets"
+pg_dump: dumping contents of table "public.lego_themes"
+```
+
+<Admonition type="important">
+Avoid using `pg_dump` over a [pooled connection string](/docs/reference/glossary#pooled-connection-string) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an [unpooled connection string](/docs/reference/glossary#unpooled-connection-string) instead.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database to receive the imported data.
+
+### Create the Neon database
+
+To maintain consistency with your Render setup, you might want to create a new database in Neon with the same database name used in Render.
+
+1. Connect to your Neon project using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or a Postgres client like `psql`.
+
+2. Create a new database. For example, if your Render database was named `lego`, run:
+
+   ```sql
+   CREATE DATABASE lego;
+   ```
+
+For more information, see [Create a database](/docs/manage/databases#create-a-database).
+
+### Retrieve Neon connection details
+
+1. In the Neon Console, go to your project dashboard.
+2. Find the **Connection Details** widget.
+3. Copy the connection string. It will look similar to this:
+
+   ```
+   postgresql://[user]:[password]@[neon_hostname]/[dbname]
+   ```
+
+## Restore data to Neon with pg_restore
+
+Now you can restore your data to the Neon database using `pg_restore`:
+
+```bash
+pg_restore -d <neon-connection-string> -v --no-owner --no-acl render_dump.bak
+```
+
+Replace `<neon-connection-string>` with your Neon connection string.
+
+This command includes these arguments:
+
+- `-d`: Specifies the connection string for your Neon database.
+- `-v`: Runs `pg_restore` in verbose mode.
+- `--no-owner`: Skips setting the ownership of objects as in the original database.
+- `--no-acl`: Skips restoring access privileges for objects as in the original database.
+
+We recommend using the `--no-owner` and `--no-acl` options to skip restoring ownership and access control settings from Render. After migrating the data, review and configure the appropriate roles and privileges for all objects, as needed. For more information, refer to the section on [Database object ownership considerations](/docs/import/migrate-from-postgres#database-object-ownership-considerations).
+
+If the command was successful, you'll see output similar to the following:
+
+```bash
+pg_restore: connecting to database for restore
+pg_restore: creating SCHEMA "public"
+pg_restore: creating TABLE "public.lego_colors"
+pg_restore: creating SEQUENCE "public.lego_colors_id_seq"
+pg_restore: creating SEQUENCE OWNED BY "public.lego_colors_id_seq"
+pg_restore: creating TABLE "public.lego_inventories"
+pg_restore: creating SEQUENCE "public.lego_inventories_id_seq"
+...
+```
+
+## Verify the migration
+
+After the restore process completes, you should verify that your data has been successfully migrated:
+
+1. Connect to your Neon database using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or [psql](/docs/connect/query-with-psql-editor).
+
+2. Run some application queries to check your data. For example, if you're using the LEGO database, you can run the following:
+
+   ```sql
+   SELECT * FROM lego_inventory_parts ORDER BY quantity DESC LIMIT 5;
+   SELECT parent_id, COUNT(name) FROM lego_themes GROUP BY parent_id;
+   ```
+
+3. Compare the results with those from running the same queries on your Render database to ensure data integrity.
+
+## Clean up
+
+After successfully migrating and verifying your data on Neon, you can update your application's connection strings to point to your new Neon database. We recommend that you keep your Render database dump file (`render_dump.bak`) as a backup until you've verified that the migration was successful.
+
+## Other migration options
+
+While this guide focuses on using `pg_dump` and `pg_restore`, there are other migration options available:
+
+- **Logical replication**
+
+  For larger databases or scenarios where you need to minimize downtime, you might consider using logical replication. See our guide on [Logical replication](/docs/guides/logical-replication-guide) for more information.
+
+- **CSV export/import**
+
+  For smaller datasets or specific tables, you might consider exporting to CSV from Render and then importing to Neon. See [Import data from CSV](/docs/import/import-from-csv) for more details on this method.
+
+## Reference
+
+For more information on the Postgres utilities used in this guide, refer to the following documentation:
+
+- [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
+- [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html)
+- [Migrating data to Neon](https://neon.tech/docs/import/migrate-from-postgres)
+
+<NeedHelp/>
+
+
+# Migrate from Supabase
+
+---
+title: Migrate from Supabase to Neon Postgres
+subtitle: Learn how to migrate your database from Supabase to Neon Postgres using
+  pg_dump and pg_restore
+tag: new
+redirectFrom:
+  - /docs/import/import-from-supabase
+enableTableOfContents: true
+updatedOn: '2024-09-23T22:07:20.574Z'
+---
+
+This guide describes how to migrate a database from Supabase to Neon Postgres.
+
+We use the `pg_dump` and `pg_restore` utilities, which are part of the Postgres client toolset. `pg_dump` works by dumping both the schema and data in a custom format that is compressed and suitable for input into `pg_restore` to rebuild the database.
+
+## Prerequisites
+
+- A Supabase project containing the data you want to migrate.
+
+- A Neon project to move the data to.
+
+  For detailed information on creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project). Make sure to create a project with the same Postgres version as your Supabase deployment.
+
+- `pg_dump` and `pg_restore` utilities installed on your local machine. These typically come with a Postgres installation.
+
+  We recommended that you use the `pg_dump` and `pg_restore` programs from the latest version of Postgres, to take advantage of enhancements that might have been made in these programs. To check the version of `pg_dump` or `pg_restore`, use the `-V` option. For example: `pg_dump -V`.
+
+- Review our guide on [Migrating data from Postgres](/docs/import/migrate-from-postgres) for more comprehensive information on using `pg_dump` and `pg_restore`.
+
+## Prepare your Supabase database
+
+This section describes how to prepare your Supabase database for exporting data.
+
+To illustrate the migration workflow, we use the [LEGO Database](https://neon.tech/docs/import/import-sample-data#lego-database). This database contains information about LEGO sets, parts, and themes.
+
+### Retrieve Supabase connection details
+
+1. Log in to your Supabase account and navigate to your project dashboard.
+2. In the left sidebar, click on **Project Settings**.
+3. Select **Database**, where you will find the below settings under the **Connection Parameters** section:
+   - Host
+   - Database name
+   - Port
+   - User
+   - Password [Not visible in the dashboard]
+
+You'll need these details to construct your connection string for `pg_dump`.
+
+## Export data with pg_dump
+
+Now that you have your Supabase connection details, you can export your data using `pg_dump`:
+
+```bash shouldWrap
+pg_dump -Fc -v -d postgresql://[user]:[password]@[supabase_host]:[port]/[database] --schema=public -f supabase_dump.bak
+```
+
+Replace `[user]`, `[password]`, `[supabase_host]`, `[port]`, and `[database]` with your Supabase connection details.
+
+This command includes these arguments:
+
+- `-Fc`: Outputs the dump in custom format, which is compressed and suitable for input into `pg_restore`.
+- `-v`: Runs `pg_dump` in verbose mode, allowing you to monitor the dump operation.
+- `-d`: Specifies the connection string for your Supabase database.
+- `-f`: Specifies the output file name.
+- `--schema=public`: Specifies the schema to dump. In this case, we only want to back up tables in the `public` schema.
+
+Supabase projects may also store data corresponding to authentication, storage and other services under different schemas. If necessary, you can specify additional schemas to dump by adding the `--schema` option multiple times.
+
+If the command was successful, you’ll see output similar to the following:
+
+```bash
+
+...
+pg_dump: saving encoding = UTF8
+pg_dump: saving standard_conforming_strings = on
+pg_dump: saving search_path =
+pg_dump: saving database definition
+pg_dump: dumping contents of table "public.lego_colors"
+pg_dump: dumping contents of table "public.lego_inventories"
+pg_dump: dumping contents of table "public.lego_inventory_parts"
+pg_dump: dumping contents of table "public.lego_inventory_sets"
+pg_dump: dumping contents of table "public.lego_part_categories"
+pg_dump: dumping contents of table "public.lego_parts"
+pg_dump: dumping contents of table "public.lego_sets"
+pg_dump: dumping contents of table "public.lego_themes"
+```
+
+<Admonition type="important">
+Avoid using `pg_dump` over a [pooled connection string](/docs/reference/glossary#pooled-connection-string) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an [unpooled connection string](/docs/reference/glossary#unpooled-connection-string) instead.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database to receive the imported data.
+
+### Create the Neon database
+
+To maintain consistency with your Supabase setup, you can create a new database in Neon with the same database name you used in Supabase.
+
+1. Connect to your Neon project using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or a Postgres client like [psql](/docs/connect/query-with-psql-editor).
+
+2. Create a new database. For example, if your Supabase database was named `lego`, run:
+
+   ```sql
+   CREATE DATABASE lego;
+   ```
+
+For more information, see [Create a database](/docs/manage/databases#create-a-database).
+
+### Retrieve Neon connection details
+
+1. In the Neon Console, go to your project dashboard.
+2. Find the **Connection Details** widget.
+3. Copy the connection string. It will look similar to this:
+
+   ```
+   postgresql://[user]:[password]@[neon_hostname]/[dbname]
+   ```
+
+## Restore data to Neon with pg_restore
+
+Now you can restore your data to the Neon database using `pg_restore`:
+
+```bash
+pg_restore -d <neon-connection-string> -v --no-owner --no-acl supabase_dump.bak
+```
+
+Replace `[user]`, `[password]`, `[neon_hostname]`, and `[dbname]` with your Neon connection details.
+
+This command includes these arguments:
+
+- `-d`: Specifies the connection string for your Neon database.
+- `-v`: Runs `pg_restore` in verbose mode.
+- `--no-owner`: Skips setting the ownership of objects as in the original database.
+- `--no-acl`: Skips restoring access privileges for objects as in the original database.
+
+A Supabase database has ownership and access control tied to the authentication system. We recommend that you use the `--no-owner` and `--no-acl` options to skip restoring these settings. After migrating the data, review and configure the appropriate roles and privileges for all objects, as needed. For more information, refer to the section on [Database object ownership considerations](/docs/import/migrate-from-postgres#database-object-ownership-considerations).
+
+If the command was successful, you’ll see output similar to the following:
+
+```bash
+pg_restore: connecting to database for restore
+pg_restore: creating SCHEMA "public"
+pg_restore: while PROCESSING TOC:
+pg_restore: from TOC entry 13; 2615 2200 SCHEMA public pg_database_owner
+pg_restore: error: could not execute query: ERROR:  schema "public" already exists
+Command was: CREATE SCHEMA public;
+
+
+pg_restore: creating COMMENT "SCHEMA public"
+pg_restore: creating TABLE "public.lego_colors"
+pg_restore: creating SEQUENCE "public.lego_colors_id_seq"
+pg_restore: creating SEQUENCE OWNED BY "public.lego_colors_id_seq"
+pg_restore: creating TABLE "public.lego_inventories"
+pg_restore: creating SEQUENCE "public.lego_inventories_id_seq"
+...
+
+```
+
+## Verify the migration
+
+After the restore process completes, you should verify that your data has been successfully migrated:
+
+1. Connect to your Neon database using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or `psql`.
+
+2. Run some application queries to check your data. For example, if you're using the LEGO database, you can run the following:
+
+   ```sql
+   SELECT COUNT(*) FROM lego_sets;
+   SELECT * FROM lego_themes LIMIT 5;
+   ```
+
+3. Compare the results with those from running the same queries on your Supabase database to ensure data integrity.
+
+## Clean up
+
+After successfully migrating and verifying your data on Neon, you can update your application's connection strings to point to your new Neon database. We recommend that you keep your Supabase dump file (`supabase_dump.bak`) as a backup until you've verified that the migration was successful.
+
+## Other migration options
+
+While this guide focuses on using `pg_dump` and `pg_restore`, there are other migration options available:
+
+- **Logical replication**
+
+  For larger databases or scenarios where you need to minimize downtime, you might consider using logical replication. See our guide on [Logical replication](/docs/guides/logical-replication-guide) for more information.
+
+- **CSV export/import**
+
+  For smaller datasets or specific tables, you might consider exporting to CSV from Supabase and then importing to Neon. See [Import data from CSV](/docs/import/import-from-csv) for more details on this method.
+
+## Reference
+
+For more information on the Postgres utilities used in this guide, refer to the following documentation:
+
+- [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
+- [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html)
+- [Migrating data to Neon](https://neon.tech/docs/import/migrate-from-postgres)
+
+<NeedHelp/>
+
+
+# Logical replication
+
+# Replicate from AlloyDB
+
+---
+title: Replicate data from AlloyDB
+subtitle: Learn how to replicate data from AlloyDB to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.541Z'
+---
+
+<LRBeta/>
+
+This guide describes how to replicate data from AlloyDB Postgres to Neon using native Postgres logical replication. The steps in this guide follow those described in [Set up native PostgreSQL logical replication](https://cloud.google.com/sql/docs/postgres/replication/configure-logical-replication#set-up-native-postgresql-logical-replication), in the _Google AlloyDB documentation_.
+
+## Prerequisites
+
+- An AlloyDB Postgres instance containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data.
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A Neon project with a Postgres database to receive the replicated data. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your AlloyDB source database
+
+This section describes how to prepare your source AlloyDB Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication
+
+Your first step is to enable logical replication at the source Postgres instance. In AlloyDB, you can enable logical replication by setting the `alloydb.enable_pglogical` and `alloydb.logical_decoding` flags to `on`. This sets the Postgres `wal_level` parameter to `logical`.
+
+To enable these flags:
+
+1. In the Google Cloud console, navigate to your [AlloyDB Clusters](https://console.cloud.google.com/alloydb/clusters) page.
+2. From the **Actions** menu for your Primary instance, select **Edit**.
+3. Scroll down to the **Advanced Configurations Options** > **Flags** section.
+4. If the flags have not been set on the instance before, click **Add a Database Flag**, and set the value to `on` for the `alloydb.enable_pglogical` and `alloydb.logical_decoding`.
+5. Click **Update instance** to save your changes and confirm your selections.
+
+Afterward, you can verify that logical replication is enabled by running `SHOW wal_level;` from **AlloyDB Studio** or your terminal:
+
+![show wal_level](/docs/guides/alloydb_show_wal_level.png)
+
+### Allow connections from Neon
+
+You need to allow connections to your AlloyDB Postgres instance from Neon. To do this in your AlloyDB instance:
+
+1. In the Google Cloud console, navigate to your [AlloyDB Clusters](https://console.cloud.google.com/alloydb/clusters) page and select your **Primary instance** to open the **Overview** page.
+2. Scroll down to the **Instances in your cluster** section.
+3. Click **Edit Primary**.
+4. Select the **Enable public IP** checkbox to allow connections over the public internet.
+5. Under **Authorized external networks**, enter the Neon IP addresses you want to allow. Add an entry for each of the NAT gateway IP addresses associated with your Neon project's region. Neon has 3 to 6 IP addresses per region, corresponding to each availability zone. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for the IP addresses.
+
+   <Admonition type="note">
+   AlloyDB requires addresses to be specified in CIDR notation. You can do so by appending `/32` to the NAT Gateway IP address; for example: `18.217.181.229/32`
+   </Admonition>
+
+   In the example shown below, you can see that three addresses were added in CIDR format by appending `/32`.
+
+   ![AlloyDB network configuration](/docs/guides/alloydb_network_config.png)
+
+6. Under **Network Security**, select **Require SSL Encryption (default)** if it's not already selected.
+7. Click **Update Instance** when you are finished.
+
+### Note your public IP address
+
+Record the public IP address of your AlloyDB Postgres instance. You'll need this value later when you set up a subscription from your Neon database. You can find the public IP address on your AlloyDB instance's **Overview** page, under **Instances in your cluster** > **Connectivity**.
+
+<Admonition type="note">
+If you do not use a public IP address, you'll need to configure access via a private IP. See [Private IP overview](https://cloud.google.com/alloydb/docs/private-ip), in the AlloyDB documentation.
+</Admonition>
+
+![AlloyDB public IP address](/docs/guides/alloydb_public_ip.png)
+
+### Create a Postgres role for replication
+
+It is recommended that you create a dedicated Postgres role for replicating data from your AlloyDB Postgres instance. The role must have the `REPLICATION` privilege. On your AlloyDB Postgres instance, login in as your `postgres` user or an administrative user you use to create roles and run the following command to create a replication role. You can replace the name `replication_user` with whatever name you want to use.
+
+```sql shouldWrap
+CREATE USER replication_user WITH REPLICATION IN ROLE alloydbsuperuser LOGIN PASSWORD 'replication_user_password';
+```
+
+### Grant schema access to your Postgres role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to a Postgres role named `replication_user`:
+
+```sql
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+
+Run this command to create a publication for all tables in your source database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your AlloyDB Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables defined in your publication on the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Create the subscription using the using a `CREATE SUBSCRIPTION` statement:
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'host=<primary-ip> port=5432 dbname=postgres user=replication_user password=replication_user_password'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source AlloyDB database where you defined the publication. For the `<primary_ip>`, use the IP address of your AlloyDB Postgres instance that you noted earlier, and specify the name and password of your replication role. If you're replicating from a database other than `postgres`, be sure to specify that database name.
+   - `publication_name`: The name of the publication you created on the source Neon database.
+
+2. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert 10 rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your AlloyDB source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Replicate from Aurora
+
+---
+title: Replicate data from Aurora PostgreSQL
+subtitle: Learn how to replicate data from Aurora PostgreSQL to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.544Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from Aurora PostgreSQL to Neon.
+
+## Prerequisites
+
+- A source database in Aurora PostgreSQL containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+   CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A Neon project with a Postgres database to receive the replicated data. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences
+
+## Prepare your source database
+
+This section describes how to prepare your source Aurora Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication in the source Aurora PostgreSQL instance
+
+1. Sign in to the AWS Management Console and navigate to the Amazon RDS console at [https://console.aws.amazon.com/rds/](https://console.aws.amazon.com/rds/).
+
+2. From the navigation pane, select your Aurora PostgreSQL DB cluster.
+
+3. Go to the **Configuration** tab. Locate the **DB cluster parameter group** link.
+
+   <Admonition type="note">
+   If you are using the default parameter group, you will need to create a custom parameter group to set the value. You can do so by selecting **Parameter groups** > **Create parameter group** from the sidebar, selecting **Aurora PostgreSQL** as the engine type, and filling in the required fields. When you're finished, navigate back to your Aurora instance page, click **Modify**, and scroll down to select your new parameter group. Click **Continue**, and select **Apply immediately** to make the change, then click **Modify DB instance**.
+   </Admonition>
+
+4. Click on the link to view the custom parameters for your Aurora PostgreSQL DB cluster.
+
+5. In the parameters search bar, type `rds` to locate the `rds.logical_replication` parameter. This parameter is set to `0` by default, meaning it is turned off.
+
+6. To enable this feature, click on **Edit**, and select `1` from the drop-down menu.
+
+7. Click **Save Changes**.
+
+8. Reboot the **Writer instance** of your Aurora PostgreSQL DB cluster to apply the changes. In the Amazon RDS console, select your Aurora PostgreSQL DB cluster, then select the **Writer instance** of the cluster and choose **Reboot** from the **Actions** menu.
+
+9. Once the instance is available again, you can verify that logical replication is enabled as follows:
+
+   - Use `psql` to connect to the writer instance of your Aurora PostreSQL DB cluster.
+
+     ```bash
+     psql --host=your-db-cluster-instance-1.aws-region.rds.amazonaws.com --port=5432 --username=postgres --password --dbname=postgres
+     ```
+
+   - Verify that logical replication is enabled by running the following command:
+
+     ```bash
+     SHOW rds.logical_replication;
+     rds.logical_replication
+     -------------------------
+     on
+     (1 row)
+     ```
+
+   - Also, confirm that the `wal_level` is set to logical:
+
+     ```bash
+     SHOW wal_level;
+     wal_level
+     -----------
+     logical
+     (1 row)
+     ```
+
+### Allow connections from Neon
+
+You need to allow inbound connections to your Aurora Postgres instance from Neon. You can do this by editing your writer instance's **CIDR/IP - Inbound** security group, which you can find a link to from the **Connectivity & security** tab on your database instance page.
+
+1. Click on the security group name.
+2. Click on the security group ID.
+3. From the **Actions** menu, select **Edit inbound rules**.
+4. Add rules that allow traffic from each of the IP addresses for your Neon project's region.
+
+   Neon uses 3 to 6 IP addresses per region for outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses.
+
+5. When you're finished, click **Save rules**.
+
+   <Admonition type="note">
+   You can specify a rule for `0.0.0.0/0` to allow traffic from any IP address. However, this configuration is not considered secure.
+   </Admonition>
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+
+To create a publication for all tables in your source database, run the following query. You can use a publication name of your choice.
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your Aurora Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables defined in your publication on the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql shouldWrap
+   CREATE SUBSCRIPTION my_subscription CONNECTION 'postgresql://postgres:password@database-1.czmwaio8k05k.us-east-2.rds.amazonaws.com/postgres' PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source AWS Aurora Postgres database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Aurora Postgres database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+
+   subid |     subname     | pid | leader_pid | relid | received_lsn |      last_msg_send_time       |     last_msg_receipt_time     | latest_end_lsn |        latest_end_time
+   ------+-----------------+-----+------------+-------+--------------+-------------------------------+-------------------------------+----------------+-------------------------------
+   16471 | my_subscription | 932 |            |       | 0/401CB10    | 2024-08-14 11:57:34.148184+00 | 2024-08-14 11:57:34.148388+00 | 0/401CB10      | 2024-08-14 11:57:34.148184+00
+   (1 row)
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription was created.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert 10 rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your Aurora source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Replicate from Azure
+
+---
+title: Migrate from Azure PostgreSQL to Neon
+subtitle: Learn how to migrate your database from Azure PostgreSQL to Neon using logical
+  replication
+tag: new
+redirectFrom:
+  - /docs/import/import-from-azure-postgres
+enableTableOfContents: true
+updatedOn: '2024-09-18T09:52:58.422Z'
+---
+
+<LRBeta/>
+
+This guide describes how to migrate your database from Azure Database for PostgreSQL to Neon, using logical replication.
+
+Logical replication for Postgres transfers data from a source Postgres database to another, as a stream of tuples (records) or SQL statements. This allows for minimal downtime during the migration process, since all the records don't need to be copied at once.
+
+## Prerequisites
+
+- An Azure Database for PostgreSQL instance containing the data you want to migrate.
+- A Neon project to move the data to.
+
+  For detailed information on creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project). Make sure to create a project with the same Postgres version as your Azure PostgreSQL deployment.
+
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your Azure PostgreSQL database
+
+This section describes how to prepare your Azure PostgreSQL database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+To illustrate the migration workflow, we set up the [AdventureWorks sample database](https://wiki.postgresql.org/wiki/Sample_Databases) on an Azure Database for PostgreSQL deployment. This database contains data corresponding to a fictionaly bicycle parts company, organized across 5 schemas and almost 70 tables.
+
+### Enable logical replication in Azure PostgreSQL
+
+1. Navigate to your Azure Database for PostgreSQL instance in the Azure portal.
+2. From the left sidebar, select **Server parameters** under the **Settings** section.
+3. Search for the `wal_level` parameter and set its value to `LOGICAL`.
+4. Click **Save** to apply the changes.
+
+   <Admonition type="note">
+   Changing the `wal_level` parameter on Azure requires a server restart. This may cause a brief interruption to your database service.
+   </Admonition>
+
+### Create a PostgreSQL role for replication
+
+It is recommended that you create a dedicated Postgres role for replicating data. Connect to your Azure PostgreSQL database using a tool like [psql](https://www.postgresql.org/docs/current/app-psql.html) or [Azure Data Studio](https://learn.microsoft.com/en-us/azure-data-studio/?view=sql-server-ver15), then create a new role with `REPLICATION` privileges:
+
+```sql shouldWrap
+CREATE ROLE replication_user WITH REPLICATION LOGIN PASSWORD 'your_secure_password';
+```
+
+### Grant schema access to your PostgreSQL role
+
+Grant the necessary permissions to your replication role. For example, the following commands grant access to all tables in the `sales` schema to Postgres role `replication_user`:
+
+```sql
+GRANT USAGE ON SCHEMA sales TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA sales TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA sales GRANT SELECT ON TABLES TO replication_user;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+If you have data split across multiple schemas, you can run a similar command for each schema, or use a PL/pgSQL function to dynamically grant access to all schemas in the database.
+
+```sql
+-- Thanks to this Stackoverflow answer - https://dba.stackexchange.com/a/241266
+
+DO $do$
+DECLARE
+    sch text;
+BEGIN
+    FOR sch IN SELECT nspname FROM pg_namespace
+    where
+        -- Exclude system schemas
+        nspname != 'pg_toast'
+        and nspname != 'pg_temp_1'
+        and nspname != 'pg_toast_temp_1'
+        and nspname != 'pg_statistic'
+        and nspname != 'pg_catalog'
+        and nspname != 'information_schema'
+    LOOP
+        EXECUTE format($$ GRANT USAGE ON SCHEMA %I TO replication_user $$, sch);
+        EXECUTE format($$ GRANT SELECT ON ALL TABLES IN SCHEMA %I TO replication_user $$, sch);
+        EXECUTE format($$ ALTER DEFAULT PRIVILEGES IN SCHEMA %I GRANT SELECT ON TABLES TO replication_user $$, sch);
+    END LOOP;
+END;
+$do$;
+```
+
+### Create a publication on the Azure PostgreSQL database
+
+Publications define which tables will be replicated to the destination database. To create a publication for all tables in your database, run the following query:
+
+```sql
+CREATE PUBLICATION azure_publication FOR ALL TABLES;
+```
+
+This command creates a publication named `azure_publication` that includes all tables in the `public` schema, since we want to copy all the data. For details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+### Allow inbound traffic from Neon
+
+You need to allow inbound traffic from Neon Postgres servers so it can connect to your Azure database. To do this, follow these steps:
+
+1. Log into the Azure portal and navigate to your Azure Postgres Server resource.
+
+2. Click on the **Networking** option under the `Settings` section in the sidebar. Navigate to the **Firewall Rules** section under the `Public access` tab.
+
+3. Click on `Add a Firewall Rule`, which generates a modal to add the range of IP addresses from which we want to allow connections. You will need to perform this step for each of the NAT gateway IP addresses associated with your Neon project's region. For each IP address, create a new rule and fill both the `Start IP` and `End IP` fields with the IP address.
+
+   Neon uses 3 to 6 IP addresses per region for this outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses.
+
+4. To fetch the database schema using `pg_dump`, you also need to allow inbound traffic from your local machine (or where you are running `pg_dump`) so it can connect to your Azure database. Add another firewall rule entry with that IP address as the start and end IP address.
+
+5. CLick `Save` at the bottom to make sure all changes are saved.
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon PostgreSQL database (the subscriber) to receive replicated data.
+
+You can find the connection details for the Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+### Create the Neon database
+
+To keep parity with the Azure PostgreSQL deployment, create a new database with the same name. See [Create a database](/docs/manage/databases#create-a-database) for more information.
+
+For this example, we run the following query to create a new database named `AdventureWorks` in the Neon project.
+
+```sql
+CREATE DATABASE "AdventureWorks";
+```
+
+### Import the database schema
+
+To ensure that the Neon `AdventureWorks` database has the same schema as the Azure PostgreSQL database, we'll need to import the schema. You can use the `pg_dump` utility to export the schema and then `psql` to import it into Neon.
+
+1. Export the schema from Azure PostgreSQL:
+
+   ```shell shouldWrap
+   pg_dump --schema-only --no-owner --no-privileges -h <azure-host> -U <azure-user> -d <azure-database> > schema.sql
+   ```
+
+2. Import the schema into your Neon database:
+
+   ```shell
+   psql <neon-connection-string> < schema.sql
+   ```
+
+### Create a subscription
+
+After importing the schema, create a subscription on the Neon database:
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), [psql](/docs/connect/query-with-psql-editor), or another SQL client to connect to your Neon database.
+
+2. Create the subscription using the `CREATE SUBSCRIPTION` statement:
+
+   ```sql
+   CREATE SUBSCRIPTION neon_subscription
+   CONNECTION 'host=<azure-host> port=5432 dbname=<azure-database> user=replication_user password=your_secure_password'
+   PUBLICATION azure_publication;
+   ```
+
+3. Verify that the subscription was created by running the following query, and confirming that the subscription (`neon_subscription`) is listed:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+## Monitor and verify the replication
+
+To ensure that data is being replicated correctly:
+
+1. Monitor the replication status on Neon, by running the following query:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   This query should return an output similar to the following:
+
+   ```text
+    subid |      subname      | pid | leader_pid | relid | received_lsn |      last_msg_send_time       |     last_msg_receipt_time     | latest_end_lsn |        latest_end_time
+    -------+-------------------+-----+------------+-------+--------------+-------------------------------+-------------------------------+----------------+-------------------------------
+    24576 | neon_subscription | 540 |            |       | 1/3D0020A8   | 2024-09-11 11:34:24.841807+00 | 2024-09-11 11:34:24.869991+00 | 1/3D0020A8     | 2024-09-11 11:34:24.841807+00
+    (1 row)
+   ```
+
+   - An active `pid` indicates that the subscription is active and running.
+   - The `received_lsn` and `latest_end_lsn` columns show the LSN (Log Sequence Number) of the last received (at Neon) and last written data (at Azure source), respectively.
+   - In this example, they have the same value, which means that all the data has been successfully replicated from Azure to Neon.
+
+2. To verify that the data has been replicated correctly, compare row counts between Azure PostgreSQL and Neon for some key tables. For example, you can run the following query to check the number of rows in the `addresses` table:
+
+   ```sql
+   SELECT COUNT(*) FROM person.address;
+   ```
+
+   It returns the same output on both databases:
+
+   ```text
+     count
+    -------
+    19614
+    (1 row)
+   ```
+
+3. Optionally, you can run some queries from your application against the Neon database to verify that it returns the same output as the Azure instance.
+
+## Complete the migration
+
+Once the initial data sync is complete and you've verified that ongoing changes are being replicated:
+
+1. Stop writes to your Azure PostgreSQL database.
+2. Wait for any final transactions to be replicated to Neon.
+3. Update your application's connection string to point to your Neon database.
+
+This ensures a much shorter downtime for the application, as you only need to wait for the last few transactions to be replicated before switching the application over to the Neon database.
+
+<Admonition type="note">
+Remember to update any Azure-specific configurations or extensions in your application code to be compatible with Neon. For Neon Postgres parameter settings, see [Postgres parameter settings](/docs/reference/compatibility#postgres-parameter-settings). For Postgres extensions supported by Neon, see [Supported Postgres extensions](/docs/extensions/pg-extensions).
+</Admonition>
+
+## Clean up
+
+After successfully migrating and verifying your data on Neon, you can:
+
+1. Drop the subscription on the Neon database:
+
+   ```sql
+   DROP SUBSCRIPTION neon_subscription;
+   ```
+
+2. Remove the publication from the Azure PostgreSQL database:
+
+   ```sql
+   DROP PUBLICATION azure_publication;
+   ```
+
+3. Consider backing up your Azure PostgreSQL database before decommissioning it.
+
+## Other migration options
+
+This section discusses migration options other than using logical replication.
+
+- **pg_dump and pg_restore**
+
+  If your database size is not large, you can use the `pg_dump` utility to create a dump file of your database, and then use `pg_restore` to restore the dump file to Neon. Please refer to the [Migrate from Postgres](/docs/import/migrate-from-postgres) guide for more information on this method.
+
+- **Postgres GUI clients**
+
+  Some Postgres clients offer backup and restore capabilities. These include [pgAdmin](https://www.pgadmin.org/docs/pgadmin4/latest/backup_and_restore.html) and [phppgadmin](https://github.com/phppgadmin/phppgadmin/releases), among others. We have not tested migrations using these clients, but if you are uncomfortable using command-line utilities, they may provide an alternative.
+
+- **Table-level data migration using CSV files**
+
+  Table-level data migration (using CSV files, for example) does not preserve database schemas, constraints, indexes, types, or other database features. You will have to create these separately. Table-level migration is simple but could result in significant downtime depending on the size of your data and the number of tables. For instructions, see [Import data from CSV](/docs/import/import-from-csv).
+
+## Reference
+
+For more information about logical replication and Postgres client utilities, refer to the following topics in the Postgres and Neon documentation:
+
+- [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
+- [pg_restore](https://www.postgresql.org/docs/current/app-pgrestore.html)
+- [psql](https://www.postgresql.org/docs/current/app-psql.html)
+- [Postgres - Logical replication](https://www.postgresql.org/docs/current/logical-replication.html)
+- [Neon logical replication guide](https://neon.tech/docs/guides/logical-replication-guide)
+
+<NeedHelp/>
+
+
+# Replicate from Cloud SQL
+
+---
+title: Replicate data from Cloud SQL Postgres
+subtitle: Learn how to replicate data from Google Cloud SQL Postgres to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.545Z'
+---
+
+<LRBeta/>
+
+This guide describes how to replicate data from Cloud SQL Postgres using native Postgres logical replication, as described in [Set up native PostgreSQL logical replication](https://cloud.google.com/sql/docs/postgres/replication/configure-logical-replication#set-up-native-postgresql-logical-replication), in the Google Cloud SQL documentation.
+
+## Prerequisites
+
+- A Cloud SQL Postgres instance containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data. Your database and schema may differ.
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A Neon project with a Postgres database to receive the replicated data. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your Cloud SQL source database
+
+This section describes how to prepare your source Cloud SQL Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication
+
+The first step is to enable logical replication at the source Postgres instance. In Cloud SQL, you can enable logical replication for your Postgres instance by setting the `cloudsql.logical_decoding` flag to `on`. This action will set the Postgres `wal_level` parameter to `logical`.
+
+To enable this flag:
+
+1. In the Google Cloud console, select the project that contains the Cloud SQL instance for which you want to set a database flag.
+2. Open the instance and click **Edit**.
+3. Scroll down to the **Flags** section.
+4. If this flag has not been set on the instance before, click **Add item**, choose the flag from the drop-down menu, and set its value to `On`.
+5. Click **Save** to save your changes.
+6. Confirm your changes under **Flags** on the **Overview** page.
+
+The change requires restarting the instance:
+
+![Clod SQL instance restart](/docs/guides/cloud_sql_restart.png)
+
+Afterward, you can verify that logical replication is enabled by running `SHOW wal_level;` from **Cloud SQL Studio** or your terminal.
+
+![show wal_level](/docs/guides/cloud_sql_show_wal_level.png)
+
+### Allow connections from Neon
+
+You need to allow connections to your Cloud SQL Postgres instance from Neon. To do this in Google Cloud:
+
+1. In the Google Cloud console, go to the Cloud SQL Instances page.
+1. Open the **Overview** page of your instance by clicking the instance name.
+1. From the SQL navigation menu, select **Connections**.
+1. Click the **Networking** tab.
+1. Select the **Public IP** checkbox.
+1. Click **Add network**.
+1. Optionally, in the **Name** field, enter a name for this network.
+1. In the **Network** field, enter the IP address from which you want to allow connections. You will need to perform this step for each of the NAT gateway IP addresses associated with your Neon project's region. Neon uses 3 to 6 IP addresses per region for this outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses.
+
+   <Admonition type="note">
+   Cloud SQL requires addresses to be specified in CIDR notation. You can do so by appending `/32` to the NAT Gateway IP address; for example: `18.217.181.229/32`
+   </Admonition>
+
+   In the example shown below, you can see that three addresses were added, named `Neon1`, `Neon2`, and `Neon3`. You can name them whatever you like. The addresses were added in CIDR format by adding `/32`.
+
+   ![Cloud SQL network configuration](/docs/guides/cloud_sql_network_config.png)
+
+1. Click **Done** after adding a Network entry.
+1. Click **Save** when you are finished adding Network entries for all of your Neon project's NAT Gateway IP addresses.
+
+<Admonition type="note">
+You can specify a single Network entry using `0.0.0.0/0` to allow traffic from any IP address. However, this configuration is not considered secure and will trigger a warning.
+</Admonition>
+
+### Note your public IP address
+
+Record the public IP address of your Cloud SQL Postgres instance. You'll need this value later when you set up a subscription from your Neon database. You can find the public IP address on your Cloud SQL instance's **Overview** page.
+
+<Admonition type="note">
+If you do not use a public IP address, you'll need to configure access via a private IP. Refer to the [Cloud SQL documentation](https://cloud.google.com/sql/docs/mysql/private-ip).
+</Admonition>
+
+![Clould SQL public IP address](/docs/guides/cloud_sql_public_ip.png)
+
+### Create a Postgres role for replication
+
+It is recommended that you create a dedicated Postgres role for replicating data from your Cloud SQL Postgres instance. The role must have the `REPLICATION` privilege. On your Cloud SQL Postgres instance, login in as your `postgres` user or an administrative user you use to create roles and run the following command to create a replication role. You can replace the name `replication_user` with whatever role name you want to use.
+
+```sql shouldWrap
+CREATE USER replication_user WITH REPLICATION IN ROLE cloudsqlsuperuser LOGIN PASSWORD 'replication_user_password';
+```
+
+### Grant schema access to your Postgres role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to a Postgres role named `replication_user`:
+
+```sql
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+### Create a publication on the source database
+
+This step is performed on your Cloud SQL instance.
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your source database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your Cloud SQL Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'host=<primary-ip> port=5432 dbname=postgres user=replication_user password=replication_user_password'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source Cloud SQL database where you defined the publication. For the `<primary_ip>`, use the IP address of your Cloud SQL Postgres instance that you noted earlier, and specify the name and password of your replication role. If you're replicating from a database other than `postgres`, be sure to specify that database name.
+   - `publication_name`: The name of the publication you created on the source Neon database.
+
+2. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your Cloud SQL source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Replicate from Neon to Neon
+
+---
+title: Replicate data from one Neon project to another
+subtitle: Use logical replication to migrate data to a different Neon project, account,
+  Postgres version, or region
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.545Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from one Neon project to another. This enables different replication scenarios, including:
+
+- **Postgres version migration**: Moving data from one Postgres version to another; for example, from a Neon project that runs Postgres 15 to one that runs Postgres 16.
+- **Region migration**: Moving data from one region to another; for example, from a Neon project in one region to a Neon project in a different region.
+- **Neon account migration**: Moving data from a Neon project owned by one account to a project owned by a different account; for example, from a personal Neon account to a business-owned Neon account.
+
+These are some common Neon-to-Neon replication scenarios. There may be others. You can follow the steps in this guide for any scenario that requires replicating data between different Neon projects.
+
+## Prerequisites
+
+- A Neon project with a database containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A destination Neon project.
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+
+For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+
+## Prepare your source Neon database
+
+This section describes how to prepare your source Neon database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+### Enable logical replication in the source Neon project
+
+In the Neon project containing your source database, enable logical replication. You only need to perform this step on the source Neon project.
+
+<Admonition type="important">
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication restarts all computes in your Neon project, meaning that active connections will be dropped and have to reconnect.
+</Admonition>
+
+To enable logical replication:
+
+1. Select your project in the Neon Console.
+2. On the Neon **Dashboard**, select **Settings**.
+3. Select **Logical Replication**.
+4. Click **Enable** to enable logical replication.
+
+You can verify that logical replication is enabled by running the following query:
+
+```sql
+SHOW wal_level;
+ wal_level
+-----------
+ logical
+```
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database (the subscriber) to receive replicated data.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on the destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'postgresql://neondb_owner:<password>@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source Neon database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Neon database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your source database connection details for your destination database connection details.
+
+You can find the connection details for a Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Replicate from Postgres
+
+---
+title: Replicate data from Postgres to Neon
+subtitle: Learn how to replicate data from a local Postgres instance or another Postgres
+  provider to Neon
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-09-17T15:08:05.546Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from a local Postgres instance or another Postgres provider to Neon. If you're looking to replicate data from one Neon Postgres instance to another, see [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
+
+## Prerequisites
+
+- A local Postgres instance or Postgres instance hosted on another provider containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A destination Neon project. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your source Postgres database
+
+This section describes how to prepare your source Postgres database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+### Enable logical replication in the source Neon project
+
+On your source database, enable logical replication. The typical steps for a local Postgres instance are shown below. If you run Postgres on a provider, the steps may differ. Refer to your provider's documentation.
+
+Enabling logical replication requires changing the Postgres `wal_level` configuration parameter from `replica` to `logical`.
+
+1. Locate your `postgresql.conf` file. This is usually found in the PostgreSQL data directory. The data directory path can be identified by running the following query in your PostgreSQL database:
+
+   ```sql
+   SHOW data_directory;
+   ```
+
+2. Open the `postgresql.conf` file in a text editor. Find the `wal_level` setting in the file. If it is not present, you can add it manually. Set `wal_level` to `logical` as shown below:
+
+   ```ini
+   wal_level = logical
+   ```
+
+3. After saving the changes to `postgresql.conf`, you need to reload or restart PostgreSQL for the changes to take effect.
+
+4. Confirm the change by running the following query in your PostgreSQL database:
+
+   ```sql
+   SHOW wal_level;
+   wal_level
+   -----------
+   logical
+   ```
+
+### Create a Postgres role for replication
+
+It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. For example:
+
+```sql
+CREATE ROLE replication_user WITH REPLICATION LOGIN PASSWORD 'your_secure_password';
+```
+
+### Grant schema access to your Postgres role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
+
+```sql
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database (the subscriber) to receive replicated data.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on the destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'host=<host-address-or-ip> port=5432 dbname=postgres user=replication_user password=replication_user_password'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source Postgres database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Postgres database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your source database connection details for your destination database connection details.
+
+You can find the connection details for a Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+<NeedHelp/>
+
+
+# Replicate from RDS
+
+---
+title: Replicate data from Amazon RDS Postgres
+subtitle: Learn how to replicate data from Amazon RDS Postgres to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.548Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from Amazon RDS PostgreSQL to Neon.
+
+## Prerequisites
+
+- A source database in Amazon RDS for PostgreSQL containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A destination Neon project. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your source database
+
+This section describes how to prepare your source Amazon RDS Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication in the source Amazon RDS PostgreSQL instance
+
+Enabling logical replication in Postgres requires changing the `wal_level` configuration parameter from `replica` to `logical`. Before you begin, you can check your current setting with the following command:
+
+```bash
+SHOW wal_level;
+ wal_level
+-----------
+ replica
+(1 row)
+```
+
+<Admonition type="note">
+For information about connecting to RDS from `psql`, see [Connect to a PostgreSQL DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.CreatingConnecting.PostgreSQL.html#CHAP_GettingStarted.Connecting.PostgreSQL).
+</Admonition>
+
+If your current setting is `replica`, follow these steps to enable logical replication. If you are using the default parameter group, you will need to create a new parameter group to set the value. You can do so by selecting **Parameter groups** > **Create parameter group** from the sidebar and filling in the required fields.
+
+To enable logical replication:
+
+1. Navigate to the **Configuration** tab of your RDS instance.
+2. Under the **Configuration** heading, click on the **DB instance parameter group** link.
+3. Click **Edit**. In the **Filter parameters** search field, search for `rds.logical_replication`.
+4. Set the value to `1`, and click **Save Changes**.
+5. If you created a new parameter group, navigate back to your RDS instance page, click **Modify**, and scroll down to select your new parameter group. Click **Continue**, and select **Apply immediately** to make the change now, then click **Modify DB instance**.
+6. Reboot your instance to apply the new setting. From the **Actions** menu for your database, select **Reboot**.
+7. Make sure that the `wal_level` parameter is now set to `logical`:
+
+   ```sql
+   SHOW wal_level;
+   wal_level
+   -----------
+   logical
+   (1 row)
+   ```
+
+### Allow connections from Neon
+
+You need to allow inbound connections to your AWS RDS Postgres instance from Neon. You can do this by editing your instance's **CIDR/IP - Inbound** security group, which you can find a link to from your AWS RDS Postgres instance page.
+
+1. Click on the security group name.
+2. Click on the security group ID.
+3. From the **Actions** menu, select **Edit inbound rules**.
+4. Add rules that allow traffic from each of the IP addresses for your Neon project's region.
+
+   Neon uses 3 to 6 IP addresses per region for outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses.
+
+5. When you're finished, click **Save rules**.
+
+   <Admonition type="note">
+   You can specify a rule for `0.0.0.0/0` to allow traffic from any IP address. However, this configuration is not considered secure.
+   </Admonition>
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+
+To create a publication for all tables in your source database, run the following query. You can use a publication name of your choice.
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your AWS RDS Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql shouldWrap
+   CREATE SUBSCRIPTION my_subscription CONNECTION 'postgresql://postgres:password@database-1.czmwaio8k05k.us-east-2.rds.amazonaws.com/postgres' PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source AWS RDS Postgres database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source AWS RDS Postgres database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+
+   subid |     subname     | pid  | leader_pid | relid | received_lsn |      last_msg_send_time       |     last_msg_receipt_time     | latest_end_lsn |        latest_end_time
+   ------+-----------------+------+------------+-------+--------------+-------------------------------+-------------------------------+----------------+-------------------------------
+   16471 | my_subscription | 1080 |            |       | 0/300003A0   | 2024-08-13 20:25:08.011501+00 | 2024-08-13 20:25:08.013521+00 | 0/300003A0     | 2024-08-13 20:25:08.011501+00
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription was created.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your AWS RDS source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Data migration services
+
+# AWS Data Migration Service (DMS)
 
 ---
 title: Migrate with AWS Database Migration Service (DMS)
@@ -7739,154 +10671,82 @@ This section contains notes from our experience using AWS DMS to migrate data to
   The replication instance, which was created in the private subnet where the source database resided, could not access the Neon database, which resides outside of the VPC. To allow the replication instance to access the Neon database, we added a NAT Gateway to the public subnet, allocated an Elastic IP address, and modified the **Route Table** associated with the private subnet to add a route via the NAT Gateway.
 
 
-# Migrate from MySQL to Postgres
+# CSV
+
+# Import from CSV
 
 ---
-title: Migrate your MySQL database to Neon Postgres
+title: Import data from CSV
 enableTableOfContents: true
-isDraft: false
-updatedOn: '2024-08-07T21:36:52.670Z'
+updatedOn: '2024-08-07T21:36:52.667Z'
 ---
 
-This topic describes how to migrate your MySQL database to Neon Postgres using [pgloader](https://pgloader.readthedocs.io/en/latest/intro.html).
+This topic describes how to import data into a Neon database table from a CSV file.
 
-The `pgloader` utility transforms data to a Postgres-compatible format as it is read from your MySQL database. It uses the `COPY` Postgres protocol to stream the data into your Postgres database.
+The instructions require a working installation of [psql](https://www.postgresql.org/download/). The `psql` client is the native command-line client for Postgres. It provides an interactive session for sending commands to Postgres. For more information about `psql`, refer to the [psql reference](https://www.postgresql.org/docs/current/app-psql.html), in the _PostgreSQL Documentation_.
 
-## Before you begin
+The following example uses the ready-to-use `neondb` database that is created with your Neon project, a table named `customer`, and a data file named `customer.csv`. Data is loaded from the `customer.csv` file into the `customer` table.
 
-Before you begin, make sure that you have the following:
+1. Connect to the `neondb` database using `psql`. For example:
 
-- A Neon account and a project. See [Sign up](/docs/get-started-with-neon/signing-up).
-- A properly named database. For example, if you are migrating a database named `sakila`, you might want to create a database of the same name in Neon. See [Create a database](/docs/manage/databases#create-a-database) for instructions.
-- Neon's Free Plan supports 500 MiB of data. If your data size is more than 500 MiB, you'll need to upgrade to one of Neon's paid plans. See [Neon plans](/docs/introduction/plans) for more information.
-
-Also, a close review of the [Pgloader MySQL to Postgres Guide](https://pgloader.readthedocs.io/en/latest/ref/mysql.html) guide is recommended before you start. This guide will provide you with a good understanding of `pgloader` capabilities and how to configure your `pgloader` configuration file, if necessary.
-
-## Retrieve Your MySQL database credentials
-
-Before starting the migration process, collect your MySQL database credentials:
-
-1. Log into your MySQL database provider.
-2. Identify and record the following details or grab your MySQL database connection string.
-   - Hostname or IP address
-   - Database name
-   - Username
-   - Password
-
-Keep your MySQL database connection details handy for later use.
-
-## Retrieve your Neon database connection string
-
-Log in to the Neon Console and navigate to the **Connection Details** section on the **Dashboard** to find your Postgres database connection string. It should look similar to this:
-
-```bash shouldWrap
-postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
-```
-
-Now, modify the connection string as follows to pass your **endpoint ID** (`ep-cool-darkness-123456` in this example) to Neon with your password using the `endpoint` keyword, as shown here:
-
-```bash shouldWrap
-postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
-```
-
-<Admonition type="note">
-Passing the `endpoint ID` with your password is a required workaround for some Postgres drivers, including the one used by `pgloader`. For more information about this workaround and why it's required, refer to our [connection workaround](/docs/connect/connection-errors#d-specify-the-endpoint-id-in-the-password-field) documentation. 
-</Admonition>
-
-Keep your Neon connection string handy for later use.
-
-### Install pgloader
-
-Here's how you can set up `pgloader` for your database migration:
-
-1. Install the `pgloader` utility using your preferred installation method. Debian (apt), RPM package, and Docker methods are supported, as well as Homebrew for macOS (`brew install pgloader`). If your macOS has an ARM processor, use the Homebrew installation method.
-
-   See [Installing pgloader](https://pgloader.readthedocs.io/en/latest/install.html) for Debian (apt), RPM package, and Docker installation instructions.
-
-2. Create a `pgloader` configuration file (e.g., `config.load`). Use your MySQL database credentials to define the connection string for your database source. Use the Neon database connection string you retrieved and modified in the previous step as the destination.
-
-   <Admonition type="note">
-   If you need to specify an SSL mode in your connection string, the following format is recommended: `sslmode=require`. Other formats may not work.
-   </Admonition>
-
-   Example configuration in `config.load`:
-
-   ```plaintext
-   load database
-     from mysql://user:password@host/source_db?sslmode=require
-     into postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require;
+   ```bash shouldWrap
+   psql postgresql://[user]:[password]@[neon_hostname]/[dbname]
    ```
 
-## Run the migration with pgloader
+   <Admonition type="note">
+   For more information about connecting to Neon with `psql`, see [Connect with psql](/docs/connect/query-with-psql-editor).
+   </Admonition>
 
-To initiate the migration process, run:
+2. Create the `customer` table.
 
-```shell
-pgloader config.load
-```
+   ```sql
+   CREATE TABLE customer (
+     id SERIAL,
+     first_name VARCHAR(50),
+     last_name VARCHAR(50),
+     email VARCHAR(255),
+     PRIMARY KEY (id)
+   )
+   ```
 
-The command output will look similar to this:
+   <Admonition type="tip">
+   You can also create tables using the **SQL Editor** in the Neon Console. See [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor).
+   </Admonition>
 
-```bash
-LOG report summary reset
-             table name     errors       rows      bytes      total time
------------------------  ---------  ---------  ---------  --------------
-        fetch meta data          0          2                     0.727s
-         Create Schemas          0          0                     0.346s
-       Create SQL Types          0          0                     0.178s
-          Create tables          0          2                     0.551s
-         Set Table OIDs          0          1                     0.094s
------------------------  ---------  ---------  ---------  --------------
-    "db-test".dbname             0          1     0.0 kB          0.900s
------------------------  ---------  ---------  ---------  --------------
-COPY Threads Completion          0          4                     0.905s
- Index Build Completion          0          1                     0.960s
-         Create Indexes          0          1                     0.257s
-        Reset Sequences          0          0                     1.083s
-           Primary Keys          0          1                     0.263s
-    Create Foreign Keys          0          0                     0.000s
-        Create Triggers          0          0                     0.169s
-        Set Search Path          0          1                     0.427s
-       Install Comments          0          0                     0.000s
------------------------  ---------  ---------  ---------  --------------
-      Total import time          ✓          1     0.0 kB          4.064s
-```
+3. Prepare a `customer.csv` file with the following data:
 
-## SSL verify error
+   ```text
+   First Name,Last Name,Email
+   1,Casey,Smith,casey.smith@example.com
+   2,Sally,Jones,sally.jones@example.com
+   ```
 
-If you encounter an `SSL verify error: 20 X509_V_ERR_UNABLE_TO_GET_ISSUER_CERT_LOCALLY` error while attempting the instructions described above using `pgloader` from a Docker container, try the solution identified in this [GitHub issue](https://github.com/dimitri/pgloader/issues/768#issuecomment-693390290), which involves specifying `sslmode=allow` in the Postgres connection string and using the `--no-ssl-cert-verification` option with `pgloader`.
+4. From your `psql` prompt, load the data from the `customer.csv` file using the `\copy` option.
 
-The following configuration file and Docker command were verified to work with Docker on Windows but may apply generally when using `pgloader` in a Docker container. In your `pgloader` config file, replace the MySQL and Postgres connection string values with your own. In the Docker command, specify the path to your `pgloader` config file, and replace the container ID value (the long alphanumeric string) with your own.
+   ```bash
+   \copy customer FROM '/path/to/customer.csv' DELIMITER ',' CSV HEADER
+   ```
 
-`pgloader` config.load file:
+   If the command runs successfully, it returns the number of records copied to the database:
 
-```plaintext
-load database
-  from mysql://user:password@host/source_db?sslmode=require
-  into postgresql://alex:endpoint=ep-cool-darkness-123456;AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=allow;
-```
+   ```bash
+   COPY 2
+   ```
 
-Docker command:
+   For more information about the `\copy` option, refer to the [psql reference](https://www.postgresql.org/docs/current/app-psql.html), in the _PostgreSQL Documentation_.
 
-```plaintext
-docker run -v C:\path\to\config.load:/config.load d183dc100d3af5e703bd867b3b7826c117fa16b7ee2cd360af591dc895b121dc pgloader --no-ssl-cert-verification /config.load
-```
+<NeedHelp/>
 
-## References
 
-- [Installing pgloader](https://pgloader.readthedocs.io/en/latest/install.html)
-- [Pgloader Tutorial: Migrating from MySQL to PostgreSQL](https://pgloader.readthedocs.io/en/latest/tutorial/tutorial.html#migrating-from-mysql-to-postgresql)
-- [Pgloader MySQL to Postgres Guide](https://pgloader.readthedocs.io/en/latest/ref/mysql.html)
-- [How to Migrate from MySQL to PostgreSQL RDBMS: An Enterprise Approach](https://jfrog.com/community/data-science/how-to-migrate-from-mysql-to-postgresql-rdbms-an-enterprise-approach/)
-
+# Sample data
 
 # Sample data
 
 ---
 title: Postgres sample data
-subtitle: 'Download sample data for learning, testing, and exploring Neon'
+subtitle: Import sample data for learning, testing, and exploring Neon
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.670Z'
+updatedOn: '2024-08-22T02:18:02.655Z'
 ---
 
 This guide describes how to download and install sample data for use with Neon.
@@ -8446,7 +11306,7 @@ title: Neon architecture
 redirectFrom:
   - /docs/storage-engine/architecture-overview
   - /docs/conceptual-guides/architecture-overview
-updatedOn: '2023-10-07T10:43:33.403Z'
+updatedOn: '2024-08-19T15:59:15.067Z'
 ---
 
 Neon architecture is based on the separation of compute and storage and is orchestrated by the Neon Control Plane, which manages cloud resources across both storage and compute.
@@ -8462,9 +11322,11 @@ Postgres streams [Write-Ahead Log (WAL)](/docs/reference/glossary#wal) to the Sa
 
 Pageservers are responsible for serving read requests. To do that, Pageservers process the incoming WAL stream into a custom storage format that makes all [page](/docs/reference/glossary#page) versions easily accessible. Pageservers also upload data to cloud object storage, and download the data on demand.
 
-Neon uses cloud object storage such as S3 for long-term data storage. Stored data is [encrypted at rest](/docs/reference/glossary#data-at-rest-encryption).
+Safekeepers can be thought of as an ultra-reliable write buffer that holds the latest data until it is processed and uploaded to cloud storage. Safekeepers implement the Paxos protocol for reliability. Pageservers also function as a read cache for cloud storage, providing fast random access to data pages.
 
-Safekeepers can be thought of as an ultra reliable write buffer that holds the latest data until it is processed and uploaded to cloud storage. Safekeepers implement the Paxos protocol for reliability. Pageservers also function as a read cache for cloud storage, providing fast random access to data pages.
+## Durability
+
+Durability is at the core of Neon's architecture. As described earlier, incoming WAL data is initially stored across multiple availability zones in a [Paxos](<https://en.wikipedia.org/wiki/Paxos_(computer_science)>) cluster before being uploaded to [S3](https://aws.amazon.com/s3/) (99.999999999% durability), both in raw WAL and materialized form. Additional copies are maintained across Pageservers to enhance the read performance of frequently accessed data. Consequently, there are always multiple copies of your data in Neon, ensuring durability.
 
 
 # Overview
@@ -8474,7 +11336,7 @@ title: Neon architecture
 redirectFrom:
   - /docs/storage-engine/architecture-overview
   - /docs/conceptual-guides/architecture-overview
-updatedOn: '2023-10-07T10:43:33.403Z'
+updatedOn: '2024-08-19T15:59:15.067Z'
 ---
 
 Neon architecture is based on the separation of compute and storage and is orchestrated by the Neon Control Plane, which manages cloud resources across both storage and compute.
@@ -8490,9 +11352,74 @@ Postgres streams [Write-Ahead Log (WAL)](/docs/reference/glossary#wal) to the Sa
 
 Pageservers are responsible for serving read requests. To do that, Pageservers process the incoming WAL stream into a custom storage format that makes all [page](/docs/reference/glossary#page) versions easily accessible. Pageservers also upload data to cloud object storage, and download the data on demand.
 
-Neon uses cloud object storage such as S3 for long-term data storage. Stored data is [encrypted at rest](/docs/reference/glossary#data-at-rest-encryption).
+Safekeepers can be thought of as an ultra-reliable write buffer that holds the latest data until it is processed and uploaded to cloud storage. Safekeepers implement the Paxos protocol for reliability. Pageservers also function as a read cache for cloud storage, providing fast random access to data pages.
 
-Safekeepers can be thought of as an ultra reliable write buffer that holds the latest data until it is processed and uploaded to cloud storage. Safekeepers implement the Paxos protocol for reliability. Pageservers also function as a read cache for cloud storage, providing fast random access to data pages.
+## Durability
+
+Durability is at the core of Neon's architecture. As described earlier, incoming WAL data is initially stored across multiple availability zones in a [Paxos](<https://en.wikipedia.org/wiki/Paxos_(computer_science)>) cluster before being uploaded to [S3](https://aws.amazon.com/s3/) (99.999999999% durability), both in raw WAL and materialized form. Additional copies are maintained across Pageservers to enhance the read performance of frequently accessed data. Consequently, there are always multiple copies of your data in Neon, ensuring durability.
+
+
+# Autoscaling
+
+---
+title: Autoscaling architecture
+subtitle: Learn how Neon automatically scales compute resources on demand
+enableTableOfContents: true
+updatedOn: '2024-08-19T14:50:59.585Z'
+---
+
+<InfoBlock>
+<DocsList title="What you will learn:">
+<p>How Neon's autoscaling architecture is structured</p>
+<p>The role of key components like the autoscaler-agent and Kubernetes scheduler</p>
+</DocsList>
+
+<DocsList title="Related topics" theme="docs">
+<a href="/docs/introduction/autoscaling">Introduction to autoscaling</a>
+<a href="/docs/guides/autoscaling-guide">Enabling autoscaling</a>
+<a href="/docs/guides/autoscaling-algorithm">How the algorithm works</a>
+</DocsList>
+</InfoBlock>
+
+A Neon project can have one or more computes, each representing an individual Postgres instance. Storage is decoupled from these computes, meaning that the Postgres servers executing queries are physically separate from the data storage location. This separation offers numerous advantages, including enablement of Neon's autoscaling feature.
+
+![High-level architecture diagram](/docs/introduction/autoscale-high-level-architecture.jpg)
+
+Looking more closely, you can see that each Postgres instance operates within its own virtual machine inside a [Kubernetes cluster](/docs/reference/glossary#kubernetes-cluster), with multiple VMs hosted on each node of the cluster. Autoscaling is implemented by allocating and deallocating [vCPU](/docs/reference/glossary#vcpu) and [RAM](/docs/reference/glossary#ram) to each VM.
+
+![Autoscaling diagram](/docs/introduction/autoscale-architecture.jpg)
+
+## The autoscaler-agent
+
+Each [Kubernetes node](/docs/reference/glossary#kubernetes-node) hosts a single instance of the [autoscaler-agent](/docs/reference/glossary#autoscaler-agent), which serves as the control mechanism for Neon's autoscaling system. The agent collects metrics from the VMs on its node, makes scaling decisions, and performs the necessary checks and requests to implement those decisions.
+
+## The Kubernetes scheduler
+
+A Neon-modified [Kubernetes scheduler](/docs/reference/glossary#kubernetes-scheduler) coordinates with the autoscaler-agent and is the single source of truth for resource allocation. The autoscaler-agent obtains approval for all upscaling from the scheduler. The scheduler maintains a global view of all resource usage changes and approves requests for additional resources from the autoscaler-agent or standard scheduling. In this way, the scheduler assumes responsibility for preventing overcommitting of memory resources. In the rare event that a node exhausts its resources, new pods are not scheduled on the node, and the autoscaler-agent is denied permission to allocate more resources.
+
+## NeonVM
+
+Kubernetes does not natively support the creation or management of VMs. To address this, Neon uses a tool called [NeonVM](/docs/reference/glossary#neonvm). This tool is a custom resource definition and controller for VMs, handling tasks such as adding or removing CPUs and memory. Internally, NeonVM utilizes [QEMU](/docs/reference/glossary#qemu) and [KVM](/docs/reference/glossary#kvm) (where available) to achieve near-native performance.
+
+When an autoscaler-agent needs to modify a VM's resource allocation, it simply updates the corresponding NeonVM object in Kubernetes, and the VM controller then manages the rest of the process.
+
+## Live migration
+
+In cases where a Kubernetes node becomes saturated, NeonVM manages the process of [live migrating](/docs/reference/glossary#live-migration) a VM, transferring the VM from one machine to another with minimal interruptions (typically around 100ms). Live migration transmits the internal state of the original VM to a new one while the former continues to operate, swiftly transitioning to the new VM after most of the data is copied. From within the VM, the only indication that a migration occurred might be a temporary performance reduction. Importantly, the VM retains its IP address, ensuring that connections are preserved and queries remain uninterrupted.
+
+The live migration process allows for the proactive reduction of node load by migrating VMs away before reaching capacity. Although it is still possible for the node to fill up in the interim, Neon's separation of storage and compute means that VMs typically use minimal disk space, resulting in fast migrations.
+
+## Memory scaling
+
+Postgres memory consumption can escalate rapidly in specific scenarios. Fortunately, Neon's autoscaling system is able to detect memory usage increases without constantly requesting metrics from the VM. This is accomplished by running Postgres within a [cgroups](/docs/reference/glossary#cgroups), which provides notifications when memory usage crosses a specified threshold. Using cgroups in this way requires running our [vm-monitor](/docs/reference/glossary#vm-monitor) in the VM alongside Postgres to request more resources from the autoscaler-agent when Postgres consumes too much memory. The vm-monitor also verifies that downscaling requests from an autoscaler-agent will leave sufficient memory leftover.
+
+## Local File Cache
+
+To expedite queries, the autoscaling system incorporates a Postgres extension that places a cache in front of the storage layer. Many queries benefit from this additional memory, particularly those requiring multiple database scans (such as creating an index). The [Local File Cache (LFC)](/docs/reference/glossary#local-file-cache) capitalizes on the additional memory allocated to the VM by dedicating a portion to the cache to itself. The cache is backed by disk and kept at a size intended to fit in the kernel page cache. Due to the storage model, writebacks are not required, resulting in near-instant evictions. The vm-monitor adjusts the LFC size when scaling occurs through the autoscaler-agent, ensuring seamless operation.
+
+## Autoscaling source code
+
+To further explore Neon's autoscaling implementation, visit Neon's [autoscaling](https://github.com/neondatabase/autoscaling) GitHub repository. While not primarily designed for external use, Neon welcomes exploration and contributions.
 
 
 # Compute lifecycle
@@ -8502,7 +11429,7 @@ title: Compute lifecycle
 enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/compute-lifecycle
-updatedOn: '2024-08-01T12:09:36.119Z'
+updatedOn: '2024-08-19T15:59:15.069Z'
 ---
 
 A compute in Neon is a stateless Postgres process due to the separation of storage and compute. It has two main states: `Idle` and `Active`.
@@ -8533,11 +11460,11 @@ In the **Branches** widget on your **Project Dashboard**, you can check if a com
 
 ![Compute state](/docs/introduction/compute_state.png)
 
-## Compute configuration
+## Session context considerations
 
-Neon only supports modifying session-level configuration parameters. Parameters are reset when the session terminates, such as when the compute suspends due to inactivity.
+When connections are closed due to a compute being suspended, anything that exists within a session context is forgotten and must be recreated before being used again. For example, Postgres parameters set for a specific session, in-memory statistics, temporary tables, prepared statements, advisory locks, and notifications and listeners defined using `NOTIFY/LISTEN` commands only exist for the duration of the current session and are lost when the session ends.
 
-For information about Neon's Postgres server configuration, see [Neon Postgres parameter settings](/docs/reference/compatibility#neon-postgres-parameter-settings).
+For more, see [Session context](/docs/reference/compatibility#session-context).
 
 
 # Features
@@ -8545,8 +11472,8 @@ For information about Neon's Postgres server configuration, see [Neon Postgres p
 ---
 title: Neon feature guides
 subtitle: Explore Neon's capabilities with our feature guides
-enableTableOfContents: true
-updatedOn: '2024-06-20T17:29:55.106Z'
+enableTableOfContents: false
+updatedOn: '2024-08-22T02:18:02.654Z'
 ---
 
 ### Autoscaling
@@ -8607,7 +11534,9 @@ Replicate data from Neon to external data platforms and services.
 
 <a href="/docs/guides/logical-replication-concepts" description="Learn about Postgres logical replication concepts" icon="scale-up">Logical replication concepts</a>
 
-<a href="/docs/guides/logical-replication-neon" description="Learn how to manage logical replication in Neon" icon="screen">Manage logical replication</a>
+<a href="/docs/guides/logical-replication-manage" description="Commands for managing your logical replication configuration" icon="cli">Logical replication commands</a>
+
+<a href="/docs/guides/logical-replication-neon" description="Information about logical replication specific to Neon" icon="screen">Logical replication in Neon</a>
 
 </DetailIconCards>
 
@@ -8682,34 +11611,148 @@ Protect your production or sensitive data.
 </DetailIconCards>
 
 
+# Serverless
+
+---
+title: Serverless
+subtitle: Postgres with instant provisioning, no server management, and pay-per-usage
+  billing
+enableTableOfContents: true
+updatedOn: '2024-08-29T10:48:38.733Z'
+---
+
+Neon takes the world's most loved database &#8212; Postgres &#8212; and delivers it as a serverless platform, enabling teams to ship reliable and scalable applications faster.
+
+Enabling serverless Postgres begins with Neon's [native decoupling of storage and compute](https://neon.tech/blog/architecture-decisions-in-neon). By separating these components, Neon can dynamically scale up during periods of high activity and down to zero when idle. Developers can be hands-off instead of sizing infrastructure manually.
+
+This serverless character also makes Neon databases highly agile and well-suited for use cases that require automatic creation, management, and deletion of a high number of Postgres databases, like [database-per-user architectures with thousands of tenants](https://neon.tech/use-cases/database-per-tenant), as well as [database branching workflows](https://neon.tech/flow) that accelerate development by enabling the management of dev/testing databases via CI/CD.
+
+![Multi-tenant storage](/docs/introduction/multi_tenant_storage.png)
+
+Read our [Architecture](https://neon.tech/docs/introduction/architecture-overview) section for more information on how Neon is built.
+
+## What “serverless” means to us
+
+At Neon, we interpret “serverless” not only as the absence of servers to manage but as a set of principles and features designed to streamline your development process and optimize operational efficiency for your database.
+
+To us, serverless means:
+
+- **Instant provisioning**: Neon allows you to spin up Postgres databases in seconds, eliminating the long setup times traditionally associated with database provisioning.
+- **No server management**: You don’t have to deal with the complexities of provisioning, maintaining, and administering servers. Neon handles it all, so you can focus on your application.
+- **Autoscaling**: Compute resources automatically scale up or down based on real-time demand, ensuring optimal performance without manual intervention.
+- **Usage-based pricing**: Your costs are directly tied to the resources your workload consumes—both compute and storage. There's no need to over-provision or pay for idle capacity.
+- **Built-in availability and fault tolerance**: We’ve designed our architecture for high availability and resilience, ensuring your data is safe and your applications are always accessible.
+- **Focus on business logic**: With the heavy lifting of infrastructure management handled by Neon, you can dedicate your time and effort to writing code and delivering value to your users.
+
+## To us, serverless does not mean…
+
+_That Neon only works with serverless architectures_. Neon is fully compatible with the entire PostgreSQL ecosystem. Whether you're using [Django](/docs/guides/django), [Rails](/docs/guides/ruby-on-rails), or even a bash script in your basement, if it works with Postgres, it works with Neon.
+
+_That you have to pay per query_. Your charges are based on compute and storage usage, not the number of queries. For example, you could run billions of queries for as little as $19 a month if they fit within the resources allotted in the [Launch plan](/docs/introduction/plans#launch). The CPU allowance is ample for running sites 24/7 with low CPU requirements.
+
+_That you’ll get unpredictable costs due to traffic spikes_. We provide transparency in your potential costs. You always set a maximum autoscaling limit to avoid unpredictable bills, and you can always [check your consumption](/docs/introduction/monitor-usage). We send you notifications if your storage usage grows quickly.
+
+## Learn more
+
+- [Autoscaling](/docs/introduction/autoscaling)
+- [Autosuspend](/docs/introduction/auto-suspend)
+- [Plans and billing](/docs/introduction/about-billing)
+- [Database-per-tenant use cases](https://neon.tech/use-cases/database-per-tenant)
+- [Variable workload use cases](https://neon.tech/variable-load)
+- [Postgres for SaaS use cases](https://neon.tech/use-cases/postgres-for-saas)
+
+
 # Autoscaling
 
 ---
 title: Autoscaling
-subtitle: Learn how Neon automatically scales compute resources on demand
+subtitle: An introduction to Neon's autoscaling
 enableTableOfContents: true
-updatedOn: '2024-07-25T12:53:42.430Z'
+updatedOn: '2024-08-22T16:14:37.838Z'
 ---
 
-Neon's _Autoscaling_ feature, available to paying users, dynamically adjusts the amount of compute resources allocated to a Neon compute in response to the current load, eliminating the need for manual intervention.
+Neon's _Autoscaling_ feature dynamically adjusts the amount of compute resources allocated to a Neon compute in response to the current load, eliminating the need for manual intervention.
+
+The following visualization shows how Neon’s autoscaling works throughout a typical day. The compute resources scale up or down based on demand, ensuring that your database has the necessary compute resources when it needs them, while conserving resources during off-peak times.
+
+![visualization for autoscaling](/docs/introduction/autoscaling_intro.png)
+
+To dive deeper into how Neon's autoscaling algorithm operates, visit [Understanding Neon’s autoscaling algorithm](/docs/guides/autoscaling-algorithm).
 
 ## Autoscaling benefits
 
 Neon's Autoscaling feature offers the following benefits:
 
-- **On-demand scaling:** Autoscaling helps with workloads that experience variations over time, such as applications with regional or time-based changes in demand.
-- **Cost-effectiveness**: Autoscaling optimizes resource utilization, ensuring that organizations only pay for required resources, rather than over-provisioning to handle peak loads.
+- **On-demand scaling:** Autoscaling helps with workloads that experience variations over time, such as applications with time-based changes in demand or occasional spikes.
+- **Cost-effectiveness**: Autoscaling optimizes resource utilization, ensuring that you only use required resources, rather than over-provisioning to handle peak loads.
 - **Resource and cost control**: Autoscaling operates within a user-defined range, ensuring that your compute resources and associated costs do not scale indefinitely.
 - **No manual intervention**: After you enable autoscaling and set scaling limits, no manual intervention is required, allowing you to focus on your applications.
 
-## How to enable autoscaling
+## Configuring autoscaling
 
-You can enable autoscaling when creating a Neon project or afterward using a simple compute configuration dialog. For instructions, see:
+You can enable autoscaling for any compute instance, whether it's a primary compute or a read replica. Simply open **Edit compute settings** ([learn how](/docs/guides/autoscaling-guide)) for your compute and set the autoscaling range. This range defines the minimum and maximum compute sizes within which your compute will automatically scale. For example, you might set the minimum to 2 vCPUs with 8 GB of RAM and the maximum to 8 vCPUs with 32 GB of RAM. Your compute resources will dynamically adjust within these limits, never dropping below the minimum or exceeding the maximum, regardless of demand. We recommend regularly [monitoring](/docs/introduction/monitoring-page) your usage from the **Monitoring Dashboard** to determine if adjustments to this range are needed.
 
-- [Create a project](/docs/manage/projects#create-a-project)
-- [Edit a compute](/docs/manage/endpoints#edit-a-compute)
+![autoscaling configuration](/docs/introduction/autoscaling_config.png)
 
-## How autoscaling works
+For full details about enabling and configuring autoscaling, see [Enabling autoscaling](/docs/guides/autoscaling-guide).
+
+
+# Introduction
+
+---
+title: Autoscaling
+subtitle: An introduction to Neon's autoscaling
+enableTableOfContents: true
+updatedOn: '2024-08-22T16:14:37.838Z'
+---
+
+Neon's _Autoscaling_ feature dynamically adjusts the amount of compute resources allocated to a Neon compute in response to the current load, eliminating the need for manual intervention.
+
+The following visualization shows how Neon’s autoscaling works throughout a typical day. The compute resources scale up or down based on demand, ensuring that your database has the necessary compute resources when it needs them, while conserving resources during off-peak times.
+
+![visualization for autoscaling](/docs/introduction/autoscaling_intro.png)
+
+To dive deeper into how Neon's autoscaling algorithm operates, visit [Understanding Neon’s autoscaling algorithm](/docs/guides/autoscaling-algorithm).
+
+## Autoscaling benefits
+
+Neon's Autoscaling feature offers the following benefits:
+
+- **On-demand scaling:** Autoscaling helps with workloads that experience variations over time, such as applications with time-based changes in demand or occasional spikes.
+- **Cost-effectiveness**: Autoscaling optimizes resource utilization, ensuring that you only use required resources, rather than over-provisioning to handle peak loads.
+- **Resource and cost control**: Autoscaling operates within a user-defined range, ensuring that your compute resources and associated costs do not scale indefinitely.
+- **No manual intervention**: After you enable autoscaling and set scaling limits, no manual intervention is required, allowing you to focus on your applications.
+
+## Configuring autoscaling
+
+You can enable autoscaling for any compute instance, whether it's a primary compute or a read replica. Simply open **Edit compute settings** ([learn how](/docs/guides/autoscaling-guide)) for your compute and set the autoscaling range. This range defines the minimum and maximum compute sizes within which your compute will automatically scale. For example, you might set the minimum to 2 vCPUs with 8 GB of RAM and the maximum to 8 vCPUs with 32 GB of RAM. Your compute resources will dynamically adjust within these limits, never dropping below the minimum or exceeding the maximum, regardless of demand. We recommend regularly [monitoring](/docs/introduction/monitoring-page) your usage from the **Monitoring Dashboard** to determine if adjustments to this range are needed.
+
+![autoscaling configuration](/docs/introduction/autoscaling_config.png)
+
+For full details about enabling and configuring autoscaling, see [Enabling autoscaling](/docs/guides/autoscaling-guide).
+
+
+# Architecture
+
+---
+title: Autoscaling architecture
+subtitle: Learn how Neon automatically scales compute resources on demand
+enableTableOfContents: true
+updatedOn: '2024-08-19T14:50:59.585Z'
+---
+
+<InfoBlock>
+<DocsList title="What you will learn:">
+<p>How Neon's autoscaling architecture is structured</p>
+<p>The role of key components like the autoscaler-agent and Kubernetes scheduler</p>
+</DocsList>
+
+<DocsList title="Related topics" theme="docs">
+<a href="/docs/introduction/autoscaling">Introduction to autoscaling</a>
+<a href="/docs/guides/autoscaling-guide">Enabling autoscaling</a>
+<a href="/docs/guides/autoscaling-algorithm">How the algorithm works</a>
+</DocsList>
+</InfoBlock>
 
 A Neon project can have one or more computes, each representing an individual Postgres instance. Storage is decoupled from these computes, meaning that the Postgres servers executing queries are physically separate from the data storage location. This separation offers numerous advantages, including enablement of Neon's autoscaling feature.
 
@@ -8719,109 +11762,99 @@ Looking more closely, you can see that each Postgres instance operates within it
 
 ![Autoscaling diagram](/docs/introduction/autoscale-architecture.jpg)
 
-### The autoscaler-agent
+## The autoscaler-agent
 
 Each [Kubernetes node](/docs/reference/glossary#kubernetes-node) hosts a single instance of the [autoscaler-agent](/docs/reference/glossary#autoscaler-agent), which serves as the control mechanism for Neon's autoscaling system. The agent collects metrics from the VMs on its node, makes scaling decisions, and performs the necessary checks and requests to implement those decisions.
 
-### The Kubernetes scheduler
+## The Kubernetes scheduler
 
 A Neon-modified [Kubernetes scheduler](/docs/reference/glossary#kubernetes-scheduler) coordinates with the autoscaler-agent and is the single source of truth for resource allocation. The autoscaler-agent obtains approval for all upscaling from the scheduler. The scheduler maintains a global view of all resource usage changes and approves requests for additional resources from the autoscaler-agent or standard scheduling. In this way, the scheduler assumes responsibility for preventing overcommitting of memory resources. In the rare event that a node exhausts its resources, new pods are not scheduled on the node, and the autoscaler-agent is denied permission to allocate more resources.
 
-### NeonVM
+## NeonVM
 
 Kubernetes does not natively support the creation or management of VMs. To address this, Neon uses a tool called [NeonVM](/docs/reference/glossary#neonvm). This tool is a custom resource definition and controller for VMs, handling tasks such as adding or removing CPUs and memory. Internally, NeonVM utilizes [QEMU](/docs/reference/glossary#qemu) and [KVM](/docs/reference/glossary#kvm) (where available) to achieve near-native performance.
 
 When an autoscaler-agent needs to modify a VM's resource allocation, it simply updates the corresponding NeonVM object in Kubernetes, and the VM controller then manages the rest of the process.
 
-### Live migration
+## Live migration
 
 In cases where a Kubernetes node becomes saturated, NeonVM manages the process of [live migrating](/docs/reference/glossary#live-migration) a VM, transferring the VM from one machine to another with minimal interruptions (typically around 100ms). Live migration transmits the internal state of the original VM to a new one while the former continues to operate, swiftly transitioning to the new VM after most of the data is copied. From within the VM, the only indication that a migration occurred might be a temporary performance reduction. Importantly, the VM retains its IP address, ensuring that connections are preserved and queries remain uninterrupted.
 
 The live migration process allows for the proactive reduction of node load by migrating VMs away before reaching capacity. Although it is still possible for the node to fill up in the interim, Neon's separation of storage and compute means that VMs typically use minimal disk space, resulting in fast migrations.
 
-### Memory scaling
+## Memory scaling
 
-Postgres memory consumption can escalate rapidly in specific scenarios. Fortunately, Neon's autoscaling system is able to detect memory usage increases without constantly requesting metrics from the VM. This is accomplished by running Postgres within a [cgroups](/docs/reference/glossary#cgroups), which provides notifications when memory usage crosses a specified threshold. Using cgroups in this way requires running our [vm-informant](/docs/reference/glossary#vm-informant) in the VM alongside Postgres to request more resources from the autoscaler-agent when Postgres consumes too much memory. The vm-informant also verifies that downscaling requests from an autoscaler-agent will leave sufficient memory leftover.
+Postgres memory consumption can escalate rapidly in specific scenarios. Fortunately, Neon's autoscaling system is able to detect memory usage increases without constantly requesting metrics from the VM. This is accomplished by running Postgres within a [cgroups](/docs/reference/glossary#cgroups), which provides notifications when memory usage crosses a specified threshold. Using cgroups in this way requires running our [vm-monitor](/docs/reference/glossary#vm-monitor) in the VM alongside Postgres to request more resources from the autoscaler-agent when Postgres consumes too much memory. The vm-monitor also verifies that downscaling requests from an autoscaler-agent will leave sufficient memory leftover.
 
-### Local file cache
+## Local File Cache
 
-To expedite queries, the autoscaling system incorporates a Postgres extension that places a cache in front of the storage layer. Many queries benefit from this additional memory, particularly those requiring multiple database scans (such as creating an index). The [local file cache](/docs/reference/glossary#local-file-cache) capitalizes on the additional memory allocated to the VM by dedicating a portion to the cache to itself. The cache is backed by disk and kept at a size intended to fit in the kernel page cache. Due to the storage model, writebacks are not required, resulting in near-instant evictions. The vm-informant adjusts the local file cache size when scaling occurs through the autoscaler-agent, ensuring seamless operation.
+To expedite queries, the autoscaling system incorporates a Postgres extension that places a cache in front of the storage layer. Many queries benefit from this additional memory, particularly those requiring multiple database scans (such as creating an index). The [Local File Cache (LFC)](/docs/reference/glossary#local-file-cache) capitalizes on the additional memory allocated to the VM by dedicating a portion to the cache to itself. The cache is backed by disk and kept at a size intended to fit in the kernel page cache. Due to the storage model, writebacks are not required, resulting in near-instant evictions. The vm-monitor adjusts the LFC size when scaling occurs through the autoscaler-agent, ensuring seamless operation.
 
 ## Autoscaling source code
 
 To further explore Neon's autoscaling implementation, visit Neon's [autoscaling](https://github.com/neondatabase/autoscaling) GitHub repository. While not primarily designed for external use, Neon welcomes exploration and contributions.
 
 
-# Autoscaling guide
+# Enable autoscaling
 
 ---
 title: Enable Autoscaling in Neon
-subtitle: Learn how to enable Neon's Autoscaling feature to automatically scale compute
-  resources on demand
 enableTableOfContents: true
-updatedOn: '2024-07-25T12:53:42.424Z'
+updatedOn: '2024-08-19T14:50:59.584Z'
 ---
 
-Neon's _Autoscaling_ feature dynamically adjusts the amount of compute resources allocated to a Neon compute in response to the current workload, eliminating the need for manual intervention. This guide demonstrates how to enable autoscaling in your Neon project and how to [visualize](#monitor-autoscaling) your usage.
+<InfoBlock>
+<DocsList title="What you will learn:">
+<p>Enable autoscaling for a compute</p>
+<p>Configure autoscaling defaults for your project</p>
+</DocsList>
 
-_Autoscaling_ is a paid plan feature. Users on paid plans can enable autoscaling for a new project, for an existing project, or for an individual compute. Autoscaling is supported with primary read-write computes and read replica computes.
+<DocsList title="Related topics" theme="docs">
+<a href="/docs/introduction/autoscaling">About autoscaling</a>
+<a href="/docs/guides/autoscaling-algorithm">How the algorithm works</a>
+</DocsList>
+</InfoBlock>
 
-## Enable autoscaling for a new project
-
-Enabling autoscaling when you create a project allows you to set autoscaling default settings for all computes created in your project. You can adjust autoscaling settings for individual computes afterward, but setting defaults when creating a project saves you from having to configure the settings for each compute later on.
-
-To enable autoscaling when you first create your project:
-
-1. Navigate to the [Neon Console](https://console.neon.tech).
-2. If you are creating your very first project, click **Create a project**. Otherwise, click **New Project**.
-3. Specify a name, a Postgres version, and a region.
-4. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
-   ![Autoscaling](/docs/guides/autoscaling_project_creation.png)
-
-<Admonition type="note">
-You can configure the autosuspend setting for your compute at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute is automatically suspended. This feature is also referred to as "scale-to-zero".
-</Admonition>
-
-5. Click **Create Project**. Your initial compute is created with the specified settings. All future computes that you create will use this setting.
-
-## Enable autoscaling for an existing project
-
-Configuring autoscaling for an existing project sets the project's default, which is applied to all computes created from that point forward. Existing computes are unaffected. You can adjust autoscaling default or configure the setting for individual computes later, as necessary.
-
-To configure autoscaling default settings for an existing project:
-
-1. Select a project in the Neon Console.
-1. On the Neon **Dashboard**, select **Project settings**.
-1. Select **Compute** and click **Change**.
-1. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
-   ![Autoscaling](/docs/guides/autoscaling_existing_project.png)
-
-<Admonition type="note">
-You can configure the autosuspend setting for your compute at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute is automatically suspended. This feature is also referred to as "scale-to-zero".
-</Admonition>
-
-1. Click **Save**.
+This guide demonstrates how to enable autoscaling in your Neon project and how to [visualize](#monitor-autoscaling) your usage.
 
 ## Enable autoscaling for a compute
 
-Users on paid plans can edit an individual compute to alter the compute configuration, which includes autoscaling.
+You can edit an individual compute to alter the compute configuration, which includes autoscaling.
 
 To edit a compute:
 
 1. In the Neon Console, select **Branches**.
 1. Select a branch.
-1. Click on the compute you want to edit.
+1. On the **Compute** tab, identify the compute you want to configure and click **Edit**.
    ![Edit compute menu](/docs/guides/autoscaling_edit.png)
-1. Under **Compute size**, use the slider to specify a minimum and maximum compute size.
-   ![Autoscaling edit settings](/docs/guides/autoscaling_edit_settings.png)
+1. On the **Edit compute** settings drawer, toggle **Enable autoscaling** to enable it and use the slider to specify a minimum and maximum compute size.
+   ![Autoscaling edit settings](/docs/introduction/autoscaling_config.png)
 
-   Neon scales the compute size up and down within the specified range to meet workload demand. Autoscaling currently supports a range of 1/4 (.25) to 10 vCPUs. One vCPU has 4 GB of RAM, 2 vCPUs have 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPUs.
+   Neon scales the compute size up and down within the specified range to meet workload demand. Autoscaling currently supports a range of 1/4 (.25) to 10 vCPUs. One vCPU has 4 GB of RAM, 2 vCPUs have 8 GB of RAM, and so on. The amount of RAM in GB is always 4 times the number of vCPUs. For an overview of available compute sizes, see [Compute size and autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration).
 
    <Admonition type="note">
-   You can configure the autosuspend setting for your compute at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute is automatically suspended. This feature is also referred to as "scale-to-zero".
+   You can configure the autosuspend setting for your compute at the same time. The **Suspend compute after a period of inactivity** setting defines the period of inactivity after which a compute scales to zero. For more, see [Autosuspend](/docs/introduction/auto-suspend).
    </Admonition>
 
 1. Click **Save**.
+
+## Configure autoscaling defaults for your project
+
+You can configure autoscaling configuration defaults for your project so that **newly created computes** (including those created when you create a new branch or add read replica) are created with the same autoscaling configuration. This will save your from having to configure autoscaling each time, assuming you want the same settings for all of your computes.
+
+<Admonition type="note">
+Changing your autoscaling default settings does not alter the autoscaling configuration for existing computes.
+</Admonition>
+
+To configure autoscaling defaults:
+
+1. Navigate to your Project Dashboard and select **Settings** from the sidebar.
+2. Select **Compute**.
+3. Select **Change** to open the **Change default compute settings** modal.
+   ![Edit autoscaling defaults](/docs/guides/autoscaling_defaults.png)
+4. Use the slider to specify a minimum and maximum compute size and **Save** your changes.
+
+The next time you create a compute, these settings will be applied to it.
 
 ## Monitor autoscaling
 
@@ -8853,11 +11886,97 @@ Ideally, for smaller datasets, you want to keep as much of your dataset in memor
 
 If your autoscaling graphs show regular spikes that hit your maximum setting, consider increasing your maximum. However, because these spikes plateau at the maximum setting, it can be difficult to determine your actual demand.
 
-Another approach is to set a higher threshold than you need and monitor usage spikes to get a sense of where your typical maximum demand reaches; you can then throttle the maximum setting down closer to anticipated/historical demand. Either way, with autoscaling you only pay for what you use; a higher setting does not translate to higher costs unless the demand is there to increase usage.
+Another approach is to set a higher threshold than you need and monitor usage spikes to get a sense of where your typical maximum demand reaches; you can then throttle the maximum setting down closer to anticipated/historical demand. Either way, with autoscaling you only use what's necessary; a higher setting does not translate to increased usage unless there's demand for it.
 
 ### The neon_utils extension
 
 Another tool for understanding usage, the `neon_utils` extension provides a `num_cpus()` function that helps you monitor how the _Autoscaling_ feature allocates compute resources in response to workload. For more information, see [The neon_utils extension](/docs/extensions/neon-utils).
+
+
+# How the algorithm works
+
+---
+title: Understanding Neon’s autoscaling algorithm
+subtitle: How Neon’s algorithm scales resources to match your workload
+enableTableOfContents: true
+updatedOn: '2024-09-08T12:44:00.898Z'
+---
+
+<InfoBlock>
+<DocsList title="What you will learn:">
+<p>Key metrics that drive autoscaling decisions</p>
+<p>How often the algorithm checks these metrics</p>
+</DocsList>
+
+<DocsList title="Related topics" theme="docs">
+<a href="/docs/introduction/autoscaling">Introduction to autoscaling</a>
+<a href="/docs/guides/autoscaling-guide">Enabling autoscaling</a>
+</DocsList>
+</InfoBlock>
+
+The key concept behind autoscaling is that compute resizing happens _automatically_ — once you set up your minimum and maximum [compute sizes](/docs/manage/endpoints#how-to-size-your-compute), there’s no action required on your part other than [monitoring](/docs/introduction/monitoring-page) your usage metrics to see if adjustments are needed.
+
+That said, it can be helpful to understand exactly when and under what circumstances the algorithm optimizes your database on two key fronts — **performance** and **efficiency**. In a nutshell, the algorithm automatically **scales up** your compute to ensure optimal performance and **scales down** to maximize efficiency.
+
+![autoscaling algorithm](/docs/guides/autoscaling_algorithm.png)
+
+## How the algorithm works
+
+Neon's autoscaling algorithm uses two components, the [vm-monitor](/docs/reference/glossary#vm-monitor) and the [autoscaler-agent](/docs/reference/glossary#autoscaler-agent), to continuously monitor three key metrics: your average CPU load, your memory usage, and the activity of your [Local File Cache (LFC)](/docs/reference/glossary#local-file-cache). These metrics determine how your compute resources — the virtual machine that powers your database — should be scaled to maintain performance and efficiency.
+
+### The Formula
+
+In essence, the algorithm is built on **goals**. We set a goal (an ideal compute size) for each of the three key metrics:
+
+- **`cpuGoalCU`** &#8212; Keep the 1-minute average CPU load at or below 90% of the available CPU capacity.
+- **`memGoalCU`** &#8212; Keep memory usage at or below 75% of the total allocated RAM.
+- **`lfcGoalCU`** &#8212; Fit your frequently accessed working set within 75% of the compute's RAM allocated to the LFC.
+
+The formula can be expressed as:
+
+```
+goalCU := max(cpuGoalCU, memGoalCU, lfcGoalCU)
+```
+
+The algorithm selects the highest value from these goals as the overall `goalCU`, ensuring your database has enough resources to handle the most demanding metric — while staying within the minimum and maximum limits you’ve set.
+
+### The Metrics
+
+Let's go into a bit more detail about each metric.
+
+#### CPU load average
+
+The CPU load average is a measure of how much work your CPU is handling. Every 5 seconds, the autoscaler-agent checks the 1-minute load average from the virtual machine (VM) running your database. This load average reflects the average number of processes waiting to be executed by the vCPU over the previous minute.
+
+The goal is to keep the CPU load at or below 90% of the available vCPU capacity. If the load exceeds this threshold, the algorithm increases the compute allocated to your database to handle the additional demand.
+
+In simpler terms, if your database is working too hard, the algorithm adds more CPU power to keep things running smoothly.
+
+#### Memory Usage
+
+Memory usage refers to the amount of RAM your database and its related processes are using. Every 5 seconds, the autoscaler-agent checks for the latest memory metrics from inside the VM, and every 100ms the vm-monitor checks memory usage from Postgres.
+
+The algorithm aims to keep overall memory usage at or below 75% of the total allocated memory. If your database starts using more memory than this threshold, the algorithm increases compute size to allocate more memory, making sure your database has enough RAM to perform well without over-provisioning.
+
+#### Local File Cache (LFC) working set size
+
+An important part of the scaling algorithm is estimating your current working set size — a subset of your most frequently accessed data — and scaling your compute to ensure it fits within the LFC.
+
+Every 20 seconds, the autoscaler-agent checks the working set size across a variety of time windows, ranging from 1 to 60 minutes. The goal is to fit your working set within 75% of the compute’s RAM allocated to the LFC. If your working set exceeds this threshold, the algorithm increases compute size to expand the LFC, keeping frequently accessed data in memory for faster access. To learn more about how we do this, see [Dynamically estimating and scaling Postgres’ working set size](https://neon.tech/blog/dynamically-estimating-and-scaling-postgres-working-set-size).
+
+<Admonition type="note">
+If your dataset is small enough, you can improve performance by keeping the entire dataset in memory. Check your database size on the Monitoring [dashboard](/docs/introduction/monitoring-page#database-size) and adjust your minimum compute size accordingly. For example, a 6.4 GiB database can comfortably fit within a compute size of 2 vCPU with 8 GB of RAM (where the LFC can use up to 80% of the available RAM).
+</Admonition>
+
+## How often the metrics are polled
+
+To give you a sense of the algorithm's responsiveness, here's a summary of how often the metrics are polled:
+
+- **Every 5 seconds** → the autoscaler-agent fetches load metrics from the VM, including CPU usage and overall memory usage.
+- **Every 20 seconds** → the autoscaler-agent checks the Local File Cache (LFC) metrics, including the working set size across various time windows: 1 minute, 2 minutes, up to 60 minutes.
+- **Every 100 milliseconds** → the vm-monitor checks memory usage specifically within Postgres.
+
+This frequent polling allows the algorithm to respond swiftly to changes in workload, ensuring that your compute resources are always appropriately scaled to meet current demands.
 
 
 # Autosuspend
@@ -8889,7 +12008,7 @@ title: Configuring Autosuspend for Neon computes
 subtitle: Learn how to configure Neon's Autosuspend feature to control when your compute
   scales to zero
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.947Z'
+updatedOn: '2024-09-23T18:40:25.913Z'
 ---
 
 Neon's [Autosuspend](/docs/introduction/auto-suspend) feature controls when a Neon compute transitions to an `Idle` state (scales to zero) due to inactivity. For example, if your autosuspend setting is 5 minutes, your compute will "scale to zero" after it's been inactive for 5 minutes. Neon's paid plans allow you to configure this time period to keep your compute active for longer, suspend it more quickly, or disable autosuspension entirely, depending on your requirements.
@@ -8904,12 +12023,13 @@ This guide demonstrates how to configure the autosuspend setting for a new proje
 
 The autosuspend limits differ by [Neon plan](/docs/introduction/plans). The limits for each plan are outlined below. The initial default setting for all plans is 5 minutes.
 
-| Plan       | Autosuspend delay   | Can be disabled? |
-| :--------- | :------------------ | :--------------- |
-| Free Plan  | 5 minutes           |                  |
-| Launch     | 5 minutes to 7 days | &check;          |
-| Scale      | 1 minute to 7 days  | &check;          |
-| Enterprise | 0 up to 7 days      | &check;          |
+| Plan       | Autosuspend delay      | Can be disabled? |
+| :--------- | :--------------------- | :--------------- |
+| Free Plan  | 5 minutes              |                  |
+| Launch     | 5 minutes to 7 days    | &check;          |
+| Scale      | 1 minute to 7 days     | &check;          |
+| Business   | 1 minute to 7 days     | &check;          |
+| Enterprise | 0 seconds up to 7 days | &check;          |
 
 ### Configure the autosuspend setting for a new project
 
@@ -8977,6 +12097,10 @@ The Neon API includes [Start endpoint](https://api-docs.neon.tech/reference/star
 </Admonition>
 
 You can try any of these methods and watch the status of your compute as it transitions from an **Idle** to an **Active** state.
+
+## Considerations
+
+When a compute autosuspends and later restarts, the [session context](/docs/reference/compatibility#session-context) resets. This includes in-memory statistics, temporary tables, prepared statements, and autovacuum thresholds, among other session-specific data. If your workflow requires persistent session data, consider disabling autosuspend on a paid plan to keep your compute active continuously. On the Free plan, autosuspend is always enabled and automatically suspends after 5 minutes of inactivity.
 
 
 # Branching
@@ -9173,14 +12297,14 @@ Refer to the following guides for instructions.
 title: Branch reset and restore
 subtitle: Learn about the different branch reset and restore features in Neon
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.954Z'
+updatedOn: '2024-09-06T12:09:44.681Z'
 ---
 
 Neon retains a history of changes for all branches. This shared history provides the basis for a variety of branch restore and reset operations: resetting a branch to its parent, restoring a branch to its history, creating a new branch from a selected point-in-time, and Time Travel queries against the shared history. You can use these features to reset a development branch to main, to recover lost data, as a database backup strategy, or to view the past state of your database.
 
 ## History retention
 
-The history retention limit is 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users.
+By default, Neon's history retention window is set to **1 day** across all plans to help you avoid unexpected storage costs. Increasing your retention window gives you a better range for your reset and restore operations, but it can also increase storage costs. The history retention limit is up to 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch), 14 days for [Scale](/docs/introduction/plans#scale), and 30 days for [Business](/docs/introduction/plans#business) plan users.
 
 You can configure the **History retention** setting in the Neon Console, under **Project settings** > **Storage**. For further instructions, see [Configure history retention](/docs/manage/projects#configure-history-retention).
 ![History retention configuration](/docs/relnotes/history_retention.png)
@@ -9210,7 +12334,7 @@ Find out more about the different branch reset and restore features that Neon pr
 title: Reset from parent
 subtitle: Learn how to reset a branch from its parent
 enableTableOfContents: true
-updatedOn: '2024-06-30T14:35:12.888Z'
+updatedOn: '2024-09-13T11:45:46.033Z'
 ---
 
 Neon's **Reset from parent** feature lets you instantly reset all databases on a branch to the latest schema and data from its parent branch, helping you recover from issues, start on new feature development, or keep the different branches in your environment in sync.
@@ -9298,11 +12422,11 @@ For details, see [Branch Restore using the API](/docs/guides/branch-restore#how-
 
 </Tabs>
 
-## Integrating branch resets in CI/CD workflos
+## Integrating branch resets in CI/CD workflows
 
 You can include resetting database branches as part of your CI/CD workflow. For example, when **starting a new feature** or **refreshing staging**.
 
-### For New features
+### For new features
 
 Initiate feature development by resetting your development branch to align with staging or production, ensuring a fresh starting point. Use the command:
 
@@ -9333,7 +12457,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/guides/branching-pitr
   - /docs/guides/branch-refresh
-updatedOn: '2024-07-25T12:53:42.425Z'
+updatedOn: '2024-08-26T16:15:31.888Z'
 ---
 
 With Neon's branch restore capability, you can easily restore a branch to an earlier state in its own or another branch's history. You can use Time Travel Assist to connect to a specific point in your history retention window, where you can run read-only queries to pinpoint the exact moment you need to restore to. You can also use Schema Diff to get a side-by-side, Github-style visual comparison of your selected branches before restoring.
@@ -9364,6 +12488,14 @@ In case you need to rollback a restore, Neon preserves the branch's final state 
 ```
 
 You can use this backup to rollback the restore operation if necessary. The backup branches are listed on the **Branches** page in the Neon Console among your other branches.
+
+<Admonition type="note" title="Can you delete a backup branch?">
+Unfortunately, not at this time. A backup branch is the parent of a restored branch, and you cannot delete a parent branch without first removing its child branches. Support for deleting backup branches is expected in a future release.
+
+In the meantime, if you're certain you no longer need a backup branch, you can free up its storage space by connecting to the branch and dropping its databases or tables. **Be sure to connect to the correct branch when doing this**. You can connect to a backup branch like any other branch via the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or an SQL client like [psql](/docs/connect/query-with-psql-editor).
+
+If backup branches clutter your **Branches** page, consider renaming them. For example, you can prefix their names with a `z` to move them to the bottom of the list. See [Rename a branch](/docs/manage/branches#rename-a-branch) for details.
+</Admonition>
 
 This backup becomes the parent of your original branch, which makes rolling back the restore operation simple: [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent).
 
@@ -9574,7 +12706,7 @@ There are minimal impacts to billing from the branch restore and Time Travel Ass
 
 ## Limitations
 
-- You cannot delete a backup branch without first removing the child branch.
+- You cannot delete a backup branch without first removing the child branch. See the note [above](#automatic-backups).
 - Once you restore a branch, [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent) restores from the restore backup branch, not the original parent.
 
   For example, let's say you have a `main` branch with a child development branch `dev/alex`. You are working on `dev/alex` and decide to restore to an earlier point in time to fix something during development. At this point, `dev/alex`'s parent switches from `main` to the backup `dev/alex_old_timestamp`. A day later, you want to refresh `dev/alex` with the latest data from `main`. You can't use **Reset from parent**, since the backup is now the parent. Instead, use **Branch Restore** and select the original parent `main` as the source.
@@ -10042,7 +13174,7 @@ For details on how to use this endpoint to restore a branch to its own or anothe
 title: Automate branching with GitHub Actions
 subtitle: Create and delete branches with GitHub Actions
 enableTableOfContents: true
-updatedOn: '2024-07-25T12:53:42.425Z'
+updatedOn: '2024-09-13T11:02:49.006Z'
 ---
 
 Neon provides the following GitHub Actions for working with Neon branches, which you can add to your CI workflows:
@@ -10050,6 +13182,10 @@ Neon provides the following GitHub Actions for working with Neon branches, which
 - [Create branch action](#create-branch-action)
 - [Delete branch action](#delete-branch-action)
 - [Reset from parent action](#reset-from-parent-action)
+
+<Admonition type="tip">
+Neon supports a GitHub integration that connects your Neon project to a GitHub repository. The integration automatically configures a `NEON_API_KEY` secret and `PROJECT_ID` variable in your GitHub repository and provides a sample GitHub Actions workflow that utilizes Neon's [Create branch](#create-branch-action) and [Delete branch](#delete-branch-action) actions. See [Neon GitHub integration](/docs/guides/neon-github-integration) for more.
+</Admonition>
 
 ## Create branch action
 
@@ -10077,20 +13213,21 @@ name: Create Neon Branch with GitHub Actions Demo
 run-name: Create a Neon Branch 🚀
 jobs:
   Create-Neon-Branch:
-    uses: neondatabase/create-branch-action@v5
-    with:
-      project_id: rapid-haze-373089
-      # optional (defaults to your project's default branch)
-      parent: dev
-      # optional (defaults to neondb)
-      database: my-database
-      branch_name: from_action_reusable
-      username: db_user_for_url
-      api_key: ${{ secrets.NEON_API_KEY }}
-    id: create-branch
-  - run: echo db_url ${{ steps.create-branch.outputs.db_url }}
-  - run: echo host ${{ steps.create-branch.outputs.host }}
-  - run: echo branch_id ${{ steps.create-branch.outputs.branch_id }}
+  steps:
+    - uses: neondatabase/create-branch-action@v5
+      id: create-branch
+      with:
+        project_id: rapid-haze-373089
+        # optional (defaults to your project's default branch)
+        parent: dev
+        # optional (defaults to neondb)
+        database: my-database
+        branch_name: from_action_reusable
+        username: db_user_for_url
+        api_key: ${{ secrets.NEON_API_KEY }}
+    - run: echo db_url ${{ steps.create-branch.outputs.db_url }}
+    - run: echo host ${{ steps.create-branch.outputs.host }}
+    - run: echo branch_id ${{ steps.create-branch.outputs.branch_id }}
 ```
 
 ### Input variables
@@ -10116,10 +13253,10 @@ inputs:
     description: 'Use prisma or not'
     default: 'false'
   parent:
-    description: 'The parent branch name or id or LSN or timestamp. By default the default branch is used'
+    description: 'The parent branch name or id or LSN or timestamp. By default the primary branch is used'
   suspend_timeout:
     description: >
-      Duration of inactivity in seconds after which the compute is
+      Duration of inactivity in seconds after which the compute endpoint is
       For more information, see [Auto-suspend configuration](https://neon.tech/docs/manage/endpoints#auto-suspend-configuration).
     default: '0'
   ssl:
@@ -10179,11 +13316,12 @@ run-name: Delete a Neon Branch 🚀
 on: [push]
 jobs:
   delete-neon-branch:
-    uses: neondatabase/delete-branch-action@v3
-    with:
-      project_id: rapid-haze-373089
-      branch: br-long-forest-224191
-      api_key: { { secrets.NEON_API_KEY } }
+    steps:
+      uses: neondatabase/delete-branch-action@v3
+      with:
+        project_id: rapid-haze-373089
+        branch: br-long-forest-224191
+        api_key: ${{ secrets.NEON_API_KEY }}
 ```
 
 ### Input variables
@@ -10211,8 +13349,9 @@ This Action has no outputs.
 
 This GitHub Action resets a child branch with the latest data from its parent branch.
 
-> **Info**
-> The source code for this action is available on [GitHub](https://github.com/neondatabase/reset-branch-action).
+<Admonition type="info">
+The source code for this action is available on [GitHub](https://github.com/neondatabase/reset-branch-action).
+</Admonition>
 
 ### Prerequisites
 
@@ -10232,14 +13371,15 @@ name: Reset Neon Branch with GitHub Actions Demo
 run-name: Reset a Neon Branch 🚀
 jobs:
   Reset-Neon-Branch:
-    uses: neondatabase/reset-branch-action@v1
-    with:
-      project_id: rapid-haze-373089
-      parent: true
-      branch: child_branch
-      api_key: {{ secrets.NEON_API_KEY }}
-    id: reset-branch
-  - run: echo branch_id ${{ steps.reset-branch.outputs.branch_id }}
+    steps:
+      - uses: neondatabase/reset-branch-action@v1
+        id: reset-branch
+        with:
+          project_id: rapid-haze-373089
+          parent: true
+          branch: child_branch
+          api_key: ${{ secrets.NEON_API_KEY }}
+      - run: echo branch_id ${{ steps.reset-branch.outputs.branch_id }}
 ```
 
 ### Input variables
@@ -10258,7 +13398,34 @@ inputs:
   parent:
     description: 'If specified, the branch will be reset to the parent branch'
     required: false
+  cs_role_name:
+    description: 'The output connection string db role name'
+    required: false
+  cs_database:
+    description: 'The output connection string database name'
+    required: false
+  cs_prisma:
+    description: 'Use prisma in output connection string or not'
+    required: false
+    default: 'false'
+  cs_ssl:
+    description: >
+      Add sslmode to the connection string. Supported values are: "require", "verify-ca", "verify-full", "omit".
+    required: false
+    default: 'require'
 ```
+
+- `project_id`: The ID of your Neon project. Find this value in the Neon Console on the Settings page.
+- `parent`: If specified, the branch will be reset to the latest state of the parent branch.
+- `branch`: The name or id of the branch to reset.
+- `api_key`: An API key created in your Neon account.
+
+The action outputs a connection string. You can modify the connection string with these optional connection string (`cs_*`) inputs:
+
+- `cs_role_name`: The output connection string database role name.
+- `cs_database`: The output connection string database name.
+- `cs_prisma`: Use Prisma in output connection string or not. The default is 'false'.
+- `cs_ssl`: Add `sslmode` to the connection string. Supported values are: `"require"`, `"verify-ca"`, `"verify-full"`, `"omit"`. The default is `"require"`.
 
 ### Outputs
 
@@ -10267,13 +13434,37 @@ outputs:
   branch_id:
     description: 'Reset branch id'
     value: ${{ steps.reset-branch.outputs.branch_id }}
+  db_url:
+    description: 'DATABASE_URL of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url }}
+  db_url_with_pooler:
+    description: 'DATABASE_URL with pooler of the branch after the reset'
+    value: ${{ steps.reset-branch.outputs.db_url_with_pooler }}
+  host:
+    description: 'Branch host after reset'
+    value: ${{ steps.reset-branch.outputs.host }}
+  host_with_pooler:
+    description: 'Branch host with pooling enabled after reset'
+    value: ${{ steps.reset-branch.outputs.host_with_pooler }}
+  password:
+    description: 'Password for connecting to the branch database after reset'
+    value: ${{ steps.reset-branch.outputs.password }}
 ```
+
+- `branch_id`: The ID of the newly reset branch.
+- `db_url`: Database connection string for the branch after the reset.
+- `db_url_with_pooler`: The pooled database connection string for the branch after the reset.
+- `host`: The branch host after the reset.
+- `host_with_pooler`: The branch host with pooling after the reset.
+- `password`: The password for connecting to the branch database after the reset.
 
 ## Example applications
 
 The following example applications use GitHub Actions workflows to create and delete branches in Neon.
 
 <DetailIconCards>
+
+<a href="https://github.com/neondatabase/preview-branches-with-cloudflare" description="Demonstrates using GitHub Actions workflows to create a Neon branch for every Cloudflare Pages preview deployment" icon="github">Preview branches with Cloudflare Pages</a>
 
 <a href="https://github.com/neondatabase/preview-branches-with-vercel" description="Demonstrates using GitHub Actions workflows to create a Neon branch for every Vercel preview deployment" icon="github">Preview branches with Vercel</a>
 
@@ -10742,19 +13933,98 @@ You should now have a new default branch, and because you moved the compute from
 # Logical replication
 
 ---
-title: Logical replication
-subtitle: Stream data from Neon for Change Data Capture (CDC) and real-time analytics
+title: Get started with logical replication
+subtitle: Learn how to replicate data to and from your Neon Postgres database
 enableTableOfContents: true
-updatedOn: '2024-01-05T19:45:09.629Z'
+isDraft: false
+redirectFrom:
+  - /docs/introduction/logical-replication
+updatedOn: '2024-09-08T11:01:35.764Z'
 ---
 
-Neon's logical replication feature, available to all Neon users, allows you to stream data from your Neon database to external destinations, enabling Change Data Capture (CDC) and real-time analytics. These destinations might include data warehouses, analytical database services, real-time stream processing systems, messaging and event-streaming platforms, and external Postgres databases, among others.
+<LRBeta/>
 
-![Neon logical replication subscribers image](/docs/guides/logical_replication_subscribers.png)
+Neon's logical replication feature, available to all Neon users, allows you to replicate data to and from your Neon Postgres database:
 
-Logical replication in Neon works in the same way as logical replication on a standard Postgres installation, using a publish and subscribe model to replicate data from the source database to the destination.
+- Stream data from your Neon database to external destinations, enabling Change Data Capture (CDC) and real-time analytics. External sources might include data warehouses, analytical database services, real-time stream processing systems, messaging and event-streaming platforms, and external Postgres databases, among others. See [Replicate data from Neon](#replicate-data-from-neon).
+- Perform live migrations to Neon from external sources such as AWS RDS, Aurora, and Google Cloud SQL &#8212; or any platform that runs Postgres. See [Replicate data to Neon](#replicate-data-to-neon).
+- Replicate data from one Neon project to another for Neon project, account, Postgres version, or region migration. See [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
 
-To learn more, refer to our [Logical replication guide](/docs/guides/logical-replication-guide).
+![Neon logical replication subscribers image](/docs/guides/logical_replication_publishers_subscribers.jpg)
+
+Logical replication in Neon works like it does on any standard Postgres installation. It uses a publisher-subscriber model to replicate data from the source database to the destination database. Neon can act as a publisher or subscriber.
+
+Replication starts by copying a snapshot of the data from the publisher to the subscriber. Once this is done, subsequent changes are sent to the subscriber as they occur in real-time.
+
+To learn more about Postgres logical replication, see the following topics.
+
+## Learn about logical replication
+
+<DetailIconCards>
+
+<a href="/docs/guides/logical-replication-concepts" description="Learn about Postgres logical replication concepts" icon="scale-up">Logical replication concepts</a>
+
+<a href="/docs/guides/logical-replication-manage" description="Commands for managing your logical replication configuration" icon="cli">Logical replication commands</a>
+
+<a href="/docs/guides/logical-replication-neon" description="Information about logical replication specific to Neon" icon="screen">Logical replication in Neon</a>
+
+<a href="/docs/guides/logical-replication-schema-changes" description="Learn about managing schema changes in a logical replication setup" icon="screen">Managing schema changes</a>
+
+</DetailIconCards>
+
+To get started, jump into one of our step-by-step logical replication guides.
+
+## Replicate data from Neon
+
+<TechnologyNavigation open>
+
+<a href="/docs/guides/logical-replication-airbyte" title="Airbyte" description="Replicate data from Neon with Airbyte" icon="airbyte"></a>
+
+<a href="/docs/guides/bemi" title="Bemi" description="Create an automatic audit trail with Bemi" icon="bemi"></a>
+
+<a href="https://docs.peerdb.io/mirror/cdc-neon-clickhouse" title="ClickHouse" description="Change Data Capture from Neon to ClickHouse with PeerDB (PeerDB docs)" icon="clickhouse"></a>
+
+<a href="/docs/guides/logical-replication-clickhouse" title="DoubleCloud" description="Replicate data from Neon to ClickHouse with DoubleCloud" icon="doublecloud"></a>
+
+<a href="/docs/guides/logical-replication-kafka-confluent" title="Confluent (Kafka)" description="Replicate data from Neon with Confluent (Kafka)" icon="confluent"></a>
+
+<a href="/docs/guides/logical-replication-decodable" title="Decodable" description="Replicate data from Neon with Decodable" icon="decodable"></a>
+
+<a href="/docs/guides/logical-replication-estuary-flow" title="Estuary Flow" description="Replicate data from Neon with Estuary Flow" icon="estuary"></a>
+
+<a href="/docs/guides/logical-replication-fivetran" title="Fivetran" description="Replicate data from Neon with Fivetran" icon="fivetran"></a>
+
+<a href="/docs/guides/logical-replication-materialize" title="Materialize" description="Replicate data from Neon to Materialize" icon="materialize"></a>
+
+<a href="/docs/guides/logical-replication-neon-to-neon" title="Neon to Neon" description="Replicate data from Neon to Neon" icon="neon"></a>
+
+<a href="/docs/guides/logical-replication-postgres" title="Neon to PostgreSQL" description="Replicate data from Neon to PostgreSQL" icon="postgresql"></a>
+
+<a href="/docs/guides/logical-replication-prisma-pulse" title="Prisma Pulse" description="Stream database changes in real-time with Prisma Pulse" icon="prisma"></a>
+
+<a href="/docs/guides/sequin" title="Sequin" description="Stream data from platforms like Stripe, Linear, and GitHub to Neon" icon="sequin"></a>
+
+<a href="/docs/guides/logical-replication-airbyte-snowflake" title="Snowflake" description="Replicate data from Neon to Snowflake with Airbyte" icon="snowflake"></a>
+
+</TechnologyNavigation>
+
+## Replicate data to Neon
+
+<TechnologyNavigation open>
+
+<a href="/docs/guides/logical-replication-alloydb" title="AlloyDB" description="Replicate data from AlloyDB to Neon" icon="alloydb"></a>
+
+<a href="/docs/guides/logical-replication-aurora-to-neon" title="Aurora" description="Replicate data from Aurora to Neon" icon="aws-rds"></a>
+
+<a href="/docs/guides/logical-replication-cloud-sql" title="Cloud SQL" description="Replicate data from Cloud SQL to Neon" icon="google-cloud-sql"></a>
+
+<a href="/docs/guides/logical-replication-neon-to-neon" title="Neon to Neon" description="Replicate data from Neon to Neon" icon="neon"></a>
+
+<a href="/docs/guides/logical-replication-postgres-to-neon" title="PostgreSQL to Neon" description="Replicate data from PostgreSQL to Neon" icon="postgresql"></a>
+
+<a href="/docs/guides/logical-replication-rds-to-neon" title="RDS" description="Replicate data from AWS RDS PostgreSQL to Neon" icon="aws-rds"></a>
+
+</TechnologyNavigation>
 
 
 # Concepts
@@ -10764,8 +14034,10 @@ title: Postgres logical replication concepts
 subtitle: Learn about PostgreSQL logical replication concepts
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-07T21:36:52.656Z'
+updatedOn: '2024-08-22T02:18:02.648Z'
 ---
+
+<LRBeta/>
 
 Logical Replication is a method of replicating data between databases or between your database and other data services or platforms. It differs from physical replication in that it replicates transactional changes rather than copying the entire database byte-for-byte. This approach allows for selective replication, where users can choose specific tables or rows for replication. It works by capturing DML operations in the source database and applying these changes to the target, which could be another Postgres database or data platform.
 
@@ -10783,7 +14055,9 @@ The Postgres logical replication architecture is very simple. It uses a _publish
 
 ## Enabling logical replication
 
-In Neon, you can enable logical replication from the Neon Console:
+In Neon, you can enable logical replication from the Neon Console. This only necessary if your Neon Postgres instance is acting as a publisher, replicating data to another Postgres instance, data service, or platform.
+
+To enable logical replication:
 
 1. Select your project in the Neon Console.
 2. On the Neon **Dashboard**, select **Project settings**.
@@ -10805,11 +14079,11 @@ Enabling logical replication turns on detailed logging, which is required to sup
 
 The Postgres documentation describes a [publication](https://www.postgresql.org/docs/current/logical-replication-publication.html) as a group of tables whose data changes are intended to be replicated through logical replication. It also describes a publication as a set of changes generated from a table or a group of tables. It's indeed both of these things.
 
-A particular table can be included in multiple publications if necessary. Currently, publications can only include tables within a single schema.
+A particular table can be included in multiple publications if necessary. Currently, publications can only include tables within a single schema. This is a Postgres limitation.
 
 Publications can specify the types of changes they replicate, which can include `INSERT`, `UPDATE`, `DELETE`, and `TRUNCATE` operations. By default, publications replicate all of these operation types.
 
-You can create a publication for one or more on the "publisher" database using [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html) syntax. For example, this command creates a publication named `users_publication` that tracks changes made to a `users` table.
+You can create a publication for one or more tables on the "publisher" database using [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html) syntax. For example, this command creates a publication named `users_publication` that tracks changes made to a `users` table.
 
 ```sql
 CREATE PUBLICATION users_publication FOR TABLE users;
@@ -10817,7 +14091,7 @@ CREATE PUBLICATION users_publication FOR TABLE users;
 
 ## Subscriptions
 
-A subscription represents the downstream side of logical replication. It establishes a connection to the publisher and identifies the publication it intends to subscribe to.
+A subscription represents the downstream side of logical replication. Data is replicated _to_ a subscriber. A subscription- establishes a connection to the publisher and identifies the publication it intends to subscribe to.
 
 A single subscriber can maintain multiple subscriptions, including multiple subscriptions to the same publisher.
 
@@ -10833,7 +14107,7 @@ A subscription requires a unique name, a database connection string, the name an
 
 ## How does it work under the hood?
 
-While the publisher and subscriber model forms the surface of PostgreSQL logical replication, the underlying mechanism is driven by a few key components, described below.
+While the publisher and subscriber model forms the surface of Postgres logical replication, the underlying mechanism is driven by a few key components, described below.
 
 ### Write-Ahead Log (WAL)
 
@@ -10865,7 +14139,7 @@ To prevent storage bloat, **Neon automatically removes _inactive_ replication sl
 
 ### Decoder plugins
 
-The Postgres replication architecture uses decoder plugins to decode WAL entries into a logical replication stream, making the data understandable for the subscriber. The default decoder plugin for PostgreSQL logical replication is `pgoutput`, and it's included in Postgres by default. You don't need to worry about installing it.
+The Postgres replication architecture uses decoder plugins to decode WAL entries into a logical replication stream, making the data understandable for the subscriber. The default decoder plugin for PostgreSQL logical replication is `pgoutput`, and it's included in Postgres by default. You don't need to install it.
 
 Neon, supports an alternative decoder plugin called `wal2json`. This decoder plugin differs from `pgoutput` in that it converts WAL data into `JSON` format, which is useful for integrating Postgres with systems and applications that work with `JSON` data.
 
@@ -10904,23 +14178,19 @@ On the subscriber side, WAL receivers receive the replication stream (the decode
 <NeedHelp/>
 
 
-# Manage
+# Commands
 
 ---
-title: Manage logical replication in Neon
-subtitle: Learn how to manage logical replication in Neon
+title: Logical replication commands
+subtitle: Commands for managing your logical replication configuration
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-07T21:36:52.658Z'
+updatedOn: '2024-09-12T08:11:32.640Z'
 ---
 
-This topic provides commands for managing publications, subscriptions, and replication slots. It also includes information about logical replication specific to Neon, including [known limitations](#known-limitations).
+This topic provides commands for managing publications, subscriptions, and replication slots.
 
 For step-by-step setup instructions, refer to our [logical replication guides](/docs/guides/logical-replication-guide).
-
-<Admonition type="note">
-Logical replication in Neon is currently in Beta. We welcome your feedback to help improve this feature. You can provide feedback via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or by reaching out to us on [Discord](https://t.co/kORvEuCUpJ).
-</Admonition>
 
 ## Publications
 
@@ -11063,7 +14333,7 @@ DROP SUBSCRIPTION my_subscription;
 Replication slots are created on the publisher database to track replication progress, ensuring that no data in the WAL is purged before the subscriber has successfully replicated it. This mechanism serves to maintain data consistency and prevent data loss in cases of network interruption or subscriber downtime.
 
 <Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](#unused-replication-slots) to learn more.
+To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
 </Admonition>
 
 ### Create a replication slot
@@ -11118,174 +14388,6 @@ SELECT * FROM pg_replication_slots;
 
 It's important to keep an eye on replication lag, which indicates how far behind the subscriber is from the publisher. A significant replication lag could mean that the subscriber isn't receiving updates in a timely manner, which could lead to data inconsistencies.
 
-## Neon specifics
-
-This section outlines information about logical replication specific to Neon, including known limitations.
-
-### Enabling logical replication in Neon
-
-<Admonition type="important">
-Once you enable logical replication in Neon, the setting cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning that active connections will be dropped and have to reconnect.
-</Admonition>
-
-In Neon, logical replication is enabled from the console, by following these steps:
-
-1. Select your project in the Neon Console.
-2. On the Neon **Dashboard**, select **Settings**.
-3. Select **Logical Replication**.
-4. Click **Enable** to enable logical replication.
-
-You can verify that logical replication is enabled by running the following query:
-
-```sql
-SHOW wal_level;
-wal_level
------------
-logical
-```
-
-### Logical replication and autosuspend
-
-By default, Neon's [Autosuspend](/docs/introduction/auto-suspend) feature suspends a compute after 300 seconds (5 minutes) of inactivity. In a logical replication setup, Neon does not autosuspend a compute that has an active connection from a logical replication subscriber. In other words, a compute with an active subscriber remains active at all times. Neon determines if there are active connections from a logical replication subscriber by checking for `walsender` processes on the Neon Postgres instance using the following query:
-
-```sql
-SELECT *
-FROM pg_stat_replication
-WHERE application_name != 'walproposer';
-```
-
-If the count is greater than 0, a Neon compute where the publishing Postgres instance runs will not ber suspended.
-
-### Replication roles
-
-It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon Console, CLI, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege. Roles created via SQL do not have this privilege, and the `REPLICATION` privilege cannot be granted.
-
-<Tabs labels={["Neon Console", "CLI", "API"]}>
-
-<TabItem>
-
-To create a replication role in the Neon Console:
-
-1. Navigate to the [Neon Console](https://console.neon.tech).
-2. Select a project.
-3. Select **Roles**.
-4. Select the branch where you want to create the role.
-5. Click **New Role**.
-6. In the role creation dialog, specify a role name.
-7. Click **Create**. The role is created, and you are provided with the password for the role.
-
-</TabItem>
-
-<TabItem>
-
-The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
-
-```bash
-neon roles create --name <role>
-```
-
-</TabItem>
-
-<TabItem>
-
-The following Neon API method creates a role. To view the API documentation for this method, refer to the [Neon API reference](/docs/reference/cli-roles).
-
-```bash
-curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer $NEON_API_KEY" \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "role": {
-    "name": "alex"
-  }
-}' | jq
-```
-
-</TabItem>
-
-</Tabs>
-
-You can verify that your role has the `REPLICATION` privilege by running the follow query:
-
-```sql
-SELECT rolname, rolreplication
-FROM pg_roles
-WHERE rolname = '<role_name>';
-```
-
-### Subscriber access
-
-A subscriber must be able to access the Neon database that is acting as a publisher. In Neon, no action is required unless you use Neon's **IP Allow** feature to limit IP addresses that can connect to Neon.
-
-If you use Neon's **IP Allow** feature:
-
-1. Determine the IP address or addresses of the subscriber.
-2. In your Neon project, add the IPs to your **IP Allow** list, which you can find in your project's settings. For instructions, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
-
-### Decoder plugins
-
-Neon supports both `pgoutput` and `wal2json` replication output decoder plugins.
-
-- `pgoutput`: This is the default logical replication output plugin for Postgres. Specifically, it's part of the Postgres built-in logical replication system, designed to read changes from the database's write-ahead log (WAL) and output them in a format suitable for logical replication.
-- `wal2json`: This is also a logical replication output plugin for Postgres, but it differs from `pgoutput` in that it converts WAL data into `JSON` format. This makes it useful for integrating Postgres with systems and applications that work with `JSON` data. For usage information, see [The wal2json plugin](/docs/extensions/wal2json).
-
-### Dedicated replication slots
-
-Some data services and platforms require dedicated replication slots. You can create a dedicated replication slot using the standard PostgreSQL syntax. As mentioned above, Neon supports both `pgoutput` and `wal2json` replication output decoder plugins.
-
-```sql
-SELECT pg_create_logical_replication_slot('my_replication_slot', 'pgoutput');
-```
-
-```sql
-SELECT pg_create_logical_replication_slot('my_replication_slot', 'wal2json');
-```
-
-### Publisher settings
-
-The `max_wal_senders` and `max_replication_slots` configuration parameter settings on Neon are set to `10`.
-
-```text
-max_wal_senders = 10
-max_replication_slots = 10
-```
-
-- The `max_wal_senders` parameter defines the maximum number of concurrent WAL sender processes that are responsible for streaming WAL data to subscribers. In most cases, you should have one WAL sender process for each subscriber or replication slot to ensure efficient and consistent data replication.
-- The `max_replication_slots` defines the maximum number of replication slots which are used to manage database replication connections. Each replication slot tracks changes in the publisher database to ensure that the connected subscriber stays up to date. You'll want a replication slot for each replication connection. For example, if you expect to have 10 separate subscribers replicating from your database, you would set `max_replication_slots` to 10 to accommodate each connection.
-
-If you require different values for these parameters, please contact Neon support.
-
-### Unused replication slots
-
-To prevent storage bloat, **Neon automatically removes an _inactive_ replication slot if you have other _active_ replication slots**. Removal occurs after 75 minutes.
-
-If you have only one replication slot, and that slot becomes inactive, it is not removed due to inactivity because a single replication slot does not bloat storage. If you find that your single replication slot has been removed, please contact [Neon Support](/docs/introduction/support).
-
-#### What causes a replication slot to become inactive?
-
-An inactive replication slot is one that doesn't acknowledge `flush_lsn` progress for an extended period. This is the same `flush_lsn` value found in the `pg_stat_replication` view in your Neon database.
-
-An _inactive_ replication slot is often the result of a _dead subscriber_, where the replication slot is not dropped after a subscriber is deactivated or becomes unavailable. An inactive replication slot can also result from a replication delay configured on the subscriber. For example, some subscribers allow you to configure the replication frequency or set a replication delay to minimize usage.
-
-#### How to avoid removal of inactive replication slots
-
-To avoid having "inactive" replication slots removed, ensure that your subscriber reports `flush_lsn` progress regularly and that your replication connection doesn't disappear for more than 75 minutes. If the 75-minute limit is not sufficient for your replication setup, please contact [Neon Support](/docs/introduction/support) to discuss a limit extension.
-
-If using Debezium, ensure that [flush.lsn.source](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-flush-lsn-source) is set to `true` to allow WAL logs on the source to be cleared. For other subscriber platforms, check for an equivalent setting to make sure it's configured to acknowledge progress on the subscriber.
-
-#### What to do if your replication slot is removed
-
-If you find that a replication slot was removed and you need to add it back, please see [Create a replication slot](/docs/guides/logical-replication-neon#create-a-replication-slot) for instructions or refer to the replication slot creation instructions for your subscriber.
-
-### Known limitations
-
-Neon is working toward removing the following limitations in future releases:
-
-- Only your default Neon Postgres role and roles created via the Neon Console, CLI, or API have the `REPLICATION` privilege. This privilege cannot be granted to other roles. You can expect this limitation to be lifted in a future release. Roles created via SQL do not have the `REPLICATION` privilege, and this privilege cannot be granted.
-- `max_slot_wal_keep_size` is set to 1 GB, limiting the maximum size of WAL files that replication slots are allowed to retain in the `pg_wal` directory. This is a temporary limit that will be removed in a future release. The limit avoids an accumulation of WAL data at the publisher due to a lagging subscriber, which could cause a slow compute start.
-- To avoid storage bloat, Neon automatically removes an _inactive_ replication slot if you have other _active_ replication slots. See [Unused replication slots](#unused-replication-slots).
-
 ## References
 
 - [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html)
@@ -11298,7 +14400,298 @@ Neon is working toward removing the following limitations in future releases:
 - [pg_stat_replication](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-REPLICATION-VIEW)
 - [pg_replication_slots](https://www.postgresql.org/docs/current/view-pg-replication-slots.html)
 
+
+# Neon specifics
+
+---
+title: Logical replication in Neon
+subtitle: Information about logical replication specific to Neon
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-08-22T02:18:02.652Z'
+---
+
+<LRBeta/>
+
+This topic outlines information about logical replication specific to Neon, including important notices.
+
+## Important notices
+
+To avoid potential issues, please review the following notices carefully before using logical replication in Neon.
+
+### Neon as a publisher
+
+These notices apply when replicating data from Neon:
+
+- **Autosuspend**: Neon does not autosuspend a compute that has an active connection from a logical replication subscriber. In other words, a Neon Postgres instance with an active subscriber will not scale to zero, which may result in increased compute usage. For more information, see [Logical replication and autosuspend](/docs/guides/logical-replication-neon#logical-replication-and-autosuspend).
+- **Removal of inactive replication slots**: To prevent storage bloat, **Neon automatically removes _inactive_ replication slots if there are other _active_ replication slots**. If you will have more than one replication slot, please read [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) before you begin.
+
+### Neon as a subscriber
+
+This notice applies when replicating data to Neon:
+
+- **Duplicate subscriptions when branching from a subscriber**: When a child branch is created, restored, or reset from a parent branch that is a subscriber in a logical replication configuration, any subscription defined on the parent branch is duplicated on the child branch. This duplicate subscription will attempt to establish a connection to the same publisher, potentially leading to "slot already used" errors. Additionally, if the parent branch's compute is suspended, the child branch might take over as the subscriber, which can result in a replication gap on the parent branch as updates are directed to the child branch.
+
+  To avoid interruptions and inconsistencies, it’s strongly recommended to disable and drop the duplicate subscriptions on child branches using the following commands:
+
+  ```sql
+  ALTER SUBSCRIPTION subscription_name DISABLE;
+  ALTER SUBSCRIPTION subscription_name SET (slot_name = NONE);
+  DROP SUBSCRIPTION subscription_name;
+  ```
+
+  Even with this workaround, the replication gap issue can still occur if the parent branch is suspended before the duplicate subscription on a child branch is disabled. Therefore, we encourage you to take this action promptly on newly created, restored, or reset child branches.
+
+  This issue will be addressed in an upcoming release.
+
+## Logical replication and autosuspend
+
+By default, Neon's [Autosuspend](/docs/introduction/auto-suspend) feature suspends a compute after 300 seconds (5 minutes) of inactivity. In a logical replication setup, Neon does not autosuspend a compute that has an active connection from a logical replication subscriber. In other words, a compute with an active subscriber remains active at all times. Neon determines if there are active connections from a logical replication subscriber by checking for `walsender` processes on the Neon Postgres instance using the following query:
+
+```sql
+SELECT *
+FROM pg_stat_replication
+WHERE application_name != 'walproposer';
+```
+
+If the count is greater than 0, a Neon compute where the publishing Postgres instance runs will not be suspended.
+
+## Replication roles
+
+It is recommended that you create a dedicated Postgres role for replicating data from Neon to a subscriber. This role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon Console, CLI, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege. Roles created via SQL do not have this privilege, and the `REPLICATION` privilege cannot be granted.
+
+You can verify that your role has the `REPLICATION` privilege by running the following query:
+
+```sql
+SELECT rolname, rolreplication
+FROM pg_roles
+WHERE rolname = '<role_name>';
+```
+
+## Subscriber access
+
+A subscriber must be able to access the Neon database that is acting as a publisher. In Neon, no action is required unless you use Neon's **IP Allow** feature to limit IP addresses that can connect to Neon.
+
+If you use Neon's **IP Allow** feature:
+
+1. Determine the IP address or addresses of the subscriber.
+2. In your Neon project, add the IPs to your **IP Allow** list, which you can find in your project's settings. For instructions, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+
+## Publisher access
+
+When replicating data to Neon, you may need to allow connections from Neon on the publisher platform or service.
+
+Neon uses 3 to 6 IP addresses per region for outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses. When configuring access, be sure to open access to all of the NAT gateway IP addresses for your Neon project's region.
+
+## Decoder plugins
+
+Neon supports both `pgoutput` and `wal2json` replication output decoder plugins.
+
+- `pgoutput`: This is the default logical replication output plugin for Postgres. Specifically, it's part of the Postgres built-in logical replication system, designed to read changes from the database's write-ahead log (WAL) and output them in a format suitable for logical replication.
+- `wal2json`: This is also a logical replication output plugin for Postgres, but it differs from `pgoutput` in that it converts WAL data into `JSON` format. This makes it useful for integrating Postgres with systems and applications that work with `JSON` data. For usage information, see [The wal2json plugin](/docs/extensions/wal2json).
+
+## Dedicated replication slots
+
+Some data services and platforms require dedicated replication slots. You can create a dedicated replication slot using the standard PostgreSQL syntax. As mentioned above, Neon supports both `pgoutput` and `wal2json` replication output decoder plugins.
+
+```sql
+SELECT pg_create_logical_replication_slot('my_replication_slot', 'pgoutput');
+```
+
+```sql
+SELECT pg_create_logical_replication_slot('my_replication_slot', 'wal2json');
+```
+
+## Publisher settings
+
+The `max_wal_senders` and `max_replication_slots` configuration parameter settings on Neon are set to `10`.
+
+```text
+max_wal_senders = 10
+max_replication_slots = 10
+```
+
+- The `max_wal_senders` parameter defines the maximum number of concurrent WAL sender processes that are responsible for streaming WAL data to subscribers. In most cases, you should have one WAL sender process for each subscriber or replication slot to ensure efficient and consistent data replication.
+- The `max_replication_slots` defines the maximum number of replication slots used to manage database replication connections. Each replication slot tracks changes in the publisher database to ensure that the connected subscriber stays up to date. You'll want a replication slot for each replication connection. For example, if you expect to have 10 separate subscribers replicating from your database, you would set `max_replication_slots` to 10 to accommodate each connection.
+
+If you require different values for these parameters, please contact Neon support.
+
+## Unused replication slots
+
+To prevent storage bloat, **Neon automatically removes an _inactive_ replication slot if you have other _active_ replication slots**. Removal occurs after 75 minutes.
+
+If you have only one replication slot, and that slot becomes inactive, it is not removed due to inactivity because a single replication slot does not bloat storage. If you find that your single replication slot has been removed, please contact [Neon Support](/docs/introduction/support).
+
+### What causes a replication slot to become inactive?
+
+An inactive replication slot is one that doesn't acknowledge `flush_lsn` progress for an extended period. This is the same `flush_lsn` value found in the `pg_stat_replication` view in your Neon database.
+
+An _inactive_ replication slot is often the result of a _dead subscriber_, where the replication slot is not dropped after a subscriber is deactivated or becomes unavailable. An inactive replication slot can also result from a replication delay configured on the subscriber. For example, some subscribers allow you to configure the replication frequency or set a replication delay to minimize usage.
+
+### How to avoid removal of inactive replication slots
+
+To avoid having "inactive" replication slots removed, ensure that your subscriber reports `flush_lsn` progress regularly and that your replication connection doesn't disappear for more than 75 minutes. If the 75-minute limit is not sufficient for your replication setup, please contact [Neon Support](/docs/introduction/support) to discuss a limit extension.
+
+If using Debezium, ensure that [flush.lsn.source](https://debezium.io/documentation/reference/stable/connectors/postgresql.html#postgresql-property-flush-lsn-source) is set to `true` to allow WAL logs on the source to be cleared. For other subscriber platforms, check for an equivalent setting to make sure it's configured to acknowledge progress on the subscriber.
+
+### What to do if your replication slot is removed
+
+If you find that a replication slot was removed and you need to add it back, please see [Create a replication slot](/docs/guides/logical-replication-neon#create-a-replication-slot) for instructions or refer to the replication slot creation instructions for your subscriber.
+
 <NeedHelp/>
+
+
+# Schema management
+
+---
+title: Managing schema changes in a logical replication setup
+subtitle: Learn about managing schema changes in a logical replication setup
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-09-05T17:34:34.204Z'
+---
+
+When working with Postgres logical replication, managing schema changes is a task that requires careful planning. As stated in the [PostgreSQL documentation](https://www.postgresql.org/docs/current/logical-replication-restrictions.html):
+
+"_The database schema and DDL commands are not replicated. The initial schema can be copied by hand using `pg_dump --schema-only`. Subsequent schema changes would need to be kept in sync manually. (Note, however, that there is no need for the schemas to be absolutely the same on both sides.) Logical replication is robust when schema definitions change in a live database: When the schema is changed on the publisher and replicated data starts arriving at the subscriber but does not fit into the table schema, replication will error until the schema is updated. In many cases, intermittent errors can be avoided by applying additive schema changes to the subscriber first._"
+
+This guidelines below outline some recommended practices for handling schema changes in a logical replication setup.
+
+## Schema management in a logical replication context
+
+Logical replication in Postgres is designed to replicate data changes (inserts, updates, and deletes) but not schema changes (DDL commands). This means that any modifications to the database schema, such as adding or dropping columns, need to be manually applied to both the publisher and the subscriber databases.
+
+Since the schemas do not need to be exactly the same on both sides, you have some flexibility. However, inconsistencies in the schema can lead to replication errors if the subscriber cannot accommodate incoming data due to schema mismatches.
+
+To ensure that schema changes are successful, we recommend the following practices:
+
+### 1. Apply additive schema changes to the subscriber first
+
+Additive changes, such as adding a new column or creating an index, should be applied to the subscriber before they are applied to the publisher. This approach ensures that when the new data is replicated from the publisher, the subscriber is already prepared to handle it. For example:
+
+- **Add a new column on the subscriber:**
+
+  ```sql
+  ALTER TABLE your_table_name ADD COLUMN new_column_name data_type;
+  ```
+
+- **Add the same column on the publisher:**
+
+  ```sql
+  ALTER TABLE your_table_name ADD COLUMN new_column_name data_type;
+  ```
+
+Applying additive schema changes in this order will help prevent replication errors caused by the subscriber not recognizing the additive change in the incoming data.
+
+### 2. Handle non-additive schema changes with caution
+
+Non-additive changes, such as dropping a column or altering a column's data type, require careful handling. When performing a non-additive schema change like dropping a column, apply the change on the publisher first, then on the subscriber.
+
+Non-additive changes are often feasible if applied in the correct order (publisher first). However, always carefully assess how the schema change will impact replication to the subscriber. Will writes still succeed on the subscriber after the change on the publisher? It’s best practice to test schema changes before implementing them in production. For example, test whether writes to the modified publisher schema still execute successfully on the unmodified subscriber schema.
+
+Mistakes in the schema update process could disrupt replication on the subscriber, requiring troubleshooting and reestablishing replication.
+
+For an added degree of safety or for complex schema changes, consider temporarily pausing write activity on the publisher before applying schema changes. The steps for this approach include:
+
+- **Pausing writes on the publisher:** Pause writes on the publisher by stopping or pausing the application that handles inserts, updates, and deletes, or by revoking write permissions on the roles that write to the database. Other methods may also be available depending on your environment.
+- **Applying schema changes on the publisher:** Apply the necessary schema changes to the publisher.
+- **Applying schema changes on the subscriber:** Once the publisher changes are complete, apply the schema changes to the subscriber.
+- **Resuming writes:** After verifying that the changes are successful, resume normal write operations.
+
+### 3. Monitor and verify replication
+
+After applying schema changes and resuming writes, verify that data is being replicated between the publisher and subscriber.
+
+To do this, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is recent:
+
+```sql shouldWrap
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+You can also perform a row count on the publisher and subscriber databases to make sure results are as expected. If you're actively adding rows, the results may be close but not exactly the same.
+
+```sql
+SELECT COUNT(*) FROM your_table_name;
+```
+
+## Schema migration tools
+
+Tools like [Flyway](https://flywaydb.org/) and [Liquibase](https://www.liquibase.org/) can assist in managing schema changes by ensuring they are applied consistently across multiple databases. These tools track the history of each change and ensure updates are applied in the correct sequence. Integrating these tools into your workflow can improve the reliability and organization of your schema migrations, but may require adjustments to your existing process.
+
+If you're unfamiliar with these tools, check out the following guides to get started with Neon:
+
+- [Get started with Flyway and Neon](/docs/guides/flyway)
+- [Get started with Liquibase and Neon](/docs/guides/liquibase)
+
+For guidance on managing schemas across multiple databases using Flyway or Liquibase, see:
+
+- [Flyway: A simple way to manage multiple environment deployments](https://www.red-gate.com/blog/a-simple-way-to-manage-multi-environment-deployments)
+- [How to set up Liquibase with an Existing Project and Multiple Environments](https://docs.liquibase.com/workflows/liquibase-community/existing-project.html)
+
+Some Object Relational Mappers (ORMs) also support managing schemas across multiple database environments. For example, with Prisma ORM, you can configure multiple `.env` files. Learn more at [Using multiple .env files](https://www.prisma.io/docs/orm/more/development-environment/environment-variables/using-multiple-env-files).
+
+Regardless of the schema management tool you choose, ensure that changes adhere to the guidelines for [additive](#1-apply-additive-schema-changes-to-the-subscriber-first) and [non-additive](#2-handle-non-additive-schema-changes-with-caution) schema changes.
+
+If you have suggestions, tips, or requests regarding schema management in a replication setup, please let us know via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or through our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
+
+## References
+
+- [PostgreSQL logical replication restrictions](https://www.postgresql.org/docs/current/logical-replication-restrictions.html)
+- [Import a database schema](/docs/import/import-schema-only)
+
+
+# Logical replication tips
+
+---
+title: Logical replication tips
+subtitle: Learn how to optimize for logical replication
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-09-17T15:08:05.548Z'
+---
+
+The following tips are based on actual customer data migrations to Neon using logical replication:
+
+- If you are replicating a large dataset to Neon, check whether your indexes exceed 20 GB in size. To estimate the total size of your indexes, run the following query on the source database:
+
+  ```sql shouldWrap
+  SELECT pg_size_pretty(SUM(pg_relation_size(indexrelid))) AS total_index_size FROM pg_stat_user_indexes;
+  ```
+
+  If the size of your indexes exceeds 20 GB, contact [Neon Support](/docs/introduction/support) to request an increase in the fixed disk size for your Neon compute. A larger disk size will help prevent `no space left on device` errors. Neon Support may also make additional modifications to your Neon compute to prepare for replicating a large dataset.
+
+- Initial data copying during logical replication can significantly increase the load on both the publisher and subscriber. For large data migrations, consider increasing compute resources (CPU and RAM) for the initial copy. On Neon, you can do this by [enabling autoscaling](/docs/guides/autoscaling-guide) and selecting a larger maximum compute size. The publisher (source database instance) typically experiences higher load, as it serves other requests while the subscriber only receives replicated data.
+- For large datasets, avoid creating indexes when setting up the schema on the destination database (subscriber) to reduce the initial data load time. Indexes can be added back after the data copy is complete.
+- If you encounter replication timeout errors, consider increasing `wal_sender_timeout` on the publisher and `wal_receiver_timeout` on the subscriber to a higher value, such as 5 minutes (default is 1 minute). On Neon, adjusting these settings requires assistance from [Neon Support](/docs/introduction/support).
+- To minimize storage consumption during data replication to Neon, reduce your [history retention](/docs/introduction/point-in-time-restore#history-retention) setting. For example, set it to 1 hour or 0 during the initial copy, and restore it to the desired value afterward.
+- Ensure that any Postgres extensions that you depend on are also supported by Neon. For extensions and extension versions supported by Neon, see [Supported Postgres extensions](/docs/extensions/pg-extensions). If you find that support is missing for a particular extension or extension version that would prevent you from migrating your data to Neon, please reach out to [Neon Support](https://neon.tech/docs/introduction/support).
+- Avoid defining publications with `FOR ALL TABLES` if you want to add or drop tables from the publication later. It is not possible to add or drop tables from a publication defined with `FOR ALL TABLES`.
+
+  ```sql
+  ALTER PUBLICATION test_publication ADD TABLE users;
+  ERROR:  publication "my_publication" is defined as FOR ALL TABLES
+  DETAIL:  Tables cannot be added to or dropped from FOR ALL TABLES publications.
+
+  ALTER PUBLICATION test_publication DROP TABLE products;
+  ERROR:  publication "my_publication" is defined as FOR ALL TABLES
+  DETAIL:  Tables cannot be added to or dropped from FOR ALL TABLES publications.
+  ```
+
+  Instead, you can create a publication for a specific table using the following syntax:
+
+  ```sql shouldWrap
+  CREATE PUBLICATION my_publication FOR TABLE users;
+  ```
+
+  To create a publication for multiple tables, specify a comma-separated list of tables:
+
+  ```sql shouldWrap
+  CREATE PUBLICATION my_publication FOR TABLE users, departments;
+  ```
+
+  For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+
+If you have logical replication or data migration tips you would like to share, please let us know via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
 
 
 # Read replicas
@@ -11307,41 +14700,41 @@ Neon is working toward removing the following limitations in future releases:
 title: Read replicas
 subtitle: Maximize scalability and more with read replicas
 enableTableOfContents: true
-updatedOn: '2024-07-25T12:53:42.431Z'
+updatedOn: '2024-08-27T12:23:05.820Z'
 ---
 
-Neon read replicas are independent computes designed to perform read operations on the same data as your primary read-write compute. Neon's read replicas do not replicate data across database instances. Instead, read requests are directed to a single source &#8212; a capability made possible by Neon's architecture, which separates storage and compute. The following diagram shows how your primary compute and read replicas send read requests to the same Neon [Pageserver](/docs/reference/glossary#pageserver).
+Neon read replicas are independent computes designed to perform read operations on the same data as your primary read-write compute. Neon's read replicas do not replicate data across database instances. Instead, read requests are directed to a same data source as your read/write compute. The following diagram shows how your primary compute and read replicas send read requests to the same Pageserver, which is the component of the [Neon architecture](/docs/introduction/architecture-overview) that is responsible for serving read requests.
 
 ![read replica computes](/docs/introduction/read_replicas.jpg)
 
-In data replication terms, Neon read replicas are asynchronous, which means they are _eventually consistent_. As updates are made by your primary compute, Safekeepers store the data changes durably until they are processed by Pageservers. At the same time, Safekeepers keep read replica computes up to date with the latest changes to maintain data consistency.
+Neon read replicas are asynchronous, which means they are _eventually consistent_. As updates are made by your primary compute, Safekeepers store the data changes durably until they are processed by Pageservers. At the same time, Safekeepers keep read replica computes up to date with the most recent changes to maintain data consistency.
 
 Neon supports creating read replicas in the same region as your database. Cross-region read replicas are currently not supported.
 
 You can instantly create one or more read replicas for any branch in your Neon project and configure the amount of vCPU and memory allocated to each. Read replicas also support Neon's Autoscaling and Autosuspend features, providing you with control over the compute resources used by your read replicas.
 
-## Use cases
+## How can you use read replicas?
 
 Neon's read replicas have a number of potential applications:
 
 - **Increase throughput**: By distributing read requests among multiple read replicas, you can achieve higher throughput for both read-write and read-only workloads.
-- **Workload offloading**: Assign reporting or analytical workloads to a read replica to prevent any impact on the performance of read-write application workloads.
-- **Access control**: Provide read-only data access to certain users or applications that do not need write access.
-- **Resource customization**: Configure different CPU and memory resources for each read replica to cater to the specific needs of different users and applications.
+- **Offloading work**: You can assign reporting or analytical workloads to a read replica to prevent any impact on the performance of read-write application workloads.
+- **Access control**: You can use read replicas to provide read-only data access to certain users or applications that do not need write access.
+- **Resource customization**: You configure different compute size, autoscaling, and autosuspend settings for each read replica to cater to the specific needs of different users and applications.
 
-## Advantages
+## What are the advantages of Neon's read replica architecture?
 
-Advantages of Neon's read replica feature include the following:
+Neon's read replicas perform read operations on the same data as your read-write compute &#8212; there's no replicating data across database instances. This has several advantages:
 
-1. **Efficient storage**: With read replicas reading from the same source as your primary read-write compute, no additional storage is required to create a read replica. Data is neither duplicated nor replicated, which means zero additional storage cost.
+1. **Efficient storage**: With read replicas reading from the same source as your primary read-write compute, no additional storage is required to create a read replica. Data is neither duplicated nor replicated, which means there's no additional storage required.
 2. **Data consistency**: Your primary read-write compute and read replicas read data from a single source, ensuring a high degree of data consistency.
-3. **Scalability**: With no data replication required, you can create read replicas almost instantly, providing fast and seamless scalability. You can also scale read replica compute resources the same way you scale your primary read-write compute resources.
-4. **Cost effectiveness**: By removing the need for additional storage and data replication, costs associated with storage and data transfer are avoided. Neon's read replicas also benefit from Neon's [Autoscaling](/docs/introduction/autoscaling) and [Autosuspend](/docs/manage/endpoints#auto-suspend-configuration) features, which enable efficient management of compute resources.
+3. **Near-instant scalability**: With no data replication required, you can create read replicas almost instantly. You can also scale read replica compute resources the same way you scale your primary read-write compute resources, by increasing the compute size.
+4. **Cost effectiveness**: With no additional storage or tranfer of data, costs associated with storage and data transfer are avoided. Neon's read replicas also benefit from Neon's [Autoscaling](/docs/introduction/autoscaling) and [Autosuspend](/docs/manage/endpoints#auto-suspend-configuration) features, which enable efficient management of compute resources.
 5. **Instant availability**. With an architecture that separates storage and compute, you can allow read replicas to scale to zero when not in use without introducing lag. When a read replica starts up, it is up to date with your primary read-write compute almost instantly.
 
 ## Get started with read replicas
 
-The first step to leveraging Neon's read replica feature is to sign up for a paid plan. After subscribing, you will be able to create and configure read replicas. To get started, refer to the [Working with read replicas](/docs/guides/read-replica-guide) guide.
+Read replicas are a paid plan feature. To get started, refer to the [Working with read replicas](/docs/guides/read-replica-guide) guide.
 
 
 # Working with read replicas
@@ -11350,7 +14743,7 @@ The first step to leveraging Neon's read replica feature is to sign up for a pai
 title: Working with Neon read replicas
 subtitle: Learn how to create and and manage read replicas in Neon
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.663Z'
+updatedOn: '2024-08-27T12:23:05.819Z'
 ---
 
 [Read replicas](/docs/introduction/read-replicas) are supported with the Neon paid plans. This guide will lead you through the process of creating and managing read replicas.
@@ -11367,7 +14760,7 @@ Regardless of the application, the steps for creating, configuring, and connecti
 ## Prerequisites
 
 - A Neon paid plan account
-- A [Neon project](/docs/manage/projects#create-a-project).
+- A [Neon project](/docs/manage/projects#create-a-project)
 
 ## Create a read replica
 
@@ -11382,13 +14775,13 @@ To create a read replica from the Neon Console:
 2. Select the branch where your database resides.
 3. Click **Add Read Replica**.
 4. On the **Add new compute** dialog, select **Read replica** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after inactivity** setting, which is the amount of idle time after which your compute is automatically suspended. The default setting is 5 minutes.
+5. Specify the **Compute size settings**. You can configure a **Fixed Size** compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size. You can also configure the **Suspend compute after inactivity** setting, which is the amount of idle time after which your compute is automatically suspended. The default setting is 5 minutes.
    <Admonition type="note">
    The compute size configuration determines the processing power of your database.
    </Admonition>
 6. When you finish making your selections, click **Create**.
 
-In a few moments, your read replica is provisioned and appears on the **Computes** tab on the **Branches** page. The following section describes how to connect to your read replica.
+In a few seconds, your read replica is provisioned and appears on the **Computes** tab on the **Branches** page. The following section describes how to connect to your read replica.
 </TabItem>
 
 <TabItem>
@@ -11566,7 +14959,7 @@ In a Postgres primary-standby configuration, certain settings should be no small
 title: Read replicas — Data analysis and reporting
 subtitle: Leverage read replicas for running data-intensive queries
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.663Z'
+updatedOn: '2024-08-27T12:23:05.816Z'
 ---
 
 With Neon's read replica feature, you can instantly create a dedicated read replica computes for running data-intensive analytics or reporting queries. This allows you to avoid disruption or performance degradation on your production database.
@@ -11606,7 +14999,7 @@ You can add a read replica compute- to any branch in your Neon project by follow
 2. Select the branch where your database resides.
 3. Click **Add Read Replica**.
 4. On the **Add new copmpute** dialog, select **Read replica** as the **Compute type**.
-5. Specify the **Compute size** options. You can configure a fixed size compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size using the slider. You can also configure an **Autosuspend time** setting, which is the amount of idle time after which a compute suspends due to inactivity. The default setting is 5 minutes.
+5. Specify the **Compute size settings**. You can configure a fixed size compute with a specific amount of vCPU and RAM (the default) or enable autoscaling by configuring a minimum and maximum compute size using the slider. You can also configure an **Autosuspend time** setting, which is the amount of idle time after which a compute suspends due to inactivity. The default setting is 5 minutes.
    <Admonition type="note">
    The compute size configuration determines the processing power of your database.
    </Admonition>
@@ -11614,9 +15007,13 @@ You can add a read replica compute- to any branch in your Neon project by follow
 
 Your read replica is provisioned and appears on the **Computes** tab of the **Branches** page. The following section describes how to connect to your read replica.
 
-Alternatively, you can create read replicas using the [Neon API](https://api-docs.neon.tech/reference/createprojectendpoint) or [Neon CLI](/docs/reference/cli-branches#create).
+Alternatively, you can create read replicas using the [Neon CLI](/docs/reference/cli-branches#create) or [Neon API](https://api-docs.neon.tech/reference/createprojectendpoint).
 
-<CodeTabs labels={["API", "CLI"]}>
+<CodeTabs labels={["CLI", "API"]}>
+
+```bash
+neon branches add-compute mybranch --type read_only
+```
 
 ```bash
 curl --request POST \
@@ -11632,10 +15029,6 @@ curl --request POST \
   }
 }
 ' | jq
-```
-
-```bash
-neon branches add-compute mybranch --type read_only
 ```
 
 </CodeTabs>
@@ -11852,7 +15245,7 @@ This example demonstrates how to use the [@prisma/extension-read-replicas](https
 title: Time Travel
 subtitle: Learn how to query point-in-time connections against your data's history
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.666Z'
+updatedOn: '2024-09-05T17:14:45.243Z'
 ---
 
 To help review your data's history, Time Travel lets you connect to any selected point in time within your history retention window and then run queries against that connection.
@@ -11880,7 +15273,7 @@ The ephemeral endpoints are created according to your configured [default comput
 
 ### History retention
 
-You are only able to run Time Travel queries that fall within your history retention window, which starts at 24 hours for Free Plan users, up to 7 days for Launch plan users, and up to 30 days for Scale plan users.
+You are only able to run Time Travel queries that fall within your history retention window, which starts at 24 hours for Free Plan users, up to 7 days for Launch, 14 days for Scale, and 30 days for Business plan users.
 
 You cannot select a time outside your current retention window.
 
@@ -12565,10 +15958,10 @@ The result shows a comparison between the `dev/jordan` branch and its parent bra
 title: IP Allow and protected branches
 subtitle: Limit database access to trusted IP addresses
 enableTableOfContents: true
-updatedOn: '2024-08-02T13:56:37.926Z'
+updatedOn: '2024-09-05T17:14:45.243Z'
 ---
 
-Neon's IP Allow feature, available with the Neon [Scale](/docs/introduction/plans#scale) plan, ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation).
+Neon's IP Allow feature, available with the Neon [Business](/docs/introduction/plans#business) plan, ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation).
 
 You can configure **IP Allow** in your Neon project's settings. To get started, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
@@ -12586,7 +15979,7 @@ title: Protected branches
 subtitle: Learn how to use Neon's protected branches feature to secure your critical
   data
 enableTableOfContents: true
-updatedOn: '2024-08-02T17:09:55.515Z'
+updatedOn: '2024-09-06T18:23:43.939Z'
 ---
 
 Neon's protected branches feature implements a series of protections:
@@ -12598,7 +15991,7 @@ Neon's protected branches feature implements a series of protections:
 - New passwords are automatically generated for Postgres roles on branches created from protected branches. [See below](#new-passwords-generated-for-postgres-roles-on-child-branches).
 - With additional configuration steps, you can apply IP restrictions to protected branches only. See [below](#how-to-apply-ip-restrictions-to-protected-branches).
 
-The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) plan.
+The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans.
 
 ## Set a branch as protected
 
@@ -12630,15 +16023,18 @@ To set a branch as protected:
 
 ## New passwords generated for Postgres roles on child branches
 
-When you create a branch in Neon, it includes all Postgres databases and roles from the parent branch. By default, Postgres roles on the child branch will have the same passwords as on the parent branch. However, this does not apply to protected branches. When you create a child branch from a protected branch, new passwords are generated for the Postgres roles on the child branch.
+When you create a branch in Neon, it includes all Postgres databases and roles from the parent branch. By default, Postgres roles on the child branch will have the same passwords as on the parent branch. However, this does not apply to protected branches. When you create a child branch from a protected branch, new passwords are generated for the matching Postgres roles on the child branch.
 
 This behavior is designed to prevent the exposure of passwords that could be used to access your protected branch. For example, if you have designated a production branch as protected, the automatic password change for child branches ensures that you can create child branches for development or testing without risking access to data on your production branch.
 
+Please note that resetting or restoring a child branch from a protected parent branch preserves passwords for matching Postgres roles on the child branch. Please refer to the feature notes below for more.
+
 <Admonition type="important" title="Feature notes">
-- This feature was released on July, 31, 2024. If you have existing CI scripts that create branches from protected branches, please be aware that passwords for Postgres roles on those newly created branches will now differ. If you depend on those passwords being the same, you'll need to make adjustments to get the correct connection details for those branches.
+- The "new password" feature for child branches was released on July, 31, 2024. If you have existing CI scripts that create branches from protected branches, please be aware that passwords for matching Postgres roles on those newly created branches will now differ. If you depend on those passwords being the same, you'll need to make adjustments to get the correct connection details for those branches.
     - After a branch is created, the up-to-date connection string is returned in the output of the [Create Branch GitHub Action](/docs/guides/branching-github-actions#create-branch-action).
-    - After resetting a branch from its parent, you can get the connection details for the branch using the Neon CLI [connection-string](/docs/reference/cli-connection-string) command.
-- Resetting a child branch from a protected parent branch currently restores Postgres role passwords on the child branch to those used on the protected parent branch. This issue will be addressed in an upcoming release. See [reset from parent](/docs/manage/branches#reset-a-branch-from-parent) to understand how Neon's branch reset feature works.
+    - The [Reset Branch GitHub Action](/docs/guides/branching-github-actions#reset-from-parent-action) also outputs connection string values, in case you are using this action in your workflows.
+    - The Neon CLI supports a [connection-string](/docs/reference/cli-connection-string) command for retrieving a branch's connection string.
+- Prior to September, 6, 2024, resetting or restoring a child branch from a protected parent branch restored passwords for matching Postgres roles on the child branch to those used on the protected parent branch. As of September, 6, 2024, passwords for matching Postgres roles on the child branch are preserved when resetting or restoring a child branch from a protected parent branch.
 </Admonition>
 
 ## How to apply IP restrictions to protected branches
@@ -12747,123 +16143,290 @@ Removing a protected branch designation can be performed by selecting **Set as u
 
 # Access control
 
-# E-mail signup
+# Accounts
 
 ---
-title: E-mail signup
-subtitle: 'How to change to an email-based account, or simply change your email'
+title: Accounts
+subtitle: Find out which account type is right for you
 enableTableOfContents: true
-updatedOn: '2024-07-24T13:12:44.740Z'
+updatedOn: '2024-09-23T19:06:42.278Z'
 ---
 
-As you get more familiar with Neon, you may decide to bring Neon into your organization, or change the type of account you want to associate with Neon. This page covers the kinds of email-related changes that you might encounter as you mature your usage with Neon.
-
-## Signing in to a social account with your email
-
-If you already have a Neon account using one of our social or partner login options but you now want to sign in with your email account, all you have to do is add a password to your profile.
-
-Go to **Profile** and click **Update Password**.
-
-<Admonition type="note">
-If you don't see an **Update Password** button, please sign out and sign back in. You should then see the option. This is a legacy issue; it will be resolved soon.
-</Admonition>
-
-You will be guided through a few steps, asking you to reauthenticate using your original social account, and then create your new password. After that, you are free to sign into your Neon account using either your social account or the email option.
-
-## Changing your email
-
-If you've signed up with a social or partner login and now want to change your email &#8212; for example, you previously signed up using a GitHub, Google, or Hasura account and now want to use your personal email &#8212; you can make this change under **Profile → Account Settings → Personal Information**.
-
-Or follow this direct link:
-
-[change email](https://console.neon.tech/app/settings/profile?modal=change_email)
-
-After you make the change, you'll receive a notification at this new email address asking you to confirm. Once confirmed, you'll be logged out of Neon. Log back in with your new email, and use this email going forward.
-
-## Removing email as a login method
-
-Removing an email account as a login method is currently not supported via the Neon Console. If you need to remove this login method in favor of a Google or GitHub social account login, please contact [Support](/docs/introduction/support) for assistance. If you are looking to remove your Neon account entirely, see [Delete your account](/docs/introduction/manage-billing#delete-your-account) for instructions.
-
-
-# Organizations
-
----
-title: Organizations (private preview)
-subtitle: Invite Members to your Organization and collaborate on projects
-enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.957Z'
----
-
-Organizations let you work with your Neon projects as a team. By creating an organization, you can bring together Members and Guests, manage permissions, and organize all of your team's projects under a single umbrella.
-
-<Admonition type="comingSoon" title="Feature Coming Soon">
-Available in **private preview** for existing **paid accounts only**. To start using the Organizations feature, [request access](#request-access-to-the-private-preview) and we'll help you get set up.
-</Admonition>
-
-## What are Organizations in Neon?
-
-There are two account types available in Neon:
+Neon offers two account types for you to choose from:
 
 - **Personal account**
-- **Organization account**
+- **Organization account** (Early Access)
 
-Any Neon user with a **paid personal account** can request an Organization account, which allows for sharing projects across the various members that make up your team. Whether you create an organization or are invited to join one, you retain your personal account, letting you manage personal projects independently of any organizations you belong to.
+## Personal accounts
 
-From the Neon Console, you can navigate to your Organization dashboard, where you'll find all projects in the organization and various user management actions that you can take as the Admin.
+When you first sign up with Neon, whether you're signing up on your own or you're invited to join, you start with a personal account. During your [onboarding](/docs/get-started-with-neon/signing-up#step-2-onboarding-in-the-neon-console), you are prompted to create your first personal project that you can get started with.
+
+You can always access your personal account settings from your **Profile** dropdown.
+
+![personal account settings](/docs/manage/personal_account.png)
+
+If you want to work with other people on this project, your options are:
+
+- [Share](/docs/guides/project-sharing-guide) the project with another Neon user
+- [Transfer](/docs/manage/orgs-project-transfer) the project from a personal to an Organization-level project, where you can then invite other users
+
+## Organization accounts
+
+<FeatureBeta/>
+
+Any Neon paid account user can [create an Organization account](/docs/manage/organizations#create-an-organization), which allows you to share projects with your team members. Whether you create an organization or are invited to join one, you still retain your personal account, letting you manage personal projects independently of any organizations you belong to.
+
+From the Neon Console, you can navigate to your Organization dashboard, where you'll find all the projects in the organization and can take any actions that your permissions allow.
 
 ![organizations projects tab](/docs/manage/org_projects.png)
 
-### Types of users
+See [Organizations](/docs/manage/organizations) to learn more.
 
-Within each organization are three types of users:
-
-- **Admin** &#8212; Administrators have access to all projects in the organization. Additionally, admins manage all permissions, invitations, and billing details.
-- **Members** &#8212; Members have access to all the projects that belong to the organization. They need to be invited to the organization by an Admin.
-- **Guests** &#8212; Guests are people given limited access to particular projects, using [project sharing](/docs/guides/project-sharing-guide). They do not have access to the Organization dashboard. Projects will appear under the **Shared with me** grouping in their personal account.
-
-## Request access to the private preview
-
-During the private preview, direct creation of your own organization is not available. This feature is exclusively available to users with **paid Neon accounts**. Here’s how you can request a new Organization and what to expect:
-
-### How to request access
-
-1. **Submit a Request** &#8212; Contact our [Customer Success](mailto:customer-success@neon.tech) team and ask to join the private preview for Organizations and we'll start the process.
-1. **Provide Organization Details** &#8212; During the request process, you will be asked to provide:
-
-   - The email of the Neon account you would like to designate as the Organization Admin.
-   - The name of your new Organization as it will appear for all Members in the Neon Console.
-   - Your informed consent, acknowledging that you understand the current [limitations](#feature-limitations) of the private preview.
-
-### What happens next
-
-Once your request is processed:
-
-1. **Project Transfer** &#8212; All existing projects in your personal account will be automatically transferred to your new organization.
-1. **Admin Role** &#8212; You will be assigned as the Admin of the organization, letting you invite Members to get started working together.
-1. **Billing Transition** &#8212; Your existing paid plan (Launch, Scale, or Enterprise) will transfer to the organization. Any Admin can manage billing details. To delegate billing management, promote a regular Member to Admin.
-1. **Personal Account Adjustment** &#8212; Your personal account will convert to a Free Plan, allowing you to continue individual projects without affecting your organization.
-
-We value your [feedback](#feedback-and-future-improvements) throughout this preview phase to enhance and refine the Organizations feature.
-
-## Manage your organization
-
-Learn how to manage your organization's projects, invite Members and Guests, revise permissions, and oversee billing details. This section explains which specific actions each Member can take based on their assigned roles and permissions.
-
-- [Switch to your org](#switch-to-your-organization-account)
-- [Invite Members](#invite-members)
-- [Invite Guests](#invite-guests)
-- [Set permissions](#set-permissions)
-- [Manage projects](#manage-projects)
-- [Passwordless authentication](#passwordless-authentication)
-- [Billing](#billing)
-
-### Switch to your Organization account
+## Switching between accounts
 
 Easily switch between your personal account and any organization you are a Member of using the navigation breadcrumb.
 
 ![Switch between personal and organization](/docs/manage/switch_to_org.png 'no-border')
 
-### Invite Members
+## Deleting your account
+
+After deleting your account, it is suspended for 180 days; if you log back within this period your account will be reactivated. After 180 days, your account and related information is permanently purged and cannot be recovered.
+
+Before deleting your account, you must take deliberate steps to remove your resources. This includes deleting all projects, leaving any organizations, and, if you're on a paid plan, downgrading to the Free Plan.
+
+To protect your data, each resource must be removed individually &#8212; nothing is deleted in bulk. The **Delete** action will stay disabled until all conditions are met.
+
+![delete personal account](/docs/manage/delete_account.png)
+
+Here's where to go in the Neon Console to complete these actions:
+
+| **Action**                  | **Instructions**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Leave all organizations** | On the **People** page of each organization you belong to, find your name and select **Leave organization** from the more options menu. If you're the only Admin, promote another Member to Admin first &#8212; or delete the organization if it is no longer required. <br/> ![leave organization](/docs/manage/leave_org.png) <br/> When deleting an organization, you must first remove all its resources before you can delete the organization itself. See [Delete an organization](/docs/manage/orgs-manage#delete-an-organization) for more detail. |
+| **Delete all projects**     | Go to the **Projects** page and manually [delete](docs/manage/projects#delete-a-project) each project from **Settings → Delete**.                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| **Downgrade your account**  | Go to **Billing → Change plan** and select **Downgrade to Free plan**. <br/> ![downgrade to free plan](/docs/manage/downgrade_to_free.png)                                                                                                                                                                                                                                                                                                                                                                                                                 |
+
+Once all conditions are met and all your checkmarks show green, you can safely deactivate your account. You'll get a confirmation email soon afterwards. If you change your mind, just log back in within 180 days to reactivate your account with your personal info intact. API keys, however, will not be restored.
+
+After 180 days, your account will be permanetly removed.
+
+
+# Organizations
+
+---
+title: Organizations
+subtitle: Invite Members to your Organization and collaborate on projects
+enableTableOfContents: true
+updatedOn: '2024-09-20T16:07:37.866Z'
+---
+
+<FeatureBeta/>
+
+Build your team in Neon with Organizations. Manage all of your team's projects under a single account — with billing, role management, and project transfer capabilities in one accessible location.
+
+## About Neon Organizations
+
+In the Neon Console, the Organizations page provides a centralized view of all your team’s projects. From there, you can create new projects, manage existing ones, as well as oversee your organization’s members and your billing information.
+
+![organizations projects tab](/docs/manage/org_projects.png)
+
+## User roles and permissions
+
+Each organization is made up of three types of users:
+
+- **Admin** &#8212; Administrators have access to all projects in the organization. Additionally, admins manage all permissions, invitations, and billing details.
+- **Members** &#8212; Members have access to all the projects that belong to the organization. They need to be invited to the organization by an Admin.
+- **Guests** &#8212; Guests are people given limited access to particular projects, using [project sharing](/docs/guides/project-sharing-guide). They do not have access to the Organization dashboard. Projects will appear under the **Shared with you** grouping in their personal account.
+
+Here's a breakdown of what actions each role can take:
+
+| Action                                                                   | Admin | Member | Guest |
+| ------------------------------------------------------------------------ | :---: | :----: | :---: |
+| [Create projects](/docs/manage/orgs-manage#create-and-delete-projects)   |  ✅   |   ✅   |  ❌   |
+| [Delete projects](/docs/manage/orgs-manage#create-and-delete-projects)   |  ✅   |   ❌   |  ❌   |
+| Manage [members](/docs/manage/orgs-manage#invite-members)                |  ✅   |   ❌   |  ❌   |
+| Manage [guests](/docs/manage/orgs-manage#invite-guests) (share projects) |  ✅   |   ✅   |  ✅   |
+| [Set permissions](/docs/manage/orgs-manage#set-permissions)              |  ✅   |   ❌   |  ❌   |
+| [Manage billing](/docs/manage/orgs-manage#billing)                       |  ✅   |   ❌   |  ❌   |
+| [Delete organization](/docs/manage/orgs-manage#delete-an-organization)   |  ✅   |   ❌   |  ❌   |
+
+## Create an organization
+
+To get started, click **Create organization** from the breadcrumb dropdown.
+
+![create organization button](/docs/manage/orgs_create_button.png)
+
+You'll be asked to select a plan and confirm your billing details. After confirming billing, you'll be directed to your organization's billing page, where you can take steps like inviting [members](/docs/manage/orgs-manage#invite-members) and [transferring projects](/docs/manage/orgs-project-transfer).
+
+![getting started with new org](/docs/manage/orgs_create_next.png)
+
+## What's next?
+
+After creating the organization, your next actions depend on your particular scenario. Here are a couple example scenarios.
+
+### Scenario 1 &#8212; Moving an existing team to a new organization
+
+If you’re currently on a paid plan, using project sharing to work with your team on your Personal account projects, and you intend to work primarily from your new Organization account:
+
+- [Transfer your existing projects](/docs/manage/orgs-project-transfer#transfer-projects-in-bulk) from your personal account to the new organization. You can leave one project behind, since that's the Free Plan limit.
+- Downgrade your personal account to the [Free Plan](/docs/introduction/manage-billing#change-your-plan) once all projects are transferred. This shifts all billing to the Organization.
+- [Invite](/docs/manage/orgs-manage#invite-members) your team members to join the organization.
+
+### Scenario 2 &#8212; Starting a new organization from scratch
+
+In this scenario you've been using Neon for personal projects for some time, and you now want to bring Neon to your company, but still keep your personal projects separate. You might instead:
+
+- [Invite](/docs/manage/orgs-manage#invite-members) someone to your new organization and delegate billing to them: set their [permissions](/docs/manage/orgs-manage#set-permissions) to **Admin**. They can then revise the billing details and handle invoices for the organization.
+- Start creating new projects within the new organization.
+- Keep your personal projects on your existing paid plan. No need to transfer or downgrade.
+
+## Request conversion from support
+
+If you want us to handle this conversion for you, you can contact [Neon Support](https://neon.tech/docs/introduction/support#support-channels) to request this service. We’ll manage the transition of your billing and projects to your new organization for you.
+
+## Limitations
+
+As we continue to refine our Organizations feature during this Beta phase, please remember that these features are only available under paid account plans. Here are some temporary limitations you should be aware of:
+
+- **Integration limitations** — You cannot install new Vercel integrations on organization-owned projects.
+- **Branch management** — All users are currently able to manage [protected branches](/docs/guides/protected-branches), regardless of their role or permission level. Granular permissions for this feature are not yet implemented.
+- **Project transfer restrictions** — Currently, you cannot transfer projects using either the Vercel, Outerbase, or the GitHub integrations.
+- **Permissions and roles** — The current permissions system may not meet all needs for granular control. Users are encouraged to share their feedback and requirements for more detailed permissions settings.
+
+## Feedback
+
+If you've got feature requests or feedback about what you'd like to see from Organizations in Neon, let us know via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
+
+<NeedHelp/>
+
+
+# Getting started
+
+---
+title: Organizations
+subtitle: Invite Members to your Organization and collaborate on projects
+enableTableOfContents: true
+updatedOn: '2024-09-20T16:07:37.866Z'
+---
+
+<FeatureBeta/>
+
+Build your team in Neon with Organizations. Manage all of your team's projects under a single account — with billing, role management, and project transfer capabilities in one accessible location.
+
+## About Neon Organizations
+
+In the Neon Console, the Organizations page provides a centralized view of all your team’s projects. From there, you can create new projects, manage existing ones, as well as oversee your organization’s members and your billing information.
+
+![organizations projects tab](/docs/manage/org_projects.png)
+
+## User roles and permissions
+
+Each organization is made up of three types of users:
+
+- **Admin** &#8212; Administrators have access to all projects in the organization. Additionally, admins manage all permissions, invitations, and billing details.
+- **Members** &#8212; Members have access to all the projects that belong to the organization. They need to be invited to the organization by an Admin.
+- **Guests** &#8212; Guests are people given limited access to particular projects, using [project sharing](/docs/guides/project-sharing-guide). They do not have access to the Organization dashboard. Projects will appear under the **Shared with you** grouping in their personal account.
+
+Here's a breakdown of what actions each role can take:
+
+| Action                                                                   | Admin | Member | Guest |
+| ------------------------------------------------------------------------ | :---: | :----: | :---: |
+| [Create projects](/docs/manage/orgs-manage#create-and-delete-projects)   |  ✅   |   ✅   |  ❌   |
+| [Delete projects](/docs/manage/orgs-manage#create-and-delete-projects)   |  ✅   |   ❌   |  ❌   |
+| Manage [members](/docs/manage/orgs-manage#invite-members)                |  ✅   |   ❌   |  ❌   |
+| Manage [guests](/docs/manage/orgs-manage#invite-guests) (share projects) |  ✅   |   ✅   |  ✅   |
+| [Set permissions](/docs/manage/orgs-manage#set-permissions)              |  ✅   |   ❌   |  ❌   |
+| [Manage billing](/docs/manage/orgs-manage#billing)                       |  ✅   |   ❌   |  ❌   |
+| [Delete organization](/docs/manage/orgs-manage#delete-an-organization)   |  ✅   |   ❌   |  ❌   |
+
+## Create an organization
+
+To get started, click **Create organization** from the breadcrumb dropdown.
+
+![create organization button](/docs/manage/orgs_create_button.png)
+
+You'll be asked to select a plan and confirm your billing details. After confirming billing, you'll be directed to your organization's billing page, where you can take steps like inviting [members](/docs/manage/orgs-manage#invite-members) and [transferring projects](/docs/manage/orgs-project-transfer).
+
+![getting started with new org](/docs/manage/orgs_create_next.png)
+
+## What's next?
+
+After creating the organization, your next actions depend on your particular scenario. Here are a couple example scenarios.
+
+### Scenario 1 &#8212; Moving an existing team to a new organization
+
+If you’re currently on a paid plan, using project sharing to work with your team on your Personal account projects, and you intend to work primarily from your new Organization account:
+
+- [Transfer your existing projects](/docs/manage/orgs-project-transfer#transfer-projects-in-bulk) from your personal account to the new organization. You can leave one project behind, since that's the Free Plan limit.
+- Downgrade your personal account to the [Free Plan](/docs/introduction/manage-billing#change-your-plan) once all projects are transferred. This shifts all billing to the Organization.
+- [Invite](/docs/manage/orgs-manage#invite-members) your team members to join the organization.
+
+### Scenario 2 &#8212; Starting a new organization from scratch
+
+In this scenario you've been using Neon for personal projects for some time, and you now want to bring Neon to your company, but still keep your personal projects separate. You might instead:
+
+- [Invite](/docs/manage/orgs-manage#invite-members) someone to your new organization and delegate billing to them: set their [permissions](/docs/manage/orgs-manage#set-permissions) to **Admin**. They can then revise the billing details and handle invoices for the organization.
+- Start creating new projects within the new organization.
+- Keep your personal projects on your existing paid plan. No need to transfer or downgrade.
+
+## Request conversion from support
+
+If you want us to handle this conversion for you, you can contact [Neon Support](https://neon.tech/docs/introduction/support#support-channels) to request this service. We’ll manage the transition of your billing and projects to your new organization for you.
+
+## Limitations
+
+As we continue to refine our Organizations feature during this Beta phase, please remember that these features are only available under paid account plans. Here are some temporary limitations you should be aware of:
+
+- **Integration limitations** — You cannot install new Vercel integrations on organization-owned projects.
+- **Branch management** — All users are currently able to manage [protected branches](/docs/guides/protected-branches), regardless of their role or permission level. Granular permissions for this feature are not yet implemented.
+- **Project transfer restrictions** — Currently, you cannot transfer projects using either the Vercel, Outerbase, or the GitHub integrations.
+- **Permissions and roles** — The current permissions system may not meet all needs for granular control. Users are encouraged to share their feedback and requirements for more detailed permissions settings.
+
+## Feedback
+
+If you've got feature requests or feedback about what you'd like to see from Organizations in Neon, let us know via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
+
+<NeedHelp/>
+
+
+# Manage Organizations
+
+---
+title: Manage Neon Organizations
+enableTableOfContents: true
+updatedOn: '2024-09-19T14:13:04.118Z'
+---
+
+<FeatureBeta/>
+
+Learn how to manage your organization's projects, invite Members and Guests, revise permissions, and oversee billing details. This section explains which specific actions each Member can take based on their assigned roles and permissions.
+
+<div style={{ display: 'flex' }}>
+  <div style={{ flex: 1, paddingRight: '20px' }}>
+    <ul>
+      <li><a href="#switch-to-your-organization-account">Switch to your org</a></li>
+      <li><a href="#invite-members">Invite Member</a></li>
+      <li><a href="#invite-guests">Invite Guests</a></li>
+      <li><a href="#set-permissions" style={{ cursor: 'pointer' }} >Set permissions</a></li>
+    </ul>
+  </div>
+  <div style={{ flex: 1 }}>
+    <ul>
+      <li><a href="#create-and-delete-projects">Create and delete projects</a></li>
+      <li><a href="#passwordless-authentication">Passwordless authentication</a></li>
+      <li><a href="#delete-an-organization">Delete an organization</a></li>
+      <li><a href="#billing">Billing</a></li>
+    </ul>
+  </div>
+</div>
+
+## Switch to your Organization account
+
+Easily switch between your personal account and any organization you are a Member of using the navigation breadcrumb.
+
+![Switch between personal and organization](/docs/manage/switch_to_org.png 'no-border')
+
+## Invite Members
 
 Only Admins have the authority to invite new Members to the organization. Invitations are issued via email. If a recipient does not have a Neon account, they will receive instructions to create one.
 
@@ -12875,7 +16438,7 @@ To invite Members:
 - Click **Invite member** and enter the email addresses in a comma-separated list.
 - Monitor the status of sent invites on the **Pending Invites** page; from here, you can resend or cancel invitations as needed.
 
-#### Set permissions
+## Set permissions
 
 Permissions within the organization are exclusively managed by Admins. As an Admin:
 
@@ -12885,28 +16448,24 @@ Permissions within the organization are exclusively managed by Admins. As an Adm
 
   ![organization members](/docs/manage/orgs_members_kebab.png 'no-border')
 
-### Invite Guests
+## Invite Guests
 
-Admins can also invite external Guests to collaborate on specific projects through [project sharing](/docs/guides/project-sharing-guide). Guests will not have access to the organization itself but can access any projects shared with them from the **Projects** page of their personal account, under **Shared with Me**.
-
-<Admonition type="note">
-Any users you've already shared projects with will appear as Guests on the **Guests** page if those projects were transferred during the organization conversion.
-</Admonition>
+All members can invite external Guests to collaborate on specific projects through [project sharing](/docs/guides/project-sharing-guide). Guests will not have access to the organization Dashboard but can access any projects shared with them from the **Projects** page of their personal account, under **Shared with you**. Guests can invite additional Guests to the project and remove existing Guests from the project.
 
 ![organization guests](/docs/manage/org_guests.png)
 
-To invite new Guests, click **Invite guests** and select the project you want to share, then add a comma-separated list of emails for anyone you want to give access to.
+To invite new Guests, click **Invite guests** and select the project you want to share, then add a comma-separated list of emails for anyone you want to give access to. These users will receive an email inviting them to the project.
 
-#### Manage Guests
+### Manage Guests
 
-Click the kebab menu next to the row in the **Guests** table to manage Guest access. You have two options:
+Click the more options menu next to the row in the **Guests** table to manage Guest access. You have two options:
 
-- **Convert to member** — promote the Guest to a full Member, granting access to all projects in the organization.
-- **Remove from project** — revoke the Guest's access to the shared project.
+- **Convert to member** — Admins can promote the Guest to a full Member, granting access to all projects in the organization.
+- **Remove from project** — All members can revoke the Guest's access to the shared project.
 
-  ![guests kebab](/docs/manage/orgs_guests_kebab.png 'no-border')
+  ![guests more options menu](/docs/manage/orgs_guests_kebab.png 'no-border')
 
-### Manage projects
+## Create and delete projects
 
 All Members can create new projects from the Organization's **Projects** page; however, the organization itself retains ownership of these projects, not the individual user.
 
@@ -12916,7 +16475,7 @@ Members have different capabilities based on their roles:
 - Members cannot delete projects owned by the organization. They can only delete personal projects from their personal account (switch to personal account via breadcrumb).
 - Admins can delete any project within the organization.
 
-### Passwordless authentication
+## Passwordless authentication
 
 If you want the simplest way to connect to your database from the command line, passwordless authentication using `pg.neon.tech` lets you directly start a `psql` connection with any of your organization's databases. This saves you time versus logging in to the Console and copying your connection string manually.
 
@@ -12942,7 +16501,17 @@ Type "help" for help.
 alexlopez=>
 ```
 
-### Billing
+## Delete an organization
+
+Only Admins can delete an Organization. Before doing so, make sure all projects within the Organization are removed.
+
+In your Organization's **Settings** page, you'll find the **Delete** section. It will list any actions you need to take before deletion is allowed. For example, if you still have outstanding projects that need to be remove, you'll see:
+
+![delete organization](/docs/manage/orgs_delete.png)
+
+Complete any necessary steps. Once cleared, you can go ahead and delete. This action will permanently remove the organization and cancel its associated billing. It can't be reversed.
+
+## Billing
 
 On creating an organization, your existing paid plan (Launch, Scale, or Enterprise) will be transferred to the new organization account. Following the conversion, your personal account will switch to the Free Plan, letting you manage any new personal projects separately.
 
@@ -12954,35 +16523,301 @@ As the Admin for the organization account:
 
 For detailed information on pricing and plans, refer to [Neon plans](/docs/introduction/plans).
 
-## Managing projects using the Neon API
 
-In the Neon API, the `org_id` represents the unique identifier for your organization. Use this ID to manage and interact with your organization's projects, making sure that your API requests are scoped to the right organization.
+# Transfer projects
 
-When creating a new project, include `org_id` in your `POST` request to ensure the project gets associated with your organization. Otherwise, the project will be created under your personal account.
+---
+title: Transfer projects to an organization
+enableTableOfContents: true
+updatedOn: '2024-09-19T14:13:04.118Z'
+---
 
-You can also use the `org_id` parameter in `GET` requests to:
+<FeatureBeta/>
 
-- List all projects that belong to your organization
-- Get consumption metrics for your organization
-- List of all organizations that you belong to (via your personal account)
+When creating an organization as an Admin &#8212; or as a member of an organization that's already up and running &#8212; you may need to transfer existing projects from your personal account to your target organization.
 
-### Finding your org_id
+## Guidelines
 
-While you can't get your `org_id` directly in the Neon Console (it's not yet available during private preview), if you navigate to your organization, you can find the ID in the console URL:
+The Neon Console allows you to transfer projects up to 200 projects at a time, while the API supports up to 400 projects in a single operation. If you need to transfer more than 200 projects, our [Python script](#transfer-large-numbers-of-projects) can help you efficiently manage this one-time​ task.
 
-![org ID in console URL](/docs/manage/org_id_URL.png)
+A few important points to keep in mind:
 
-<Admonition type="tip">
-To help you identify organization IDs more easily, notice that they all start with the prefix `org`.
-</Admonition>
+- You must be at least a Member of the selected Organization to transfer projects to it.
+- The number of projects you can transfer is limited by the target Organization plan's allowance.
+- Projects can't be transferred between incompatible plans due to differences in usage allowances. For example, attempting to transfer projects from a Scale plan personal account to a Launch plan Organization will result in an error.
 
-### API key
+## Transfer from the Neon Console
 
-Currently, while still in private preview, you can’t generate organization-specific API keys. Instead, use your personal account API key. If you’re a member of the specified `org_id`, these API requests will work.
+You can transfer individual projects by selecting each project to transfer from your personal account, or you can transfer in bulk by starting from the destination Organization.
 
-### Creating a new project
+### Transfer a single project
 
-To create a new project and ensure it gets associated with your organization, include `org_id` in your `POST` request. Here we'll create a new project for the organization `org-ocean-art-12345678`.
+Make sure you're in your personal account. Find the project you want to transfer, then start the Transfer from under projects settings.
+
+![transfer single project](/docs/manage/transfer_single.gif)
+
+### Transfer projects in bulk
+
+Navigate to the Organization you want to import projects into. In the **Billing** section, find **Transfer projects** in the list of "Get Started with your paid plan" actions. From this action, you can choose the projects you want to transfer &#8212; either all of them or a selection. The list of available projects is taken from existing projects in your personal account.
+
+![transfer projects in bulk](/docs/manage/transfer_bulk.gif)
+
+## Transfer projects via API
+
+Use the Project Transfer API to transfer projects from your personal Neon account to a specified organization account.
+
+`POST /users/me/projects/transfer`
+
+The API call requires both the organization ID and the project IDs that you want to transfer. Below is an example using the API in a cURL command.
+
+```bash shoudlWrap
+curl -X POST 'https://console.neon.tech/api/v2/users/me/projects/transfer' \
+  -H 'accept: application/json' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "org_id": "org-cool-breeze-12345678",
+  "project_ids": [
+    "project-id-1",
+    "project-id-2"
+  ]
+}'
+```
+
+### Example responses
+
+Here's the response after a successful transfer:
+
+```bash shouldWrap
+{
+  "status": "success",
+  "message": "Projects successfully transferred from personal account to organization."
+}
+```
+
+And here's a sample response showing incompatible subscription types:
+
+```json
+{
+  "limits": [
+    {
+      "name": "subscription_type",
+      "actual": "launch",
+      "expected": "scale"
+    }
+  ],
+  "error": "Transfer failed: the organization has too many projects or its plan is incompatible with the source account."
+}
+```
+
+## Transfer large numbers of projects
+
+When your number of projects exceeds the Console transfer limit of 200 (or the API transfer limit of 400), you can use the following Python script to transfer projects in batches.
+
+### How to use the script
+
+1. **Replace placeholders**: Update the script with your actual API key and organization ID.
+   - Your API key belongs to your Personal Account. See [API actions](/docs/manage/orgs-api#using-the-api-key) to learn more.
+   - To find your organization ID, see [Finding your org_id](/docs/manage/orgs-api#finding-your-orgid).
+1. **Run the script**: Execute the script locally to transfer projects.
+
+The script will efficiently handle large project transfers by splitting them into manageable batches of 400 projects at a time.
+<Tabs labels={["Python", "Bash"]}>
+
+<TabItem>
+
+```python shouldWrap
+import requests
+
+API_KEY = "your_api_key_here"
+ORG_ID = "your_org_id_here"
+TRANSFER_API_URL = "https://console.neon.tech/api/v2/users/me/projects/transfer"
+PROJECTS_API_URL = f"https://console.neon.tech/api/v2/projects?limit=400"
+HEADERS = {
+"accept": "application/json",
+"Authorization": f"Bearer {API_KEY}"
+}
+
+def fetch_all_projects():
+   projects = []
+   cursor = None
+
+    while True:
+        url = PROJECTS_API_URL
+        if cursor:
+            url += f"&cursor={cursor}"
+
+        response = requests.get(url, headers=HEADERS)
+        if response.status_code != 200:
+            raise Exception(f"Failed to fetch projects: {response.text}")
+
+        data = response.json()
+        projects.extend(data.get("projects", []))
+        if len(projects) == 0:
+            break
+
+        cursor = data.get("pagination", {}).get("cursor")
+        if cursor == projects[-1].get("id"):
+            break
+
+    return projects
+
+def transfer_projects(project_ids):
+   payload = {
+   "project_ids": project_ids,
+   "org_id": ORG_ID
+   }
+
+    response = requests.post(TRANSFER_API_URL, json=payload, headers=HEADERS)
+    if response.status_code == 200:
+        print(f"Successfully transferred projects: {project_ids}")
+    elif response.status_code == 406:
+        print("Transfer failed due to insufficient organization limits.")
+    elif response.status_code == 501:
+        print("Transfer failed because one or more projects have integration linked.")
+    else:
+        print(f"Transfer failed: {response.text}")
+
+def main():
+   all_projects = fetch_all_projects()
+   print(f"Fetched {len(all_projects)} projects.")
+
+    # Split the projects into batches of 400 for transfer
+    batch_size = 400
+    for i in range(0, len(all_projects), batch_size):
+        batch = all_projects[i:i + batch_size]
+        project_ids = [project["id"] for project in batch]
+        transfer_projects(project_ids)
+
+if _name_ == "_main_":
+main()
+```
+
+</TabItem>
+
+<TabItem>
+
+```bash shouldWrap
+#!/bin/bash
+
+# Configuration
+API_KEY="your_api_key_here"
+ORG_ID="your_org_id_here"
+TRANSFER_API_URL="https://console.neon.tech/api/v2/users/me/projects/transfer"
+PROJECTS_API_URL="https://console.neon.tech/api/v2/projects?limit=400"
+HEADERS=(-H "Content-Type: application/json" -H "Authorization: Bearer $API_KEY")
+
+fetch_all_projects() {
+  local projects=()
+  local cursor=""
+  local response=""
+  local data=""
+  local next_cursor=""
+
+  while true; do
+    if [ -n "$cursor" ]; then
+      response=$(curl -s "${HEADERS[@]}" "${PROJECTS_API_URL}&cursor=$cursor")
+    else
+      response=$(curl -s "${HEADERS[@]}" "$PROJECTS_API_URL")
+    fi
+
+    if [ $? -ne 0 ]; then
+      echo "Failed to fetch projects: $response" >&2
+      exit 1
+    fi
+
+    data=$(echo "$response" | jq '.projects')
+    projects+=($(echo "$data" | jq -r '.[] | .id'))
+
+    if [ ${#projects[@]} -eq 0 ]; then
+      break
+    fi
+
+    next_cursor=$(echo "$response" | jq -r '.pagination.cursor // ""')
+
+    # Check if we have reached the last cursor
+    last_project_id="${projects[${#projects[@]} - 1]]}"
+    if [ -z "$next_cursor" ] || [ "$next_cursor" == "$last_project_id" ]; then
+      break
+    fi
+
+    cursor=$next_cursor
+  done
+
+  echo "${projects[@]}"
+}
+
+transfer_projects() {
+  local project_ids=("$@")
+  local project_ids_json=$(printf '%s\n' "${project_ids[@]}" | jq -R . | jq -s)
+  local payload='{"org_id": "'"${ORG_ID}"'", "project_ids": '"${project_ids_json}"'}'
+
+  local response=$(curl -s -o /dev/stderr -w "%{http_code}" -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $API_KEY" \
+    -d "$payload" \
+    "$TRANSFER_API_URL")
+
+  local status_code=$(echo "$response" | sed -n '$p')
+  local response_body=$(echo "$response" | sed '$d')
+
+  if [ "$status_code" == "200" ]; then
+    echo "Successfully transferred projects: ${project_ids[*]}"
+  elif [ "$status_code" == "406" ]; then
+    echo "Transfer failed due to insufficient organization limits."
+  elif [ "$status_code" == "501" ]; then
+    echo "Transfer failed because one or more projects have integration linked."
+  else
+    echo "Transfer failed: $response_body"
+  fi
+}
+
+main() {
+  local all_projects=($(fetch_all_projects))
+  echo "Fetched ${#all_projects[@]} projects."
+
+  # Split projects into batches of 400 for transfer
+  local batch_size=400
+  for ((i = 0; i < ${#all_projects[@]}; i += batch_size)); do
+    batch=("${all_projects[@]:i:batch_size}")
+    transfer_projects "${batch[@]}"
+  done
+}
+
+main
+```
+
+</TabItem>
+</Tabs>
+
+
+# API actions
+
+---
+title: Manage Organizations using the Neon API
+enableTableOfContents: true
+updatedOn: '2024-09-19T14:13:04.117Z'
+---
+
+<FeatureBeta/>
+
+Learn how to manage Neon Organizations using the Neon API, including creating projects, transferring projects, and retrieving consumption metrics.
+
+The `org_id` is your organization's unique identifier, used to make sure your API requests are scoped to the right organization.
+
+## Finding your org_id
+
+To find your organization's `org_id`, navigate to your Organization's **Settings** page, where you'll find it under the **General information** section. Copy and use this ID in your API requests.
+
+![organization ID](/docs/manage/orgs_id.png)
+
+## Using the API key
+
+Currently, while in Early Access, you can’t generate organization-specific API keys. Instead, use your personal account API key. If you’re a member of the specified `org_id`, these API requests will work. See [API Keys](/docs/manage/api-keys) for detail.
+
+## Creating a new project
+
+You can create a new project within your organization by including `org_id` in your `POST` request. Here we'll create a new project for the organization `org-ocean-art-12345678`.
 
 ```bash shouldWrap
 curl --request POST \
@@ -13000,9 +16835,9 @@ curl --request POST \
 '
 ```
 
-### Listing projects
+## Listing projects
 
-Include `org_id` in the `GET /projects` request. For example, let's get a list of all projects for the organization `org-ocean-art-12345678`, with the default limit of 10 projects per return:
+To list all projects belonging to your organization, include `org_id` in the `GET /projects` request. For example, let's get a list of all projects for the organization `org-ocean-art-12345678`, with the default limit of 10 projects per return:
 
 ```bash shouldWrap
 curl --request GET \
@@ -13011,7 +16846,11 @@ curl --request GET \
      --header 'authorization: Bearer $NEON_API_KEY'
 ```
 
-### Consumption metrics
+## Transfer projects
+
+The Project Transfer API allows you to transfer projects from your personal Neon account to a specified organization account. See [Transfer projects via API](/docs/manage/orgs-project-transfer#transfer-projects-via-api) for details.
+
+## Consumption metrics
 
 You can use the Neon API to retrieve three types of consumption metrics for your organization:
 
@@ -13021,7 +16860,7 @@ You can use the Neon API to retrieve three types of consumption metrics for your
 | [Project-level](https://api-docs.neon.tech/reference/getconsumptionhistoryperproject) (granular) | Project-level metrics available at hourly, daily, or monthly level of granularity        | Scale plan only   |
 | [Project-level](https://api-docs.neon.tech/reference/listprojectsconsumption) (billing period)   | Consumption metrics for each project in your Organization for the current billing period | All plans         |
 
-#### Account-level metrics
+### Account-level metrics
 
 To get global totals for all projects in the organization `org-ocean-art-12345678`, include the `org_id` in the `GET /consumption/projects` request. We also need to include:
 
@@ -13097,7 +16936,7 @@ The response will provide aggregated hourly consumption metrics, including activ
 
 </details>
 
-#### Project-level metrics (granular)
+### Project-level metrics (granular)
 
 You can also get similar daily, hourly, or monthly metrics across a selected time period, but broken out for each individual project that belongs to your organization.
 
@@ -13165,7 +17004,7 @@ curl --request GET \
 
 </details>
 
-#### Project-level metrics (for the current billing period)
+### Project-level metrics (for the current billing period)
 
 To get basic billing period-based consumption metrics for each project in the organization `org-ocean-art-12345678`, include `org_id` in the `GET /projects` request for consumption metrics:
 
@@ -13178,7 +17017,7 @@ curl --request GET \
 
 See more details about using this endpoint on the [Manage billing with consumption limits](/docs/guides/partner-billing#retrieving-metrics-for-all-projects) page in our Partner Guide.
 
-### List all organizations you belong to
+## List all organizations you belong to
 
 You can use the `GET /users/me/organizations` request to retrieve a list of all organizations associated with your personal account.
 
@@ -13207,9 +17046,30 @@ The response will include details about each organization, including the `org_id
 }
 ```
 
-## Managing organizations using the Neon CLI
 
-During private preview, we'll be continuing to add options for managing your organization using the Neon CLI. For now, we've added the main command `neonctl orgs` with a single subcommand `list`, which outputs a list of all organizations that the CLI user currently belongs to.
+# CLI actions
+
+---
+title: Manage Organizations using the Neon CLI
+enableTableOfContents: true
+updatedOn: '2024-09-19T14:13:04.118Z'
+---
+
+<FeatureBeta/>
+
+Neon's CLI (`neonctl`) provides an expanding set of commands to manage your organizations.
+
+## Authorization
+
+Use the `auth` command to authenticate your Neon account from the CLI. This command opens a browser where you will be asked to grant the necessary permissions to managae both your personal and organization resources.
+
+Note that authentication is tied to your personal account. Once authenticated, you can access and manage any Organizations that you belong to.
+
+See [Auth - CLI](/docs/reference/cli-auth) to learn more.
+
+## List Organizations
+
+The `neonctl orgs list` command outputs a list of all organizations that the CLI user currently belongs to. This command is useful for quickly identifying the `org_id` associated with each organization, which can be used in other CLI operations.
 
 Example:
 
@@ -13223,21 +17083,40 @@ Organizations
 └────────────────────────┴──────────────────┘
 ```
 
-For more detail, see [Neon CLI commands - orgs](/docs/reference/cli-orgs). We'll update this page as new management options become available.
+See [Orgs - CLI](/docs/reference/cli-orgs) to learn more.
 
-## Feature limitations
+## Manage projects within an Organization
 
-As we continue to refine our Organizations feature during this private preview phase, please remember that these features are only available under paid account plans. Here are some temporary limitations you should be aware of:
+The Neon CLI `projects` command supports an `--org-id` option. This allows you to list or create projects within a specified organization.
 
-- **Integration limitations** — You cannot install new Vercel integrations on organization-owned projects. However, existing integrations will continue to work on projects transferred from personal to the organization account.
-- **Connection restrictions** — Passwordless connect is not available for organization-owned projects. Users must use standard authentication methods.
-- **Branch management** — All users are currently able to manage [protected branches](/docs/guides/protected-branches), regardless of their role or permission level. Granular permissions for this feature are not yet implemented.
-- **Project transfer restrictions** — Currently, transferring projects to an organization is done in bulk ("all or nothing") during the Neon-managed conversion. Selective and self-serve transfers are planned for future updates.
-- **Permissions and roles** — The current permissions system may not meet all needs for granular control. Users are encouraged to share their feedback and requirements for more detailed permissions settings.
+Example: Listing all projects in an organization:
 
-## Feedback and future improvements
+```bash
+neon projects list --org-id org-xxxx-xxxx
+Projects
+┌───────────────────────────┬───────────────────────────┬────────────────────┬──────────────────────┐
+│ Id                        │ Name                      │ Region Id          │ Created At           │
+├───────────────────────────┼───────────────────────────┼────────────────────┼──────────────────────┤
+│ bright-moon-12345678      │ dev-backend-api           │ aws-us-east-2      │ 2024-07-26T11:43:37Z │
+├───────────────────────────┼───────────────────────────┼────────────────────┼──────────────────────┤
+│ silent-forest-87654321    │ test-integration-service  │ aws-eu-central-1   │ 2024-05-30T22:14:49Z │
+├───────────────────────────┼───────────────────────────┼────────────────────┼──────────────────────┤
+│ crystal-stream-23456789   │ staging-web-app           │ aws-us-east-2      │ 2024-05-17T13:47:35Z │
+└───────────────────────────┴───────────────────────────┴────────────────────┴──────────────────────┘
+```
 
-If you've got feature requests or feedback about what you'd like to see from Organizations in Neon, let us know via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
+You can include the `org-id` to apply the following subcommands specifically to your organization:
+
+- [List projects](/docs/reference/cli-projects#list)
+- [Create projects](/docs/reference/cli-projects#create)
+
+See [Projects - CLI](/docs/reference/cli-projects) to learn more.
+
+## Setting Organization Context
+
+To simplify your workflow, the Neon CLI `set-context` command supports setting an organization context. This means you don't have to specify an organization ID every time you run a CLI command.
+
+Sees [set-context - CLI](/docs/reference/cli-set-context) to learn more.
 
 
 # Project access
@@ -13282,7 +17161,7 @@ To manage access to a database within a Neon project, refer to [Manage database 
 title: Project sharing
 subtitle: Learn how to share your Neon project with others
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.949Z'
+updatedOn: '2024-09-19T14:13:04.113Z'
 ---
 
 You can share a Neon project with other users, giving them access to your Neon project from all supported Neon interfaces, including the Neon Console, Neon API, and Neon CLI. Follow this guide to learn how.
@@ -13311,7 +17190,7 @@ To share your project:
 
    The Neon account associated with the email address is granted full access to the project with the exception privileges required to delete the project. This account can also share the project with other Neon users. When the user logs in to Neon, the shared project is listed on their **Projects** page, under **Shared with me**.
 
-   ![Project shared with me](/docs/guides/shared_with_me.png)
+   ![Project shared with you](/docs/guides/shared_with_you.png)
 
    An email is also sent to the email address informing the user that a project has been shared with them. The email includes an **Open project** link the user can click on to log in to Neon. After logging in, the user is directed to the **Dashboard** for the shared project in the Neon Console.
 
@@ -13657,6 +17536,44 @@ This ensures users are unable to connect to a database by default unless this pe
 For more information about granting privileges in Postgres, please see the [GRANT](https://www.postgresql.org/docs/current/sql-grant.html) command in the _PostgreSQL documentation_.
 
 
+# E-mail signup
+
+---
+title: E-mail signup
+subtitle: 'How to change to an email-based account, or simply change your email'
+enableTableOfContents: true
+updatedOn: '2024-07-24T13:12:44.740Z'
+---
+
+As you get more familiar with Neon, you may decide to bring Neon into your organization, or change the type of account you want to associate with Neon. This page covers the kinds of email-related changes that you might encounter as you mature your usage with Neon.
+
+## Signing in to a social account with your email
+
+If you already have a Neon account using one of our social or partner login options but you now want to sign in with your email account, all you have to do is add a password to your profile.
+
+Go to **Profile** and click **Update Password**.
+
+<Admonition type="note">
+If you don't see an **Update Password** button, please sign out and sign back in. You should then see the option. This is a legacy issue; it will be resolved soon.
+</Admonition>
+
+You will be guided through a few steps, asking you to reauthenticate using your original social account, and then create your new password. After that, you are free to sign into your Neon account using either your social account or the email option.
+
+## Changing your email
+
+If you've signed up with a social or partner login and now want to change your email &#8212; for example, you previously signed up using a GitHub, Google, or Hasura account and now want to use your personal email &#8212; you can make this change under **Profile → Account Settings → Personal Information**.
+
+Or follow this direct link:
+
+[change email](https://console.neon.tech/app/settings/profile?modal=change_email)
+
+After you make the change, you'll receive a notification at this new email address asking you to confirm. Once confirmed, you'll be logged out of Neon. Log back in with your new email, and use this email going forward.
+
+## Removing email as a login method
+
+Removing an email account as a login method is currently not supported via the Neon Console. If you need to remove this login method in favor of a Google or GitHub social account login, please contact [Support](/docs/introduction/support) for assistance. If you are looking to remove your Neon account entirely, see [Delete your account](/docs/introduction/manage-billing#delete-your-account) for instructions.
+
+
 # API keys
 
 ---
@@ -13665,12 +17582,12 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/using-api-keys
   - /docs/get-started-with-neon/api-keys
-updatedOn: '2024-06-14T07:55:54.416Z'
+updatedOn: '2024-08-13T15:31:30.507Z'
 ---
 
 Most actions performed in the Neon Console can be performed using the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api). Using the Neon API requires an API key. This topic describes how to generate, revoke, and use API keys.
 
-API keys are global and belong to your Neon account. They can be used with any project that belongs to your Neon account. A Neon account can create unlimited API keys.
+API keys are global and belong to your Neon account. They can be used with any project that belongs to your Neon account. While there is no strict limit on the number of API keys you can create, we recommend keeping it under 10,000 per Neon account.
 
 ## Create an API key
 
@@ -13872,7 +17789,7 @@ curl -X DELETE \
 title: Overview of the Neon object hierarchy
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-06T15:23:10.957Z'
+updatedOn: '2024-09-19T14:13:04.119Z'
 ---
 
 Managing your Neon project requires an understanding of the Neon object hierarchy. The following diagram shows how objects in Neon are related. See below for a description of each object.
@@ -13881,31 +17798,37 @@ Managing your Neon project requires an understanding of the Neon object hierarch
 
 ## Neon account
 
-This is the account you used to sign up with Neon. Neon supports signing up with an email, GitHub, Google, or partner account.
+This is the Neon account you signed up with. Neon supports signing up with an email, GitHub, Google, or partner account.
 
-## API keys
+**API keys** are global and belong to the Neon account. API keys are used with the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) to create and manage Neon projects or objects within a Neon project. While there is no strict limit on the number of API keys you can create, we recommend keeping it under 10,000 per Neon account. For more about API keys, see [Manage API keys](/docs/manage/api-keys).
 
-API keys are global and belong to the Neon account. API keys are used with the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) to create and manage Neon projects or objects within a Neon project. A Neon account can create unlimited API keys. For more information, see [Manage API keys](/docs/manage/api-keys).
+## Organizations
+
+Neon's Organizations feature allows you organize and manage a team's projects under a single Neon account — with billing, role management, and project transfer capabilities all in one accessible location in the Neon Console.
 
 ## Projects
 
-A project is the top-level object in the Neon object hierarchy. It is a container for all objects except for API keys, which are global and work with any project owned by your Neon account. Branches, computes, roles, and databases belong to a project. A Neon project also defines the region where project resources reside. A Neon account can have multiple projects, but plan limits define the number of projects per Neon account. For more information, see [Manage projects](/docs/manage/projects).
+A project is a container for all objects except for API keys, which are global and work with any project owned by your Neon account. Branches, computes, roles, and databases belong to a project. A Neon project also defines the region where project resources reside. A Neon account can have multiple projects, but plan limits define the number of projects per Neon account. For more information, see [Manage projects](/docs/manage/projects).
 
 ## Default branch
 
-Data resides in a branch. Each Neon project is created with a default branch called `main`. This initial branch is also your project's root branch, which cannot be deleted. After creating more branches, you can designate a different branch as your default branch, but your root branch cannot be deleted. You can create child branches from any branch in your project. Each branch can contain multiple databases and roles. Tier limits define the number of branches you can create in a project and the amount of data per branch. To learn more, see [Manage branches](/docs/manage/branches).
+Data resides in a branch. Each Neon project is created with a default branch called `main`. This initial branch is also your project's root branch, which cannot be deleted. After creating more branches, you can designate a different branch as your default branch, but your root branch cannot be deleted. You can create child branches from any branch in your project. Each branch can contain multiple databases and roles. Plan limits define the number of branches you can create in a project and the amount of data per branch. To learn more, see [Manage branches](/docs/manage/branches).
 
-## Computes
+## R/W computes and Read Replicas
 
-A compute is a virtualized computing resource that includes vCPU and memory for running applications. In the context of Neon, a compute runs Postgres. When you create a project in Neon, a primary read-write compute is created for a project's default branch. Neon supports both read-write and [read replica](/docs/introduction/read-replicas) computes. A branch can have a single primary read-write compute but supports multiple read replicas. To connect to a database that resides on a branch, you must connect via a compute associated with the branch. Your Neon plan defines the resources (vCPU and RAM) available to a compute. For more information, see [Manage computes](/docs/manage/endpoints). Compute size, autoscaling, and autosuspend (scale-to-zero) are all settings that are configured for a compute.
+A compute is a virtualized computing resource that includes vCPU and memory for running applications. In the context of Neon, a compute runs Postgres. When you create a project in Neon, a primary R/W (read/write) compute is created for a project's default branch. Neon supports both R/W and [Read Replica](/docs/introduction/read-replicas) computes. A branch can have a single primary R/W compute but supports multiple Read Replica computes. To connect to a database that resides on a branch, you must connect via a R/W or Read Replica compute associated with the branch. Your Neon plan defines the resources (vCPU and RAM) available to your R/W and Read Replica computes. For more information, see [Manage computes](/docs/manage/endpoints). Compute size, autoscaling, and autosuspend (scale-to-zero) are all settings that are configured for R/W and Read Replica computes.
 
 ## Roles
 
-In Neon, roles are Postgres roles. A role is required to create and access a database. A role belongs to a branch. There is no limit on the number of roles you can create. The default branch of a Neon project is created with a role named for your database. For example, if your database is named `neondb`, the project is created with a role named `neondb_owner`. This role is the owner of the database. Any role created via the Neon Console, CLI, or API is created with [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) privileges. For more information, see [Manage roles](/docs/manage/roles).
+In Neon, roles are Postgres roles. A role is required to create and access a database. A role belongs to a branch. There is a limit of 500 roles per branch. The default branch of a Neon project is created with a role named for your database. For example, if your database is named `neondb`, the project is created with a role named `neondb_owner`. This role is the owner of the database. Any role created via the Neon Console, CLI, or API is created with [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) privileges. For more information, see [Manage roles](/docs/manage/roles).
 
 ## Databases
 
-As with any standalone instance of Postgres, a database is a container for SQL objects such as schemas, tables, views, functions, and indexes. In Neon, a database belongs to a branch. If you do not specify your own database name when creating a project, the default branch of your project is created with a ready-to-use database named `neondb`. There is no defined limit on the number of databases you can create in a Neon project. For more information, see [Manage databases](/docs/manage/databases).
+As with any standalone instance of Postgres, a database is a container for SQL objects such as schemas, tables, views, functions, and indexes. In Neon, a database belongs to a branch. If you do not specify your own database name when creating a project, the default branch of your project is created with a ready-to-use database named `neondb`. There is a limit of 500 databases per branch. For more information, see [Manage databases](/docs/manage/databases).
+
+## Schemas
+
+All databases in Neon are created with a `public` schema, which is the default behavior for any standard PostgreSQL instance. SQL objects are created in the `public` schema, by default. For more information about the `public` schema, refer to [The Public schema](https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-PUBLIC), in the _PostgreSQL documentation_.
 
 
 # Projects
@@ -13917,7 +17840,7 @@ isDraft: false
 subtitle: Learn how to manage Neon projects from the Neon Console or the Neon API.
 redirectFrom:
   - /docs/get-started-with-neon/projects
-updatedOn: '2024-08-07T21:36:52.672Z'
+updatedOn: '2024-09-06T12:09:44.681Z'
 ---
 
 With Neon, everything starts with the project. It is the top-level object in the [Neon object hierarchy](/docs/manage/overview). A project can hold as many databases and branches as your application or workflow needs. However, [plan limits](/docs/introduction/plans) define how many projects you can create. The Neon Free Plan limits you to one project per Neon account.
@@ -14017,6 +17940,10 @@ To delete a project:
 5. Click **Delete project.**
 6. On the confirmation dialog, click **Delete**.
 
+<Admonition type="important">
+If you are any of Neon's paid plans, such as our Launch or Scale plan, deleting all your Neon projects won't stop monthly billing. To avoid charges, you also need to downgrade to the Free plan. You can do so from the [Billing](https://console.neon.tech/app/billing#change_plan) page in the Neon Console.
+</Admonition>
+
 ### Share a project
 
 Neon's project sharing feature allows you to share your project with other Neon accounts.
@@ -14050,7 +17977,7 @@ _Compute size_ is the number of Compute Units (CUs) assigned to a Neon compute. 
 
 For [Neon Free Plan](/docs/introduction/plans#free-plan) users, Neon sets your compute size to a static shared .25 vCPU, with 1 GB of RAM for each branch (max 10 branches).
 
-Users on paid plans have the flexibility to choose a compute size for each branch's compute individually. By default, new branches inherit the compute size from your first branch (i.e., `main`). However, there may be times when you want to reset this default. For example, if you want to create read replica computes, where each replica requires less compute per branch.
+By default, new branches inherit the compute size from your first branch (i.e., `main`). However, there may be times when you want to reset this default. For example, if you want to create read replica computes, where each replica requires less compute per branch.
 
 To reset the default compute size, go to **Project settings** > **Compute**.
 
@@ -14065,7 +17992,14 @@ _Example: default minimum and maximum autoscale settings_
 
 ### Configure history retention
 
-By default, Neon retains a history of changes for all branches in a Neon project, which allows you to create a branch that restores data to any point within the defined retention period. The supported limits are 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users. Please be aware that increasing the history retention period affects all branches in your project and increases [project storage](/docs/introduction/usage-metrics#storage).
+By default, Neon retains a history of changes for all branches in your project, enabling features like:
+
+- [Point-in-time restore](/docs/introduction/point-in-time-restore) for recovering lost data
+- [Time Travel](/docs/guides/time-travel-assist) queries for investingating data issues
+
+The default retention window is **1 day** across all plans to help avoid unexpected storage costs. If you extend this retention window, you'll expand the range of data recovery and query options, but note that this will also increase your [storage](/docs/introduction/usage-metrics#storage) usage, especially with multiple active branches.
+
+Also note that adjusting the history retention period affects _all_ branches in your project.
 
 To configure the history retention period for a project:
 
@@ -14075,6 +18009,8 @@ To configure the history retention period for a project:
    ![History retention configuration](/docs/manage/history_retention.png)
 4. Use the slider to select the history retention period.
 5. Click **Save**.
+
+For more information about available plan limits, see [Neon plans](/docs/introduction/plans).
 
 ## Enable logical replication
 
@@ -14104,7 +18040,7 @@ After enabling logical replication, the next steps involve creating publications
 
 ### Configure IP Allow
 
-Available to [Scale](/docs/introduction/plans#scale) plan users, the IP Allow feature provides an added layer of security for your data, restricting access to the branch where your database resides to only those IP addresses that you specify. In Neon, the IP allowlist is applied to all branches by default.
+Available to Neon [Business](/docs/introduction/plans#business) plan users, the IP Allow feature provides an added layer of security for your data, restricting access to the branch where your database resides to only those IP addresses that you specify. In Neon, the IP allowlist is applied to all branches by default.
 
 Optionally, you can allow unrestricted access to your project's [non-default branches](/docs/manage/branches#non-default-branch). For instance, you might want to restrict access to the default branch to a handful of trusted IPs while allowing unrestricted access to your development branches.
 
@@ -14578,10 +18514,10 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/get-started-with-neon/get-started-branching
-updatedOn: '2024-08-07T21:36:52.671Z'
+updatedOn: '2024-09-02T13:42:56.662Z'
 ---
 
-Data resides in a branch. Each Neon project is created with a [root branch](#root-branch) called `main`, which is also designated as your [default branch](#default-branch). You can create child branches from `main` or from previously created branches. A branch can contain multiple databases and roles. Tier limits define the number of branches you can create in a project and the amount of data you can store in a branch.
+Data resides in a branch. Each Neon project is created with a [root branch](#root-branch) called `main`, which is also designated as your [default branch](#default-branch). You can create child branches from `main` or from previously created branches. A branch can contain multiple databases and roles. Plan limits define the number of branches you can create in a project and the amount of data you can store in a branch.
 
 A child branch is a copy-on-write clone of the parent branch. You can modify the data in a branch without affecting the data in the parent branch.
 For more information about branches and how you can use them in your development workflows, see [Branching](/docs/introduction/branching).
@@ -14596,15 +18532,15 @@ When working with branches, it is important to remove old and unused branches. B
 
 Each Neon project has a default branch. In the Neon Console, your default branch is identified by a `DEFAULT` tag. You can designate any branch as the default branch for your project. The advantage of the default branch is that its compute remains accessible if you exceed your project's limits, ensuring uninterrupted access to data that resides on the default branch, which is typically the branch used in production.
 
-- For Neon Free Plan users, the compute associated with the default branch is always available.
+- For Neon Free Plan users, the compute associated with the default branch has 24/7 availability at 0.25 vCPU with 1 GB RAM.
 - For users on paid plans, the compute associated with the default branch is exempt from the limit on simultaneously active computes, ensuring that it is always available. Neon has a default limit of 20 concurrently active computes to protect your account from unintended usage.
 
 ## Non-default branch
 
 Any branch not designated as the default branch is considered a non-default branch. You can rename or delete non-default branches.
 
-- For Neon Free Plan users, computes associated with non-default branches are suspended if you exceed the Neon Free Plan _active hours_ limit of 20 hours per month.
-- For users on paid plans, default limits prevent more than 20 concurrently active computes. Beyond that limit, a computes associated with a non-default branch remains suspended.
+- For Neon Free Plan users, computes associated with **non-default branches** are suspended if you exceed the Neon Free Plan 5 hours per month for **non-default branches**.
+- For users on paid plans, default limits prevent more than 20 concurrently active computes. Beyond that limit, a compute associated with a non-default branch remains suspended.
 
 ## Protected branch
 
@@ -14617,7 +18553,7 @@ Neon's protected branches feature implements a series of protections:
 - New passwords are automatically generated for Postgres roles on branches created from protected branches.
 - With additional configuration steps, you can apply IP restrictions to protected branches only.
 
-Typically, a protected status is given to a branch or branches that hold production data or sensitive data. The protected branch feature is only supported on Neon's [Scale](/docs/introduction/plans#scale) plan, where you can designate up to 5 protected branches. See [Set a branch as protected](#set-a-branch-as-protected).
+Typically, a protected status is given to a branch or branches that hold production data or sensitive data. The protected branch feature is only supported on Neon's [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans, where you can designate up to 5 protected branches. See [Set a branch as protected](#set-a-branch-as-protected).
 
 ## Create a branch
 
@@ -14707,7 +18643,7 @@ To set a branch as the default branch:
 
 ## Set a branch as protected
 
-This feature is available on Neon's [Scale](/docs/introduction/plans#scale) plan, which supports up to five protected branches.
+This feature is available on Neon's [Business](/docs/introduction/plans#business) plan, which supports up to five protected branches.
 
 To set a branch as protected:
 
@@ -15034,7 +18970,7 @@ You can verify that a branch is deleted by listing the branches for your project
 title: Manage computes
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-09T09:32:01.733Z'
+updatedOn: '2024-08-22T16:01:18.423Z'
 ---
 
 A primary read-write compute is created for your project's [default branch](/docs/reference/glossary#default-branch).
@@ -15081,13 +19017,13 @@ To create an endpoint:
 
 ## Edit a compute
 
-Neon paid plan users can edit a compute to change the [compute size](#compute-size-and-autoscaling-configuration) or [Autosuspend](#auto-suspend-configuration) configuration.
+You can edit a compute to change the [compute size](#compute-size-and-autoscaling-configuration) or [Autosuspend](#auto-suspend-configuration) configuration.
 
 To edit a compute:
 
 1. In the Neon Console, select **Branches**.
 1. Select a branch.
-1. From the **Compute** tab, select **Edit** for the compute you wnat to edit.
+1. From the **Compute** tab, select **Edit** for the compute you want to edit.
 
    The **Edit** window opens, letting you modify settings such as compute size, the autoscaling configuration (if applicable), and your autosuspend setting.
 
@@ -15164,10 +19100,6 @@ The following table outlines the vCPU, RAM, LFC size (80% of RAM), and the `max_
 | 8                      | 8    | 32 GB | 25.6 GB  | 3604            |
 | 9                      | 9    | 36 GB | 28.8 GB  | 4000            |
 | 10                     | 10   | 40 GB | 32 GB    | 4000            |
-
-<Admonition type="note">
-Users on paid plans can configure the size of their computes. The compute size for Free Plan users is set at .25 CU (.25 vCPU and 1 GB RAM).
-</Admonition>
 
 When selecting a compute size, ideally, you want to keep as much of your dataset in memory as possible. This improves performance by reducing the amount of reads from storage. If your dataset is not too large, select a compute size that will hold the entire dataset in memory. For larger datasets that cannot be fully held in memory, select a compute size that can hold your [working set](/docs/reference/glossary#working-set). Selecting a compute size for a working set involves advanced steps, which are outlined below. See [Sizing your compute based on the working set](#sizing-your-compute-based-on-the-working-set).
 
@@ -15571,7 +19503,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/manage/users
-updatedOn: '2024-06-21T14:17:23.478Z'
+updatedOn: '2024-08-13T15:31:30.511Z'
 ---
 
 In Neon, roles are Postgres roles. Each Neon project is created with a Postgres role that is named for your database. For example, if your database is named `neondb`, the project is created with a role named `neondb_owner`. This role owns the database that is created in your Neon project's default branch.
@@ -15582,7 +19514,7 @@ Your Postgres role and roles created in the Neon Console, API, and CLI are grant
 Neon is a managed Postgres service, so you cannot access the host operating system, and you can't connect using the Postgres `superuser` account like you can in a standalone Postgres installation.
 </Admonition>
 
-You can create roles in a project's default branch or child branches. There is no limit to the number of roles you can create.
+You can create roles in a project's default branch or child branches. While there is no strict limit on the number of roles you can create, we recommend keeping it under 500 per branch.
 
 In Neon, roles belong to a branch, which could be your main branch or a child branch. When you create a child branch, roles in the parent branch are duplicated in the child branch. For example, if role `alex` exists in the parent branch, role `alex` is copied to the child branch when the child branch is created. The only time this does not occur is when you create a branch that only includes data up to a particular point in time. If the role was created in the parent branch after that point in time, it is not duplicated in the child branch.
 
@@ -15975,10 +19907,10 @@ The following names are protected and cannot be given to a role:
 title: Manage databases
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-06-21T14:17:23.476Z'
+updatedOn: '2024-08-13T15:31:30.510Z'
 ---
 
-A database is a container for SQL objects such as schemas, tables, views, functions, and indexes. In the [Neon object hierarchy](/docs/manage/overview), a database exists within a branch of a project. There is no limit on the number of databases you can create.
+A database is a container for SQL objects such as schemas, tables, views, functions, and indexes. In the [Neon object hierarchy](/docs/manage/overview), a database exists within a branch of a project. While there is no strict limit on the number of databases you can create, we recommend keeping it under 500 per branch.
 
 If you do not specify your own database name when creating a project, your project's default branch is created with a database called `neondb`, which is owned by your project's default role (see [Manage roles](/docs/manage/roles) for more information). You can create your own databases in a project's default branch or in a child branch.
 
@@ -16433,6 +20365,8 @@ The Neon team will review your request.
 
 # Monitoring
 
+# Overview
+
 ---
 title: Monitoring in Neon
 subtitle: Learn about monitoring resources and metrics in Neon
@@ -16470,7 +20404,7 @@ If you've got feature requests or feedback about what you'd like to see in Neon 
 ---
 title: Monitoring dashboard
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.953Z'
+updatedOn: '2024-09-06T18:23:43.942Z'
 ---
 
 The **Monitoring** dashboard in the Neon console provides several graphs for monitoring system and database metrics. You can access the **Monitoring** dashboard from the sidebar in the Neon Console. Observable metrics include:
@@ -16481,6 +20415,8 @@ The **Monitoring** dashboard in the Neon console provides several graphs for mon
 - [Database size](#database-size)
 - [Deadlocks](#deadlocks)
 - [Rows](#rows)
+- [Replication delay bytes](#replication-delay-bytes)
+- [Replication delay seconds](#replication-delay-seconds)
 
 Your Neon plan defines the range of data you can view.
 
@@ -16488,7 +20424,8 @@ Your Neon plan defines the range of data you can view.
 | ----------------------------------------------- | ------------------------ |
 | [Free Plan](/docs/introduction/plans#free-plan) | Last day (24 hours)      |
 | [Launch](/docs/introduction/plans#launch)       | Last 7 days (168 hours)  |
-| [Scale](/docs/introduction/plans#scale)         | Last 14 days (336 hours) |
+| [Scale](/docs/introduction/plans#scale)         | Last 7 days (168 hours) |
+| [Business](/docs/introduction/plans#business)         | Last 14 days (336 hours) |
 
 A shorter or custom period can be selected within the permitted range by selecting the desired option from the **Other** menu on the dashboard.
 
@@ -16572,7 +20509,7 @@ Database size metrics are only displayed while your compute is active. When your
 
 The **Deadlocks** graph shows a count of deadlocks over time for the named database on the selected branch. The named database is always the oldest database on the selected branch.
 
-Deadlocks occur in a database when two or more transactions simultaneously block each other by holding onto resources the other transactions need, creating a cycle of dependencies that prevent any of the transactions from proceeding, potentially leading to performance issues or application errors. For lock-related queries you can use to investigate deadlocks, see [Performance tuning](/docs/postgresql/query-reference#performance-tuning). To learn more about deadlocks in Postgres, see [Deadlocks](/docs/current/explicit-locking.html#LOCKING-DEADLOCKS).
+Deadlocks occur in a database when two or more transactions simultaneously block each other by holding onto resources the other transactions need, creating a cycle of dependencies that prevent any of the transactions from proceeding, potentially leading to performance issues or application errors. For lock-related queries you can use to investigate deadlocks, see [Performance tuning](/docs/postgresql/query-reference#performance-tuning). To learn more about deadlocks in Postgres, see [Deadlocks](https://www.postgresql.org/docs/current/explicit-locking.html).
 
 ![Monitoring page deadlocks graph](/docs/introduction/monitor_deadlocks.jpg)
 
@@ -16583,6 +20520,18 @@ The **Rows** graph shows the number of rows deleted, updated, and inserted over 
 Tracking rows inserted, updated, and deleted over time provides insights into your database's activity patterns. You can use this data to identify trends or irregularities, such as insert spikes or an unusual number of deletions.
 
 ![Monitoring page rows graph](/docs/introduction/monitor_rows.jpg)
+
+### Replication delay bytes 
+
+The **Replication delay bytes** graph shows the total size, in bytes, of the data that has been sent from the primary compute but has not yet been applied on the replica. A larger value indicates a higher backlog of data waiting to be replicated, which may suggest issues with replication throughput or resource availability on the replica. This chart is only visible when selecting a **Replica** compute from the **Compute** drop-down menu.
+
+![Replication delay bytes](/docs/introduction/rep_delay_bytes.png)
+
+### Replication delay seconds 
+
+The **Replication delay seconds** graph shows the time delay, in seconds, between the last transaction committed on the primary compute and the application of that transaction on the replica. A higher value suggests that the replica is behind the primary, potentially due to network latency, high replication load, or resource constraints on the replica. This chart is only visible when selecting a **Replica** compute from the **Compute** drop-down menu.
+
+![Replication delay seconds](/docs/introduction/rep_delay_seconds.png)
 
 
 # System operations
@@ -16996,7 +20945,7 @@ Neon currently does not support the `system_stats` extension required to use the
 
 ### How to install pgAdmin
 
-Pre-compiled and configured installation packages for pgAdmin 4 are available for different desktop environments. For installation instructions, refer to the [pgAdmin deployment documentation](https://www.pgadmin.org/docs/pgadmin4/8.4/deployment.html). Downloads can be found on the [PgAdmin Downloads](https://www.pgadmin.org/download/) page.
+Pre-compiled and configured installation packages for pgAdmin 4 are available for different desktop environments. For installation instructions, refer to the [pgAdmin deployment documentation](https://www.pgadmin.org/docs/pgadmin4/latest/deployment.html). Downloads can be found on the [PgAdmin Downloads](https://www.pgadmin.org/download/) page.
 
 ### How to connect to your database from pgAdmin
 
@@ -17019,7 +20968,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/security/security
   - /docs/security
-updatedOn: '2024-08-02T15:45:37.656Z'
+updatedOn: '2024-09-05T17:14:45.247Z'
 ---
 
 At Neon, security is our highest priority. We are committed to implementing best practices and earning the trust of our users. A key aspect of earning this trust is by ensuring that every touchpoint in our system, from connections, to data storage, to our internal processes, adheres to the highest security standards.
@@ -17034,7 +20983,7 @@ In addition, Neon requires a 60-bit entropy password for all PostgreSQL roles. T
 
 ## IP allowlist support
 
-Neon's IP Allow feature, available with the [Scale](/docs/introduction/plans#scale) plan, ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation). To learn more, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+Neon's IP Allow feature, available with the Neon [Business](/docs/introduction/plans#business) plan, ensures that only trusted IP addresses can connect to the project where your database resides, preventing unauthorized access and helping maintain overall data security. You can limit access to individual IP addresses, IP ranges, or IP addresses and ranges defined with [CIDR notation](/docs/reference/glossary#cidr-notation). To learn more, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
 ## Protected branches
 
@@ -17047,7 +20996,7 @@ You can designate any branch as a "protected branch", which implements a series 
 - New passwords are automatically generated for Postgres roles on branches created from protected branches.
 - With additional configuration steps, you can apply IP restrictions to protected branches only.
 
-The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) plan. Typically, the protected branch status is given to a branch or branches that hold production data or sensitive data. For information about how to configure a protected branch, refer to our [Protected branches guide](/docs/guides/protected-branches).
+The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans. Typically, the protected branch status is given to a branch or branches that hold production data or sensitive data. For information about how to configure a protected branch, refer to our [Protected branches guide](/docs/guides/protected-branches).
 
 ## Data-at-rest encryption
 
@@ -17117,7 +21066,7 @@ If you identify a security vulnerability, please proceed as follows under the pr
 ---
 title: SOC 2 compliance
 enableTableOfContents: false
-updatedOn: '2024-01-18T12:13:39.430Z'
+updatedOn: '2024-09-02T13:42:56.664Z'
 ---
 
 Neon has successfully achieved both SOC 2 Type 1 and Type 2 compliance, demonstrating our commitment to data security and privacy. These compliance milestones, validated by independent auditors, affirm our adherence to the criteria set forth by the American Institute of Certified Public Accountants (AICPA) in the areas of security, availability, processing integrity, confidentiality, and privacy.
@@ -17129,7 +21078,7 @@ The **SOC 2 Type 2 Compliance** audit assessed the operational effectiveness of 
 Achieving SOC 2 Type 1 and Type 2 compliance underscores Neon's ongoing commitment to safeguarding customer data and maintaining a high level of security. We will continue to invest in regular audits and adhere to industry best practices to ensure the security, integrity, and privacy of the data you entrust us with.
 
 <Admonition type="note">
-Neon [Scale](/docs/introduction/plans#scale) plan users can request SOC 2 audit reports through our [Trust Center](https://trust.neon.tech/). If you have other security questions or concerns, please contact us at [security@neon.tech](mailto:security@neon.tech).
+Neon [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plan users can request SOC 2 audit reports through our [Trust Center](https://trust.neon.tech/). If you have other security questions or concerns, please contact us at [security@neon.tech](mailto:security@neon.tech).
 </Admonition>
 
 
@@ -17191,14 +21140,14 @@ You agree to abide by this Acceptable Use Policy by using Neon's resources. Your
 ---
 title: Backups
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.956Z'
+updatedOn: '2024-09-05T17:14:45.246Z'
 ---
 
 Neon does not yet provide support for configuring automated backups in the Neon Console or API. This feature is on our roadmap. You can expect it to be introduced in the coming months. In the meantime, we support the following backup options:
 
 ## Built-in backups with Neon's point-in-time restore feature
 
-Neon retains a history for all branches, allowing you to restore your data to a particular date and time or Log Sequence Number (LSN). The history retention period is configurable. The supported limits are 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users. With this backup option, no action or automation is required. You can restore your data to a past state at any time by creating a database branch, which is a near-instant operation. This feature is referred to as [Point-in-time restore](/docs/introduction/point-in-time-restore).
+Neon retains a history for all branches, allowing you to restore your data to a particular date and time or Log Sequence Number (LSN). The history retention period is configurable. The supported limits are up to 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch), 14 days for [Scale](/docs/introduction/plans#scale), and 30 days for [Business](/docs/introduction/plans#business) plan users. With this backup option, no action or automation is required. You can restore your data to a past state at any time by creating a database branch, which is a near-instant operation. This feature is referred to as [Point-in-time restore](/docs/introduction/point-in-time-restore).
 
 For information about creating a point-in-time restore branch, see [Branching — Point-in-time restore](/docs/guides/branching-pitr).
 
@@ -17212,7 +21161,7 @@ Avoid using `pg_dump` over a [pooled Neon connection](https://neon.tech/docs/con
 
 This method dumps a single database in a single branch of your Neon project. If you need to create backups for multiple databases in multiple branches, you must perform a dump operation for each database in each branch separately.
 
-To dump a database from your Neon project, please refer to the `pg_dump` instructions in our [Import from Postgres](/docs/import/import-from-postgres) guide.
+To dump a database from your Neon project, please refer to the `pg_dump` instructions in our [Migrate from Postgres](/docs/import/migrate-from-postgres) guide.
 
 ## Backups with @neondatabase/pg-import
 
@@ -17244,7 +21193,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/conceptual-guides/regions
-updatedOn: '2024-08-06T15:23:10.955Z'
+updatedOn: '2024-09-03T14:54:52.675Z'
 ---
 
 Neon supports project deployment in several regions. We recommended that you select the region closest to your application server to reduce latency between your Neon database and your application.
@@ -17260,59 +21209,7 @@ Neon currently supports the following AWS regions:
 - Asia Pacific (Singapore) &mdash; `aws-ap-southeast-1`
 - Asia Pacific (Sydney) &mdash; `aws-ap-southeast-2`
 
-## Select a region for your Neon project
-
-You can select the region for your Neon project during project creation. See [Create a project](/docs/manage/projects#create-a-project).
-
-All branches and databases created in a Neon project are created in the region selected for the project.
-
-![Select region image](/docs/introduction/project_creation_regions.png)
-
-<Admonition type="note">
-After you select a region for a Neon project, it cannot be changed for that project.
-</Admonition>
-
-## Move project data to a new region
-
-If you need to move your data to a different region, the following steps are recommended:
-
-1. Create a new project in the desired region. For project creation instructions, see [Create a project](/docs/manage/projects#create-a-project).
-1. Move your data from the old project to the new project. For instructions, see [Import data from Postgres](/docs/import/import-from-postgres).
-
-<Admonition type="note">
-Neon Free Plan users are limited to a single project. In this case, you can export your data using `pg_dump`, remove your existing project, create a new project in the desired region, and import your data into the new project.
-</Admonition>
-
-Moving data to a new Neon project may require downtime if you are moving a production database, as the import procedure may take some time depending on the size of your data. To prevent the loss of data during the import operation, consider disabling writes from your applications before initiating the import operation. You can re-enable writes when the import is completed. Neon does not currently support disabling database writes. Writes must be disabled at the application level.
-
-Neon regularly reviews opportunities for expanding into new regions. We welcome your input regarding where you'd like to see us next. Please share your suggestions or express your interest in specific regions via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or in our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
-
-<NeedHelp/>
-
-
-# Neon Regions
-
----
-title: Regions
-enableTableOfContents: true
-isDraft: false
-redirectFrom:
-  - /docs/conceptual-guides/regions
-updatedOn: '2024-08-06T15:23:10.955Z'
----
-
-Neon supports project deployment in several regions. We recommended that you select the region closest to your application server to reduce latency between your Neon database and your application.
-
-## Available regions
-
-Neon currently supports the following AWS regions:
-
-- US East (N. Virginia) &mdash; `aws-us-east-1`
-- US East (Ohio) &mdash; `aws-us-east-2`
-- US West (Oregon) &mdash; `aws-us-west-2`
-- Europe (Frankfurt) &mdash; `aws-eu-central-1`
-- Asia Pacific (Singapore) &mdash; `aws-ap-southeast-1`
-- Asia Pacific (Sydney) &mdash; `aws-ap-southeast-2`
+<RegionRequest />
 
 ## Select a region for your Neon project
 
@@ -17326,20 +21223,43 @@ All branches and databases created in a Neon project are created in the region s
 After you select a region for a Neon project, it cannot be changed for that project.
 </Admonition>
 
+## NAT Gateway IP addresses
+
+A NAT gateway has a public IP address that external systems see when private resources initiate outbound connections. Neon uses 3 to 6 IP addresses per region for this outbound communication, corresponding to each availability zone in the region. To ensure proper connectivity for setups such as replicating data to Neon, you should allow access to all the NAT gateway IP addresses associated with your Neon project's region.
+
+If you are unsure of your project's region, you can find this information in the **Project settings** widget on the **Project Dashboard**.
+
+### NAT Gateway IP Addresses by region
+
+| Region                                        | NAT Gateway IP Addresses                                                               |
+| :-------------------------------------------- | :------------------------------------------------------------------------------------- |
+| US East (N. Virginia) — aws-us-east-1         | 23.23.0.232, 3.222.32.110, 35.168.244.148, 54.160.39.37, 54.205.208.153, 54.88.155.118 |
+| US East (Ohio) — aws-us-east-2                | 18.217.181.229, 3.129.145.179, 3.139.195.115                                           |
+| US West (Oregon) — aws-us-west-2              | 44.235.241.217, 52.32.22.241, 52.37.48.254, 54.213.57.47                               |
+| Europe (Frankfurt) — aws-eu-central-1         | 18.158.63.175, 3.125.234.79, 3.125.57.42                                               |
+| Asia Pacific (Singapore) — aws-ap-southeast-1 | 54.254.50.26, 54.254.92.70, 54.255.161.23                                              |
+| Asia Pacific (Sydney) — aws-ap-southeast-2    | 13.237.134.148, 13.55.152.144, 54.153.185.87                                           |
+
 ## Move project data to a new region
 
-If you need to move your data to a different region, the following steps are recommended:
+Moving a project to a differ region requires moving your data using one of the following methods:
+
+### Dump and restore
+
+Using the dump and restore method involves the following steps:
 
 1. Create a new project in the desired region. For project creation instructions, see [Create a project](/docs/manage/projects#create-a-project).
-1. Move your data from the old project to the new project. For instructions, see [Import data from Postgres](/docs/import/import-from-postgres).
+1. Move your data from the old project to the new project. For instructions, see [Import data from Postgres](/docs/import/migrate-from-postgres).
+
+Moving data to a new Neon project using this method may take some time depending on the size of your data. To prevent the loss of data during the import operation, consider disabling writes from your applications before initiating the import operation. You can re-enable writes when the import is completed. Neon does not currently support disabling database writes. Writes must be disabled at the application level.
 
 <Admonition type="note">
 Neon Free Plan users are limited to a single project. In this case, you can export your data using `pg_dump`, remove your existing project, create a new project in the desired region, and import your data into the new project.
 </Admonition>
 
-Moving data to a new Neon project may require downtime if you are moving a production database, as the import procedure may take some time depending on the size of your data. To prevent the loss of data during the import operation, consider disabling writes from your applications before initiating the import operation. You can re-enable writes when the import is completed. Neon does not currently support disabling database writes. Writes must be disabled at the application level.
+### Logical replication
 
-Neon regularly reviews opportunities for expanding into new regions. We welcome your input regarding where you'd like to see us next. Please share your suggestions or express your interest in specific regions via the [Feedback](https://console.neon.tech/app/projects?modal=feedback) form in the Neon Console or in our [feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042) on Discord.
+As an alternative to the dump and restore method described above, you can use **logical replication** to replicate data from one Neon project to another for a near-zero downtime data migration. For more information, see [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
 
 <NeedHelp/>
 
@@ -17349,162 +21269,214 @@ Neon regularly reviews opportunities for expanding into new regions. We welcome 
 ---
 title: Support
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.955Z'
+updatedOn: '2024-09-20T19:10:25.308Z'
 ---
 
-Neon's Community, Standard, Priority, and Enterprise support plans are outlined below. Support plans are mapped to Neon's pricing plans. See [Upgrading your support plan](#upgrading-your-support-plan).
+This page outlines Neon's support plans, available channels, and policies. To learn how to access support, please refer to the [Support channels](#support-channels) section. Identify the channels available to you based on your plan and follow the links to navigate to the relevant information.
 
-| Support channels                | Community | Standard | Priority | Enterprise |
-| :------------------------------ | :-------: | :------: | :------: | :--------: |
-| Neon Discord Server             |  &check;  | &check;  | &check;  |  &check;   |
-| Support tickets                 |     -     | &check;  | &check;  |  &check;   |
-| Prioritized supported tickets   |     -     |    -     | &check;  |  &check;   |
-| Video chat                      |     -     |    -     | &check;  |  &check;   |
-| Dedicated Customer Success Team |     -     |    -     |          |  &check;   |
-| SLAs                            |     -     |    -     |          |  &check;   |
+## Support plans
 
-<Admonition type="important">
-The [Neon Discord Server](https://discord.gg/92vNTzKDGp) is available to all Neon users but is not an official Neon Support channel. If you are a paid plan user and require assistance from the Neon Support team, please open a support ticket, as described in [Standard support](#standard-support).
+Neon's support plans are mapped to [Neon Pricing Plans](/docs/introduction/plans), as outlined in the following table.
+
+| Neon Pricing Plan                                      | Support Plan |
+| :----------------------------------------------------- | :----------- |
+| [Free Plan](/docs/introduction/plans#free-plan)        | Community    |
+| [Launch Plan](/docs/introduction/plans#launch)         | Standard     |
+| [Scale Plan](/docs/introduction/plans#scale)           | Standard     |
+| [Business Plan](/docs/introduction/plans#business)     | Priority     |
+| [Enterprise Plan](/docs/introduction/plans#enterprise) | Enterprise   |
+
+<Admonition type="note">
+Upgrading your support plan requires [upgrading your pricing plan](/docs/introduction/manage-billing#change-your-plan).
 </Admonition>
 
-## Community support
+## Support channels
 
-Neon's [Free Plan](/docs/introduction/plans#free-plan) includes **Community** support.
+The support channels you can access differ according to your [Support Plan](#support-plans).
 
-Community support is provided through the [Neon Discord Server](https://discord.gg/92vNTzKDGp), where you can ask questions or see what others are doing with Neon. You will find Neon users and members of the Neon team actively engaged in our Discord Server.
+| Support channels                                                      | Community | Standard | Priority | Enterprise |
+| :-------------------------------------------------------------------- | :-------: | :------: | :------: | :--------: |
+| [Neon Discord Server](#neon-discord-server) (not an official channel) |  &check;  | &check;  | &check;  |  &check;   |
+| [Neon AI Chat](#neon-ai-chat) (not an official channel)               |  &check;  | &check;  | &check;  |  &check;   |
+| [Support tickets](#support-tickets)                                   |     -     | &check;  | &check;  |  &check;   |
+| [Prioritized support tickets](#prioritized-support-tickets)           |     -     |    -     | &check;  |  &check;   |
+| [Video chat](#video-chat)                                             |     -     |    -     |    \*    |     \*     |
+| [SLAs](#slas)                                                         |     -     |    -     |          |  &check;   |
 
-## Standard support
+<div style={{margin: '-30px 0 30px 0'}}>
+<small><sup>*</sup>Video chats may be scheduled on a case-by-case basis. See [Video chat](#video-chat).</small>
+</div>
 
-Neon's [Launch plan](/docs/introduction/plans#launch) includes **Standard** support.
+### Neon Discord Server
 
-Standard support includes access to the Neon Support team via support tickets.
+All Neon users have access to the [Neon Discord Server](https://discord.gg/92vNTzKDGp), where you can ask questions or see what others are doing with Neon. You will find Neon users and members of the Neon team actively engaged.
 
-You can open support tickets in the Neon Console. Look for the **Support** link in the sidebar. It opens the **Create Support Ticket** modal, where you can describe your issue. To access the modal directly, [click here](https://console.neon.tech/app/projects?modal=support).
+<Admonition type="important">
+The [Neon Discord Server](https://discord.gg/92vNTzKDGp) is not an official Neon Support channel.
+</Admonition>
+
+### Neon AI Chat
+
+Neon AI chat is available to all Neon users. You can access Neon AI chat from the following locations:
+
+- The **Search** bar at the top of the [Neon Console](https://console.neon.tech/app/projects)
+- The **Search** bar in the [Neon Documentation](https://neon.tech/docs/introduction)
+- The **#gpt-help** channel on the [Neon Discord Server](https://discord.gg/92vNTzKDGp)
+
+![Ask Neon AI](/docs/introduction/ask_neon_ai.png)
+
+Neon AI Chat sources include the Neon Discord Server, the Neon Documentation, the Neon Blog, the Neon API Reference, PostgreSQL documentation, and GitHub repositories for Neon, the Neon CLI, and the Neon Serverless driver. Neon AI chat sources are updated daily to ensure that responses reflect the latest information.
+
+<Admonition type="important">
+Neon AI chat is not an official Neon Support channel.
+</Admonition>
+
+### Support tickets
+
+Paying users can contact support by opening a support ticket in the Neon Console. Select **Support** from the **?** menu at the top of the Neon Console. This will open the **Create Support Ticket** modal, where you can describe your issue.
+
+To access the modal directly, click here: [Open Support Ticket](https://console.neon.tech/app/projects?modal=support).
+
+<Admonition type="note">
+If you are a paying user and cannot access the support ticket form in the Neon Console for some reason, you can contact Neon support at the following email address: `support@neon.tech`.
+</Admonition>
 
 ![Support ticket modal](/docs/introduction/neon_support_modal.png)
 
-You can expect an initial response time of 2 business days, from 6am to 6pm Pacific Standard Time (UTC -8), Monday through Friday, excluding public holidays in the United States. For custom support solutions, please contact [Sales](https://neon.tech/contact-sales).
+You can expect an initial response time of 3 business days, Monday through Friday, excluding public holidays. For custom support solutions, please contact [Sales](https://neon.tech/contact-sales).
 
-## Priority support
+### Prioritized support tickets
 
-Neon's [Scale plan](/docs/introduction/plans#scale) includes **Priority** support.
+Support tickets opened by Priority and Enterprise support plan customers are given top priority by the Neon Support team. Refer to [Support tickets](#support-tickets) for how to open a support ticket.
 
-With Priority support, your support tickets are given priority by the Neon Support team and you can request a video chat. Requests for video chat should be submitted via a support ticket.
+### Video chat
 
-## Enterprise support
+Video chat is available to Priority and Enterprise support plan customers and may be scheduled on a case-by-case basis through the [support ticket](#support-tickets) process.
 
-Neon's [Enterprise plan](/docs/introduction/plans#launch) includes **Enterprise** support.
+### SLAs
 
-With Enterprise support, you have everything offered with the Priority plan plus dedicated Customer Success Team support, and SLAs.
+Support Level Agreements (SLAs) are available to Enterprise support plan customers. If you are interested in exploring an SLA, [get in touch with our sales team](/contact-sales).
 
-<Admonition type="note">
-If you are a Launch, Scale, or Enterprise user and are unable to access the support ticket form in the Neon Console, you can use the following email address as a fallback: `support@neon.tech`
-</Admonition>
+## General support policy
 
-## Upgrading your support plan
+Neon provides Support for eligible plans under the terms of this Support Policy as long as the Customer maintains a current subscription to one of the following Neon plans: Launch, Scale, Business, or Enterprise. For more information, see [plans](/docs/introduction/plans). “Support” means the services described in this Support Policy and does not include one-time services or other services not specified in this Support Policy, such as training, consulting, or custom development. Support for [Free Plan](/docs/introduction/plans#free-plan) users is provided through [Discord](https://neon.tech/discord). See Neon [plans](/docs/introduction/plans) and [pricing](https://neon.tech/pricing) for more information about our plans.
 
-Neon's support plans are mapped to our [pricing plans](/docs/introduction/plans), as outlined in the following table. Upgrading your support plan requires [upgrading your pricing plan](/docs/introduction/manage-billing#change-your-plan).
+Unless described otherwise, defined terms mentioned in this policy shall have the same meaning as defined in our [terms of service](https://neon.tech/terms-of-service).
 
-| Support plan | Pricing plan                                           |
-| :----------- | :----------------------------------------------------- |
-| Community    | [Free Plan](/docs/introduction/plans#free-plan)        |
-| Standard     | [Launch plan](/docs/introduction/plans#launch)         |
-| Priority     | [Scale plan](/docs/introduction/plans#scale)           |
-| Enterprise   | [Enterprise plan](/docs/introduction/plans#enterprise) |
+We provide updates regarding any disruption in our Services on our [status page](https://neonstatus.com/). Please check this source first before seeking support.
 
+### Issue resolution
 
-# Neon Support
+Neon will make commercially reasonable efforts to resolve any Issues submitted by customers on eligible plans. Such efforts may (at our discretion) include helping with diagnosis, suggesting workarounds, or changing the Product in a new release. An “Issue” is a material and verifiable failure of the Product to conform to its Documentation. Support will not be provided for the following: (1) use of the Products in a manner inconsistent with the applicable Documentation, (2) modifications to the Products not provided by or approved in writing by Neon, (3) use of the Products with third-party software not provided or approved by Neon. The Customer shall not submit Issues arising from any products other than the Products or otherwise use Support for unsupported products; this includes issues caused by third-party integrations.
 
----
-title: Support
-enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.955Z'
----
+### Billing issues
 
-Neon's Community, Standard, Priority, and Enterprise support plans are outlined below. Support plans are mapped to Neon's pricing plans. See [Upgrading your support plan](#upgrading-your-support-plan).
+If you, the Customer, believe that your invoice or billing receipt is incorrect, we strongly encourage you to contact our Support team rather than filing a dispute with your card provider. Should a payment dispute be filed before getting in touch with us, we are limited in terms of the action we can take to resolve the matter. Once a dispute has been made with the card provider, the account associated with it and all deployments under it may be suspended until it has been resolved.
 
-| Support channels                | Community | Standard | Priority | Enterprise |
-| :------------------------------ | :-------: | :------: | :------: | :--------: |
-| Neon Discord Server             |  &check;  | &check;  | &check;  |  &check;   |
-| Support tickets                 |     -     | &check;  | &check;  |  &check;   |
-| Prioritized supported tickets   |     -     |    -     | &check;  |  &check;   |
-| Video chat                      |     -     |    -     | &check;  |  &check;   |
-| Dedicated Customer Success Team |     -     |    -     |          |  &check;   |
-| SLAs                            |     -     |    -     |          |  &check;   |
+### Response times
 
-<Admonition type="important">
-The [Neon Discord Server](https://discord.gg/92vNTzKDGp) is available to all Neon users but is not an official Neon Support channel. If you are a paid plan user and require assistance from the Neon Support team, please open a support ticket, as described in [Standard support](#standard-support).
-</Admonition>
+Neon aims to respond to all **paid subscription** requests in a timely manner and as soon as practically possible. Customers are prioritized based on their plan and [Severity](#severity-levels) of their issue. We only commit to responding to Customers with an Enterprise subscription using the target response time guidelines below.
 
-## Community support
+#### Enterprise target response times
 
-Neon's [Free Plan](/docs/introduction/plans#free-plan) includes **Community** support.
+The table below outlines Neon’s guidelines for the various support tiers of our Enterprise support plan.
 
-Community support is provided through the [Neon Discord Server](https://discord.gg/92vNTzKDGp), where you can ask questions or see what others are doing with Neon. You will find Neon users and members of the Neon team actively engaged in our Discord Server.
+These times relate to the time it takes Neon to respond to the Customer’s initial request. This guideline only applies when submitting a support ticket through the Neon Console.
 
-## Standard support
+|    Severity Level     | Enterprise Standard                       | Enterprise Gold                          |
+| :-------------------: | ----------------------------------------- | ---------------------------------------- |
+| Severity 1 (Critical) | \< 2 hours (during Normal Business Hours) | \< 1 hour                                |
+|   Severity 2 (High)   | \< 2 days (during Normal Business Hours)  | \< 1 day                                 |
+|  Severity 3 (Normal)  | \< 3 days (during Normal Business Hours)  | \< 3 days (during Normal Business Hours) |
+|   Severity 4 (Low)    | \< 3 days (during Normal Business Hours)  | \< 3 days (during Normal Business Hours) |
 
-Neon's [Launch plan](/docs/introduction/plans#launch) includes **Standard** support.
+### Severity levels
 
-Standard support includes access to the Neon Support team via support tickets.
+When the Customer submits an issue (with or without specifying a starting severity), Neon will reasonably assess its severity according to the appropriate severity levels defined below. Neon reserves the right to set, upgrade and downgrade severities of support tickets, on a case-by-case basis, considering any available mitigations, workarounds, and timely cooperation from Customers. Neon will explain the reasoning to the Customer and will resolve any disagreement regarding the severity as soon as is reasonably practicable. **Critical and High-priority levels should not be used for low-impact issues or general questions\!**
 
-You can open support tickets in the Neon Console. Look for the **Support** link in the sidebar. It opens the **Create Support Ticket** modal, where you can describe your issue. To access the modal directly, [click here](https://console.neon.tech/app/projects?modal=support).
+A detailed explanation of each severity level, including several examples, is provided below.
 
-![Support ticket modal](/docs/introduction/neon_support_modal.png)
+#### Severity 1 (Critical)
 
-You can expect an initial response time of 2 business days, from 6am to 6pm Pacific Standard Time (UTC -8), Monday through Friday, excluding public holidays in the United States. For custom support solutions, please contact [Sales](https://neon.tech/contact-sales).
-
-## Priority support
-
-Neon's [Scale plan](/docs/introduction/plans#scale) includes **Priority** support.
-
-With Priority support, your support tickets are given priority by the Neon Support team and you can request a video chat. Requests for video chat should be submitted via a support ticket.
-
-## Enterprise support
-
-Neon's [Enterprise plan](/docs/introduction/plans#launch) includes **Enterprise** support.
-
-With Enterprise support, you have everything offered with the Priority plan plus dedicated Customer Success Team support, and SLAs.
+- Catastrophic problems in the Customer’s production system leading to loss of service or impact on the Customer’s business
+- Unavailability of the service
+- Security breaches that compromise the confidentiality, integrity, or availability of the database or its data.
 
 <Admonition type="note">
-If you are a Launch, Scale, or Enterprise user and are unable to access the support ticket form in the Neon Console, you can use the following email address as a fallback: `support@neon.tech`
+If Critical is selected during the case creation, the customer will be asked to provide in-depth details on the business impact the issue has caused.
 </Admonition>
 
-## Upgrading your support plan
+Examples:
 
-Neon's support plans are mapped to our [pricing plans](/docs/introduction/plans), as outlined in the following table. Upgrading your support plan requires [upgrading your pricing plan](/docs/introduction/manage-billing#change-your-plan).
+1. A complete outage of the service provided by Neon
+2. Security breaches
+3. Error impacting the project as a whole (all endpoints/db affected)
+4. Error impacting multiple projects
+5. EP/Branch/DB unreachable
+6. Data corruption/Data loss
 
-| Support plan | Pricing plan                                           |
-| :----------- | :----------------------------------------------------- |
-| Community    | [Free Plan](/docs/introduction/plans#free-plan)        |
-| Standard     | [Launch plan](/docs/introduction/plans#launch)         |
-| Priority     | [Scale plan](/docs/introduction/plans#scale)           |
-| Enterprise   | [Enterprise plan](/docs/introduction/plans#enterprise) |
+#### Severity 2 (High)
+
+Means a high-impact problem in a customer’s production systems. Essential operations are seriously disrupted, but a workaround exists that allows for continued essential operations.
+
+- Non-essential modifications to configuration, like adjusting database parameters or table schema
+- Minor performance concerns that have minimal impact on database usability
+- Minor issues related to application integrations, such as minor API connectivity problems
+- Small-scale challenges with data import/export, data transformation, or data loading processes
+
+Examples:
+
+1. Partial outage of the service provided by Neon: service usable, but key feature unusable, e.g.:
+   - Cannot create a new branch
+   - Cannot execute a branch [restore](/docs/guides/branch-restore)
+   - Cannot peform PITR
+   - Etc.
+2. Any use case that would require a high load of manual work on the customer side to mitigate an issue on our end
+3. Any use case which massively and negatively affects the customer's business
+
+#### Severity 3 (Normal)
+
+A medium-impact problem on a production or non-production system that involves:
+
+- Partial or limited loss of non-critical functionality
+- A usage problem that involves no loss in functionality
+
+Customers can continue essential operations. Normal problems also include issues with non-production systems, such as test and development systems.
+
+Examples:
+
+1. RCA for past outages or incidents (no disruption of the service at the moment)
+2. Sporadic connection failure/timeouts/retries
+3. Cannot connect with random third-party framework or tool (but can connect generally speaking)
+4. Any use case which has a minor impact on the customer's business
+5. Poor performing queries/ingestion
+6. Billing issues
+
+#### Severity 4 (Low)
+
+- A general usage question; here is no impact on the product's quality, performance, or functionality in a production or non-production system
+- Any request for information, enhancement, or documentation clarification regarding the platform
+
+Examples:
+
+1. Feature requests/feature enablement
+2. General questions (“active time,” “how to backup a DB,” “how to ingest data”) and feedback
+3. Any use case that has no impact on the customer's business at all
+
+### Etiquette
+
+Regardless of the method or location through which Neon provides Support, communication should be professional and respectful. Any communication that is deemed objectionable by Neon staff is not tolerated. This includes but is not limited to any communication that is abusive or contains profane language. Neon reserves the right to terminate Support Services in the event of any such objectionable communication.
+
+### Customer responsibilities
+
+To ensure efficient resolution of issues, customers are expected to (1) provide detailed information about the issue, (2) cooperate with the Support team during troubleshooting, and (3) utilize available self-service resources for basic inquiries.
+
+### Changes to the support policy
+
+We reserve the right to modify, amend, or update this Support Policy, including the types of support offered, support hours, response times, and support plans, at any time and at our sole discretion. Any changes to the Support Policy will be effective immediately upon posting a revised version of this Support Policy. Continued use of our services after such modifications will constitute acknowledgment and acceptance of the changes.
 
 
 # Status
-
----
-title: Neon status
-subtitle: Stay informed about the performance and availability of Neon
-enableTableOfContents: true
-updatedOn: '2023-10-07T10:43:33.416Z'
----
-
-For our customers to stay informed about the performance and availability of Neon, we provide a dedicated status page where you can monitor the health of our service in real-time.
-
-The status page includes the status for:
-
-- Console and API Requests
-- Database Operations
-- Database Connectivity
-
-To view the Neon Status page, please click [here](https://neonstatus.com/).
-
-We strive to maintain the highest level of service availability and performance, but in the case of interruptions or maintenance, you'll be able to find the information you need promptly and accurately. Please remember to bookmark the link for easy access.
-
-
-# Neon Status
 
 ---
 title: Neon status
@@ -17596,7 +21568,7 @@ redirectFrom:
   - /docs/introduction/pro-plan
   - /docs/introduction/custom-plan
   - /docs/reference/technical-preview-free-tier
-updatedOn: '2024-08-06T15:23:10.954Z'
+updatedOn: '2024-09-10T21:01:06.528Z'
 ---
 
 Neon's plans are designed to meet different user requirements, ranging from hobby projects to enterprise-level production workloads. We also offer custom enterprise plans with volume-based discounts for large teams or database fleets. Refer to our [Pricing](https://neon.tech/pricing) page for fees and a detailed plan comparison.
@@ -17606,6 +21578,7 @@ Neon offers four plans:
 - [Free Plan](#free-plan)
 - [Launch](#launch)
 - [Scale](#scale)
+- [Business](#business)
 - [Enterprise](#enterprise)
 
 <Admonition type="tip" title="Plan Allowances and Extra Usage">
@@ -17620,19 +21593,19 @@ Neon's Free Plan plan is best for hobby projects, prototypes, and learning Neon.
 
 The Free Plan includes the following usage allowances:
 
-| Usage type                 | Plan allowance                                                                                                                                         |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Projects**               | 1 Neon project                                                                                                                                         |
-| **Branches**               | 10 branches                                                                                                                                            |
-| **Databases**              | Unlimited                                                                                                                                              |
-| **Storage**                | 0.5 GiB                                                                                                                                                |
-| **Compute**                | Always-available default branch compute, 5 compute hours (20 _active hours_)/month on branch computes. Free Plan computes have 0.25 vCPU with 1GB RAM. |
-| **Data transfer (Egress)** | 5 GB per month                                                                                                                                         |
+| Usage type                 | Plan allowance                                                                                                                                                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Projects**               | 1 Neon project                                                                                                                                                                                                                             |
+| **Branches**               | 10 branches                                                                                                                                                                                                                                |
+| **Databases**              | Unlimited                                                                                                                                                                                                                                  |
+| **Storage**                | 0.5 GiB                                                                                                                                                                                                                                    |
+| **Compute**                | 24/7 availability at 0.25 vCPU with 1 GB RAM on your default branch. Autoscaling up to 2 vCPU with 8 GB RAM available. Your account includes 191.9 compute hours per month, with up to 5 of those hours available to non-default branches. |
+| **Data transfer (Egress)** | 5 GB per month                                                                                                                                                                                                                             |
 
-<Admonition type="tip" title="What are active hours and compute hours?">
+<Admonition type="tip" title="What is a compute hour?">
 
-- An **active hour** is a measure of the amount of time a compute is active. The time your compute is idle when suspended due to inactivity is not counted. In the table above, _active hours_ are based on a 0.25 vCPU compute size.
 - A **compute hour** is one _active hour_ for a compute with 1 vCPU. For a compute with .25 vCPU, it takes 4 _active hours_ to use 1 compute hour. On the other hand, if your compute has 4 vCPUs, it takes only 15 minutes to use 1 compute hour.
+- An **active hour** is a measure of the amount of time a compute is active. The time your compute is idle when suspended due to inactivity is not counted.
 - **Compute hours formula**
 
   ```
@@ -17644,6 +21617,7 @@ The Free Plan includes the following usage allowances:
 ### Free Plan features
 
 - Autosuspend (after 5 minutes of inactivity)
+- Monitoring with 1 day of historical data
 - All supported regions
 - Project sharing
 - Advanced Postgres features such as connection pooling, logical replication, and 60+ Postgres extensions
@@ -17653,7 +21627,7 @@ The Free Plan includes the following usage allowances:
 For a complete list of features, refer to the **detailed plan comparison** on the [Neon pricing](https://neon.tech/pricing) page.
 
 <Admonition type="tip" title="Free Plan Compute Allowances">
-On the Free Plan, your default branch compute is always available — it will never be suspended, which means you can always access the data on the default branch in your Neon project. Branch computes have 20 [active hours](/docs/reference/glossary#active-time) (5 [compute hours](/docs/reference/glossary#compute-hour)) per month. If your branch computes exceed this allowance, they are suspended until the allowance resets at the beginning of the month. You can monitor branch compute hours on the [Billing page](/docs/introduction/manage-billing#view-the-billing-page) in the Neon Console. The compute hour allowance for branch computes resets at the beginning of each month. For instance, if you enrolled in the Neon Free Plan in January, the allowance for branch computes resets on February 1st.
+On the Free Plan, your default branch compute can run 24/7 at 0.25 vCPU with 1 GB of RAM. If you enable autoscaling, your compute can scale up to 2 vCPU with 8 GB of RAM, providing additional resources to meet peak demand. Note that enabling autoscaling may affect 24/7 availability depending on your usage patterns. The Free Plan includes 191.9 compute hours per month, with up to 5 of those compute hours per month available to non-default branches. If you go over the 5 compute hours allowance, non-default branch computes are suspended until the allowance resets at the beginning of the month. If you go over the 191.9 compute hour allowance, all computes are suspended until the beginning of the month. For example, if you signed up for the Free Plan in January, your compute allowance resets on February 1st.
 </Admonition>
 
 ## Launch
@@ -17664,13 +21638,13 @@ The Launch plan provides all of the resources, features, and support you need to
 
 The Launch plan includes the following usage allowances:
 
-| Usage type    | Plan allowance                                                                  |
-| ------------- | ------------------------------------------------------------------------------- |
-| **Projects**  | 10 Neon projects                                                                |
-| **Branches**  | 500                                                                             |
-| **Databases** | Unlimited                                                                       |
-| **Storage**   | 10 GiB of data storage                                                          |
-| **Compute**   | 300 compute hours (1,200 _active hours_)/month for all computes in all projects |
+| Usage type    | Plan allowance                                                 |
+| ------------- | -------------------------------------------------------------- |
+| **Projects**  | 10 Neon projects                                               |
+| **Branches**  | 500 per project                                                |
+| **Databases** | Unlimited                                                      |
+| **Storage**   | 10 GiB of data storage                                         |
+| **Compute**   | 300 compute hours a month for all computes across all projects |
 
 ### Launch plan extra usage
 
@@ -17683,7 +21657,8 @@ Launch plan users have access to [extra compute and storage](/docs/introduction/
 
 ### Launch plan features
 
-- Compute size up to 4 vCPUs and 16 GB RAM, _Autosuspend_ (**5 minutes+** to **7 days**)
+- Autoscaling compute size up to 4 vCPUs and 16 GB RAM, _Autosuspend_ (**5 minutes+** to **7 days**)
+- Monitoring with 7 days of historical data
 - Advanced Postgres features, including connection pooling, logical replication, and 60+ Postgres extensions
 - Neon features such as branching, point-in-time restore up to **7 days** in the past, time travel connections, and more
 - [Standard support](/docs/introduction/support)
@@ -17698,32 +21673,73 @@ The Scale plan provides full platform and support access and is designed for sca
 
 The Scale plan includes the following usage allowances:
 
-| Usage type    | Plan allowance                                                                  |
-| ------------- | ------------------------------------------------------------------------------- |
-| **Projects**  | 50 Neon projects                                                                |
-| **Branches**  | 500                                                                             |
-| **Databases** | Unlimited                                                                       |
-| **Storage**   | 50 GiB of data storage                                                          |
-| **Compute**   | 750 compute hours (3,000 _active hours_)/month for all computes in all projects |
+| Usage type    | Plan allowance                                                 |
+| ------------- | -------------------------------------------------------------- |
+| **Projects**  | 50 Neon projects                                               |
+| **Branches**  | 500 per project                                                |
+| **Databases** | Unlimited                                                      |
+| **Storage**   | 50 GiB of data storage                                         |
+| **Compute**   | 750 compute hours a month for all computes across all projects |
 
 ### Scale plan extra usage
 
 Scale plan users have access to [extra compute, storage, and projects](/docs/introduction/extra-usage), which is allocated and billed automatically when plan allowances are exceeded.
 
-| Extra usage type   | Cost                                                                  |
-| ------------------ | --------------------------------------------------------------------- |
-| **Extra Storage**  | Billed for in units of 10 GiB at $15 per unit, prorated for the month |
-| **Extra Compute**  | Billed by compute hour at $0.16 per hour                              |
-| **Extra Projects** | Billed for in units of 10 at $50 per unit                             |
+| Extra usage type   | Cost                                                              |
+| ------------------ | ----------------------------------------------------------------- |
+| **Extra Storage**  | Billed in units of 10 GiB at $15 per unit, prorated for the month |
+| **Extra Compute**  | Billed by compute hour at $0.16 per hour                          |
+| **Extra Projects** | Billed for in units of 10 at $50 per unit                         |
 
 ### Scale plan features
 
-- Compute up to 10 vCPUs and 40 GB RAM, _Autosuspend_ (**1 minute+** to **7 days**)
+- Autoscaling compute up to 8 vCPUs and 32 GB RAM, _Autosuspend_ (**1 minute+** to **7 days**)
+- Monitoring with 14 days of historical data
 - Advanced Postgres features, including connection pooling, logical replication, 60+ Postgres extensions, and customer-provided custom extensions
-- Neon features such as branching, point-in-time restore up to **30 days** in the past, time travel connections, and more
-- [Priority support](/docs/introduction/support)
+- Branch protection (up to 5 branches)
+- Monitoring with 7 days of historical data
+- Neon features such as branching, point-in-time restore up to **14 days** in the past, time travel connections, and more
+- [Standard support](/docs/introduction/support)
 
 For a complete list of features, refer to the **detailed plan comparison** on the [Neon pricing](https://neon.tech/pricing) page.
+
+## Business
+
+The Business plan is designed for mid-to-large enterprises requiring higher compute capacity and advanced security and compliance features.
+
+### Business plan allowances
+
+The Business plan includes the following usage allowances:
+
+| Usage type    | Plan allowance                                                   |
+| ------------- | ---------------------------------------------------------------- |
+| **Projects**  | 100 Neon projects                                                |
+| **Branches**  | 500 per project                                                  |
+| **Databases** | Unlimited                                                        |
+| **Storage**   | 500 GiB of data storage                                          |
+| **Compute**   | 1,000 compute hours a month for all computes across all projects |
+
+### Business plan extra usage
+
+Business plan users have access to [extra compute, storage, and projects](/docs/introduction/extra-usage), which are allocated and billed automatically when plan allowances are exceeded.
+
+| Extra usage type   | Cost                                                                    |
+| ------------------ | ----------------------------------------------------------------------- |
+| **Extra Storage**  | Billed for in units of 10 GiB at $7.50 per unit, prorated for the month |
+| **Extra Compute**  | Billed by compute hour at $0.16 per hour                                |
+| **Extra Projects** | Billed for in units of 10 at $5 per unit                                |
+
+### Business plan features
+
+- Autoscaling compute up to 10 vCPUs and 40 GB RAM
+- Monitoring with 14 days of historical data
+- Advanced Postgres features, including connection pooling, logical replication, and 60+ Postgres extensions
+- Neon features such as branching, point-in-time restore up to **30 days** in the past, time travel connections, and more
+- Enhanced security features including SOC 2 compliance, Branch Protection, and allowed IP configurations.
+- [Priority support](/docs/introduction/support)
+- [Service SLA of 99.95% uptime](https://neon.tech/neon-business-sla)
+
+For a complete list of features and comparisons with other plans, refer to the **detailed plan comparison** on the [Neon pricing](https://neon.tech/pricing) page.
 
 ## Enterprise
 
@@ -17746,7 +21762,7 @@ Additionally, the _Enterprise_ plan can be tailored to your specific requirement
 - _Autosuspend_ (disabled entirely or up to **7 days**)
 - Customer-owned S3
 
-Enterprise plan users have access to **Enterprise** support, which includes everything offered with the **Priority** plan plus retail customer support, Customer Success Team support, and SLAs. For more information, Neon support plans are outlined on our [Support](/docs/introduction/support) page.
+Enterprise plan users have access to **Enterprise** support, which includes everything offered with the **Priority** plan plus SLAs. For more information, Neon support plans are outlined on our [Support](/docs/introduction/support) page.
 
 If you are interested in exploring an _Enterprise_ plan with Neon, you can [request an enterprise trial](/enterprise#request-trial) or [get in touch with our sales team](/contact-sales).
 
@@ -17765,7 +21781,7 @@ enableTableOfContents: true
 subtitle: Estimate your monthly bill with Neon
 redirectFrom:
   - /docs/introduction/how-billing-works#neon-pricing-estimation-guide
-updatedOn: '2024-08-06T15:23:10.954Z'
+updatedOn: '2024-09-02T13:42:56.660Z'
 ---
 
 You can use this guide to estimate your monthly bill with Neon based on your selected plan and estimated usage.
@@ -17786,6 +21802,7 @@ This table provides an overview of plan fees with allowances for storage, comput
 | Free Plan  | $0          | 0.5 GiB           | Always-available default branch compute, 5 compute hours for branch computes | 1 project         |
 | Launch     | $19         | 10 GiB            | 300 compute hours                                                            | 10 projects       |
 | Scale      | $69         | 50 GiB            | 750 compute hours                                                            | 50 projects       |
+| Business   | $700        | 500 GiB           | 1000 compute hours                                                           | 100 projects      |
 | Enterprise | Custom      | Custom            | Custom                                                                       | Custom            |
 
 <Admonition type="note" title="Notes">
@@ -17812,7 +21829,7 @@ Based on your usage estimates, calculate the fees for extra storage units, compu
 
 ### For the Launch plan:
 
-The Launch plan supports extra **Storage** and **Compute**. If you need extra projects, you'll need to move up to the Scale plan.
+The Launch plan supports extra **Storage** and **Compute**. If you need extra projects, you'll need to move up to the Scale or Business plan.
 
 - **Extra Storage**: If you exceed 10 GiB, extra storage is allocated in units of 2 GiB at $3.50 per unit.
 - **Extra Compute**: If you exceed 300 compute hours, extra compute is billed at $0.16/hour.
@@ -17836,6 +21853,20 @@ The Scale plan supports extra **Storage**, **Compute**, and **Projects**.
 | Extra Compute  | Compute hour | $0.16  |
 | Extra Projects | 10           | $50.00 |
 
+### For the Business plan:
+
+The Business plan supports extra **Storage**, **Compute**, and **Projects**.
+
+- **Extra Storage**: If you exceed 500 GiB, extra storage is allocated in increments of 10 GiB at $7.50 per increment.
+- **Extra Compute**: If you exceed 1,000 compute hours, extra compute is billed at $0.16/hour.
+- **Extra Projects**: If you exceed 100 projects, extra projects are allocated in units of 10 projects at $50 per unit.
+
+| Resource       | Unit         | Price  |
+| -------------- | ------------ | ------ |
+| Extra Storage  | 10 GiB       | $7.50  |
+| Extra Compute  | Compute hour | $0.16  |
+| Extra Projects | 10           | $50.00 |
+
 ## Step 4: Total monthly estimate
 
 Add up your plan's monthly fee and extra usage fees to estimate your total monthly bill.
@@ -17855,13 +21886,23 @@ Total Estimate = Plan Fee + Extra Storage Fee + Extra Compute Fee + Extra Projec
 
 ### Scale plan example
 
-| Item               | Details                             |
-| ------------------ | ----------------------------------- |
-| Plan Fee           | $69                                 |
-| Storage Usage      | 60 GiB (10 GiB over, $15 extra)     |
-| Compute Usage      | 800 hours (50 hours over, $8 extra) |
-| Project Usage      | 55 projects (5 over, $50 extra)     |
-| **Total Estimate** | $142 per month                      |
+| Item               | Details                                     |
+| ------------------ | ------------------------------------------- |
+| Plan Fee           | $69                                         |
+| Storage Usage      | 60 GiB (10 GiB over, $15 extra)             |
+| Compute Usage      | 800 hours (50 hours over, $8 extra)         |
+| Project Usage      | 55 projects (5 over, $50 extra for 10 pack) |
+| **Total Estimate** | $142 per month                              |
+
+### Business plan example
+
+| Item               | Details                                      |
+| ------------------ | -------------------------------------------- |
+| Plan Fee           | $700                                         |
+| Storage Usage      | 510 GiB (20 GiB over, $15 extra)             |
+| Compute Usage      | 1,150 hours (150 hours over, $24 extra)      |
+| Project Usage      | 108 projects (8 over, $50 extra for 10 pack) |
+| **Total Estimate** | $789 per month                               |
 
 For examples illustrating extra usage incurred mid-month, usage fluctuations during the billing period, and prorated charges, see [Extra usage](/docs/introduction/extra-usage).
 
@@ -17880,7 +21921,7 @@ enableTableOfContents: true
 subtitle: Learn how extra usage works in Neon's pricing plans
 redirectFrom:
   - /docs/introduction/billing-overview
-updatedOn: '2024-08-06T15:23:10.952Z'
+updatedOn: '2024-09-20T16:07:37.863Z'
 ---
 
 Neon plans are structured around **Allowances** and **Extra usage**. Allowances are included in your plan. With Neon's paid plans, you can purchase extra usage in set increments for when you need to go over your allowance.
@@ -17889,12 +21930,13 @@ Neon plans are structured around **Allowances** and **Extra usage**. Allowances 
 
 This table provides an overview of plan fees with allowances for storage, compute, and projects:
 
-| Plan       | Monthly Fee | Storage Allowance | Compute Allowance                                                                                     | Project Allowance |
-| ---------- | ----------- | ----------------- | ----------------------------------------------------------------------------------------------------- | ----------------- |
-| Free Plan  | $0          | 0.5 GiB           | Always-available default branch compute, 5 compute hours (20 _active hours_)/month on branch computes | 1 project         |
-| Launch     | $19         | 10 GiB            | 300 compute hours (1,200 _active hours_)/month                                                        | 10 projects       |
-| Scale      | $69         | 50 GiB            | 750 compute hours (3,000 _active hours_)/month                                                        | 50 projects       |
-| Enterprise | Custom      | Custom            | Custom                                                                                                | Custom            |
+| Plan       | Monthly Fee | Storage Allowance | Compute Allowance                                                                                   | Project Allowance |
+| ---------- | ----------- | ----------------- | --------------------------------------------------------------------------------------------------- | ----------------- |
+| Free Plan  | $0          | 0.5 GiB           | 191.9 compute hours (24/7 at 0.25 CU), includes up to 5 hours/month for non-default branch computes | 1 project         |
+| Launch     | $19         | 10 GiB            | 300 compute hours amonth                                                                            | 10 projects       |
+| Scale      | $69         | 50 GiB            | 750 compute hours a month                                                                           | 50 projects       |
+| Business   | $700        | 500 GiB           | 1000 compute hours a month                                                                          | 100 projects      |
+| Enterprise | Custom      | Custom            | Custom                                                                                              | Custom            |
 
 The [Enterprise](/docs/introduction/plans#enterprise) plan is fully customizable with respect to allowances. Please contact [Sales](/contact-sales) for more information.
 
@@ -17912,11 +21954,11 @@ The [Enterprise](/docs/introduction/plans#enterprise) plan is fully customizable
 
 ## Extra usage
 
-The [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans permit extra usage beyond the allowances included with the monthly fee. The extra usage types that are available differ by plan.
+The [Launch](/docs/introduction/plans#launch), [Scale](/docs/introduction/plans#scale), and [Business](/docs/introduction/plans#business) plans permit extra usage beyond the allowances included with the monthly fee. The extra usage types that are available differ by plan.
 
 ### Launch plan
 
-The Launch plan supports extra **Storage** and **Compute** usage. If you need extra projects, you'll need to move up to the Scale plan.
+The Launch plan supports extra **Storage** and **Compute** usage. If you need extra projects, you'll need to move up to the Scale or Business plan.
 
 - **Extra Storage**: If you exceed 10 GiB, extra storage is allocated in units of 2 GiB at $3.50 per unit.
 - **Extra Compute**: If you exceed 300 compute hours, extra compute is billed at $0.16/compute hour.
@@ -17926,13 +21968,13 @@ The Launch plan supports extra **Storage** and **Compute** usage. If you need ex
 | Extra Storage | 2 GiB        | $3.50 per unit |
 | Extra Compute | Compute hour | $0.16          |
 
-### Scale plan
+### Scale and Business plan
 
-The Scale plan supports extra **Storage**, **Compute**, and **Project** usage.
+Both the Scale and Business plans supports extra **Storage**, **Compute**, and **Project** usage.
 
-- **Extra Storage**: If you exceed 50 GiB, extra storage is allocated in units of 10 GiB at $15 per unit.
-- **Extra Compute**: If you exceed 750 compute hours, extra compute is billed at $0.16/compute hour.
-- **Extra Projects**: If you exceed 50 projects, extra projects are allocated in units of 10 projects at $50 per unit.
+- **Extra Storage**: If you exceed 50 GiB on Scale or 500 GiB on Business, extra storage is allocated in units of 10 GiB at $15 per unit.
+- **Extra Compute**: If you exceed 750 compute hours on Scale or 1000 compute hours on Business, extra compute is billed at $0.16/compute hour.
+- **Extra Projects**: If you exceed 50 projects on Scale or 100 projects on Business, extra projects are allocated in units of 10 projects at $50 per unit.
 
 | Resource       | Unit         | Price           |
 | -------------- | ------------ | --------------- |
@@ -17946,15 +21988,15 @@ Taking advantage of extra usage requires no user action. Extra usage, if support
 
 **Storage**
 
-For example, the Launch plan includes an allowance of 10 GiB in the plan's monthly fee. If you exceed 10 GiB of storage at any point during the month, you are automatically allocated an extra storage unit of 2 GiB at $3.50 per unit. If you exceed 12 GiB, you are allocated 2 units of 2 GiB (an extra $7), and so on. It works the same way on the Scale plan, but with 10 GiB units of storage at $15 per unit. However, the extra charge is prorated from the date the extra usage was allocated, meaning that you are not billed the full amount if extra storage units were allocated partway through the month.
+For example, the Launch plan includes an allowance of 10 GiB in the plan's monthly fee. If you exceed 10 GiB of storage at any point during the month, you are automatically allocated an extra storage unit of 2 GiB at $3.50 per unit. If you exceed 12 GiB, you are allocated 2 units of 2 GiB (an extra $7), and so on. It works the same way on the Scale and Business plans, but with 10 GiB units of storage at $15 per unit for Scale and $7.50 per unit for Business. However, the extra charge is prorated from the date the extra usage was allocated, meaning that you are not billed the full amount if extra storage units were allocated partway through the month.
 
 <Admonition type="note">
-In the context of billing, allocation of extra storage refers to an increases in the storage allowance rather than physical storage allocation.
+In the context of billing, allocation of extra storage refers to an increase in the storage allowance rather than physical storage allocation.
 </Admonition>
 
 **Projects**
 
-Billing for extra projects, which are available with the [Scale](/docs/introduction/plans##scale) plan, works in the same way as storage. Extra projects are allocated in units of 10. For example, the Scale plan has an allowance of 50 projects. If you use more than 50 projects, you are automatically allocated an extra unit of 10 projects at $50 per unit. For example, if you use 51 projects, you are allocated 1 unit of 10 projects (an extra $50). If you use 61 projects, you are allocated 2 units of 10 projects (an extra $100), and so on. The extra charge is prorated from the date the extra usage was allocated, meaning that you are not billed the full amount if extra project units are allocated partway through the month.
+Billing for extra projects, which are available with the [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans, works in the same way as storage. Extra projects are allocated in units of 10. For example, the Scale plan has an allowance of 50 projects. If you use more than 50 projects, you are automatically allocated an extra unit of 10 projects at $50 per unit. For example, if you use 51 projects, you are allocated 1 unit of 10 projects (an extra $50). If you use 61 projects, you are allocated 2 units of 10 projects (an extra $100), and so on. The extra charge is prorated from the date the extra usage was allocated, meaning that you are not billed the full amount if extra project units are allocated partway through the month.
 
 <Admonition type="note" title="How extra storage and project charges are prorated">
 The proration formula for calculating the cost of extra storage or projects allocated during a monthly billing period is:
@@ -17963,7 +22005,6 @@ The proration formula for calculating the cost of extra storage or projects allo
 Cost = Units x (Unit Price/Days in Month) x Days Left in Month
 ```
 
-​
 Where:
 
 - **Cost** is the amount charged for an extra unit of storage or projects
@@ -17977,7 +22018,7 @@ Once an extra unit of storage or projects is allocated, you are billed for that 
 
 **Compute**
 
-Extra compute usage is available with the [Launch](/docs/introduction/plans##launch) and [Scale](/docs/introduction/plans##scale) plans and is billed by _compute hour_ at $0.16 per hour. For example, the Launch plan has an allowance of 300 compute hours included in the plan's monthly fee. If you use 100 additional compute hours over the billing period, you are billed an extra $16 (100 x $0.16). Since extra compute usage is per hour, prorated billing does not apply.
+Extra compute usage is available with the [Launch](/docs/introduction/plans#launch), [Scale](/docs/introduction/plans#scale), and [Business](/docs/introduction/plans#business) plans and is billed by _compute hour_ at $0.16 per hour. For example, the Launch plan has an allowance of 300 compute hours included in the plan's monthly fee. If you use 100 additional compute hours over the billing period, you are billed an extra $16 (100 x $0.16). Since extra compute usage is per hour, prorated billing does not apply.
 
 ## Extra usage examples
 
@@ -18045,7 +22086,7 @@ We’re always looking for ways to improve our pricing model to make it as devel
 ---
 title: Usage metrics
 enableTableOfContents: true
-updatedOn: '2024-08-09T20:21:45.348Z'
+updatedOn: '2024-09-23T18:40:25.916Z'
 ---
 
 This topic describes [Storage](#storage), [Compute](#compute), [Data transfer](#data-transfer) and [Project](#projects) usage metrics in detail so that you can better manage your [plan](/docs/introduction/plans) allowances and extra usage.
@@ -18080,7 +22121,7 @@ If you use Neon's branching feature, you should be aware that it can also affect
 The storage amount you see under **Usage** on the **Billing** page in the Neon Console takes all of these factors into account.
 
 <Admonition type="note">
-Remember that each Neon plan comes with an allowance of storage that's already included in your plan's monthly fee. The Launch plan includes 10 GiB of storage. The Scale plan has an allowance of 50 GiB. You are only billed for extra storage if you go over your plan allowance. To learn how extra storage is allocated and billed, see [Extra usage](/docs/introduction/extra-usage).
+Remember that each Neon plan comes with an allowance of storage that's already included in your plan's monthly fee. The Launch plan includes 10 GiB of storage, the Scale plan has an allowance of 50 GiB, while the Business plan supports up to 500 GiB. You are only billed for extra storage if you go over your plan allowance. To learn how extra storage is allocated and billed, see [Extra usage](/docs/introduction/extra-usage).
 </Admonition>
 
 ### Storage FAQs
@@ -18137,7 +22178,7 @@ Here are some strategies to consider:
 Your storage limit varies depending on your Neon plan.
 
 - **Free Plan**: If you reach your storage limit on the Free Plan (0.5 GiB), any further database operations that would increase storage (inserts, updates, and deletes) will fail, and you will receive an error message.
-- **Launch and Scale Plans**: For users on Launch and Scale plans, exceeding your storage limit will result in [extra usage](/docs/introduction/extra-usage). The amount of extra usage is based on the maximum size your storage reaches. Charges are prorated based on when in the month your storage size increased.
+- **Launch, Scale, and Business Plans**: For users on a paid plan (Launch, Scale, or Business), exceeding your storage limit will result in [extra usage](/docs/introduction/extra-usage). The amount of extra usage is based on the maximum size your storage reaches. Charges are prorated based on when in the month your storage size increased.
 
 </details>
 
@@ -18152,6 +22193,53 @@ These factors could be contributing to your high storage consumption:
 To mitigate this issue, consider adjusting your [history retention](https://neon.tech/docs/introduction/point-in-time-restore#history-retention) setting. Perhaps you can do with a shorter window for point-in-time restore, for example. Retaining less history should reduce your future storage consumption.
 
 Also, make sure you don't have old branches lying around. If you created a bunch of branches and let those age out of your history retention window, that could also explain why your storage is so large.
+
+</details>
+
+<details>
+<summary>**How does running `VACUUM` or `VACUUM FULL` affect my storage costs?**</summary>
+
+If you're looking to control your storage costs, you might start by deleting old data from your tables, which reduces the data size you're billed for going forward. Since, in typical Postgres operations, deleted tuples are not physically removed until a vacuum is performed, you might then run `VACUUM`, expecting to see a further reduction in the `Data size` reported in the Console &#8212; but you don't see the expected decrease.
+
+**Why no reduction?**
+
+In Postgres, [VACUUM](https://www.postgresql.org/docs/current/sql-vacuum.html) doesn't reduce your storage size. Instead, it marks the deleted space in the table for reuse, meaning future data can fill that space without increasing data size. While, `VACUUM` by itself won't make the data size smaller, it is good practice to run it periodically, and it does not impact availability of your data.
+
+```sql
+VACUUM your_table_name;
+```
+
+**Use VACUUM FULL to reclaim space**
+
+Running `VACUUM FULL` _does_ reclaim physical storage space by rewriting the table, removing empty spaces, and shrinking the table size. This can help lower the **Data size** part of your storage costs. It’s recommended to use `VACUUM FULL` when a table has accumulated a lot of unused space, which can happen after heavy updates or deletions. For smaller tables or less frequent updates, a regular `VACUUM` is usually enough.
+
+To reclaim space using `VACUUM FULL`, you can run the following command per table you want to vacuum:
+
+```sql
+VACUUM FULL your_table_name;
+```
+
+However, there are some trade-offs:
+
+- **Table locking** &#8212; `VACUUM FULL` locks your table during the operation. If this is your production database, this may not be an option.
+- **Temporary storage spike** &#8212;The process creates a new table, temporarily increasing your [peak storage](/docs/reference/glossary#peak-usage). If the table is large, this could push you over your plan's limit, trigging extra usage charges. On the Free Plan, this might even cause the operation to fail if you hit the storage limit.
+
+In short, `VACUUM FULL` can help reduce your data size and future storage costs, but it can also result in temporary extra usage charges for the current billing period.
+
+**Recommendations**
+
+- **Set a reasonable history window** &#8212; We recommend setting your history retention period to balance your data recovery needs and storage costs. Longer history means more data recovery options, but it consumes more storage.
+- **Use VACUUM FULL sparingly** &#8212; Because it locks tables and can temporarily increase storage costs, only run `VACUUM FULL` when there is a significant amount of space to be reclaimed and you're prepared for a temporary spike in storage consumption.
+  \_ **Consider timing** &#8212; Running `VACUUM FULL` near the end of the month can help minimize the time that temporary storage spikes impact your bill, since charges are prorated.
+- **Manual VACUUM for autosuspend users** — In Neon, [autovacuum](https://www.postgresql.org/docs/current/routine-vacuuming.html#AUTOVACUUM) is enabled by default. However, when your compute endpoint suspends due to inactivity, the database activity statistics that autovacuum relies on are lost. If your project uses [autosuspend](/docs/guides/auto-suspend-guide#considerations), it’s safer to run manual `VACUUM` operations regularly on frequently updated tables rather than relying on autovacuum. This helps avoid potential issues caused by the loss of statistics when your compute endpoint is suspended.
+
+  To clean a single table named `playing_with_neon`, analyze it for the optimizer, and print a detailed vacuum activity report:
+
+  ```sql
+  VACUUM (VERBOSE, ANALYZE) playing_with_neon;
+  ```
+
+  See [VACUUM and ANALYZE statistic](https://neon.tech/docs/postgresql/query-reference#vacuum-and-analyze-statistics) for a query that shows the last time vacuum and analyze were run.
 
 </details>
 
@@ -18231,6 +22319,104 @@ To estimate what your compute hour usage might be per month:
 
    </Admonition>
 
+### Compute FAQs
+
+<details>
+<summary>**What is a compute hour?**</summary>
+
+It's a metric for tracking compute usage. 1 compute hour is equal to 1 [active hour](#active-hours) for a compute with 1 vCPU. If you have a compute with .25 vCPU, as you would on the Neon Free Plan, it would require 4 _active hours_ to use 1 compute hour. On the other hand, if you have a compute with 4 vCPU, it would only take 15 minutes to use 1 compute hour.
+
+To calculate compute hour usage, you would use the following formula:
+
+```
+compute hours = compute size * active hours
+```
+
+</details>
+
+<details>
+<summary>**I used a lot of compute hours, but I don't use the compute that often. Where is the usage coming from?**</summary>
+
+If you're noticing an unexpectedly high number of compute hours, consider the following steps:
+
+- **Check your compute size:** Compute sizes range from 0.25 CU to 10 CUs. Larger compute sizes will consume more compute hours for the same active period. The formula for compute hour usage is: `compute hours = compute size * active hours`. If your application can operate effectively with a smaller compute size (less vCPU and RAM), you can reduce compute hours by configuring a smaller compute. See [Edit a compute](/docs/manage/endpoints#edit-a-compute) for instructions.
+- **Check for active applications or clients**: Some applications or clients might be polling or querying to your compute regularly, preventing it from auto-suspending. For instance, if you're replicating data from Neon to another service, that service may poll your compute endpoint at regular intervals to detect changes for replication. This behavior is often configurable.
+
+  To investigate database activity, you can run the following query to check connections:
+
+  ```sql
+  SELECT
+      client_addr,
+      COUNT(*) AS connection_count,
+      MAX(backend_start) AS last_connection_time
+  FROM
+      pg_stat_activity
+  GROUP BY
+      client_addr
+  ORDER BY
+      connection_count DESC;
+  ```
+
+This query displays the IP addresses connected to the database, the number of connections, and the most recent connection time.
+
+</details>
+
+<details>
+<summary>**How many compute hours do I get with my plan?**</summary>
+
+Each of [Neon's plans](/docs/introduction/plans) includes a certain number of compute hours per month:
+
+- **Free Plan**: This plan includes 191.9 compute hours per month, and you can use up to 5 of those compute hours with non-default branches, in case you want to use Neon's branching feature. Why 191.9? This is enough compute hours to provide 24/7 availability on a 0.25 vCPU compute (our smallest compute size) on your default branch. The math works like this: An average month has about 770 hours. A 0.25 vCPU compute uses 1/4 compute hours per hour, which works out to 180 compute hours per month if you run the 0.25 vCPU compute non-stop. The 11.9 additional compute hours per month are a little extra that we've added on top for good measure. You can enable autoscaling on the Free Plan to allow your compute to scale up to 2 vCPU, but please be careful not to use up all of your 191.5 compute hours before the end of the month.
+- **Launch Plan**: This plan includes 300 compute hours (1,200 active hours on a 0.25 vCPU compute) total per month for all computes in all projects. Beyond 300 compute hours, you are billed for compute hours at $0.16 per hour.
+- **Scale Plan**: This plan includes 750 compute hours (3000 active hours on a 0.25 vCPU compute) total per month for all computes in all projects. Beyond 750 compute hours, you are billed an extra $0.16 per additional hour.
+- **Business Plan**: This plan inclues 1000 compute hours (4000 active hours on a 0.24 vCPU compute) total per month for all computes in all projects. Beyond 1000 compute hours, you are billed an extra $0.16 per additional hour.
+
+</details>
+
+<details>
+<summary>**Where can I monitor compute hour usage?**</summary>
+
+You can monitor compute hour usage for a Neon project on the [Project Dashboard](/docs/introduction/monitor-usage#project-dashboard). To monitor compute usage for your Neon account (all compute usage across all projects), refer to your **Billing** page. See [View usage metrics in the Neon Console](https://neon.tech/docs/introduction/monitor-usage#view-usage-metrics-in-the-neon-console).
+
+</details>
+
+<details>
+<summary>**What happens when I go over my plan's compute hour allowance?**</summary>
+
+On the Free Plan, if you go over the 5 compute hour allowance for non-default branch computes, those computes are suspended until the allowance resets at the beginning of the month. If you go over the 191.9 compute hour allowance, all computes are suspended until the beginning of the month.
+
+On our paid plans (Launch, Scale, and Business), you are billed automatically for any compute hours over your monthly allowance, which is 300 compute hours on Launch and 750 compute hours on Scale. The billing rate is $0.16 per compute hour.
+
+</details>
+
+<details>
+<summary>**Can I purchase more compute hours?**</summary>
+
+On the Free Plan, no. You'll have to upgrade to a paid plan. On the Launch, Scale, and Business plans, you are billed automatically for any compute hours over your monthly allowance: 300 compute hours on Launch, 750 compute hours on Scale, and 1000 hours on Business. The billing rate is $0.16 per compute hour.
+
+</details>
+
+<details>
+<summary>**How does autoscaling affect my compute hour usage?**</summary>
+
+The formula for compute hour usage is: `compute hours = compute size * active hours`. You will use more compute hours when your compute scales up in size to meet demand. When you enable autoscaling, you define a max compute size, which acts as a limit on your maximum potential compute usage. See [Configuring autoscaling](/docs/introduction/autoscaling#configuring-autoscaling).
+
+</details>
+
+<details>
+<summary>**How does compute size affect my compute hour usage?**</summary>
+
+The formula for compute hour usage is: `compute hours = compute size * active hours`. If you increase your compute size for more vCPU and RAM to improve performance, you will use more compute hours.
+
+</details>
+
+<details>
+<summary>**How does autosuspend (scale to zero) affect my compute hour usage?**</summary>
+
+Autosuspend places your compute into an idle state when it's not being used, which helps minimize compute hour usage. Computes are suspended after 5 minutes of inactivity by default. On Neon's paid plans, you can adjust autosuspend behavior to have it suspend computes more or less quickly after compute activity ceases. See [Autosuspend](/docs/introduction/auto-suspend).
+
+</details>
+
 ## Data Transfer
 
 Data transfer usage refers to the total volume of data transferred out of Neon (known as "egress") during a given billing period. Neon does not charge for egress data, but we do limit the amount of egress available on Free Plan projects to 5 GB per month. The project's compute is suspended if the data transfer allowance is exceeded, and the following error message will be reported:
@@ -18254,10 +22440,11 @@ The following table outlines project allowances for each Neon plan.
 | Free Plan  | 1         |
 | Launch     | 10        |
 | Scale      | 50        |
+| Business   | 100       |
 | Enterprise | Unlimited |
 
-- When you reach your limit on the [Free Plan](/docs/introduction/plans#free-plan) or [Launch](/docs/introduction/plans#launch) plan, you cannot create additional projects. Instead, you can upgrade to the [Launch](/docs/introduction/plans#launch) or [Scale](/docs/introduction/plans#scale) plan, which offers allowances of 10 and 50 projects, respectively.
-- Extra projects are available with the [Scale](/docs/introduction/plans#scale) plan in units of 10 for $50 each.
+- When you reach your limit on the [Free Plan](/docs/introduction/plans#free-plan) or [Launch](/docs/introduction/plans#launch) plan, you cannot create additional projects. Instead, you can upgrade to the [Launch](/docs/introduction/plans#launch), [Scale](/docs/introduction/plans#scale), or [Business](/docs/introduction/plans#business) plan, which offers allowances of 10, 50, and 100 projects, respectively.
+- Extra projects are available on both the [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans in units of 10 for $50 each.
 
 ## Feedback
 
@@ -18373,7 +22560,7 @@ subtitle: Monitor billing and usage metrics for your account and projects from t
 enableTableOfContents: true
 redirectFrom:
   - /docs/introduction/billing
-updatedOn: '2024-08-12T12:14:14.552Z'
+updatedOn: '2024-09-05T17:14:45.244Z'
 ---
 
 Neon exposes usage metrics in the Neon Console and through the Neon API. These metrics can answer questions like:
@@ -18415,14 +22602,14 @@ The peak usage triangle indicates the highest usage level reached for that metri
 - **Compute** usage is tracked in **compute hours**. A compute hour is 1 active hour for a compute with 1 vCPU. For a compute with .25 vCPU, it takes 4 _active hours_ to use 1 compute hour. On the other hand, if your compute has 4 vCPUs, it takes only 15 minutes to use 1 compute hour.
 
   <Admonition type="note">
-  On the Free Plan, the [default branch](/docs/reference/glossary#default-branch) compute is a 0.25 vCPU compute that is always available, so allowances do not apply to your default branch. You can run your 0.25 vCPU compute on the Free Plan 24/7. Only branch computes on the Free Plan have an allowance, which is the 5 compute hour/month allowance that Free Plan users see on the **Billing** page. On the Free Plan, this is actually 20 hours of usage because the compute size on the Free Plan is 0.25 vCPU. You cannot increase the compute size on the Free Plan.
+  On the Free Plan, [default branch](/docs/reference/glossary#default-branch) compute starts at 0.25 vCPU with 1 GB RAM and can run 24/7. Autoscaling up to 2 vCPU with 8 GB RAM is available for extra performance during peak times; note that autoscaling can affect 24/7 availability depending on your usage patterns. Your account includes 191.9 compute hours per month, with up to 5 of those hours available to non-default branches.
   </Admonition>
 
-- **Storage** includes your data size and history. Neon maintains a history of changes to support branching-related features such as [point-in-time restore](/docs/reference/glossary#point-in-time-restore). The Launch plan supports up to 7 days of history retention, and the Scale plan supports up to 30 days. Keep in mind that history retention increases storage. More history requires more storage. To manage the amount of history you retain, you can configure the history retention setting for your project. See [Configure history retention](/docs/manage/projects#configure-history-retention).
+- **Storage** includes your data size and history. Neon maintains a history of changes to support branching-related features such as [point-in-time restore](/docs/reference/glossary#point-in-time-restore). The Launch plan supports up to 7 days of history retention, the Scale plan allows up to 14 days, and the Business plan offers up to 30 days. Keep in mind that history retention increases storage. More history requires more storage. To manage the amount of history you retain, you can configure the history retention setting for your project. See [Configure history retention](/docs/manage/projects#configure-history-retention).
 
 - **What about extra usage?**
 
-  The Launch plan supports extra storage and compute usage. The Scale plan supports extra storage, compute, and project usage. Any extra usage allowance is automatically added (and billed for) when you exceed the allowances included in your plan's base fee. If extra usage occurs, it is reflected in your monthly allowance on the **Billing** page. For example, if you purchased an extra 10 GiB of storage when you exceed your 50 GiB storage allowance on the Scale plan, the extra 10 GiB is added to your **Storage** allowance on the **Billing** page. Extra storage and projects reset at the beginning of the next month based on current usage. See [Extra usage](/docs/introduction/extra-usage) to learn more.
+  The Launch plan supports extra storage and compute usage. The Scale and Business plans support extra storage, compute, and project usage. Any extra usage allowance is automatically added (and billed for) when you exceed the allowances included in your plan's base fee. If extra usage occurs, it is reflected in your monthly allowance on the **Billing** page. For example, if you purchased an extra 10 GiB of storage when you exceed your 50 GiB storage allowance on the Scale plan, the extra 10 GiB is added to your **Storage** allowance on the **Billing** page. Extra storage and projects reset at the beginning of the next month based on current usage. See [Extra usage](/docs/introduction/extra-usage) to learn more.
 
 ### Project Dashboard
 
@@ -18571,7 +22758,7 @@ title: Manage billing
 subtitle: Invoices, payment methods, changing your plan, and other actions around
   managing your bill
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.953Z'
+updatedOn: '2024-09-19T14:13:04.115Z'
 ---
 
 A Neon account can view and manage billing from the **Billing** page in the Neon Console. On the **Billing** page, you can:
@@ -18648,13 +22835,13 @@ If you are downgrading your plan, you will be required to remove any projects, b
 
 To downgrade from an [Enterprise](/docs/introduction/plans#enterprise) plan, please contact [Sales](https://neon.tech/contact-sales). Cancellation of an Enterprise plan is handled according to the Master Subscription Agreement (MSA) outlined in the customer agreement.
 
+## How to prevent further monthly charges to your account
+
+If you are on any of Neon's paid plans, you need to downgrade to the Free plan to avoid further monthly charges. You can do so from the [Billing](https://console.neon.tech/app/billing#change_plan) page in the Neon Console. Simply removing all Neon projects from your account will not stop the monthly fee associated with your plan. You will continue to be invoiced until you downgrade to Free. For example, if you are on the [Launch](/docs/introduction/plans#launch) plan, which has a base monthly fee of $19 per month, you will continue to be charged $19 a month until you downgrade to the Free plan.
+
 ## Delete your account
 
-To delete your Neon account, please initiate an account deletion request through the Neon support team. If you're a Launch or Scale plan subscriber, you can generate a support ticket directly from the Neon Console. Navigate to the **Support** link located in the Neon Console sidebar to open the **Create support ticket** modal. Here, you can formally request the deletion of your account. For direct access to this modal, [click here](https://console.neon.tech/app/projects?modal=support). If you are a Free Plan user and do not have access to the **Create support ticket** modal in the Neon Console, please direct your request to `support@neon.tech`.
-
-<Admonition type="important">
-Before Neon can proceed with deleting your account, it is necessary to ensure all active projects have been deleted. To learn how to delete your projects, please refer to [Delete a project](/docs/manage/projects#delete-a-project) for instructions.
-</Admonition>
+If you would like to delete your Neon account entirely, please refer to the steps described here: [Deleting your account](/docs/manage/accounts#deleting-your-account).
 
 
 # AWS Marketplace
@@ -18693,45 +22880,45 @@ If you have questions or need further guidance on purchasing Neon through AWS Ma
 ---
 title: Neon framework guides
 subtitle: Find detailed instructions for connecting to Neon from various frameworks
-enableTableOfContents: true
-updatedOn: '2024-08-02T19:37:20.077Z'
+enableTableOfContents: false
+updatedOn: '2024-08-15T17:23:10.552Z'
 ---
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/nodejs-logo.svg" width="33" height="36" alt="Node.js" href="/docs/guides/node" title="Connect a Node.js application to Neon" />
+<a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
 
-<img src="/images/technology-logos/nextjs-logo.svg" width="36" height="36" alt="Next.js" href="/docs/guides/nextjs" title="Connect a Next.js application to Neon" />
+<a href="/docs/guides/nextjs" title="Next.js" description="Connect a Next.js application to Neon" icon="next-js"></a>
 
-<img src="/images/technology-logos/nestjs-logo.svg" width="36" height="36" alt="NestJS" href="/docs/guides/nestjs" title="Connect a NestJS application to Neon" />
+<a href="/docs/guides/nestjs" title="NestJS" description="Connect a NestJS application to Neon" icon="nest-js"></a>
 
-<img src="/images/technology-logos/astro-logo.svg" width="36" height="36" alt="Astro" href="/docs/guides/astro" title="Connect an Astro site or app to Neon" />
+<a href="/docs/guides/astro" title="Astro" description="Connect an Astro site or app to Neon" icon="astro"></a>
 
-<img src="/images/technology-logos/django-logo.svg" width="33" height="36" alt="Django" href="/docs/guides/django" title="Connect a Django application to Neon" />
+<a href="/docs/guides/django" title="Django" description="Connect a Django application to Neon" icon="django"></a>
 
-<img src="/images/technology-logos/laravel-logo.svg" width="33" height="36" alt="Laravel" href="/docs/guides/laravel" title="Connect a Laravel application to Neon" />
+<a href="/docs/guides/laravel" title="Laravel" description="Connect a Laravel application to Neon" icon="laravel"></a>
 
-<img src="/images/technology-logos/oauth-logo.svg" width="36" height="36" alt="OAuth" href="/docs/guides/oauth-integration" title="Integrate with Neon using OAuth" />
+<a href="/docs/guides/oauth-integration" title="OAuth" description="Integrate with Neon using OAuth" icon="oauth"></a>
 
-<img src="/images/technology-logos/phoenix-logo.svg" width="36" height="36" alt="Phoenix" href="/docs/guides/phoenix" title="Connect a Phoenix site or app to Neon" />
+<a href="/docs/guides/phoenix" title="Phoenix" description="Connect a Phoenix site or app to Neon" icon="phoenix"></a>
 
-<img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-jdbc" title="Connect Quarkus (JDBC) to Neon" />
+<a href="/docs/guides/quarkus-jdbc" title="Quarkus" description="Connect Quarkus (JDBC) to Neon" icon="quarkus"></a>
 
-<img src="/images/technology-logos/quarkus-logo.svg" width="36" height="36" alt="Quarkus" href="/docs/guides/quarkus-reactive" title="Connect Quarkus (Reactive) to Neon" />
+<a href="/docs/guides/quarkus-reactive" title="Quarkus" description="Connect Quarkus (Reactive) to Neon" icon="quarkus"></a>
 
-<img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/ruby-on-rails" title="Connect a Rails application to Neon" />
+<a href="/docs/guides/ruby-on-rails" title="Rails" description="Connect a Rails application to Neon" icon="rails"></a>
 
-<img src="/images/technology-logos/react-logo.svg" width="36" height="36" alt="React" href="/docs/guides/react" title="Connect a React application to Neon" />
+<a href="/docs/guides/react" title="React" description="Connect a React application to Neon" icon="react"></a>
 
-<img src="/images/technology-logos/reflex-logo.svg" width="100" height="36" alt="Reflex" href="/docs/guides/reflex" title="Build Python Apps with Reflex and Neon" />
+<a href="/docs/guides/reflex" title="Reflex" description="Build Python Apps with Reflex and Neon" icon="reflex"></a>
 
-<img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
+<a href="/docs/guides/remix" title="Remix" description="Connect a Remix application to Neon" icon="remix"></a>
 
-<img src="/images/technology-logos/sqlalchemy-logo.svg" width="36" height="36" alt="SQLAlchemy" href="/docs/guides/sqlalchemy" title="Connect a SQLAlchemy application to Neon" />
+<a href="/docs/guides/sqlalchemy" title="SQLAlchemy" description="Connect a SQLAlchemy application to Neon" icon="sqlalchemy"></a>
 
-<img src="/images/technology-logos/symfony-logo.svg" width="36" height="36" alt="Symfony" href="/docs/guides/symfony" title="Connect from Symfony with Doctrine to Neon" />
+<a href="/docs/guides/symfony" title="Symfony" description="Connect from Symfony with Doctrine to Neon" icon="symfony"></a>
 
-<img src="/images/technology-logos/solid-logo.svg" width="36" height="36" alt="SolidStart" href="/docs/guides/solid-start" title="Connect a SolidStart site or app to Neon" />
+<a href="/docs/guides/solid-start" title="SolidStart" description="Connect a SolidStart site or app to Neon" icon="solid"></a>
 
 </TechnologyNavigation>
 
@@ -18743,7 +22930,7 @@ title: Connect an Astro site or application to Neon Postgres
 subtitle: Set up a Neon project in seconds and connect to your Postgres database from an
   Astro site or application
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.645Z'
+updatedOn: '2024-08-24T10:00:34.195Z'
 ---
 
 Astro builds fast content sites, powerful web applications, dynamic server APIs, and everything in-between. This guide describes how to create a Neon Postgres database and access it from an Astro site or application.
@@ -18888,7 +23075,7 @@ export async function GET() {
   } finally {
     client.release();
   }
-  return new Response(JSON.stringiify(data), { headers: { 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
 }
 ```
 
@@ -18900,7 +23087,7 @@ import postgres from 'postgres';
 export async function GET() {
   const sql = postgres(import.meta.env.DATABASE_URL, { ssl: 'require' });
   const response = await sql`SELECT version()`;
-  return new Response(JSON.stringiify(response[0]), {
+  return new Response(JSON.stringify(response[0]), {
     headers: { 'Content-Type': 'application/json' },
   });
 }
@@ -18914,7 +23101,7 @@ import { neon } from '@neondatabase/serverless';
 export async function GET() {
   const sql = neon(import.meta.env.DATABASE_URL);
   const response = await sql`SELECT version()`;
-  return new Response(JSON.stringiify(response[0]), {
+  return new Response(JSON.stringify(response[0]), {
     headers: { 'Content-Type': 'application/json' },
   });
 }
@@ -18955,7 +23142,7 @@ redirectFrom:
   - /docs/integrations/
   - /docs/quickstart/django/
   - /docs/cloud/integrations/django/
-updatedOn: '2024-08-12T16:22:43.605Z'
+updatedOn: '2024-09-23T22:33:41.223Z'
 ---
 
 To connect to Neon from a Django application:
@@ -19015,19 +23202,26 @@ For additional information about Django project settings, see [Django Settings: 
 
 ## Connection issues
 
-Django uses the `psycopg2` driver as the default adapter for Postgres. If you have an older version of that driver, you may encounter an `Endpoint ID is not specified` error when connecting to Neon. This error occurs if the client library used by your driver does not support the Server Name Indication (SNI) mechanism in TLS, which Neon uses to route incoming connections. The `psycopg2` driver uses the `libpq` client library, which supports SNI as of v14. You can check your `psycopg2` and `libpq` versions by starting a Django shell in your Django project and running the following commands:
+- Django uses the `psycopg2` driver as the default adapter for Postgres. If you have an older version of that driver, you may encounter an `Endpoint ID is not specified` error when connecting to Neon. This error occurs if the client library used by your driver does not support the Server Name Indication (SNI) mechanism in TLS, which Neon uses to route incoming connections. The `psycopg2` driver uses the `libpq` client library, which supports SNI as of v14. You can check your `psycopg2` and `libpq` versions by starting a Django shell in your Django project and running the following commands:
 
-```bash
-# Start a Django shell
-python3 manage.py shell
+  ```bash
+  # Start a Django shell
+  python3 manage.py shell
 
-# Check versions
-import psycopg2
-print("psycopg2 version:", psycopg2.__version__)
-print("libpq version:", psycopg2._psycopg.libpq_version())
-```
+  # Check versions
+  import psycopg2
+  print("psycopg2 version:", psycopg2.__version__)
+  print("libpq version:", psycopg2._psycopg.libpq_version())
+  ```
 
-The version number for `libpq` is presented in a different format, for example, version 14.1 will be shown as 140001. If your `libpq` version is less than version 14, you can either upgrade your `psycopg2` driver to get a newer `libpq` version or use one of the workarounds described in our [Connection errors](https://neon.tech/docs/connect/connection-errors#the-endpoint-id-is-not-specified) documentation. Upgrading your `psycopg2` driver may introduce compatibility issues with your Django or Python version, so you should test your application thoroughly.
+  The version number for `libpq` is presented in a different format, for example, version 14.1 will be shown as 140001. If your `libpq` version is less than version 14, you can either upgrade your `psycopg2` driver to get a newer `libpq` version or use one of the workarounds described in our [Connection errors](https://neon.tech/docs/connect/connection-errors#the-endpoint-id-is-not-specified) documentation. Upgrading your `psycopg2` driver may introduce compatibility issues with your Django or Python version, so you should test your application thoroughly.
+
+- If you encounter an `SSL SYSCALL error: EOF detected` when connecting to the database, this typically occurs because the application is trying to reuse a connection after the Neon compute has been suspended due to inactivity. To resolve this issue, try one of the following options:
+
+  - Set your Django [`CONN_MAX_AGE`](https://docs.djangoproject.com/en/5.1/ref/settings/#conn-max-age) setting to a value less than or equal to the autosuspend setting configured for your compute.
+  - Enable [`CONN_HEALTH_CHECKS`](https://docs.djangoproject.com/en/5.1/ref/settings/#conn-health-checks) by setting it to `true`. This forces a health check to verify that the connection is alive before executing a query.
+
+  For information configuring Neon's Autosuspend setting, see [Configuring Autosuspend for Neon computes](/docs/guides/auto-suspend-guide).
 
 ## Schema migration with Django
 
@@ -19302,8 +23496,7 @@ For schema migration with Laravel, see our guide:
 title: Connect a NestJS application to Neon
 subtitle: Set up a Neon project in seconds and connect from a NestJS application
 enableTableOfContents: true
-tag: new
-updatedOn: '2024-08-07T21:36:52.660Z'
+updatedOn: '2024-09-08T12:44:00.903Z'
 ---
 
 NestJS is a framework for building efficient, scalable Node.js server-side applications<sup><a target="_blank" href="https://docs.nestjs.com/">1</a></sup>. This guide explains how to connect NestJS with Neon using a secure server-side request.
@@ -20629,7 +24822,7 @@ PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1
 title: Connect a React application to Neon
 subtitle: Set up a Neon project in seconds and connect from a React application
 enableTableOfContents: true
-updatedOn: '2024-07-02T18:04:04.917Z'
+updatedOn: '2024-08-15T17:23:10.558Z'
 ---
 
 React by Facebook is an open-source front-end JavaScript library for building user interfaces based on components.
@@ -20642,9 +24835,9 @@ Find detailed instructions for connecting to Neon from various React meta-framew
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/nextjs-logo.svg" width="36" height="36" alt="Next.js" href="/docs/guides/nextjs" title="Connect a Next.js application to Neon" />
+<a href="/docs/guides/nextjs" title="Next.js" description="Connect a Next.js application to Neon" icon="next-js"></a>
 
-<img src="/images/technology-logos/remix-logo.svg" width="36" height="36" alt="Remix" href="/docs/guides/remix" title="Connect a Remix application to Neon" />
+<a href="/docs/guides/remix" title="Remix" description="Connect a Remix application to Neon" icon="remix"></a>
 
 </TechnologyNavigation>
 
@@ -20657,8 +24850,7 @@ Find detailed instructions for connecting to Neon from various React meta-framew
 title: Build a Python App with Reflex and Neon
 subtitle: Learn how to build a Python Full Stack application with Reflex and Neon
 enableTableOfContents: true
-updatedOn: '2024-07-02T09:17:55.465Z'
-tag: new
+updatedOn: '2024-09-08T12:44:00.904Z'
 ---
 
 [Reflex](https://reflex.dev/) is a Python web framework that allows you to build full-stack applications with Python.
@@ -21184,8 +25376,7 @@ For schema migration with Ruby on Rails, see our guide:
 title: Connect a SolidStart application to Neon
 subtitle: Set up a Neon project in seconds and connect from a SolidStart application
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.665Z'
-tag: new
+updatedOn: '2024-09-08T12:44:00.904Z'
 ---
 
 SolidStart is an open-source meta-framework designed to integrate the components that make up a web application.<sup><a target="_blank" href="https://docs.solidjs.com/solid-start#overview">1</a></sup>. This guide explains how to connect SolidStart with Neon using a secure server-side request.
@@ -21403,7 +25594,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/sqlalchemy
   - /docs/integrations/sqlalchemy
-updatedOn: '2023-11-24T11:25:06.755Z'
+updatedOn: '2024-09-23T22:33:41.224Z'
 ---
 
 SQLAlchemy is a Python SQL toolkit and Object Relational Mapper (ORM) that provides application developers with the full power and flexibility of SQL. This guide describes how to create a Neon project and connect to it from SQLAlchemy.
@@ -21495,6 +25686,16 @@ For additional information about connecting from SQLAlchemy, refer to the follow
 - [Establishing Connectivity - the Engine](https://docs.sqlalchemy.org/en/14/tutorial/engine.html)
 - [Connecting to PostgreSQL with SQLAlchemy](https://docs.sqlalchemy.org/en/14/core/engines.html#postgresql)
 
+## SQLAlchemy connection errors
+
+- SQLAlchemy versions prior to 2.0.33 may reuse idle connections, leading to connection errors. If this occurs, you could encounter an `SSL connection has been closed unexpectedly` error. To resolve this, upgrade to SQLAlchemy 2.0.33 or later. For more details, see the [SQLAlchemy 2.0.33 changelog](https://docs.sqlalchemy.org/en/20/changelog/changelog_20.html#change-2.0.33-postgresql).
+- If you encounter an `SSL SYSCALL error: EOF detected` when connecting to the database, this typically happens because the application is trying to reuse a connection after the Neon compute has been suspended due to inactivity. To resolve this issue, try one of the following options:
+
+  - Set the SQLAlchemy `pool_recycle` parameter to a value less than or equal to the autosuspend setting configured for your compute.
+  - Set the SQLAlchemy `pool_pre_ping` parameter to `true`. This ensures that your engine checks if the connection is alive before executing a query.
+
+  For more details on the `pool_recycle` and `pool_pre_ping` parameters, refer to [SQLAlchemy: Connection Pool Configuration](https://docs.sqlalchemy.org/en/20/core/pooling.html#connection-pool-configuration) and [Dealing with Disconnects](https://docs.sqlalchemy.org/en/20/core/pooling.html#connection-pool-configuration). For information on configuring Neon's autosuspend setting, see [Configuring Autosuspend for Neon computes](/docs/guides/auto-suspend-guide).
+
 ## Schema migration with SQLAlchemy
 
 For schema migration with SQLAlchemy, see our guide:
@@ -21548,6 +25749,648 @@ You can find all of the connection details listed above in the **Connection Deta
 <NeedHelp/>
 
 
+# Languages
+
+---
+title: Neon language guides
+subtitle: Find detailed instructions for connecting to Neon from various languages
+enableTableOfContents: true
+redirectFrom:
+  - /docs/guides/guides-intro
+updatedOn: '2024-08-15T17:23:10.555Z'
+---
+
+<TechnologyNavigation open>
+
+<a href="/docs/guides/elixir-ecto" title="Elixir" description="Connect from Elixir with Ecto to Neon" icon="elixir"></a>
+
+<a href="/docs/guides/go" title="Go" description="Connect a Go application to Neon" icon="go"></a>
+
+<a href="/docs/guides/java" title="Java" description="Connect a Java application to Neon" icon="java"></a>
+
+<a href="/docs/guides/javascript" title="JavaScript" description="Connect a JavaScript application to Neon" icon="javascript"></a>
+
+<a href="/docs/guides/python" title="Python" description="Connect a Python application to Neon" icon="python"></a>
+
+<a href="/docs/guides/rust" title="Rust" description="Connect a Rust application to Neon" icon="rust"></a>
+
+</TechnologyNavigation>
+
+
+# Elixir
+
+---
+title: Connect from Elixir with Ecto to Neon
+subtitle: Set up a Neon project in seconds and connect from Elixir with Ecto
+enableTableOfContents: true
+updatedOn: '2024-08-07T21:36:52.650Z'
+---
+
+This guide describes how to connect from an Elixir application with Ecto, which is a database wrapper and query generator for Elixir. Ecto provides an API and abstractions for interacting databases, enabling Elixir developers to query any database using similar constructs.
+
+The instructions in this guide follow the steps outlined in the [Ecto Getting Started](https://hexdocs.pm/ecto/getting-started.html#content) guide, modified to demonstrate connecting to a Neon Serverless Postgres database. It is assumed that you have a working installation of [Elixir](https://elixir-lang.org/install.html).
+
+To connect to Neon from Elixir with Ecto:
+
+1. [Create a database in Neon and copy the connection string](#create-a-database-in-neon-and-copy-the-connection-string)
+2. [Create an Elixir project](#create-an-elixir-project)
+3. [Add Ecto and Postgrex to the application](#add-ecto-and-postgrex-to-the-application)
+4. [Configure Ecto](#configure-ecto)
+5. [Create a migration and add a table](#create-a-migration-and-add-a-table)
+6. [Next steps](#next-steps)
+
+## Create a database in Neon and copy the connection string
+
+The instructions in this configuration use a database named `friends`.
+
+To create the database:
+
+1. Navigate to the [Neon Console](https://console.neon.tech).
+1. Select a project.
+1. Select **Databases**.
+1. Select the branch where you want to create the database.
+1. Click **New Database**.
+1. Enter a database name (`friends`), and select a database owner.
+1. Click **Create**.
+
+You can obtain the connection string for the database from the **Connection Details** widget on the Neon **Dashboard**. Select a branch, a role, and the database you want to connect to. A connection string is constructed for you. Your connection string should look something like this:
+
+```bash shouldWrap
+postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-west-2.aws.neon.tech/friends
+```
+
+You will need the connection string details later in the setup.
+
+## Create an Elixir project
+
+Create an Elixir application called `friends`.
+
+```bash
+mix new friends --sup
+```
+
+The `--sup` option ensures that the application has a supervision tree, which is required by Ecto.
+
+## Add Ecto and Postgrex to the application
+
+1. Add the Ecto and the Postgrex driver dependencies to the `mix.exs` file by updating the `deps` definition in the file to include those items. For example:
+
+   ```bash
+   defp deps do
+     [
+       {:ecto_sql, "~> 3.0"},
+       {:postgrex, ">= 0.18.0"}
+     ]
+   end
+   ```
+
+   Ecto provides the common querying API. The Postgrex driver acts as a bridge between Ecto and Postgres. Ecto interfaces with its own `Ecto.Adapters.Postgres` module, which communicates to Postgres through the Postgrex driver.
+
+2. Install the Ecto and the Postgrex driver dependencies by running the following command in your application directory:
+
+   ```bash
+   mix deps.get
+   ```
+
+## Configure Ecto
+
+Run the following command in your application directory to generate the configuration required to connect from Ecto to your Neon database.
+
+```bash
+mix ecto.gen.repo -r Friends.Repo
+```
+
+Follow these steps to complete the configuration:
+
+1. The first part of the configuration generated by the `mix ecto.gen.repo` command is found in the `config/config.exs` file. Update this configuration with your Neon database connection details. Use the connection details from the Neon connection string you copied in the first part of the guide. Your `hostname` will differ from the example below.
+
+   ```elixir
+   config :friends, Friends.Repo,
+     database: "friends",
+     username: "alex",
+     password: "AbC123dEf",
+     hostname: "ep-cool-darkness-123456.us-west-2.aws.neon.tech",
+     ssl: [cacerts: :public_key.cacerts_get()]
+   ```
+
+   The `:ssl` option is required to connect to Neon. Postgrex, since v0.18, verifies the server SSL certificate and you need to select CA trust store using `:cacerts` or `:cacertfile` options. You can use the OS-provided CA store by setting `cacerts: :public_key.cacerts_get()`. While not recommended, you can disable certificate verification by setting `ssl: [verify: :verify_none]`.
+
+2. The second part of the configuration generated by the `mix ecto.gen.repo` command is the `Ecto.Repo` module, found in `lib/friends/repo.ex`. You shouldn't have to make any changes here, but verify that the following configuration is present:
+
+   ```elixir
+   defmodule Friends.Repo do
+     use Ecto.Repo,
+       otp_app: :friends,
+       adapter: Ecto.Adapters.Postgres
+   end
+   ```
+
+   Ecto uses the module definition to query the database. The `otp_app` setting tells Ecto where to find the database configuration. In this case, the `:friends` application is specified, so Ecto will use the configuration defined in the that application's `config/config.exs` file. The `:adapter` option defines the Postgres adapter.
+
+3. Next, the `Friends.Repo` must be defined as a supervisor within the application's supervision tree. In `lib/friends/application.ex`, make sure `Friends.Repo` is specified in the `start` function, as shown:
+
+   ```elixir
+   def start(_type, _args) do
+     children = [
+       Friends.Repo,
+     ]
+   ```
+
+   This configuration starts the Ecto process, enabling it to receive and execute the application's queries.
+
+4. The final part of the configuration is to add the following line under the configuration in the `config/config.exs` file that you updated in the first step:
+
+   ```elixir
+   config :friends, ecto_repos: [Friends.Repo]
+   ```
+
+   This line tells the application about the new repo, allowing you to run commands such as `mix ecto.migrate`, which you will use in a later step to create a table in your database.
+
+## Create a migration and add a table
+
+Your `friends` database is currently empty. It has no tables or data. In this step, you will add a table. To do so, you will create a "migration" by running the following command in your application directory:
+
+```bash
+mix ecto.gen.migration create_people
+```
+
+The command generates an empty migration file in `priv/repo/migrations`, which looks like this:
+
+```elixir
+defmodule Friends.Repo.Migrations.CreatePeople do
+  use Ecto.Migration
+
+  def change do
+
+  end
+end
+```
+
+Add code to the migration file to create a table called `people`. For example:
+
+```elixir
+defmodule Friends.Repo.Migrations.CreatePeople do
+  use Ecto.Migration
+
+  def change do
+    create table(:people) do
+      add :first_name, :string
+      add :last_name, :string
+      add :age, :integer
+    end
+  end
+end
+```
+
+To run the migration and create the `people` table in your database, which also verifies your connection to Neon, run the following command from your application directory:
+
+```bash
+mix ecto.migrate
+```
+
+The output of this command should appear similar to the following:
+
+```bash shouldWrap
+14:30:04.924 [info]  == Running 20230524172817 Friends.Repo.Migrations.CreatePeople.change/0 forward
+14:30:04.925 [info]  create table people
+14:30:05.014 [info]  == Migrated 20230524172817 in 0.0s
+```
+
+You can use the **Tables** feature in the Neon Console to view the table that was created:
+
+1. Navigate to the [Neon Console](https://console.neon.tech).
+1. Select a project.
+1. Select **Tables** from the sidebar.
+1. Select the Branch, Database (`friends`), and the schema (`public`). You should see the `people` table along with a `schema_migration` table that was created by the migration.
+
+## Application code
+
+You can find the application code for the example above on GitHub.
+
+<DetailIconCards>
+<a href="https://github.com/neondatabase/neon-ecto-getting-started-app" description="Learn how to connect from Elixir with Ecto to Neon" icon="github">Neon Ecto Getting Started App</a>
+</DetailIconCards>
+
+## Next steps
+
+The [Ecto Getting Started Guide](https://hexdocs.pm/ecto/getting-started.html#content) provides additional steps that you can follow to create a schema, insert data, and run queries. See [Creating the schema](https://hexdocs.pm/ecto/getting-started.html#creating-the-schema) in the _Ecto Getting Started Guide_ to pick up where the steps in this guide leave off.
+
+## Usage notes
+
+- Suppose you have `PGHOST` environment variable on your system set to something other than your Neon hostname. In that case, this hostname will be used instead of the Neon `hostname` defined in your Ecto Repo configuration when running `mix ecto` commands. To avoid this issue, you can either set the `PGHOST` environment variable to your Neon hostname or specify `PGHOST=""` when running `mix ecto` commands; for example: `PGHOST="" mix ecto.migrate`.
+- By default, Neon's _Autosuspend_ feature scales computes to zero after 300 seconds (5 minutes) of inactivity, which can result in a `connection not available` error when running `mix ecto` commands. Typically, a Neon compute takes a few seconds to transition from `Idle` to `Active`. Wait a few seconds and try running the command again. Alternatively, consider the strategies outlined in [Connection latency and timeouts](/docs/connect/connection-latency) to manage connection issues resulting from compute suspension.
+
+<NeedHelp/>
+
+
+# Go
+
+---
+title: Connect a Go application to Neon
+subtitle: Set up a Neon project in seconds and connect from a Go application
+enableTableOfContents: true
+redirectFrom:
+  - /docs/quickstart/go
+  - /docs/integrations/go
+updatedOn: '2024-08-07T21:36:52.652Z'
+---
+
+To connect to Neon from a Go application:
+
+1. [Create a Neon project](#create-a-neon-project)
+2. [Configure Go project connection settings](#configure-go-application-connection-settings)
+
+## Create a Neon project
+
+If you do not have one already, create a Neon project. Save your connection details including your password. They are required when defining connection settings.
+
+To create a Neon project:
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+## Configure Go application connection settings
+
+Connecting to Neon requires configuring connection settings in your Go project's `.go` file.
+
+<Admonition type="note">
+Neon is fully compatible with the `sql/db` package and common Postgres drivers, such as `lib/pq` and `pgx`.
+</Admonition>
+
+Specify the connection settings in your `.go` file, as shown in the following example:
+
+```go
+package main
+
+import (
+    "database/sql"
+    "fmt"
+
+    _ "github.com/lib/pq"
+)
+
+func main() {
+    connStr := "postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
+    db, err := sql.Open("postgres", connStr)
+    if err != nil {
+        panic(err)
+    }
+    defer db.Close()
+
+    var version string
+    if err := db.QueryRow("select version()").Scan(&version); err != nil {
+        panic(err)
+    }
+
+    fmt.Printf("version=%s\n", version)
+}
+```
+
+You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+<NeedHelp/>
+
+
+# Java
+
+---
+title: Connect a Java application to Neon
+subtitle: Set up a Neon project in seconds and connect with JDBC or Spring Data
+enableTableOfContents: true
+redirectFrom:
+  - /docs/quickstart/java
+  - /docs/integrations/java
+updatedOn: '2024-06-14T07:55:54.393Z'
+---
+
+This guide describes how to create a Neon project and connect to it with Java Database Connectivity (JDBC) or from a Spring Data project that uses JDBC.
+
+The JDBC API is a Java API for relational databases. Postgres has a well-supported open-source JDBC driver which can be used to access Neon. All popular Java frameworks use JDBC internally. To connect to Neon, you are only required to provide a connection URL.
+
+For additional information about JDBC, refer to the JDBC API documentation, and the [PostgreSQL JDBC Driver documentation](https://jdbc.postgresql.org/documentation).
+
+To connect to Neon with JDBC or from a Spring Data project:
+
+1. [Create a Neon project](#create-a-neon-project)
+2. [Connect with JDBC](#connect-with-jdbc) or [Connect from Spring Data](#connect-from-spring-data)
+
+## Create a Neon project
+
+If you do not have one already, create a Neon project. Save your connection details including your password. They are required when defining connection settings.
+
+To create a Neon project:
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+## Connect with JDBC
+
+For a JDBC connection URL, replace the variables in the following URL string with your Neon project ID, database name, user, and password:
+
+```java
+jdbc:postgresql://[neon_hostname]/[dbname]?user=[user]&password=[password]&sslmode=require
+```
+
+You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+## Connect from Spring Data
+
+Spring Data relies on JDBC and Postgres drivers to connect to Postgres databases, such as Neon. If you are starting your project with Spring Initializr or connecting from an existing Spring Data project, ensure that the `PostgreSQL database driver` dependency is installed.
+
+Connecting from a Spring Data project requires specifying the datasource URL in your `application.properties` file, as shown in the following example:
+
+```java
+spring.datasource.url=jdbc:postgresql://[neon_hostname]/[dbname]?user=[user]&password=[password]&sslmode=require
+```
+
+Refer to the [Connect with JDBC](#connect-with-jdbc) section above for information about obtaining connection details for your Neon database.
+
+<NeedHelp/>
+
+
+# JavaScript
+
+---
+title: Connect a JavaScript application to Neon
+subtitle: Set up a Neon project in seconds and connect from a JavaScript application
+enableTableOfContents: true
+updatedOn: '2024-08-15T17:23:10.557Z'
+---
+
+Neon Postgres should be accessed from the server-side in JavaScript applications. Using the following JavaScript frameworks, you can easily configure a server-side connection to a Neon Postgres database.
+
+## JavaScript Frameworks
+
+Find detailed instructions for connecting to Neon from various JavaScript frameworks.
+
+<TechnologyNavigation open>
+
+<a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
+
+<a href="/docs/guides/deno" title="Deno" description="Connect a Deno application to Neon" icon="deno"></a>
+
+</TechnologyNavigation>
+
+<NeedHelp/>
+
+
+# Python
+
+---
+title: Connect a Python application to Neon using Psycopg
+subtitle: Set up a Neon project in seconds and connect from a Python application using
+  Psycopg
+enableTableOfContents: true
+updatedOn: '2024-08-07T21:36:52.661Z'
+---
+
+This guide describes how to create a Neon project and connect to it from a simple Python application using [Psycopg (psycopg2)](https://pypi.org/project/psycopg2/), a popular Postgres database adapter for the Python programming language. The application connects to Neon and retrieves the current time and Postgres version.
+
+To connect:
+
+1. [Create a Neon Project](#create-a-neon-project)
+2. [Create a Python project](#create-a-python-project)
+3. [Store your Neon credentials](#store-your-neon-credentials)
+4. [Configure your Python script](#configure-your-python-script)
+5. [Test your connection](#test-your-connection)
+
+## Create a Neon project
+
+If you do not have one already, create a Neon project.
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+The project is created with a ready-to-use `neondb` database, which you will connect to.
+
+## Create a Python project
+
+1. Create a project directory and change to the newly created directory.
+
+   ```shell
+   mkdir neon-python-example
+   cd neon-python-example
+   ```
+
+2. Set up a Python virtual environment in this directory. The virtual environment isolates your project's Python environment (including installed packages) from the rest of your system.
+
+   ```bash
+   python3 -m venv env
+   ```
+
+3. Activate the virtual environment. When the virtual environment is activated, Python uses the environment's version of Python and any installed packages.
+
+   ```bash
+   source env/bin/activate
+   ```
+
+4. Install the following dependencies in your project's root directory for synchronous and asynchronous code, respectively. You can install them using `pip`:
+
+   <CodeTabs labels={["synchronous", "asynchronous"]}>
+
+   ```bash
+   pip install psycopg2-binary python-dotenv
+   ```
+
+   ```bash
+   pip install asyncpg python-dotenv
+   ```
+
+   </CodeTabs>
+
+## Store your Neon credentials
+
+Add a `.env` file to your project's root directory and add your Neon connection string to it.
+
+You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+Your connection string will look something like this:
+
+```shell shouldWrap
+DATABASE_URL=postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+```
+
+## Configure your python script
+
+Add a `neon-connect.py` file to your project's root directory and add the following code. The script connects to your Neon database and retrieves the current time and Postgres version.
+
+<CodeTabs labels={["synchronous", "asynchronous"]}>
+
+```python
+import os
+from psycopg2 import pool
+from dotenv import load_dotenv
+
+# Load .env file
+load_dotenv()
+
+# Get the connection string from the environment variable
+connection_string = os.getenv('DATABASE_URL')
+
+# Create a connection pool
+connection_pool = pool.SimpleConnectionPool(
+    1,  # Minimum number of connections in the pool
+    10,  # Maximum number of connections in the pool
+    connection_string
+)
+
+# Check if the pool was created successfully
+if connection_pool:
+    print("Connection pool created successfully")
+
+# Get a connection from the pool
+conn = connection_pool.getconn()
+
+# Create a cursor object
+cur = conn.cursor()
+
+# Execute SQL commands to retrieve the current time and version from PostgreSQL
+cur.execute('SELECT NOW();')
+time = cur.fetchone()[0]
+
+cur.execute('SELECT version();')
+version = cur.fetchone()[0]
+
+# Close the cursor and return the connection to the pool
+cur.close()
+connection_pool.putconn(conn)
+
+# Close all connections in the pool
+connection_pool.closeall()
+
+# Print the results
+print('Current time:', time)
+print('PostgreSQL version:', version)
+```
+
+```python
+import os
+import asyncio
+import asyncpg
+from dotenv import load_dotenv
+
+async def main():
+    # Load .env file
+    load_dotenv()
+
+    # Get the connection string from the environment variable
+    connection_string = os.getenv('DATABASE_URL')
+
+    # Create a connection pool
+    pool = await asyncpg.create_pool(connection_string)
+
+    # Acquire a connection from the pool
+    async with pool.acquire() as conn:
+        # Execute SQL commands to retrieve the current time and version from PostgreSQL
+        time = await conn.fetchval('SELECT NOW();')
+        version = await conn.fetchval('SELECT version();')
+
+    # Close the pool
+    await pool.close()
+
+    # Print the results
+    print('Current time:', time)
+    print('PostgreSQL version:', version)
+
+# Run the asynchronous main function
+asyncio.run(main())
+```
+
+</CodeTabs>
+
+## Test your connection
+
+Run the `neon-connect.py` script to test your connection.
+
+```shell
+python3 neon-connect.py
+```
+
+If the connection is successful, the script returns information similar to the following:
+
+```bash shouldWrap
+Current time: 2023-05-24 08:53:10.403140+00:00
+PostgreSQL version: PostgreSQL 15.2 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1 20210110, 64-bit
+```
+
+## Source code
+
+You can find the source code for the applications described in this guide on GitHub.
+
+<DetailIconCards>
+
+<a href="https://github.com/neondatabase/examples/tree/main/with-python-asyncpg" description="Get started with Python and Neon using asyncpg" icon="github">Get started with Python and Neon using asyncpg</a>
+
+<a href="https://github.com/neondatabase/examples/tree/main/with-python-psycopg2" description="Get started with Python and Neon using psycopg2" icon="github">Get started with Python and Neon using psycopg2</a>
+
+</DetailIconCards>
+
+<NeedHelp/>
+
+
+# Rust
+
+---
+title: Connect a Rust application to Neon
+subtitle: Set up a Neon project in seconds and connect from a Rust application
+redirectFrom:
+  - /docs/quickstart/rust
+  - /docs/integrations/rust
+updatedOn: '2024-08-07T21:36:52.664Z'
+---
+
+This guide describes how to create a Neon project and connect to it from a Rust application.
+
+1. [Create a Neon project](#create-a-neon-project)
+2. [Configure the connection](#configure-the-connection)
+
+## Create a Neon project
+
+If you do not have one already, create a Neon project. Save your connection string and password. They are required when defining connection settings.
+
+To create a Neon project:
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click **New Project**.
+3. Specify your project settings and click **Create Project**.
+
+## Configure the connection
+
+<Admonition type="note">
+To run the Rust solution below you have to install the required dependencies. You can do this by running `cargo add postgres postgres_openssl openssl`.
+</Admonition>
+
+Add the Neon connection details to your `main.rs` file, as in the following example:
+
+```rust
+use postgres::Client;
+use openssl::ssl::{SslConnector, SslMethod};
+use postgres_openssl::MakeTlsConnector;
+use std::error;
+
+fn main() -> Result<(), Box<dyn error::Error>> {
+    let builder = SslConnector::builder(SslMethod::tls())?;
+    let connector = MakeTlsConnector::new(builder.build());
+
+    let mut client = Client::connect("postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require", connector)?;
+
+    for row in client.query("SELECT 42", &[])? {
+        let ret : i32 = row.get(0);
+        println!("Result = {}", ret);
+    }
+
+    Ok(())
+}
+```
+
+You can find all of the connection details listed above in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+<NeedHelp/>
+
+
 # Integrations
 
 ---
@@ -21557,30 +26400,30 @@ subtitle: Find detailed instructions for integration across various platforms an
 enableTableOfContents: true
 redirectFrom:
   - /docs/integrations/integrations-list/
-updatedOn: '2024-07-11T12:52:17.602Z'
+updatedOn: '2024-09-16T13:02:12.677Z'
 ---
 
 ## Deploy
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/vercel-logo.svg" width="36" height="36" alt="Vercel" href="/docs/guides/vercel" title="Connect with the Neon Vercel Integration" />
+<a href="/docs/guides/vercel" title="Vercel" description="Connect with the Neon Vercel Integration" icon="vercel"></a>
 
-<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Pages" href="/docs/guides/cloudflare-pages" title="Use Neon with Cloudflare Pages" />
+<a href="/docs/guides/cloudflare-pages" title="Cloudflare Pages" description="Use Neon with Cloudflare Pages" icon="cloudflare"></a>
 
-<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Workers" href="/docs/guides/cloudflare-workers" title="Use Neon with Cloudflare Workers" />
+<a href="/docs/guides/cloudflare-workers" title="Cloudflare Workers" description="Use Neon with Cloudflare Workers" icon="cloudflare"></a>
 
-<img src="/images/technology-logos/deno-logo.svg" width="36" height="36" alt="Deno Deploy" href="/docs/guides/deno" title="Use Neon with Deno Deploy" />
+<a href="/docs/guides/deno" title="Deno Deploy" description="Use Neon with Deno Deploy" icon="deno"></a>
 
-<img src="/images/technology-logos/heroku-logo.svg" width="36" height="36" alt="Heroku" href="/docs/guides/heroku" title="Deploy Your App with Neon Postgres on Heroku" />
+<a href="/docs/guides/heroku" title="Heroku" description="Deploy Your App with Neon Postgres on Heroku" icon="heroku"></a>
 
-<img src="/images/technology-logos/koyeb-logo.svg" width="36" height="36" alt="Koyeb" href="/docs/guides/koyeb" title="Use Neon with Koyeb" />
+<a href="/docs/guides/koyeb" title="Koyeb" description="Use Neon with Koyeb" icon="koyeb"></a>
 
-<img src="/images/technology-logos/netlify-logo.svg" width="29" height="36" alt="Netlify Functions" href="/docs/guides/netlify-functions" title="Connect a Neon Postgres database to your Netlify Functions application" />
+<a href="/docs/guides/netlify-functions" title="Netlify Functions" description="Connect a Neon Postgres database to your Netlify Functions application" icon="netlify"></a>
 
-<img src="/images/technology-logos/railway-logo.svg" width="36" height="36" alt="Railway" href="/docs/guides/railway" title="Use Neon Postgres with Railway" />
+<a href="/docs/guides/railway" title="Railway" description="Use Neon Postgres with Railway" icon="railway"></a>
 
-<img src="/images/technology-logos/render-logo.svg" width="36" height="36" alt="Render" href="/docs/guides/render" title="Use Neon Postgres with Render" />
+<a href="/docs/guides/render" title="Render" description="Use Neon Postgres with Render" icon="render"></a>
 
 </TechnologyNavigation>
 
@@ -21588,9 +26431,9 @@ updatedOn: '2024-07-11T12:52:17.602Z'
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/neon-logo.svg"  width="42" height="36" alt="Neon" href="/docs/serverless/serverless-driver" title="Connect with the Neon serverless driver" />
+<a href="/docs/serverless/serverless-driver" title="Neon" description="Connect with the Neon serverless driver" icon="neon"></a>
 
-<img src="/images/technology-logos/aws-lambda-logo.svg" width="36" height="36" alt="AWS Lambda" href="/docs/guides/aws-lambda" title="Connect from AWS Lambda to Neon" />
+<a href="/docs/guides/aws-lambda" title="AWS Lambda" description="Connect from AWS Lambda to Neon" icon="aws-lambda"></a>
 
 </TechnologyNavigation>
 
@@ -21598,23 +26441,23 @@ updatedOn: '2024-07-11T12:52:17.602Z'
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/exograph-logo.svg" width="36" height="36" alt="Exograph" href="/docs/guides/exograph" title="Use Exograph with Neon" />
+<a href="/docs/guides/exograph" title="Exograph" description="Use Exograph with Neon" icon="exograph"></a>
 
-<img src="/images/technology-logos/ferret-logo.svg" width="36" height="36" alt="FerretDB" href="/docs/guides/ferretdb" title="Use FerretDB with Neon" />
+<a href="/docs/guides/ferretdb" title="FerretDB" description="Use FerretDB with Neon" icon="ferret"></a>
 
-<img src="/images/technology-logos/grafbase-logo.svg" width="36" height="36" alt="Grafbase" href="/docs/guides/grafbase" title="Use Grafbase Edge Resolvers with Neon" />
+<a href="/docs/guides/grafbase" title="Grafbase" description="Use Grafbase Edge Resolvers with Neon" icon="grafbase"></a>
 
-<img src="/images/technology-logos/hasura-logo.svg" width="35" height="36" alt="Hasura" href="/docs/guides/hasura" title="Connect from Hasura Cloud to Neon" />
+<a href="/docs/guides/hasura" title="Hasura" description="Connect from Hasura Cloud to Neon" icon="hasura"></a>
 
-<img src="/images/technology-logos/cloudflare-logo.svg" width="36" height="36" alt="Cloudflare Hyperdrive" href="/docs/guides/cloudflare-hyperdrive" title="Use Neon with Cloudflare Hyperdrive" />
+<a href="/docs/guides/cloudflare-hyperdrive" title="Cloudflare Hyperdrive" description="Use Neon with Cloudflare Hyperdrive" icon="cloudflare"></a>
 
-<img src="/images/technology-logos/askyourdatabase-logo.svg" width="36" height="36" alt="Ask Your Database" href="/docs/guides/askyourdatabase" title="Chat with your Neon Postgres database with AskYourDatabase" />
+<a href="/docs/guides/askyourdatabase" title="Ask Your Database" description="Chat with your Neon Postgres database with AskYourDatabase" icon="database"></a>
 
-<img src="/images/technology-logos/stepzen-logo.svg" width="36" height="36" alt="StepZen" href="/docs/guides/stepzen" title="Use StepZen with Neon" />
+<a href="/docs/guides/stepzen" title="StepZen" description="Use StepZen with Neon" icon="stepzen"></a>
 
-<img src="/images/technology-logos/wundergraph-logo.svg" width="36" height="36" alt="Wundergraph" href="/docs/guides/wundergraph" title="Use Wundergraph with Neon" />
+<a href="/docs/guides/wundergraph" title="Wundergraph" description="Use Wundergraph with Neon" icon="wundergraph"></a>
 
-<img src="/images/technology-logos/outerbase-logo.svg" width="36" height="36" alt="Outerbase" href="/docs/guides/outerbase" title="Connect Outerbase to Neon" />
+<a href="/docs/guides/outerbase" title="Outerbase" description="Connect Outerbase to Neon" icon="outerbase"></a>
 
 </TechnologyNavigation>
 
@@ -21622,41 +26465,69 @@ updatedOn: '2024-07-11T12:52:17.602Z'
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/github-logo.svg" width="36" height="36" alt="GitHub integration" href="/docs/guides/neon-github-app" title="Use the Neon GitHub integration" />
+<a href="/docs/guides/neon-github-app" title="GitHub integration" description="Use the Neon GitHub integration" icon="github"></a>
 
-<img src="/images/technology-logos/neosync-logo.svg" width="36" height="36" alt="Neosync" href="/docs/guides/neosync-anonymize" title="Anonymize data with Neosync" />
+<a href="/docs/guides/neosync-anonymize" title="Neosync" description="Anonymize data with Neosync" icon="neosync"></a>
 
-<img src="/images/technology-logos/neosync-logo.svg" width="36" height="36" alt="Neosync" href="/docs/guides/neosync-generate" title="Seed data with Neosync" />
+<a href="/docs/guides/neosync-generate" title="Neosync" description="Seed data with Neosync" icon="neosync"></a>
 
-<img src="/images/technology-logos/prisma-logo.svg" width="30" height="36" alt="Prisma" href="/docs/guides/prisma" title="Connect from Prisma to Neon" />
+<a href="/docs/guides/prisma" title="Prisma" description="Connect from Prisma to Neon" icon="prisma"></a>
 
-<img src="/images/technology-logos/typeorm-logo.svg" width="30" height="36" alt="TypeORM" href="/docs/guides/typeorm" title="Connect from TypeORM to Neon" />
+<a href="/docs/guides/typeorm" title="TypeORM" description="Connect from TypeORM to Neon" icon="typeorm"></a>
 
-<img src="/images/technology-logos/knex-logo.svg" width="30" height="36" alt="Knex" href="/docs/guides/knex" title="Connect from Knex to Neon" />
+<a href="/docs/guides/knex" title="Knex" description="Connect from Knex to Neon" icon="knex"></a>
 
 </TechnologyNavigation>
 
-## Replicate
+## Replicate data from Neon
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/airbyte-logo.svg" width="36" height="36" alt="Airbyte" href="/docs/guides/logical-replication-airbyte" title="Replicate data from Neon with Airbyte" />
+<a href="/docs/guides/logical-replication-airbyte" title="Airbyte" description="Replicate data from Neon with Airbyte" icon="airbyte"></a>
 
-<img src="/images/technology-logos/bemi-logo.svg" width="36" height="36" alt="Bemi" href="/docs/guides/bemi" title="Create an automatic audit trail with Bemi" />
+<a href="/docs/guides/bemi" title="Bemi" description="Create an automatic audit trail with Bemi" icon="bemi"></a>
 
-<img src="/images/technology-logos/clickhouse-logo.svg" width="36" height="36" alt="ClickHouse" href="/docs/guides/logical-replication-clickhouse" title="Replicate data from Neon to ClickHouse (DoubleCloud)" />
+<a href="https://docs.peerdb.io/mirror/cdc-neon-clickhouse" title="ClickHouse" description="Change Data Capture from Neon to ClickHouse with PeerDB (PeerDB docs)" icon="clickhouse"></a>
 
-<img src="/images/technology-logos/decodable-logo.svg" width="36" height="36" alt="Decodable" href="/docs/guides/logical-replication-decodable" title="Replicate data from Neon with Decodable" />
+<a href="/docs/guides/logical-replication-clickhouse" title="DoubleCloud" description="Replicate data from Neon to ClickHouse with DoubleCloud" icon="doublecloud"></a>
 
-<img src="/images/technology-logos/kafka-logo.svg" width="36" height="36" alt="Kafka" href="/docs/guides/logical-replication-kafka-confluent" title="Replicate data from Neon with Kafka (Confluent)" />
+<a href="/docs/guides/logical-replication-kafka-confluent" title="Confluent (Kafka)" description="Replicate data from Neon with Confluent (Kafka)" icon="confluent"></a>
 
-<img src="/images/technology-logos/fivetran-logo.svg" width="36" height="36" alt="Fivetran" href="/docs/guides/logical-replication-fivetran" title="Replicate data from Neon with Fivetran" />
+<a href="/docs/guides/logical-replication-decodable" title="Decodable" description="Replicate data from Neon with Decodable" icon="decodable"></a>
 
-<img src="/images/technology-logos/materialize-logo.svg" width="36" height="36" alt="Materialize" href="/docs/guides/logical-replication-materialize" title="Replicate data from Neon to Materialize" />
+<a href="/docs/guides/logical-replication-estuary-flow" title="Estuary Flow" description="Replicate data from Neon with Estuary Flow" icon="estuary"></a>
 
-<img src="/images/technology-logos/postgresql-logo.svg" width="36" height="36" alt="Postgres" href="/docs/guides/logical-replication-postgres" title="Replicate data from Neon to PostgreSQL" />
+<a href="/docs/guides/logical-replication-fivetran" title="Fivetran" description="Replicate data from Neon with Fivetran" icon="fivetran"></a>
 
-<img src="/images/technology-logos/sequin-logo.svg" width="29" height="36" alt="Sequin" href="/docs/guides/sequin" title="Sync data from APIs to Neon in real time" />
+<a href="/docs/guides/logical-replication-materialize" title="Materialize" description="Replicate data from Neon to Materialize" icon="materialize"></a>
+
+<a href="/docs/guides/logical-replication-neon-to-neon" title="Neon to Neon" description="Replicate data from Neon to Neon" icon="neon"></a>
+
+<a href="/docs/guides/logical-replication-postgres" title="Neon to PostgreSQL" description="Replicate data from Neon to PostgreSQL" icon="postgresql"></a>
+
+<a href="/docs/guides/logical-replication-prisma-pulse" title="Prisma Pulse" description="Stream database changes in real-time with Prisma Pulse" icon="prisma"></a>
+
+<a href="/docs/guides/sequin" title="Sequin" description="Stream changes and rows from your database to anywhere with Sequin" icon="sequin"></a>
+
+<a href="/docs/guides/logical-replication-airbyte-snowflake" title="Snowflake" description="Replicate data from Neon to Snowflake with Airbyte" icon="snowflake"></a>
+
+</TechnologyNavigation>
+
+## Replicate data to Neon
+
+<TechnologyNavigation open>
+
+<a href="/docs/guides/logical-replication-alloydb" title="AlloyDB" description="Replicate data from AlloyDB to Neon" icon="alloydb"></a>
+
+<a href="/docs/guides/logical-replication-aurora-to-neon" title="Aurora" description="Replicate data from Aurora to Neon" icon="aws-rds"></a>
+
+<a href="/docs/guides/logical-replication-cloud-sql" title="Cloud SQL" description="Replicate data from Cloud SQL to Neon" icon="google-cloud-sql"></a>
+
+<a href="/docs/guides/logical-replication-neon-to-neon" title="Neon to Neon" description="Replicate data from Neon to Neon" icon="neon"></a>
+
+<a href="/docs/guides/logical-replication-postgres-to-neon" title="PostgreSQL to Neon" description="Replicate data from PostgreSQL to Neon" icon="postgresql"></a>
+
+<a href="/docs/guides/logical-replication-rds-to-neon" title="RDS" description="Replicate data from AWS RDS PostgreSQL to Neon" icon="aws-rds"></a>
 
 </TechnologyNavigation>
 
@@ -21664,25 +26535,25 @@ updatedOn: '2024-07-11T12:52:17.602Z'
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/django-logo.svg" width="29" height="36" alt="Django" href="/docs/guides/django-migrations" title="Connect a Django application to Neon" />
+<a href="/docs/guides/django-migrations" title="Django" description="Connect a Django application to Neon" icon="django"></a>
 
-<img src="/images/technology-logos/drizzle-logo.svg" width="29" height="36" alt="Drizzle" href="/docs/guides/drizzle-migrations" title="Schema migration with Neon Postgres and Drizzle ORM" />
+<a href="/docs/guides/drizzle-migrations" title="Drizzle" description="Schema migration with Neon Postgres and Drizzle ORM" icon="drizzle"></a>
 
-<img src="/images/technology-logos/entity-logo.svg" width="36" height="36" alt="Entity Framework" href="/docs/guides/entity-migrations" title="Schema migration with Neon and Entity Framework" />
+<a href="/docs/guides/entity-migrations" title="Entity Framework" description="Schema migration with Neon and Entity Framework" icon="entity"></a>
 
-<img src="/images/technology-logos/flyway-logo.svg" width="36" height="36" alt="Flyway" href="/docs/guides/flyway" title="Use Flyway with Neon" />
+<a href="/docs/guides/flyway" title="Flyway" description="Use Flyway with Neon" icon="flyway"></a>
 
-<img src="/images/technology-logos/laravel-logo.svg" width="35" height="36" alt="Laravel" href="/docs/guides/laravel" title="Connect from Laravel to Neon" />
+<a href="/docs/guides/laravel" title="Laravel" description="Connect from Laravel to Neon" icon="laravel"></a>
 
-<img src="/images/technology-logos/liquibase-logo.svg" width="35" height="36" alt="Liquibase" href="/docs/guides/liquibase" title="Use Liquibase with Neon" />
+<a href="/docs/guides/liquibase" title="Liquibase" description="Use Liquibase with Neon" icon="liquibase"></a>
 
-<img src="/images/technology-logos/prisma-logo.svg" width="29" height="36" alt="Prisma" href="/docs/guides/prisma-migrations" title="Schema migration with Neon Postgres and Prisma ORM" />
+<a href="/docs/guides/prisma-migrations" title="Prisma" description="Schema migration with Neon Postgres and Prisma ORM" icon="prisma"></a>
 
-<img src="/images/technology-logos/rails-logo.svg" width="36" height="36" alt="Rails" href="/docs/guides/rails-migrations" title="Connect a Rails application to Neon" />
+<a href="/docs/guides/rails-migrations" title="Rails" description="Connect a Rails application to Neon" icon="rails"></a>
 
-<img src="/images/technology-logos/sequelize-logo.svg" width="29" height="36" alt="Sequelize" href="/docs/guides/sequelize" title="Schema migration with Neon Postgres and Sequelize" />
+<a href="/docs/guides/sequelize" title="Sequelize" description="Schema migration with Neon Postgres and Sequelize" icon="sequelize"></a>
 
-<img src="/images/technology-logos/sqlalchemy-logo.svg" width="36" height="36" alt="SQLAlchemy" href="/docs/guides/sqlalchemy" title="Connect an SQLAlchemy application to Neon" />
+<a href="/docs/guides/sqlalchemy" title="SQLAlchemy" description="Connect an SQLAlchemy application to Neon" icon="sqlalchemy"></a>
 
 </TechnologyNavigation>
 
@@ -21690,11 +26561,13 @@ updatedOn: '2024-07-11T12:52:17.602Z'
 
 <TechnologyNavigation open>
 
-<img src="/images/technology-logos/auth0-logo.svg" width="36" height="36" alt="Auth0" href="/docs/guides/auth-auth0" title="Authenticate Neon Postgres application users with Auth0" />
+<a href="/docs/guides/auth-auth0" title="Auth0" description="Authenticate Neon Postgres application users with Auth0" icon="auth0"></a>
 
-<img src="/images/technology-logos/clerk-logo.svg" width="36" height="36" alt="Clerk" href="/docs/guides/auth-clerk" title="Authenticate Neon Postgres application users with Clerk" />
+<a href="/docs/guides/auth-authjs" title="Auth.js" description="Authenticate Neon Postgres application users with Auth.js" icon="auth"></a>
 
-<img src="/images/technology-logos/okta-logo.svg" width="36" height="36" alt="Okta" href="/docs/guides/auth-okta" title="Authenticate Neon Postgres application users with Okta" />
+<a href="/docs/guides/auth-clerk" title="Clerk" description="Authenticate Neon Postgres application users with Clerk" icon="clerk"></a>
+
+<a href="/docs/guides/auth-okta" title="Okta" description="Authenticate Neon Postgres application users with Okta" icon="okta"></a>
 
 </TechnologyNavigation>
 
@@ -21799,7 +26672,7 @@ title: Connect with the Neon Vercel Integration
 subtitle: Learn how to connect your Vercel project to Neon using the Neon Vercel
   Integration
 enableTableOfContents: true
-updatedOn: '2024-07-25T12:53:42.430Z'
+updatedOn: '2024-08-28T20:38:34.584Z'
 ---
 
 This guide describes how to connect using the [Neon Vercel Integration](https://vercel.com/integrations/neon) from the Vercel marketplace. The integration connects your Vercel project to a Neon database and creates a database branch for each preview deployment.
@@ -21919,7 +26792,7 @@ After you add the integration to a Vercel project, Neon creates a database branc
 
    - The commit triggers a preview deployment in Vercel, as would occur without the Neon integration.
      ![Neon preview deployment branch](/docs/guides/vercel_deployments.png)
-   - The integration creates a branch in Neon. This branch is an isolated copy-on-write clone of your default branch, with its own dedicated compute. The branch is created with the same name as your `git` branch but includes a `/preview` prefix.
+   - The integration creates a branch in Neon. This branch is an isolated copy-on-write clone of your default branch, with its own dedicated compute. The branch is created with the same name as your `git` branch but includes a `preview/` prefix.
      ![Neon preview deployment branch](/docs/guides/vercel_neon_app_update.png)
    - The integration sets Vercel preview environment variables to connect the preview deployment to the new branch.
      ![Vercel preview settings](/docs/guides/vercel_preview_settings.png)
@@ -22075,7 +26948,7 @@ To avoid this issue, you can reinstall the integration to update to the latest v
 
 ### Stored passwords missing in the selected Neon project
 
-Neon projects created after March, 2023 store role passwords in a secure storage vault associated with the project, allowing passwords to be retrieved by the Neon Vercel integration for the purpose of setting Postgres connection environment variables in Vercel. Projects created before March 2023, do not store role passwords, and are therefore not compatible with the Neon Vercel integration. The current workaround for this issue is to migrate your data to a new Neon project. See [Import data from another Neon project](/docs/import/import-from-neon).
+Neon projects created after March, 2023 store role passwords in a secure storage vault associated with the project, allowing passwords to be retrieved by the Neon Vercel integration for the purpose of setting Postgres connection environment variables in Vercel. Projects created before March 2023, do not store role passwords, and are therefore not compatible with the Neon Vercel integration. The current workaround for this issue is to migrate your data to a new Neon project. See [Import data from another Neon project](/docs/import/migrate-from-neon).
 
 ## Video: A Postgres database for Every Preview Deployment
 
@@ -23567,7 +28440,7 @@ You can find the source code for the application described in this guide on GitH
 - [Heroku Documentation](https://devcenter.heroku.com/)
 - [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
 - [Neon](https://neon.tech/docs)
-- [Import data from Heroku Postgres to Neon](/docs/import/import-from-heroku)
+- [Import data from Heroku Postgres to Neon](/docs/import/migrate-from-heroku)
 
 <NeedHelp/>
 
@@ -25650,7 +30523,7 @@ To view the newly created tables from the Neon Console:
 
 ## Import existing data to Neon
 
-If you are migrating from Hasura with Heroku Postgres to Neon, refer to the [Import data from Heroku](/docs/import/import-from-heroku) guide for data import instructions. For general data import instructions, see [Import data from Postgres](/docs/import/import-from-postgres).
+If you are migrating from Hasura with Heroku Postgres to Neon, refer to the [Import data from Heroku](/docs/import/migrate-from-heroku) guide for data import instructions. For general data import instructions, see [Import data from Postgres](/docs/import/migrate-from-postgres).
 
 ## Maximum connections configuration
 
@@ -25940,7 +30813,7 @@ To delete your Neon project, follow the steps outlined in the Neon documentation
 title: Connect Outerbase to Neon
 subtitle: Connect Outerbase to your Neon project with the Neon Outerbase integration
 enableTableOfContents: true
-updatedOn: '2024-08-08T18:06:25.262Z'
+updatedOn: '2024-09-05T17:14:45.241Z'
 ---
 
 Outerbase is an AI-powered interface for your database that allows you and your team to view, query, visualize, and edit your data using the power of AI. Outserbase supports both SQL and natural language. To learn more, see [What is Outerbase?](https://docs.outerbase.com/introduction/what-is-outerbase)
@@ -25963,7 +30836,7 @@ To add the Outerbase integration to your Neon project:
 7. You are directed to an **Authorize Outerbase** dialog. Click **Authorize** to give Outerbase permission to access your Neon account.
 8. You are directed to a **Connect to your Neon database** page. If you have more than one Neon project, select the project you want to connect to from the **Select a database** drop-down menu.
    <Admonition type="note">
-   If you use Neon's [IP Allow](/docs/introduction/ip-allow) feature, be sure to copy the provided Outerbase IP addresses from this page and add them to your Neon IP allowlist. See [Configure IP Allow](/docs/manage/projects#configure-ip-allow) for instructions. IP Allow is a Neon [Scale](/docs/introduction/plans#scale) plan feature.
+   If you use Neon's [IP Allow](/docs/introduction/ip-allow) feature, be sure to copy the provided Outerbase IP addresses from this page and add them to your Neon IP allowlist. See [Configure IP Allow](/docs/manage/projects#configure-ip-allow) for instructions. IP Allow is a Neon [Business](/docs/introduction/plans#business) plan feature.
    </Admonition>
 9. Select **Connect to Database**.
    <Admonition type="important">
@@ -26602,8 +31475,7 @@ subtitle: Connect Neon Postgres to a GitHub repository and build GitHub Actions
 enableTableOfContents: true
 redirectFrom:
   - /docs/guides/neon-github-app
-tag: new
-updatedOn: '2024-08-01T16:01:55.454Z'
+updatedOn: '2024-09-08T12:44:00.903Z'
 ---
 
 The Neon GitHub integration connects your Neon projects to corresponding GitHub repositories, helping you incorporate your database into your developer workflow. For example, create a database branch for each pull request using GitHub Actions. We’ll provide you with a sample GitHub Actions workflow to help you get started.
@@ -26794,6 +31666,8 @@ The Neon GitHub integration configures a `NEON_API_KEY` secret and a `PROJECT_ID
 </Admonition>
 
 <DetailIconCards>
+
+<a href="https://github.com/neondatabase/preview-branches-with-cloudflare" description="Demonstrates using GitHub Actions workflows to create a Neon branch for every Cloudflare Pages preview deployment" icon="github">Preview branches with Cloudflare Pages</a>
 
 <a href="https://github.com/neondatabase/preview-branches-with-vercel" description="Demonstrates using GitHub Actions workflows to create a Neon branch for every Vercel preview deployment" icon="github">Preview branches with Vercel</a>
 
@@ -27531,7 +32405,7 @@ A `connect_timeout` setting of 0 means no timeout.
 title: Connect from Knex to Neon
 subtitle: Learn how to connect to Neon from Knex
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.653Z'
+updatedOn: '2024-09-08T12:44:00.899Z'
 ---
 
 Knex is an open-source SQL query builder for Postgres. This guide covers the following topics:
@@ -27624,7 +32498,7 @@ You can try this optimization yourself by downloading our [Get started with Knex
 <NeedHelp/>
 
 
-# Replicate
+# Replicate from Neon
 
 # Airbyte
 
@@ -27633,7 +32507,7 @@ title: Replicate data with Airbyte
 subtitle: Learn how to replicate data from Neon with Airbyte
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.441Z'
+updatedOn: '2024-08-23T17:19:28.786Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
@@ -27646,8 +32520,13 @@ In this guide, you will learn how to define your Neon Postgres database as a dat
 
 - An [Airbyte account](https://airbyte.com/)
 - A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
-## Enable logical replication in Neon
+## Prepare your source Neon database
+
+This section describes how to prepare your source Neon database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+### Enable logical replication in Neon
 
 <Admonition type="important">
 Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning active connections will be dropped and have to reconnect.
@@ -27669,9 +32548,9 @@ SHOW wal_level;
  logical
 ```
 
-## Create a Postgres role for replication
+### Create a Postgres role for replication
 
-It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon CLI, Console, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
+It's recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon CLI, Console, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
 
 <Tabs labels={["CLI", "Console", "API"]}>
 
@@ -27680,7 +32559,7 @@ It is recommended that you create a dedicated Postgres role for replicating data
 The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
 
 ```bash
-neon roles create --name alex
+neon roles create --name replication_user
 ```
 
 </TabItem>
@@ -27711,7 +32590,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -27720,31 +32599,19 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 </Tabs>
 
-## Grant schema access to your Postgres role
+### Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
 
-## Grant schema access to your Postgres role
-
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. Run these commands for each schema:
-
-```sql
-GRANT USAGE ON SCHEMA <schema_name> TO <role_name>;
-GRANT SELECT ON ALL TABLES IN SCHEMA <schema_name> TO <role_name>;
-ALTER DEFAULT PRIVILEGES IN SCHEMA <schema_name> GRANT SELECT ON TABLES TO <role_name>;
-```
-
-Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
-
-## Create a replication slot
+### Create a replication slot
 
 Airbyte requires a dedicated replication slot. Only one source should be configured to use this replication slot.
 
@@ -27756,36 +32623,38 @@ SELECT pg_create_logical_replication_slot('airbyte_slot', 'pgoutput');
 
 `airbyte_slot` is the name assigned to the replication slot. You will need to provide this name when you set up your Airbyte source.
 
-<Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
-</Admonition>
-
-## Create a publication
+### Create a publication
 
 Perform the following steps for each table you want to replicate data from:
 
 1. Add the replication identity (the method of distinguishing between rows) for each table you want to replicate:
 
    ```sql
-   ALTER TABLE tbl1 REPLICA IDENTITY DEFAULT;
+   ALTER TABLE <table_name> REPLICA IDENTITY DEFAULT;
    ```
 
    In rare cases, if your tables use data types that support [TOAST](https://www.postgresql.org/docs/current/storage-toast.html) or have very large field values, consider using `REPLICA IDENTITY FULL` instead:
 
    ```sql
-   ALTER TABLE tbl1 REPLICA IDENTITY FULL;
+   ALTER TABLE <table_name> REPLICA IDENTITY FULL;
    ```
 
 2. Create the Postgres publication. Include all tables you want to replicate as part of the publication:
 
    ```sql
-   CREATE PUBLICATION airbyte_publication FOR TABLE <tbl1, tbl2, tbl3>;
+   CREATE PUBLICATION airbyte_publication FOR TABLE <table_name, table_name, table_name>;
+   ```
+
+   Alternatively, you can create a publication for all tables:
+
+   ```sql
+   CREATE PUBLICATION airbyte_publication FOR ALL TABLES;
    ```
 
    The publication name is customizable. Refer to the [Postgres docs](https://www.postgresql.org/docs/current/logical-replication-publication.html) if you need to add or remove tables from your publication.
 
 <Admonition type="note">
-The Airbyte UI currently allows selecting any tables for Change Data Capture (CDC). If a table is selected that is not part of the publication, it will not be replicated even though it is selected. If a table is part of the publication but does not have a replication identity, the replication identity will be created automatically on the first run if the Postgres role you use with Airbyte has the necessary permissions.
+The Airbyte UI currently allows selecting any table for Change Data Capture (CDC). If a table is selected that is not part of the publication, it will not be replicated even though it is selected. If a table is part of the publication but does not have a replication identity, the replication identity will be created automatically on the first run if the Postgres role you use with Airbyte has the necessary permissions.
 </Admonition>
 
 ## Create a Postgres source in Airbyte
@@ -27803,23 +32672,21 @@ The Airbyte UI currently allows selecting any tables for Change Data Capture (CD
    - **Host**: ep-cool-darkness-123456.us-east-2.aws.neon.tech
    - **Port**: 5432
    - **Database Name**: dbname
-   - **Username**: alex
+   - **Username**: replication_user
    - **Password**: AbC123dEf
-
-   ![Airbyte Create a source](/docs/guides/airbyte_create_source.png)
 
 3. Under **Optional fields**, list the schemas you want to sync. Schema names are case-sensitive, and multiple schemas may be specified. By default, `public` is the only selected schema.
 4. Select an SSL mode. You will most frequently choose `require` or `verify-ca`. Both of these options always require encryption. The `verify-ca` mode requires a certificate. Refer to [Connect securely](/docs/connect/connect-securely) for information about the location of certificate files you can use with Neon.
 5. Under **Advanced**:
 
-   - Select **Logical Replication (CDC)** from available replication methods.
+   - Select **Read Changes using Write-Ahead Log (CDC)** from available replication methods.
    - In the **Replication Slot** field, enter the name of the replication slot you created previously: `airbyte_slot`.
    - In the **Publication** field, enter the name of the publication you created previously: `airbyte_publication`.
      ![Airbyte advanced fields](/docs/guides/airbyte_cdc_advanced_fields.png)
 
 ## Allow inbound traffic
 
-If you are on Airbyte Cloud, and you are using Neon's **IP Allow** feature to limit IP address that can connect to Neon, you will need to allow inbound traffic from Airbyte's IP addresses. You can find a list of IPs that need to be allowlisted in the [Airbyte Security docs](https://docs.airbyte.com/operating-airbyte/security). For information about configuring allowed IPs in Neon, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+If you are on Airbyte Cloud, and you are using Neon's **IP Allow** feature to limit IP addresses that can connect to Neon, you will need to allow inbound traffic from Airbyte's IP addresses. You can find a list of IPs that need to be allowlisted in the [Airbyte Security docs](https://docs.airbyte.com/operating-airbyte/security). For information about configuring allowed IPs in Neon, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
 ## Complete the source setup
 
@@ -27827,7 +32694,7 @@ To complete your source setup, click **Set up source** in the Airbyte UI. Airbyt
 
 ## Configure a destination
 
-To complete your data integration setup, you can now add one of Airbyte's many supported destinations, such as Snowflake, BigQuery, or Kafka, to name a few. After configuring a destination, you'll need to set up a connection between your Neon source database and your chosen destination. Refer to the Airbyte documentation for instructions:
+To complete your data integration setup, you can now add one of Airbyte's many supported destinations, such as [Snowflake](/docs/guides/logical-replication-airbyte-snowflake), BigQuery, or Kafka, to name a few. After configuring a destination, you'll need to set up a connection between your Neon source database and your chosen destination. Refer to the Airbyte documentation for instructions:
 
 - [Add a destination](https://docs.airbyte.com/using-airbyte/getting-started/add-a-destination)
 - [Set up a connection](https://docs.airbyte.com/using-airbyte/getting-started/set-up-a-connection)
@@ -27849,7 +32716,7 @@ subtitle: Learn how to create an automatic audit trail for your Postgres databas
   Bemi
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-07T21:36:52.647Z'
+updatedOn: '2024-09-02T13:42:56.654Z'
 ---
 
 [Bemi](https://bemi.io/) is an open-source solution that plugs into Postgres and ORMs such as Prisma, TypeORM, SQLAlchemy, and Ruby on Rails to track database changes automatically. It unlocks robust context-aware audit trails and time travel querying inside your application.
@@ -27862,6 +32729,7 @@ In this guide, we'll show you how to connect your Neon database to Bemi to creat
 
 - A [Bemi account](https://bemi.io/)
 - A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
 ## Enable logical replication in Neon
 
@@ -27960,7 +32828,7 @@ After creating a read-only role, you can find the connection details for this ro
 
 ## Allow inbound traffic
 
-If you're using Neon's IP Allow feature, available with the Neon [Scale](/docs/introduction/plans#scale) plan, to limit IP addresses that can connect to Neon, you will need to allow inbound traffic from Bemi. [Contact Bemi](mailto:hi@bemi.io) to get the static IPs that need to be allowlisted. For information about configuring allowed IPs in Neon, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+If you're using Neon's IP Allow feature, available with the Neon [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans, to limit IP addresses that can connect to Neon, you will need to allow inbound traffic from Bemi. [Contact Bemi](mailto:hi@bemi.io) to get the static IPs that need to be allowlisted. For information about configuring allowed IPs in Neon, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
 ## References
 
@@ -27969,19 +32837,17 @@ If you're using Neon's IP Allow feature, available with the Neon [Scale](/docs
 - [Publications - PostgreSQL documentation](https://www.postgresql.org/docs/current/logical-replication-publication.html)
 
 
-# ClickHouse (DoubleCloud)
+# ClickHouse
+
+# DoubleCloud
 
 ---
 title: Replicate data to a ClickHouse database on DoubleCloud
 subtitle: Learn how to replicate data from Neon to a ClickHouse database on DoubleCloud
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.441Z'
+updatedOn: '2024-08-23T17:19:28.787Z'
 ---
-
-<Admonition type="tip">
-Even when logical replication isn't available on the Neon side, you can schedule DoubleCloud Transfer to copy incremental data from Postgres to ClickHouse at a given interval by enabling periodic snapshots.
-</Admonition>
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
 
@@ -27998,6 +32864,7 @@ With Transfer, you can replicate your data to both managed ClickHouse clusters o
 
 - A [DoubleCloud account](https://console.double.cloud/)
 - A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
 ## Enable logical replication in Neon
 
@@ -28063,7 +32930,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -28074,12 +32941,12 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 ## Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
@@ -28243,7 +33110,7 @@ title: Replicate data with Kafka (Confluent) and Debezium
 subtitle: Learn how to replicate data from Neon with Kafka (Confluent) and Debezium
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.443Z'
+updatedOn: '2024-08-23T17:19:28.788Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
@@ -28260,6 +33127,7 @@ Confluent Cloud Connectors can be set up using the [Confluent Cloud UI](https://
 
 - A [Confluent Cloud](https://www.confluent.io/confluent-cloud) account
 - A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
 ## Enable logical replication in Neon
 
@@ -28316,7 +33184,7 @@ It is recommended that you create a dedicated Postgres role for replicating data
 The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
 
 ```bash
-neon roles create --name alex
+neon roles create --name replication_user
 ```
 
 </TabItem>
@@ -28347,7 +33215,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -28358,24 +33226,12 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 ## Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
-```
-
-Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
-
-## Grant schema access to your Postgres role
-
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
-
-```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
@@ -28392,10 +33248,6 @@ SELECT pg_create_logical_replication_slot('debezium', 'pgoutput');
 
 - `debezium` is the name assigned to the replication slot. You will need to provide the slot name when you set up your source connector in Confluent.
 - `pgoutput` is the logical decoder plugin used in this example. Neon supports both `pgoutput` and `wal2json` decoder plugins.
-
-<Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
-</Admonition>
 
 ## Set up a Kafka cluster in Confluent Cloud
 
@@ -28538,7 +33390,7 @@ title: Replicate data with Decodable
 subtitle: Learn how to replicate data from Neon with Decodable
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.442Z'
+updatedOn: '2024-08-23T17:19:28.787Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
@@ -28553,6 +33405,7 @@ optionally processing the data with SQL or custom Flink jobs.
 
 - A [Decodable account](https://www.decodable.co/) ([start free](https://app.decodable.co/-/accounts/create), no credit card required)
 - A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
 ## Enable logical replication in Neon
 
@@ -28587,7 +33440,7 @@ It is recommended that you create a dedicated Postgres role for replicating data
 The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
 
 ```bash
-neon roles create --name alex
+neon roles create --name replication_user
 ```
 
 </TabItem>
@@ -28618,7 +33471,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -28629,12 +33482,12 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 ## Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
@@ -28659,10 +33512,6 @@ Alternatively, you also can create a publication `FOR ALL TABLES`.
 
 Upon start-up, the Decodable connector for Postgres will automatically create the [replication slot](https://www.postgresql.org/docs/current/logicaldecoding-explanation.html#LOGICALDECODING-REPLICATION-SLOTS) required for ingesting data change events from Postgres.
 The slot's name will be prefixed with `decodable_`, followed by a unique identifier.
-
-<Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
-</Admonition>
 
 ## Allow inbound traffic
 
@@ -28728,6 +33577,168 @@ Of course, you also can take your processed data back to another Neon database, 
 <NeedHelp/>
 
 
+# Estuary Flow
+
+---
+title: Replicate Data with Estuary Flow
+subtitle: Learn how to replicate data from Neon with Estuary Flow
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-08T12:44:00.901Z'
+---
+
+Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
+
+[Estuary Flow](https://estuary.dev/) is a real-time data streaming platform that allows you to connect, transform, and move data from various sources to destinations with sub-100ms latency.
+
+In this guide, you will learn how to configure a Postgres source connector in Estuary Flow for ingesting changes from your Neon database, enabling you to replicate data from Neon to any of Estuary Flow's [supported destinations](https://docs.estuary.dev/reference/Connectors/materialization-connectors/#available-materialization-connectors), with optional transformations along the way.
+
+## Prerequisites
+
+- An [Estuary Flow account](https://dashboard.estuary.dev/register) (start free, no credit card required)
+- A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
+
+## Enable Logical Replication in Neon
+
+<Admonition type="important">
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning active connections will be dropped and have to reconnect.
+</Admonition>
+
+To enable logical replication in Neon:
+
+1. Select your project in the Neon Console.
+2. On the Neon **Dashboard**, select **Project settings**.
+3. Select **Beta**.
+4. Click **Enable** to enable logical replication.
+
+You can verify that logical replication is enabled by running the following query from the [Neon SQL Editor](https://docs.neon.tech/docs/query-with-neon-sql-editor):
+
+```sql
+SHOW wal_level;
+ wal_level
+-----------
+ logical
+```
+
+## Create a Postgres Role for Replication
+
+It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon Console, CLI, or API are granted membership in the [neon_superuser](https://docs.neon.tech/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
+
+<Tabs labels={["CLI", "Console", "API"]}>
+
+<TabItem>
+
+The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
+
+```bash
+neon roles create --name cdc_role
+```
+
+</TabItem>
+
+<TabItem>
+
+To create a role in the Neon Console:
+
+1. Navigate to the [Neon Console](https://console.neon.tech).
+2. Select a project.
+3. Select **Branches**.
+4. Select the branch where you want to create the role.
+5. Select the **Roles & Databases** tab.
+6. Click **Add Role**.
+7. In the role creation dialog, specify a role name (e.g., `cdc_role`).
+8. Click **Create**. The role is created, and you are provided with the password for the role.
+
+</TabItem>
+
+<TabItem>
+
+The following Neon API method creates a role. To view the API documentation for this method, refer to the [Neon API reference](/docs/reference/cli-roles).
+
+```bash
+curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "role": {
+    "name": "cdc_role"
+  }
+}' | jq
+```
+
+</TabItem>
+
+</Tabs>
+
+## Grant Schema Access to Your Postgres Role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. Run these commands for each schema:
+
+```sql
+GRANT USAGE ON SCHEMA public TO cdc_role;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO cdc_role;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO cdc_role;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+## Create a Publication
+
+Create a [publication](https://www.postgresql.org/docs/current/sql-createpublication.html) with the name `estuary_publication`. Include all the tables you would like to ingest into Estuary Flow.
+
+```sql
+CREATE PUBLICATION estuary_publication FOR TABLE <tbl1, tbl2, tbl3>;
+```
+
+Refer to the [Postgres docs](https://www.postgresql.org/docs/current/sql-alterpublication.html) if you need to add or remove tables from your publication. Alternatively, you also can create a publication `FOR ALL TABLES`.
+
+Upon startup, the Estuary Flow connector for Postgres will automatically create the [replication slot](https://www.postgresql.org/docs/current/logicaldecoding-explanation.html#LOGICALDECODING-REPLICATION-SLOTS) required for ingesting data change events from Postgres. The slot's name will be prefixed with `estuary_`, followed by a unique identifier.
+
+## Allow Inbound Traffic
+
+If you are using Neon's **IP Allow** feature to limit the IP addresses that can connect to Neon, you will need to allow inbound traffic from Estuary Flow's IP addresses.
+Refer to the [Estuary Flow documentation](https://docs.estuary.dev/reference/regions-and-ip-addresses) for the list of IPs that need to be allowlisted for the Estuary Flow region of your account.
+For information about configuring allowed IPs in Neon, see [Configure IP Allow](https://docs.neon.tech/docs/manage/projects#configure-ip-allow).
+
+## Create a Postgres Source Connector in Estuary Flow
+
+1. In the Estuary Flow web UI, select **Sources** from the left navigation bar and click **New Capture**.
+2. In the connector catalog, choose **Neon PostgreSQL** and click **Connect**.
+3. Enter the connection details for your Neon database. You can get these details from your Neon connection string, which you'll find in the **Connection Details** widget on the **Dashboard** of your Neon project. Your connection string will look like this:
+
+   ```bash shouldWrap
+   postgres://cdc_role:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+   ```
+
+   ![Creating a Neon capture connector in Estuary Flow](/docs/guides/estuary_flow_create_neon_capture.png)
+
+   Enter the details for **your connection string** into the source connector fields. Based on the sample connection string above, the values would be specified as shown below. Your values will differ.
+
+   - **Name:**: Name of the Capture connector
+   - **Server Address**: ep-cool-darkness-123456.us-east-2.aws.neon.tech:5432
+   - **User**: cdc_role
+   - **Password**: Click **Add a new secret...**, then specify a name for that secret and `AbC123dEf` as its value
+   - **Database**: dbname
+
+   ![Configuring Neon capture in Estuary Flow](/docs/guides/estuary_flow_configure_neon_capture.png)
+
+4. Click **Next**. Estuary Flow will now scan the source database for all the tables that can be replicated. Select one or more tables by checking the checkbox next to their name.
+   Optionally, you can change the name of the destination name for each table. You can also take a look at the schema of each stream by clicking on the **Collection** tab.
+
+   ![Selecting collections for replication in Estuary Flow](/docs/guides/estuary_flow_configure_collections.png)
+
+5. Click **Save and Publish** to provision the connector and kick off the automated backfill process.
+
+## Previewing the Data
+
+Once the connector is up and running state, navigate to the Collections page in the Estuary Flow dashboard and click on the collection being filled by your capture.
+
+![Preview data in Estuary Flow](/docs/guides/estuary_flow_preview_collections.png)
+
+
 # Fivetran
 
 ---
@@ -28735,7 +33746,7 @@ title: Replicate data with Fivetran
 subtitle: Learn how to replicate data from Neon with Fivetran
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.443Z'
+updatedOn: '2024-08-23T17:19:28.788Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
@@ -28748,6 +33759,7 @@ In this guide, you will learn how to define a Neon Postgres database as a data s
 
 - A [Fivetran account](https://fivetran.com/)
 - A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
 ## Enable logical replication in Neon
 
@@ -28782,7 +33794,7 @@ It is recommended that you create a dedicated Postgres role for replicating data
 The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
 
 ```bash
-neon roles create --name alex
+neon roles create --name replication_user
 ```
 
 </TabItem>
@@ -28813,7 +33825,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -28824,12 +33836,12 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 ## Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
@@ -28855,10 +33867,6 @@ SELECT pg_create_logical_replication_slot('fivetran_pgoutput_slot', 'pgoutput');
 ```
 
 The name assigned to the replication slot is `fivetran_pgoutput_slot`. You will need to provide this name when you set up your Fivetran source.
-
-<Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
-</Admonition>
 
 ## Create a Postgres source in Fivetran
 
@@ -28929,7 +33937,7 @@ title: Replicate data to Materialize
 subtitle: Learn how to replicate data from Neon to Materialize
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.444Z'
+updatedOn: '2024-08-23T17:19:28.788Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
@@ -28940,13 +33948,10 @@ In this guide, you will learn how to stream data from your Neon Postgres databas
 
 ## Prerequisites
 
-- A [Materialize account](https://materialize.com/register/)
-- A [Neon account](https://console.neon.tech/)
+- A [Materialize account](https://materialize.com/register/).
+- A [Neon account](https://console.neon.tech/).
 - Optionally, you can install the [psql](https://www.postgresql.org/docs/current/logical-replication.html) command line utility for running commands in both Neon and Materialize. Alternatively, you can run commands from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) and Materialize **SQL Shell**, which require no installation or setup.
-
-<Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
-</Admonition>
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
 
 ## Enable logical replication
 
@@ -29005,7 +34010,7 @@ It is recommended that you create a dedicated Postgres role for replicating data
 The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
 
 ```bash
-neon roles create --name alex
+neon roles create --name replication_user
 ```
 
 </TabItem>
@@ -29036,7 +34041,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -29047,12 +34052,12 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 ## Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
@@ -29252,31 +34257,56 @@ With Materialize ingesting your Postgres data into durable storage, you can star
 <NeedHelp/>
 
 
-# Postgres
+# Neon to Neon
 
 ---
-title: Replicate data to an external Postgres instance
-subtitle: Learn how to replicate data from Neon to an external Postgres instance
+title: Replicate data from one Neon project to another
+subtitle: Use logical replication to migrate data to a different Neon project, account,
+  Postgres version, or region
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.444Z'
+tag: new
+updatedOn: '2024-09-17T15:08:05.545Z'
 ---
 
-Neon's logical replication feature allows you to replicate data from Neon to external subscribers. This guide shows you how to stream data from a Neon Postgres database to an external Postgres database.
+<LRBeta/>
 
-You will learn how to enable logical replication in Neon, create a publication, and configure an external Postgres database as a subscriber.
+Neon's logical replication feature allows you to replicate data from one Neon project to another. This enables different replication scenarios, including:
+
+- **Postgres version migration**: Moving data from one Postgres version to another; for example, from a Neon project that runs Postgres 15 to one that runs Postgres 16.
+- **Region migration**: Moving data from one region to another; for example, from a Neon project in one region to a Neon project in a different region.
+- **Neon account migration**: Moving data from a Neon project owned by one account to a project owned by a different account; for example, from a personal Neon account to a business-owned Neon account.
+
+These are some common Neon-to-Neon replication scenarios. There may be others. You can follow the steps in this guide for any scenario that requires replicating data between different Neon projects.
+
+## Prerequisites
+
+- A Neon project with a database containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A destination Neon project.
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+
+For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+
+## Prepare your source Neon database
+
+This section describes how to prepare your source Neon database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+### Enable logical replication in the source Neon project
+
+In the Neon project containing your source database, enable logical replication. You only need to perform this step on the source Neon project.
 
 <Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication restarts all computes in your Neon project, meaning that active connections will be dropped and have to reconnect.
 </Admonition>
 
-## Enable logical replication
-
-<Admonition type="important">
-Enabling logical replication modifies the PostgreSQL `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning that active connections will be dropped and have to reconnect.
-</Admonition>
-
-To enable logical replication in Neon:
+To enable logical replication:
 
 1. Select your project in the Neon Console.
 2. On the Neon **Dashboard**, select **Settings**.
@@ -29292,33 +34322,164 @@ SHOW wal_level;
  logical
 ```
 
-After enabling logical replication, the next steps involve creating publications on your replication source database in Neon and configuring subscriptions on the destination system or service. These processes are the same as those you would perform in a standalone Postgres environment.
+### Create a publication on the source database
 
-## Create a publication
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your database:
 
-Publications are a fundamental part of logical replication in Postgres. They allow you to specify a set of database changes that can be replicated to subscribers. This section walks you through creating a publication for a `users` table.
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
 
-1. Create the `users` table in your Neon database. You can do this via the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or by connecting to your Neon database from an SQL client such as [psql](/docs/connect/query-with-psql-editor).
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database (the subscriber) to receive replicated data.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on the destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
 
    ```sql
-   CREATE TABLE users (
-     id SERIAL PRIMARY KEY,
-     username VARCHAR(50) NOT NULL,
-     email VARCHAR(100) NOT NULL
-   );
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'postgresql://neondb_owner:<password>@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb'
+   PUBLICATION my_publication;
    ```
 
-2. To create a publication for the `users` table:
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source Neon database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Neon database.
+
+3. Verify the subscription was created by running the following command:
 
    ```sql
-   CREATE PUBLICATION users_publication FOR TABLE users;
+   SELECT * FROM pg_stat_subscription;
    ```
 
-This command creates a publication named `users_publication`, which will include all changes to the `users` table in your replication stream.
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
 
-With your publication created, you're now ready to configure a subscriber that will receive the data changes from this publication.
+## Test the replication
 
-## Create a Postgres role for replication
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your source database connection details for your destination database connection details.
+
+You can find the connection details for a Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Postgres
+
+---
+title: Replicate data to an external Postgres instance
+subtitle: Learn how to replicate data from Neon to an external Postgres instance
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-09-17T15:08:05.547Z'
+---
+
+Neon's logical replication feature allows you to replicate data from Neon to external subscribers. This guide shows you how to stream data from a Neon Postgres database to an external Postgres database (a Postgres destination other than Neon). If you're looking to replicate data from one Neon Postgres instance to another, see [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
+
+## Prerequisites
+
+- A Neon project with a database containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+  For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+
+- A destination Postgres instance other than Neon.
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your source Neon database
+
+This section describes how to prepare your source Neon database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+### Enable logical replication in the source Neon project
+
+In the Neon project containing your source database, enable logical replication. You only need to perform this step on the source Neon project.
+
+<Admonition type="important">
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication restarts all computes in your Neon project, meaning that active connections will be dropped and have to reconnect.
+</Admonition>
+
+To enable logical replication:
+
+1. Select your project in the Neon Console.
+2. On the Neon **Dashboard**, select **Settings**.
+3. Select **Logical Replication**.
+4. Click **Enable** to enable logical replication.
+
+You can verify that logical replication is enabled by running the following query:
+
+```sql
+SHOW wal_level;
+ wal_level
+-----------
+ logical
+```
+
+### Create a Postgres role for replication
 
 It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon CLI, Console, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
 
@@ -29329,7 +34490,7 @@ It is recommended that you create a dedicated Postgres role for replicating data
 The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
 
 ```bash
-neon roles create --name alex
+neon roles create --name replication_user
 ```
 
 </TabItem>
@@ -29360,7 +34521,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -29369,52 +34530,75 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 </Tabs>
 
-## Grant schema access to your Postgres role
+### Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
 
-## Configure PostgreSQL as a subscriber
+### Create a publication on the source database
 
-A subscriber is a destination that receives data changes from your publications.
-
-This section describes how to configure a subscription on a standalone Postgres instance to a publication defined on your Neon database. After the subscription is defined, the destination Postgres instance will be able to receive data changes from the publication defined on your Neon database. It is assumed that you have a separate Postgres instance ready to act as the subscriber.
-
-When configuring logical replication in Postgres, the tables defined in the publication on the publisher must also exist on the subscriber, and they must have the same name and table schema. For the example setup described in this guide, a corresponding `users` table should exist in the subscriber database. You can use the `CREATE TABLE` statement used previously to create the `users` table:
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your database:
 
 ```sql
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(50) NOT NULL,
-  email VARCHAR(100) NOT NULL
-);
+CREATE PUBLICATION my_publication FOR ALL TABLES;
 ```
 
-   <Admonition type="important">
-   By default, Neon's [Autosuspend](/docs/introduction/auto-suspend) feature suspends a compute after 300 seconds (5 minutes) of inactivity. In a logical replication setup, Neon does not autosuspend a compute that has an active connection from a logical replication subscriber. In other words, a compute with a Postgres instance that is acting as a publisher and has active subscriber remains active at all times. Neon determines if there are active connections from a subscriber by checking for `walsender` processes on the publishing Postgres instance. For more, see [Logical replication and autosuspend](/docs/guides/logical-replication-neon#logical-replication-and-autosuspend).
-   </Admonition>
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your destination database
+
+This section describes how to prepare your destination Postgres database (the subscriber) to receive replicated data.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
 
 ### Create a subscription
 
-1. Use `psql` or another SQL client to connect to your subscriber Postgres database.
-2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement. This example creates a subscription for the `user` table publication (`users_publication`) that you created previously.
+After creating a publication on the source database, you need to create a subscription on the destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
 
    ```sql
-   CREATE SUBSCRIPTION users_subscription
-   CONNECTION 'postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname'
-   PUBLICATION users_publication;
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'postgresql://neondb_owner:<password>@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb'
+   PUBLICATION my_publication;
    ```
 
    - `subscription_name`: A name you chose for the subscription.
-   - `connection_string`: The connection string for your Neon database, where you defined the publication.
-   - `publication_name`: The name of the publication you created on your Neon database.
+   - `connection_string`: The connection string for the source Neon database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Neon database.
 
 3. Verify the subscription was created by running the following command:
 
@@ -29422,237 +34606,316 @@ CREATE TABLE users (
    SELECT * FROM pg_stat_subscription;
    ```
 
-   The subscription (`users_subscription`) should be listed, confirming that your subscription has been successfully created.
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
 
 ## Test the replication
 
-Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber (from your Neon database to your standalone Postgres instance).
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
 
-First, generate some changes in the `users` table on the publisher database to see if these changes are replicated to the subscriber:
-
-1. Connect to your Neon database (the publisher) and perform an `INSERT` operation. For example:
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
 
    ```sql
-   INSERT INTO users (username, email) VALUES ('new_user', 'new_user@example.com');
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
    ```
 
-2. After making changes, query the `users` table on the publisher to confirm your `INSERT`:
+2. Perform a row count on the source and destination databases to make sure the result matches.
 
    ```sql
-   SELECT * FROM users;
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
    ```
 
-   Note the changes you made for comparison with the subscriber's data.
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
 
-3. Now, connect to your subscriber database on your standalone Postgres instance:
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
 
-   ```bash
-   psql -h [server_IP_or_hostname] -U [username] -d [database] -W
-   ```
+## Switch over your application
 
-4. Query the `users` table in the subscriber database:
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your source database connection details for your destination database connection details.
 
-   ```sql
-   SELECT * FROM users;
-   ```
-
-   Compare the results with what you observed on the publisher.
-
-5. On the subscriber, you can also check the status of the replication:
-
-   ```sql
-   SELECT * FROM pg_stat_subscription;
-   ```
-
-   Look for the `last_msg_receive_time` to confirm that the subscription is active and receiving data.
+You can find the connection details for a Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 <NeedHelp/>
+
+
+# Prisma Pulse
+
+---
+title: Stream database changes in real-time with Prisma Pulse
+subtitle: Learn how to create event-driven flows on your backend triggered by changes in
+  your Neon Postgres database
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-08T12:44:00.902Z'
+---
+
+Neon's Logical Replication feature enables you to subscribe to changes in your database, supporting things like replication or creating event-driven functionality.
+
+[Prisma Pulse](https://www.prisma.io/data-platform/pulse?utm_source=neon&utm_medium=pulse-guide) is a fully managed, production-ready service that connects to your Neon Postgres database, and allows you to stream changes from your database in real-time, integrated closely with [Prisma ORM](https://www.prisma.io/orm?utm_source=neon&utm_medium=pulse-guide).
+
+In this guide, you will learn how to set up Prisma Pulse with your Neon database and create your first event stream.
+
+<Admonition type="tip">
+What can you make with database event-driven architecture?
+
+Set up real-time triggers for your Inngest workflows, re-index your TypeSense search whenever data changes, and much more.
+</Admonition>
+
+## Prerequisites
+
+- A [Neon account](https://console.neon.tech/)
+- A [Prisma Data Platform account](https://pris.ly/pdp?utm_source=neon&utm_medium=pulse-guide)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
+
+## Enable logical replication in Neon
+
+<Admonition type="important">
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning active connections will be dropped and have to reconnect.
+</Admonition>
+
+To enable logical replication in Neon:
+
+1. Select your project in the Neon Console.
+2. On the Neon **Dashboard**, select **Project settings**.
+3. Select **Beta**.
+4. Click **Enable** to enable logical replication.
+
+You can verify that logical replication is enabled by running the following query from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor):
+
+```sql
+SHOW wal_level;
+ wal_level
+-----------
+ logical
+```
+
+## Connect Prisma Pulse
+
+1. If you haven't already done so, create a new account or sign in on the [Prisma Data Platform](https://pris.ly/pdp?utm_source=neon&utm_medium=pulse-guide).
+2. In the [Prisma Data Platform Console](https://console.prisma.io?utm_source=neon&utm_medium=pulse-guide) create a new project by clicking the **New project** button.
+3. In the **New project** configuration, select **Pulse** as your starting point.
+4. Copy your database connection string from Neon into the database connection input field on the Platform Console.
+5. Choose a region that is closest to your Neon database.
+6. Click **Create project**.
+7. We recommend leaving **Event persistence** switched **on** (default). This means Prisma Pulse will automatically store events in the case your server goes down, allowing you to resume again with zero data loss.
+8. Click **Enable Pulse**.
+9. After Pulse has been enabled (this may take a moment), generate an API key by clicking **Generate API key**. Save this for later.
+
+## Your first stream
+
+### Set up your project
+
+Create a new TypeScript project with Prisma:
+
+```
+npx try-prisma -t typescript/starter
+```
+
+If you already have a TypeScript project with Prisma client installed, you can skip this.
+
+### From the root of your project, install the Pulse extension
+
+```bash
+npm install @prisma/extension-pulse@latest
+```
+
+### Extend your Prisma Client instance with the Pulse extension
+
+Add the following to extend your existing Prisma Client instance with the Prisma Pulse extension. Don't forget to insert your own API key.
+
+```tsx
+import { PrismaClient } from '@prisma/client';
+import { withPulse } from '@prisma/extension-pulse';
+
+const prisma = new PrismaClient().$extends(withPulse({ apiKey: '<your Pulse API key>' }));
+```
+
+<Admonition type="note">
+For a real production use case, you should consider moving sensitive values like your API key into environment variables.
+</Admonition>
+
+### Create your first Pulse stream
+
+The code below subscribes to a `User` model in your Prisma schema. You can use a similar approach to subscribe to any model that exists in your project.
+
+```tsx
+import { PrismaClient } from '@prisma/client';
+import { withPulse } from '@prisma/extension-pulse';
+
+const prisma = new PrismaClient().$extends(withPulse({ apiKey: '<your Pulse API key>' }));
+
+async function main() {
+  // Create a stream from the 'User' model
+  const stream = await prisma.user.stream({ name: 'user-stream' });
+
+  for await (const event of stream) {
+    console.log('Just received an event:', event);
+  }
+}
+
+main();
+```
+
+### Trigger a database change
+
+You can use Prisma Studio to easily make changes in your database, to trigger events. Open Prisma Studio by running: `npx prisma studio`
+
+After making a change in Studio, you should see messages appearing in your terminal like this:
+
+```bash
+Just received an event: {
+  action: 'create',
+  created: {
+    id: 'clzvgzq4b0d016s28yluse9r1',
+    name: 'Polly Pulse',
+    age: 35
+  },
+  id: '01J5BCFR8F8DBJDXAQ5YJPZ6VY',
+  modelName: 'User'
+}
+```
+
+## What's next?
+
+- [Set up real-time triggers for your Inngest workflows](https://pris.ly/pulse-inngest-router?utm_source=neon&utm_medium=pulse-guide)
+- [Re-index your TypeSense search instantly when data changes](https://pris.ly/pulse-typesense?utm_source=neon&utm_medium=pulse-guide)
+- [Automatically send onboarding emails with Resend when a new user is created](https://pris.ly/pulse-resend?utm_source=neon&utm_medium=pulse-guide)
 
 
 # Sequin
 
 ---
-title: Stream data to Neon with Sequin
-subtitle: Learn how to sync data from platforms like Stripe, Linear, and GitHub into
-  your Neon database in real time.
+title: Stream changes from your Neon database to anywhere
+subtitle: Learn how to capture and stream changes and rows from your database to
+  anywhere with Sequin
 enableTableOfContents: true
-updatedOn: '2024-06-14T07:55:54.408Z'
+updatedOn: '2024-09-17T15:08:05.548Z'
 ---
 
-Sequin streams data from platforms like Stripe, Linear, and GitHub into your Neon database in real time. The moment a new subscription is created, a ticket is closed, or a PR is merged, a row in your database will reflect the change.
+Neon's Logical Replication features makes it possible to detect every change in your database. It can be used to power read-replicas and backups, but can also be used to add streaming characteristics to Neon.
 
-With data from these services in your database, you can build integrations fast. For instance, you can quickly query for a customer’s subscription status or display the comments from a user’s support ticket.
+[Sequin](https://github.com/sequinstream/sequin) uses Neon's logical replication to sends records and changes in your database to your applications and services, in real-time. It's designed to never miss an `insert`, `update`, or `delete` and provide exactly-once processing of all changes.
 
-In this guide, you’ll learn how to stream data to Neon Postgres via Sequin by:
+Changes are sent as messages via HTTP push (webhooks) or pull (SQS-like, with Sequin SDKs). Out of the box, you can start triggering side-effects when a new record is created, fan out work to cloud functions, or activate workflows in services like trigger.dev.
 
-- Connecting Sequin to an API source
-- Creating a Sequin Postgres consumer that streams to Neon
-- Querying your API data in Neon Postgres
-- Creating views to make querying easier
+In this guide, we'll show you how to connect your Neon database to Sequin to start sending changes anywhere you need.
 
 ## Prerequisites
 
-- A [Sequin account](https://sequin.io/signup)
+- A [Sequin account](https://console.sequinstream.com/register)
 - A [Neon account](https://console.neon.tech/)
-- An [API Source](https://sequin.io/integrations) you want to sync
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
-## Create a schema and table for Sequin
+## Enable logical replication in Neon
 
-As a first step, create a table in your Neon database for Sequin to sync API data to. We also recommend creating a dedicated Postgres schema for Sequin tables, but that's not required:
+Sequin uses the Write Ahead Log (WAL) to capture changes from your Postgres database. In this step, we'll enable logical replication for your Neon Postgres project.
 
-1. Select your project in the Neon Console
-2. Navigate to the SQL Editor in the sidebar.
-3. Create a `sequin` schema by running the following statement:
+<Admonition type="important">
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from replica to logical for all databases in your Neon project. Once the `wal_level` setting is changed to logical, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning active connections will be dropped and have to reconnect.
+</Admonition>
 
-   ```sql
-   create schema sequin;
+To enable logical replication in Neon:
+
+1. Select your project in the Neon Console.
+2. On the Neon **Dashboard**, select **Settings**.
+3. Select **Logical Replication**.
+4. Click **Enable** to enable logical replication.
+
+You can verify that logical replication is enabled by running the following query from the [Neon SQL Editor](https://neon.tech/docs/get-started-with-neon/query-with-neon-sql-editor):
+
+```sql
+SHOW wal_level;
+wal_level
+-----------
+logical
+```
+
+## Connect your Neon database to Sequin
+
+After enabling logical replication on Neon, you'll now connect your Neon database to Sequin. Follow these steps:
+
+1. In Neon, copy your database connection string from the **Connection Details** section on the **Project Dashboard**, which will look similar to this:
+
+   ```sql shouldWrap
+   postgresql://neondb_owner:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
    ```
 
-4. Run the following command to create a table for Sequin to sync API data to:
+2. In the Sequin Console, click on the **Connect Database** button, and then auto-complete your database credentials by clicking the **Autofill with URL** button and pasting in your database connection string.
+
+3. Use the SQL Editor in your Neon project to create a replication slot by executing the following SQL query:
 
    ```sql
-   create table sequin.records (
-   sequin_id uuid not null,
-   sync_id uuid not null,
-   collection_id text not null,
-   upstream_id text not null,
-   payload jsonb not null,
-   upstream_updated_at timestamp with time zone not null,
-   upstream_created_at timestamp with time zone,
-   inserted_at timestamp with time zone not null,
-   updated_at timestamp with time zone not null,
-   primary key (sequin_id)
-   );
+   SELECT pg_create_logical_replication_slot('sequin_slot', 'pgoutput');
    ```
 
-You can use this table to store data from any API. API data is stored denormalized in the `payload` column. Later, you'll see how to create views on top of this table.
+   This creates a replication slot named `sequin_slot`.
 
-## Create a Postgres user for Sequin
+4. Create a publication to indicate which tables will publish changes to the replication slot. Run the following SQL command:
 
-Create a user for Sequin to use when connecting to your Neon database. This user will need `insert`, `update`, and `delete` privileges on the `sequin.records` table:
+   ```sql
+   CREATE PUBLICATION sequin_pub FOR ALL TABLES;
+   ```
 
-1. In the Neon SQL Editor, run the following create statement:
+   This will publish changes from all tables. If you want to publish changes from specific tables only, you can use:
 
-```sql
-create user sequin with password 'generate-a-strong-password-here';
-```
+   ```sql
+   CREATE PUBLICATION sequin_pub FOR TABLE table1, table2, table3;
+   ```
 
-2. Then, grant the `sequin` user the necessary privileges by running the following statements:
+   Defining specific tables lets you add or remove tables from the publication later, which you cannot do if you've created a publication with `FOR ALL TABLES`.
 
-```sql
-grant usage on schema sequin to sequin;
-grant select, insert, update, delete on all tables in schema sequin to sequin;
-alter default privileges in schema sequin grant select, insert, update, delete on tables to sequin;
-```
+5. Back in the Sequin Console, enter the name of the replication slot (`sequin_slot`) and publication (`sequin_pub`) you just created. Then, name your database (e.g. `neondb`) and click **Create Database**.
 
-These statements do the following:
+With these steps completed, your Neon database is now connected to Sequin via a replication slot and publication. Sequin is now detecting changes to your tables.
 
-- Grants the `sequin` user usage permissions on the `sequin` schema.
-- Grants the `sequin` user `select`, `insert`, `update`, and `delete` permissions on all existing tables in the `sequin` schema.
-- Sets default privileges so that the `sequin` user will have `select`, `insert`, `update`, and `delete` permissions on any new tables created in the `sequin` schema.
+## Create a consumer
 
-With this user, Sequin will only have access to the tables it needs and will not be able to modify any other data in your database.
+Set up a consumer in Sequin to stream changes from your database.
 
-With your `sequin` schema and `records` table in your Neon database, you’ll now configure Sequin to authenticate with your API source, create a sync, and stream data to your database.
+1. In the Sequin Console, navigate to the **Consumers** page and click **Create Consumer**.
 
-## Connect Sequin to an API source
+2. Select the Neon database you just created and then select the specific table you want to process changes for.
 
-You can connect Sequin to an upstream API using either the Sequin console or API. For this guide, let’s use the Sequin Console for simplicity:
+3. Define any filters for the changes you want to capture. For example, you might want to only process orders with a value greater than a certain amount, or accounts with a certain status.
 
-1. Login to the Sequin console and click the **+ Add sync** button
-2. Select the source you want to sync.
-3. Click the **+ Add new** button in the credential section to complete the authentication flow for your selected API source.
-4. Once authenticated, you’ll see a list of objects available to sync. Select the object you want to sync and click the **Start syncing** button.
+4. Choose whether you want your consumer to process [rows or changes](https://sequinstream.com/docs/core-concepts#rows-and-changes):
 
-Sequin will begin to backfill all historic records from the API source and set up a real-time stream as new records are created, updated, and deleted.
+   - **Rows**: Captures the latest state of records when a row is inserted or updated.
+   - **Changes**: Captures every `insert`, `update`, and `delete`, including `OLD` values for updates and deletes.
 
-## Create a Sequin Postgres consumer
+5. Select your preferred method for [receiving changes](https://sequinstream.com/docs/core-concepts#consumption):
 
-Next, you'll create a Postgres consumer to stream data from your API source to your Neon Postgres database. Consumers are how you stream data from Sequin's syncs to destinations.
+   - **HTTP Push** (Webhooks): Sequin sends changes to your specified endpoint.
+   - **HTTP Pull** (similar to SQS): Your application pulls changes from Sequin.
 
-As a first step, you need to connect your Neon database to Sequin as a target:
+6. Enter the final details for your consumer:
 
-1. In the Sequin Console, navigate to the **Targets** tab and click the **+ Add target** button. Enter the credentials for your database:
-   - You’ll find the host and database on the **Connection Details** widget on your Neon project dashboard.
-   - The port is `5432`
-   - Make sure you check the **SSL** option. (This is required by Neon.)
-   - Use the username and password for the `sequin` user you created earlier.
-2. Sequin will validate its connection to your Neon database and you’ll be able to **Save**.
+   - Give your consumer a name (e.g., `neon-changes-consumer`).
+   - If using HTTP Push, provide the endpoint URL where Sequin should send the changes. You can also provide encrypted headers.
+   - Optionally, set a timeout and add an endpoint path.
 
-Now, create a consumer to stream data from your Sync to your Neon database target. Consumers allow you to sync multiple sources into one Neon DB target:
+7. Click **Create Consumer** to finalize the setup.
 
-1. In the Sequin Console, navigate to the **Consumers** tab and click the **+ Add consumer** button.
-2. Select your API provider (e.g. GitHub, Stripe, etc) and your Sync.
-3. Then select your Neon database for the target and enter the schema (i.e., `sequin`) and table (i.e., `records`) you set up earlier.
-4. Sequin will confirm your database is configured properly - then click the **Start consumer** button.
-
-At this point, your API data should be flowing into Neon Postgres! Let's verify by querying the database.
-
-## Query your API data in Neon Postgres
-
-In the Neon Console, open the **SQL Editor**.
-
-Verify data is being synced by running this query:
-
-```sql
-select count(*) from sequin.records;
-```
-
-You should see a non-zero count, indicating that Sequin has begun streaming data from GitHub into your Neon database.
-
-To see an example record:
-
-```sql
-select * from sequin.records limit 1;
-```
-
-Now, any time a record is created, updated, or deleted in your API source, Sequin will upsert a row in the `sequin.records` table in real-time!
-
-## Create views to make querying easier
-
-While you can query the `sequin.records` table directly, you'll usually want to create views that flatten the nested JSONB payload.
-
-For example, here's how you could create a view for GitHub pull requests:
-
-```sql
-create view sequin.github_pull_requests as
-select
-  payload->>'id' as github_id,
-  payload->>'title' as title,
-  payload->>'body' as body,
-  (payload->>'created_at')::timestamp as created_at,
-  (payload->>'merged_at')::timestamp as merged_at,
-  payload->>'head'->>'label' as head_label,
-from sequin.records
-where collection_id = 'github:pull_request';
-```
-
-The `payload->>` syntax extracts a value from the JSONB payload. The `where collection_id` clause is used to filter the view to only pull requests.
-
-With this approach, you can create a view for each collection you're syncing from a given API source. This gives you full control of the schemas for your API data. Because Sequin is syncing to the core `sequin.records` table, you can change your views and it won't affect your sync.
-
-You can query views like any other table:
-
-```sql
-select title, state, created_at
-from sequin.github_pull_requests
-order by created_at desc
-limit 10;
-```
-
-To generate these views, you can use [this handy tool](https://materialize.com/docs/ingest-data/stripe/#json-parsing).
+Your consumer is now created and will start processing changes from your Neon database according to your specified configuration.
 
 ## Where to next?
 
-By streaming your API data to Neon Postgres, you have a complete picture of your API data at rest. This means you can query your API data using the full power of SQL, without rate limits, and join it with other data in your Neon database.
+You're now using Sequin with Neon to capture and stream changes from your database. From here, you can tailor your implementation for your use case:
 
-If you have any questions or need any support, contact the Sequin team: [support@sequin.io](mailto:support@sequin.io).
+- Use Sequin to trigger workflows in tools like Inngest or trigger.dev, activate side-effects in your app, setup audit logs, or generate denormalized views.
+- Tailor your consumer's [filtering](https://sequinstream.com/docs/core-concepts#filtering) and settings to meet your requirements.
+- Try a [pull consumer](https://sequinstream.com/docs/core-concepts#pull-consumers) with [our SDKs](https://sequinstream.com/docs/sdks) to completely manage how you retrieve changes at scale.
+- Use Sequins [observability and monitoring](https://console.sequinstream.com/consumers) to debug and keep production humming.
 
-## References
-
-- [What is Sequin](https://sequin.io/docs/introduction)
-- [Sequin Postgres consumer reference](https://sequin.io/docs/consumers/postgres)
-- [Sequin Management API reference](https://sequin.io/docs/management-api/introduction)
+Learn more in our [docs](https://sequinstream.com/docs/introduction). And if you need anything, Sequin is open source - just open an issue or reach out to us: <a href="mailto:founders@sequinstream.com">founders@sequinstream.com</a>.
 
 
 # Snowflake
@@ -29662,7 +34925,7 @@ title: Replicate data to Snowflake with Airbyte
 subtitle: Learn how to replicate data from Neon to Snowflake with Airbyte
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-12T21:44:27.438Z'
+updatedOn: '2024-08-23T17:19:28.785Z'
 ---
 
 Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations. In this guide, you will learn how to define your Neon Postgres database as a data source in Airbyte so that you can stream data to Snowflake.
@@ -29673,11 +34936,23 @@ Neon's logical replication feature allows you to replicate data from your Neon P
 
 ## Prerequisites
 
-- A [Neon account](https://console.neon.tech/)
+- A source [Neon project](/docs/manage/projects#create-a-project) with a database containing the data you want to replicate. If you're just testing this out and need some data to play with, you run the following statements from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or an SQL client such as [psql](/docs/connect/query-with-psql-editor) to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
 - An [Airbyte account](https://airbyte.com/)
 - A [Snowflake account](https://www.snowflake.com/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
 
-## Enable logical replication in Neon
+## Prepare your source Neon database
+
+This section describes how to prepare your source Neon database (the publisher) for replicating data.
+
+### Enable logical replication in Neon
 
 <Admonition type="important">
 Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning active connections will be dropped and have to reconnect.
@@ -29690,7 +34965,7 @@ To enable logical replication in Neon:
 3. Select **Logical Replication**.
 4. Click **Enable** to enable logical replication.
 
-You can verify that logical replication is enabled by running the following query from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor):
+You can verify that logical replication is enabled by running the following query from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or an SQL client such as [psql](/docs/connect/query-with-psql-editor):
 
 ```sql
 SHOW wal_level;
@@ -29699,9 +34974,9 @@ SHOW wal_level;
  logical
 ```
 
-## Create a Postgres role for replication
+### Create a Postgres role for replication
 
-It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon CLI, Console, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
+It's recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon CLI, Console, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
 
 <Tabs labels={["CLI", "Console", "API"]}>
 
@@ -29710,7 +34985,7 @@ It is recommended that you create a dedicated Postgres role for replicating data
 The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
 
 ```bash
-neon roles create --name alex
+neon roles create --name replication_user
 ```
 
 </TabItem>
@@ -29741,7 +35016,7 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
   -H 'Content-Type: application/json' \
   -d '{
   "role": {
-    "name": "alex"
+    "name": "replication_user"
   }
 }' | jq
 ```
@@ -29750,19 +35025,19 @@ curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-b
 
 </Tabs>
 
-## Grant schema access to your Postgres role
+### Grant schema access to your Postgres role
 
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `alex`:
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
 
 ```sql
-GRANT USAGE ON SCHEMA public TO alex;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO alex;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO alex;
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
 ```
 
 Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
 
-## Create a replication slot
+### Create a replication slot
 
 Airbyte requires a dedicated replication slot. Only one source should be configured to use this replication slot.
 
@@ -29774,36 +35049,38 @@ SELECT pg_create_logical_replication_slot('airbyte_slot', 'pgoutput');
 
 `airbyte_slot` is the name assigned to the replication slot. You will need to provide this name when you set up your Airbyte source.
 
-<Admonition type="important">
-To prevent storage bloat, **Neon automatically removes _inactive_ replication slots after a period of time if there are other _active_ replication slots**. If you have or intend on having more than one replication slot, please see [Unused replication slots](/docs/guides/logical-replication-neon#unused-replication-slots) to learn more.
-</Admonition>
-
-## Create a publication
+### Create a publication
 
 Perform the following steps for each table you want to replicate data from:
 
 1. Add the replication identity (the method of distinguishing between rows) for each table you want to replicate:
 
    ```sql
-   ALTER TABLE tbl1 REPLICA IDENTITY DEFAULT;
+   ALTER TABLE <table_name> REPLICA IDENTITY DEFAULT;
    ```
 
    In rare cases, if your tables use data types that support [TOAST](https://www.postgresql.org/docs/current/storage-toast.html) or have very large field values, consider using `REPLICA IDENTITY FULL` instead:
 
    ```sql
-   ALTER TABLE tbl1 REPLICA IDENTITY FULL;
+   ALTER TABLE <table_name> REPLICA IDENTITY FULL;
    ```
 
 2. Create the Postgres publication. Include all tables you want to replicate as part of the publication:
 
    ```sql
-   CREATE PUBLICATION airbyte_publication FOR TABLE <tbl1, tbl2, tbl3>;
+   CREATE PUBLICATION airbyte_publication FOR TABLE <table_name, table_name, table_name>;
+   ```
+
+   Alternatively, you can create a publication for all tables:
+
+   ```sql
+   CREATE PUBLICATION airbyte_publication FOR ALL TABLES;
    ```
 
    The publication name is customizable. Refer to the [Postgres docs](https://www.postgresql.org/docs/current/logical-replication-publication.html) if you need to add or remove tables from your publication.
 
 <Admonition type="note">
-The Airbyte UI currently allows selecting any tables for Change Data Capture (CDC). If a table is selected that is not part of the publication, it will not be replicated even though it is selected. If a table is part of the publication but does not have a replication identity, the replication identity will be created automatically on the first run if the Postgres role you use with Airbyte has the necessary permissions.
+The Airbyte UI currently allows selecting any table for Change Data Capture (CDC). If a table is selected that is not part of the publication, it will not be replicated even though it is selected. If a table is part of the publication but does not have a replication identity, the replication identity will be created automatically on the first run if the Postgres role you use with Airbyte has the necessary permissions.
 </Admonition>
 
 ## Create a Postgres source in Airbyte
@@ -29821,7 +35098,7 @@ The Airbyte UI currently allows selecting any tables for Change Data Capture (CD
    - **Host**: ep-cool-darkness-123456.us-east-2.aws.neon.tech
    - **Port**: 5432
    - **Database Name**: dbname
-   - **Username**: alex
+   - **Username**: replication_user
    - **Password**: AbC123dEf
 
    ![Airbyte Create a source](/docs/guides/airbyte_create_source.png)
@@ -29830,34 +35107,1328 @@ The Airbyte UI currently allows selecting any tables for Change Data Capture (CD
 4. Select an SSL mode. You will most frequently choose `require` or `verify-ca`. Both of these options always require encryption. The `verify-ca` mode requires a certificate. Refer to [Connect securely](/docs/connect/connect-securely) for information about the location of certificate files you can use with Neon.
 5. Under **Advanced**:
 
-   - Select **Logical Replication (CDC)** from available replication methods.
+   - Select **Read Changes using Write-Ahead Log (CDC)** from available replication methods.
    - In the **Replication Slot** field, enter the name of the replication slot you created previously: `airbyte_slot`.
    - In the **Publication** field, enter the name of the publication you created previously: `airbyte_publication`.
      ![Airbyte advanced fields](/docs/guides/airbyte_cdc_advanced_fields.png)
 
-## Allow inbound traffic
+### Allow inbound traffic
 
-If you are on Airbyte Cloud, and you are using Neon's **IP Allow** feature to limit IP address that can connect to Neon, you will need to allow inbound traffic from Airbyte's IP addresses. You can find a list of IPs that need to be allowlisted in the [Airbyte Security docs](https://docs.airbyte.com/operating-airbyte/security). For information about configuring allowed IPs in Neon, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+If you are on Airbyte Cloud, and you are using Neon's **IP Allow** feature to limit IP addresses that can connect to Neon, you will need to allow inbound traffic from Airbyte's IP addresses. You can find a list of IPs that need to be allowlisted in the [Airbyte Security docs](https://docs.airbyte.com/operating-airbyte/security). For information about configuring allowed IPs in Neon, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
 
-## Complete the source setup
+### Complete the source setup
 
 To complete your source setup, click **Set up source** in the Airbyte UI. Airbyte will test the connection to your database. Once this succeeds, you've successfully configured an Airbyte Postgres source for your Neon database.
 
-## Configure a destination
+## Configure Snowflake as a destination
 
-To complete your data integration setup, you can now add Snowflake as your destination. Refer to the Airbyte documentation for instructions:
+To complete your data integration setup, you can now add Snowflake as your destination.
 
-- [Add a destination](https://docs.airbyte.com/using-airbyte/getting-started/add-a-destination)
-- [Set up a connection](https://docs.airbyte.com/using-airbyte/getting-started/set-up-a-connection)
+### Prerequisites
+
+- A Snowflake account with the `ACCOUNTADMIN` role. If you're using a company account, you may need to contact your Snowflake administrator to set one up for you.
+
+### Set up Airbyte entities in Snowflake
+
+To set up the Snowflake destination connector, you first need to create Airbyte entities in Snowflake (a warehouse, database, schema, user, and role) with the `OWNERSHIP` permission to write data to Snowflake.
+
+You can use the following script in a new [Snowflake worksheet](https://docs.snowflake.com/en/user-guide/ui-worksheet) to create the entities. This script is provided as part of [Airbyte's Snowflake connector setup guide](https://docs.airbyte.com/integrations/destinations/snowflake#setup-guide).
+
+<Admonition type="note">
+If you want, you can edit the script to change the password to a more secure password and to change the names of other resources. If you do rename entities, make sure to follow [Sbowflake identifier requirements](https://docs.snowflake.com/en/sql-reference/identifiers-syntax).
+</Admonition>
+
+```sql
+-- set variables (these need to be uppercase)
+set airbyte_role = 'AIRBYTE_ROLE';
+set airbyte_username = 'AIRBYTE_USER';
+set airbyte_warehouse = 'AIRBYTE_WAREHOUSE';
+set airbyte_database = 'AIRBYTE_DATABASE';
+set airbyte_schema = 'AIRBYTE_SCHEMA';
+
+-- set user password
+set airbyte_password = 'password';
+
+begin;
+
+-- create Airbyte role
+use role securityadmin;
+create role if not exists identifier($airbyte_role);
+grant role identifier($airbyte_role) to role SYSADMIN;
+
+-- create Airbyte user
+create user if not exists identifier($airbyte_username)
+password = $airbyte_password
+default_role = $airbyte_role
+default_warehouse = $airbyte_warehouse;
+
+grant role identifier($airbyte_role) to user identifier($airbyte_username);
+
+-- change role to sysadmin for warehouse / database steps
+use role sysadmin;
+
+-- create Airbyte warehouse
+create warehouse if not exists identifier($airbyte_warehouse)
+warehouse_size = xsmall
+warehouse_type = standard
+auto_suspend = 60
+auto_resume = true
+initially_suspended = true;
+
+-- create Airbyte database
+create database if not exists identifier($airbyte_database);
+
+-- grant Airbyte warehouse access
+grant USAGE
+on warehouse identifier($airbyte_warehouse)
+to role identifier($airbyte_role);
+
+-- grant Airbyte database access
+grant OWNERSHIP
+on database identifier($airbyte_database)
+to role identifier($airbyte_role);
+
+commit;
+
+begin;
+
+USE DATABASE identifier($airbyte_database);
+
+-- create schema for Airbyte data
+CREATE SCHEMA IF NOT EXISTS identifier($airbyte_schema);
+
+commit;
+
+begin;
+
+-- grant Airbyte schema access
+grant OWNERSHIP
+on schema identifier($airbyte_schema)
+to role identifier($airbyte_role);
+
+commit;
+```
+
+### Set up Snowflake as a destination
+
+To set up a new destination:
+
+1. Navigate to Airbyte.
+2. Select **New destination**.
+3. Select the Snowflake connector.
+4. Create the destination by filling in the required fields. You can authenticate using username/password or key pair authentication. We'll authenticate via username/password.
+
+| Field         | Description                                                                                                                              | Example                                              |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **Host**      | The host domain of the Snowflake instance (must include the account, region, cloud environment, and end with `snowflakecomputing.com`).  | `<accountname>.us-east-2.aws.snowflakecomputing.com` |
+| **Role**      | The role you created for Airbyte to access Snowflake.                                                                                    | `AIRBYTE_ROLE`                                       |
+| **Warehouse** | The warehouse you created for Airbyte to sync data into.                                                                                 | `AIRBYTE_WAREHOUSE`                                  |
+| **Database**  | The database you created for Airbyte to sync data into.                                                                                  | `AIRBYTE_DATABASE`                                   |
+| **Schema**    | The default schema used as the target schema for all statements issued from the connection that do not explicitly specify a schema name. | -                                                    |
+| **Username**  | The username you created to allow Airbyte to access the database.                                                                        | `AIRBYTE_USER`                                       |
+| **Password**  | The password associated with the username.                                                                                               | -                                                    |
+
+When you're finished filling in the required fields, click **Set up destination**.
+
+![Airbyte Snowflake destination](/docs/guides/airbyte_snowflake_destination.png)
+
+## Set up a connection
+
+In this step, you'll set up a connection between your Neon Postgres source and your Snowflake destination.
+
+To set up a new destination:
+
+1. Navigate to Airbyte.
+2. Select **New connection**.
+3. Select the existing Postgres source you created earlier.
+4. Select the existing Snowflake destination you created earlier.
+5. Select **Replicate source** as the sync mode.
+6. Click **Next**.
+7. On the **Configure connection** dialog, you can accept the defaults or modify the settings according to your requirements.
+8. Click **Finish & sync** to complete the setup.
+
+Your first sync may take a few moments.
+
+## Verify the replication
+
+After the sync operation is complete, you can verify the replication by navigating to Snowflake, opening your Snowflake project, navigating to a worksheet, and querying your database to view the replicated data. For example, if you've replicated the `playing_with_neon` example table, you can run a `SELECT * FROM PLAYING_WITH_NEON;` query to view the replicated data.
+
+![Airbyte Snowflake verify replication](/docs/guides/airbyte_snowflake_verify.png)
 
 ## References
 
+- [Setting up the Airbyte destination connector](https://docs.airbyte.com/integrations/destinations/snowflake)
+- [Airbyte: Add a destination](https://docs.airbyte.com/using-airbyte/getting-started/add-a-destination)
+- [Airbyte: Set up a connection](https://docs.airbyte.com/using-airbyte/getting-started/set-up-a-connection)
+- [Airbyte: How to load data from Postgres to Snowflake destination](https://airbyte.com/how-to-sync/postgresql-to-snowflake-data-cloud)
 - [What is an ELT data pipeline?](https://airbyte.com/blog/elt-pipeline)
 - [Logical replication - PostgreSQL documentation](https://www.postgresql.org/docs/current/logical-replication.html)
 - [Publications - PostgreSQL documentation](https://www.postgresql.org/docs/current/logical-replication-publication.html)
-- [Airbyte: How to load data from Postgres to Snowflake destination](https://airbyte.com/how-to-sync/postgresql-to-snowflake-data-cloud)
 
 <NeedHelp/>
+
+
+# Replicate to Neon
+
+# AlloyDB
+
+---
+title: Replicate data from AlloyDB
+subtitle: Learn how to replicate data from AlloyDB to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.541Z'
+---
+
+<LRBeta/>
+
+This guide describes how to replicate data from AlloyDB Postgres to Neon using native Postgres logical replication. The steps in this guide follow those described in [Set up native PostgreSQL logical replication](https://cloud.google.com/sql/docs/postgres/replication/configure-logical-replication#set-up-native-postgresql-logical-replication), in the _Google AlloyDB documentation_.
+
+## Prerequisites
+
+- An AlloyDB Postgres instance containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data.
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A Neon project with a Postgres database to receive the replicated data. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your AlloyDB source database
+
+This section describes how to prepare your source AlloyDB Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication
+
+Your first step is to enable logical replication at the source Postgres instance. In AlloyDB, you can enable logical replication by setting the `alloydb.enable_pglogical` and `alloydb.logical_decoding` flags to `on`. This sets the Postgres `wal_level` parameter to `logical`.
+
+To enable these flags:
+
+1. In the Google Cloud console, navigate to your [AlloyDB Clusters](https://console.cloud.google.com/alloydb/clusters) page.
+2. From the **Actions** menu for your Primary instance, select **Edit**.
+3. Scroll down to the **Advanced Configurations Options** > **Flags** section.
+4. If the flags have not been set on the instance before, click **Add a Database Flag**, and set the value to `on` for the `alloydb.enable_pglogical` and `alloydb.logical_decoding`.
+5. Click **Update instance** to save your changes and confirm your selections.
+
+Afterward, you can verify that logical replication is enabled by running `SHOW wal_level;` from **AlloyDB Studio** or your terminal:
+
+![show wal_level](/docs/guides/alloydb_show_wal_level.png)
+
+### Allow connections from Neon
+
+You need to allow connections to your AlloyDB Postgres instance from Neon. To do this in your AlloyDB instance:
+
+1. In the Google Cloud console, navigate to your [AlloyDB Clusters](https://console.cloud.google.com/alloydb/clusters) page and select your **Primary instance** to open the **Overview** page.
+2. Scroll down to the **Instances in your cluster** section.
+3. Click **Edit Primary**.
+4. Select the **Enable public IP** checkbox to allow connections over the public internet.
+5. Under **Authorized external networks**, enter the Neon IP addresses you want to allow. Add an entry for each of the NAT gateway IP addresses associated with your Neon project's region. Neon has 3 to 6 IP addresses per region, corresponding to each availability zone. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for the IP addresses.
+
+   <Admonition type="note">
+   AlloyDB requires addresses to be specified in CIDR notation. You can do so by appending `/32` to the NAT Gateway IP address; for example: `18.217.181.229/32`
+   </Admonition>
+
+   In the example shown below, you can see that three addresses were added in CIDR format by appending `/32`.
+
+   ![AlloyDB network configuration](/docs/guides/alloydb_network_config.png)
+
+6. Under **Network Security**, select **Require SSL Encryption (default)** if it's not already selected.
+7. Click **Update Instance** when you are finished.
+
+### Note your public IP address
+
+Record the public IP address of your AlloyDB Postgres instance. You'll need this value later when you set up a subscription from your Neon database. You can find the public IP address on your AlloyDB instance's **Overview** page, under **Instances in your cluster** > **Connectivity**.
+
+<Admonition type="note">
+If you do not use a public IP address, you'll need to configure access via a private IP. See [Private IP overview](https://cloud.google.com/alloydb/docs/private-ip), in the AlloyDB documentation.
+</Admonition>
+
+![AlloyDB public IP address](/docs/guides/alloydb_public_ip.png)
+
+### Create a Postgres role for replication
+
+It is recommended that you create a dedicated Postgres role for replicating data from your AlloyDB Postgres instance. The role must have the `REPLICATION` privilege. On your AlloyDB Postgres instance, login in as your `postgres` user or an administrative user you use to create roles and run the following command to create a replication role. You can replace the name `replication_user` with whatever name you want to use.
+
+```sql shouldWrap
+CREATE USER replication_user WITH REPLICATION IN ROLE alloydbsuperuser LOGIN PASSWORD 'replication_user_password';
+```
+
+### Grant schema access to your Postgres role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to a Postgres role named `replication_user`:
+
+```sql
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+
+Run this command to create a publication for all tables in your source database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your AlloyDB Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables defined in your publication on the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Create the subscription using the using a `CREATE SUBSCRIPTION` statement:
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'host=<primary-ip> port=5432 dbname=postgres user=replication_user password=replication_user_password'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source AlloyDB database where you defined the publication. For the `<primary_ip>`, use the IP address of your AlloyDB Postgres instance that you noted earlier, and specify the name and password of your replication role. If you're replicating from a database other than `postgres`, be sure to specify that database name.
+   - `publication_name`: The name of the publication you created on the source Neon database.
+
+2. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert 10 rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your AlloyDB source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Aurora
+
+---
+title: Replicate data from Aurora PostgreSQL
+subtitle: Learn how to replicate data from Aurora PostgreSQL to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.544Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from Aurora PostgreSQL to Neon.
+
+## Prerequisites
+
+- A source database in Aurora PostgreSQL containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+   CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A Neon project with a Postgres database to receive the replicated data. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences
+
+## Prepare your source database
+
+This section describes how to prepare your source Aurora Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication in the source Aurora PostgreSQL instance
+
+1. Sign in to the AWS Management Console and navigate to the Amazon RDS console at [https://console.aws.amazon.com/rds/](https://console.aws.amazon.com/rds/).
+
+2. From the navigation pane, select your Aurora PostgreSQL DB cluster.
+
+3. Go to the **Configuration** tab. Locate the **DB cluster parameter group** link.
+
+   <Admonition type="note">
+   If you are using the default parameter group, you will need to create a custom parameter group to set the value. You can do so by selecting **Parameter groups** > **Create parameter group** from the sidebar, selecting **Aurora PostgreSQL** as the engine type, and filling in the required fields. When you're finished, navigate back to your Aurora instance page, click **Modify**, and scroll down to select your new parameter group. Click **Continue**, and select **Apply immediately** to make the change, then click **Modify DB instance**.
+   </Admonition>
+
+4. Click on the link to view the custom parameters for your Aurora PostgreSQL DB cluster.
+
+5. In the parameters search bar, type `rds` to locate the `rds.logical_replication` parameter. This parameter is set to `0` by default, meaning it is turned off.
+
+6. To enable this feature, click on **Edit**, and select `1` from the drop-down menu.
+
+7. Click **Save Changes**.
+
+8. Reboot the **Writer instance** of your Aurora PostgreSQL DB cluster to apply the changes. In the Amazon RDS console, select your Aurora PostgreSQL DB cluster, then select the **Writer instance** of the cluster and choose **Reboot** from the **Actions** menu.
+
+9. Once the instance is available again, you can verify that logical replication is enabled as follows:
+
+   - Use `psql` to connect to the writer instance of your Aurora PostreSQL DB cluster.
+
+     ```bash
+     psql --host=your-db-cluster-instance-1.aws-region.rds.amazonaws.com --port=5432 --username=postgres --password --dbname=postgres
+     ```
+
+   - Verify that logical replication is enabled by running the following command:
+
+     ```bash
+     SHOW rds.logical_replication;
+     rds.logical_replication
+     -------------------------
+     on
+     (1 row)
+     ```
+
+   - Also, confirm that the `wal_level` is set to logical:
+
+     ```bash
+     SHOW wal_level;
+     wal_level
+     -----------
+     logical
+     (1 row)
+     ```
+
+### Allow connections from Neon
+
+You need to allow inbound connections to your Aurora Postgres instance from Neon. You can do this by editing your writer instance's **CIDR/IP - Inbound** security group, which you can find a link to from the **Connectivity & security** tab on your database instance page.
+
+1. Click on the security group name.
+2. Click on the security group ID.
+3. From the **Actions** menu, select **Edit inbound rules**.
+4. Add rules that allow traffic from each of the IP addresses for your Neon project's region.
+
+   Neon uses 3 to 6 IP addresses per region for outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses.
+
+5. When you're finished, click **Save rules**.
+
+   <Admonition type="note">
+   You can specify a rule for `0.0.0.0/0` to allow traffic from any IP address. However, this configuration is not considered secure.
+   </Admonition>
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+
+To create a publication for all tables in your source database, run the following query. You can use a publication name of your choice.
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your Aurora Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables defined in your publication on the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql shouldWrap
+   CREATE SUBSCRIPTION my_subscription CONNECTION 'postgresql://postgres:password@database-1.czmwaio8k05k.us-east-2.rds.amazonaws.com/postgres' PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source AWS Aurora Postgres database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Aurora Postgres database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+
+   subid |     subname     | pid | leader_pid | relid | received_lsn |      last_msg_send_time       |     last_msg_receipt_time     | latest_end_lsn |        latest_end_time
+   ------+-----------------+-----+------------+-------+--------------+-------------------------------+-------------------------------+----------------+-------------------------------
+   16471 | my_subscription | 932 |            |       | 0/401CB10    | 2024-08-14 11:57:34.148184+00 | 2024-08-14 11:57:34.148388+00 | 0/401CB10      | 2024-08-14 11:57:34.148184+00
+   (1 row)
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription was created.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert 10 rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your Aurora source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Cloud SQL
+
+---
+title: Replicate data from Cloud SQL Postgres
+subtitle: Learn how to replicate data from Google Cloud SQL Postgres to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.545Z'
+---
+
+<LRBeta/>
+
+This guide describes how to replicate data from Cloud SQL Postgres using native Postgres logical replication, as described in [Set up native PostgreSQL logical replication](https://cloud.google.com/sql/docs/postgres/replication/configure-logical-replication#set-up-native-postgresql-logical-replication), in the Google Cloud SQL documentation.
+
+## Prerequisites
+
+- A Cloud SQL Postgres instance containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data. Your database and schema may differ.
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A Neon project with a Postgres database to receive the replicated data. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your Cloud SQL source database
+
+This section describes how to prepare your source Cloud SQL Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication
+
+The first step is to enable logical replication at the source Postgres instance. In Cloud SQL, you can enable logical replication for your Postgres instance by setting the `cloudsql.logical_decoding` flag to `on`. This action will set the Postgres `wal_level` parameter to `logical`.
+
+To enable this flag:
+
+1. In the Google Cloud console, select the project that contains the Cloud SQL instance for which you want to set a database flag.
+2. Open the instance and click **Edit**.
+3. Scroll down to the **Flags** section.
+4. If this flag has not been set on the instance before, click **Add item**, choose the flag from the drop-down menu, and set its value to `On`.
+5. Click **Save** to save your changes.
+6. Confirm your changes under **Flags** on the **Overview** page.
+
+The change requires restarting the instance:
+
+![Clod SQL instance restart](/docs/guides/cloud_sql_restart.png)
+
+Afterward, you can verify that logical replication is enabled by running `SHOW wal_level;` from **Cloud SQL Studio** or your terminal.
+
+![show wal_level](/docs/guides/cloud_sql_show_wal_level.png)
+
+### Allow connections from Neon
+
+You need to allow connections to your Cloud SQL Postgres instance from Neon. To do this in Google Cloud:
+
+1. In the Google Cloud console, go to the Cloud SQL Instances page.
+1. Open the **Overview** page of your instance by clicking the instance name.
+1. From the SQL navigation menu, select **Connections**.
+1. Click the **Networking** tab.
+1. Select the **Public IP** checkbox.
+1. Click **Add network**.
+1. Optionally, in the **Name** field, enter a name for this network.
+1. In the **Network** field, enter the IP address from which you want to allow connections. You will need to perform this step for each of the NAT gateway IP addresses associated with your Neon project's region. Neon uses 3 to 6 IP addresses per region for this outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses.
+
+   <Admonition type="note">
+   Cloud SQL requires addresses to be specified in CIDR notation. You can do so by appending `/32` to the NAT Gateway IP address; for example: `18.217.181.229/32`
+   </Admonition>
+
+   In the example shown below, you can see that three addresses were added, named `Neon1`, `Neon2`, and `Neon3`. You can name them whatever you like. The addresses were added in CIDR format by adding `/32`.
+
+   ![Cloud SQL network configuration](/docs/guides/cloud_sql_network_config.png)
+
+1. Click **Done** after adding a Network entry.
+1. Click **Save** when you are finished adding Network entries for all of your Neon project's NAT Gateway IP addresses.
+
+<Admonition type="note">
+You can specify a single Network entry using `0.0.0.0/0` to allow traffic from any IP address. However, this configuration is not considered secure and will trigger a warning.
+</Admonition>
+
+### Note your public IP address
+
+Record the public IP address of your Cloud SQL Postgres instance. You'll need this value later when you set up a subscription from your Neon database. You can find the public IP address on your Cloud SQL instance's **Overview** page.
+
+<Admonition type="note">
+If you do not use a public IP address, you'll need to configure access via a private IP. Refer to the [Cloud SQL documentation](https://cloud.google.com/sql/docs/mysql/private-ip).
+</Admonition>
+
+![Clould SQL public IP address](/docs/guides/cloud_sql_public_ip.png)
+
+### Create a Postgres role for replication
+
+It is recommended that you create a dedicated Postgres role for replicating data from your Cloud SQL Postgres instance. The role must have the `REPLICATION` privilege. On your Cloud SQL Postgres instance, login in as your `postgres` user or an administrative user you use to create roles and run the following command to create a replication role. You can replace the name `replication_user` with whatever role name you want to use.
+
+```sql shouldWrap
+CREATE USER replication_user WITH REPLICATION IN ROLE cloudsqlsuperuser LOGIN PASSWORD 'replication_user_password';
+```
+
+### Grant schema access to your Postgres role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to a Postgres role named `replication_user`:
+
+```sql
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+### Create a publication on the source database
+
+This step is performed on your Cloud SQL instance.
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your source database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your Cloud SQL Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'host=<primary-ip> port=5432 dbname=postgres user=replication_user password=replication_user_password'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source Cloud SQL database where you defined the publication. For the `<primary_ip>`, use the IP address of your Cloud SQL Postgres instance that you noted earlier, and specify the name and password of your replication role. If you're replicating from a database other than `postgres`, be sure to specify that database name.
+   - `publication_name`: The name of the publication you created on the source Neon database.
+
+2. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your Cloud SQL source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Neon to Neon
+
+---
+title: Replicate data from one Neon project to another
+subtitle: Use logical replication to migrate data to a different Neon project, account,
+  Postgres version, or region
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.545Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from one Neon project to another. This enables different replication scenarios, including:
+
+- **Postgres version migration**: Moving data from one Postgres version to another; for example, from a Neon project that runs Postgres 15 to one that runs Postgres 16.
+- **Region migration**: Moving data from one region to another; for example, from a Neon project in one region to a Neon project in a different region.
+- **Neon account migration**: Moving data from a Neon project owned by one account to a project owned by a different account; for example, from a personal Neon account to a business-owned Neon account.
+
+These are some common Neon-to-Neon replication scenarios. There may be others. You can follow the steps in this guide for any scenario that requires replicating data between different Neon projects.
+
+## Prerequisites
+
+- A Neon project with a database containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A destination Neon project.
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+
+For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+
+## Prepare your source Neon database
+
+This section describes how to prepare your source Neon database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+### Enable logical replication in the source Neon project
+
+In the Neon project containing your source database, enable logical replication. You only need to perform this step on the source Neon project.
+
+<Admonition type="important">
+Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication restarts all computes in your Neon project, meaning that active connections will be dropped and have to reconnect.
+</Admonition>
+
+To enable logical replication:
+
+1. Select your project in the Neon Console.
+2. On the Neon **Dashboard**, select **Settings**.
+3. Select **Logical Replication**.
+4. Click **Enable** to enable logical replication.
+
+You can verify that logical replication is enabled by running the following query:
+
+```sql
+SHOW wal_level;
+ wal_level
+-----------
+ logical
+```
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database (the subscriber) to receive replicated data.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on the destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'postgresql://neondb_owner:<password>@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source Neon database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Neon database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your source database connection details for your destination database connection details.
+
+You can find the connection details for a Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+
+# Postgres
+
+---
+title: Replicate data from Postgres to Neon
+subtitle: Learn how to replicate data from a local Postgres instance or another Postgres
+  provider to Neon
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-09-17T15:08:05.546Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from a local Postgres instance or another Postgres provider to Neon. If you're looking to replicate data from one Neon Postgres instance to another, see [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
+
+## Prerequisites
+
+- A local Postgres instance or Postgres instance hosted on another provider containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A destination Neon project. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your source Postgres database
+
+This section describes how to prepare your source Postgres database (the publisher) for replicating data to your destination Neon database (the subscriber).
+
+### Enable logical replication in the source Neon project
+
+On your source database, enable logical replication. The typical steps for a local Postgres instance are shown below. If you run Postgres on a provider, the steps may differ. Refer to your provider's documentation.
+
+Enabling logical replication requires changing the Postgres `wal_level` configuration parameter from `replica` to `logical`.
+
+1. Locate your `postgresql.conf` file. This is usually found in the PostgreSQL data directory. The data directory path can be identified by running the following query in your PostgreSQL database:
+
+   ```sql
+   SHOW data_directory;
+   ```
+
+2. Open the `postgresql.conf` file in a text editor. Find the `wal_level` setting in the file. If it is not present, you can add it manually. Set `wal_level` to `logical` as shown below:
+
+   ```ini
+   wal_level = logical
+   ```
+
+3. After saving the changes to `postgresql.conf`, you need to reload or restart PostgreSQL for the changes to take effect.
+
+4. Confirm the change by running the following query in your PostgreSQL database:
+
+   ```sql
+   SHOW wal_level;
+   wal_level
+   -----------
+   logical
+   ```
+
+### Create a Postgres role for replication
+
+It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. For example:
+
+```sql
+CREATE ROLE replication_user WITH REPLICATION LOGIN PASSWORD 'your_secure_password';
+```
+
+### Grant schema access to your Postgres role
+
+If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
+
+```sql
+GRANT USAGE ON SCHEMA public TO replication_user;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
+```
+
+Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+To create a publication for all tables in your database:
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your Neon destination database
+
+This section describes how to prepare your destination Neon Postgres database (the subscriber) to receive replicated data.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on the destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql
+   CREATE SUBSCRIPTION my_subscription
+   CONNECTION 'host=<host-address-or-ip> port=5432 dbname=postgres user=replication_user password=replication_user_password'
+   PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source Postgres database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source Postgres database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription has been created successfully.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your source database connection details for your destination database connection details.
+
+You can find the connection details for a Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
+
+<NeedHelp/>
+
+
+# AWS RDS
+
+---
+title: Replicate data from Amazon RDS Postgres
+subtitle: Learn how to replicate data from Amazon RDS Postgres to Neon
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2024-09-17T15:08:05.548Z'
+---
+
+<LRBeta/>
+
+Neon's logical replication feature allows you to replicate data from Amazon RDS PostgreSQL to Neon.
+
+## Prerequisites
+
+- A source database in Amazon RDS for PostgreSQL containing the data you want to replicate. If you're just testing this out and need some data to play with, you can use the following statements to create a table with sample data:
+
+  ```sql shouldWrap
+  CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+  INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+  ```
+
+- A destination Neon project. For information about creating a Neon project, see [Create a project](/docs/manage/projects#create-a-project).
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin.
+- Review our [logical replication tips](/docs/guides/logical-replication-tips), based on real-world customer data migration experiences.
+
+## Prepare your source database
+
+This section describes how to prepare your source Amazon RDS Postgres instance (the publisher) for replicating data to Neon.
+
+### Enable logical replication in the source Amazon RDS PostgreSQL instance
+
+Enabling logical replication in Postgres requires changing the `wal_level` configuration parameter from `replica` to `logical`. Before you begin, you can check your current setting with the following command:
+
+```bash
+SHOW wal_level;
+ wal_level
+-----------
+ replica
+(1 row)
+```
+
+<Admonition type="note">
+For information about connecting to RDS from `psql`, see [Connect to a PostgreSQL DB instance](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_GettingStarted.CreatingConnecting.PostgreSQL.html#CHAP_GettingStarted.Connecting.PostgreSQL).
+</Admonition>
+
+If your current setting is `replica`, follow these steps to enable logical replication. If you are using the default parameter group, you will need to create a new parameter group to set the value. You can do so by selecting **Parameter groups** > **Create parameter group** from the sidebar and filling in the required fields.
+
+To enable logical replication:
+
+1. Navigate to the **Configuration** tab of your RDS instance.
+2. Under the **Configuration** heading, click on the **DB instance parameter group** link.
+3. Click **Edit**. In the **Filter parameters** search field, search for `rds.logical_replication`.
+4. Set the value to `1`, and click **Save Changes**.
+5. If you created a new parameter group, navigate back to your RDS instance page, click **Modify**, and scroll down to select your new parameter group. Click **Continue**, and select **Apply immediately** to make the change now, then click **Modify DB instance**.
+6. Reboot your instance to apply the new setting. From the **Actions** menu for your database, select **Reboot**.
+7. Make sure that the `wal_level` parameter is now set to `logical`:
+
+   ```sql
+   SHOW wal_level;
+   wal_level
+   -----------
+   logical
+   (1 row)
+   ```
+
+### Allow connections from Neon
+
+You need to allow inbound connections to your AWS RDS Postgres instance from Neon. You can do this by editing your instance's **CIDR/IP - Inbound** security group, which you can find a link to from your AWS RDS Postgres instance page.
+
+1. Click on the security group name.
+2. Click on the security group ID.
+3. From the **Actions** menu, select **Edit inbound rules**.
+4. Add rules that allow traffic from each of the IP addresses for your Neon project's region.
+
+   Neon uses 3 to 6 IP addresses per region for outbound communication, corresponding to each availability zone in the region. See [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) for Neon's NAT gateway IP addresses.
+
+5. When you're finished, click **Save rules**.
+
+   <Admonition type="note">
+   You can specify a rule for `0.0.0.0/0` to allow traffic from any IP address. However, this configuration is not considered secure.
+   </Admonition>
+
+### Create a publication on the source database
+
+Publications are a fundamental part of logical replication in Postgres. They define what will be replicated.
+
+To create a publication for all tables in your source database, run the following query. You can use a publication name of your choice.
+
+```sql
+CREATE PUBLICATION my_publication FOR ALL TABLES;
+```
+
+<Admonition type="important">
+Avoid defining publications with `FOR ALL TABLES` if you want the flexibility to add or drop tables from the publication later. It is not possible to modify a publication defined with `FOR ALL TABLES` to include or exclude specific tables. For details, see [Logical replication tips](/docs/guides/logical-replication-tips).
+
+To create a publication for a specific table, you can use the following syntax:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE playing_with_neon;
+```
+
+To create a publication for multiple tables, provide a comma-separated list of tables:
+
+```sql shouldWrap
+CREATE PUBLICATION my_publication FOR TABLE users, departments;
+```
+
+For syntax details, see [CREATE PUBLICATION](https://www.postgresql.org/docs/current/sql-createpublication.html), in the PostgreSQL documentation.
+</Admonition>
+
+## Prepare your destination database
+
+This section describes how to prepare your source Neon Postgres database (the subscriber) to receive replicated data from your AWS RDS Postgres instance.
+
+### Prepare your database schema
+
+When configuring logical replication in Postgres, the tables in the source database you are replicating from must also exist in the destination database, and they must have the same table names and columns. You can create the tables manually in your destination database or use utilities like `pg_dump` and `pg_restore` to dump the schema from your source database and load it to your destination database. See [Import a database schema](/docs/import/import-schema-only) for instructions.
+
+If you're using the sample `playing_with_neon` table, you can create the same table on the destination database with the following statement:
+
+```sql shouldWrap
+CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NOT NULL, value REAL);
+```
+
+### Create a subscription
+
+After creating a publication on the source database, you need to create a subscription on your Neon destination database.
+
+1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
+2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+
+   ```sql shouldWrap
+   CREATE SUBSCRIPTION my_subscription CONNECTION 'postgresql://postgres:password@database-1.czmwaio8k05k.us-east-2.rds.amazonaws.com/postgres' PUBLICATION my_publication;
+   ```
+
+   - `subscription_name`: A name you chose for the subscription.
+   - `connection_string`: The connection string for the source AWS RDS Postgres database where you defined the publication.
+   - `publication_name`: The name of the publication you created on the source AWS RDS Postgres database.
+
+3. Verify the subscription was created by running the following command:
+
+   ```sql
+   SELECT * FROM pg_stat_subscription;
+
+   subid |     subname     | pid  | leader_pid | relid | received_lsn |      last_msg_send_time       |     last_msg_receipt_time     | latest_end_lsn |        latest_end_time
+   ------+-----------------+------+------------+-------+--------------+-------------------------------+-------------------------------+----------------+-------------------------------
+   16471 | my_subscription | 1080 |            |       | 0/300003A0   | 2024-08-13 20:25:08.011501+00 | 2024-08-13 20:25:08.013521+00 | 0/300003A0     | 2024-08-13 20:25:08.011501+00
+   ```
+
+   The subscription (`my_subscription`) should be listed, confirming that your subscription was created.
+
+## Test the replication
+
+Testing your logical replication setup ensures that data is being replicated correctly from the publisher to the subscriber database.
+
+1. Run some data modifying queries on the source database (inserts, updates, or deletes). If you're using the `playing_with_neon` database, you can use this statement to insert some rows:
+
+   ```sql
+   INSERT INTO playing_with_neon(name, value)
+   SELECT LEFT(md5(i::TEXT), 10), random() FROM generate_series(1, 10) s(i);
+   ```
+
+2. Perform a row count on the source and destination databases to make sure the result matches.
+
+   ```sql
+   SELECT COUNT(*) FROM playing_with_neon;
+
+   count
+   -------
+   30
+   (1 row)
+   ```
+
+Alternatively, you can run the following query on the subscriber to make sure the `last_msg_receipt_time` is as expected. For example, if you just ran an insert option on the publisher, the `last_msg_receipt_time` should reflect the time of that operation.
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn, last_msg_receipt_time FROM pg_catalog.pg_stat_subscription;
+```
+
+## Switch over your application
+
+After the replication operation is complete, you can switch your application over to the destination database by swapping out your AWS RDS source database connection details for your Neon destination database connection details.
+
+You can find your Neon connection details on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 
 # Schema Migration
@@ -30275,6 +36846,10 @@ postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbna
 ```
 
 Keep your connection string handy for later use.
+
+<Admonition type="note">
+Neon supports both direct and pooled database connection strings, which can be copied from the **Connection Details** widget on your Neon Project Dashboard. A pooled connection string connects your application to the database via a PgBouncer connection pool, allowing for a higher number of concurrent connections. However, using a pooled connection string for migrations can lead to errors. For this reason, we recommend using a direct (non-pooled) connection when performing migrations. For more information about direct and pooled connections, see [Connection pooling](/docs/connect/connection-pooling).
+</Admonition>
 
 ## Setting up the TypeScript application
 
@@ -30697,6 +37272,10 @@ Host=hostname;Port=5432;Database=dbname;Username=username;Password=password;SSLM
 ```
 
 Construct the connection string in this format using the correct values for your Neon connection URI. Keep it handy for later use.
+
+<Admonition type="note">
+Neon supports both direct and pooled database connection strings, which can be copied from the **Connection Details** widget on your Neon Project Dashboard. A pooled connection string connects your application to the database via a PgBouncer connection pool, allowing for a higher number of concurrent connections. However, using a pooled connection string for migrations can be prone to errors. For this reason, we recommend using a direct (non-pooled) connection when performing migrations. For more information about direct and pooled connections, see [Connection pooling](/docs/connect/connection-pooling).
+</Admonition>
 
 ## Setting up the Entity Framework project
 
@@ -31584,7 +38163,7 @@ You've seen how you can instantly create new database environment with Neon's br
 title: Schema migration with Neon Postgres and Laravel
 subtitle: Set up Neon Postgres and run migrations for your Laravel project
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.654Z'
+updatedOn: '2024-09-23T22:33:41.224Z'
 ---
 
 [Laravel](https://laravel.com/) is a popular PHP web application framework that provides an expressive and elegant syntax for building web applications. It includes an ORM (Object-Relational Mapping) called Eloquent, which allows you to interact with databases using a fluent API. Laravel also provides a powerful migration system to manage database schema changes over time.
@@ -31608,11 +38187,15 @@ To follow along with this guide, you will need:
 
 ### Retrieve your Neon database connection string
 
-On the Neon project dashboard, navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+On the Neon project dashboard, navigate to the **Connection Details** widget to find your database connection string. It should look similar to this:
 
 ```bash
 postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
 ```
+
+<Admonition type="note">
+Neon supports both direct and pooled database connection strings, which can be copied from the **Connection Details** widget on your Neon Project Dashboard. A pooled connection string connects your application to the database via a PgBouncer connection pool, allowing for a higher number of concurrent connections. However, using a pooled connection string for migrations can be prone to errors. For this reason, we recommend using a direct (non-pooled) connection when performing migrations. For more information about direct and pooled connections, see [Connection pooling](/docs/connect/connection-pooling).
+</Admonition>
 
 Keep your connection string handy for later use.
 
@@ -33366,6 +39949,10 @@ postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbna
 
 Keep your connection string handy for later use.
 
+<Admonition type="note">
+Neon supports both direct and pooled database connection strings, which can be copied from the **Connection Details** widget on your Neon Project Dashboard. A pooled connection string connects your application to the database via a PgBouncer connection pool, allowing for a higher number of concurrent connections. However, using a pooled connection string for migrations can be prone to errors. For this reason, we recommend using a direct (non-pooled) connection when performing migrations. For more information about direct and pooled connections, see [Connection pooling](/docs/connect/connection-pooling).
+</Admonition>
+
 ## Setting up the Rails project
 
 ### Create a new Rails project
@@ -33731,6 +40318,10 @@ postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbna
 ```
 
 Keep your connection string handy for later use.
+
+<Admonition type="note">
+Neon supports both direct and pooled database connection strings, which can be copied from the **Connection Details** widget on your Neon Project Dashboard. A pooled connection string connects your application to the database via a PgBouncer connection pool, allowing for a higher number of concurrent connections. However, using a pooled connection string for migrations can be prone to errors. For this reason, we recommend using a direct (non-pooled) connection when performing migrations. For more information about direct and pooled connections, see [Connection pooling](/docs/connect/connection-pooling).
+</Admonition>
 
 ## Setting Up the Node application
 
@@ -34884,6 +41475,453 @@ For more information on the tools used in this guide, refer to the following doc
 <NeedHelp/>
 
 
+# Auth.js
+
+---
+title: Authenticate Neon Postgres application users with Auth.js
+subtitle: Learn how to add passwordless authentication to your Neon Postgres database
+  application using Auth.js and Resend
+tag: new
+enableTableOfContents: true
+updatedOn: '2024-09-16T13:02:12.674Z'
+---
+
+[Auth.js](https://authjs.dev/) (formerly NextAuth.js) is a popular authentication solution that supports a wide range of authentication methods, including social logins (e.g., Google, Facebook), traditional email/password, and passwordless options like magic links. For simple authentication flows, such as social logins, Auth.js can operate using only in-memory session storage (in a browser cookie). However, if you want to implement custom login flows, or persist the signed-in users' information in your database, you need to specify a database backend.
+
+For example, passwordless authentication methods like magic links require secure storage of temporary tokens. Magic link login has become increasingly popular since it eliminates the need for users to remember complex passwords, reducing the risk of credential-based attacks.
+
+In this guide, we'll walk through setting up a simple Next.js application, using Neon Postgres as the database backend for both Auth.js authentication and application data. We'll use [Resend](https://resend.com/) for sending magic link emails. We will cover how to:
+
+- Set up a Next.js project with Auth.js for magic link authentication
+- Create a Neon Postgres database and configure it as the Auth.js database backend
+- Configure Resend as an authentication provider
+- Implement a basic authenticated feature (a simple todo list)
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. If you do not have one, sign up at [Neon](https://neon.tech). We'll use a database named `neondb` in the following examples.
+- [Node.js](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed on your local machine. We'll use Node.js to build and test the application locally.
+- A [Resend](https://resend.com/) account for sending emails. Resend offers a free tier to get started.
+- A domain
+
+## Initialize your Next.js project
+
+Run the following command in your terminal to create a new Next.js project:
+
+```bash shouldWrap
+npx create-next-app guide-neon-next-authjs --typescript --eslint --tailwind --use-npm --no-src-dir --app --import-alias "@/*"
+```
+
+Now, navigate to the project directory and install the required dependencies:
+
+```bash
+cd guide-neon-next-authjs
+npm install next-auth@beta
+npm install @auth/pg-adapter @neondatabase/serverless
+```
+
+For authentication, we'll use the `Auth.js` library (aliased as v5 of the `next-auth` package), which provides a simple way to add authentication to Next.js applications. It comes with built-in support for Resend as an authentication provider. We use the `@neondatabase/serverless` package as the Postgres client for the `Auth.js` database adapter.
+
+Also, add a `.env` file to the root of your project, which we'll use to store the Neon connection string and the Resend API key:
+
+```bash
+touch .env
+```
+
+## Setting up your Neon database
+
+### Initialize a new project
+
+1. Log in to the Neon console and go to the [Projects](https://console.neon.tech/app/projects) section.
+2. Click the **New Project** button to create a new project.
+3. Choose your preferred region and Postgres version, then click **Create Project**.
+
+### Retrieve your Neon database connection string
+
+Navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
+
+```bash shouldWrap
+postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+```
+
+Add this connection string to your `.env` file:
+
+```bash
+# .env
+DATABASE_URL="YOUR_NEON_CONNECTION_STRING"
+```
+
+## Configuring Auth.js and Resend
+
+### Set up Resend
+
+1. Sign up for a [Resend](https://resend.com/) account if you don't already have one.
+2. In the Resend dashboard, create an API key.
+3. Add the API key to your `.env` file:
+
+   ```bash
+   # .env
+   AUTH_RESEND_KEY="YOUR_RESEND_API_KEY"
+   ```
+
+4. Optional: Resend requires verification of ownership for the domain you use to send emails from. If you own a domain, you can follow the instructions [here](https://resend.com/docs/dashboard/domains/introduction) to verify ownership.
+
+   For this example, we'll use the test email address (`onboarding@resend.dev`) to send emails. However, this only works for the email address you use to sign up for a Resend account, so you won't be able to sign in from other email accounts.
+
+### Configure Auth.js
+
+Create a new file `auth.ts` in the root directory of the project and add the following content:
+
+```typescript
+/// auth.ts
+
+import NextAuth from 'next-auth';
+import Resend from 'next-auth/providers/resend';
+import PostgresAdapter from '@auth/pg-adapter';
+import { Pool } from '@neondatabase/serverless';
+
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+export const { handlers, auth, signIn, signOut } = NextAuth(() => {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  return {
+    adapter: PostgresAdapter(pool),
+    providers: [Resend({ from: 'Test <onboarding@resend.dev>' })],
+  };
+});
+```
+
+This file sets up Auth.js with the Neon Postgres adapter and configures the Email provider for magic link authentication.
+
+Additionally, `Auth.js` also requires setting up an `AUTH_SECRET` environment variable, which is used to encrypt cookies and magic tokens. You can use the `Auth.js` CLI to generate one:
+
+```bash
+npx auth secret
+```
+
+Add the generated secret to your `.env` file:
+
+```bash
+# .env
+AUTH_SECRET="YOUR_AUTH_SECRET"
+```
+
+### Implement authentication routes
+
+Create a new dynamic route at `app/api/auth/[...nextauth]/route.ts` with the following content:
+
+```tsx
+/// app/api/auth/[...nextauth]/route.ts
+
+import { handlers } from '@/auth';
+
+export const { GET, POST } = handlers;
+```
+
+This route file imports the authentication handlers from the `auth.ts` file that handle all auth-related requests &#8212; sign-in, sign-out, and redirect after authentication.
+
+The `auth` object exported from `./auth.ts` is the universal method we can use to interact with the authentication state in the application. For example, we add a message above the main app layout that indicates the current user's name and a sign-out button at the bottom.
+
+## Implementing the application
+
+### Create the database schema
+
+Create a new file `app/db/schema.sql` with the following content:
+
+```sql
+-- Auth.js required tables
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL,
+  name VARCHAR(255),
+  email VARCHAR(255),
+  "emailVerified" TIMESTAMPTZ,
+  image TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS accounts (
+  id SERIAL,
+  "userId" INTEGER NOT NULL,
+  type VARCHAR(255) NOT NULL,
+  provider VARCHAR(255) NOT NULL,
+  "providerAccountId" VARCHAR(255) NOT NULL,
+  refresh_token TEXT,
+  access_token TEXT,
+  expires_at BIGINT,
+  token_type TEXT,
+  scope TEXT,
+  id_token TEXT,
+  session_state TEXT,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS sessions (
+  id SERIAL,
+  "sessionToken" VARCHAR(255) NOT NULL,
+  "userId" INTEGER NOT NULL,
+  expires TIMESTAMPTZ NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS verification_tokens (
+  identifier TEXT,
+  token TEXT,
+  expires TIMESTAMPTZ NOT NULL,
+  PRIMARY KEY (identifier, token)
+);
+
+-- Application-specific table
+CREATE TABLE IF NOT EXISTS todos (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  content TEXT NOT NULL,
+  completed BOOLEAN NOT NULL DEFAULT FALSE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+This schema defines all the tables required for the `Auth.js` library to work, and also the `todos` table that we'll use to store the todo list for each user.
+
+To apply this schema to your Neon database, you can use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) in the web console or a database management tool like [psql](/docs/connect/query-with-psql-editor).
+
+### Implement the Todo list feature
+
+Create a new file `app/TodoList.tsx`:
+
+```tsx
+'use client';
+
+import { useState } from 'react';
+
+type Todo = {
+  id: number;
+  content: string;
+  completed: boolean;
+};
+
+export default function TodoList({ initialTodos }: { initialTodos: Todo[] }) {
+  const [todos, setTodos] = useState<Todo[]>(initialTodos);
+  const [newTodo, setNewTodo] = useState('');
+
+  const addTodo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTodo.trim()) return;
+
+    const response = await fetch('/api/todos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: newTodo }),
+    });
+
+    if (response.ok) {
+      const todo = await response.json();
+      setTodos([...todos, todo]);
+      setNewTodo('');
+    }
+  };
+
+  const toggleTodo = async (id: number) => {
+    const response = await fetch(`/api/todos/${id}`, { method: 'PATCH' });
+    if (response.ok) {
+      setTodos(
+        todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo))
+      );
+    }
+  };
+
+  return (
+    <div className="w-full max-w-md">
+      <form onSubmit={addTodo} className="mb-4">
+        <input
+          type="text"
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
+          placeholder="Add a new todo"
+          className="mb-2 w-full rounded border p-2"
+        />
+        <button type="submit" className="w-full rounded border p-2">
+          Add
+        </button>
+      </form>
+      <ul className="space-y-2">
+        {todos.map((todo) => (
+          <li
+            key={todo.id}
+            onClick={() => toggleTodo(todo.id)}
+            className="flex cursor-pointer items-center space-x-2"
+          >
+            <input type="checkbox" checked={todo.completed} readOnly className="cursor-pointer" />
+            <span className={todo.completed ? 'line-through' : ''}>{todo.content}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+### Update the main page
+
+Replace the contents of `app/page.tsx` with:
+
+```tsx
+import { auth } from '@/auth';
+import TodoList from '@/app/TodoList';
+import { Pool } from '@neondatabase/serverless';
+
+async function getTodos(userId: string) {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const { rows } = await pool.query('SELECT * FROM todos WHERE user_id = $1', [userId]);
+  await pool.end();
+  return rows;
+}
+
+type Todo = {
+  id: number;
+  content: string;
+  completed: boolean;
+};
+
+export default async function Home() {
+  const session = await auth();
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center p-4">
+      <div className="w-full max-w-md text-center">
+        {!session ? (
+          <>
+            <h1 className="mb-4 text-2xl">Welcome to the Todo App</h1>
+            <p className="mb-4">Please sign in to access your todos.</p>
+            <a href="/api/auth/signin" className="inline-block rounded border p-2">
+              Sign In
+            </a>
+          </>
+        ) : (
+          <>
+            <h1 className="mb-4 text-2xl">Welcome, {session.user?.name || session.user?.email}</h1>
+            <TodoList initialTodos={await getTodos(session.user?.id as string)} />
+            <a href="/api/auth/signout" className="mt-4 inline-block rounded border p-2">
+              Sign Out
+            </a>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+```
+
+### Create API routes for the todos feature
+
+Create a new file `app/api/todos/route.ts`:
+
+```typescript
+import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
+import { Pool } from '@neondatabase/serverless';
+
+export async function POST(req: Request) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const { content } = await req.json();
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+  try {
+    const { rows } = await pool.query(
+      'INSERT INTO todos (user_id, content) VALUES ($1, $2) RETURNING *',
+      [session.user.id, content]
+    );
+    return NextResponse.json(rows[0]);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to create todo' }, { status: 500 });
+  } finally {
+    await pool.end();
+  }
+}
+```
+
+This implements a simple API endpoint that allows users to create new todos.
+
+Create another file `app/api/todos/[id]/route.ts`:
+
+```typescript
+import { NextResponse } from 'next/server';
+import { auth } from '../../auth/[...nextauth]/route';
+import { Pool } from '@neondatabase/serverless';
+
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const session = await auth();
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+  try {
+    const { rows } = await pool.query(
+      'UPDATE todos SET completed = NOT completed WHERE id = $1 AND user_id = $2 RETURNING *',
+      [params.id, session.user.id]
+    );
+    if (rows.length === 0) {
+      return NextResponse.json({ error: 'Todo not found' }, { status: 404 });
+    }
+    return NextResponse.json(rows[0]);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to update todo' }, { status: 500 });
+  } finally {
+    await pool.end();
+  }
+}
+```
+
+This implements a simple API endpoint that allows users to update the status of a todo.
+
+## Running the application
+
+To start the application, run:
+
+```bash
+npm run dev
+```
+
+This will start the Next.js development server. Open your browser and navigate to `http://localhost:3000` to see the application in action. When running for the first time, you'll be see a `Sign In` link which will redirect you to the `Auth.js` widget, prompting you to input your email address. Enter your email to receive a magic link. Once authenticated, you'll be able to add and manage your todos.
+
+Note that if you are using the test email address (`onboarding@resend.dev`) to send emails, you won't be able to sign in from other email accounts.
+
+## Conclusion
+
+In this guide, we demonstrated how to set up a Next.js application with Auth.js for magic link authentication, using Neon Postgres as the database backend for both authentication and application data. We implemented a simple todo list feature to showcase how authenticated users can interact with the application.
+
+Next, we can add more routes and features to the application. The `auth` method can be used in the Next.js API routes or middleware to protect endpoints that require authentication.
+
+To view and manage the users who authenticated with your application, you can query the `users` table of your Neon project. Similarly, all the generated magic link tokens are logged in the `verification_token` table, making it easy to audit and revoke access to your application.
+
+## Source code
+
+You can find the source code for the application described in this guide on GitHub.
+
+<DetailIconCards>
+<a href="https://github.com/neondatabase/examples/tree/main/auth/with-authjs-next" description="Authenticate users of your Neon application with Auth.js" icon="github">Authentication flow with Auth.js</a>
+</DetailIconCards>
+
+## Resources
+
+For more information about the tools and libraries used in this guide, refer to the following documentation:
+
+- [Neon Documentation](https://neon.tech/docs)
+- [Auth.js Documentation](https://authjs.dev/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Resend Documentation](https://resend.com/docs)
+
+<NeedHelp/>
+
+
 # Clerk
 
 ---
@@ -35717,7 +42755,7 @@ For more information on the tools used in this guide, refer to the following doc
 title: AI & Embeddings
 subtitle: Build AI applications with Neon Postgres as your vector database
 enableTableOfContents: true
-updatedOn: '2024-07-15T16:00:39.125Z'
+updatedOn: '2024-08-16T14:55:52.653Z'
 ---
 
 Vector databases enable efficient storage and retrieval of vector data, which is an essential component in building AI applications that leverage Large Language Models (LLMs).
@@ -35810,6 +42848,8 @@ Share your AI app on our **#showcase** channel on [Discord](https://discord.gg/9
 </Admonition>
 
 <DetailIconCards>
+
+<a href="https://github.com/neondatabase/ai-vector-db-per-tenant" description="Deploy an AI vector database per-tenant architecture with Neon" icon="github">AI vector database per tenant</a>
 
 <a href="https://neon.tech/guides/chatbot-astro-postgres-llamaindex" description="Build a RAG chatbot in an Astro application with LlamaIndex and Postgres" icon="openai">Guide: Build a RAG chatbot</a>
 
@@ -36050,7 +43090,7 @@ After generating embeddings using a service like [OpenAI’s Embeddings API](htt
   ```
 
    <Admonition type="tip">
-   For a Python script that loads embeddings in bulk, see [bulk_loading.py](https://github.com/pgvector/pgvector-python/blob/master/examples/bulk_loading.py).
+   For a Python script that loads embeddings in bulk, refer to this [Bulk loading with COPY](https://github.com/pgvector/pgvector-python/blob/master/examples/loading/example.py) example provided in the `pgvector` GitHub repository.
    </Admonition>
 
 - Upsert vectors:
@@ -36786,8 +43826,6 @@ Hackable, fully-featured, pre-built [starter apps](https://github.com/neondataba
 
 <a href="https://github.com/neondatabase/examples/tree/main/ai/langchain/semantic-search-nextjs" description="A Next.js Semantic Search chatbot starter app built with OpenAI and LangChain" icon="github">Semantic search chatbot (OpenAI + LangChain)</a>
 
-<a href="https://github.com/neondatabase/examples/tree/main/ai/langchain/reverse-image-search-nextjs" description="A Next.js Reverse Image Search Engine starter app built with OpenAI and LangChain" icon="github">Reverse image search (OpenAI + LangChain)</a>
-
 <a href="https://github.com/neondatabase/examples/tree/main/ai/langchain/chat-with-pdf-nextjs" description="A Next.js Chat with PDF chatbot starter app built with OpenAI and LangChain" icon="github">Chat with PDF (OpenAI + LangChain)</a>
 
 </DetailIconCards>
@@ -37083,7 +44121,7 @@ Be sure to test different index tuning parameter settings to find the right bala
 title: Scale your AI application with Neon
 subtitle: Scale your AI application with Neon's Autoscaling and Read Replica features
 enableTableOfContents: true
-updatedOn: '2024-08-06T15:23:10.940Z'
+updatedOn: '2024-09-02T13:42:56.650Z'
 ---
 
 You can scale your AI application built on Postgres with `pgvector` in the same way you would any Postgres app: Vertically with added CPU, RAM, and storage, or horizontally with read replicas.
@@ -37105,7 +44143,7 @@ In Neon, scaling vertically is a matter of selecting the desired compute size. N
 | 9                  | 9    | 36 GB | 604 MB               |
 | 10                 | 10   | 40 GB | 671 MB               |
 
-See [Edit a compute](/docs/manage/endpoints#edit-a-compute) to learn how to configure your compute size. Available compute sizes differ according to your Neon plan. The Neon Free Plan supports computes with 0.25 vCPU and 1 GB RAM. The Launch plan offers compute sizes up to 4 vCPU with 16 GB RAM. Larger computes are available on the Scale plan. See [Neon plans](/docs/introduction/plans).
+See [Edit a compute](/docs/manage/endpoints#edit-a-compute) to learn how to configure your compute size. Available compute sizes differ according to your Neon plan. The Neon Free Plan supports computes starting at 0.25 CU, up to 2 CU with autoscaling enabled. The Launch plan offers compute sizes up to 4 CU. Larger computes are available on the Scale and Business plans. See [Neon plans](/docs/introduction/plans).
 
 To optimize `pgvector` index build time, you can increase the `maintenance_work_mem` setting for the current session beyond the preconfigured default shown in the table above with a command similar to this:
 
@@ -37127,7 +44165,7 @@ To learn more about Neon's autoscaling feature and how to enable it, refer to ou
 
 ## Storage
 
-Neon's data storage allowances differ by plan. The Free plan offers 512 MB of storage. The Launch and Scale plans support larger data sizes and purchasing additional units of storage. See [Neon plans](/docs/introduction/plans).
+Neon's data storage allowances differ by plan. The Free plan offers 512 MB of storage. The Launch, Scale, and Business plans support larger data sizes and purchasing additional units of storage. See [Neon plans](/docs/introduction/plans).
 
 ## Read replicas
 
@@ -37440,7 +44478,7 @@ For more information about using Neon with `pgvector`, see [The pgvector extensi
 title: Neon CLI
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-07-12T11:16:39.831Z'
+updatedOn: '2024-08-15T12:36:39.367Z'
 ---
 
 The Neon CLI is a command-line interface that lets you manage Neon directly from the terminal. This documentation references all commands and options available in the Neon CLI.
@@ -37719,7 +44757,7 @@ Global options are supported with any Neon CLI command.
 
 - <a id="context-file"></a>`--context-file`
 
-  Sets a background context for your CLI sessions, letting you perform project or branch-specific actions without having to specify the project or branch id in every command. For example, this command lists all branches using the `branches list` command. No need to specify the project since the context file provides it.
+  Sets a background context for your CLI sessions, letting you perform organization, project, or branch-specific actions without having to specify the relevant id in every command. For example, this command lists all branches using the `branches list` command. No need to specify the project since the context file provides it.
 
   ```bash
   neon branches list --context-file path/to/context_file_name
@@ -38159,7 +45197,7 @@ neon orgs list -o json
 title: Neon CLI commands — projects
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.675Z'
+updatedOn: '2024-08-15T12:36:39.364Z'
 ---
 
 ## Before you begin
@@ -38201,31 +45239,50 @@ neon projects list [options]
 
 In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `projects` subcommand supports this option:
 
-| Option           | Description                                                                                   | Type   | Required |
-| ---------------- | --------------------------------------------------------------------------------------------- | ------ | :------: |
-| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string |          |
+| Option           | Description                                                                                                              | Type   | Required |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------ | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name                            | string |          |
+| `--org-id`       | List all projects belonging to the specified organization. If unspecified, personal account projects are listed instead. | string |          |
 
-#### Example
+#### Examples
 
-```bash
-neon projects list
-Projects
-┌────────────────────────┬────────────────────┬───────────────┬──────────────────────┐
-│ Id                     │ Name               │ Region Id     │ Created At           │
-├────────────────────────┼────────────────────┼───────────────┼──────────────────────┤
-│ crimson-voice-12345678 │ frontend           │ aws-us-east-2 │ 2024-04-15T11:17:30Z │
-├────────────────────────┼────────────────────┼───────────────┼──────────────────────┤
-│ calm-thunder-12121212  │ backend            │ aws-us-east-2 │ 2024-04-10T15:21:01Z │
-├────────────────────────┼────────────────────┼───────────────┼──────────────────────┤
-│ nameless-hall-87654321 │ billing            │ aws-us-east-2 │ 2024-04-10T14:35:17Z │
-└────────────────────────┴────────────────────┴───────────────┴──────────────────────┘
-Shared with me
-┌───────────────────┬────────────────────┬──────────────────┬──────────────────────┐
-│ Id                │ Name               │ Region Id        │ Created At           │
-├───────────────────┼────────────────────┼──────────────────┼──────────────────────┤
-│ noisy-fire-212121 │ API                │ aws-eu-central-1 │ 2023-04-22T18:41:13Z │
-└───────────────────┴────────────────────┴──────────────────┴──────────────────────┘
-```
+- List all projects belonging to your personal acccount
+
+  ```bash
+  neon projects list
+  Projects
+  ┌────────────────────────┬────────────────────┬───────────────┬──────────────────────┐
+  │ Id                     │ Name               │ Region Id     │ Created At           │
+  ├────────────────────────┼────────────────────┼───────────────┼──────────────────────┤
+  │ crimson-voice-12345678 │ frontend           │ aws-us-east-2 │ 2024-04-15T11:17:30Z │
+  ├────────────────────────┼────────────────────┼───────────────┼──────────────────────┤
+  │ calm-thunder-12121212  │ backend            │ aws-us-east-2 │ 2024-04-10T15:21:01Z │
+  ├────────────────────────┼────────────────────┼───────────────┼──────────────────────┤
+  │ nameless-hall-87654321 │ billing            │ aws-us-east-2 │ 2024-04-10T14:35:17Z │
+  └────────────────────────┴────────────────────┴───────────────┴──────────────────────┘
+  Shared with me
+  ┌───────────────────┬────────────────────┬──────────────────┬──────────────────────┐
+  │ Id                │ Name               │ Region Id        │ Created At           │
+  ├───────────────────┼────────────────────┼──────────────────┼──────────────────────┤
+  │ noisy-fire-212121 │ API                │ aws-eu-central-1 │ 2023-04-22T18:41:13Z │
+  └───────────────────┴────────────────────┴──────────────────┴──────────────────────┘
+  ```
+
+- List all projects belonging to the specified organization.
+
+  ```bash
+  neon projects list --org-id org-xxxx-xxxx
+  Projects
+  ┌───────────────────────────┬───────────────────────────┬────────────────────┬──────────────────────┐
+  │ Id                        │ Name                      │ Region Id          │ Created At           │
+  ├───────────────────────────┼───────────────────────────┼────────────────────┼──────────────────────┤
+  │ bright-moon-12345678      │ dev-backend-api           │ aws-us-east-2      │ 2024-07-26T11:43:37Z │
+  ├───────────────────────────┼───────────────────────────┼────────────────────┼──────────────────────┤
+  │ silent-forest-87654321    │ test-integration-service  │ aws-eu-central-1   │ 2024-05-30T22:14:49Z │
+  ├───────────────────────────┼───────────────────────────┼────────────────────┼──────────────────────┤
+  │ crystal-stream-23456789   │ staging-web-app           │ aws-us-east-2      │ 2024-05-17T13:47:35Z │
+  └───────────────────────────┴───────────────────────────┴────────────────────┴──────────────────────┘
+  ```
 
 ### create
 
@@ -38243,13 +45300,17 @@ neon projects create [options]
 
 In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `create` subcommand supports these options:
 
-| Option           | Description                                                                                                                                                                | Type          | Required |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- | :------: |
-| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name                                                                              | string        |          |
-| `--name`         | The project name. The project ID is used if a name is not specified.                                                                                                       | string        |          |
-| `--region-id`    | The region ID. Possible values: `aws-us-west-2`, `aws-ap-southeast-1`, `aws-eu-central-1`, `aws-us-east-2`, `aws-us-east-1`. Defaults to `aws-us-east-2` if not specified. | string number |          |
-| `--psql`         | Connect to a database via `psql` using connection string. `psql` must be installed to use this option.                                                                     | boolean       |          |
-| `--set-context`  | Set the current context to the new project. The default is `false`.                                                                                                        | boolean       |          |
+| Option           | Description                                                                                                                                                                | Type    | Required |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name.                                                                             | string  |          |
+| `--name`         | The project name. The project ID is used if a name is not specified.                                                                                                       | string  |          |
+| `--region-id`    | The region ID. Possible values: `aws-us-west-2`, `aws-ap-southeast-1`, `aws-eu-central-1`, `aws-us-east-2`, `aws-us-east-1`. Defaults to `aws-us-east-2` if not specified. | string  |          |
+| `--org-id`       | The organization ID where you want this project to be created. If unspecified, the project is created in your personal account.                                            | string  |          |
+| `--psql`         | Connect to your new project's database via `psql` immediately on project creation.                                                                                         | boolean |          |
+| `--database`     | The database name. If not specified, the default database name will be used.                                                                                               | string  |          |
+| `--role`         | The role name. If not specified, the default role name will be used.                                                                                                       | string  |          |
+| `--set-context`  | Set the current context to the new project.                                                                                                                                | boolean |          |
+| `--cu`           | The compute size for the default branch's primary compute. Could be a fixed size (e.g., "2") or a range delimited by a dash (e.g., "0.5-3").                               | string  |          |
 
 #### Examples
 
@@ -38455,9 +45516,9 @@ The `id` is the project ID, which you can obtain by listing your projects or fro
 
 In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-options), the `delete` subcommand supports this option:
 
-| Option           | Description                                                                                   | Type   | Required |
-| ---------------- | --------------------------------------------------------------------------------------------- | ------ | :------: |
-| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name | string |          |
+| Option           | Description                                                                                    | Type   | Required |
+| ---------------- | ---------------------------------------------------------------------------------------------- | ------ | :------: |
+| `--context-file` | [Context file](/docs/reference/cli-set-context#using-a-named-context-file) path and file name. | string |          |
 
 #### Example
 
@@ -39820,7 +46881,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 title: Neon CLI commands — set-context
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-07-05T18:43:27.663Z'
+updatedOn: '2024-08-15T12:36:39.367Z'
 ---
 
 ## Before you begin
@@ -39860,10 +46921,11 @@ neon projects create --name <project_name> --set-context <your_context_file>
 
 The `set-context` command requires you set at least one of these options:
 
-| Option           | Description        | Type   |                                     Required                                      |
-| ---------------- | ------------------ | ------ | :-------------------------------------------------------------------------------: |
-| `--project-id`   | Project ID         | string | Sets the identified project as the context until you reset or remove context-file |
-| `--context-file` | path and file name | string |              Creates a file that holds project-id and branch context              |
+| Option           | Description        | Type   |                                               Required                                               |
+| ---------------- | ------------------ | ------ | :--------------------------------------------------------------------------------------------------: |
+| `--project-id`   | Project ID         | string |          Sets the identified project as the context until you reset or remove context-file           |
+| `--org-id`       | Organization ID    | string | Sets the organization context, which allows you to perform actions in the context of an organization |
+| `--context-file` | Path and file name | string |              Creates a file that holds organization-id, project-id, and branch context               |
 
 [Global options](/docs/reference/neon-cli#global-options) are also supported.
 
@@ -39876,16 +46938,16 @@ Here are some examples of setting contexts to specific projects, then using them
 Set the context to the default `.neon` file:
 
 ```bash
-neon set-context --project-id patient-frost-50125040
+neon set-context --project-id patient-frost-50125040 --org-id org-bright-sky-12345678
 ```
 
-List all branches for this project using `branches list`. You do not need to include `--project-id` even though multiple projects exist for this account:
+List all branches for this project using `branches list`. There's no need to include `--project-id` or `--org-id`, even if you belong to multiple organizations or have multiple projects:
 
 ```bash
 neon branches list
 ```
 
-The results show details for all branches in the `patient-frost-50125040` project:
+The results show details for all branches in the `patient-frost-50125040` project within the `org-bright-sky-12345678` organization:
 
 ```bash
 ┌──────────────────────────┬─────────────┬─────────┬──────────────────────┬──────────────────────┐
@@ -40399,6 +47461,8 @@ Community SDKs are not maintained or officially supported by Neon. Some features
 - [Go SDK](https://github.com/kislerdm/neon-sdk-go)
 
 
+# Terraform
+
 # Postgres
 
 # PostgreSQL docs
@@ -40410,7 +47474,7 @@ title: Postgres guides
 enableTableOfContents: false
 redirectFrom:
   - /docs/postgres/postgres-intro
-updatedOn: '2024-08-09T20:46:35.872Z'
+updatedOn: '2024-09-23T22:07:20.574Z'
 ---
 
 Explore Postgres features with Neon's Postgres guides. Learn about data types, extensions, functions, and optimizing query performance. Remember, **Neon is Postgres**, so you're encouraged to reference both the Neon documentation and the [official PostgreSQL documentation](https://www.postgresql.org/docs/current/).
@@ -40430,6 +47494,10 @@ Explore Postgres features with Neon's Postgres guides. Learn about data types, e
 <a href="/docs/postgresql/query-reference" description="Find examples of commonly-used Postgres queries for basic to advanced operations" icon="research">Query reference</a>
 
 <a href="/docs/reference/compatibility" description="Learn about Neon as a managed Postgres service" icon="puzzle">Compatibility</a>
+
+<a href="/docs/postgresql/postgres-version-policy" description="Read about Neon's policy for Postgres version support and maintenance" icon="trend-up">Neon Postgres Version Support</a>
+
+<a href="/docs/postgresql/postgres-upgrade" description="Learn how to upgrade your Postgres version in Neon" icon="trend-up">Upgrade Postgres</a>
 
 </DetailIconCards>
 
@@ -42385,7 +49453,7 @@ title: Supported Postgres extensions
 enableTableOfContents: true
 redirectFrom:
   - /docs/reference/pg-extensions
-updatedOn: '2024-07-30T20:25:11.766Z'
+updatedOn: '2024-08-16T16:57:59.921Z'
 ---
 
 Neon supports the Postgres extensions shown in the following table. The supported version of the extension sometimes differs by Postgres version.
@@ -42420,11 +49488,11 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | [moddatetime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                    |    1.0 |    1.0 |    1.0 |                                                                                                                                                                           |
 | [neon](/docs/extensions/neon)                                                                    |    1.3 |    1.3 |    1.3 |                                                                                                                                                                           |
 | [neon_utils](/docs/extensions/neon-utils)                                                        |    1.0 |    1.0 |    1.0 |                                                                                                                                                                           |
-| [pg_graphql](https://github.com/supabase/pg_graphql)                                             |  1.4.0 |  1.4.0 |  1.4.0 |                                                                                                                                                                           |
+| [pg_graphql](https://github.com/supabase/pg_graphql)                                             |  1.5.7 |  1.5.7 |  1.5.7 |                                                                                                                                                                           |
 | [pg_hashids](https://github.com/iCyberon/pg_hashids)                                             |  1.2.1 |  1.2.1 |  1.2.1 |                                                                                                                                                                           |
 | [pg_hint_plan](https://github.com/ossc-db/pg_hint_plan)                                          |  1.4.1 |  1.5.0 |  1.6.0 |                                                                                                                                                                           |
 | [pg_ivm](https://github.com/sraoss/pg_ivm)                                                       |    1.7 |    1.7 |    1.7 |                                                                                                                                                                           |
-| [pg_jsonschema](https://github.com/supabase/pg_jsonschema)                                       |  0.2.0 |  0.2.0 |  0.2.0 |                                                                                                                                                                           |
+| [pg_jsonschema](https://github.com/supabase/pg_jsonschema)                                       |  0.3.1 |  0.3.1 |  0.3.1 |                                                                                                                                                                           |
 | [pg_partman](https://github.com/pgpartman/pg_partman)                                            |  5.0.1 |  5.0.1 |  5.0.1 |                                                                                                                                                                           |
 | [pg_prewarm](/docs/extensions/pg_prewarm)                                                        |    1.2 |    1.2 |    1.2 |                                                                                                                                                                           |
 | [pg_roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)                               |    0.5 |    0.5 |    0.5 | Install with `CREATE EXTENSION roaringbitmap;`                                                                                                                            |
@@ -42439,7 +49507,7 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | [pgstattuple](https://www.postgresql.org/docs/16/pgstattuple.html)                               |    1.5 |    1.5 |    1.5 |                                                                                                                                                                           |
 | [pgtap](https://pgtap.org/documentation.html)                                                    |  1.2.0 |  1.2.0 |  1.2.0 |                                                                                                                                                                           |
 | [pgvector](/docs/extensions/pgvector)                                                            |  0.7.2 |  0.7.2 |  0.7.2 | Install with `CREATE EXTENSION vector;`                                                                                                                                   |
-| [pgx_ulid](https://github.com/pksunkara/pgx_ulid)                                                |  0.1.3 |  0.1.3 |  0.1.3 | Install with `CREATE EXTENSION ulid;`                                                                                                                                     |
+| [pgx_ulid](https://github.com/pksunkara/pgx_ulid)                                                |  0.1.5 |  0.1.5 |  0.1.5 | Install with `CREATE EXTENSION ulid;`                                                                                                                                     |
 | [plcoffee](https://coffeescript.org/)                                                            |  3.1.5 |  3.1.5 |  3.1.8 |                                                                                                                                                                           |
 | [plls](https://livescript.net/)                                                                  |  3.1.5 |  3.1.5 |  3.1.8 |                                                                                                                                                                           |
 | [plpgsql](https://www.postgresql.org/docs/16/plpgsql.html)                                       |    1.0 |    1.0 |    1.0 | Pre-installed with Postgres.                                                                                                                                              |
@@ -43238,7 +50306,7 @@ After generating embeddings using a service like [OpenAI’s Embeddings API](htt
   ```
 
    <Admonition type="tip">
-   For a Python script that loads embeddings in bulk, see [bulk_loading.py](https://github.com/pgvector/pgvector-python/blob/master/examples/bulk_loading.py).
+   For a Python script that loads embeddings in bulk, refer to this [Bulk loading with COPY](https://github.com/pgvector/pgvector-python/blob/master/examples/loading/example.py) example provided in the `pgvector` GitHub repository.
    </Admonition>
 
 - Upsert vectors:
@@ -46157,7 +53225,7 @@ You were able to configure the timescaledb extension in Neon and create a hypert
 title: The wal2json plugin
 subtitle: Convert Postgres Write-Ahead Log (WAL) changes to JSON format
 enableTableOfContents: true
-updatedOn: '2024-08-09T20:46:35.869Z'
+updatedOn: '2024-08-22T02:18:02.640Z'
 ---
 
 The `wal2json` plugin is a logical replication decoding output plugin for Postgres. It lets you convert the Write-Ahead Log (WAL) changes into JSON format, making it easier to consume and process database changes in various applications, such as data replication, auditing, event-driven services, and real-time analytics.
@@ -46445,7 +53513,7 @@ The `wal2json` plugin is a powerful tool for capturing and processing database c
 
 - [wal2json GitHub Repository](https://github.com/eulerto/wal2json)
 - [PostgreSQL Logical Decoding](https://www.postgresql.org/docs/current/logicaldecoding.html)
-- [Manage logical replication in Neon - Decoder plugins](/docs/guides/logical-replication-neon#decoder-plugins)
+- [Manage logical replication in Neon - Decoder plugins](/docs/guides/logical-replication-manage#decoder-plugins)
 
 <NeedHelp/>
 
@@ -56408,7 +63476,7 @@ subtitle: Learn about Neon as a managed Postgres service
 enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/compatibility
-updatedOn: '2024-08-01T13:14:19.485Z'
+updatedOn: '2024-08-19T15:59:15.070Z'
 ---
 
 **Neon is Postgres**. However, as a managed Postgres service, there are some differences you should be aware of.
@@ -56438,7 +63506,7 @@ Neon roles cannot install Postgres extensions other than those supported by Neon
 The following table shows parameter settings that are set explicitly for your Neon Postgres instance. These values may differ from standard Postgres defaults, and a few settings differ based on your Neon compute size.
 
 <Admonition type="note">
-Because Neon is a managed Postgres service, Postgres parameters are not user-configurable outside of a session context, but if you are a paid plan user and require a different setting, you can contact [Neon Support](/docs/introduction/support) to see if a different setting can be supported.
+Because Neon is a managed Postgres service, Postgres parameters are not user-configurable outside of a [session, database, or role context](#configuring-postgres-parameters-for-a-session-database-or-role), but if you are a paid plan user and require a different Postgres instance-level setting, you can contact [Neon Support](/docs/introduction/support) to see if the desired setting can be supported.
 </Admonition>
 
 | Parameter                             | Value         | Note                                                                                                                                                                          |
@@ -56493,9 +63561,9 @@ Of the parameter settings listed above, the `maintenance_work_mem`, `max_connect
 You can use connection pooling in Neon to increase the number of supported connections. For more information, see [Connection pooling](/docs/connect/connection-pooling).
 </Admonition>
 
-### Configuring Postgres parameters in a session context
+### Configuring Postgres parameters for a session, database, or role
 
-Neon permits configuring parameters that have a `user` context, meaning that the parameter can be set by a connected user within a specific session using a [SET](https://www.postgresql.org/docs/current/sql-set.html) command. These parameters are also referred to as "run-time parameters". You can identify Postgres parameters with a `user` context by running the following command:
+Neon permits configuring parameters that have a `user` context, meaning that these parameters can be set for a session, database, or role. You can identify Postgres parameters with a `user` context by running the following query:
 
 ```sql
 SELECT name
@@ -56503,10 +63571,22 @@ FROM pg_settings
 WHERE context = 'user';
 ```
 
+To set a parameter for a specific session, use a [SET](https://www.postgresql.org/docs/current/sql-set.html) command.
+
 For example, the `maintenance_work_mem` parameter supports a `user` context, which lets you set it for the current session with a `SET` command:
 
 ```sql
 SET maintenance_work_mem='1 GB';
+```
+
+To set parameters for a database or role:
+
+```sql
+ALTER DATABASE neondb SET maintenance_work_mem='1 GB';
+```
+
+```sql
+ALTER USER neondb_owner SET maintenance_work_mem='1 GB';
 ```
 
 ## Postgres server logs
@@ -56527,7 +63607,7 @@ Temporary tables, which are stored in compute local storage, are limited by comp
 
 ## Session context
 
-The Neon cloud service automatically closes idle connections after a period of inactivity, as described in [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/). When connections are closed, anything that exists within a session context is forgotten and must be recreated before being used again. For example, in-memory statistics, temporary tables, prepared statements, advisory locks, and notifications and listeners defined using [NOTIFY](https://www.postgresql.org/docs/14/sql-notify.html)/[LISTEN](https://www.postgresql.org/docs/14/sql-listen.html) commands only exist for the duration of the current session and are lost when the session ends. To avoid losing session-level contexts in Neon, you can disable Neon's [autosuspend](/docs/guides/auto-suspend-guide) feature, which is possible on any of Neon's paid plans. However, disabling autosuspend also means that your compute will run 24/7. You can't disable autosuspend on Neon's Free plan, where your compute always autosuspends after 5 minutes of inactivity.
+The Neon cloud service automatically closes idle connections after a period of inactivity, as described in [Compute lifecycle](/docs/conceptual-guides/compute-lifecycle/). When connections are closed, anything that exists within a session context is forgotten and must be recreated before being used again. For example, parameters set for a specific session, in-memory statistics, temporary tables, prepared statements, advisory locks, and notifications and listeners defined using [NOTIFY](https://www.postgresql.org/docs/current/sql-notify.html)/[LISTEN](https://www.postgresql.org/docs/current/sql-listen.html) commands only exist for the duration of the current session and are lost when the session ends. To avoid losing session-level contexts in Neon, you can disable Neon's [autosuspend](/docs/guides/auto-suspend-guide) feature, which is possible on any of Neon's paid plans. However, disabling autosuspend also means that your compute will run 24/7. You can't disable autosuspend on Neon's Free plan, where your compute always autosuspends after 5 minutes of inactivity.
 
 ## Statistics collection
 
@@ -56535,19 +63615,72 @@ Statistics collected by the Postgres [cumulative statistics system](https://www.
 
 ## Database encoding
 
-Neon does not currently support changing the database encoding. However, Neon does support [ICU Custom Collations](https://www.postgresql.org/docs/current/collation.html#ICU-CUSTOM-COLLATIONS), which lets you define collation objects using ICU as the collation provider. For example:
+Neon supports UTF8 encoding (Unicode, 8-bit variable-width encoding). This is the most widely used and recommended encoding for Postgres.
+
+To view the encoding and collation for your database, you can run the following query:
 
 ```sql
-CREATE COLLATION german (provider = icu, locale = 'de');
-CREATE TABLE books (id int, title text COLLATE "german");
+SELECT
+    pg_database.datname AS database_name,
+    pg_encoding_to_char(pg_database.encoding) AS encoding,
+    pg_database.datcollate AS collation,
+    pg_database.datctype AS ctype
+FROM
+    pg_database
+WHERE
+    pg_database.datname = 'your_database_name';
 ```
 
-or
+You can also issue this command from [psql](/docs/connect/query-with-psql-editor) or the Neon SQL Editor:
+
+```bash
+\l
+```
+
+<Admonition type="note">
+In Postgres, you cannot change a database's encoding or collation after it has been created.
+</Admonition>
+
+## Collation support
+
+A collation is an SQL schema object that maps an SQL name to locales provided by libraries installed in the operating system. A collation has a provider that specifies which library supplies the locale data. A common standard provider, `libc`, uses locales provided by the operating system C library. By default, Neon uses the `C` collation provided by `libc`, which offers a simple binary sorting order based on the byte values of characters.
+
+The `C.UTF-8` collation is also available. While the `C` collation is strictly binary and limited to ASCII characters, `C.UTF-8` supports the full range of UTF-8 encoded characters. To create a database with that collation, you can use the following syntax:
 
 ```sql
-CREATE COLLATION arabic (provider = icu, locale = 'ar');
-CREATE TABLE books (id int, title text COLLATE "arabic");
+CREATE DATABASE my_database
+ENCODING 'UTF8'
+LC_COLLATE 'C.UTF-8'
+LC_CTYPE 'C.UTF-8'
+template template0;
 ```
+
+Another provider supported by Neon is `icu`, which uses the external [ICU](https://icu.unicode.org/) library. In Neon, support for standard `libc` locales is limited compared to what you might find in a locally installed Postgres instance where there's typically a wider range of locales provided by libraries installed on your operating system. For this reason, Neon provides a full series of [predefined icu locales](https://www.postgresql.org/docs/current/collation.html#COLLATION-MANAGING-PREDEFINED-ICU) in case you require locale-specific sorting or case conversions.
+
+To view all of the predefined locales available to you, use the query `SELECT * FROM pg_collation`, or the command `\dOS+` from the [Neon SQL Editor](/docs/connect/query-with-psql-editor) or an SQL client like [psql](/docs/connect/query-with-psql-editor).
+
+To create a database with a predefined `icu` locale, you can issue a query similar to this one with your preferred locale:
+
+```sql
+CREATE DATABASE my_arabic_db
+LOCALE_PROVIDER icu
+icu_locale 'ar-x-icu'
+template template0;
+```
+
+To specify the locale for individual columns, you can use this syntax:
+
+```sql
+CREATE TABLE my_ru_table (
+    id serial PRIMARY KEY,
+    russian_text_column text COLLATE "ru-x-icu",
+    description text
+);
+```
+
+ICU also supports creating custom collations. For more information, see [ICU Custom Collations](https://www.postgresql.org/docs/current/collation.html#ICU-CUSTOM-COLLATIONS).
+
+For more about collations in Postgres, see [Collation Support](https://www.postgresql.org/docs/current/collation.html#COLLATION).
 
 ## Event triggers
 
@@ -56574,6 +63707,439 @@ Neon provides a mirror of the official PostgreSQL documentation on the [Neon doc
 - Some features detailed in the official PostgreSQL documentation may not be relevant for Neon, such as those mentioned on this Postgres compatibility page.
 - Features requiring the PostgreSQL superuser privilege may not be supported. See [Roles and permissions](#roles-and-permissions) above.
 - Neon may not support all of the extensions mentioned in the official PostgreSQL documentation. See [Postgres extensions](#postgres-extensions) above.
+
+<NeedHelp/>
+
+
+# Extensions
+
+---
+title: Postgres extensions
+enableTableOfContents: true
+updatedOn: '2024-07-30T20:25:11.763Z'
+---
+
+Explore supported Postgres extensions by category. Also see:
+
+- [List view of supported extensions and versions](/docs/extensions/pg-extensions)
+- [Install an extension](/docs/extensions/pg-extensions#install-an-extension)
+- [Update an extension](/docs/extensions/pg-extensions#update-an-extension-version)
+- [Request extension support](/docs/extensions/pg-extensions#request-extension-support)
+
+## AI / Machine Learning
+
+<DetailIconCards>
+
+<a href="/docs/extensions/pg_tiktoken" description="Tokenize data in Postgres using the OpenAI tiktoken library" icon="app-store" icon="sparkle">pg_tiktoken</a>
+
+<a href="/docs/extensions/pgvector" description="Store vector embeddings and perform vector similarity search in Postgres" icon="sparkle">pgvector</a>
+
+</DetailIconCards>
+
+## Analytics
+
+<DetailIconCards>
+
+<a href="https://github.com/citusdata/postgresql-hll" description="Implements a HyperLogLog data structure as a native data type for efficient and tunable distinct value counting" icon="a-chart">hll</a>
+
+<a href="/docs/extensions/timescaledb" description="Enables Postgres as a time-series database for efficient storage and retrieval of time-series data" icon="a-chart">timescaledb</a>
+
+</DetailIconCards>
+
+## Auditing / Logging
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Implements a trigger that stores the current user's name into a text field, useful for tracking who modified a particular row within a table" icon="check">insert_username</a>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Implements a trigger that automatically updates a timestamp column to the current timestamp whenever a row is modified" icon="check">moddatetime</a>
+
+<a href="https://www.postgresql.org/docs/16/pgrowlocks.html" description="Provides a function that shows row locking information for a specified table, useful in concurrency and deadlock debugging" icon="check">pgrowlocks</a>
+
+<a href="https://www.postgresql.org/docs/16/tcn.html" description="Provides a trigger function to notify listeners of changes to a table, allowing applications to respond to changes in the database" icon="check">tcn</a>
+
+</DetailIconCards>
+
+## Data / Transformations
+
+<DetailIconCards>
+
+<a href="https://postgis.net/docs/Extras.html#Address_Standardizer" description="A single-line address parser that takes an input address and normalizes it based on a set of rules" icon="data">address_standardizer</a>
+
+<a href="https://postgis.net/docs/Extras.html#Address_Standardizer_Tables" description="Provides data for standardizing US addresses, for use with the address_standardizer extension" icon="data">address_standardizer_data_us</a>
+
+<a href="/docs/extensions/citext" description="Provides a case-insensitive character string type that internally calls lower when comparing values in Postgres" icon="data">citext</a>
+
+<a href="https://www.postgresql.org/docs/16/cube.html" description="Implements the cube data type for representing multidimensional cubes in Postgres" icon="data">cube</a>
+
+<a href="https://www.postgresql.org/docs/16/earthdistance.html" description="Provides cube-based and point-based approaches to calculating great circle distances on the surface of the Earth" icon="data">earthdistance</a>
+
+<a href="/docs/extensions/hstore" description="Implements an hstore data type for storing and manipulating sets of key-value pairs within a single Postgres value" icon="data">hstore</a>
+
+<a href="https://www.postgresql.org/docs/16/intagg.html" description="Provides an integer aggregator and enumerator for Postgres" icon="data">intagg</a>
+
+<a href="https://www.postgresql.org/docs/16/intarray.html" description="Offers functions and operators for manipulating and searching arrays of integers within Postgres" icon="data">intarray</a>
+
+<a href="https://www.postgresql.org/docs/16/isn.html" description="Implements data types for international product numbering standards: EAN13, UPC, ISBN (books), ISMN (music), and ISSN (serials)" icon="data">isn</a>
+
+<a href="https://www.postgresql.org/docs/16/ltree.html" description="Provides data types for representing labels of data stored in a hierarchical tree-like structure and facilities for searching through label trees" icon="data">ltree</a>
+
+<a href="https://github.com/supabase/pg_graphql" description="Adds GraphQL support to Postgres, allowing you to query your database via GraphQL" icon="data">pg_graphql</a>
+
+<a href="https://github.com/iCyberon/pg_hashids" description="Enables the generation of short, unique hash ids from integers, useful for obfuscating internal ids" icon="data">pg_hashids</a>
+
+<a href="https://github.com/supabase/pg_jsonschema" description="Provides support for JSON schema validation on json and jsonb data types" icon="data">pg_jsonschema</a>
+
+<a href="https://github.com/fboulnois/pg_uuidv7" description="Enables creating valid UUID Version 7 values in Postgres, enabling globally unique identifiers with temporal ordering" icon="data">pg_uuidv7</a>
+
+<a href="https://github.com/pksunkara/pgx_ulid" description="A full-featured extension for generating and working with ULID (Universally Unique Lexicographically Sortable Identifiers)" icon="data">pgx_ulid</a>
+
+<a href="https://www.postgresql.org/docs/16/seg.html" description="Implements the seg data type for storage and manipulation of line segments or floating-point ranges, useful for geometric and scientific applications" icon="data">seg</a>
+
+<a href="https://www.postgresql.org/docs/16/tablefunc.html" description="Contains functions that return tables (multiple rows), including crosstab, which can pivot row data into columns dynamically" icon="data">tablefunc</a>
+
+<a href="https://www.postgresql.org/docs/16/unaccent.html" description="A text search dictionary that removes accents from characters, simplifying text search in Postgres" icon="data">unaccent</a>
+
+<a href="https://github.com/df7cb/postgresql-unit" description="Implements a data type for SI units, plus byte, for storage, manipulation, and calculation of scientific units" icon="data">unit</a>
+
+<a href="https://www.postgresql.org/docs/16/uuid-ossp.html" description="Provides functions to generate universally unique identifiers (UUIDs) in Postgres, supporting various UUID standards" icon="data">uuid-ossp</a>
+
+<a href="/docs/extensions/wal2json" description="A Postgres logical decoding plugin that converts Write-Ahead Log (WAL) changes into JSON objects" icon="data">wal2json</a>
+
+<a href="https://www.postgresql.org/docs/current/xml2.html" description="Enables XPath queries and XSLT functionality directly within Postgres, enabling XML data processing" icon="data">xml2</a>
+
+</DetailIconCards>
+
+## Debugging
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Automatically updates a timestamp column to the current timestamp whenever a row is modified in Postgres" icon="bug">moddatetime</a>
+
+<a href="https://www.postgresql.org/docs/16/pgrowlocks.html" description="Provides a function that shows row locking information for a specified table, which can aid in concurrency and deadlock debugging" icon="bug">pgrowlocks</a>
+
+<a href="https://pgtap.org/documentation.html" description="A unit testing framework for Postgres, enabling sophisticated testing of database queries and functions" icon="bug">pgTap</a>
+
+<a href="https://pgxn.org/dist/plpgsql_check/" description="Provides a linter and debugger for PL/pgSQL code, helping identify errors and optimize PL/pgSQL functions" icon="bug">plpgsql_check</a>
+
+</DetailIconCards>
+
+## Geospatial
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/cube.html" description="Implements a data type for representing multidimensional cubes in Postgres" icon="globe">cube</a>
+
+<a href="https://www.postgresql.org/docs/16/earthdistance.html" description="Provides cube-based and point-based approaches to calculating great circle distances on the surface of the Earth" icon="globe">earthdistance</a>
+
+<a href="/docs/extensions/postgis-related-extensions#h3-and-h3-postgis" description="Integrates Uber's H3 geospatial indexing system that combines the benefits of a hexagonal grid with S2's hierarchical subdivisions" icon="globe">h3</a>
+
+<a href="/docs/extensions/postgis-related-extensions#h3-and-h3-postgis" description="A PostGIS extension for H3, enabling advanced spatial analysis and indexing" icon="globe">h3_postgis</a>
+
+<a href="/docs/extensions/postgis-related-extensions#pgrouting" description="Extends PostGIS/Postgres databases, providing geospatial routing and other network analysis functionality" icon="globe">pgrouting</a>
+
+<a href="/docs/extensions/postgis" description="Extends Postgres to allow GIS (Geographic Information Systems) objects to be stored in the database, enabling spatial queries directly in SQL" icon="globe">postgis</a>
+
+<a href="https://postgis.net/docs/RT_reference.html" description="Adds support for raster data to PostGIS, enabling advanced geospatial analysis on raster images" icon="globe">postgis_raster</a>
+
+<a href="/docs/extensions/postgis-related-extensions#postgis-sfcgal" description="Provides support for advanced 3D geometries in PostGIS, based on the SFCGAL library" icon="globe">postgis_sfcgal</a>
+
+<a href="/docs/extensions/postgis-related-extensions#postgis-tiger-geocoder" description="Enables geocoding and reverse geocoding capabilities in PostGIS using TIGER/Line data" icon="globe">postgis_tiger_geocoder</a>
+
+<a href="https://www.postgis.net/docs/Topology.html" description="Extends PostGIS with support for topological data types and functions, facilitating the analysis of spatial relationships" icon="globe">postgis_topology</a>
+
+</DetailIconCards>
+
+## Index / Table optimization
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/bloom.html" description="Provides an index access method for Postgres based on Bloom filters" icon="table">bloom</a>
+
+<a href="https://www.postgresql.org/docs/16/btree-gin.html" description="Provides GIN operator classes that implement B-tree equivalent behavior" icon="table">btree_gin</a>
+
+<a href="https://www.postgresql.org/docs/16/btree-gist.html" description="Provides GiST index operator classes that implement B-tree equivalent behavior" icon="table">btree_gist</a>
+
+<a href="https://github.com/RhodiumToad/ip4r" description="Provides a range index type and functions for efficiently storing and querying IPv4 and IPv6 ranges and addresses in Postgres" icon="table">ip4r</a>
+
+<a href="https://github.com/sraoss/pg_ivm" description="Provides an Incremental View Maintenance (IVM) feature for Postgres" icon="table">pg_ivm</a>
+
+<a href="https://github.com/pgpartman/pg_partman" description="A partition manager extension that enables creating and managing time-based and number-based table partition sets in Postgres" icon="table">pg_partman</a>
+
+<a href="/docs/extensions/pg_prewarm" description="Allows manual preloading of relation data into the Postgres buffer cache, reducing access times for frequently queried tables" icon="table">pg_prewarm</a>
+
+<a href="https://github.com/ChenHuajun/pg_roaringbitmap" description="Implements Roaring Bitmaps in Postgres for efficient storage and manipulation of bit sets" icon="table">pg_roaringbitmap</a>
+
+<a href="https://github.com/postgrespro/rum" description="Provides an access method to work with a RUM index, designed to speed up full-text searches" icon="table">rum</a>
+
+</DetailIconCards>
+
+## Metrics
+
+<DetailIconCards>
+
+<a href="/docs/extensions/neon" description="Provides functions and views designed to gather Neon-specific metrics" icon="metrics">neon</a>
+
+<a href="/docs/extensions/pg_stat_statements" description="Tracks planning and execution statistics for all SQL statements executed, aiding in performance analysis and tuning" icon="metrics">pg_stat_statements</a>
+
+<a href="https://www.postgresql.org/docs/16/pgstattuple.html" description="Offers functions to show tuple-level statistics for tables, helping identify bloat and efficiency opportunities" icon="metrics">pgstattuple</a>
+
+<a href="https://www.postgresql.org/docs/16/tsm-system-rows.html" description="Provides a table sampling method that selects a fixed number of table rows randomly" icon="metrics">tsm_system_rows</a>
+
+<a href="https://www.postgresql.org/docs/16/tsm-system-time.html" description="Offers a table sampling method based on system time, enabling consistent sample data retrieval over time" icon="metrics">tsm_system_time</a>
+
+</DetailIconCards>
+
+## Orchestration
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/tcn.html" description="Provides a trigger function to notify listeners of changes to a table, allowing applications to respond to changes in the database" icon="gear">tcn</a>
+
+<a href="https://github.com/pgpartman/pg_partman" description="A partition manager extension that enables creating and managing time-based and number-based table partition sets in Postgres" icon="gear">pg_partman</a>
+
+</DetailIconCards>
+
+## Procedural languages
+
+<DetailIconCards>
+
+<a href="https://coffeescript.org/" description="Enables writing functions in CoffeeScript, a Javascript dialect with a syntax similar to Ruby" icon="binary-code">plcoffee</a>
+
+<a href="https://livescript.net/" description="Enables writing functions in LiveScript, a Javascript dialect that serves as a more powerful successor to CoffeeScript" icon="binary-code">plls</a>
+
+<a href="https://github.com/plv8/plv8/" description="A Postgres procedural language powered by V8 Javascript Engine for writing functions in Javascript that are callable from SQL" icon="binary-code">plv8</a>
+
+<a href="https://www.postgresql.org/docs/16/plpgsql.html" description="The default procedural language for Postgres, enabling the creation of complex functions and triggers" icon="binary-code">plpgsql</a>
+
+</DetailIconCards>
+
+## Query optimization
+
+<DetailIconCards>
+
+<a href="https://hypopg.readthedocs.io/en/rel1_stable/" description="Provides the ability to create hypothetical (virtual) indexes in Postgres for performance testing" icon="find-replace">hypopg</a>
+
+<a href="https://github.com/ossc-db/pg_hint_plan" description="Allows developers to influence query plans with hints in SQL comments, improving performance and control over query execution" icon="find-replace">pg_hint_plan</a>
+
+</DetailIconCards>
+
+## Scientific computing
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/cube.html" description="Implements the cube data type for representing multidimensional cubes in Postgres" icon="atom">cube</a>
+
+<a href="https://github.com/rdkit/rdkit" description="Integrates the RDKit cheminformatics toolkit with Postgres, enabling chemical informatics operations directly in the database" icon="atom">rdkit</a>
+
+<a href="https://www.postgresql.org/docs/16/seg.html" description="Implements the seg data type for storage and manipulation of line segments or floating-point intervals, useful for representing laboratory measurements" icon="atom">seg</a>
+
+<a href="https://github.com/df7cb/postgresql-unit" description="Implements a data type for SI units, plus byte, for storage, manipulation, and calculation of scientific units" icon="atom">unit</a>
+
+</DetailIconCards>
+
+## Search
+
+<DetailIconCards>
+
+<a href="/docs/extensions/citext" description="Provides a case-insensitive character string type that internally calls lower when comparing values in Postgres" icon="search">citext</a>
+
+<a href="https://www.postgresql.org/docs/16/dict-int.html" description="Provides a text search dictionary template for indexing integer data in Postgres" icon="search">dict_int</a>
+
+<a href="https://www.postgresql.org/docs/16/fuzzystrmatch.html" description="Provides several functions to determine similarities and distance between strings in Postgres" icon="search">fuzzystrmatch</a>
+
+<a href="/docs/extensions/pg_trgm" description="Provides functions and operators for determining the similarity of alphanumeric text based on trigram matching, and index operator classes for fast string similarity search" icon="search">pg_trgm</a>
+
+<a href="https://github.com/dimitri/prefix" description="A prefix range module that supports efficient queries on text columns with prefix-based searching and matching capabilities" icon="search">prefix</a>
+
+<a href="https://www.postgresql.org/docs/16/unaccent.html" description="A text search dictionary that removes accents from characters, simplifying text search in Postgres" icon="search">unaccent</a>
+
+</DetailIconCards>
+
+## Security
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/16/pgcrypto.html" description="Offers cryptographic functions, allowing for encryption and hashing of data within Postgres" icon="check">pgcrypto</a>
+
+<a href="https://github.com/michelp/pgjwt" description="Implements JSON Web Tokens (JWT) in Postgres, allowing for secure token creation and verification" icon="check">pgjwt</a>
+
+</DetailIconCards>
+
+## Tooling / Admin
+
+<DetailIconCards>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Provides an autoinc() function that stores the next value of a sequence into an integer field" icon="wrench">autoinc</a>
+
+<a href="https://hypopg.readthedocs.io/en/rel1_stable/" description="Provides the ability to create hypothetical (virtual) indexes in Postgres for performance testing" icon="wrench">hypopg</a>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Automatically inserts the username of the person executing an insert operation into a specified table in Postgres" icon="wrench">insert_username</a>
+
+<a href="https://www.postgresql.org/docs/16/lo.html" description="Provides support for managing large objects (LOBs) in Postgres, including a data type lo and a trigger lo_manage" icon="wrench">lo</a>
+
+<a href="/docs/extensions/neon-utils" description="Provides a function for monitoring how Neon's Autoscaling feature allocates vCPU in response to workload" icon="wrench">neon_utils</a>
+
+<a href="https://pgtap.org/documentation.html" description="A unit testing framework for Postgres, enabling sophisticated testing of database queries and functions" icon="wrench">pgtap</a>
+
+<a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Provides functions for maintaining foreign key constraints" icon="wrench">refint</a>
+
+</DetailIconCards>
+
+
+# Version support
+
+---
+title: Neon Postgres Version Support Policy
+enableTableOfContents: true
+updatedOn: '2024-09-23T22:07:20.575Z'
+---
+
+This topic outlines [Neon's Postgres Version Support Policy](#neon-version-support-policy).
+
+## The official Postgres versioning policy
+
+To better understand [Neon's Postgres Version Support Policy](#neon-version-support-policy), it's useful to first grasp the official Postgres versioning policy and numbering system. You can refer to the official [PostgreSQL Versioning Policy](https://www.postgresql.org/support/versioning/) documentation for details, but here’s a condensed summary:
+
+### Major versions
+
+- The PostgreSQL Global Development Group releases a new major version approximately once per year.
+- Each major version is supported for five years from its initial release.
+- After five years, a final minor version is released, and the major version reaches end-of-life (EOL) and is no longer supported.
+
+### Minor releases
+
+- Minor releases include only bug fixes and security patches, and are issued _at least_ once every three months. They do not introduce new features.
+- The minor release schedule is available in the [official PostgreSQL roadmap](https://www.postgresql.org/developer/roadmap/).
+- Critical bugs or security issues may result in an unscheduled release outside the regular minor release roadmap if the issue is deemed too urgent to delay.
+- A minor release is issued for all supported major versions simultaneously.
+- Occasionally, manual actions are necessary after a minor version upgrade. The PostgreSQL Global Development Group strives to minimize these situations, but they do occur. Any exceptions, required manual steps, or incompatibilities introduced in minor releases are detailed in the [PostgreSQL release notes](https://www.postgresql.org/docs/release/).
+
+### Postgres version numbering
+
+- The major version is indicated by the first part of the version number, such as the "16" in "16.1".
+- The minor release is indicated by the second part of the version number, such as the "1" in "16.1".
+
+## Neon Version Support Policy
+
+Neon is committed to providing stability and hassle-free maintenance. You select the major version of Postgres when [creating a Neon project](/docs/manage/projects#create-a-project), and Neon automatically updates your chosen Postgres version to the latest minor release soon after it becomes available. Typically, no user action is required for minor release updates.
+
+Minor release updates are announced in the [Neon Changelog](https://neon.tech/docs/changelog).
+
+To check your current Postgres major and minor version, you can run the following query from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or any SQL client connection to your database:
+
+```sql
+SELECT version();
+```
+
+Your Postgres major version is also displayed in the **Project settings** widget on your Neon **Project Dashboard**.
+
+### Minor releases
+
+In Neon, an instance of Postgres runs on each compute. You may have multiple computes in your Neon project. When the PostgreSQL Global Development Group releases a new minor version, Neon automatically updates your computes to the new minor version. Typically, no user action is required for minor version updates. While we aim to make the new minor version available at the same time as the official Postgres release, these updates may occur a few days later than the official release date.
+
+Once a new minor version is available on Neon, it is applied the next time your compute restarts (for any reason). For example, if your compute suspends due to inactivity, the compute will be updated to the new minor version when it restarts the next time your Postgres instance is accessed. If your compute is always active (i.e., it never stops due to consistent database activity or because you disabled [autosuspend](/docs/introduction/auto-suspend)), and you want to force a restart to pick up the latest update, see [Restart a compute](/docs/manage/endpoints#restart-a-compute).
+
+Neon only supports the latest minor release for each major Postgres version. For example, when 16.4 is the latest minor release of Postgres version 16, it is no longer possible run a Neon compute with version 16.3.
+
+Neon does not support skipping minor releases or downgrading to a previous minor release.
+
+#### Manual actions after minor release upgrades
+
+As a managed service, Neon strives to manage all minor version updates automatically, minimizing the need for user intervention. However, certain updates, such as security fixes, may require decisions that depend on your application and cannot be fully automated.
+
+In such cases, your action may occasionally be required. When this occurs &#8212; which is infrequent &#8212; we will notify you through appropriate communication channels to ensure you are aware of any necessary steps.
+
+### Major versions
+
+Neon currently supports Postgres 14, 15, and 16, and we plan to support Postgres 17 as soon as it is released. In the future, Neon intends to **support the five latest major Postgres versions, in alignment with the official Postgres version support policy.**
+
+### Major version upgrades
+
+Each Neon project is created with a specific Postgres major version. Upgrading to a newer major version requires [creating a new Neon project](/docs/manage/projects#create-a-project) with the desired Postgres version and migrating your data to the new Neon project. For more information, see [Upgrading your Postgres version](/docs/postgresql/postgres-upgrade).
+
+<NeedHelp/>
+
+
+# Upgrade
+
+---
+title: Upgrading your Postgres version
+subtitle: Learn how upgrade to a new major Postgres version in Neon
+enableTableOfContents: true
+updatedOn: '2024-09-23T22:07:20.575Z'
+---
+
+This topic describes how to upgrade your Neon project from one **major** Postgres version to a newer one.
+
+Postgres version numbers consist of a **major** and a **minor** version number. For example, in the version number 16.1, 16 is the major version number and the 1 is the minor version number.
+
+Neon manages **minor** Postgres version upgrades for you, as per the [Neon Postgres Version Support Policy](/docs/postgresql/postgres-version-policy). Typically, no user action is required for **minor** version upgrades. Neon deploys minor versions soon after they become available. However, upgrading to a new major Postgres version is a manual task that must be performed by you.
+
+Each Neon project is tied to a specific Postgres major version, which you select when creating a Neon project.
+
+You can check your current Neon project's Postgres version in the **Project settings** widget on **Project Dashboard** or by running the following query from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or any SQL client connection to your database:
+
+```sql
+SELECT version();
+```
+
+## Before you begin
+
+- Review the [PostgreSQL Release Notes](https://www.postgresql.org/docs/current/release.html) for the new Postgres version. Major Postgres versions often introduce user-visible incompatibilities, so review the release notes for these changes. While you can upgrade directly to a new major Postgres version without going through each intermediate version, make sure you review the release notes for any skipped versions, as they may contain changes relevant to your upgrade.
+- Optionally, you may want to run some performance tests of your current database to set a benchmark for post-upgrade comparison.
+
+## Performing the upgrade
+
+### 1. Create a Neon project with the new Postgres version
+
+Start by creating a new Neon project with the desired Postgres version. For instructions, see [creating a new Neon project](/docs/manage/projects#create-a-project).
+
+<Admonition type="note">
+The Neon [Free Plan](https://neon.tech/docs/introduction/plans#free-plan) has a limit of one project per user, which means a Neon Free Plan user cannot have two projects simultaneously. Due to this limitation, migrating to a Neon project with a new Postgres major version requires dumping your data using `pg_dump`, deleting your current Neon project, creating a new project with the desired Postgres version, and restoring your data using `pg_restore`. For instructions, please refer to the [Migrate data with pg_dump and pg_restore](https://neon.tech/docs/import/migrate-from-postgres) method.
+</Admonition>
+
+At this time, you may also also want to apply any specific configurations to your new Neon project that exist in your current Neon project. For example, you may have configured settings for the following Neon features that you want to duplicate in your new Neon project:
+
+- [Compute size](/docs/manage/endpoints#edit-a-compute)
+- [Autoscaling](/docs/guides/autoscaling-guide)
+- [Autosuspend](/docs/guides/auto-suspend-guide)
+- [Protected branches](/docs/guides/protected-branches)
+- [IP Allow](/docs/introduction/ip-allow)
+
+### 2. Migrate your data using one of the following methods
+
+**Dump and Restore**
+
+Neon supports the following dump and restore options:
+
+- [Migrate data with pg_dump and pg_restore](/docs/import/migrate-from-postgres)
+
+  This method requires dumping data from your current Neon project with `pg_dump` and loading the data into the new Neon project using `pg_restore`.
+
+- [Migrate data from one Neon project to another by piping data from pg_dump to pg_restore](/docs/import/migrate-from-neon)
+
+  If your database is small, you can use this method to pipe `pg_dump` output directly to `pg_restore` to save time. While this method is a bit simpler, we recommend it only for small databases, as it is susceptible to failures during lengthy migration operations.
+
+- [Migrate data with the @neondatabase/pg-import CLI](docs/import/migrate-from-postgres-pg-import)
+
+  This experimental CLI utility is built on top of the piping method described above.
+
+**Logical Replication**
+
+The logical replication method can be used to achieve a near-zero downtime migration. Once the data in the new Neon project is synced with the data in the Neon project running the older version of Postgres, you can quickly switch your applications to the database. This method is recommended for active databases that cannot afford much downtime. For instructions, see [Logical Replication](/docs/guides/logical-replication-neon-to-neon).
+
+<Admonition type="note" title="Notes">
+- Neon does not support the `pg_dumpall` utility. If upgrading via dump and restore, dumps must be performed one database at a time using `pg_dump`.
+- Neon does not yet support upgrading using `pg_upgrade`. Support for this utility is being considered for a future release.
+- If you choose a dump and restore method, it is recommended that you use `pg_dump` and `pg_store` programs from the newer version of Postgres, to take advantage of any enhancements introduced in the newer version. Current releases of the these programs can read data from all previous Postgres versions supported by Neon.
+</Admonition>
+
+### 3. Switch over your applications
+
+After the migration is complete and you have verified that your new database is working as expected, you can switch your application over to the database in your new Neon project by swapping out your current database connection details for your new database connection details.
+
+You can find the connection details for your new Neon database on the **Connection Details** widget in the Neon Console. For details, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 <NeedHelp/>
 
@@ -56784,7 +64350,7 @@ title: Manage billing with consumption limits
 subtitle: Learn how to set usage quotas per project with the Neon API
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-08-06T15:23:10.949Z'
+updatedOn: '2024-09-02T13:42:56.656Z'
 ---
 
 When setting up your billing solution with Neon, you may want to impose some hard limits on how much storage or compute resources a given project can consume. For example, you may want to cap how much usage your free plan users can consume versus pro or enterprise users. With the Neon API, you can use the `quota` key to set usage limits for a variety of consumption metrics. These limits act as thresholds after which all active computes for a project are [suspended](#suspending-active-computes).
@@ -56857,14 +64423,14 @@ In addition to the configurable limits that you can set, Neon also sets certain 
 - `branch_logical_size_limit` (MiB)
 - `branch_logical_size_limit_bytes`(Bytes)
 
-These limits are not directly configurable. The Free Plan branch size limit is 512 MiB (0.5 GiB). The Launch and Scale plans support any data size but have a "failsafe" logical data size limit of 200 GiB to prevent runaway branch size growth due to possible issues with your application. If you require larger limits, you can [request large database support](https://console.neon.tech/app/projects?modal=request_large_db).
+These limits are not directly configurable. The Free Plan branch size limit is 512 MiB (0.5 GiB). The Launch, Scale, and Business plans support any data size but have a "failsafe" logical data size limit of 200 GiB to prevent runaway branch size growth due to possible issues with your application. If you require larger limits, you can [request large database support](https://console.neon.tech/app/projects?modal=request_large_db).
 
 The Neon Free Plan logical data size limit is approximately 512 MiB:
 
 - `branch_logical_size_limit`: 512
 - `branch_logical_size_limit_bytes`: 536870912
 
-The Neon Launch and Scale plan failsafe limit is 200 GiB:
+The Neon Launch, Scale, and Business plan failsafe limit is 200 GiB:
 
 - `branch_logical_size_limit`: 204800
 - `branch_logical_size_limit_bytes`: 214748364800
@@ -56946,12 +64512,12 @@ curl --request PATCH \
 
 You can use the Neon API to retrieve consumption metrics for your organization and projects through various endpoints:
 
-| Endpoint                                                                                             | Description                                                                                                              | Plan Availability | Docs                                                                                                                                    |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [Aggregated account metrics](https://api-docs.neon.tech/reference/getconsumptionhistoryperaccount)   | Aggregates the metrics from all projects in an account into a single cumulative number for each metric                   | Scale plan only   | [Get account-level aggregated metrics](metrics-api#get-account-level-aggregated-metrics)                                                |
-| [Granular metrics per project](https://api-docs.neon.tech/reference/getconsumptionhistoryperproject) | Provides detailed metrics for each project in an account at a specified granularity level (e.g., hourly, daily, monthly) | Scale plan only   | [Get granular project-level metrics for the account](metrics-api#get-granular-project-level-metrics-for-your-account)                   |
-| [Billing period metrics per project](https://api-docs.neon.tech/reference/listprojectsconsumption)   | Offers consumption metrics for each project in an account for the current billing period                                 | All plans         | [Get project-level metrics for the account by billing period](metrics-api#get-project-level-metrics-for-your-account-by-billing-period) |
-| [Single project metrics](https://api-docs.neon.tech/reference/getproject)                            | Retrieves detailed metrics and quota information for a specific project                                                  | All plans         | [Get metrics for a single specified project](metrics-api#get-metrics-for-a-single-specified-project)                                    |
+| Endpoint                                                                                             | Description                                                                                                              | Plan Availability            | Docs                                                                                                                                    |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| [Aggregated account metrics](https://api-docs.neon.tech/reference/getconsumptionhistoryperaccount)   | Aggregates the metrics from all projects in an account into a single cumulative number for each metric                   | Scale and Business plan only | [Get account-level aggregated metrics](metrics-api#get-account-level-aggregated-metrics)                                                |
+| [Granular metrics per project](https://api-docs.neon.tech/reference/getconsumptionhistoryperproject) | Provides detailed metrics for each project in an account at a specified granularity level (e.g., hourly, daily, monthly) | Scale and Business plan only | [Get granular project-level metrics for the account](metrics-api#get-granular-project-level-metrics-for-your-account)                   |
+| [Billing period metrics per project](https://api-docs.neon.tech/reference/listprojectsconsumption)   | Offers consumption metrics for each project in an account for the current billing period                                 | All plans                    | [Get project-level metrics for the account by billing period](metrics-api#get-project-level-metrics-for-your-account-by-billing-period) |
+| [Single project metrics](https://api-docs.neon.tech/reference/getproject)                            | Retrieves detailed metrics and quota information for a specific project                                                  | All plans                    | [Get metrics for a single specified project](metrics-api#get-metrics-for-a-single-specified-project)                                    |
 
 ## Resetting a project after suspend
 
@@ -57063,7 +64629,7 @@ curl --request POST \
 title: Querying consumption metrics with the API
 subtitle: Learn how to get a variety of consumption metrics using the Neon API
 enableTableOfContents: true
-updatedOn: '2024-07-16T19:46:05.841Z'
+updatedOn: '2024-09-02T13:42:56.655Z'
 ---
 
 Using the Neon API, you can query a range of account-level and project-level metrics to help gauge your resource consumption.
@@ -57072,12 +64638,12 @@ To learn more about which metrics you can get reports on, see [Available metrics
 
 Here are the different ways to retrieve these metrics, depending on how you want them aggregated or broken down:
 
-| Endpoint                                                                                                 | Description                                                                                                              | Plan Availability |
-| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------- |
-| [Account-level cumulative metrics](https://api-docs.neon.tech/reference/getconsumptionhistoryperaccount) | Aggregates all metrics from all projects in an account into a single cumulative number for each metric                   | Scale plan only   |
-| [Granular project-level metrics](https://api-docs.neon.tech/reference/getconsumptionhistoryperproject)   | Provides detailed metrics for each project in an account at a specified granularity level (e.g., hourly, daily, monthly) | Scale plan only   |
-| [Billing period project-level metrics](https://api-docs.neon.tech/reference/listprojectsconsumption)     | Offers consumption metrics for each project in an account for the current billing period                                 | All plans         |
-| [Single project metrics](https://api-docs.neon.tech/reference/getproject)                                | Retrieves detailed metrics and quota information for a specific project                                                  | All plans         |
+| Endpoint                                                                                                 | Description                                                                                                              | Plan Availability            |
+| -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| [Account-level cumulative metrics](https://api-docs.neon.tech/reference/getconsumptionhistoryperaccount) | Aggregates all metrics from all projects in an account into a single cumulative number for each metric                   | Scale and Business plan only |
+| [Granular project-level metrics](https://api-docs.neon.tech/reference/getconsumptionhistoryperproject)   | Provides detailed metrics for each project in an account at a specified granularity level (e.g., hourly, daily, monthly) | Scale and Business plan only |
+| [Billing period project-level metrics](https://api-docs.neon.tech/reference/listprojectsconsumption)     | Offers consumption metrics for each project in an account for the current billing period                                 | All plans                    |
+| [Single project metrics](https://api-docs.neon.tech/reference/getproject)                                | Retrieves detailed metrics and quota information for a specific project                                                  | All plans                    |
 
 ## Get account-level aggregated metrics
 
@@ -57478,7 +65044,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2024-08-09T20:21:45.352Z'
+updatedOn: '2024-09-23T18:40:25.917Z'
 ---
 
 ## access token
@@ -57542,6 +65108,10 @@ Connecting to a database on a branch requires connecting via a compute attached 
 ## Branching
 
 A Neon feature that allows you to create an isolated copy of your data for parallel database development, testing, and other purposes, similar to branching in Git. See [Branch](#branch).
+
+### Business plan
+
+A paid plan offered by Neon designed for mid-to-large enterprises that require higher compute capacity and advanced security and compliance features. See [Neon plans](/docs/introduction/plans).
 
 ## check_availability
 
@@ -57615,7 +65185,7 @@ A usage metric for tracking compute usage. 1 compute hour is equal to 1 [active 
 To calculate compute hour usage, you would use the following formula:
 
 ```
-compute hours = active hours x compute size
+compute hours = compute size * active hours
 ```
 
 For more information, see [Compute](/docs/introduction/usage-metrics#compute).
@@ -57696,7 +65266,7 @@ The history of data changes for all branches in your Neon project. A history is 
 
 ## IP allowlist
 
-An IP allowlist is a security measure used in network and database management. It specifies a list of IP addresses that are permitted to access a certain resource. Any IP address not on the list is automatically blocked, ensuring that only authorized users or systems can gain access. In Neon, **IP Allow** is a Scale plan feature that can be used to control access to the branch where your database resides. The allowlist can be applied to all branches (the default) or the [default branch](#default-branch) only. For more information, see [Configure the IP Allow list](/docs/manage/projects#configure-tip-allow).
+An IP allowlist is a security measure used in network and database management. It specifies a list of IP addresses that are permitted to access a certain resource. Any IP address not on the list is automatically blocked, ensuring that only authorized users or systems can gain access. In Neon, **IP Allow** is a Business plan feature that can be used to control access to the branch where your database resides. The allowlist can be applied to all branches (the default) or the [default branch](#default-branch) only. For more information, see [Configure the IP Allow list](/docs/manage/projects#configure-tip-allow).
 
 ## Kubernetes
 
@@ -57796,9 +65366,17 @@ The Pageserver uploads immutable files to cloud storage, which is the final, hig
 
 The ability to authenticate without providing a password. Neon’s [Passwordless auth](#passwordless-auth) feature supports passwordless authentication.
 
+## peak usage
+
+Peak usage is the highest amount of a resource (like storage or projects) you’ve used during the current billing period. If you go over your plan’s limit, extra charges are added in set increments. You’re charged for these extra units from the date you went over the limit, with the charges prorated for the rest of the month.
+
 ## point-in-time restore
 
-Restoration of data to a state that existed at an earlier time. Neon retains a history of changes in the form of Write-Ahead-Log (WAL) records, which allows you to restore data to an earlier time. A point-in-time restore is performed by creating a branch using the **Time** or **LSN** option. By default, Neon retains a history of changes for all branches in a project. The supported limits are 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users. For more information about this feature, see [Branching — Point-in-time restore](https://neon.tech/docs/guides/branching-pitr).
+Restoration of data to a state that existed at an earlier time. Neon retains a history of changes in the form of Write-Ahead-Log (WAL) records, which allows you to restore data to an earlier point. A point-in-time restore is performed by creating a branch using the **Time** or **LSN** option.
+
+By default, Neon retains a history of changes for **1 day** across all plans to help avoid unexpected storage costs. You can increase the retention window to 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch), 14 days for [Scale](/docs/introduction/plans#scale), and 30 days for [Business](/docs/introduction/plans#business) plan users. Keep in mind that this will increase your storage usage and may lead to higher costs, especially if you have many active branches.
+
+For more information about this feature, see [Branching — Point-in-time restore](/docs/introduction/point-in-time-restore).
 
 ## pooled connection string
 
@@ -57867,7 +65445,7 @@ You can designate any Neon branch as a "protected branch", which implements a se
 - New passwords are automatically generated for Postgres roles on branches created from protected branches.
 - With additional configuration steps, you can apply IP restrictions to protected branches only.
 
-The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) plan. Typically, the protected branch status is given to a branch or branches that hold production data or sensitive data. For information about how to configure a protected branch, refer to our [Protected branches guide](/docs/guides/protected-branches).
+The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans. Typically, the protected branch status is given to a branch or branches that hold production data or sensitive data. For information about how to configure a protected branch, refer to our [Protected branches guide](/docs/guides/protected-branches).
 
 ## Publisher
 
@@ -57989,7 +65567,7 @@ A Neon feature that lets you connect to any selected point in time within your h
 
 See [Neon user](#neon-user) and [Postgres role](#postgresql-role).
 
-## vm-informant
+## vm-monitor
 
 A program that runs inside the VM alongside Postgres, responsible for requesting more resources from the autoscaler-agent and validating proposed downscaling to ensure sufficient memory.
 
@@ -58040,7 +65618,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2024-08-09T20:21:45.352Z'
+updatedOn: '2024-09-23T18:40:25.917Z'
 ---
 
 ## access token
@@ -58104,6 +65682,10 @@ Connecting to a database on a branch requires connecting via a compute attached 
 ## Branching
 
 A Neon feature that allows you to create an isolated copy of your data for parallel database development, testing, and other purposes, similar to branching in Git. See [Branch](#branch).
+
+### Business plan
+
+A paid plan offered by Neon designed for mid-to-large enterprises that require higher compute capacity and advanced security and compliance features. See [Neon plans](/docs/introduction/plans).
 
 ## check_availability
 
@@ -58177,7 +65759,7 @@ A usage metric for tracking compute usage. 1 compute hour is equal to 1 [active 
 To calculate compute hour usage, you would use the following formula:
 
 ```
-compute hours = active hours x compute size
+compute hours = compute size * active hours
 ```
 
 For more information, see [Compute](/docs/introduction/usage-metrics#compute).
@@ -58258,7 +65840,7 @@ The history of data changes for all branches in your Neon project. A history is 
 
 ## IP allowlist
 
-An IP allowlist is a security measure used in network and database management. It specifies a list of IP addresses that are permitted to access a certain resource. Any IP address not on the list is automatically blocked, ensuring that only authorized users or systems can gain access. In Neon, **IP Allow** is a Scale plan feature that can be used to control access to the branch where your database resides. The allowlist can be applied to all branches (the default) or the [default branch](#default-branch) only. For more information, see [Configure the IP Allow list](/docs/manage/projects#configure-tip-allow).
+An IP allowlist is a security measure used in network and database management. It specifies a list of IP addresses that are permitted to access a certain resource. Any IP address not on the list is automatically blocked, ensuring that only authorized users or systems can gain access. In Neon, **IP Allow** is a Business plan feature that can be used to control access to the branch where your database resides. The allowlist can be applied to all branches (the default) or the [default branch](#default-branch) only. For more information, see [Configure the IP Allow list](/docs/manage/projects#configure-tip-allow).
 
 ## Kubernetes
 
@@ -58358,9 +65940,17 @@ The Pageserver uploads immutable files to cloud storage, which is the final, hig
 
 The ability to authenticate without providing a password. Neon’s [Passwordless auth](#passwordless-auth) feature supports passwordless authentication.
 
+## peak usage
+
+Peak usage is the highest amount of a resource (like storage or projects) you’ve used during the current billing period. If you go over your plan’s limit, extra charges are added in set increments. You’re charged for these extra units from the date you went over the limit, with the charges prorated for the rest of the month.
+
 ## point-in-time restore
 
-Restoration of data to a state that existed at an earlier time. Neon retains a history of changes in the form of Write-Ahead-Log (WAL) records, which allows you to restore data to an earlier time. A point-in-time restore is performed by creating a branch using the **Time** or **LSN** option. By default, Neon retains a history of changes for all branches in a project. The supported limits are 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch) plan users, and 30 days for [Scale](/docs/introduction/plans#scale) plan users. For more information about this feature, see [Branching — Point-in-time restore](https://neon.tech/docs/guides/branching-pitr).
+Restoration of data to a state that existed at an earlier time. Neon retains a history of changes in the form of Write-Ahead-Log (WAL) records, which allows you to restore data to an earlier point. A point-in-time restore is performed by creating a branch using the **Time** or **LSN** option.
+
+By default, Neon retains a history of changes for **1 day** across all plans to help avoid unexpected storage costs. You can increase the retention window to 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch), 14 days for [Scale](/docs/introduction/plans#scale), and 30 days for [Business](/docs/introduction/plans#business) plan users. Keep in mind that this will increase your storage usage and may lead to higher costs, especially if you have many active branches.
+
+For more information about this feature, see [Branching — Point-in-time restore](/docs/introduction/point-in-time-restore).
 
 ## pooled connection string
 
@@ -58429,7 +66019,7 @@ You can designate any Neon branch as a "protected branch", which implements a se
 - New passwords are automatically generated for Postgres roles on branches created from protected branches.
 - With additional configuration steps, you can apply IP restrictions to protected branches only.
 
-The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) plan. Typically, the protected branch status is given to a branch or branches that hold production data or sensitive data. For information about how to configure a protected branch, refer to our [Protected branches guide](/docs/guides/protected-branches).
+The protected branches feature is available with the Neon [Scale](/docs/introduction/plans#scale) and [Business](/docs/introduction/plans#business) plans. Typically, the protected branch status is given to a branch or branches that hold production data or sensitive data. For information about how to configure a protected branch, refer to our [Protected branches guide](/docs/guides/protected-branches).
 
 ## Publisher
 
@@ -58551,7 +66141,7 @@ A Neon feature that lets you connect to any selected point in time within your h
 
 See [Neon user](#neon-user) and [Postgres role](#postgresql-role).
 
-## vm-informant
+## vm-monitor
 
 A program that runs inside the VM alongside Postgres, responsible for requesting more resources from the autoscaler-agent and validating proposed downscaling to ensure sufficient memory.
 
@@ -58599,40 +66189,36 @@ A usage metric that measures the total volume of data written from compute to st
 ---
 title: Roadmap
 enableTableOfContents: true
+tag: updated
 redirectFrom:
   - /docs/cloud/roadmap
   - /docs/conceptual-guides/roadmap
   - /docs/reference/roadmap
-updatedOn: '2024-08-09T17:28:16.003Z'
+updatedOn: '2024-09-23T19:07:35.843Z'
 ---
 
-Our development teams are focused on helping you ship faster with Postgres. This roadmap describes committed features that we're working on right now, plus a peak at some of the upcoming features we'll be taking on next.
+Our development teams are focused on helping you ship faster with Postgres. This roadmap describes committed features that we're working on right now, plus a peek at some of the upcoming features we'll be taking on next.
 
 ## What we've just launched
 
-For the latest features and fixes, check our [Changelog](/docs/changelog), updated every Friday. Or watch for our Changelog email, also sent regularly on Fridays. You can also subscribe to updates using our [RSS feed](https://neon.tech/docs/changelog/rss.xml).
+- **A new Business plan with more compute and storage**: This new plan provides higher storage and compute allowances (500 GiB of storage and 1,000 compute hours) in addition to all of Neon's advanced features. It also offers potential cost savings for customers requiring more storage than our Scale plan provides. To learn more, please refer to our [Pricing](https://neon.tech/pricing) page and [Plans](/docs/introduction/plans) documentation.
+- **Data migration support with inbound logical replication**: We've introduced inbound logical replication as the first step toward enabling seamless, low-downtime migrations from your current database provider to Neon. This feature allows you to use Neon as your development environment, taking advantage of developer-friendly tools like branching and our [GitHub integration](/docs/guides/neon-github-integration), even if you keep production with your existing provider. To get started, explore our guides for replicating data from AlloyDB, Aurora, CloudSQL, and RDS. See [Replicate data to Neon](/docs/guides/logical-replication-guide#replicate-data-to-neon). Inbound logical replication also supports migrating data between Neon projects, useful for version, region, or account migrations. See [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
+- **Organizations**: Organization Accounts are now available in Beta. Create a new organization, transfer over your projects, invite your team and get started collaborating. Refer to our [Organizations docs](/docs/manage/organizations) to learn more.
+- **Autoscaling GA**: One of our defining features, [Autoscaling](/docs/introduction/autoscaling), is now GA. Read the announcement: [Neon Autoscaling is Generally Available](https://neon.tech/blog/neon-autoscaling-is-generally-available).
+- **Autoscaling on the Free Plan**: Users on the Free Plan are now able to try Neon's Autoscaling feature, within reasonable Free Plan limits. [Learn how](/docs/guides/autoscaling-guide).
+- **Neon CLI**: We've recently added a [create-app](/docs/reference/cli-create-app) command that lets you bootstrap your application with common dev stacks. `create-app` is maturing fast, with new frameworks, ORMs, and features coming out regularly.
+
+For more of the latest features and fixes, check our [Changelog](/docs/changelog), published weekly. Or watch for our Changelog email, also sent out weekly. You can also subscribe to updates using our [RSS feed](https://neon.tech/docs/changelog/rss.xml).
 
 ## What we're working on now
 
 Here's a snapshot of what we're working on now:
 
 - **Neon on Azure**: If you didn't catch the post, Neon is coming to Azure. [Read more](https://neon.tech/blog/neon-is-coming-to-azure) about this big news.
-- **Autoscaling GA**: One of our defining features, Autoscaling, is soon going GA. Look for an announcement with details coming out soon!
-- **Autoscaling on the Free Plan**: Users on the Free Plan will soon be able to try Neon's Autoscaling feature, within reasonable Free Plan limits.
-- **Postgres 17**: We've been at work on this for a while now. We plan to support Postgres 17 the day it's released. Postgres 17 will support direct SSL connections, which can eliminate one round-trip from establishing a connection.
-- **Database deploy previews**: Our GitHub App is available now for all users, with more refinements to come &#8212; including better integration with GitHub Actions, making it easier to incorporate your database into your development workflow.
+- **Postgres 17**: We've been at work on this for a while now. We plan to support Postgres 17 the day it's released.
+- **Support for exporting metrics**: We'd like to help users integrate Neon into their monitoring platforms and services with exportable metrics.
 - **Better deletes**: We're adding support for deleting obsolete branches, especially after [restore](/docs/guides/branch-restore) operations.
-- **Migrations (Beta)**: We’re adding inbound logical replication as a first step towards offering seamless, low-downtime migrations from your current database provider to Neon. Inbound replication can also help you use Neon as your staging environment, letting you take advantage of developer-friendly features like branching and our GitHub Integration, even if you decide to keep production with your current provider.
-- **Snapshots**: Create regularly scheduled snapshots as a way to archive your database &#8212; a cost-effective alternative to long-lived branches.
-- **SQL Editor improvements**: Stay tuned for interesting updates we have planned for our SQL Editor.
-- **Plans & Billing**: We’re always looking for ways to improve our pricing model to make it as developer-friendly as possible. You can expect to see changes in this area, including:
-
-  - A new plan tailored to business needs, with key features and usage allowances that better fit business-focused development teams.
-  - Storage-related billing optimizations.
-
-- **Organizations Beta**: We're thankful to our private preview customers for the feedback they've given us so far &#8212; and happy to say that **Organization Accounts** are on track for Early Access users soon.
-- **Neon CLI**: We've recently added a [create-app](/docs/reference/cli-create-app) command that lets you bootstrap your application with common dev stacks. `create-app` is maturing fast, with new frameworks, ORMs, and features coming out regularly.
-- **An email app service**: This service will provide support for email verification and password recovery workflows.
+- **Archive branches**: A mechanism to allow offloading branches (snapshots of your data) to cost-efficient object storage for retention periods longer than a Neon project's history retention window.
 
 If you have other feature ideas, [let us know](#share-your-thoughts).
 
@@ -58641,10 +66227,13 @@ If you have other feature ideas, [let us know](#share-your-thoughts).
 And here's a quick list of what we'll be taking on in the near future:
 
 - **Staging Environments**: A critical part of making it easy for you to use Neon as the staging environment for your team's app development &#8212; simple, robust anonymization of PII data. We're working on it.
-- **Support for exporting logs and metrics**: We'd like to help users integrate Neon into their monitoring platforms and services with exportable logs and metrics.
-- **Support for soft deletions**: Work is underway to build a deletion workflow for Neon projects. As part of this workflow, we'll support a recovery grace period for unintended deletions, and we'll also add a little friction to the deletion process to avoid accidental deletions &#8212; something similar to the steps required to delete a repository in GitHub.
 - **Larger computes**: We are working on adding support for ever-larger compute sizes.
 - **New authentication method:** We're working on a new authentication method for Postgres that will enable simplified application -> database connections, as well as allow for Neon to be integrated into various marketplaces.
+- **Snapshots**: Create regularly scheduled snapshots as a way to archive your database &#8212; a cost-effective alternative to long-lived branches.
+- **SQL Editor improvements**: Stay tuned for interesting updates we have planned for our SQL Editor.
+- **Support for exporting logs and traces**: We'd like to help users further integrate Neon into their monitoring platforms and services with exportable logs and traces.
+- **Private access**: Private and secure access to your compute resources without traversing public networks.
+- **An email app service**: This service will provide support for email verification and password recovery workflows.
 
 ## Join the Neon Early Access Program
 
@@ -58672,112 +66261,21 @@ As always, we are listening. If you see something you like, something you disagr
 
 The Neon **Limited Preview** started in February 2022 and was made available to a small number of select users and friends.
 
-On June 15th, 2022, the Neon team announced a [Technical Preview](#technical-preview), making Neon available to a wider audience. Thousands of users were able to try Neon's [Free Plan](/docs/introduction/#free-plan).
+- On June 15th, 2022, the Neon team announced a [Technical Preview](https://neon.tech/blog/hello-world), making Neon available to a wider audience. Thousands of users were able to try Neon's [Free Plan](/docs/introduction/#free-plan).
 
-On December 6th, 2022, Neon released its branching feature and dropped the invite gate, welcoming everyone to try Neon's Free Plan.
+- On December 6th, 2022, Neon released its branching feature and dropped the invite gate, welcoming everyone to try Neon's Free Plan.
 
-In the first quarter of 2023, Neon launched [paid plans](https://neon.tech/pricing) with new features like Project Sharing, [Autoscaling](/docs/introduction/autoscaling), and [Autosuspend](/docs/introduction/auto-suspend). We also added support for US East (N. Virginia)
+- In the first quarter of 2023, Neon launched [paid plans](https://neon.tech/pricing) with new features like Project Sharing, [Autoscaling](/docs/introduction/autoscaling), and [Autosuspend](/docs/introduction/auto-suspend). We also added support for US East (N. Virginia)
 
-In the second quarter of 2023, we released the [Neon CLI](/docs/reference/neon-cli). Enhancements included a configurable [history retention](/docs/introduction/point-in-time-restore) window, support for Postgres 16, and [SOC 2 Type 1](https://neon.tech/blog/soc2-type-1#our-journey-to-soc2) compliance.
+- In the second quarter of 2023, we released the [Neon CLI](/docs/reference/neon-cli). Enhancements included a configurable [history retention](/docs/introduction/point-in-time-restore) window, support for Postgres 16, and [SOC 2 Type 1](https://neon.tech/blog/soc2-type-1#our-journey-to-soc2) compliance.
 
-In the third quarter of 2023, we added [IP allowlisting](/docs/introduction/ip-allow), email signup, and [logical replication](/docs/introduction/logical-replication). We also announced [SOC 2 Type 2](https://neon.tech/blog/soc2-type2) compliance.
+- In the third quarter of 2023, we added [IP allowlisting](/docs/introduction/ip-allow), email signup, and [logical replication](/docs/introduction/logical-replication). We also announced [SOC 2 Type 2](https://neon.tech/blog/soc2-type2) compliance.
 
-In the fourth quarter of 2023, we added support for the Asia Pacific (Sydney) region, [Branch Restore](/docs/guides/branch-restore) with Time Travel Assist, and new [Pricing](https://neon.tech/pricing) plans.
+- In the fourth quarter of 2023, we added support for the Asia Pacific (Sydney) region, [Branch Restore](/docs/guides/branch-restore) with Time Travel Assist, and new [Pricing](https://neon.tech/pricing) plans.
 
-On April 15th, 2024, Neon announced [General Availability](https://neon.tech/blog/neon-ga).
+- On April 15th, 2024, Neon announced [General Availability](https://neon.tech/blog/neon-ga).
 
-
-# Neon roadmap
-
----
-title: Roadmap
-enableTableOfContents: true
-redirectFrom:
-  - /docs/cloud/roadmap
-  - /docs/conceptual-guides/roadmap
-  - /docs/reference/roadmap
-updatedOn: '2024-08-09T17:28:16.003Z'
----
-
-Our development teams are focused on helping you ship faster with Postgres. This roadmap describes committed features that we're working on right now, plus a peak at some of the upcoming features we'll be taking on next.
-
-## What we've just launched
-
-For the latest features and fixes, check our [Changelog](/docs/changelog), updated every Friday. Or watch for our Changelog email, also sent regularly on Fridays. You can also subscribe to updates using our [RSS feed](https://neon.tech/docs/changelog/rss.xml).
-
-## What we're working on now
-
-Here's a snapshot of what we're working on now:
-
-- **Neon on Azure**: If you didn't catch the post, Neon is coming to Azure. [Read more](https://neon.tech/blog/neon-is-coming-to-azure) about this big news.
-- **Autoscaling GA**: One of our defining features, Autoscaling, is soon going GA. Look for an announcement with details coming out soon!
-- **Autoscaling on the Free Plan**: Users on the Free Plan will soon be able to try Neon's Autoscaling feature, within reasonable Free Plan limits.
-- **Postgres 17**: We've been at work on this for a while now. We plan to support Postgres 17 the day it's released. Postgres 17 will support direct SSL connections, which can eliminate one round-trip from establishing a connection.
-- **Database deploy previews**: Our GitHub App is available now for all users, with more refinements to come &#8212; including better integration with GitHub Actions, making it easier to incorporate your database into your development workflow.
-- **Better deletes**: We're adding support for deleting obsolete branches, especially after [restore](/docs/guides/branch-restore) operations.
-- **Migrations (Beta)**: We’re adding inbound logical replication as a first step towards offering seamless, low-downtime migrations from your current database provider to Neon. Inbound replication can also help you use Neon as your staging environment, letting you take advantage of developer-friendly features like branching and our GitHub Integration, even if you decide to keep production with your current provider.
-- **Snapshots**: Create regularly scheduled snapshots as a way to archive your database &#8212; a cost-effective alternative to long-lived branches.
-- **SQL Editor improvements**: Stay tuned for interesting updates we have planned for our SQL Editor.
-- **Plans & Billing**: We’re always looking for ways to improve our pricing model to make it as developer-friendly as possible. You can expect to see changes in this area, including:
-
-  - A new plan tailored to business needs, with key features and usage allowances that better fit business-focused development teams.
-  - Storage-related billing optimizations.
-
-- **Organizations Beta**: We're thankful to our private preview customers for the feedback they've given us so far &#8212; and happy to say that **Organization Accounts** are on track for Early Access users soon.
-- **Neon CLI**: We've recently added a [create-app](/docs/reference/cli-create-app) command that lets you bootstrap your application with common dev stacks. `create-app` is maturing fast, with new frameworks, ORMs, and features coming out regularly.
-- **An email app service**: This service will provide support for email verification and password recovery workflows.
-
-If you have other feature ideas, [let us know](#share-your-thoughts).
-
-## What's on the horizon
-
-And here's a quick list of what we'll be taking on in the near future:
-
-- **Staging Environments**: A critical part of making it easy for you to use Neon as the staging environment for your team's app development &#8212; simple, robust anonymization of PII data. We're working on it.
-- **Support for exporting logs and metrics**: We'd like to help users integrate Neon into their monitoring platforms and services with exportable logs and metrics.
-- **Support for soft deletions**: Work is underway to build a deletion workflow for Neon projects. As part of this workflow, we'll support a recovery grace period for unintended deletions, and we'll also add a little friction to the deletion process to avoid accidental deletions &#8212; something similar to the steps required to delete a repository in GitHub.
-- **Larger computes**: We are working on adding support for ever-larger compute sizes.
-- **New authentication method:** We're working on a new authentication method for Postgres that will enable simplified application -> database connections, as well as allow for Neon to be integrated into various marketplaces.
-
-## Join the Neon Early Access Program
-
-If you would like to get a little more involved, consider signing up for the **Neon Early Access Program**.
-
-Benefits of joining:
-
-- **Exclusive early access**: Get a first look at upcoming features before they go live.
-- **Private community**: Gain access to a dedicated Discord channel to connect with the Neon team and provide feedback to help shape what comes next.
-- **Weekly insights**: Receive updates on Neon's latest developments and future plans.
-
-[Sign Up Now](https://neon.tech/early-access-program) and start influencing the future of Neon!
-
-## A note about timing
-
-We are as excited as you are to see new features in Neon, but their development, release, and timing are at our discretion.
-
-## Share your thoughts
-
-As always, we are listening. If you see something you like, something you disagree with, or something you'd love for us to add, let us know in our Discord feedback channel.
-
-<CommunityBanner buttonText="Leave feedback" buttonUrl="https://discord.com/channels/1176467419317940276/1176788564890112042" logo="discord">Share your ideas in&nbsp;Discord</CommunityBanner>
-
-## A brief history of Neon
-
-The Neon **Limited Preview** started in February 2022 and was made available to a small number of select users and friends.
-
-On June 15th, 2022, the Neon team announced a [Technical Preview](#technical-preview), making Neon available to a wider audience. Thousands of users were able to try Neon's [Free Plan](/docs/introduction/#free-plan).
-
-On December 6th, 2022, Neon released its branching feature and dropped the invite gate, welcoming everyone to try Neon's Free Plan.
-
-In the first quarter of 2023, Neon launched [paid plans](https://neon.tech/pricing) with new features like Project Sharing, [Autoscaling](/docs/introduction/autoscaling), and [Autosuspend](/docs/introduction/auto-suspend). We also added support for US East (N. Virginia)
-
-In the second quarter of 2023, we released the [Neon CLI](/docs/reference/neon-cli). Enhancements included a configurable [history retention](/docs/introduction/point-in-time-restore) window, support for Postgres 16, and [SOC 2 Type 1](https://neon.tech/blog/soc2-type-1#our-journey-to-soc2) compliance.
-
-In the third quarter of 2023, we added [IP allowlisting](/docs/introduction/ip-allow), email signup, and [logical replication](/docs/introduction/logical-replication). We also announced [SOC 2 Type 2](https://neon.tech/blog/soc2-type2) compliance.
-
-In the fourth quarter of 2023, we added support for the Asia Pacific (Sydney) region, [Branch Restore](/docs/guides/branch-restore) with Time Travel Assist, and new [Pricing](https://neon.tech/pricing) plans.
-
-On April 15th, 2024, Neon announced [General Availability](https://neon.tech/blog/neon-ga).
+For everything post-GA, please refer to our [Changelog](https://neon.tech/docs/changelog) and the [Neon Blog](https://neon.tech/blog). You can also stay updated with the latest information and announcements by subscribing to our [RSS feeds](/docs/reference/feeds) or newsletter.
 
 
 # noname
@@ -59268,5 +66766,90 @@ title: Changelog
 isDraft: false
 updatedOn: '2024-06-14T08:04:50.305Z'
 ---
+
+
+# RSS feeds
+
+---
+title: Neon RSS feeds
+subtitle: Stay updated with the latest news from Neon
+enableTableOfContents: true
+tag: new
+updatedOn: '2024-09-08T12:44:00.906Z'
+---
+
+Stay updated with the latest information and announcements from Neon by subscribing to our RSS feeds. You can monitor the Neon Changelog, and blog posts, and Neon status updates through your preferred RSS reader or [Slack channel](#subscribe-to-feeds-in-slack).
+
+## Changelog
+
+Keep track of new features, improvements, and fixes by subscribing to the [Neon Changelog](https://neon.tech/docs/changelog) RSS feed.
+
+```bash
+https://neon.tech/docs/changelog/rss.xml
+```
+
+## Blog
+
+Stay informed on the latest articles and news by following the [Neon Blog](https://neon.tech/blog) RSS feed.
+
+```bash
+https://neon.tech/blog/rss.xml
+```
+
+## Community Guides
+
+Get the latest tips, tutorials, and best practices by subscribing to the [Neon Community Guides](https://neon.tech/guides) RSS feed.
+
+```bash
+https://neon.tech/guides/rss.xml
+```
+
+## Status
+
+Monitor the operational status of Neon across different regions by subscribing to the appropriate [Neon Status](https://neonstatus.com/) RSS feed.
+
+- **AWS US East (N. Virginia)**
+
+  ```bash
+  https://neonstatus.com/aws-us-east-n-virginia/feed.rss
+  ```
+
+- **AWS US East (Ohio)**
+
+  ```bash
+  https://neonstatus.com/aws-us-east-ohio/feed.rss
+  ```
+
+- **AWS US West (Oregon)**
+
+  ```bash
+  https://neonstatus.com/aws-us-west-oregon/feed.rss
+  ```
+
+- **AWS Europe (Frankfurt)**
+
+  ```bash
+  https://neonstatus.com/aws-europe-frankfurt/feed.rss
+  ```
+
+- **AWS Asia Pacific (Singapore)**
+
+  ```bash
+  https://neonstatus.com/aws-asia-pacific-singapore/feed.rss
+  ```
+
+- **AWS Asia Pacific (Sydney)**
+
+  ```bash
+  https://neonstatus.com/aws-asia-pacific-sydney/feed.rss
+  ```
+
+## Subscribe to feeds in Slack
+
+To receive updates in Slack, enter the `/feed subscribe` command with the desired RSS feed into your Slack channel:
+
+```bash
+/feed subscribe https://neon.tech/docs/changelog/rss.xml
+```
 
 
