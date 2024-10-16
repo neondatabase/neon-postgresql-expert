@@ -148,7 +148,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 1. Install XCode and dependencies
 ```
 xcode-select --install
-brew install protobuf openssl flex bison icu4c pkg-config
+brew install protobuf openssl flex bison icu4c pkg-config m4
 
 # add openssl to PATH, required for ed25519 keys generation in neon_local
 echo 'export PATH="$(brew --prefix openssl)/bin:$PATH"' >> ~/.zshrc
@@ -436,6 +436,27 @@ and compute_ctl are built and copied into the compute image by
 Dockerfile.compute-node.
 
 
+# Content from file ../neon/compute/etc/README.md:
+
+# Compute Configuration
+
+These files are the configuration files for various other pieces of software
+that will be running in the compute alongside Postgres.
+
+## `sql_exporter`
+
+### Adding a `sql_exporter` Metric
+
+We use `sql_exporter` to export various metrics from Postgres. In order to add
+a metric, you will need to create two files: a `libsonnet` and a `sql` file. You
+will then import the `libsonnet` file in one of the collector files, and the
+`sql` file will be imported in the `libsonnet` file.
+
+In the event your statistic is an LSN, you may want to cast it to a `float8`
+because Prometheus only supports floats. It's probably fine because `float8` can
+store integers from `-2^53` to `+2^53` exactly.
+
+
 # Content from file ../neon/compute_tools/README.md:
 
 # Compute node tools
@@ -585,8 +606,8 @@ The first command creates `neon_superuser` and necessary roles. The second comma
 # Example docker compose configuration
 
 The configuration in this directory is used for testing Neon docker images: it is
-not intended for deploying a usable system.  To run a development environment where
-you can experiment with a minature Neon system, use `cargo neon` rather than container images.
+not intended for deploying a usable system. To run a development environment where
+you can experiment with a miniature Neon system, use `cargo neon` rather than container images.
 
 This configuration does not start the storage controller, because the controller
 needs a way to reconfigure running computes, and no such thing exists in this setup.
@@ -1475,7 +1496,7 @@ We can capture state of compute node buffer cache and send bulk request for this
 Currently we build two main images:
 
 - [neondatabase/neon](https://hub.docker.com/repository/docker/neondatabase/neon) — image with pre-built `pageserver`, `safekeeper` and `proxy` binaries and all the required runtime dependencies. Built from [/Dockerfile](/Dockerfile).
-- [neondatabase/compute-node-v16](https://hub.docker.com/repository/docker/neondatabase/compute-node-v16) — compute node image with pre-built Postgres binaries from [neondatabase/postgres](https://github.com/neondatabase/postgres). Similar images exist for v15 and v14.
+- [neondatabase/compute-node-v16](https://hub.docker.com/repository/docker/neondatabase/compute-node-v16) — compute node image with pre-built Postgres binaries from [neondatabase/postgres](https://github.com/neondatabase/postgres). Similar images exist for v15 and v14. Built from [/compute-node/Dockerfile](/compute/Dockerfile.compute-node).
 
 And additional intermediate image:
 
@@ -13992,6 +14013,469 @@ To my mind, the "row in database" approach is straightforward enough that we don
 to something external.
 
 
+# Content from file ../neon/docs/rfcs/038-aux-file-v2.md:
+
+# AUX file v2
+
+## Summary
+
+This is a retrospective RFC describing a new storage strategy for AUX files.
+
+## Motivation
+
+The original aux file storage strategy stores everything in a single `AUX_FILES_KEY`.
+Every time the compute node streams a `neon-file` record to the pageserver, it will
+update the aux file hash map, and then write the serialized hash map into the key.
+This creates serious space bloat. There was a fix to log delta records (i.e., update
+a key in the hash map) to the aux file key. In this way, the pageserver only stores
+the deltas at each of the LSNs. However, this improved v1 storage strategy still
+requires us to store everything in an aux file cache in memory, because we cannot
+fetch a single key (or file) from the compound `AUX_FILES_KEY`.
+
+### Prior art
+
+For storing large amount of small files, we can use a key-value store where the key
+is the filename and the value is the file content.
+
+## Requirements
+
+- No space bloat, fixed space amplification.
+- No write bloat, fixed write amplification.
+
+## Impacted Components
+
+pageserver
+
+## Sparse Keyspace
+
+In pageserver, we had assumed the keyspaces are always contiguous. For example, if the keyspace 0x0000-0xFFFF
+exists in the pageserver, every single key in the key range would exist in the storage. Based on the prior
+assumption, there are code that traverses the keyspace by iterating every single key.
+
+```rust
+loop {
+    // do something
+    key = key.next();
+}
+```
+
+If a keyspace is very large, for example, containing `2^64` keys, this loop will take infinite time to run.
+Therefore, we introduce the concept of sparse keyspace in this RFC. For a sparse keyspace, not every key would
+exist in the key range. Developers should not attempt to iterate every single key in the keyspace. Instead,
+they should fetch all the layer files in the key range, and then do a merge of them.
+
+In aux file v2, we store aux files within the sparse keyspace of the prefix `AUX_KEY_PREFIX`.
+
+## AUX v2 Keyspace and Key Mapping
+
+Pageserver uses fixed-size keys. The key is 128b. In order to store files of arbitrary filenames into the
+keyspace, we assign a predetermined prefix based on the directory storing the aux file, and use the FNV hash
+of the filename for the rest bits of the key. The encoding scheme is defined in `encode_aux_file_key`.
+
+For example, `pg_logical/mappings/test1` will be encoded as:
+
+```
+62 0000 01 01 7F8B83D94F7081693471ABF91C
+^ aux prefix
+        ^ assigned prefix of pg_logical/
+           ^ assigned prefix of mappings/
+              ^ 13B FNV hash of test1
+   ^ not used due to key representation
+```
+
+The prefixes of the directories should be assigned every time we add a new type of aux file into the storage within `aux_file.rs`. For all directories without an assigned prefix, it will be put into the `0xFFFF` keyspace.
+
+Note that inside pageserver, there are two representations of the keys: the 18B full key representation
+and the 16B compact key representation. For the 18B representation, some fields have restricted ranges
+of values. Therefore, the aux keys only use the 16B compact portion of the full key.
+
+It is possible that two files get mapped to the same key due to hash collision. Therefore, the value of
+each of the aux key is an array that contains all filenames and file content that should be stored in
+this key.
+
+We use `Value::Image` to store the aux keys. Therefore, page reconstruction works in the same way as before,
+and we do not need addition code to support reconstructing the value. We simply get the latest image from
+the storage.
+
+## Inbound Logical Replication Key Mapping
+
+For inbound logical replication, Postgres needs the `replorigin_checkpoint` file to store the data.
+This file not directly stored in the pageserver using the aux v2 mechanism. It is constructed during
+generating the basebackup by scanning the `REPL_ORIGIN_KEY_PREFIX` keyspace.
+
+## Sparse Keyspace Read Path
+
+There are two places we need to read the aux files from the pageserver:
+
+* On the write path, when the compute node adds an aux file to the pageserver, we will retrieve the key from the storage, append the file to the hashed key, and write it back. The current `get` API already supports that.
+*  We use the vectored get API to retrieve all aux files during generating the basebackup. Because we need to scan a sparse keyspace, we slightly modified the vectored get path. The vectorized API will attempt to retrieve every single key within the requested key range, and therefore, we modified it in a way that keys within `NON_INHERITED_SPARSE_RANGE` will not trigger missing key error.
+
+## Compaction and Image Layer Generation
+
+With the add of sparse keyspaces, we also modified the compaction code to accommodate the fact that sparse keyspaces do not have every single key stored in the storage.
+
+* L0 compaction: we modified the hole computation code so that it can handle sparse keyspaces when computing holes.
+* Image layer creation: instead of calling `key.next()` and getting/reconstructing images for every single key, we use the vectored get API to scan all keys in the keyspace at a given LSN. Image layers are only created if there are too many delta layers between the latest LSN and the last image layer we generated for sparse keyspaces. The created image layer always cover the full aux key range for now, and could be optimized later.
+
+## Migration
+
+We decided not to make the new aux storage strategy (v1) compatible with the original one (v1). One feasible way of doing a seamless migration is to store new data in aux v2 while old data in aux v1, but this complicates file deletions. We want all users to start with a clean state with no aux files in the storage, and therefore, we need to do manual migrations for users using aux v1 by using the [migration script](https://github.com/neondatabase/aux_v2_migration).
+
+During the period of migration, we store the aux policy in the `index_part.json` file. When a tenant is attached
+with no policy set, the pageserver will scan the aux file keyspaces to identify the current aux policy being used (v1 or v2).
+
+If a timeline has aux v1 files stored, it will use aux file policy v1 unless we do a manual migration for them. Otherwise, the default aux file policy for new timelines is aux v2. Users enrolled in logical replication before we set aux v2 as default use aux v1 policy. Users who tried setting up inbound replication (which was not supported at that time) may also create some file entries in aux v1 store, even if they did not enroll in the logical replication testing program.
+
+The code for aux v2 migration is in https://github.com/neondatabase/aux_v2_migration. The toolkit scans all projects with logical replication enabled. For all these projects, it put the computes into maintenance mode (suspend all of then), call the migration API to switch the aux file policy on the pageserver (which drops all replication states), and restart all the computes.
+
+
+# Content from file ../neon/docs/rfcs/038-independent-compute-release.md:
+
+# Independent compute release
+
+Created at: 2024-08-30. Author: Alexey Kondratov (@ololobus)
+
+## Summary
+
+This document proposes an approach to fully independent compute release flow. It attempts to
+cover the following features:
+
+- Process is automated as much as possible to minimize human errors.
+- Compute<->storage protocol compatibility is ensured.
+- A transparent release history is available with an easy rollback strategy.
+- Although not in the scope of this document, there is a viable way to extend the proposed release
+  flow to achieve the canary and/or blue-green deployment strategies.
+
+## Motivation
+
+Previously, the compute release was tightly coupled to the storage release. This meant that once
+some storage nodes got restarted with a newer version, all new compute starts using these nodes
+automatically got a new version. Thus, two releases happen in parallel, which increases the blast
+radius and makes ownership fuzzy.
+
+Now, we practice a manual v0 independent compute release flow -- after getting a new compute release
+image and tag, we pin it region by region using Admin UI. It's better, but it still has its own flaws:
+
+1. It's a simple but fairly manual process, as you need to click through a few pages.
+2. It's prone to human errors, e.g., you could mistype or copy the wrong compute tag.
+3. We now require an additional approval in the Admin UI, which partially solves the 2.,
+   but also makes the whole process pretty annoying, as you constantly need to go back
+   and forth between two people.
+
+## Non-goals
+
+It's not the goal of this document to propose a design for some general-purpose release tool like Helm.
+The document considers how the current compute fleet is orchestrated at Neon. Even if we later
+decide to split the control plane further (e.g., introduce a separate compute controller), the proposed
+release process shouldn't change much, i.e., the releases table and API will reside in
+one of the parts.
+
+Achieving the canary and/or blue-green deploy strategies is out of the scope of this document. They
+were kept in mind, though, so it's expected that the proposed approach will lay down the foundation
+for implementing them in future iterations.
+
+## Impacted components
+
+Compute, control plane, CI, observability (some Grafana dashboards may require changes).
+
+## Prior art
+
+One of the very close examples is how Helm tracks [releases history](https://helm.sh/docs/helm/helm_history/).
+
+In the code:
+
+- [Release](https://github.com/helm/helm/blob/2b30cf4b61d587d3f7594102bb202b787b9918db/pkg/release/release.go#L20-L43)
+- [Release info](https://github.com/helm/helm/blob/2b30cf4b61d587d3f7594102bb202b787b9918db/pkg/release/info.go#L24-L40)
+- [Release status](https://github.com/helm/helm/blob/2b30cf4b61d587d3f7594102bb202b787b9918db/pkg/release/status.go#L18-L42)
+
+TL;DR it has several important attributes:
+
+- Revision -- unique release ID/primary key. It is not the same as the application version,
+  because the same version can be deployed several times, e.g., after a newer version rollback.
+- App version -- version of the application chart/code.
+- Config -- set of overrides to the default config of the application.
+- Status -- current status of the release in the history.
+- Timestamps -- tracks when a release was created and deployed.
+
+## Proposed implementation
+
+### Separate release branch
+
+We will use a separate release branch, `release-compute`, to have a clean history for releases and commits.
+In order to avoid confusion with storage releases, we will use a different prefix for compute [git release
+tags](https://github.com/neondatabase/neon/releases) -- `release-compute-XXXX`. We will use the same tag for
+Docker images as well. The `neondatabase/compute-node-v16:release-compute-XXXX` looks longer and a bit redundant,
+but it's better to have image and git tags in sync.
+
+Currently, control plane relies on the numeric compute and storage release versions to decide on compute->storage
+compatibility. Once we implement this proposal, we should drop this code as release numbers will be completely
+independent. The only constraint we want is that it must monotonically increase within the same release branch.
+
+### Compute config/settings manifest
+
+We will create a new sub-directory `compute` and file `compute/manifest.yaml` with a structure:
+
+```yaml
+pg_settings:
+  # Common settings for primaries and secondaries of all versions.
+  common:
+    wal_log_hints: "off"
+    max_wal_size: "1024"
+
+  per_version:
+    14:
+      # Common settings for both replica and primary of version PG 14
+      common:
+        shared_preload_libraries: "neon,pg_stat_statements,extension_x"
+    15:
+      common:
+        shared_preload_libraries: "neon,pg_stat_statements,extension_x"
+      # Settings that should be applied only to
+      replica:
+        # Available only starting Postgres 15th
+        recovery_prefetch: "off"
+    # ...
+    17:
+      common:
+        # For example, if third-party `extension_x` is not yet available for PG 17
+        shared_preload_libraries: "neon,pg_stat_statements"
+      replica:
+        recovery_prefetch: "off"
+```
+
+**N.B.** Setting value should be a string with `on|off` for booleans and a number (as a string)
+without units for all numeric settings. That's how the control plane currently operates.
+
+The priority of settings will be (a higher number is a higher priority):
+
+1. Any static and hard-coded settings in the control plane
+2. `pg_settings->common`
+3. Per-version `common`
+4. Per-version `replica`
+5. Any per-user/project/endpoint overrides in the control plane
+6. Any dynamic setting calculated based on the compute size
+
+**N.B.** For simplicity, we do not do any custom logic for `shared_preload_libraries`, so it's completely
+overridden if specified on some level. Make sure that you include all necessary extensions in it when you
+do any overrides.
+
+**N.B.** There is a tricky question about what to do with custom compute image pinning we sometimes
+do for particular projects and customers. That's usually some ad-hoc work and images are based on
+the latest compute image, so it's relatively safe to assume that we could use settings from the latest compute
+release. If for some reason that's not true, and further overrides are needed, it's also possible to do
+on the project level together with pinning the image, so it's on-call/engineer/support responsibility to
+ensure that compute starts with the specified custom image. The only real risk is that compute image will get
+stale and settings from new releases will drift away, so eventually it will get something incompatible,
+but i) this is some operational issue, as we do not want stale images anyway, and ii) base settings
+receive something really new so rarely that the chance of this happening is very low. If we want to solve it completely,
+then together with pinning the image we could also pin the matching release revision in the control plane.
+
+The compute team will own the content of `compute/manifest.yaml`.
+
+### Control plane: releases table
+
+In order to store information about releases, the control plane will use a table `compute_releases` with the following
+schema:
+
+```sql
+CREATE TABLE compute_releases (
+  -- Unique release ID
+  -- N.B. Revision won't by synchronized across all regions, because all control planes are technically independent
+  -- services. We have the same situation with Helm releases as well because they could be deployed and rolled back
+  -- independently in different clusters.
+  revision BIGSERIAL PRIMARY KEY,
+  -- Numeric version of the compute image, e.g. 9057
+  version BIGINT NOT NULL,
+  -- Compute image tag, e.g. `release-9057`
+  tag TEXT NOT NULL,
+  -- Current release status. Currently, it will be a simple enum
+  -- * `deployed` -- release is deployed and used for new compute starts.
+  --                 Exactly one release can have this status at a time.
+  -- * `superseded` -- release has been replaced by a newer one.
+  -- But we can always extend it in the future when we need more statuses
+  -- for more complex deployment strategies.
+  status TEXT NOT NULL,
+  -- Any additional metadata for compute in the corresponding release
+  manifest JSONB NOT NULL,
+  -- Timestamp when release record was created in the control plane database
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  -- Timestamp when release deployment was finished
+  deployed_at TIMESTAMP
+);
+```
+
+We keep track of the old releases not only for the sake of audit, but also because we usually have ~30% of
+old computes started using the image from one of the previous releases. Yet, when users want to reconfigure
+them without restarting, the control plane needs to know what settings are applicable to them, so we also need
+information about the previous releases that are readily available. There could be some other auxiliary info
+needed as well: supported extensions, compute flags, etc.
+
+**N.B.** Here, we can end up in an ambiguous situation when the same compute image is deployed twice, e.g.,
+it was deployed once, then rolled back, and then deployed again, potentially with a different manifest. Yet,
+we could've started some computes with the first deployment and some with the second. Thus, when we need to
+look up the manifest for the compute by its image tag, we will see two records in the table with the same tag,
+but different revision numbers. We can assume that this could happen only in case of rollbacks, so we
+can just take the latest revision for the given tag.
+
+### Control plane: management API
+
+The control plane will implement new API methods to manage releases:
+
+1. `POST /management/api/v2/compute_releases` to create a new release. With payload
+
+   ```json
+    {
+      "version": 9057,
+      "tag": "release-9057",
+      "manifest": {}
+    }
+   ```
+
+   and response
+
+   ```json
+    {
+      "revision": 53,
+      "version": 9057,
+      "tag": "release-9057",
+      "status": "deployed",
+      "manifest": {},
+      "created_at": "2024-08-15T15:52:01.0000Z",
+      "deployed_at": "2024-08-15T15:52:01.0000Z",
+    }
+   ```
+
+   Here, we can actually mix-in custom (remote) extensions metadata into the `manifest`, so that the control plane
+   will get information about all available extensions not bundled into compute image. The corresponding
+   workflow in `neondatabase/build-custom-extensions` should produce it as an artifact and make
+   it accessible to the workflow in the `neondatabase/infra`. See the complete release flow below. Doing that,
+   we put a constraint that new custom extension requires new compute release, which is good for the safety,
+   but is not exactly what we want operational-wise (we want to be able to deploy new extensions without new
+   images). Yet, it can be solved incrementally: v0 -- do not do anything with extensions at all;
+   v1 -- put them into the same manifest; v2 -- make them separate entities with their own lifecycle.
+
+   **N.B.** This method is intended to be used in CI workflows, and CI/network can be flaky. It's reasonable
+   to assume that we could retry the request several times, even though it's already succeeded. Although it's
+   not a big deal to create several identical releases one-by-one, it's better to avoid it, so the control plane
+   should check if the latest release is identical and just return `304 Not Modified` in this case.
+
+2. `POST /management/api/v2/compute_releases/rollback` to rollback to any previously deployed release. With payload
+   including the revision of the release to rollback to:
+
+   ```json
+   {
+      "revision": 52
+   }
+   ```
+
+   Rollback marks the current release as `superseded` and creates a new release with all the same data as the
+   requested revision, but with a new revision number.
+
+   This rollback API is not strictly needed, as we can just use `infra` repo workflow to deploy any
+   available tag. It's still nice to have for on-call and any urgent matters, for example, if we need
+   to rollback and GitHub is down. It's much easier to specify only the revision number vs. crafting
+   all the necessary data for the new release payload.
+
+### Compute->storage compatibility tests
+
+In order to safely release new compute versions independently from storage, we need to ensure that the currently
+deployed storage is compatible with the new compute version. Currently, we maintain backward compatibility
+in storage, but newer computes may require a newer storage version.
+
+Remote end-to-end (e2e) tests [already accept](https://github.com/neondatabase/cloud/blob/e3468d433e0d73d02b7d7e738d027f509b522408/.github/workflows/testing.yml#L43-L48)
+`storage_image_tag` and `compute_image_tag` as separate inputs. That means that we could reuse e2e tests to ensure
+compatibility between storage and compute:
+
+1. Pick the latest storage release tag and use it as `storage_image_tag`.
+2. Pick a new compute tag built in the current compute release PR and use it as `compute_image_tag`.
+   Here, we should use a temporary ECR image tag, because the final tag will be known only after the release PR is merged.
+3. Trigger e2e tests as usual.
+
+### Release flow
+
+```mermaid
+  sequenceDiagram
+
+  actor oncall as Compute on-call person
+  participant neon as neondatabase/neon
+
+  box private
+    participant cloud as neondatabase/cloud
+    participant exts as neondatabase/build-custom-extensions
+    participant infra as neondatabase/infra
+  end
+
+  box cloud
+    participant preprod as Pre-prod control plane
+    participant prod as Production control plane
+    participant k8s as Compute k8s
+  end
+
+  oncall ->> neon: Open release PR into release-compute
+
+  activate neon
+  neon ->> cloud: CI: trigger e2e compatibility tests
+  activate cloud
+  cloud -->> neon: CI: e2e tests pass
+  deactivate cloud
+  neon ->> neon: CI: pass PR checks, get approvals
+  deactivate neon
+
+  oncall ->> neon: Merge release PR into release-compute
+
+  activate neon
+  neon ->> neon: CI: pass checks, build and push images
+  neon ->> exts: CI: trigger extensions build
+  activate exts
+  exts -->> neon: CI: extensions are ready
+  deactivate exts
+  neon ->> neon: CI: create release tag
+  neon ->> infra: Trigger release workflow using the produced tag
+  deactivate neon
+
+  activate infra
+  infra ->> infra: CI: pass checks
+  infra ->> preprod: Release new compute image to pre-prod automatically <br/> POST /management/api/v2/compute_releases
+  activate preprod
+  preprod -->> infra: 200 OK
+  deactivate preprod
+
+  infra ->> infra: CI: wait for per-region production deploy approvals
+  oncall ->> infra: CI: approve deploys region by region
+  infra ->> k8s: Prewarm new compute image
+  infra ->> prod: POST /management/api/v2/compute_releases
+  activate prod
+  prod -->> infra: 200 OK
+  deactivate prod
+  deactivate infra
+```
+
+## Further work
+
+As briefly mentioned in other sections, eventually, we would like to use more complex deployment strategies.
+For example, we can pass a fraction of the total compute starts that should use the new release. Then we can
+mark the release as `partial` or `canary` and monitor its performance. If everything is fine, we can promote it
+to `deployed` status. If not, we can roll back to the previous one.
+
+## Alternatives
+
+In theory, we can try using Helm as-is:
+
+1. Write a compute Helm chart. That will actually have only some config map, which the control plane can access and read.
+   N.B. We could reuse the control plane chart as well, but then it's not a fully independent release again and even more fuzzy.
+2. The control plane will read it and start using the new compute version for new starts.
+
+Drawbacks:
+
+1. Helm releases work best if the workload is controlled by the Helm chart itself. Then you can have different
+   deployment strategies like rolling update or canary or blue/green deployments. At Neon, the compute starts are controlled
+   by control plane, so it makes it much more tricky.
+2. Releases visibility will suffer, i.e. instead of a nice table in the control plane and Admin UI, we would need to use
+   `helm` cli and/or K8s UIs like K8sLens.
+3. We do not restart all computes shortly after the new version release. This means that for some features and compatibility
+   purpose (see above) control plane may need some auxiliary info from the previous releases.
+
+
 # Content from file ../neon/docs/rfcs/README.md:
 
 This directory contains Request for Comments documents, or RFCs, for
@@ -16255,7 +16739,7 @@ When all IDs are collected, manually go to every pageserver and detach/delete th
 In future, the cleanup tool may access pageservers directly, but now it's only console and S3 it has access to.
 
 
-# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-72f767ba3f2f194f/out/build/INSTALL.md:
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-6f5fc6627034d5aa/out/build/INSTALL.md:
 
 Building and installing a packaged release of jemalloc can be as simple as
 typing the following while in the root directory of the source tree:
@@ -16683,7 +17167,7 @@ prior to installation via the following command:
     nroff -man -t doc/jemalloc.3
 
 
-# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-72f767ba3f2f194f/out/build/TUNING.md:
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-6f5fc6627034d5aa/out/build/TUNING.md:
 
 This document summarizes the common approaches for performance fine tuning with
 jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
@@ -16816,7 +17300,7 @@ improve application performance with jemalloc.
     may reduce contention at the allocator level.
 
 
-# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-72f767ba3f2f194f/out/build/doc_internal/PROFILING_INTERNALS.md:
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-6f5fc6627034d5aa/out/build/doc_internal/PROFILING_INTERNALS.md:
 
 # jemalloc profiling
 This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
@@ -17639,6 +18123,698 @@ The nice story above is at least partially a lie. Initially, jeprof (copying its
 This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
 
 
+# Content from file ../neon/target/release/build/tikv-jemalloc-sys-85780710a32b3be5/out/build/INSTALL.md:
+
+Building and installing a packaged release of jemalloc can be as simple as
+typing the following while in the root directory of the source tree:
+
+    ./configure
+    make
+    make install
+
+If building from unpackaged developer sources, the simplest command sequence
+that might work is:
+
+    ./autogen.sh
+    make
+    make install
+
+You can uninstall the installed build artifacts like this:
+
+    make uninstall
+
+Notes:
+ - "autoconf" needs to be installed
+ - Documentation is built by the default target only when xsltproc is
+available.  Build will warn but not stop if the dependency is missing.
+
+
+## Advanced configuration
+
+The 'configure' script supports numerous options that allow control of which
+functionality is enabled, where jemalloc is installed, etc.  Optionally, pass
+any of the following arguments (not a definitive list) to 'configure':
+
+* `--help`
+
+    Print a definitive list of options.
+
+* `--prefix=<install-root-dir>`
+
+    Set the base directory in which to install.  For example:
+
+        ./configure --prefix=/usr/local
+
+    will cause files to be installed into /usr/local/include, /usr/local/lib,
+    and /usr/local/man.
+
+* `--with-version=(<major>.<minor>.<bugfix>-<nrev>-g<gid>|VERSION)`
+
+    The VERSION file is mandatory for successful configuration, and the
+    following steps are taken to assure its presence:
+    1) If --with-version=<major>.<minor>.<bugfix>-<nrev>-g<gid> is specified,
+       generate VERSION using the specified value.
+    2) If --with-version is not specified in either form and the source
+       directory is inside a git repository, try to generate VERSION via 'git
+       describe' invocations that pattern-match release tags.
+    3) If VERSION is missing, generate it with a bogus version:
+       0.0.0-0-g0000000000000000000000000000000000000000
+
+    Note that --with-version=VERSION bypasses (1) and (2), which simplifies
+    VERSION configuration when embedding a jemalloc release into another
+    project's git repository.
+
+* `--with-rpath=<colon-separated-rpath>`
+
+    Embed one or more library paths, so that libjemalloc can find the libraries
+    it is linked to.  This works only on ELF-based systems.
+
+* `--with-mangling=<map>`
+
+    Mangle public symbols specified in <map> which is a comma-separated list of
+    name:mangled pairs.
+
+    For example, to use ld's --wrap option as an alternative method for
+    overriding libc's malloc implementation, specify something like:
+
+      --with-mangling=malloc:__wrap_malloc,free:__wrap_free[...]
+
+    Note that mangling happens prior to application of the prefix specified by
+    --with-jemalloc-prefix, and mangled symbols are then ignored when applying
+    the prefix.
+
+* `--with-jemalloc-prefix=<prefix>`
+
+    Prefix all public APIs with <prefix>.  For example, if <prefix> is
+    "prefix_", API changes like the following occur:
+
+      malloc()         --> prefix_malloc()
+      malloc_conf      --> prefix_malloc_conf
+      /etc/malloc.conf --> /etc/prefix_malloc.conf
+      MALLOC_CONF      --> PREFIX_MALLOC_CONF
+
+    This makes it possible to use jemalloc at the same time as the system
+    allocator, or even to use multiple copies of jemalloc simultaneously.
+
+    By default, the prefix is "", except on OS X, where it is "je_".  On OS X,
+    jemalloc overlays the default malloc zone, but makes no attempt to actually
+    replace the "malloc", "calloc", etc. symbols.
+
+* `--without-export`
+
+    Don't export public APIs.  This can be useful when building jemalloc as a
+    static library, or to avoid exporting public APIs when using the zone
+    allocator on OSX.
+
+* `--with-private-namespace=<prefix>`
+
+    Prefix all library-private APIs with <prefix>je_.  For shared libraries,
+    symbol visibility mechanisms prevent these symbols from being exported, but
+    for static libraries, naming collisions are a real possibility.  By
+    default, <prefix> is empty, which results in a symbol prefix of je_ .
+
+* `--with-install-suffix=<suffix>`
+
+    Append <suffix> to the base name of all installed files, such that multiple
+    versions of jemalloc can coexist in the same installation directory.  For
+    example, libjemalloc.so.0 becomes libjemalloc<suffix>.so.0.
+
+* `--with-malloc-conf=<malloc_conf>`
+
+    Embed `<malloc_conf>` as a run-time options string that is processed prior to
+    the malloc_conf global variable, the /etc/malloc.conf symlink, and the
+    MALLOC_CONF environment variable.  For example, to change the default decay
+    time to 30 seconds:
+
+      --with-malloc-conf=decay_ms:30000
+
+* `--enable-debug`
+
+    Enable assertions and validation code.  This incurs a substantial
+    performance hit, but is very useful during application development.
+
+* `--disable-stats`
+
+    Disable statistics gathering functionality.  See the "opt.stats_print"
+    option documentation for usage details.
+
+* `--enable-prof`
+
+    Enable heap profiling and leak detection functionality.  See the "opt.prof"
+    option documentation for usage details.  When enabled, there are several
+    approaches to backtracing, and the configure script chooses the first one
+    in the following list that appears to function correctly:
+
+    + libunwind      (requires --enable-prof-libunwind)
+    + libgcc         (unless --disable-prof-libgcc)
+    + gcc intrinsics (unless --disable-prof-gcc)
+
+* `--enable-prof-libunwind`
+
+    Use the libunwind library (http://www.nongnu.org/libunwind/) for stack
+    backtracing.
+
+* `--disable-prof-libgcc`
+
+    Disable the use of libgcc's backtracing functionality.
+
+* `--disable-prof-gcc`
+
+    Disable the use of gcc intrinsics for backtracing.
+
+* `--with-static-libunwind=<libunwind.a>`
+
+    Statically link against the specified libunwind.a rather than dynamically
+    linking with -lunwind.
+
+* `--disable-fill`
+
+    Disable support for junk/zero filling of memory.  See the "opt.junk" and
+    "opt.zero" option documentation for usage details.
+
+* `--disable-zone-allocator`
+
+    Disable zone allocator for Darwin.  This means jemalloc won't be hooked as
+    the default allocator on OSX/iOS.
+
+* `--enable-utrace`
+
+    Enable utrace(2)-based allocation tracing.  This feature is not broadly
+    portable (FreeBSD has it, but Linux and OS X do not).
+
+* `--enable-xmalloc`
+
+    Enable support for optional immediate termination due to out-of-memory
+    errors, as is commonly implemented by "xmalloc" wrapper function for malloc.
+    See the "opt.xmalloc" option documentation for usage details.
+
+* `--enable-lazy-lock`
+
+    Enable code that wraps pthread_create() to detect when an application
+    switches from single-threaded to multi-threaded mode, so that it can avoid
+    mutex locking/unlocking operations while in single-threaded mode.  In
+    practice, this feature usually has little impact on performance unless
+    thread-specific caching is disabled.
+
+* `--disable-cache-oblivious`
+
+    Disable cache-oblivious large allocation alignment by default, for large
+    allocation requests with no alignment constraints.  If this feature is
+    disabled, all large allocations are page-aligned as an implementation
+    artifact, which can severely harm CPU cache utilization.  However, the
+    cache-oblivious layout comes at the cost of one extra page per large
+    allocation, which in the most extreme case increases physical memory usage
+    for the 16 KiB size class to 20 KiB.
+
+* `--disable-syscall`
+
+    Disable use of syscall(2) rather than {open,read,write,close}(2).  This is
+    intended as a workaround for systems that place security limitations on
+    syscall(2).
+
+* `--disable-cxx`
+
+    Disable C++ integration.  This will cause new and delete operator
+    implementations to be omitted.
+
+* `--with-xslroot=<path>`
+
+    Specify where to find DocBook XSL stylesheets when building the
+    documentation.
+
+* `--with-lg-page=<lg-page>`
+
+    Specify the base 2 log of the allocator page size, which must in turn be at
+    least as large as the system page size.  By default the configure script
+    determines the host's page size and sets the allocator page size equal to
+    the system page size, so this option need not be specified unless the
+    system page size may change between configuration and execution, e.g. when
+    cross compiling.
+
+* `--with-lg-hugepage=<lg-hugepage>`
+
+    Specify the base 2 log of the system huge page size.  This option is useful
+    when cross compiling, or when overriding the default for systems that do
+    not explicitly support huge pages.
+
+* `--with-lg-quantum=<lg-quantum>`
+
+    Specify the base 2 log of the minimum allocation alignment.  jemalloc needs
+    to know the minimum alignment that meets the following C standard
+    requirement (quoted from the April 12, 2011 draft of the C11 standard):
+
+    >  The pointer returned if the allocation succeeds is suitably aligned so
+      that it may be assigned to a pointer to any type of object with a
+      fundamental alignment requirement and then used to access such an object
+      or an array of such objects in the space allocated [...]
+
+    This setting is architecture-specific, and although jemalloc includes known
+    safe values for the most commonly used modern architectures, there is a
+    wrinkle related to GNU libc (glibc) that may impact your choice of
+    <lg-quantum>.  On most modern architectures, this mandates 16-byte
+    alignment (<lg-quantum>=4), but the glibc developers chose not to meet this
+    requirement for performance reasons.  An old discussion can be found at
+    <https://sourceware.org/bugzilla/show_bug.cgi?id=206> .  Unlike glibc,
+    jemalloc does follow the C standard by default (caveat: jemalloc
+    technically cheats for size classes smaller than the quantum), but the fact
+    that Linux systems already work around this allocator noncompliance means
+    that it is generally safe in practice to let jemalloc's minimum alignment
+    follow glibc's lead.  If you specify `--with-lg-quantum=3` during
+    configuration, jemalloc will provide additional size classes that are not
+    16-byte-aligned (24, 40, and 56).
+
+* `--with-lg-vaddr=<lg-vaddr>`
+
+    Specify the number of significant virtual address bits.  By default, the
+    configure script attempts to detect virtual address size on those platforms
+    where it knows how, and picks a default otherwise.  This option may be
+    useful when cross-compiling.
+
+* `--disable-initial-exec-tls`
+
+    Disable the initial-exec TLS model for jemalloc's internal thread-local
+    storage (on those platforms that support explicit settings).  This can allow
+    jemalloc to be dynamically loaded after program startup (e.g. using dlopen).
+    Note that in this case, there will be two malloc implementations operating
+    in the same process, which will almost certainly result in confusing runtime
+    crashes if pointers leak from one implementation to the other.
+
+* `--disable-libdl`
+
+    Disable the usage of libdl, namely dlsym(3) which is required by the lazy
+    lock option.  This can allow building static binaries.
+
+The following environment variables (not a definitive list) impact configure's
+behavior:
+
+* `CFLAGS="?"`
+* `CXXFLAGS="?"`
+
+    Pass these flags to the C/C++ compiler.  Any flags set by the configure
+    script are prepended, which means explicitly set flags generally take
+    precedence.  Take care when specifying flags such as -Werror, because
+    configure tests may be affected in undesirable ways.
+
+* `EXTRA_CFLAGS="?"`
+* `EXTRA_CXXFLAGS="?"`
+
+    Append these flags to CFLAGS/CXXFLAGS, without passing them to the
+    compiler(s) during configuration.  This makes it possible to add flags such
+    as -Werror, while allowing the configure script to determine what other
+    flags are appropriate for the specified configuration.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.  Note that CFLAGS is not passed to
+    'cpp' when 'configure' is looking for include files, so you must use
+    CPPFLAGS instead if you need to help 'configure' find header files.
+
+* `LD_LIBRARY_PATH="?"`
+
+    'ld' uses this colon-separated list to find libraries.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    'configure' uses this to find programs.
+
+In some cases it may be necessary to work around configuration results that do
+not match reality.  For example, Linux 4.5 added support for the MADV_FREE flag
+to madvise(2), which can cause problems if building on a host with MADV_FREE
+support and deploying to a target without.  To work around this, use a cache
+file to override the relevant configuration variable defined in configure.ac,
+e.g.:
+
+    echo "je_cv_madv_free=no" > config.cache && ./configure -C
+
+
+## Advanced compilation
+
+To build only parts of jemalloc, use the following targets:
+
+    build_lib_shared
+    build_lib_static
+    build_lib
+    build_doc_html
+    build_doc_man
+    build_doc
+
+To install only parts of jemalloc, use the following targets:
+
+    install_bin
+    install_include
+    install_lib_shared
+    install_lib_static
+    install_lib_pc
+    install_lib
+    install_doc_html
+    install_doc_man
+    install_doc
+
+To clean up build results to varying degrees, use the following make targets:
+
+    clean
+    distclean
+    relclean
+
+
+## Advanced installation
+
+Optionally, define make variables when invoking make, including (not
+exclusively):
+
+* `INCLUDEDIR="?"`
+
+    Use this as the installation prefix for header files.
+
+* `LIBDIR="?"`
+
+    Use this as the installation prefix for libraries.
+
+* `MANDIR="?"`
+
+    Use this as the installation prefix for man pages.
+
+* `DESTDIR="?"`
+
+    Prepend DESTDIR to INCLUDEDIR, LIBDIR, DATADIR, and MANDIR.  This is useful
+    when installing to a different path than was specified via --prefix.
+
+* `CC="?"`
+
+    Use this to invoke the C compiler.
+
+* `CFLAGS="?"`
+
+    Pass these flags to the compiler.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    Use this to search for programs used during configuration and building.
+
+
+## Development
+
+If you intend to make non-trivial changes to jemalloc, use the 'autogen.sh'
+script rather than 'configure'.  This re-generates 'configure', enables
+configuration dependency rules, and enables re-generation of automatically
+generated source files.
+
+The build system supports using an object directory separate from the source
+tree.  For example, you can create an 'obj' directory, and from within that
+directory, issue configuration and build commands:
+
+    autoconf
+    mkdir obj
+    cd obj
+    ../configure --enable-autogen
+    make
+
+
+## Documentation
+
+The manual page is generated in both html and roff formats.  Any web browser
+can be used to view the html manual.  The roff manual page can be formatted
+prior to installation via the following command:
+
+    nroff -man -t doc/jemalloc.3
+
+
+# Content from file ../neon/target/release/build/tikv-jemalloc-sys-85780710a32b3be5/out/build/TUNING.md:
+
+This document summarizes the common approaches for performance fine tuning with
+jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
+reasonably well in practice, and most applications should not have to tune any
+options. However, in order to cover a wide range of applications and avoid
+pathological cases, the default setting is sometimes kept conservative and
+suboptimal, even for many common workloads.  When jemalloc is properly tuned for
+a specific application / workload, it is common to improve system level metrics
+by a few percent, or make favorable trade-offs.
+
+
+## Notable runtime options for performance tuning
+
+Runtime options can be set via
+[malloc_conf](http://jemalloc.net/jemalloc.3.html#tuning).
+
+* [background_thread](http://jemalloc.net/jemalloc.3.html#background_thread)
+
+    Enabling jemalloc background threads generally improves the tail latency for
+    application threads, since unused memory purging is shifted to the dedicated
+    background threads.  In addition, unintended purging delay caused by
+    application inactivity is avoided with background threads.
+
+    Suggested: `background_thread:true` when jemalloc managed threads can be
+    allowed.
+
+* [metadata_thp](http://jemalloc.net/jemalloc.3.html#opt.metadata_thp)
+
+    Allowing jemalloc to utilize transparent huge pages for its internal
+    metadata usually reduces TLB misses significantly, especially for programs
+    with large memory footprint and frequent allocation / deallocation
+    activities.  Metadata memory usage may increase due to the use of huge
+    pages.
+
+    Suggested for allocation intensive programs: `metadata_thp:auto` or
+    `metadata_thp:always`, which is expected to improve CPU utilization at a
+    small memory cost.
+
+* [dirty_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.dirty_decay_ms) and
+  [muzzy_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.muzzy_decay_ms)
+
+    Decay time determines how fast jemalloc returns unused pages back to the
+    operating system, and therefore provides a fairly straightforward trade-off
+    between CPU and memory usage.  Shorter decay time purges unused pages faster
+    to reduces memory usage (usually at the cost of more CPU cycles spent on
+    purging), and vice versa.
+
+    Suggested: tune the values based on the desired trade-offs.
+
+* [narenas](http://jemalloc.net/jemalloc.3.html#opt.narenas)
+
+    By default jemalloc uses multiple arenas to reduce internal lock contention.
+    However high arena count may also increase overall memory fragmentation,
+    since arenas manage memory independently.  When high degree of parallelism
+    is not expected at the allocator level, lower number of arenas often
+    improves memory usage.
+
+    Suggested: if low parallelism is expected, try lower arena count while
+    monitoring CPU and memory usage.
+
+* [percpu_arena](http://jemalloc.net/jemalloc.3.html#opt.percpu_arena)
+
+    Enable dynamic thread to arena association based on running CPU.  This has
+    the potential to improve locality, e.g. when thread to CPU affinity is
+    present.
+    
+    Suggested: try `percpu_arena:percpu` or `percpu_arena:phycpu` if
+    thread migration between processors is expected to be infrequent.
+
+Examples:
+
+* High resource consumption application, prioritizing CPU utilization:
+
+    `background_thread:true,metadata_thp:auto` combined with relaxed decay time
+    (increased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:30000,muzzy_decay_ms:30000`).
+
+* High resource consumption application, prioritizing memory usage:
+
+    `background_thread:true,tcache_max:4096` combined with shorter decay time
+    (decreased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:5000,muzzy_decay_ms:5000`), and lower arena count
+    (e.g. number of CPUs).
+
+* Low resource consumption application:
+
+    `narenas:1,tcache_max:1024` combined with shorter decay time (decreased
+    `dirty_decay_ms` and / or `muzzy_decay_ms`,e.g.
+    `dirty_decay_ms:1000,muzzy_decay_ms:0`).
+
+* Extremely conservative -- minimize memory usage at all costs, only suitable when
+allocation activity is very rare:
+
+    `narenas:1,tcache:false,dirty_decay_ms:0,muzzy_decay_ms:0`
+
+Note that it is recommended to combine the options with `abort_conf:true` which
+aborts immediately on illegal options.
+
+## Beyond runtime options
+
+In addition to the runtime options, there are a number of programmatic ways to
+improve application performance with jemalloc.
+
+* [Explicit arenas](http://jemalloc.net/jemalloc.3.html#arenas.create)
+
+    Manually created arenas can help performance in various ways, e.g. by
+    managing locality and contention for specific usages.  For example,
+    applications can explicitly allocate frequently accessed objects from a
+    dedicated arena with
+    [mallocx()](http://jemalloc.net/jemalloc.3.html#MALLOCX_ARENA) to improve
+    locality.  In addition, explicit arenas often benefit from individually
+    tuned options, e.g. relaxed [decay
+    time](http://jemalloc.net/jemalloc.3.html#arena.i.dirty_decay_ms) if
+    frequent reuse is expected.
+
+* [Extent hooks](http://jemalloc.net/jemalloc.3.html#arena.i.extent_hooks)
+
+    Extent hooks allow customization for managing underlying memory.  One use
+    case for performance purpose is to utilize huge pages -- for example,
+    [HHVM](https://github.com/facebook/hhvm/blob/master/hphp/util/alloc.cpp)
+    uses explicit arenas with customized extent hooks to manage 1GB huge pages
+    for frequently accessed data, which reduces TLB misses significantly.
+
+* [Explicit thread-to-arena
+  binding](http://jemalloc.net/jemalloc.3.html#thread.arena)
+
+    It is common for some threads in an application to have different memory
+    access / allocation patterns.  Threads with heavy workloads often benefit
+    from explicit binding, e.g. binding very active threads to dedicated arenas
+    may reduce contention at the allocator level.
+
+
+# Content from file ../neon/target/release/build/tikv-jemalloc-sys-85780710a32b3be5/out/build/doc_internal/PROFILING_INTERNALS.md:
+
+# jemalloc profiling
+This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
+
+Note: this document is markdown with embedded LaTeX; different markdown renderers may not produce the expected output.  Viewing with `pandoc -s PROFILING_INTERNALS.md -o PROFILING_INTERNALS.pdf` is recommended.
+
+## Some tricks in our implementation toolbag
+
+### Sampling
+Recording our metadata is quite expensive; we need to walk up the stack to get a stack trace. On top of that, we need to allocate storage to record that stack trace, and stick it somewhere where a profile-dumping call can find it. That call might happen on another thread, so we'll probably need to take a lock to do so. These costs are quite large compared to the average cost of an allocation. To manage this, we'll only sample some fraction of allocations. This will miss some of them, so our data will be incomplete, but we'll try to make up for it. We can tune our sampling rate to balance accuracy and performance.
+
+### Fast Bernoulli sampling
+Compared to our fast paths, even a `coinflip(p)` function can be quite expensive. Having to do a random-number generation and some floating point operations would be a sizeable relative cost. However (as pointed out in [[Vitter, 1987](https://dl.acm.org/doi/10.1145/23002.23003)]), if we can orchestrate our algorithm so that many of our `coinflip` calls share their parameter value, we can do better. We can sample from the geometric distribution, and initialize a counter with the result. When the counter hits 0, the `coinflip` function returns true (and reinitializes its internal counter).
+This can let us do a random-number generation once per (logical) coinflip that comes up heads, rather than once per (logical) coinflip. Since we expect to sample relatively rarely, this can be a large win.
+
+### Fast-path / slow-path thinking
+Most programs have a skewed distribution of allocations. Smaller allocations are much more frequent than large ones, but shorter lived and less common as a fraction of program memory. "Small" and "large" are necessarily sort of fuzzy terms, but if we define "small" as "allocations jemalloc puts into slabs" and "large" as the others, then it's not uncommon for small allocations to be hundreds of times more frequent than large ones, but take up around half the amount of heap space as large ones. Moreover, small allocations tend to be much cheaper than large ones (often by a factor of 20-30): they're more likely to hit in thread caches, less likely to have to do an mmap, and cheaper to fill (by the user) once the allocation has been returned.
+
+## An unbiased estimator of space consumption from (almost) arbitrary sampling strategies
+Suppose we have a sampling strategy that meets the following criteria:
+
+  - One allocation being sampled is independent of other allocations being sampled.
+  - Each allocation has a non-zero probability of being sampled.
+
+We can then estimate the bytes in live allocations through some particular stack trace as:
+
+$$ \sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]} $$
+
+where the sum ranges over some index variable of live allocations from that stack, $S_i$ is the size of the $i$'th allocation, and $I_i$ is an indicator random variable for whether or not the $i'th$ allocation is sampled. $S_i$ and $\mathrm{E}[I_i]$ are constants (the program allocations are fixed; the random variables are the sampling decisions), so taking the expectation we get
+
+$$ \sum_i S_i \mathrm{E}[I_i] \frac{1}{\mathrm{E}[I_i]}.$$
+
+This is of course $\sum_i S_i$, as we want (and, a similar calculation could be done for allocation counts as well).
+This is a fairly general strategy; note that while we require that sampling decisions be independent of one another's outcomes, they don't have to be independent of previous allocations, total bytes allocated, etc. You can imagine strategies that:
+
+  - Sample allocations at program startup at a higher rate than subsequent allocations
+  - Sample even-indexed allocations more frequently than odd-indexed ones (so long as no allocation has zero sampling probability)
+  - Let threads declare themselves as high-sampling-priority, and sample their allocations at an increased rate.
+
+These can all be fit into this framework to give an unbiased estimator.
+
+## Evaluating sampling strategies
+Not all strategies for picking allocations to sample are equally good, of course. Among unbiased estimators, the lower the variance, the lower the mean squared error. Using the estimator above, the variance is:
+
+$$
+\begin{aligned}
+& \mathrm{Var}[\sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]}]  \\
+=& \sum_i \mathrm{Var}[S_i I_i \frac{1}{\mathrm{E}[I_i]}] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{E}[I_i](1 - \mathrm{E}[I_i]) \\
+=& \sum_i S_i^2 \frac{1 - \mathrm{E}[I_i]}{\mathrm{E}[I_i]}.
+\end{aligned}
+$$
+
+We can use this formula to compare various strategy choices. All else being equal, lower-variance strategies are better.
+
+## Possible sampling strategies
+Because of the desire to avoid the fast-path costs, we'd like to use our Bernoulli trick if possible. There are two obvious counters to use: a coinflip per allocation, and a coinflip per byte allocated.
+
+### Bernoulli sampling per-allocation
+An obvious strategy is to pick some large $N$, and give each allocation a $1/N$ chance of being sampled. This would let us use our Bernoulli-via-Geometric trick. Using the formula from above, we can compute the variance as:
+
+$$ \sum_i S_i^2 \frac{1 - \frac{1}{N}}{\frac{1}{N}}  = (N-1) \sum_i S_i^2.$$
+
+That is, an allocation of size $Z$ contributes a term of $(N-1)Z^2$ to the variance.
+
+### Bernoulli sampling per-byte
+Another option we have is to pick some rate $R$, and give each byte a $1/R$ chance of being picked for sampling (at which point we would sample its contained allocation). The chance of an allocation of size $Z$ being sampled, then, is
+
+$$1-(1-\frac{1}{R})^{Z}$$
+
+and an allocation of size $Z$ contributes a term of
+
+$$Z^2 \frac{(1-\frac{1}{R})^{Z}}{1-(1-\frac{1}{R})^{Z}}.$$
+
+In practical settings, $R$ is large, and so this is well-approximated by
+
+$$Z^2 \frac{e^{-Z/R}}{1 - e^{-Z/R}} .$$
+
+Just to get a sense of the dynamics here, let's look at the behavior for various values of $Z$. When $Z$ is small relative to $R$, we can use $e^z \approx 1 + x$, and conclude that the variance contributed by a small-$Z$ allocation is around
+
+$$Z^2 \frac{1-Z/R}{Z/R} \approx RZ.$$
+
+When $Z$ is comparable to $R$, the variance term is near $Z^2$ (we have $\frac{e^{-Z/R}}{1 - e^{-Z/R}} = 1$ when $Z/R = \ln 2 \approx 0.693$). When $Z$ is large relative to $R$, the variance term goes to zero.
+
+## Picking a sampling strategy
+The fast-path/slow-path dynamics of allocation patterns point us towards the per-byte sampling approach:
+
+  - The quadratic increase in variance per allocation in the first approach is quite costly when heaps have a non-negligible portion of their bytes in those allocations, which is practically often the case.
+  - The Bernoulli-per-byte approach shifts more of its samples towards large allocations, which are already a slow-path.
+  - We drive several tickers (e.g. tcache gc) by bytes allocated, and report bytes-allocated as a user-visible statistic, so we have to do all the necessary bookkeeping anyways.
+
+Indeed, this is the approach we use in jemalloc. Our heap dumps record the size of the allocation and the sampling rate $R$, and jeprof unbiases by dividing by $1 - e^{-Z/R}$.  The framework above would suggest dividing by $1-(1-1/R)^Z$; instead, we use the fact that $R$ is large in practical situations, and so $e^{-Z/R}$ is a good approximation (and faster to compute).  (Equivalently, we may also see this as the factor that falls out from viewing sampling as a Poisson process directly).
+
+## Consequences for heap dump consumers
+Using this approach means that there are a few things users need to be aware of.
+
+### Stack counts are not proportional to allocation frequencies
+If one stack appears twice as often as another, this by itself does not imply that it allocates twice as often. Consider the case in which there are only two types of allocating call stacks in a program. Stack A allocates 8 bytes, and occurs a million times in a program. Stack B allocates 8 MB, and occurs just once in a program. If our sampling rate $R$ is about 1MB, we expect stack A to show up about 8 times, and stack B to show up once. Stack A isn't 8 times more frequent than stack B, though; it's a million times more frequent.
+
+### Aggregation must be done after unbiasing samples
+Some tools manually parse heap dump output, and aggregate across stacks (or across program runs) to provide wider-scale data analyses. When doing this aggregation, though, it's important to unbias-and-then-sum, rather than sum-and-then-unbias. Reusing our example from the previous section: suppose we collect heap dumps of the program from a million machines. We then have 8 million occurs of stack A (each of 8 bytes), and a million occurrences of stack B (each of 8 MB). If we sum first, we'll attribute 64 MB to stack A, and 8 TB to stack B. Unbiasing changes these numbers by an infinitesimal amount, so that sum-then-unbias dramatically underreports the amount of memory allocated by stack A.
+
+## An avenue for future exploration
+While the framework we laid out above is pretty general, as an engineering decision we're only interested in fairly simple approaches (i.e. ones for which the chance of an allocation being sampled depends only on its size). Our job is then: for each size class $Z$, pick a probability $p_Z$ that an allocation of that size will be sampled. We made some handwave-y references to statistical distributions to justify our choices, but there's no reason we need to pick them that way. Any set of non-zero probabilities is a valid choice.
+The real limiting factor in our ability to reduce estimator variance is that fact that sampling is expensive; we want to make sure we only do it on a small fraction of allocations. Our goal, then, is to pick the $p_Z$ to minimize variance given some maximum sampling rate $P$. If we define $a_Z$ to be the fraction of allocations of size $Z$, and $l_Z$ to be the fraction of allocations of size $Z$ still alive at the time of a heap dump, then we can phrase this as an optimization problem over the choices of $p_Z$:
+
+Minimize
+
+$$ \sum_Z Z^2 l_Z \frac{1-p_Z}{p_Z} $$
+
+subject to
+
+$$ \sum_Z a_Z p_Z \leq P $$
+
+Ignoring a term that doesn't depend on $p_Z$, the objective is minimized whenever
+
+$$ \sum_Z Z^2 l_Z \frac{1}{p_Z} $$
+
+is. For a particular program, $l_Z$ and $a_Z$ are just numbers that can be obtained (exactly) from existing stats introspection facilities, and we have a fairly tractable convex optimization problem (it can be framed as a second-order cone program). It would be interesting to evaluate, for various common allocation patterns, how well our current strategy adapts. Do our actual choices for $p_Z$ closely correspond to the optimal ones? How close is the variance of our choices to the variance of the optimal strategy?
+You can imagine an implementation that actually goes all the way, and makes $p_Z$ selections a tuning parameter. I don't think this is a good use of development time for the foreseeable future; but I do wonder about the answers to some of these questions.
+
+## Implementation realities
+
+The nice story above is at least partially a lie. Initially, jeprof (copying its logic from pprof)  had the sum-then-unbias error described above.  The current version of jemalloc does the unbiasing step on a per-allocation basis internally, so that we're always tracking what the unbiased numbers "should" be.  The problem is, actually surfacing those unbiased numbers would require a breaking change to jeprof (and the various already-deployed tools that have copied its logic). Instead, we use a little bit more trickery. Since we know at dump time the numbers we want jeprof to report, we simply choose the values we'll output so that the jeprof numbers will match the true numbers.  The math is described in `src/prof_data.c` (where the only cleverness is a change of variables that lets the exponentials fall out).
+
+This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
+
+
 # Content from file ../neon/test_runner/README.md:
 
 ## Neon test runner
@@ -17707,10 +18883,12 @@ By default performance tests are excluded. To run them explicitly pass performan
 Useful environment variables:
 
 `NEON_BIN`: The directory where neon binaries can be found.
+`COMPATIBILITY_NEON_BIN`: The directory where the previous version of Neon binaries can be found
 `POSTGRES_DISTRIB_DIR`: The directory where postgres distribution can be found.
 Since pageserver supports several postgres versions, `POSTGRES_DISTRIB_DIR` must contain
 a subdirectory for each version with naming convention `v{PG_VERSION}/`.
 Inside that dir, a `bin/postgres` binary should be present.
+`COMPATIBILITY_POSTGRES_DISTRIB_DIR`: The directory where the prevoius version of postgres distribution can be found.
 `DEFAULT_PG_VERSION`: The version of Postgres to use,
 This is used to construct full path to the postgres binaries.
 Format is 2-digit major version nubmer, i.e. `DEFAULT_PG_VERSION=16`
@@ -17937,6 +19115,16 @@ def test_foobar2(neon_env_builder: NeonEnvBuilder):
     client.timeline_detail(tenant_id=tenant_id, timeline_id=timeline_id)
 ```
 
+All the test which rely on NeonEnvBuilder, can check the various version combinations of the components.
+To do this yuo may want to add the parametrize decorator with the function fixtures.utils.allpairs_versions()
+E.g.
+
+```python
+@pytest.mark.parametrize(**fixtures.utils.allpairs_versions())
+def test_something(
+...
+```
+
 For more information about pytest fixtures, see https://docs.pytest.org/en/stable/fixture.html
 
 At the end of a test, all the nodes in the environment are automatically stopped, so you
@@ -18131,5 +19319,30 @@ To add a new SQL test:
 That's it.
 For more complex tests see PostgreSQL regression tests in src/test/regress.
 These work basically the same.
+
+
+# Content from file ../neon/vendor/postgres-v17/README.md:
+
+PostgreSQL Database Management System
+=====================================
+
+This directory contains the source code distribution of the PostgreSQL
+database management system.
+
+PostgreSQL is an advanced object-relational database management system
+that supports an extended subset of the SQL standard, including
+transactions, foreign keys, subqueries, triggers, user-defined types
+and functions.  This distribution also contains C language bindings.
+
+Copyright and license information can be found in the file COPYRIGHT.
+
+General documentation about this version of PostgreSQL can be found at
+<https://www.postgresql.org/docs/17/>.  In particular, information
+about building PostgreSQL from the source code can be found at
+<https://www.postgresql.org/docs/17/installation.html>.
+
+The latest version of this software, and related software, may be
+obtained at <https://www.postgresql.org/download/>.  For more information
+look at our web site located at <https://www.postgresql.org/>.
 
 
