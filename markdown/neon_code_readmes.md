@@ -222,7 +222,7 @@ make -j`sysctl -n hw.logicalcpu` -s
 To run the `psql` client, install the `postgresql-client` package or modify `PATH` and `LD_LIBRARY_PATH` to include `pg_install/bin` and `pg_install/lib`, respectively.
 
 To run the integration tests or Python scripts (not required to use the code), install
-Python (3.9 or higher), and install the python3 packages using `./scripts/pysync` (requires [poetry>=1.8](https://python-poetry.org/)) in the project directory.
+Python (3.11 or higher), and install the python3 packages using `./scripts/pysync` (requires [poetry>=1.8](https://python-poetry.org/)) in the project directory.
 
 
 #### Running neon database
@@ -14109,7 +14109,7 @@ generating the basebackup by scanning the `REPL_ORIGIN_KEY_PREFIX` keyspace.
 There are two places we need to read the aux files from the pageserver:
 
 * On the write path, when the compute node adds an aux file to the pageserver, we will retrieve the key from the storage, append the file to the hashed key, and write it back. The current `get` API already supports that.
-*  We use the vectored get API to retrieve all aux files during generating the basebackup. Because we need to scan a sparse keyspace, we slightly modified the vectored get path. The vectorized API will attempt to retrieve every single key within the requested key range, and therefore, we modified it in a way that keys within `NON_INHERITED_SPARSE_RANGE` will not trigger missing key error.
+*  We use the vectored get API to retrieve all aux files during generating the basebackup. Because we need to scan a sparse keyspace, we slightly modified the vectored get path. The vectorized API used to always attempt to retrieve every single key within the requested key range, and therefore, we modified it in a way that keys within `NON_INHERITED_SPARSE_RANGE` will not trigger missing key error. Furthermore, as aux file reads usually need all layer files intersecting with that key range within the branch and cover a big keyspace, it incurs large overhead for tracking keyspaces that have not been read. Therefore, for sparse keyspaces, we [do not track](https://github.com/neondatabase/neon/pull/9631) `ummapped_keyspace`.
 
 ## Compaction and Image Layer Generation
 
@@ -15295,21 +15295,21 @@ so manual installation of dependencies is not recommended.
 A single virtual environment with all dependencies is described in the single `Pipfile`.
 
 ### Prerequisites
-- Install Python 3.9 (the minimal supported version) or greater.
+- Install Python 3.11 (the minimal supported version) or greater.
     - Our setup with poetry should work with newer python versions too. So feel free to open an issue with a `c/test-runner` label if something doesn't work as expected.
-    - If you have some trouble with other version you can resolve it by installing Python 3.9 separately, via [pyenv](https://github.com/pyenv/pyenv) or via system package manager e.g.:
+    - If you have some trouble with other version you can resolve it by installing Python 3.11 separately, via [pyenv](https://github.com/pyenv/pyenv) or via system package manager e.g.:
       ```bash
       # In Ubuntu
       sudo add-apt-repository ppa:deadsnakes/ppa
       sudo apt update
-      sudo apt install python3.9
+      sudo apt install python3.11
       ```
 - Install `poetry`
     - Exact version of `poetry` is not important, see installation instructions available at poetry's [website](https://python-poetry.org/docs/#installation).
 - Install dependencies via `./scripts/pysync`.
     - Note that CI uses specific Python version (look for `PYTHON_VERSION` [here](https://github.com/neondatabase/docker-images/blob/main/rust/Dockerfile))
       so if you have different version some linting tools can yield different result locally vs in the CI.
-    - You can explicitly specify which Python to use by running `poetry env use /path/to/python`, e.g. `poetry env use python3.9`.
+    - You can explicitly specify which Python to use by running `poetry env use /path/to/python`, e.g. `poetry env use python3.11`.
       This may also disable the `The currently activated Python version X.Y.Z is not supported by the project` warning.
 
 Run `poetry shell` to activate the virtual environment.
@@ -16208,6 +16208,16 @@ PostgreSQL file formats or WAL layout, that knowledge should be
 encapsulated in this module.
 
 
+# Content from file ../neon/libs/proxy/README.md:
+
+This directory contains libraries that are specific for proxy.
+
+Currently, it contains a signficant fork/refactoring of rust-postgres that no longer reflects the API
+of the original library. Since it was so significant, it made sense to upgrade it to it's own set of libraries.
+
+Proxy needs unique access to the protocol, which explains why such heavy modifications were necessary.
+
+
 # Content from file ../neon/libs/tenant_size_model/README.md:
 
 # Logical size + WAL pricing
@@ -16537,12 +16547,32 @@ cargo bench --package safekeeper --bench receive_wal process_msg/fsync=false
 
 # List available benchmarks.
 cargo bench --package safekeeper --benches -- --list
+
+# Generate flamegraph profiles using pprof-rs, profiling for 10 seconds.
+# Output in target/criterion/*/profile/flamegraph.svg.
+cargo bench --package safekeeper --bench receive_wal process_msg/fsync=false --profile-time 10
 ```
 
 Additional charts and statistics are available in `target/criterion/report/index.html`.
 
 Benchmarks are automatically compared against the previous run. To compare against other runs, see
 `--baseline` and `--save-baseline`.
+
+# Content from file ../neon/safekeeper/spec/readme.md:
+
+The specifications, models and results of running of them of the compute <->
+safekeepers consensus algorithm for committing WAL on the fleet of safekeepers.
+Following Paxos parlance, compute which writes WAL is called (WAL) proposer here
+and safekeepers which persist it are called (WAL) acceptors.
+
+Directory structure:
+- Use modelcheck.sh to run TLC.
+- MC*.tla contains bits of TLA+ needed for TLC like constraining the state space, and models/ actual models.
+- Other .tla files are the actual specs.
+
+Structure is partially borrowed from
+[logless-reconfig](https://github.com/will62794/logless-reconfig), thanks to it.
+
 
 # Content from file ../neon/scripts/sk_cleanup_tenants/readme.md:
 
@@ -16763,6 +16793,698 @@ Note that some tenants/timelines could be marked as deleted in console, but cons
 
 When all IDs are collected, manually go to every pageserver and detach/delete the tenant/timeline.
 In future, the cleanup tool may access pageservers directly, but now it's only console and S3 it has access to.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-0b8ef2fcad60da9d/out/build/INSTALL.md:
+
+Building and installing a packaged release of jemalloc can be as simple as
+typing the following while in the root directory of the source tree:
+
+    ./configure
+    make
+    make install
+
+If building from unpackaged developer sources, the simplest command sequence
+that might work is:
+
+    ./autogen.sh
+    make
+    make install
+
+You can uninstall the installed build artifacts like this:
+
+    make uninstall
+
+Notes:
+ - "autoconf" needs to be installed
+ - Documentation is built by the default target only when xsltproc is
+available.  Build will warn but not stop if the dependency is missing.
+
+
+## Advanced configuration
+
+The 'configure' script supports numerous options that allow control of which
+functionality is enabled, where jemalloc is installed, etc.  Optionally, pass
+any of the following arguments (not a definitive list) to 'configure':
+
+* `--help`
+
+    Print a definitive list of options.
+
+* `--prefix=<install-root-dir>`
+
+    Set the base directory in which to install.  For example:
+
+        ./configure --prefix=/usr/local
+
+    will cause files to be installed into /usr/local/include, /usr/local/lib,
+    and /usr/local/man.
+
+* `--with-version=(<major>.<minor>.<bugfix>-<nrev>-g<gid>|VERSION)`
+
+    The VERSION file is mandatory for successful configuration, and the
+    following steps are taken to assure its presence:
+    1) If --with-version=<major>.<minor>.<bugfix>-<nrev>-g<gid> is specified,
+       generate VERSION using the specified value.
+    2) If --with-version is not specified in either form and the source
+       directory is inside a git repository, try to generate VERSION via 'git
+       describe' invocations that pattern-match release tags.
+    3) If VERSION is missing, generate it with a bogus version:
+       0.0.0-0-g0000000000000000000000000000000000000000
+
+    Note that --with-version=VERSION bypasses (1) and (2), which simplifies
+    VERSION configuration when embedding a jemalloc release into another
+    project's git repository.
+
+* `--with-rpath=<colon-separated-rpath>`
+
+    Embed one or more library paths, so that libjemalloc can find the libraries
+    it is linked to.  This works only on ELF-based systems.
+
+* `--with-mangling=<map>`
+
+    Mangle public symbols specified in <map> which is a comma-separated list of
+    name:mangled pairs.
+
+    For example, to use ld's --wrap option as an alternative method for
+    overriding libc's malloc implementation, specify something like:
+
+      --with-mangling=malloc:__wrap_malloc,free:__wrap_free[...]
+
+    Note that mangling happens prior to application of the prefix specified by
+    --with-jemalloc-prefix, and mangled symbols are then ignored when applying
+    the prefix.
+
+* `--with-jemalloc-prefix=<prefix>`
+
+    Prefix all public APIs with <prefix>.  For example, if <prefix> is
+    "prefix_", API changes like the following occur:
+
+      malloc()         --> prefix_malloc()
+      malloc_conf      --> prefix_malloc_conf
+      /etc/malloc.conf --> /etc/prefix_malloc.conf
+      MALLOC_CONF      --> PREFIX_MALLOC_CONF
+
+    This makes it possible to use jemalloc at the same time as the system
+    allocator, or even to use multiple copies of jemalloc simultaneously.
+
+    By default, the prefix is "", except on OS X, where it is "je_".  On OS X,
+    jemalloc overlays the default malloc zone, but makes no attempt to actually
+    replace the "malloc", "calloc", etc. symbols.
+
+* `--without-export`
+
+    Don't export public APIs.  This can be useful when building jemalloc as a
+    static library, or to avoid exporting public APIs when using the zone
+    allocator on OSX.
+
+* `--with-private-namespace=<prefix>`
+
+    Prefix all library-private APIs with <prefix>je_.  For shared libraries,
+    symbol visibility mechanisms prevent these symbols from being exported, but
+    for static libraries, naming collisions are a real possibility.  By
+    default, <prefix> is empty, which results in a symbol prefix of je_ .
+
+* `--with-install-suffix=<suffix>`
+
+    Append <suffix> to the base name of all installed files, such that multiple
+    versions of jemalloc can coexist in the same installation directory.  For
+    example, libjemalloc.so.0 becomes libjemalloc<suffix>.so.0.
+
+* `--with-malloc-conf=<malloc_conf>`
+
+    Embed `<malloc_conf>` as a run-time options string that is processed prior to
+    the malloc_conf global variable, the /etc/malloc.conf symlink, and the
+    MALLOC_CONF environment variable.  For example, to change the default decay
+    time to 30 seconds:
+
+      --with-malloc-conf=decay_ms:30000
+
+* `--enable-debug`
+
+    Enable assertions and validation code.  This incurs a substantial
+    performance hit, but is very useful during application development.
+
+* `--disable-stats`
+
+    Disable statistics gathering functionality.  See the "opt.stats_print"
+    option documentation for usage details.
+
+* `--enable-prof`
+
+    Enable heap profiling and leak detection functionality.  See the "opt.prof"
+    option documentation for usage details.  When enabled, there are several
+    approaches to backtracing, and the configure script chooses the first one
+    in the following list that appears to function correctly:
+
+    + libunwind      (requires --enable-prof-libunwind)
+    + libgcc         (unless --disable-prof-libgcc)
+    + gcc intrinsics (unless --disable-prof-gcc)
+
+* `--enable-prof-libunwind`
+
+    Use the libunwind library (http://www.nongnu.org/libunwind/) for stack
+    backtracing.
+
+* `--disable-prof-libgcc`
+
+    Disable the use of libgcc's backtracing functionality.
+
+* `--disable-prof-gcc`
+
+    Disable the use of gcc intrinsics for backtracing.
+
+* `--with-static-libunwind=<libunwind.a>`
+
+    Statically link against the specified libunwind.a rather than dynamically
+    linking with -lunwind.
+
+* `--disable-fill`
+
+    Disable support for junk/zero filling of memory.  See the "opt.junk" and
+    "opt.zero" option documentation for usage details.
+
+* `--disable-zone-allocator`
+
+    Disable zone allocator for Darwin.  This means jemalloc won't be hooked as
+    the default allocator on OSX/iOS.
+
+* `--enable-utrace`
+
+    Enable utrace(2)-based allocation tracing.  This feature is not broadly
+    portable (FreeBSD has it, but Linux and OS X do not).
+
+* `--enable-xmalloc`
+
+    Enable support for optional immediate termination due to out-of-memory
+    errors, as is commonly implemented by "xmalloc" wrapper function for malloc.
+    See the "opt.xmalloc" option documentation for usage details.
+
+* `--enable-lazy-lock`
+
+    Enable code that wraps pthread_create() to detect when an application
+    switches from single-threaded to multi-threaded mode, so that it can avoid
+    mutex locking/unlocking operations while in single-threaded mode.  In
+    practice, this feature usually has little impact on performance unless
+    thread-specific caching is disabled.
+
+* `--disable-cache-oblivious`
+
+    Disable cache-oblivious large allocation alignment by default, for large
+    allocation requests with no alignment constraints.  If this feature is
+    disabled, all large allocations are page-aligned as an implementation
+    artifact, which can severely harm CPU cache utilization.  However, the
+    cache-oblivious layout comes at the cost of one extra page per large
+    allocation, which in the most extreme case increases physical memory usage
+    for the 16 KiB size class to 20 KiB.
+
+* `--disable-syscall`
+
+    Disable use of syscall(2) rather than {open,read,write,close}(2).  This is
+    intended as a workaround for systems that place security limitations on
+    syscall(2).
+
+* `--disable-cxx`
+
+    Disable C++ integration.  This will cause new and delete operator
+    implementations to be omitted.
+
+* `--with-xslroot=<path>`
+
+    Specify where to find DocBook XSL stylesheets when building the
+    documentation.
+
+* `--with-lg-page=<lg-page>`
+
+    Specify the base 2 log of the allocator page size, which must in turn be at
+    least as large as the system page size.  By default the configure script
+    determines the host's page size and sets the allocator page size equal to
+    the system page size, so this option need not be specified unless the
+    system page size may change between configuration and execution, e.g. when
+    cross compiling.
+
+* `--with-lg-hugepage=<lg-hugepage>`
+
+    Specify the base 2 log of the system huge page size.  This option is useful
+    when cross compiling, or when overriding the default for systems that do
+    not explicitly support huge pages.
+
+* `--with-lg-quantum=<lg-quantum>`
+
+    Specify the base 2 log of the minimum allocation alignment.  jemalloc needs
+    to know the minimum alignment that meets the following C standard
+    requirement (quoted from the April 12, 2011 draft of the C11 standard):
+
+    >  The pointer returned if the allocation succeeds is suitably aligned so
+      that it may be assigned to a pointer to any type of object with a
+      fundamental alignment requirement and then used to access such an object
+      or an array of such objects in the space allocated [...]
+
+    This setting is architecture-specific, and although jemalloc includes known
+    safe values for the most commonly used modern architectures, there is a
+    wrinkle related to GNU libc (glibc) that may impact your choice of
+    <lg-quantum>.  On most modern architectures, this mandates 16-byte
+    alignment (<lg-quantum>=4), but the glibc developers chose not to meet this
+    requirement for performance reasons.  An old discussion can be found at
+    <https://sourceware.org/bugzilla/show_bug.cgi?id=206> .  Unlike glibc,
+    jemalloc does follow the C standard by default (caveat: jemalloc
+    technically cheats for size classes smaller than the quantum), but the fact
+    that Linux systems already work around this allocator noncompliance means
+    that it is generally safe in practice to let jemalloc's minimum alignment
+    follow glibc's lead.  If you specify `--with-lg-quantum=3` during
+    configuration, jemalloc will provide additional size classes that are not
+    16-byte-aligned (24, 40, and 56).
+
+* `--with-lg-vaddr=<lg-vaddr>`
+
+    Specify the number of significant virtual address bits.  By default, the
+    configure script attempts to detect virtual address size on those platforms
+    where it knows how, and picks a default otherwise.  This option may be
+    useful when cross-compiling.
+
+* `--disable-initial-exec-tls`
+
+    Disable the initial-exec TLS model for jemalloc's internal thread-local
+    storage (on those platforms that support explicit settings).  This can allow
+    jemalloc to be dynamically loaded after program startup (e.g. using dlopen).
+    Note that in this case, there will be two malloc implementations operating
+    in the same process, which will almost certainly result in confusing runtime
+    crashes if pointers leak from one implementation to the other.
+
+* `--disable-libdl`
+
+    Disable the usage of libdl, namely dlsym(3) which is required by the lazy
+    lock option.  This can allow building static binaries.
+
+The following environment variables (not a definitive list) impact configure's
+behavior:
+
+* `CFLAGS="?"`
+* `CXXFLAGS="?"`
+
+    Pass these flags to the C/C++ compiler.  Any flags set by the configure
+    script are prepended, which means explicitly set flags generally take
+    precedence.  Take care when specifying flags such as -Werror, because
+    configure tests may be affected in undesirable ways.
+
+* `EXTRA_CFLAGS="?"`
+* `EXTRA_CXXFLAGS="?"`
+
+    Append these flags to CFLAGS/CXXFLAGS, without passing them to the
+    compiler(s) during configuration.  This makes it possible to add flags such
+    as -Werror, while allowing the configure script to determine what other
+    flags are appropriate for the specified configuration.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.  Note that CFLAGS is not passed to
+    'cpp' when 'configure' is looking for include files, so you must use
+    CPPFLAGS instead if you need to help 'configure' find header files.
+
+* `LD_LIBRARY_PATH="?"`
+
+    'ld' uses this colon-separated list to find libraries.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    'configure' uses this to find programs.
+
+In some cases it may be necessary to work around configuration results that do
+not match reality.  For example, Linux 4.5 added support for the MADV_FREE flag
+to madvise(2), which can cause problems if building on a host with MADV_FREE
+support and deploying to a target without.  To work around this, use a cache
+file to override the relevant configuration variable defined in configure.ac,
+e.g.:
+
+    echo "je_cv_madv_free=no" > config.cache && ./configure -C
+
+
+## Advanced compilation
+
+To build only parts of jemalloc, use the following targets:
+
+    build_lib_shared
+    build_lib_static
+    build_lib
+    build_doc_html
+    build_doc_man
+    build_doc
+
+To install only parts of jemalloc, use the following targets:
+
+    install_bin
+    install_include
+    install_lib_shared
+    install_lib_static
+    install_lib_pc
+    install_lib
+    install_doc_html
+    install_doc_man
+    install_doc
+
+To clean up build results to varying degrees, use the following make targets:
+
+    clean
+    distclean
+    relclean
+
+
+## Advanced installation
+
+Optionally, define make variables when invoking make, including (not
+exclusively):
+
+* `INCLUDEDIR="?"`
+
+    Use this as the installation prefix for header files.
+
+* `LIBDIR="?"`
+
+    Use this as the installation prefix for libraries.
+
+* `MANDIR="?"`
+
+    Use this as the installation prefix for man pages.
+
+* `DESTDIR="?"`
+
+    Prepend DESTDIR to INCLUDEDIR, LIBDIR, DATADIR, and MANDIR.  This is useful
+    when installing to a different path than was specified via --prefix.
+
+* `CC="?"`
+
+    Use this to invoke the C compiler.
+
+* `CFLAGS="?"`
+
+    Pass these flags to the compiler.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    Use this to search for programs used during configuration and building.
+
+
+## Development
+
+If you intend to make non-trivial changes to jemalloc, use the 'autogen.sh'
+script rather than 'configure'.  This re-generates 'configure', enables
+configuration dependency rules, and enables re-generation of automatically
+generated source files.
+
+The build system supports using an object directory separate from the source
+tree.  For example, you can create an 'obj' directory, and from within that
+directory, issue configuration and build commands:
+
+    autoconf
+    mkdir obj
+    cd obj
+    ../configure --enable-autogen
+    make
+
+
+## Documentation
+
+The manual page is generated in both html and roff formats.  Any web browser
+can be used to view the html manual.  The roff manual page can be formatted
+prior to installation via the following command:
+
+    nroff -man -t doc/jemalloc.3
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-0b8ef2fcad60da9d/out/build/TUNING.md:
+
+This document summarizes the common approaches for performance fine tuning with
+jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
+reasonably well in practice, and most applications should not have to tune any
+options. However, in order to cover a wide range of applications and avoid
+pathological cases, the default setting is sometimes kept conservative and
+suboptimal, even for many common workloads.  When jemalloc is properly tuned for
+a specific application / workload, it is common to improve system level metrics
+by a few percent, or make favorable trade-offs.
+
+
+## Notable runtime options for performance tuning
+
+Runtime options can be set via
+[malloc_conf](http://jemalloc.net/jemalloc.3.html#tuning).
+
+* [background_thread](http://jemalloc.net/jemalloc.3.html#background_thread)
+
+    Enabling jemalloc background threads generally improves the tail latency for
+    application threads, since unused memory purging is shifted to the dedicated
+    background threads.  In addition, unintended purging delay caused by
+    application inactivity is avoided with background threads.
+
+    Suggested: `background_thread:true` when jemalloc managed threads can be
+    allowed.
+
+* [metadata_thp](http://jemalloc.net/jemalloc.3.html#opt.metadata_thp)
+
+    Allowing jemalloc to utilize transparent huge pages for its internal
+    metadata usually reduces TLB misses significantly, especially for programs
+    with large memory footprint and frequent allocation / deallocation
+    activities.  Metadata memory usage may increase due to the use of huge
+    pages.
+
+    Suggested for allocation intensive programs: `metadata_thp:auto` or
+    `metadata_thp:always`, which is expected to improve CPU utilization at a
+    small memory cost.
+
+* [dirty_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.dirty_decay_ms) and
+  [muzzy_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.muzzy_decay_ms)
+
+    Decay time determines how fast jemalloc returns unused pages back to the
+    operating system, and therefore provides a fairly straightforward trade-off
+    between CPU and memory usage.  Shorter decay time purges unused pages faster
+    to reduces memory usage (usually at the cost of more CPU cycles spent on
+    purging), and vice versa.
+
+    Suggested: tune the values based on the desired trade-offs.
+
+* [narenas](http://jemalloc.net/jemalloc.3.html#opt.narenas)
+
+    By default jemalloc uses multiple arenas to reduce internal lock contention.
+    However high arena count may also increase overall memory fragmentation,
+    since arenas manage memory independently.  When high degree of parallelism
+    is not expected at the allocator level, lower number of arenas often
+    improves memory usage.
+
+    Suggested: if low parallelism is expected, try lower arena count while
+    monitoring CPU and memory usage.
+
+* [percpu_arena](http://jemalloc.net/jemalloc.3.html#opt.percpu_arena)
+
+    Enable dynamic thread to arena association based on running CPU.  This has
+    the potential to improve locality, e.g. when thread to CPU affinity is
+    present.
+    
+    Suggested: try `percpu_arena:percpu` or `percpu_arena:phycpu` if
+    thread migration between processors is expected to be infrequent.
+
+Examples:
+
+* High resource consumption application, prioritizing CPU utilization:
+
+    `background_thread:true,metadata_thp:auto` combined with relaxed decay time
+    (increased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:30000,muzzy_decay_ms:30000`).
+
+* High resource consumption application, prioritizing memory usage:
+
+    `background_thread:true,tcache_max:4096` combined with shorter decay time
+    (decreased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:5000,muzzy_decay_ms:5000`), and lower arena count
+    (e.g. number of CPUs).
+
+* Low resource consumption application:
+
+    `narenas:1,tcache_max:1024` combined with shorter decay time (decreased
+    `dirty_decay_ms` and / or `muzzy_decay_ms`,e.g.
+    `dirty_decay_ms:1000,muzzy_decay_ms:0`).
+
+* Extremely conservative -- minimize memory usage at all costs, only suitable when
+allocation activity is very rare:
+
+    `narenas:1,tcache:false,dirty_decay_ms:0,muzzy_decay_ms:0`
+
+Note that it is recommended to combine the options with `abort_conf:true` which
+aborts immediately on illegal options.
+
+## Beyond runtime options
+
+In addition to the runtime options, there are a number of programmatic ways to
+improve application performance with jemalloc.
+
+* [Explicit arenas](http://jemalloc.net/jemalloc.3.html#arenas.create)
+
+    Manually created arenas can help performance in various ways, e.g. by
+    managing locality and contention for specific usages.  For example,
+    applications can explicitly allocate frequently accessed objects from a
+    dedicated arena with
+    [mallocx()](http://jemalloc.net/jemalloc.3.html#MALLOCX_ARENA) to improve
+    locality.  In addition, explicit arenas often benefit from individually
+    tuned options, e.g. relaxed [decay
+    time](http://jemalloc.net/jemalloc.3.html#arena.i.dirty_decay_ms) if
+    frequent reuse is expected.
+
+* [Extent hooks](http://jemalloc.net/jemalloc.3.html#arena.i.extent_hooks)
+
+    Extent hooks allow customization for managing underlying memory.  One use
+    case for performance purpose is to utilize huge pages -- for example,
+    [HHVM](https://github.com/facebook/hhvm/blob/master/hphp/util/alloc.cpp)
+    uses explicit arenas with customized extent hooks to manage 1GB huge pages
+    for frequently accessed data, which reduces TLB misses significantly.
+
+* [Explicit thread-to-arena
+  binding](http://jemalloc.net/jemalloc.3.html#thread.arena)
+
+    It is common for some threads in an application to have different memory
+    access / allocation patterns.  Threads with heavy workloads often benefit
+    from explicit binding, e.g. binding very active threads to dedicated arenas
+    may reduce contention at the allocator level.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-0b8ef2fcad60da9d/out/build/doc_internal/PROFILING_INTERNALS.md:
+
+# jemalloc profiling
+This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
+
+Note: this document is markdown with embedded LaTeX; different markdown renderers may not produce the expected output.  Viewing with `pandoc -s PROFILING_INTERNALS.md -o PROFILING_INTERNALS.pdf` is recommended.
+
+## Some tricks in our implementation toolbag
+
+### Sampling
+Recording our metadata is quite expensive; we need to walk up the stack to get a stack trace. On top of that, we need to allocate storage to record that stack trace, and stick it somewhere where a profile-dumping call can find it. That call might happen on another thread, so we'll probably need to take a lock to do so. These costs are quite large compared to the average cost of an allocation. To manage this, we'll only sample some fraction of allocations. This will miss some of them, so our data will be incomplete, but we'll try to make up for it. We can tune our sampling rate to balance accuracy and performance.
+
+### Fast Bernoulli sampling
+Compared to our fast paths, even a `coinflip(p)` function can be quite expensive. Having to do a random-number generation and some floating point operations would be a sizeable relative cost. However (as pointed out in [[Vitter, 1987](https://dl.acm.org/doi/10.1145/23002.23003)]), if we can orchestrate our algorithm so that many of our `coinflip` calls share their parameter value, we can do better. We can sample from the geometric distribution, and initialize a counter with the result. When the counter hits 0, the `coinflip` function returns true (and reinitializes its internal counter).
+This can let us do a random-number generation once per (logical) coinflip that comes up heads, rather than once per (logical) coinflip. Since we expect to sample relatively rarely, this can be a large win.
+
+### Fast-path / slow-path thinking
+Most programs have a skewed distribution of allocations. Smaller allocations are much more frequent than large ones, but shorter lived and less common as a fraction of program memory. "Small" and "large" are necessarily sort of fuzzy terms, but if we define "small" as "allocations jemalloc puts into slabs" and "large" as the others, then it's not uncommon for small allocations to be hundreds of times more frequent than large ones, but take up around half the amount of heap space as large ones. Moreover, small allocations tend to be much cheaper than large ones (often by a factor of 20-30): they're more likely to hit in thread caches, less likely to have to do an mmap, and cheaper to fill (by the user) once the allocation has been returned.
+
+## An unbiased estimator of space consumption from (almost) arbitrary sampling strategies
+Suppose we have a sampling strategy that meets the following criteria:
+
+  - One allocation being sampled is independent of other allocations being sampled.
+  - Each allocation has a non-zero probability of being sampled.
+
+We can then estimate the bytes in live allocations through some particular stack trace as:
+
+$$ \sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]} $$
+
+where the sum ranges over some index variable of live allocations from that stack, $S_i$ is the size of the $i$'th allocation, and $I_i$ is an indicator random variable for whether or not the $i'th$ allocation is sampled. $S_i$ and $\mathrm{E}[I_i]$ are constants (the program allocations are fixed; the random variables are the sampling decisions), so taking the expectation we get
+
+$$ \sum_i S_i \mathrm{E}[I_i] \frac{1}{\mathrm{E}[I_i]}.$$
+
+This is of course $\sum_i S_i$, as we want (and, a similar calculation could be done for allocation counts as well).
+This is a fairly general strategy; note that while we require that sampling decisions be independent of one another's outcomes, they don't have to be independent of previous allocations, total bytes allocated, etc. You can imagine strategies that:
+
+  - Sample allocations at program startup at a higher rate than subsequent allocations
+  - Sample even-indexed allocations more frequently than odd-indexed ones (so long as no allocation has zero sampling probability)
+  - Let threads declare themselves as high-sampling-priority, and sample their allocations at an increased rate.
+
+These can all be fit into this framework to give an unbiased estimator.
+
+## Evaluating sampling strategies
+Not all strategies for picking allocations to sample are equally good, of course. Among unbiased estimators, the lower the variance, the lower the mean squared error. Using the estimator above, the variance is:
+
+$$
+\begin{aligned}
+& \mathrm{Var}[\sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]}]  \\
+=& \sum_i \mathrm{Var}[S_i I_i \frac{1}{\mathrm{E}[I_i]}] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{E}[I_i](1 - \mathrm{E}[I_i]) \\
+=& \sum_i S_i^2 \frac{1 - \mathrm{E}[I_i]}{\mathrm{E}[I_i]}.
+\end{aligned}
+$$
+
+We can use this formula to compare various strategy choices. All else being equal, lower-variance strategies are better.
+
+## Possible sampling strategies
+Because of the desire to avoid the fast-path costs, we'd like to use our Bernoulli trick if possible. There are two obvious counters to use: a coinflip per allocation, and a coinflip per byte allocated.
+
+### Bernoulli sampling per-allocation
+An obvious strategy is to pick some large $N$, and give each allocation a $1/N$ chance of being sampled. This would let us use our Bernoulli-via-Geometric trick. Using the formula from above, we can compute the variance as:
+
+$$ \sum_i S_i^2 \frac{1 - \frac{1}{N}}{\frac{1}{N}}  = (N-1) \sum_i S_i^2.$$
+
+That is, an allocation of size $Z$ contributes a term of $(N-1)Z^2$ to the variance.
+
+### Bernoulli sampling per-byte
+Another option we have is to pick some rate $R$, and give each byte a $1/R$ chance of being picked for sampling (at which point we would sample its contained allocation). The chance of an allocation of size $Z$ being sampled, then, is
+
+$$1-(1-\frac{1}{R})^{Z}$$
+
+and an allocation of size $Z$ contributes a term of
+
+$$Z^2 \frac{(1-\frac{1}{R})^{Z}}{1-(1-\frac{1}{R})^{Z}}.$$
+
+In practical settings, $R$ is large, and so this is well-approximated by
+
+$$Z^2 \frac{e^{-Z/R}}{1 - e^{-Z/R}} .$$
+
+Just to get a sense of the dynamics here, let's look at the behavior for various values of $Z$. When $Z$ is small relative to $R$, we can use $e^z \approx 1 + x$, and conclude that the variance contributed by a small-$Z$ allocation is around
+
+$$Z^2 \frac{1-Z/R}{Z/R} \approx RZ.$$
+
+When $Z$ is comparable to $R$, the variance term is near $Z^2$ (we have $\frac{e^{-Z/R}}{1 - e^{-Z/R}} = 1$ when $Z/R = \ln 2 \approx 0.693$). When $Z$ is large relative to $R$, the variance term goes to zero.
+
+## Picking a sampling strategy
+The fast-path/slow-path dynamics of allocation patterns point us towards the per-byte sampling approach:
+
+  - The quadratic increase in variance per allocation in the first approach is quite costly when heaps have a non-negligible portion of their bytes in those allocations, which is practically often the case.
+  - The Bernoulli-per-byte approach shifts more of its samples towards large allocations, which are already a slow-path.
+  - We drive several tickers (e.g. tcache gc) by bytes allocated, and report bytes-allocated as a user-visible statistic, so we have to do all the necessary bookkeeping anyways.
+
+Indeed, this is the approach we use in jemalloc. Our heap dumps record the size of the allocation and the sampling rate $R$, and jeprof unbiases by dividing by $1 - e^{-Z/R}$.  The framework above would suggest dividing by $1-(1-1/R)^Z$; instead, we use the fact that $R$ is large in practical situations, and so $e^{-Z/R}$ is a good approximation (and faster to compute).  (Equivalently, we may also see this as the factor that falls out from viewing sampling as a Poisson process directly).
+
+## Consequences for heap dump consumers
+Using this approach means that there are a few things users need to be aware of.
+
+### Stack counts are not proportional to allocation frequencies
+If one stack appears twice as often as another, this by itself does not imply that it allocates twice as often. Consider the case in which there are only two types of allocating call stacks in a program. Stack A allocates 8 bytes, and occurs a million times in a program. Stack B allocates 8 MB, and occurs just once in a program. If our sampling rate $R$ is about 1MB, we expect stack A to show up about 8 times, and stack B to show up once. Stack A isn't 8 times more frequent than stack B, though; it's a million times more frequent.
+
+### Aggregation must be done after unbiasing samples
+Some tools manually parse heap dump output, and aggregate across stacks (or across program runs) to provide wider-scale data analyses. When doing this aggregation, though, it's important to unbias-and-then-sum, rather than sum-and-then-unbias. Reusing our example from the previous section: suppose we collect heap dumps of the program from a million machines. We then have 8 million occurs of stack A (each of 8 bytes), and a million occurrences of stack B (each of 8 MB). If we sum first, we'll attribute 64 MB to stack A, and 8 TB to stack B. Unbiasing changes these numbers by an infinitesimal amount, so that sum-then-unbias dramatically underreports the amount of memory allocated by stack A.
+
+## An avenue for future exploration
+While the framework we laid out above is pretty general, as an engineering decision we're only interested in fairly simple approaches (i.e. ones for which the chance of an allocation being sampled depends only on its size). Our job is then: for each size class $Z$, pick a probability $p_Z$ that an allocation of that size will be sampled. We made some handwave-y references to statistical distributions to justify our choices, but there's no reason we need to pick them that way. Any set of non-zero probabilities is a valid choice.
+The real limiting factor in our ability to reduce estimator variance is that fact that sampling is expensive; we want to make sure we only do it on a small fraction of allocations. Our goal, then, is to pick the $p_Z$ to minimize variance given some maximum sampling rate $P$. If we define $a_Z$ to be the fraction of allocations of size $Z$, and $l_Z$ to be the fraction of allocations of size $Z$ still alive at the time of a heap dump, then we can phrase this as an optimization problem over the choices of $p_Z$:
+
+Minimize
+
+$$ \sum_Z Z^2 l_Z \frac{1-p_Z}{p_Z} $$
+
+subject to
+
+$$ \sum_Z a_Z p_Z \leq P $$
+
+Ignoring a term that doesn't depend on $p_Z$, the objective is minimized whenever
+
+$$ \sum_Z Z^2 l_Z \frac{1}{p_Z} $$
+
+is. For a particular program, $l_Z$ and $a_Z$ are just numbers that can be obtained (exactly) from existing stats introspection facilities, and we have a fairly tractable convex optimization problem (it can be framed as a second-order cone program). It would be interesting to evaluate, for various common allocation patterns, how well our current strategy adapts. Do our actual choices for $p_Z$ closely correspond to the optimal ones? How close is the variance of our choices to the variance of the optimal strategy?
+You can imagine an implementation that actually goes all the way, and makes $p_Z$ selections a tuning parameter. I don't think this is a good use of development time for the foreseeable future; but I do wonder about the answers to some of these questions.
+
+## Implementation realities
+
+The nice story above is at least partially a lie. Initially, jeprof (copying its logic from pprof)  had the sum-then-unbias error described above.  The current version of jemalloc does the unbiasing step on a per-allocation basis internally, so that we're always tracking what the unbiased numbers "should" be.  The problem is, actually surfacing those unbiased numbers would require a breaking change to jeprof (and the various already-deployed tools that have copied its logic). Instead, we use a little bit more trickery. Since we know at dump time the numbers we want jeprof to report, we simply choose the values we'll output so that the jeprof numbers will match the true numbers.  The math is described in `src/prof_data.c` (where the only cleverness is a change of variables that lets the exponentials fall out).
+
+This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
 
 
 # Content from file ../neon/target/debug/build/tikv-jemalloc-sys-57af2ff6e422bc2e/out/build/INSTALL.md:
@@ -18149,6 +18871,698 @@ The nice story above is at least partially a lie. Initially, jeprof (copying its
 This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
 
 
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-7326ca451095963e/out/build/INSTALL.md:
+
+Building and installing a packaged release of jemalloc can be as simple as
+typing the following while in the root directory of the source tree:
+
+    ./configure
+    make
+    make install
+
+If building from unpackaged developer sources, the simplest command sequence
+that might work is:
+
+    ./autogen.sh
+    make
+    make install
+
+You can uninstall the installed build artifacts like this:
+
+    make uninstall
+
+Notes:
+ - "autoconf" needs to be installed
+ - Documentation is built by the default target only when xsltproc is
+available.  Build will warn but not stop if the dependency is missing.
+
+
+## Advanced configuration
+
+The 'configure' script supports numerous options that allow control of which
+functionality is enabled, where jemalloc is installed, etc.  Optionally, pass
+any of the following arguments (not a definitive list) to 'configure':
+
+* `--help`
+
+    Print a definitive list of options.
+
+* `--prefix=<install-root-dir>`
+
+    Set the base directory in which to install.  For example:
+
+        ./configure --prefix=/usr/local
+
+    will cause files to be installed into /usr/local/include, /usr/local/lib,
+    and /usr/local/man.
+
+* `--with-version=(<major>.<minor>.<bugfix>-<nrev>-g<gid>|VERSION)`
+
+    The VERSION file is mandatory for successful configuration, and the
+    following steps are taken to assure its presence:
+    1) If --with-version=<major>.<minor>.<bugfix>-<nrev>-g<gid> is specified,
+       generate VERSION using the specified value.
+    2) If --with-version is not specified in either form and the source
+       directory is inside a git repository, try to generate VERSION via 'git
+       describe' invocations that pattern-match release tags.
+    3) If VERSION is missing, generate it with a bogus version:
+       0.0.0-0-g0000000000000000000000000000000000000000
+
+    Note that --with-version=VERSION bypasses (1) and (2), which simplifies
+    VERSION configuration when embedding a jemalloc release into another
+    project's git repository.
+
+* `--with-rpath=<colon-separated-rpath>`
+
+    Embed one or more library paths, so that libjemalloc can find the libraries
+    it is linked to.  This works only on ELF-based systems.
+
+* `--with-mangling=<map>`
+
+    Mangle public symbols specified in <map> which is a comma-separated list of
+    name:mangled pairs.
+
+    For example, to use ld's --wrap option as an alternative method for
+    overriding libc's malloc implementation, specify something like:
+
+      --with-mangling=malloc:__wrap_malloc,free:__wrap_free[...]
+
+    Note that mangling happens prior to application of the prefix specified by
+    --with-jemalloc-prefix, and mangled symbols are then ignored when applying
+    the prefix.
+
+* `--with-jemalloc-prefix=<prefix>`
+
+    Prefix all public APIs with <prefix>.  For example, if <prefix> is
+    "prefix_", API changes like the following occur:
+
+      malloc()         --> prefix_malloc()
+      malloc_conf      --> prefix_malloc_conf
+      /etc/malloc.conf --> /etc/prefix_malloc.conf
+      MALLOC_CONF      --> PREFIX_MALLOC_CONF
+
+    This makes it possible to use jemalloc at the same time as the system
+    allocator, or even to use multiple copies of jemalloc simultaneously.
+
+    By default, the prefix is "", except on OS X, where it is "je_".  On OS X,
+    jemalloc overlays the default malloc zone, but makes no attempt to actually
+    replace the "malloc", "calloc", etc. symbols.
+
+* `--without-export`
+
+    Don't export public APIs.  This can be useful when building jemalloc as a
+    static library, or to avoid exporting public APIs when using the zone
+    allocator on OSX.
+
+* `--with-private-namespace=<prefix>`
+
+    Prefix all library-private APIs with <prefix>je_.  For shared libraries,
+    symbol visibility mechanisms prevent these symbols from being exported, but
+    for static libraries, naming collisions are a real possibility.  By
+    default, <prefix> is empty, which results in a symbol prefix of je_ .
+
+* `--with-install-suffix=<suffix>`
+
+    Append <suffix> to the base name of all installed files, such that multiple
+    versions of jemalloc can coexist in the same installation directory.  For
+    example, libjemalloc.so.0 becomes libjemalloc<suffix>.so.0.
+
+* `--with-malloc-conf=<malloc_conf>`
+
+    Embed `<malloc_conf>` as a run-time options string that is processed prior to
+    the malloc_conf global variable, the /etc/malloc.conf symlink, and the
+    MALLOC_CONF environment variable.  For example, to change the default decay
+    time to 30 seconds:
+
+      --with-malloc-conf=decay_ms:30000
+
+* `--enable-debug`
+
+    Enable assertions and validation code.  This incurs a substantial
+    performance hit, but is very useful during application development.
+
+* `--disable-stats`
+
+    Disable statistics gathering functionality.  See the "opt.stats_print"
+    option documentation for usage details.
+
+* `--enable-prof`
+
+    Enable heap profiling and leak detection functionality.  See the "opt.prof"
+    option documentation for usage details.  When enabled, there are several
+    approaches to backtracing, and the configure script chooses the first one
+    in the following list that appears to function correctly:
+
+    + libunwind      (requires --enable-prof-libunwind)
+    + libgcc         (unless --disable-prof-libgcc)
+    + gcc intrinsics (unless --disable-prof-gcc)
+
+* `--enable-prof-libunwind`
+
+    Use the libunwind library (http://www.nongnu.org/libunwind/) for stack
+    backtracing.
+
+* `--disable-prof-libgcc`
+
+    Disable the use of libgcc's backtracing functionality.
+
+* `--disable-prof-gcc`
+
+    Disable the use of gcc intrinsics for backtracing.
+
+* `--with-static-libunwind=<libunwind.a>`
+
+    Statically link against the specified libunwind.a rather than dynamically
+    linking with -lunwind.
+
+* `--disable-fill`
+
+    Disable support for junk/zero filling of memory.  See the "opt.junk" and
+    "opt.zero" option documentation for usage details.
+
+* `--disable-zone-allocator`
+
+    Disable zone allocator for Darwin.  This means jemalloc won't be hooked as
+    the default allocator on OSX/iOS.
+
+* `--enable-utrace`
+
+    Enable utrace(2)-based allocation tracing.  This feature is not broadly
+    portable (FreeBSD has it, but Linux and OS X do not).
+
+* `--enable-xmalloc`
+
+    Enable support for optional immediate termination due to out-of-memory
+    errors, as is commonly implemented by "xmalloc" wrapper function for malloc.
+    See the "opt.xmalloc" option documentation for usage details.
+
+* `--enable-lazy-lock`
+
+    Enable code that wraps pthread_create() to detect when an application
+    switches from single-threaded to multi-threaded mode, so that it can avoid
+    mutex locking/unlocking operations while in single-threaded mode.  In
+    practice, this feature usually has little impact on performance unless
+    thread-specific caching is disabled.
+
+* `--disable-cache-oblivious`
+
+    Disable cache-oblivious large allocation alignment by default, for large
+    allocation requests with no alignment constraints.  If this feature is
+    disabled, all large allocations are page-aligned as an implementation
+    artifact, which can severely harm CPU cache utilization.  However, the
+    cache-oblivious layout comes at the cost of one extra page per large
+    allocation, which in the most extreme case increases physical memory usage
+    for the 16 KiB size class to 20 KiB.
+
+* `--disable-syscall`
+
+    Disable use of syscall(2) rather than {open,read,write,close}(2).  This is
+    intended as a workaround for systems that place security limitations on
+    syscall(2).
+
+* `--disable-cxx`
+
+    Disable C++ integration.  This will cause new and delete operator
+    implementations to be omitted.
+
+* `--with-xslroot=<path>`
+
+    Specify where to find DocBook XSL stylesheets when building the
+    documentation.
+
+* `--with-lg-page=<lg-page>`
+
+    Specify the base 2 log of the allocator page size, which must in turn be at
+    least as large as the system page size.  By default the configure script
+    determines the host's page size and sets the allocator page size equal to
+    the system page size, so this option need not be specified unless the
+    system page size may change between configuration and execution, e.g. when
+    cross compiling.
+
+* `--with-lg-hugepage=<lg-hugepage>`
+
+    Specify the base 2 log of the system huge page size.  This option is useful
+    when cross compiling, or when overriding the default for systems that do
+    not explicitly support huge pages.
+
+* `--with-lg-quantum=<lg-quantum>`
+
+    Specify the base 2 log of the minimum allocation alignment.  jemalloc needs
+    to know the minimum alignment that meets the following C standard
+    requirement (quoted from the April 12, 2011 draft of the C11 standard):
+
+    >  The pointer returned if the allocation succeeds is suitably aligned so
+      that it may be assigned to a pointer to any type of object with a
+      fundamental alignment requirement and then used to access such an object
+      or an array of such objects in the space allocated [...]
+
+    This setting is architecture-specific, and although jemalloc includes known
+    safe values for the most commonly used modern architectures, there is a
+    wrinkle related to GNU libc (glibc) that may impact your choice of
+    <lg-quantum>.  On most modern architectures, this mandates 16-byte
+    alignment (<lg-quantum>=4), but the glibc developers chose not to meet this
+    requirement for performance reasons.  An old discussion can be found at
+    <https://sourceware.org/bugzilla/show_bug.cgi?id=206> .  Unlike glibc,
+    jemalloc does follow the C standard by default (caveat: jemalloc
+    technically cheats for size classes smaller than the quantum), but the fact
+    that Linux systems already work around this allocator noncompliance means
+    that it is generally safe in practice to let jemalloc's minimum alignment
+    follow glibc's lead.  If you specify `--with-lg-quantum=3` during
+    configuration, jemalloc will provide additional size classes that are not
+    16-byte-aligned (24, 40, and 56).
+
+* `--with-lg-vaddr=<lg-vaddr>`
+
+    Specify the number of significant virtual address bits.  By default, the
+    configure script attempts to detect virtual address size on those platforms
+    where it knows how, and picks a default otherwise.  This option may be
+    useful when cross-compiling.
+
+* `--disable-initial-exec-tls`
+
+    Disable the initial-exec TLS model for jemalloc's internal thread-local
+    storage (on those platforms that support explicit settings).  This can allow
+    jemalloc to be dynamically loaded after program startup (e.g. using dlopen).
+    Note that in this case, there will be two malloc implementations operating
+    in the same process, which will almost certainly result in confusing runtime
+    crashes if pointers leak from one implementation to the other.
+
+* `--disable-libdl`
+
+    Disable the usage of libdl, namely dlsym(3) which is required by the lazy
+    lock option.  This can allow building static binaries.
+
+The following environment variables (not a definitive list) impact configure's
+behavior:
+
+* `CFLAGS="?"`
+* `CXXFLAGS="?"`
+
+    Pass these flags to the C/C++ compiler.  Any flags set by the configure
+    script are prepended, which means explicitly set flags generally take
+    precedence.  Take care when specifying flags such as -Werror, because
+    configure tests may be affected in undesirable ways.
+
+* `EXTRA_CFLAGS="?"`
+* `EXTRA_CXXFLAGS="?"`
+
+    Append these flags to CFLAGS/CXXFLAGS, without passing them to the
+    compiler(s) during configuration.  This makes it possible to add flags such
+    as -Werror, while allowing the configure script to determine what other
+    flags are appropriate for the specified configuration.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.  Note that CFLAGS is not passed to
+    'cpp' when 'configure' is looking for include files, so you must use
+    CPPFLAGS instead if you need to help 'configure' find header files.
+
+* `LD_LIBRARY_PATH="?"`
+
+    'ld' uses this colon-separated list to find libraries.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    'configure' uses this to find programs.
+
+In some cases it may be necessary to work around configuration results that do
+not match reality.  For example, Linux 4.5 added support for the MADV_FREE flag
+to madvise(2), which can cause problems if building on a host with MADV_FREE
+support and deploying to a target without.  To work around this, use a cache
+file to override the relevant configuration variable defined in configure.ac,
+e.g.:
+
+    echo "je_cv_madv_free=no" > config.cache && ./configure -C
+
+
+## Advanced compilation
+
+To build only parts of jemalloc, use the following targets:
+
+    build_lib_shared
+    build_lib_static
+    build_lib
+    build_doc_html
+    build_doc_man
+    build_doc
+
+To install only parts of jemalloc, use the following targets:
+
+    install_bin
+    install_include
+    install_lib_shared
+    install_lib_static
+    install_lib_pc
+    install_lib
+    install_doc_html
+    install_doc_man
+    install_doc
+
+To clean up build results to varying degrees, use the following make targets:
+
+    clean
+    distclean
+    relclean
+
+
+## Advanced installation
+
+Optionally, define make variables when invoking make, including (not
+exclusively):
+
+* `INCLUDEDIR="?"`
+
+    Use this as the installation prefix for header files.
+
+* `LIBDIR="?"`
+
+    Use this as the installation prefix for libraries.
+
+* `MANDIR="?"`
+
+    Use this as the installation prefix for man pages.
+
+* `DESTDIR="?"`
+
+    Prepend DESTDIR to INCLUDEDIR, LIBDIR, DATADIR, and MANDIR.  This is useful
+    when installing to a different path than was specified via --prefix.
+
+* `CC="?"`
+
+    Use this to invoke the C compiler.
+
+* `CFLAGS="?"`
+
+    Pass these flags to the compiler.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    Use this to search for programs used during configuration and building.
+
+
+## Development
+
+If you intend to make non-trivial changes to jemalloc, use the 'autogen.sh'
+script rather than 'configure'.  This re-generates 'configure', enables
+configuration dependency rules, and enables re-generation of automatically
+generated source files.
+
+The build system supports using an object directory separate from the source
+tree.  For example, you can create an 'obj' directory, and from within that
+directory, issue configuration and build commands:
+
+    autoconf
+    mkdir obj
+    cd obj
+    ../configure --enable-autogen
+    make
+
+
+## Documentation
+
+The manual page is generated in both html and roff formats.  Any web browser
+can be used to view the html manual.  The roff manual page can be formatted
+prior to installation via the following command:
+
+    nroff -man -t doc/jemalloc.3
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-7326ca451095963e/out/build/TUNING.md:
+
+This document summarizes the common approaches for performance fine tuning with
+jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
+reasonably well in practice, and most applications should not have to tune any
+options. However, in order to cover a wide range of applications and avoid
+pathological cases, the default setting is sometimes kept conservative and
+suboptimal, even for many common workloads.  When jemalloc is properly tuned for
+a specific application / workload, it is common to improve system level metrics
+by a few percent, or make favorable trade-offs.
+
+
+## Notable runtime options for performance tuning
+
+Runtime options can be set via
+[malloc_conf](http://jemalloc.net/jemalloc.3.html#tuning).
+
+* [background_thread](http://jemalloc.net/jemalloc.3.html#background_thread)
+
+    Enabling jemalloc background threads generally improves the tail latency for
+    application threads, since unused memory purging is shifted to the dedicated
+    background threads.  In addition, unintended purging delay caused by
+    application inactivity is avoided with background threads.
+
+    Suggested: `background_thread:true` when jemalloc managed threads can be
+    allowed.
+
+* [metadata_thp](http://jemalloc.net/jemalloc.3.html#opt.metadata_thp)
+
+    Allowing jemalloc to utilize transparent huge pages for its internal
+    metadata usually reduces TLB misses significantly, especially for programs
+    with large memory footprint and frequent allocation / deallocation
+    activities.  Metadata memory usage may increase due to the use of huge
+    pages.
+
+    Suggested for allocation intensive programs: `metadata_thp:auto` or
+    `metadata_thp:always`, which is expected to improve CPU utilization at a
+    small memory cost.
+
+* [dirty_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.dirty_decay_ms) and
+  [muzzy_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.muzzy_decay_ms)
+
+    Decay time determines how fast jemalloc returns unused pages back to the
+    operating system, and therefore provides a fairly straightforward trade-off
+    between CPU and memory usage.  Shorter decay time purges unused pages faster
+    to reduces memory usage (usually at the cost of more CPU cycles spent on
+    purging), and vice versa.
+
+    Suggested: tune the values based on the desired trade-offs.
+
+* [narenas](http://jemalloc.net/jemalloc.3.html#opt.narenas)
+
+    By default jemalloc uses multiple arenas to reduce internal lock contention.
+    However high arena count may also increase overall memory fragmentation,
+    since arenas manage memory independently.  When high degree of parallelism
+    is not expected at the allocator level, lower number of arenas often
+    improves memory usage.
+
+    Suggested: if low parallelism is expected, try lower arena count while
+    monitoring CPU and memory usage.
+
+* [percpu_arena](http://jemalloc.net/jemalloc.3.html#opt.percpu_arena)
+
+    Enable dynamic thread to arena association based on running CPU.  This has
+    the potential to improve locality, e.g. when thread to CPU affinity is
+    present.
+    
+    Suggested: try `percpu_arena:percpu` or `percpu_arena:phycpu` if
+    thread migration between processors is expected to be infrequent.
+
+Examples:
+
+* High resource consumption application, prioritizing CPU utilization:
+
+    `background_thread:true,metadata_thp:auto` combined with relaxed decay time
+    (increased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:30000,muzzy_decay_ms:30000`).
+
+* High resource consumption application, prioritizing memory usage:
+
+    `background_thread:true,tcache_max:4096` combined with shorter decay time
+    (decreased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:5000,muzzy_decay_ms:5000`), and lower arena count
+    (e.g. number of CPUs).
+
+* Low resource consumption application:
+
+    `narenas:1,tcache_max:1024` combined with shorter decay time (decreased
+    `dirty_decay_ms` and / or `muzzy_decay_ms`,e.g.
+    `dirty_decay_ms:1000,muzzy_decay_ms:0`).
+
+* Extremely conservative -- minimize memory usage at all costs, only suitable when
+allocation activity is very rare:
+
+    `narenas:1,tcache:false,dirty_decay_ms:0,muzzy_decay_ms:0`
+
+Note that it is recommended to combine the options with `abort_conf:true` which
+aborts immediately on illegal options.
+
+## Beyond runtime options
+
+In addition to the runtime options, there are a number of programmatic ways to
+improve application performance with jemalloc.
+
+* [Explicit arenas](http://jemalloc.net/jemalloc.3.html#arenas.create)
+
+    Manually created arenas can help performance in various ways, e.g. by
+    managing locality and contention for specific usages.  For example,
+    applications can explicitly allocate frequently accessed objects from a
+    dedicated arena with
+    [mallocx()](http://jemalloc.net/jemalloc.3.html#MALLOCX_ARENA) to improve
+    locality.  In addition, explicit arenas often benefit from individually
+    tuned options, e.g. relaxed [decay
+    time](http://jemalloc.net/jemalloc.3.html#arena.i.dirty_decay_ms) if
+    frequent reuse is expected.
+
+* [Extent hooks](http://jemalloc.net/jemalloc.3.html#arena.i.extent_hooks)
+
+    Extent hooks allow customization for managing underlying memory.  One use
+    case for performance purpose is to utilize huge pages -- for example,
+    [HHVM](https://github.com/facebook/hhvm/blob/master/hphp/util/alloc.cpp)
+    uses explicit arenas with customized extent hooks to manage 1GB huge pages
+    for frequently accessed data, which reduces TLB misses significantly.
+
+* [Explicit thread-to-arena
+  binding](http://jemalloc.net/jemalloc.3.html#thread.arena)
+
+    It is common for some threads in an application to have different memory
+    access / allocation patterns.  Threads with heavy workloads often benefit
+    from explicit binding, e.g. binding very active threads to dedicated arenas
+    may reduce contention at the allocator level.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-7326ca451095963e/out/build/doc_internal/PROFILING_INTERNALS.md:
+
+# jemalloc profiling
+This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
+
+Note: this document is markdown with embedded LaTeX; different markdown renderers may not produce the expected output.  Viewing with `pandoc -s PROFILING_INTERNALS.md -o PROFILING_INTERNALS.pdf` is recommended.
+
+## Some tricks in our implementation toolbag
+
+### Sampling
+Recording our metadata is quite expensive; we need to walk up the stack to get a stack trace. On top of that, we need to allocate storage to record that stack trace, and stick it somewhere where a profile-dumping call can find it. That call might happen on another thread, so we'll probably need to take a lock to do so. These costs are quite large compared to the average cost of an allocation. To manage this, we'll only sample some fraction of allocations. This will miss some of them, so our data will be incomplete, but we'll try to make up for it. We can tune our sampling rate to balance accuracy and performance.
+
+### Fast Bernoulli sampling
+Compared to our fast paths, even a `coinflip(p)` function can be quite expensive. Having to do a random-number generation and some floating point operations would be a sizeable relative cost. However (as pointed out in [[Vitter, 1987](https://dl.acm.org/doi/10.1145/23002.23003)]), if we can orchestrate our algorithm so that many of our `coinflip` calls share their parameter value, we can do better. We can sample from the geometric distribution, and initialize a counter with the result. When the counter hits 0, the `coinflip` function returns true (and reinitializes its internal counter).
+This can let us do a random-number generation once per (logical) coinflip that comes up heads, rather than once per (logical) coinflip. Since we expect to sample relatively rarely, this can be a large win.
+
+### Fast-path / slow-path thinking
+Most programs have a skewed distribution of allocations. Smaller allocations are much more frequent than large ones, but shorter lived and less common as a fraction of program memory. "Small" and "large" are necessarily sort of fuzzy terms, but if we define "small" as "allocations jemalloc puts into slabs" and "large" as the others, then it's not uncommon for small allocations to be hundreds of times more frequent than large ones, but take up around half the amount of heap space as large ones. Moreover, small allocations tend to be much cheaper than large ones (often by a factor of 20-30): they're more likely to hit in thread caches, less likely to have to do an mmap, and cheaper to fill (by the user) once the allocation has been returned.
+
+## An unbiased estimator of space consumption from (almost) arbitrary sampling strategies
+Suppose we have a sampling strategy that meets the following criteria:
+
+  - One allocation being sampled is independent of other allocations being sampled.
+  - Each allocation has a non-zero probability of being sampled.
+
+We can then estimate the bytes in live allocations through some particular stack trace as:
+
+$$ \sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]} $$
+
+where the sum ranges over some index variable of live allocations from that stack, $S_i$ is the size of the $i$'th allocation, and $I_i$ is an indicator random variable for whether or not the $i'th$ allocation is sampled. $S_i$ and $\mathrm{E}[I_i]$ are constants (the program allocations are fixed; the random variables are the sampling decisions), so taking the expectation we get
+
+$$ \sum_i S_i \mathrm{E}[I_i] \frac{1}{\mathrm{E}[I_i]}.$$
+
+This is of course $\sum_i S_i$, as we want (and, a similar calculation could be done for allocation counts as well).
+This is a fairly general strategy; note that while we require that sampling decisions be independent of one another's outcomes, they don't have to be independent of previous allocations, total bytes allocated, etc. You can imagine strategies that:
+
+  - Sample allocations at program startup at a higher rate than subsequent allocations
+  - Sample even-indexed allocations more frequently than odd-indexed ones (so long as no allocation has zero sampling probability)
+  - Let threads declare themselves as high-sampling-priority, and sample their allocations at an increased rate.
+
+These can all be fit into this framework to give an unbiased estimator.
+
+## Evaluating sampling strategies
+Not all strategies for picking allocations to sample are equally good, of course. Among unbiased estimators, the lower the variance, the lower the mean squared error. Using the estimator above, the variance is:
+
+$$
+\begin{aligned}
+& \mathrm{Var}[\sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]}]  \\
+=& \sum_i \mathrm{Var}[S_i I_i \frac{1}{\mathrm{E}[I_i]}] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{E}[I_i](1 - \mathrm{E}[I_i]) \\
+=& \sum_i S_i^2 \frac{1 - \mathrm{E}[I_i]}{\mathrm{E}[I_i]}.
+\end{aligned}
+$$
+
+We can use this formula to compare various strategy choices. All else being equal, lower-variance strategies are better.
+
+## Possible sampling strategies
+Because of the desire to avoid the fast-path costs, we'd like to use our Bernoulli trick if possible. There are two obvious counters to use: a coinflip per allocation, and a coinflip per byte allocated.
+
+### Bernoulli sampling per-allocation
+An obvious strategy is to pick some large $N$, and give each allocation a $1/N$ chance of being sampled. This would let us use our Bernoulli-via-Geometric trick. Using the formula from above, we can compute the variance as:
+
+$$ \sum_i S_i^2 \frac{1 - \frac{1}{N}}{\frac{1}{N}}  = (N-1) \sum_i S_i^2.$$
+
+That is, an allocation of size $Z$ contributes a term of $(N-1)Z^2$ to the variance.
+
+### Bernoulli sampling per-byte
+Another option we have is to pick some rate $R$, and give each byte a $1/R$ chance of being picked for sampling (at which point we would sample its contained allocation). The chance of an allocation of size $Z$ being sampled, then, is
+
+$$1-(1-\frac{1}{R})^{Z}$$
+
+and an allocation of size $Z$ contributes a term of
+
+$$Z^2 \frac{(1-\frac{1}{R})^{Z}}{1-(1-\frac{1}{R})^{Z}}.$$
+
+In practical settings, $R$ is large, and so this is well-approximated by
+
+$$Z^2 \frac{e^{-Z/R}}{1 - e^{-Z/R}} .$$
+
+Just to get a sense of the dynamics here, let's look at the behavior for various values of $Z$. When $Z$ is small relative to $R$, we can use $e^z \approx 1 + x$, and conclude that the variance contributed by a small-$Z$ allocation is around
+
+$$Z^2 \frac{1-Z/R}{Z/R} \approx RZ.$$
+
+When $Z$ is comparable to $R$, the variance term is near $Z^2$ (we have $\frac{e^{-Z/R}}{1 - e^{-Z/R}} = 1$ when $Z/R = \ln 2 \approx 0.693$). When $Z$ is large relative to $R$, the variance term goes to zero.
+
+## Picking a sampling strategy
+The fast-path/slow-path dynamics of allocation patterns point us towards the per-byte sampling approach:
+
+  - The quadratic increase in variance per allocation in the first approach is quite costly when heaps have a non-negligible portion of their bytes in those allocations, which is practically often the case.
+  - The Bernoulli-per-byte approach shifts more of its samples towards large allocations, which are already a slow-path.
+  - We drive several tickers (e.g. tcache gc) by bytes allocated, and report bytes-allocated as a user-visible statistic, so we have to do all the necessary bookkeeping anyways.
+
+Indeed, this is the approach we use in jemalloc. Our heap dumps record the size of the allocation and the sampling rate $R$, and jeprof unbiases by dividing by $1 - e^{-Z/R}$.  The framework above would suggest dividing by $1-(1-1/R)^Z$; instead, we use the fact that $R$ is large in practical situations, and so $e^{-Z/R}$ is a good approximation (and faster to compute).  (Equivalently, we may also see this as the factor that falls out from viewing sampling as a Poisson process directly).
+
+## Consequences for heap dump consumers
+Using this approach means that there are a few things users need to be aware of.
+
+### Stack counts are not proportional to allocation frequencies
+If one stack appears twice as often as another, this by itself does not imply that it allocates twice as often. Consider the case in which there are only two types of allocating call stacks in a program. Stack A allocates 8 bytes, and occurs a million times in a program. Stack B allocates 8 MB, and occurs just once in a program. If our sampling rate $R$ is about 1MB, we expect stack A to show up about 8 times, and stack B to show up once. Stack A isn't 8 times more frequent than stack B, though; it's a million times more frequent.
+
+### Aggregation must be done after unbiasing samples
+Some tools manually parse heap dump output, and aggregate across stacks (or across program runs) to provide wider-scale data analyses. When doing this aggregation, though, it's important to unbias-and-then-sum, rather than sum-and-then-unbias. Reusing our example from the previous section: suppose we collect heap dumps of the program from a million machines. We then have 8 million occurs of stack A (each of 8 bytes), and a million occurrences of stack B (each of 8 MB). If we sum first, we'll attribute 64 MB to stack A, and 8 TB to stack B. Unbiasing changes these numbers by an infinitesimal amount, so that sum-then-unbias dramatically underreports the amount of memory allocated by stack A.
+
+## An avenue for future exploration
+While the framework we laid out above is pretty general, as an engineering decision we're only interested in fairly simple approaches (i.e. ones for which the chance of an allocation being sampled depends only on its size). Our job is then: for each size class $Z$, pick a probability $p_Z$ that an allocation of that size will be sampled. We made some handwave-y references to statistical distributions to justify our choices, but there's no reason we need to pick them that way. Any set of non-zero probabilities is a valid choice.
+The real limiting factor in our ability to reduce estimator variance is that fact that sampling is expensive; we want to make sure we only do it on a small fraction of allocations. Our goal, then, is to pick the $p_Z$ to minimize variance given some maximum sampling rate $P$. If we define $a_Z$ to be the fraction of allocations of size $Z$, and $l_Z$ to be the fraction of allocations of size $Z$ still alive at the time of a heap dump, then we can phrase this as an optimization problem over the choices of $p_Z$:
+
+Minimize
+
+$$ \sum_Z Z^2 l_Z \frac{1-p_Z}{p_Z} $$
+
+subject to
+
+$$ \sum_Z a_Z p_Z \leq P $$
+
+Ignoring a term that doesn't depend on $p_Z$, the objective is minimized whenever
+
+$$ \sum_Z Z^2 l_Z \frac{1}{p_Z} $$
+
+is. For a particular program, $l_Z$ and $a_Z$ are just numbers that can be obtained (exactly) from existing stats introspection facilities, and we have a fairly tractable convex optimization problem (it can be framed as a second-order cone program). It would be interesting to evaluate, for various common allocation patterns, how well our current strategy adapts. Do our actual choices for $p_Z$ closely correspond to the optimal ones? How close is the variance of our choices to the variance of the optimal strategy?
+You can imagine an implementation that actually goes all the way, and makes $p_Z$ selections a tuning parameter. I don't think this is a good use of development time for the foreseeable future; but I do wonder about the answers to some of these questions.
+
+## Implementation realities
+
+The nice story above is at least partially a lie. Initially, jeprof (copying its logic from pprof)  had the sum-then-unbias error described above.  The current version of jemalloc does the unbiasing step on a per-allocation basis internally, so that we're always tracking what the unbiased numbers "should" be.  The problem is, actually surfacing those unbiased numbers would require a breaking change to jeprof (and the various already-deployed tools that have copied its logic). Instead, we use a little bit more trickery. Since we know at dump time the numbers we want jeprof to report, we simply choose the values we'll output so that the jeprof numbers will match the true numbers.  The math is described in `src/prof_data.c` (where the only cleverness is a change of variables that lets the exponentials fall out).
+
+This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
+
+
 # Content from file ../neon/target/debug/build/tikv-jemalloc-sys-75fedc58bdad9193/out/build/INSTALL.md:
 
 Building and installing a packaged release of jemalloc can be as simple as
@@ -18711,6 +20125,698 @@ improve application performance with jemalloc.
 
 
 # Content from file ../neon/target/debug/build/tikv-jemalloc-sys-75fedc58bdad9193/out/build/doc_internal/PROFILING_INTERNALS.md:
+
+# jemalloc profiling
+This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
+
+Note: this document is markdown with embedded LaTeX; different markdown renderers may not produce the expected output.  Viewing with `pandoc -s PROFILING_INTERNALS.md -o PROFILING_INTERNALS.pdf` is recommended.
+
+## Some tricks in our implementation toolbag
+
+### Sampling
+Recording our metadata is quite expensive; we need to walk up the stack to get a stack trace. On top of that, we need to allocate storage to record that stack trace, and stick it somewhere where a profile-dumping call can find it. That call might happen on another thread, so we'll probably need to take a lock to do so. These costs are quite large compared to the average cost of an allocation. To manage this, we'll only sample some fraction of allocations. This will miss some of them, so our data will be incomplete, but we'll try to make up for it. We can tune our sampling rate to balance accuracy and performance.
+
+### Fast Bernoulli sampling
+Compared to our fast paths, even a `coinflip(p)` function can be quite expensive. Having to do a random-number generation and some floating point operations would be a sizeable relative cost. However (as pointed out in [[Vitter, 1987](https://dl.acm.org/doi/10.1145/23002.23003)]), if we can orchestrate our algorithm so that many of our `coinflip` calls share their parameter value, we can do better. We can sample from the geometric distribution, and initialize a counter with the result. When the counter hits 0, the `coinflip` function returns true (and reinitializes its internal counter).
+This can let us do a random-number generation once per (logical) coinflip that comes up heads, rather than once per (logical) coinflip. Since we expect to sample relatively rarely, this can be a large win.
+
+### Fast-path / slow-path thinking
+Most programs have a skewed distribution of allocations. Smaller allocations are much more frequent than large ones, but shorter lived and less common as a fraction of program memory. "Small" and "large" are necessarily sort of fuzzy terms, but if we define "small" as "allocations jemalloc puts into slabs" and "large" as the others, then it's not uncommon for small allocations to be hundreds of times more frequent than large ones, but take up around half the amount of heap space as large ones. Moreover, small allocations tend to be much cheaper than large ones (often by a factor of 20-30): they're more likely to hit in thread caches, less likely to have to do an mmap, and cheaper to fill (by the user) once the allocation has been returned.
+
+## An unbiased estimator of space consumption from (almost) arbitrary sampling strategies
+Suppose we have a sampling strategy that meets the following criteria:
+
+  - One allocation being sampled is independent of other allocations being sampled.
+  - Each allocation has a non-zero probability of being sampled.
+
+We can then estimate the bytes in live allocations through some particular stack trace as:
+
+$$ \sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]} $$
+
+where the sum ranges over some index variable of live allocations from that stack, $S_i$ is the size of the $i$'th allocation, and $I_i$ is an indicator random variable for whether or not the $i'th$ allocation is sampled. $S_i$ and $\mathrm{E}[I_i]$ are constants (the program allocations are fixed; the random variables are the sampling decisions), so taking the expectation we get
+
+$$ \sum_i S_i \mathrm{E}[I_i] \frac{1}{\mathrm{E}[I_i]}.$$
+
+This is of course $\sum_i S_i$, as we want (and, a similar calculation could be done for allocation counts as well).
+This is a fairly general strategy; note that while we require that sampling decisions be independent of one another's outcomes, they don't have to be independent of previous allocations, total bytes allocated, etc. You can imagine strategies that:
+
+  - Sample allocations at program startup at a higher rate than subsequent allocations
+  - Sample even-indexed allocations more frequently than odd-indexed ones (so long as no allocation has zero sampling probability)
+  - Let threads declare themselves as high-sampling-priority, and sample their allocations at an increased rate.
+
+These can all be fit into this framework to give an unbiased estimator.
+
+## Evaluating sampling strategies
+Not all strategies for picking allocations to sample are equally good, of course. Among unbiased estimators, the lower the variance, the lower the mean squared error. Using the estimator above, the variance is:
+
+$$
+\begin{aligned}
+& \mathrm{Var}[\sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]}]  \\
+=& \sum_i \mathrm{Var}[S_i I_i \frac{1}{\mathrm{E}[I_i]}] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{E}[I_i](1 - \mathrm{E}[I_i]) \\
+=& \sum_i S_i^2 \frac{1 - \mathrm{E}[I_i]}{\mathrm{E}[I_i]}.
+\end{aligned}
+$$
+
+We can use this formula to compare various strategy choices. All else being equal, lower-variance strategies are better.
+
+## Possible sampling strategies
+Because of the desire to avoid the fast-path costs, we'd like to use our Bernoulli trick if possible. There are two obvious counters to use: a coinflip per allocation, and a coinflip per byte allocated.
+
+### Bernoulli sampling per-allocation
+An obvious strategy is to pick some large $N$, and give each allocation a $1/N$ chance of being sampled. This would let us use our Bernoulli-via-Geometric trick. Using the formula from above, we can compute the variance as:
+
+$$ \sum_i S_i^2 \frac{1 - \frac{1}{N}}{\frac{1}{N}}  = (N-1) \sum_i S_i^2.$$
+
+That is, an allocation of size $Z$ contributes a term of $(N-1)Z^2$ to the variance.
+
+### Bernoulli sampling per-byte
+Another option we have is to pick some rate $R$, and give each byte a $1/R$ chance of being picked for sampling (at which point we would sample its contained allocation). The chance of an allocation of size $Z$ being sampled, then, is
+
+$$1-(1-\frac{1}{R})^{Z}$$
+
+and an allocation of size $Z$ contributes a term of
+
+$$Z^2 \frac{(1-\frac{1}{R})^{Z}}{1-(1-\frac{1}{R})^{Z}}.$$
+
+In practical settings, $R$ is large, and so this is well-approximated by
+
+$$Z^2 \frac{e^{-Z/R}}{1 - e^{-Z/R}} .$$
+
+Just to get a sense of the dynamics here, let's look at the behavior for various values of $Z$. When $Z$ is small relative to $R$, we can use $e^z \approx 1 + x$, and conclude that the variance contributed by a small-$Z$ allocation is around
+
+$$Z^2 \frac{1-Z/R}{Z/R} \approx RZ.$$
+
+When $Z$ is comparable to $R$, the variance term is near $Z^2$ (we have $\frac{e^{-Z/R}}{1 - e^{-Z/R}} = 1$ when $Z/R = \ln 2 \approx 0.693$). When $Z$ is large relative to $R$, the variance term goes to zero.
+
+## Picking a sampling strategy
+The fast-path/slow-path dynamics of allocation patterns point us towards the per-byte sampling approach:
+
+  - The quadratic increase in variance per allocation in the first approach is quite costly when heaps have a non-negligible portion of their bytes in those allocations, which is practically often the case.
+  - The Bernoulli-per-byte approach shifts more of its samples towards large allocations, which are already a slow-path.
+  - We drive several tickers (e.g. tcache gc) by bytes allocated, and report bytes-allocated as a user-visible statistic, so we have to do all the necessary bookkeeping anyways.
+
+Indeed, this is the approach we use in jemalloc. Our heap dumps record the size of the allocation and the sampling rate $R$, and jeprof unbiases by dividing by $1 - e^{-Z/R}$.  The framework above would suggest dividing by $1-(1-1/R)^Z$; instead, we use the fact that $R$ is large in practical situations, and so $e^{-Z/R}$ is a good approximation (and faster to compute).  (Equivalently, we may also see this as the factor that falls out from viewing sampling as a Poisson process directly).
+
+## Consequences for heap dump consumers
+Using this approach means that there are a few things users need to be aware of.
+
+### Stack counts are not proportional to allocation frequencies
+If one stack appears twice as often as another, this by itself does not imply that it allocates twice as often. Consider the case in which there are only two types of allocating call stacks in a program. Stack A allocates 8 bytes, and occurs a million times in a program. Stack B allocates 8 MB, and occurs just once in a program. If our sampling rate $R$ is about 1MB, we expect stack A to show up about 8 times, and stack B to show up once. Stack A isn't 8 times more frequent than stack B, though; it's a million times more frequent.
+
+### Aggregation must be done after unbiasing samples
+Some tools manually parse heap dump output, and aggregate across stacks (or across program runs) to provide wider-scale data analyses. When doing this aggregation, though, it's important to unbias-and-then-sum, rather than sum-and-then-unbias. Reusing our example from the previous section: suppose we collect heap dumps of the program from a million machines. We then have 8 million occurs of stack A (each of 8 bytes), and a million occurrences of stack B (each of 8 MB). If we sum first, we'll attribute 64 MB to stack A, and 8 TB to stack B. Unbiasing changes these numbers by an infinitesimal amount, so that sum-then-unbias dramatically underreports the amount of memory allocated by stack A.
+
+## An avenue for future exploration
+While the framework we laid out above is pretty general, as an engineering decision we're only interested in fairly simple approaches (i.e. ones for which the chance of an allocation being sampled depends only on its size). Our job is then: for each size class $Z$, pick a probability $p_Z$ that an allocation of that size will be sampled. We made some handwave-y references to statistical distributions to justify our choices, but there's no reason we need to pick them that way. Any set of non-zero probabilities is a valid choice.
+The real limiting factor in our ability to reduce estimator variance is that fact that sampling is expensive; we want to make sure we only do it on a small fraction of allocations. Our goal, then, is to pick the $p_Z$ to minimize variance given some maximum sampling rate $P$. If we define $a_Z$ to be the fraction of allocations of size $Z$, and $l_Z$ to be the fraction of allocations of size $Z$ still alive at the time of a heap dump, then we can phrase this as an optimization problem over the choices of $p_Z$:
+
+Minimize
+
+$$ \sum_Z Z^2 l_Z \frac{1-p_Z}{p_Z} $$
+
+subject to
+
+$$ \sum_Z a_Z p_Z \leq P $$
+
+Ignoring a term that doesn't depend on $p_Z$, the objective is minimized whenever
+
+$$ \sum_Z Z^2 l_Z \frac{1}{p_Z} $$
+
+is. For a particular program, $l_Z$ and $a_Z$ are just numbers that can be obtained (exactly) from existing stats introspection facilities, and we have a fairly tractable convex optimization problem (it can be framed as a second-order cone program). It would be interesting to evaluate, for various common allocation patterns, how well our current strategy adapts. Do our actual choices for $p_Z$ closely correspond to the optimal ones? How close is the variance of our choices to the variance of the optimal strategy?
+You can imagine an implementation that actually goes all the way, and makes $p_Z$ selections a tuning parameter. I don't think this is a good use of development time for the foreseeable future; but I do wonder about the answers to some of these questions.
+
+## Implementation realities
+
+The nice story above is at least partially a lie. Initially, jeprof (copying its logic from pprof)  had the sum-then-unbias error described above.  The current version of jemalloc does the unbiasing step on a per-allocation basis internally, so that we're always tracking what the unbiased numbers "should" be.  The problem is, actually surfacing those unbiased numbers would require a breaking change to jeprof (and the various already-deployed tools that have copied its logic). Instead, we use a little bit more trickery. Since we know at dump time the numbers we want jeprof to report, we simply choose the values we'll output so that the jeprof numbers will match the true numbers.  The math is described in `src/prof_data.c` (where the only cleverness is a change of variables that lets the exponentials fall out).
+
+This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-d766ba3e52809d66/out/build/INSTALL.md:
+
+Building and installing a packaged release of jemalloc can be as simple as
+typing the following while in the root directory of the source tree:
+
+    ./configure
+    make
+    make install
+
+If building from unpackaged developer sources, the simplest command sequence
+that might work is:
+
+    ./autogen.sh
+    make
+    make install
+
+You can uninstall the installed build artifacts like this:
+
+    make uninstall
+
+Notes:
+ - "autoconf" needs to be installed
+ - Documentation is built by the default target only when xsltproc is
+available.  Build will warn but not stop if the dependency is missing.
+
+
+## Advanced configuration
+
+The 'configure' script supports numerous options that allow control of which
+functionality is enabled, where jemalloc is installed, etc.  Optionally, pass
+any of the following arguments (not a definitive list) to 'configure':
+
+* `--help`
+
+    Print a definitive list of options.
+
+* `--prefix=<install-root-dir>`
+
+    Set the base directory in which to install.  For example:
+
+        ./configure --prefix=/usr/local
+
+    will cause files to be installed into /usr/local/include, /usr/local/lib,
+    and /usr/local/man.
+
+* `--with-version=(<major>.<minor>.<bugfix>-<nrev>-g<gid>|VERSION)`
+
+    The VERSION file is mandatory for successful configuration, and the
+    following steps are taken to assure its presence:
+    1) If --with-version=<major>.<minor>.<bugfix>-<nrev>-g<gid> is specified,
+       generate VERSION using the specified value.
+    2) If --with-version is not specified in either form and the source
+       directory is inside a git repository, try to generate VERSION via 'git
+       describe' invocations that pattern-match release tags.
+    3) If VERSION is missing, generate it with a bogus version:
+       0.0.0-0-g0000000000000000000000000000000000000000
+
+    Note that --with-version=VERSION bypasses (1) and (2), which simplifies
+    VERSION configuration when embedding a jemalloc release into another
+    project's git repository.
+
+* `--with-rpath=<colon-separated-rpath>`
+
+    Embed one or more library paths, so that libjemalloc can find the libraries
+    it is linked to.  This works only on ELF-based systems.
+
+* `--with-mangling=<map>`
+
+    Mangle public symbols specified in <map> which is a comma-separated list of
+    name:mangled pairs.
+
+    For example, to use ld's --wrap option as an alternative method for
+    overriding libc's malloc implementation, specify something like:
+
+      --with-mangling=malloc:__wrap_malloc,free:__wrap_free[...]
+
+    Note that mangling happens prior to application of the prefix specified by
+    --with-jemalloc-prefix, and mangled symbols are then ignored when applying
+    the prefix.
+
+* `--with-jemalloc-prefix=<prefix>`
+
+    Prefix all public APIs with <prefix>.  For example, if <prefix> is
+    "prefix_", API changes like the following occur:
+
+      malloc()         --> prefix_malloc()
+      malloc_conf      --> prefix_malloc_conf
+      /etc/malloc.conf --> /etc/prefix_malloc.conf
+      MALLOC_CONF      --> PREFIX_MALLOC_CONF
+
+    This makes it possible to use jemalloc at the same time as the system
+    allocator, or even to use multiple copies of jemalloc simultaneously.
+
+    By default, the prefix is "", except on OS X, where it is "je_".  On OS X,
+    jemalloc overlays the default malloc zone, but makes no attempt to actually
+    replace the "malloc", "calloc", etc. symbols.
+
+* `--without-export`
+
+    Don't export public APIs.  This can be useful when building jemalloc as a
+    static library, or to avoid exporting public APIs when using the zone
+    allocator on OSX.
+
+* `--with-private-namespace=<prefix>`
+
+    Prefix all library-private APIs with <prefix>je_.  For shared libraries,
+    symbol visibility mechanisms prevent these symbols from being exported, but
+    for static libraries, naming collisions are a real possibility.  By
+    default, <prefix> is empty, which results in a symbol prefix of je_ .
+
+* `--with-install-suffix=<suffix>`
+
+    Append <suffix> to the base name of all installed files, such that multiple
+    versions of jemalloc can coexist in the same installation directory.  For
+    example, libjemalloc.so.0 becomes libjemalloc<suffix>.so.0.
+
+* `--with-malloc-conf=<malloc_conf>`
+
+    Embed `<malloc_conf>` as a run-time options string that is processed prior to
+    the malloc_conf global variable, the /etc/malloc.conf symlink, and the
+    MALLOC_CONF environment variable.  For example, to change the default decay
+    time to 30 seconds:
+
+      --with-malloc-conf=decay_ms:30000
+
+* `--enable-debug`
+
+    Enable assertions and validation code.  This incurs a substantial
+    performance hit, but is very useful during application development.
+
+* `--disable-stats`
+
+    Disable statistics gathering functionality.  See the "opt.stats_print"
+    option documentation for usage details.
+
+* `--enable-prof`
+
+    Enable heap profiling and leak detection functionality.  See the "opt.prof"
+    option documentation for usage details.  When enabled, there are several
+    approaches to backtracing, and the configure script chooses the first one
+    in the following list that appears to function correctly:
+
+    + libunwind      (requires --enable-prof-libunwind)
+    + libgcc         (unless --disable-prof-libgcc)
+    + gcc intrinsics (unless --disable-prof-gcc)
+
+* `--enable-prof-libunwind`
+
+    Use the libunwind library (http://www.nongnu.org/libunwind/) for stack
+    backtracing.
+
+* `--disable-prof-libgcc`
+
+    Disable the use of libgcc's backtracing functionality.
+
+* `--disable-prof-gcc`
+
+    Disable the use of gcc intrinsics for backtracing.
+
+* `--with-static-libunwind=<libunwind.a>`
+
+    Statically link against the specified libunwind.a rather than dynamically
+    linking with -lunwind.
+
+* `--disable-fill`
+
+    Disable support for junk/zero filling of memory.  See the "opt.junk" and
+    "opt.zero" option documentation for usage details.
+
+* `--disable-zone-allocator`
+
+    Disable zone allocator for Darwin.  This means jemalloc won't be hooked as
+    the default allocator on OSX/iOS.
+
+* `--enable-utrace`
+
+    Enable utrace(2)-based allocation tracing.  This feature is not broadly
+    portable (FreeBSD has it, but Linux and OS X do not).
+
+* `--enable-xmalloc`
+
+    Enable support for optional immediate termination due to out-of-memory
+    errors, as is commonly implemented by "xmalloc" wrapper function for malloc.
+    See the "opt.xmalloc" option documentation for usage details.
+
+* `--enable-lazy-lock`
+
+    Enable code that wraps pthread_create() to detect when an application
+    switches from single-threaded to multi-threaded mode, so that it can avoid
+    mutex locking/unlocking operations while in single-threaded mode.  In
+    practice, this feature usually has little impact on performance unless
+    thread-specific caching is disabled.
+
+* `--disable-cache-oblivious`
+
+    Disable cache-oblivious large allocation alignment by default, for large
+    allocation requests with no alignment constraints.  If this feature is
+    disabled, all large allocations are page-aligned as an implementation
+    artifact, which can severely harm CPU cache utilization.  However, the
+    cache-oblivious layout comes at the cost of one extra page per large
+    allocation, which in the most extreme case increases physical memory usage
+    for the 16 KiB size class to 20 KiB.
+
+* `--disable-syscall`
+
+    Disable use of syscall(2) rather than {open,read,write,close}(2).  This is
+    intended as a workaround for systems that place security limitations on
+    syscall(2).
+
+* `--disable-cxx`
+
+    Disable C++ integration.  This will cause new and delete operator
+    implementations to be omitted.
+
+* `--with-xslroot=<path>`
+
+    Specify where to find DocBook XSL stylesheets when building the
+    documentation.
+
+* `--with-lg-page=<lg-page>`
+
+    Specify the base 2 log of the allocator page size, which must in turn be at
+    least as large as the system page size.  By default the configure script
+    determines the host's page size and sets the allocator page size equal to
+    the system page size, so this option need not be specified unless the
+    system page size may change between configuration and execution, e.g. when
+    cross compiling.
+
+* `--with-lg-hugepage=<lg-hugepage>`
+
+    Specify the base 2 log of the system huge page size.  This option is useful
+    when cross compiling, or when overriding the default for systems that do
+    not explicitly support huge pages.
+
+* `--with-lg-quantum=<lg-quantum>`
+
+    Specify the base 2 log of the minimum allocation alignment.  jemalloc needs
+    to know the minimum alignment that meets the following C standard
+    requirement (quoted from the April 12, 2011 draft of the C11 standard):
+
+    >  The pointer returned if the allocation succeeds is suitably aligned so
+      that it may be assigned to a pointer to any type of object with a
+      fundamental alignment requirement and then used to access such an object
+      or an array of such objects in the space allocated [...]
+
+    This setting is architecture-specific, and although jemalloc includes known
+    safe values for the most commonly used modern architectures, there is a
+    wrinkle related to GNU libc (glibc) that may impact your choice of
+    <lg-quantum>.  On most modern architectures, this mandates 16-byte
+    alignment (<lg-quantum>=4), but the glibc developers chose not to meet this
+    requirement for performance reasons.  An old discussion can be found at
+    <https://sourceware.org/bugzilla/show_bug.cgi?id=206> .  Unlike glibc,
+    jemalloc does follow the C standard by default (caveat: jemalloc
+    technically cheats for size classes smaller than the quantum), but the fact
+    that Linux systems already work around this allocator noncompliance means
+    that it is generally safe in practice to let jemalloc's minimum alignment
+    follow glibc's lead.  If you specify `--with-lg-quantum=3` during
+    configuration, jemalloc will provide additional size classes that are not
+    16-byte-aligned (24, 40, and 56).
+
+* `--with-lg-vaddr=<lg-vaddr>`
+
+    Specify the number of significant virtual address bits.  By default, the
+    configure script attempts to detect virtual address size on those platforms
+    where it knows how, and picks a default otherwise.  This option may be
+    useful when cross-compiling.
+
+* `--disable-initial-exec-tls`
+
+    Disable the initial-exec TLS model for jemalloc's internal thread-local
+    storage (on those platforms that support explicit settings).  This can allow
+    jemalloc to be dynamically loaded after program startup (e.g. using dlopen).
+    Note that in this case, there will be two malloc implementations operating
+    in the same process, which will almost certainly result in confusing runtime
+    crashes if pointers leak from one implementation to the other.
+
+* `--disable-libdl`
+
+    Disable the usage of libdl, namely dlsym(3) which is required by the lazy
+    lock option.  This can allow building static binaries.
+
+The following environment variables (not a definitive list) impact configure's
+behavior:
+
+* `CFLAGS="?"`
+* `CXXFLAGS="?"`
+
+    Pass these flags to the C/C++ compiler.  Any flags set by the configure
+    script are prepended, which means explicitly set flags generally take
+    precedence.  Take care when specifying flags such as -Werror, because
+    configure tests may be affected in undesirable ways.
+
+* `EXTRA_CFLAGS="?"`
+* `EXTRA_CXXFLAGS="?"`
+
+    Append these flags to CFLAGS/CXXFLAGS, without passing them to the
+    compiler(s) during configuration.  This makes it possible to add flags such
+    as -Werror, while allowing the configure script to determine what other
+    flags are appropriate for the specified configuration.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.  Note that CFLAGS is not passed to
+    'cpp' when 'configure' is looking for include files, so you must use
+    CPPFLAGS instead if you need to help 'configure' find header files.
+
+* `LD_LIBRARY_PATH="?"`
+
+    'ld' uses this colon-separated list to find libraries.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    'configure' uses this to find programs.
+
+In some cases it may be necessary to work around configuration results that do
+not match reality.  For example, Linux 4.5 added support for the MADV_FREE flag
+to madvise(2), which can cause problems if building on a host with MADV_FREE
+support and deploying to a target without.  To work around this, use a cache
+file to override the relevant configuration variable defined in configure.ac,
+e.g.:
+
+    echo "je_cv_madv_free=no" > config.cache && ./configure -C
+
+
+## Advanced compilation
+
+To build only parts of jemalloc, use the following targets:
+
+    build_lib_shared
+    build_lib_static
+    build_lib
+    build_doc_html
+    build_doc_man
+    build_doc
+
+To install only parts of jemalloc, use the following targets:
+
+    install_bin
+    install_include
+    install_lib_shared
+    install_lib_static
+    install_lib_pc
+    install_lib
+    install_doc_html
+    install_doc_man
+    install_doc
+
+To clean up build results to varying degrees, use the following make targets:
+
+    clean
+    distclean
+    relclean
+
+
+## Advanced installation
+
+Optionally, define make variables when invoking make, including (not
+exclusively):
+
+* `INCLUDEDIR="?"`
+
+    Use this as the installation prefix for header files.
+
+* `LIBDIR="?"`
+
+    Use this as the installation prefix for libraries.
+
+* `MANDIR="?"`
+
+    Use this as the installation prefix for man pages.
+
+* `DESTDIR="?"`
+
+    Prepend DESTDIR to INCLUDEDIR, LIBDIR, DATADIR, and MANDIR.  This is useful
+    when installing to a different path than was specified via --prefix.
+
+* `CC="?"`
+
+    Use this to invoke the C compiler.
+
+* `CFLAGS="?"`
+
+    Pass these flags to the compiler.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    Use this to search for programs used during configuration and building.
+
+
+## Development
+
+If you intend to make non-trivial changes to jemalloc, use the 'autogen.sh'
+script rather than 'configure'.  This re-generates 'configure', enables
+configuration dependency rules, and enables re-generation of automatically
+generated source files.
+
+The build system supports using an object directory separate from the source
+tree.  For example, you can create an 'obj' directory, and from within that
+directory, issue configuration and build commands:
+
+    autoconf
+    mkdir obj
+    cd obj
+    ../configure --enable-autogen
+    make
+
+
+## Documentation
+
+The manual page is generated in both html and roff formats.  Any web browser
+can be used to view the html manual.  The roff manual page can be formatted
+prior to installation via the following command:
+
+    nroff -man -t doc/jemalloc.3
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-d766ba3e52809d66/out/build/TUNING.md:
+
+This document summarizes the common approaches for performance fine tuning with
+jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
+reasonably well in practice, and most applications should not have to tune any
+options. However, in order to cover a wide range of applications and avoid
+pathological cases, the default setting is sometimes kept conservative and
+suboptimal, even for many common workloads.  When jemalloc is properly tuned for
+a specific application / workload, it is common to improve system level metrics
+by a few percent, or make favorable trade-offs.
+
+
+## Notable runtime options for performance tuning
+
+Runtime options can be set via
+[malloc_conf](http://jemalloc.net/jemalloc.3.html#tuning).
+
+* [background_thread](http://jemalloc.net/jemalloc.3.html#background_thread)
+
+    Enabling jemalloc background threads generally improves the tail latency for
+    application threads, since unused memory purging is shifted to the dedicated
+    background threads.  In addition, unintended purging delay caused by
+    application inactivity is avoided with background threads.
+
+    Suggested: `background_thread:true` when jemalloc managed threads can be
+    allowed.
+
+* [metadata_thp](http://jemalloc.net/jemalloc.3.html#opt.metadata_thp)
+
+    Allowing jemalloc to utilize transparent huge pages for its internal
+    metadata usually reduces TLB misses significantly, especially for programs
+    with large memory footprint and frequent allocation / deallocation
+    activities.  Metadata memory usage may increase due to the use of huge
+    pages.
+
+    Suggested for allocation intensive programs: `metadata_thp:auto` or
+    `metadata_thp:always`, which is expected to improve CPU utilization at a
+    small memory cost.
+
+* [dirty_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.dirty_decay_ms) and
+  [muzzy_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.muzzy_decay_ms)
+
+    Decay time determines how fast jemalloc returns unused pages back to the
+    operating system, and therefore provides a fairly straightforward trade-off
+    between CPU and memory usage.  Shorter decay time purges unused pages faster
+    to reduces memory usage (usually at the cost of more CPU cycles spent on
+    purging), and vice versa.
+
+    Suggested: tune the values based on the desired trade-offs.
+
+* [narenas](http://jemalloc.net/jemalloc.3.html#opt.narenas)
+
+    By default jemalloc uses multiple arenas to reduce internal lock contention.
+    However high arena count may also increase overall memory fragmentation,
+    since arenas manage memory independently.  When high degree of parallelism
+    is not expected at the allocator level, lower number of arenas often
+    improves memory usage.
+
+    Suggested: if low parallelism is expected, try lower arena count while
+    monitoring CPU and memory usage.
+
+* [percpu_arena](http://jemalloc.net/jemalloc.3.html#opt.percpu_arena)
+
+    Enable dynamic thread to arena association based on running CPU.  This has
+    the potential to improve locality, e.g. when thread to CPU affinity is
+    present.
+    
+    Suggested: try `percpu_arena:percpu` or `percpu_arena:phycpu` if
+    thread migration between processors is expected to be infrequent.
+
+Examples:
+
+* High resource consumption application, prioritizing CPU utilization:
+
+    `background_thread:true,metadata_thp:auto` combined with relaxed decay time
+    (increased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:30000,muzzy_decay_ms:30000`).
+
+* High resource consumption application, prioritizing memory usage:
+
+    `background_thread:true,tcache_max:4096` combined with shorter decay time
+    (decreased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:5000,muzzy_decay_ms:5000`), and lower arena count
+    (e.g. number of CPUs).
+
+* Low resource consumption application:
+
+    `narenas:1,tcache_max:1024` combined with shorter decay time (decreased
+    `dirty_decay_ms` and / or `muzzy_decay_ms`,e.g.
+    `dirty_decay_ms:1000,muzzy_decay_ms:0`).
+
+* Extremely conservative -- minimize memory usage at all costs, only suitable when
+allocation activity is very rare:
+
+    `narenas:1,tcache:false,dirty_decay_ms:0,muzzy_decay_ms:0`
+
+Note that it is recommended to combine the options with `abort_conf:true` which
+aborts immediately on illegal options.
+
+## Beyond runtime options
+
+In addition to the runtime options, there are a number of programmatic ways to
+improve application performance with jemalloc.
+
+* [Explicit arenas](http://jemalloc.net/jemalloc.3.html#arenas.create)
+
+    Manually created arenas can help performance in various ways, e.g. by
+    managing locality and contention for specific usages.  For example,
+    applications can explicitly allocate frequently accessed objects from a
+    dedicated arena with
+    [mallocx()](http://jemalloc.net/jemalloc.3.html#MALLOCX_ARENA) to improve
+    locality.  In addition, explicit arenas often benefit from individually
+    tuned options, e.g. relaxed [decay
+    time](http://jemalloc.net/jemalloc.3.html#arena.i.dirty_decay_ms) if
+    frequent reuse is expected.
+
+* [Extent hooks](http://jemalloc.net/jemalloc.3.html#arena.i.extent_hooks)
+
+    Extent hooks allow customization for managing underlying memory.  One use
+    case for performance purpose is to utilize huge pages -- for example,
+    [HHVM](https://github.com/facebook/hhvm/blob/master/hphp/util/alloc.cpp)
+    uses explicit arenas with customized extent hooks to manage 1GB huge pages
+    for frequently accessed data, which reduces TLB misses significantly.
+
+* [Explicit thread-to-arena
+  binding](http://jemalloc.net/jemalloc.3.html#thread.arena)
+
+    It is common for some threads in an application to have different memory
+    access / allocation patterns.  Threads with heavy workloads often benefit
+    from explicit binding, e.g. binding very active threads to dedicated arenas
+    may reduce contention at the allocator level.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-d766ba3e52809d66/out/build/doc_internal/PROFILING_INTERNALS.md:
 
 # jemalloc profiling
 This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
@@ -20342,7 +22448,7 @@ The test suite has a Python enum with equal name but different meaning:
 
 ```python
 @enum.unique
-class RemoteStorageKind(str, enum.Enum):
+class RemoteStorageKind(StrEnum):
     LOCAL_FS = "local_fs"
     MOCK_S3 = "mock_s3"
     REAL_S3 = "real_s3"
@@ -20552,6 +22658,30 @@ Also consider:
   * For function arguments and return values.
 
 
+# Content from file ../neon/test_runner/cloud_regress/README.md:
+
+# How to run the `pg_regress` tests on a cloud Neon instance.
+
+* Create a Neon project on staging.
+* Grant the superuser privileges to the DB user.
+* (Optional) create a branch for testing
+* Configure the endpoint by updating the control-plane database with the following settings:
+  * `Timeone`: `America/Los_Angeles`
+  * `DateStyle`: `Postgres,MDY`
+  * `compute_query_id`: `off`
+* Checkout the actual `Neon` sources
+* Patch the sql and expected files for the specific PostgreSQL version, e.g. for v17:
+```bash
+$ cd vendor/postgres-v17
+$ patch -p1 <../../compute/patches/cloud_regress_pg17.patch
+```
+* Set the environment variable `BENCHMARK_CONNSTR` to the connection URI of your project.
+* Set the environment variable `PG_VERSION` to the version of your project.
+* Run 
+```bash
+$ pytest -m remote_cluster -k cloud_regress
+```
+
 # Content from file ../neon/test_runner/logical_repl/README.md:
 
 # Logical replication tests
@@ -20596,6 +22726,7 @@ Some handy pytest flags for local development:
 - `-k` selects a test to run
 - `--timeout=0` disables our default timeout of 300s (see `setup.cfg`)
 - `--preserve-database-files` to skip cleanup
+- `--out-dir` to produce a JSON with the recorded test metrics
 
 # What performance tests do we have and how we run them
 
@@ -20617,7 +22748,7 @@ All tests run only once. Usually to obtain more consistent performance numbers, 
 
 ## Results collection
 
-Local test results for main branch, and results of daily performance tests, are stored in a neon project deployed in production environment. There is a Grafana dashboard that visualizes the results. Here is the [dashboard](https://observer.zenith.tech/d/DGKBm9Jnz/perf-test-results?orgId=1). The main problem with it is the unavailability to point at particular commit, though the data for that is available in the database. Needs some tweaking from someone who knows Grafana tricks.
+Local test results for main branch, and results of daily performance tests, are stored in a [neon project](https://console.neon.tech/app/projects/withered-sky-69117821) deployed in production environment. There is a Grafana dashboard that visualizes the results. Here is the [dashboard](https://observer.zenith.tech/d/DGKBm9Jnz/perf-test-results?orgId=1). The main problem with it is the unavailability to point at particular commit, though the data for that is available in the database. Needs some tweaking from someone who knows Grafana tricks.
 
 There is also an inconsistency in test naming. Test name should be the same across platforms, and results can be differentiated by the platform field. But currently, platform is sometimes included in test name because of the way how parametrization works in pytest. I.e. there is a platform switch in the dashboard with neon-local-ci and neon-staging variants. I.e. some tests under neon-local-ci value for a platform switch are displayed as `Test test_runner/performance/test_bulk_insert.py::test_bulk_insert[vanilla]` and `Test test_runner/performance/test_bulk_insert.py::test_bulk_insert[neon]` which is highly confusing.
 
