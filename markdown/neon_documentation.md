@@ -396,7 +396,7 @@ Neon supports the [pgvector](/docs/extensions/pgvector) Postgres extension for s
 title: Production readiness with Neon
 subtitle: Neon features for real-world workloads
 enableTableOfContents: true
-updatedOn: '2024-12-13T20:52:57.581Z'
+updatedOn: '2025-01-07T20:03:22.702Z'
 ---
 
 Learn how autoscaling, scale to zero, Neon's storage architecture, change data capture, read replicas, and support for thousands of connections can improve performance, reliability, and efficiency for your production environments.
@@ -411,7 +411,7 @@ Neon's autoscaling feature automatically and transparently scales up compute res
 - **You can stop paying for compute resources that you only use sometimes**. You no longer have to run a maximum potential load configuration at all times.
 - **No more manual scaling disruptions**. With autoscaling, you can focus more on your application and less on managing infrastructure.
 
-To learn more, see our [Autoscaling](/docs/introduction/autoscaling-guide) guide.
+To learn more, see our [Autoscaling](/docs/introduction/autoscaling) guide.
 
 ## Scale to zero
 
@@ -3667,7 +3667,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/vercel
   - /docs/integrations/vercel
-updatedOn: '2024-10-25T10:38:21.887Z'
+updatedOn: '2024-12-17T16:19:51.366Z'
 ---
 
 Next.js by Vercel is an open-source web development framework that enables React-based web applications. This topic describes how to create a Neon project and access it from a Next.js application.
@@ -3711,7 +3711,7 @@ If you do not have one already, create a Neon project. Save your connection deta
 
 ## Store your Neon credentials
 
-Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard** and add a pooler flag to the connection string. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 ```shell shouldWrap
 DATABASE_URL="postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
@@ -4098,7 +4098,7 @@ title: Connect Nuxt to Postgres on Neon
 subtitle: Learn how to make server-side queries to Postgres using Nitro API routes
 enableTableOfContents: true
 tag: new
-updatedOn: '2024-11-09T10:04:27.008Z'
+updatedOn: '2025-01-08T13:28:42.040Z'
 ---
 
 [Nuxt](https://nuxt.com/) is an open-source full-stack meta framework that enables Vue-based web applications. This topic describes how to connect a Nuxt application to a Postgres database on Neon.
@@ -4145,19 +4145,19 @@ If you do not have one already, create a Neon project. Save your connection deta
 Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 ```shell shouldWrap
-DATABASE_URL="postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
+NUXT_DATABASE_URL="postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
 ```
 
 ## Configure the Postgres client
 
-First, make sure you load the `DATABASE_URL` from your .env file in Nuxt’s runtime configuration:
+First, make sure you load the `NUXT_DATABASE_URL` from your .env file in Nuxt’s runtime configuration:
 
 In `nuxt.config.js`:
 
 ```javascript
 export default defineNuxtConfig({
   runtimeConfig: {
-    databaseUrl: process.env.DATABASE_URL,
+    databaseUrl: ‘’,
   },
 });
 ```
@@ -5925,7 +5925,7 @@ Optimize your connections by enabling connection pooling.
 title: Choosing your driver and connection type
 subtitle: How to select the right driver and connection type for your application
 enableTableOfContents: true
-updatedOn: '2024-10-23T14:34:44.510Z'
+updatedOn: '2025-01-06T23:37:50.186Z'
 ---
 
 When setting up your application’s connection to your Neon Postgres database, you need to make two main choices:
@@ -5980,7 +5980,7 @@ You then need to decide whether to use direct connections or pooled connections 
   If your application is focused mainly on tasks like migrations or administrative operations that require stable and long-lived connections, use an unpooled connection.
 
 <Admonition type="note">
-Connection pooling is not a magic bullet. PgBouncer can keep many application connections open (up to 10,000) concurrently, but only a limited number of these can be actively querying the Postgres server at any given time: 64 active backend connections (transactions between PgBouncer and Postgres) per user-database pair, as determined by the PgBouncer's `default_pool_size` setting. For example, the Postgres user `alex` can hold up to 64 connections to a single database at one time.
+Connection pooling is not a magic bullet. PgBouncer can keep many application connections open (up to 10,000) concurrently, but only a limited number of these can be actively querying the Postgres server at any given time. For example, 64 active backend connections (transactions between PgBouncer and Postgres) per user-database pair, as determined by the PgBouncer's `default_pool_size` setting, mean that Postgres user `alex` can hold up to 64 connections to a single database at one time.
 </Admonition>
 
 For more information on these choices, see:
@@ -5994,7 +5994,7 @@ Here are some key points to help you navigate potential issues.
 | Issue | Description |
 |----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Double pooling | **Neon-side pooling** uses PgBouncer to manage connections between your application and Postgres.<br /><br /> **Client-side pooling** occurs within the client library before connections are passed to PgBouncer.<br /><br />If you're using a pooled Neon connection (supported by PgBouncer), it's best to avoid client-side pooling. Let Neon handle the pooling to prevent retaining unused connections on the client side. If you must use client-side pooling, make sure that connections are released back to the pool promptly to avoid conflicts with PgBouncer. |
-| Understanding limits | Don't confuse `max_connections` with `default_pool_size`.<br /><br />`max_connections` is the maximum number of concurrent connections allowed by Postgres and is determined by your [Neon compute size](/docs/connect/connection-pooling#connection-limits-without-connection-pooling).<br /><br />`default_pool_size` is the maximum number of backend connections or transactions that PgBouncer supports per user/database pair, which is set to 64 by default.<br /><br />Simply increasing your compute to get more `max_connections` may not improve performance if the bottleneck is actually on your `default_pool_size`. To increase your `default_pool_size`, contact [Support](/docs/introduction/support). |
+| Understanding limits | Don't confuse `max_connections` with `default_pool_size`.<br /><br />`max_connections` is the maximum number of concurrent connections allowed by Postgres, determined by your [Neon compute size](/docs/connect/connection-pooling#connection-limits-without-connection-pooling).<br /><br />`default_pool_size` is the maximum number of backend connections or transactions that PgBouncer supports per user/database pair, also determined by compute size <br /><br />Simply increasing your compute to get more `max_connections` may not improve performance if the bottleneck is actually on your `default_pool_size`. To increase your `default_pool_size`, contact [Support](/docs/introduction/support). |
 | Use request handlers | In serverless environments such as Vercel Edge Functions or Cloudflare Workers, WebSocket connections can't outlive a single request. That means Pool or Client objects must be connected, used and closed within a single request handler. Don't create them outside a request handler; don't create them in one handler and try to reuse them in another; and to avoid exhausting available connections, don't forget to close them. See [Pool and Client](https://github.com/neondatabase/serverless?tab=readme-ov-file#pool-and-client) for details.|
 
 ## Configuration
@@ -6049,11 +6049,11 @@ For more details, see [How to use connection pooling](/docs/connect/connection-p
 
 Here is a table summarizing the options we've walked through on this page:
 
-|                 | Direct Connections                                                                                   | Pooled Connections                                                                                                                                                                                                                                     | Serverless Driver (HTTP)                 | Serverless Driver (WebSocket)                 |
-| --------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- | --------------------------------------------- |
-| **Use Case**    | Migrations, admin tasks requiring stable connections                                                 | High number of concurrent client connections, efficient resource management                                                                                                                                                                            | One-shot queries, short-lived operations | Transactions requiring persistent connections |
-| **Scalability** | Limited by `max_connections` tied to [compute size](/docs/manage/endpoints#how-to-size-your-compute) | Up to 10,000 application connections (between your application and PgBouncer); however, only 64 backend connections (active transactions between PgBouncer and Postgres) are allowed per user/database pair. This limit can be increased upon request. | Automatically scales                     | Automatically scales                          |
-| **Performance** | Low overhead                                                                                         | Efficient for stable, high-concurrency workloads                                                                                                                                                                                                       | Optimized for serverless                 | Optimized for serverless                      |
+|                 | Direct Connections                                                                                   | Pooled Connections                                                                                                                                                                                                                                                                                                                                | Serverless Driver (HTTP)                 | Serverless Driver (WebSocket)                 |
+| --------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | --------------------------------------------- |
+| **Use Case**    | Migrations, admin tasks requiring stable connections                                                 | High number of concurrent client connections, efficient resource management                                                                                                                                                                                                                                                                       | One-shot queries, short-lived operations | Transactions requiring persistent connections |
+| **Scalability** | Limited by `max_connections` tied to [compute size](/docs/manage/endpoints#how-to-size-your-compute) | Up to 10,000 application connections (between your application and PgBouncer); however, only [`default_pool_size`](/docs/connect/connection-pooling#neon-pgbouncer-configuration-settings) backend connections (active transactions between PgBouncer and Postgres) are allowed per user/database pair. This limit can be increased upon request. | Automatically scales                     | Automatically scales                          |
+| **Performance** | Low overhead                                                                                         | Efficient for stable, high-concurrency workloads                                                                                                                                                                                                                                                                                                  | Optimized for serverless                 | Optimized for serverless                      |
 
 
 # Connect from any app
@@ -7382,7 +7382,7 @@ subtitle: Learn how connection pooling works in Neon
 enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/connection-pooling
-updatedOn: '2024-12-11T21:23:33.083Z'
+updatedOn: '2025-01-09T10:35:15.969Z'
 ---
 
 Neon uses [PgBouncer](https://www.pgbouncer.org/) to support connection pooling, enabling up to 10,000 concurrent connections. PgBouncer is a lightweight connection pooler for Postgres.
@@ -7405,48 +7405,48 @@ The `-pooler` option routes the connection to a connection pooling port at the N
 
 ## Connection limits without connection pooling
 
-Each Postgres connection creates a new process in the operating system, which consumes resources. Postgres limits the number of open connections for this reason. The Postgres connection limit is defined by the Postgres `max_connections` parameter. In Neon, `max_connections` is set according to your compute size &#8212; and if you are using Neon's Autoscaling feature, it is set according to your **minimum** compute size.
+Each Postgres connection creates a new process in the operating system, which consumes resources. Postgres limits the number of open connections for this reason. The Postgres connection limit is defined by the Postgres `max_connections` parameter. In Neon, `max_connections` is set according to your compute size &#8212; and if you are using Neon's Autoscaling feature, it is set according to your **maximum** compute size.
 
-| Compute Size (CU) | vCPU | RAM    | max_connections |
-| :---------------- | :--- | :----- | :-------------- |
-| 0.25              | 0.25 | 1 GB   | 112             |
-| 0.50              | 0.50 | 2 GB   | 225             |
-| 1                 | 1    | 4 GB   | 450             |
-| 2                 | 2    | 8 GB   | 901             |
-| 3                 | 3    | 12 GB  | 1351            |
-| 4                 | 4    | 16 GB  | 1802            |
-| 5                 | 5    | 20 GB  | 2253            |
-| 6                 | 6    | 24 GB  | 2703            |
-| 7                 | 7    | 28 GB  | 3154            |
-| 8                 | 8    | 32 GB  | 3604            |
-| 9                 | 9    | 36 GB  | 4000            |
-| 10                | 10   | 40 GB  | 4000            |
-| 11                | 11   | 44 GB  | 4000            |
-| 12                | 12   | 48 GB  | 4000            |
-| 13                | 13   | 52 GB  | 4000            |
-| 14                | 14   | 56 GB  | 4000            |
-| 15                | 15   | 60 GB  | 4000            |
-| 16                | 16   | 64 GB  | 4000            |
-| 18                | 18   | 72 GB  | 4000            |
-| 20                | 20   | 80 GB  | 4000            |
-| 22                | 22   | 88 GB  | 4000            |
-| 24                | 24   | 96 GB  | 4000            |
-| 26                | 26   | 104 GB | 4000            |
-| 28                | 28   | 112 GB | 4000            |
-| 30                | 30   | 120 GB | 4000            |
-| 32                | 32   | 128 GB | 4000            |
-| 34                | 34   | 136 GB | 4000            |
-| 36                | 36   | 144 GB | 4000            |
-| 38                | 38   | 152 GB | 4000            |
-| 40                | 40   | 160 GB | 4000            |
-| 42                | 42   | 168 GB | 4000            |
-| 44                | 44   | 176 GB | 4000            |
-| 46                | 46   | 184 GB | 4000            |
-| 48                | 48   | 192 GB | 4000            |
-| 50                | 50   | 200 GB | 4000            |
-| 52                | 52   | 208 GB | 4000            |
-| 54                | 54   | 216 GB | 4000            |
-| 56                | 56   | 224 GB | 4000            |
+| Max. Compute Size (CU) | vCPU | RAM    | max_connections |
+| :--------------------- | :--- | :----- | :-------------- |
+| 0.25                   | 0.25 | 1 GB   | 112             |
+| 0.50                   | 0.50 | 2 GB   | 225             |
+| 1                      | 1    | 4 GB   | 450             |
+| 2                      | 2    | 8 GB   | 901             |
+| 3                      | 3    | 12 GB  | 1351            |
+| 4                      | 4    | 16 GB  | 1802            |
+| 5                      | 5    | 20 GB  | 2253            |
+| 6                      | 6    | 24 GB  | 2703            |
+| 7                      | 7    | 28 GB  | 3154            |
+| 8                      | 8    | 32 GB  | 3604            |
+| 9                      | 9    | 36 GB  | 4000            |
+| 10                     | 10   | 40 GB  | 4000            |
+| 11                     | 11   | 44 GB  | 4000            |
+| 12                     | 12   | 48 GB  | 4000            |
+| 13                     | 13   | 52 GB  | 4000            |
+| 14                     | 14   | 56 GB  | 4000            |
+| 15                     | 15   | 60 GB  | 4000            |
+| 16                     | 16   | 64 GB  | 4000            |
+| 18                     | 18   | 72 GB  | 4000            |
+| 20                     | 20   | 80 GB  | 4000            |
+| 22                     | 22   | 88 GB  | 4000            |
+| 24                     | 24   | 96 GB  | 4000            |
+| 26                     | 26   | 104 GB | 4000            |
+| 28                     | 28   | 112 GB | 4000            |
+| 30                     | 30   | 120 GB | 4000            |
+| 32                     | 32   | 128 GB | 4000            |
+| 34                     | 34   | 136 GB | 4000            |
+| 36                     | 36   | 144 GB | 4000            |
+| 38                     | 38   | 152 GB | 4000            |
+| 40                     | 40   | 160 GB | 4000            |
+| 42                     | 42   | 168 GB | 4000            |
+| 44                     | 44   | 176 GB | 4000            |
+| 46                     | 46   | 184 GB | 4000            |
+| 48                     | 48   | 192 GB | 4000            |
+| 50                     | 50   | 200 GB | 4000            |
+| 52                     | 52   | 208 GB | 4000            |
+| 54                     | 54   | 216 GB | 4000            |
+| 56                     | 56   | 224 GB | 4000            |
 
 The formula used to calculate `max_connections` for Neon computes is `RAM in bytes / 9531392 bytes`. For a Neon Free Plan compute, which has 1 GB of RAM, this works out to approximately 112 connections. Larger computes offered with paid plans have more RAM and therefore support a larger number of connections. For example, a compute with 12 GB of RAM supports up to 1351 connections. You can check the `max_connections` limit for your compute by running the following query from the Neon SQL Editor or a client connected to Neon:
 
@@ -7471,8 +7471,8 @@ Some applications open numerous connections, with most eventually becoming inact
 
 The use of connection pooling, however, is not a magic bullet: As the name implies, connections to the pooler endpoint together share a pool of connections to the normal Postgres endpoint, so they still consume some connections to the main Postgres instance.
 
-To ensure that direct access to Postgres is still possible for administrative tasks or similar, the pooler is configured to only open up to [64 connections](#neon-pgbouncer-configuration-settings) to Postgres for each user to each database. For example, there can be only 64 active connections from role `alex` to the `neondb` database through the pooler. All other connections by `alex` to the `neondb` database will have to wait for one of those 64 active connections to complete their transactions before the next connection's work is started.  
-At the same time, role `dana` will also be able to connect to the `neondb` database through the pooler and have up to 64 concurrent active transactions across 64 connections, assuming the endpoint started with a high enough minimum Neon compute size to have a high enough `max_connections` setting to support those 128 concurrent connections from the two roles.
+To ensure that direct access to Postgres is still possible for administrative tasks or similar, the pooler is configured to only open up to [`default_pool_size`](#neon-pgbouncer-configuration-settings) to Postgres for each user to each database. For example, if `default_pool_size` is 64, there can be only 64 active connections from role `alex` to the `neondb` database through the pooler. All other connections by `alex` to the `neondb` database will have to wait for one of those 64 active connections to complete their transactions before the next connection's work is started.  
+At the same time, role `dana` will also be able to connect to the `neondb` database through the pooler and have up to 64 concurrent active transactions across 64 connections, assuming the endpoint started with a high enough maximum Neon compute size to have a high enough `max_connections` setting to support those 128 concurrent connections from the two roles.
 
 Similarly, even if role `alex` has 64 concurrently active transactions through the pooler to the `neondb` database, that role can still start up to 64 concurrent transactions in the `alex_db` database (a different database) when connected through the pooler; but again, only if the Postgres `max_connections` limit can support the number of connections managed by the pooler.
 
@@ -7494,16 +7494,18 @@ Neon's PgBouncer configuration is shown below. The settings are not user-configu
 [pgbouncer]
 pool_mode=transaction
 max_client_conn=10000
-default_pool_size=64
+default_pool_size=0.9 * max_connections
 max_prepared_statements=0
 query_wait_timeout=120
 ```
+
+where `max_connections` is a Postgres setting.
 
 The following list describes each setting. For a full explanation of each parameter, please refer to the official [PgBouncer documentation](https://www.pgbouncer.org/config.html).
 
 - `pool_mode=transaction`: The pooling mode PgBouncer uses, set to `transaction` pooling.
 - `max_client_conn=10000`: Maximum number of client connections allowed.
-- `default_pool_size=64`: Default number of server connections to allow per user/database pair.
+- `default_pool_size`: Default number of server connections to allow per user/database pair.
 - `max_prepared_statements=0`: Maximum number of prepared statements a connection is allowed to have at the same time. `0` means prepared statements are disabled.
 - `query_wait_timeout=120`: Maximum time queries are allowed to spend waiting for execution. Neon uses the default setting of `120` seconds.
 
@@ -8152,7 +8154,7 @@ subtitle: Learn how to migrate data to Neon Postgres from different database pro
 redirectFrom:
   - /docs/import/import-intro
 enableTableOfContents: true
-updatedOn: '2024-12-03T14:38:16.504Z'
+updatedOn: '2024-12-31T18:05:26.276Z'
 ---
 
 Find instructions for migrating data from Postgres, CSV, other Neon projects, and other database providers. For near-zero downtime data migrations from other Postgres providers, consider using logical replication. Additionally, if you're new to Neon and want to try it out, our sample data guide provides datasets for exploration and testing.
@@ -8164,6 +8166,8 @@ If you're planning to migrate a production workload to Neon, let us know&#8212;w
 ## Data migration guides
 
 <DetailIconCards>
+
+<a href="/docs/import/migration-assistant" description="Move your existing database to Neon using our guided migration tool" icon="neon">Neon Migration Assistant</a>
 
 <a href="/docs/import/migrate-from-postgres" description="Migrate data from another Postgres database using pg_dump and pg_restore" icon="postgres">Migrate with pg_dump and pg_restore</a>
 
@@ -8181,7 +8185,7 @@ If you're planning to migrate a production workload to Neon, let us know&#8212;w
 
 <a href="/docs/import/migrate-from-azure-postgres" description="Migrate from an Azure Database for PostgreSQL to Neon Postgres" icon="import">Migrate from Azure</a>
 
-<a href="/docs/import/migrate-from-digital-ocean" description="Migrate data from Digital Ocean Postgres to Neon Postgres with pg_dump and pg_restore" icon="aws">Migrate from Digital Ocean</a>
+<a href="/docs/import/migrate-from-digital-ocean" description="Migrate data from Digital Ocean Postgres to Neon Postgres with pg_dump and pg_restore" icon="import">Migrate from Digital Ocean</a>
 
 <a href="/docs/import/import-sample-data" description="Import one of several sample datasets for exploration and testing" icon="download">Import sample data</a>
 
@@ -8222,7 +8226,7 @@ Postgres logical replication in Neon provides an efficient way to migrate data f
 title: Neon Migration Assistant
 subtitle: Move your existing database to Neon using our guided tool
 enableTableOfContents: true
-updatedOn: '2024-11-22T19:06:16.922Z'
+updatedOn: '2024-12-31T13:01:35.403Z'
 ---
 
 When you're ready to move your data to Neon, our Migration Assistant can help. You need only the connection string to your existing database to get started.
@@ -8262,8 +8266,8 @@ Neon will check the availability and configuration of your source database to he
 
 - **Postgres version** — Verifies that your source database uses a version of Postgres that Neon supports (Postgres 14 to 17).
 - **Region** — Checks the hosting region of your source database.
-- **Supported extensions** — Identifies whether your extensions are supported by Neon. Unsupported extensions are listed, but you are not blocked from continuing the migration. Use your discretion.
-- **Compatible extensions** — Checks that your extension versions match Neon's current support. See [Supported Postgres extensions](/docs/extensions/pg-extensions) for a matrix of extensions to Postgres versions in Neon.
+- **Supported Postgres extensions** — Identifies whether your extensions are supported by Neon. Unsupported extensions are listed, but you are not blocked from continuing the migration. Use your discretion.
+- **Compatible Postgres extension versions** — Checks that your extension versions match Neon's current support. See [Supported Postgres extensions](/docs/extensions/pg-extensions) for a matrix of extensions to Postgres versions in Neon.
 
 ## Step 2 — Create a Neon project
 
@@ -8315,6 +8319,10 @@ For more detailed instructions about using these commands, see [Migrate data usi
 1. **Verify data integrity** by running some queries and checking that tables and data are present as expected in Neon.
 2. **Switch over your application** by updating your connection string to point to Neon. You can find your connection details on your project Dashboard. See [Connect from any application](/docs/connect/connect-from-any-app) for more information.
 
+## It didn't work. What can I do?
+
+If your database migration failed because of an incompatibility, a connection issue, or another problem, contact us for [migration assistance](https://neon.tech/migration-assistance). We're here to help you get up and running.
+
 
 # Migrate from Postgres with pg_dump and pg_restore
 
@@ -8325,7 +8333,7 @@ redirectFrom:
   - /docs/cloud/tutorials
   - /docs/how-to-guides/import-an-existing-database
   - /docs/import/import-from-postgres
-updatedOn: '2024-09-26T13:33:08.731Z'
+updatedOn: '2025-01-09T12:42:28.913Z'
 ---
 
 This topic describes migrating data from one Postgres database to another using the `pg_dump` and `pg_restore`.
@@ -8408,7 +8416,7 @@ mydumpfile.bak
 
 ## Pipe pg_dump to pg_restore
 
-For small databases, the standard output of `pg_dump` can be piped directly into a `pg_restore` command to minimize migration downtime:
+For small databases where the source and target Postgres instances and databases are presumed to be compatible, the standard output of `pg_dump` can be piped directly into a `pg_restore` command to minimize migration downtime:
 
 ```bash
 pg_dump [args] | pg_restore [args]
@@ -8420,7 +8428,7 @@ For example:
 pg_dump -Fc -v -d <source_database_connection_string> | pg_restore -v -d <neon-database-connection-string>
 ```
 
-Piping is not recommended for large databases, as it is susceptible to failures during lengthy migration operations.
+Piping is not recommended for large databases because it can fail during lengthy migration operations. Incompatibilities between the source and target Postgres instances or databases may also cause a piping operation to fail. If you're importing from another Postgres instance, review Neon's [compatibility](/docs/reference/compatibility) page to ensure that Neon Postgres is compatible with your source Postgres instance. If you're unsure or encounter issues, consider using separate dump and restore operations. This approach lets you adjust dump and restore options or modify the dump file directly to resolve migration challenges.
 
 When piping `pg_dump` output directly to `pg_restore`, the custom output format (`-Fc`) is most efficient. The directory format (`-Fd`) format cannot be piped to `pg_restore`.
 
@@ -10520,7 +10528,7 @@ CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NO
 After creating a publication on the source database, you need to create a subscription on your Neon destination database.
 
 1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
-2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+2. Create the subscription using a `CREATE SUBSCRIPTION` statement.
 
    ```sql shouldWrap
    CREATE SUBSCRIPTION my_subscription CONNECTION 'postgresql://postgres:password@database-1.czmwaio8k05k.us-east-2.rds.amazonaws.com/postgres' PUBLICATION my_publication;
@@ -12667,7 +12675,7 @@ _No cross-region replication._ Neon's HA architecture is designed to mitigate fa
 title: Neon feature guides
 subtitle: Explore Neon's capabilities with our feature guides
 enableTableOfContents: false
-updatedOn: '2024-12-13T20:52:57.584Z'
+updatedOn: '2025-01-10T00:37:35.166Z'
 ---
 
 ### Autoscaling
@@ -12713,8 +12721,6 @@ Branch data the same way you branch your code.
 <a href="/docs/guides/branching-github-actions" description="Automate branching with GitHub Actions" icon="split-branch">Branching with GitHub Actions</a>
 
 <a href="/docs/guides/branch-refresh" description="Refresh a development branch with the Neon API" icon="split-branch">Refresh a branch</a>
-
-<a href="/docs/guides/branch-promote" description="Promote a branch to default with the Neon API" icon="split-branch">Promote a branch to default</a>
 
 </DetailIconCards>
 
@@ -12814,7 +12820,7 @@ Secure your database connections with private access.
 
 <DetailIconCards>
 
-<a href="/docs/guides/private-networking" description="Learn how to connect your application to a Neon database via AWS PrivateLink, bypassing the open internet" icon="respond-arrow">Private Networking</a>
+<a href="/docs/guides/neon-private-networking" description="Learn how to connect your application to a Neon database via AWS PrivateLink, bypassing the open internet" icon="respond-arrow">Private Networking</a>
 
 </DetailIconCards>
 
@@ -13287,7 +13293,7 @@ When a compute suspends and later restarts, the [session context](/docs/referenc
 title: Get started with branching
 subtitle: Everything you need to get started with Neon's branching feature
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.057Z'
+updatedOn: '2025-01-10T00:37:35.161Z'
 ---
 
 Find detailed information and instructions about Neon's branching feature and how you can integrate branching with your development workflows.
@@ -13360,16 +13366,6 @@ Recover lost data or track down issues by restoring a branch to its history, or 
 
 </DetailIconCards>
 
-## Branching guides
-
-Learn how to promote a branch to become your default branch.
-
-<DetailIconCards>
-
-<a href="/docs/guides/branch-promote" description="Promote a branch to the default branch of your Neon project using the Neon API" icon="trend-up">Promote a branch</a>
-
-</DetailIconCards>
-
 ## Example applications
 
 Explore example applications that use Neon's branching feature.
@@ -13378,7 +13374,6 @@ Explore example applications that use Neon's branching feature.
 <a href="https://github.com/kelvich/branching_demo_bisect" description="Use Neon branching, the Neon API, and a bisect script to recover lost data" icon="hourglass">Time Travel Demo</a>
 <a href="https://github.com/neondatabase/neon_twitter" description="Use GitHub Actions to create and delete a branch with each pull request" icon="x">Neon Twitter app</a>
 <a href="https://github.com/neondatabase/preview-branches-with-vercel" description="An application demonstrating using GitHub Actions with preview deployments in Vercel" icon="calendar-day">Preview branches app</a>
-<a href="https://github.com/tinkertim/neon_branching_demo" description="Learn how to build a Discord bot while leveraging Neon branching" icon="discord">Neon Discord Bot</a>
 </DetailIconCards>
 
 
@@ -13635,6 +13630,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/guides/branching-pitr
   - /docs/guides/branch-refresh
+  - /docs/guides/branch-promote
 updatedOn: '2024-10-22T15:41:04.374Z'
 ---
 
@@ -15103,333 +15099,6 @@ curl --request DELETE \
 </CodeTabs>
 
 
-# Promote a branch with the Neon API
-
----
-title: Promote a branch
-subtitle: Learn how to promote a branch to the default branch of your Neon project using
-  the Neon API
-enableTableOfContents: true
-updatedOn: '2024-12-12T15:31:10.125Z'
----
-
-This guide describes how to create a new branch and promote it to the default branch of your Neon project in the context of a data recovery scenario. It also describes how to move the compute from your existing default branch to the new branch to avoid having to reconfigure your application's database connection details.
-
-## What is a default branch?
-
-Each Neon project has a default branch. In the Neon Console, your default branch is identified on the **Branches** page by a `DEFAULT` tag. You can designate any branch as the default branch. The advantage of the default branch is that it has a larger compute hour allowance on the Free Plan. For users on paid plans, the compute associated with the default branch is exempt from the limit on simultaneously active computes, ensuring that it is always available. Neon has a default limit of 20 concurrently active computes to protect your account from unintended usage.
-
-## Why promote a branch to default?
-
-A common usage scenario involving promoting a branch to default is data recovery. For example, a data loss occurs on the current default branch. To recover the lost data, you create a point-in-time branch with data that existed before the data loss occurred. To avoid modifying your application's database connection configuration, you move the compute from the current default branch to the new branch and make that branch your default branch.
-
-The procedure described below creates a new branch and promotes it to the default branch of your project by performing the following steps:
-
-1. [Creating a new point-in-time branch without a compute](#creating-a-new-point-in-time-branch-without-a-compute)
-2. [Moving the compute from your current default branch to the new branch](#move-the-compute-from-your-current-default-branch-to-the-new-branch)
-3. [Renaming the old default branch](#rename-the-old-default-branch)
-4. [Renaming the new branch to the name of the old default branch](#rename-the-new-branch-to-the-name-of-the-old-default-branch)
-5. [Promoting the new branch to default](#promote-the-new-branch-to-default)
-
-## Prerequisites
-
-The following information is required to perform the procedure:
-
-- A Neon API key. For information about obtaining an API key, see [Create an API key](/docs/manage/api-keys#create-an-api-key).
-- The `project_id` for your Neon project. You can obtain a `project_id` using the [List projects](https://api-docs.neon.tech/reference/listprojects) method, or you can find it on your project's **Settings** page in the Neon Console.
-- The `branch_id` of the current default branch. You can obtain a `branch_id` using the [List branches](https://api-docs.neon.tech/reference/listprojectbranches) method, or you can find it on the your project's **Branches** page in the Neon Console. A `branch_id` has a `br-` prefix.
-- The `endpoint_id` of the compute associated with the current default branch. You can obtain an `endpoint_id` using the [List endpoints](https://api-docs.neon.tech/reference/listprojectendpoints) method, or you can find it on the **Branches** page in the Neon Console. An `endpoint_id` has an `ep-` prefix.
-
-## Creating a new point-in-time branch without a compute
-
-The [Create branch](https://api-docs.neon.tech/reference/createprojectbranch) request shown below creates a point-in-time branch without a compute. The `project_id` is a required parameter. To create a point-in-time branch, specify a `parent_timestamp` value in the `branch` object. The `parent_timestamp` value must be provided in ISO 8601 format. You can use this [timestamp converter](https://www.timestamp-converter.com/). For more information about point-in-time restore, see [Branching — Point-in-time restore (PITR)](/docs/guides/branching-pitr).
-
-The `project_id` value used in the example below is `young-silence-08999984`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key. The branch is given the name `recovery_branch`. You will change the name in a later step.
-
-```bash
-curl --request POST \
-     --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API" \
-     --header 'Content-Type: application/json' \
-     --data '
-{
-  "branch": {
-    "parent_timestamp": "2023-09-02T10:00:00Z",
-    "name": "recovery_branch"
-  }
-}
-'
-```
-
-The response body includes the `id` of your new branch. You will need this value (`br-solitary-hat-85369851`) to move the compute in the next step.
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "branch": {
-    "id": "br-solitary-hat-85369851",
-    "project_id": "young-silence-08999984",
-    "parent_id": "br-twilight-field-06246553",
-    "parent_lsn": "0/1EC5378",
-    "parent_timestamp": "2023-09-02T10:00:00Z",
-    "name": "recovery_branch",
-    "current_state": "init",
-    "pending_state": "ready",
-    "creation_source": "console",
-    "default": false,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2023-09-05T19:44:51Z",
-    "updated_at": "2023-09-05T19:44:51Z"
-  },
-  "endpoints": [],
-  "operations": [
-    {
-      "id": "192e9d28-1f82-4afc-8a2e-b8147ec0ff7b",
-      "project_id": "young-silence-08999984",
-      "branch_id": "br-solitary-hat-85369851",
-      "action": "create_branch",
-      "status": "running",
-      "failures_count": 0,
-      "created_at": "2023-09-05T19:44:51Z",
-      "updated_at": "2023-09-05T19:44:51Z",
-      "total_duration_ms": 0
-    }
-  ],
-  "roles": [
-    {
-      "branch_id": "br-solitary-hat-85369851",
-      "name": "daniel",
-      "protected": false,
-      "created_at": "2023-08-29T10:26:27Z",
-      "updated_at": "2023-08-29T10:26:27Z"
-    }
-  ],
-  "databases": [
-    {
-      "id": 5841198,
-      "branch_id": "br-solitary-hat-85369851",
-      "name": "neondb",
-      "owner_name": "daniel",
-      "created_at": "2023-09-05T19:40:09Z",
-      "updated_at": "2023-09-05T19:40:09Z"
-    }
-  ]
-}
-```
-</details>
-
-<Admonition type="note">
-Creating a point-in-time branch can also be performed using the Neon Console or CLI. See [Create a point-in-time branch](/docs/guides/branching-pitr#create-a-point-in-time-branch) for Neon Console instructions. See [Neon CLI commands — branches](/docs/reference/cli-branches#create) for CLI instructions.
-</Admonition>
-
-## Move the compute from your current default branch to the new branch
-
-The [Update endpoint](https://api-docs.neon.tech/reference/updateprojectendpoint) API request shown below moves the compute from your current default branch to the new branch. The required parameters are the `project_id` and `endpoint_id` of your current default branch, and the `branch_id` of the new branch. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
-
-```bash shouldWrap
-curl --request PATCH \
-     --url https://console.neon.tech/api/v2/projects/young-silence-08999984/endpoints/ep-curly-term-54009904 \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY" \
-     --header 'Content-Type: application/json' \
-     --data '
-{
-  "endpoint": {
-    "branch_id": "br-solitary-hat-85369851"
-  }
-}
-'
-```
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "endpoint": {
-    "host": "ep-curly-term-54009904.us-east-2.aws.neon.tech",
-    "id": "ep-curly-term-54009904",
-    "project_id": "young-silence-08999984",
-    "branch_id": "br-solitary-hat-85369851",
-    "autoscaling_limit_min_cu": 0.25,
-    "autoscaling_limit_max_cu": 0.25,
-    "region_id": "aws-us-east-2",
-    "type": "read_write",
-    "current_state": "idle",
-    "settings": {},
-    "pooler_enabled": false,
-    "pooler_mode": "transaction",
-    "disabled": false,
-    "passwordless_access": true,
-    "last_active": "2023-09-02T12:22:44Z",
-    "creation_source": "console",
-    "created_at": "2023-08-29T10:26:27Z",
-    "updated_at": "2023-09-05T20:29:09Z",
-    "proxy_host": "us-east-2.aws.neon.tech",
-    "suspend_timeout_seconds": 0,
-    "provisioner": "k8s-neonvm"
-  },
-  "operations": []
-}
-```
-</details>
-
-<Admonition type="note">
-This procedure can only be performed using the Neon API. You can expect Neon Cole and CLI support to be added in a future release.
-</Admonition>
-
-## Rename the old default branch
-
-The [Update branch](https://api-docs.neon.tech/reference/updateprojectbranch) API request shown below renames the old default branch to `old_main`. You may want to delete this branch later to reduce storage usage, but just rename it for now. The required parameters are the `project_id` and `branch_id`. You must also set the `$NEON_API_KEY` variable or replace `$NEON_API_KEY` with an actual API key.
-
-```bash shouldWrap
-curl --request PATCH \
-     --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches/br-twilight-field-06246553 \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY" \
-     --header 'Content-Type: application/json' \
-     --data '
-{
-  "branch": {
-    "name": "old_main "
-  }
-}
-'
-```
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "branch": {
-    "id": "br-twilight-field-06246553",
-    "project_id": "young-silence-08999984",
-    "name": "old_main",
-    "current_state": "ready",
-    "logical_size": 29589504,
-    "creation_source": "console",
-    "default": true,
-    "cpu_used_sec": 969,
-    "compute_time_seconds": 969,
-    "active_time_seconds": 3816,
-    "written_data_bytes": 4809458540,
-    "data_transfer_bytes": 412826,
-    "created_at": "2023-08-29T10:26:27Z",
-    "updated_at": "2023-09-05T20:32:50Z"
-  },
-  "operations": []
-}
-```
-</details>
-
-<Admonition type="note">
-Renaming a branch can also be performed using the Neon Console or CLI. See [Rename a branch](/docs/manage/branches#rename-a-branch) for Neon Console instructions. See [Neon CLI commands — branches](/docs/reference/cli-branches#rename) for CLI instructions.
-</Admonition>
-
-## Rename the new branch to the name of the old default branch
-
-Rename the new branch to the name of the old branch, which was `main`. The [Update branch](https://api-docs.neon.tech/reference/updateprojectbranch) API request shown below renames the new branch from `recovery_branch` to `main`.
-
-```bash shouldWrap
-curl --request PATCH \
-     --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches/br-solitary-hat-85369851 \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY" \
-     --header 'Content-Type: application/json' \
-     --data '
-{
-  "branch": {
-    "name": "main"
-  }
-}
-'
-```
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "branch": {
-    "id": "br-solitary-hat-85369851",
-    "project_id": "young-silence-08999984",
-    "parent_id": "br-twilight-field-06246553",
-    "parent_lsn": "0/1EC5378",
-    "parent_timestamp": "2023-09-02T10:00:00Z",
-    "name": "main",
-    "current_state": "ready",
-    "logical_size": 29605888,
-    "creation_source": "console",
-    "default": false,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2023-09-05T19:44:51Z",
-    "updated_at": "2023-09-05T20:34:42Z"
-  },
-  "operations": []
-}
-```
-
-</details>
-
-<Admonition type="note">
-Renaming a branch can also be performed using the Neon Console or CLI. See [Rename a branch](/docs/manage/branches#rename-a-branch) for Neon Console instructions. See [Neon CLI commands — branches](/docs/reference/cli-branches#rename) for CLI instructions.
-</Admonition>
-
-## Promote the new branch to default
-
-The [Set default branch](https://api-docs.neon.tech/reference/setdefaultprojectbranch) API request sets the new branch as the default branch for the project.
-
-```bash shouldWrap
-curl --request POST \
-     --url https://console.neon.tech/api/v2/projects/young-silence-08999984/branches/br-solitary-hat-85369851/set_as_default \
-     --header 'Accept: application/json' \
-     --header "Authorization: Bearer $NEON_API_KEY"
-```
-
-<details>
-<summary>Response body</summary>
-```json
-{
-  "branch": {
-    "id": "br-solitary-hat-85369851",
-    "project_id": "young-silence-08999984",
-    "parent_id": "br-twilight-field-06246553",
-    "parent_lsn": "0/1EC5378",
-    "parent_timestamp": "2023-09-02T10:00:00Z",
-    "name": "main",
-    "current_state": "ready",
-    "logical_size": 29605888,
-    "creation_source": "console",
-    "default": true,
-    "cpu_used_sec": 0,
-    "compute_time_seconds": 0,
-    "active_time_seconds": 0,
-    "written_data_bytes": 0,
-    "data_transfer_bytes": 0,
-    "created_at": "2023-09-05T19:44:51Z",
-    "updated_at": "2023-09-05T20:37:08Z"
-  },
-  "operations": []
-}
-```
-
-</details>
-
-<Admonition type="note">
-Promoting a branch to default can also be performed using the Neon Console or CLI. See [Set a branch as default](/docs/manage/branches#set-a-branch-as-default) for Neon Console instructions. See [Neon CLI commands — branches](/docs/reference/cli-branches#set-default) for CLI instructions.
-</Admonition>
-
-You should now have a new default branch, and because you moved the compute from your old default branch to the new one, you do not need to change the connection details in your applications. Once you have validated the change, consider deleting your old default branch to save storage space. See [Delete a branch with the API](/docs/manage/branches#delete-a-branch-with-the-api).
-
-
 # Logical replication
 
 ---
@@ -15439,7 +15108,8 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/introduction/logical-replication
-updatedOn: '2024-10-02T13:57:11.420Z'
+  - /docs/guides/logical-replication-clickhouse
+updatedOn: '2024-12-26T17:57:49.404Z'
 ---
 
 <LRBeta/>
@@ -15503,6 +15173,8 @@ To get started, jump into one of our step-by-step logical replication guides.
 <a href="/docs/guides/sequin" title="Sequin" description="Stream data from platforms like Stripe, Linear, and GitHub to Neon" icon="sequin"></a>
 
 <a href="/docs/guides/logical-replication-airbyte-snowflake" title="Snowflake" description="Replicate data from Neon to Snowflake with Airbyte" icon="snowflake"></a>
+
+<a href="/docs/guides/logical-replication-inngest" title="Inngest" description="Replicate data from Neon to Inngest" icon="inngest"></a>
 
 </TechnologyNavigation>
 
@@ -15906,7 +15578,7 @@ title: Logical replication in Neon
 subtitle: Information about logical replication specific to Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-12-13T20:52:57.583Z'
+updatedOn: '2025-01-10T15:44:20.072Z'
 ---
 
 <LRBeta/>
@@ -15942,6 +15614,8 @@ This notice applies when replicating data to Neon:
   Even with this workaround, the replication gap issue can still occur if the parent branch is suspended before the duplicate subscription on a child branch is disabled. Therefore, we encourage you to take this action promptly on newly created, restored, or reset child branches.
 
   This issue will be addressed in an upcoming release.
+
+- Before dropping a database in response to a user issued `DROP DATABASE` command or operation, Neon will drop any logical replication subscriptions defined in the database.
 
 ## Logical replication and scale to zero
 
@@ -17552,7 +17226,7 @@ Now, we see the `new_checkout_process` feature flag is `t` for true, confirming 
 title: Schema diff
 subtitle: Learn how to use Neon's Schema Diff tool to compare branches of your database
 enableTableOfContents: true
-updatedOn: '2024-11-27T14:58:45.561Z'
+updatedOn: '2025-01-09T14:34:13.460Z'
 ---
 
 Neon's Schema Diff tool lets you compare an SQL script of the schemas for two selected branches in a side-by-side view (or line-by-line on mobile devices).
@@ -17564,7 +17238,7 @@ Schema Diff is available in the Neon Console for use in two ways:
 - Compare a branch's schema to its parent
 - Compare selected branches during a branch restore operation
 
-You can also use the `branches schema-diff` command in the Neon CLI to effect a variety of comparisons.
+You can also use the `branches schema-diff` command in the Neon CLI or `compare-schema` endpoint in the Neon API to effect a variety of comparisons.
 
 ### Compare to parent
 
@@ -17574,9 +17248,9 @@ In the detailed view for any child branch, you can check the schema differences 
 
 Built into the Time Travel assist editor, you can use Schema Diff to help when restoring branches, letting you compare states of your branch against its own or another branch's history before you complete a [branch restore](/docs/guides/branch-restore) operation.
 
-### Comparisons using the CLI
+### Comparisons using the CLI or API
 
-You can use the Neon CLI to compare a branch to any point in its own or any other branch's history. The `branches schema-diff` command offers full flexibility for any type of schema comparison: between a branch and its parent, a branch and its earlier state, or a branch to the head or prior state of another branch.
+You can use the Neon CLI to compare a branch to any point in its own or any other branch's history. The `branches schema-diff` command offers full flexibility for any type of schema comparison: between a branch and its parent, a branch and its earlier state, or a branch to the head or prior state of another branch. The Neon API provides a `compare-schema` endpoint that lets you compare schemas between Neon branches programmatically, supporting CI/CD automation and AI agent use cases.
 
 ### Practical Applications
 
@@ -17584,6 +17258,7 @@ You can use the Neon CLI to compare a branch to any point in its own or any othe
 - **Audit Changes**: Historically compare schema changes to understand the evolution of your database structure.
 - **Consistency Checks**: Ensure environment consistency by comparing schemas across development, staging, and production branches.
 - **Automation**: Integrate schema-diff into CI/CD pipelines to automatically compare schemas during deployments.
+- **AI Agents**: Enable AI agents to retrieve schema differences programmatically to support agent-driven database migrations.
 
 ## How to Use Schema Diff
 
@@ -17639,10 +17314,62 @@ neon branch sd dev/alex@0/123456 --db people
 
 To find out what other comparisons you can make, see [Neon CLI commands — branches](/docs/reference/cli-branches#schema-diff) for full documentation of the command.
 
-### Understanding the Output
+### Using the Neon API
 
-- **+ Green Highlight**: Indicates additions or new elements in the schema.
-- **- Red Highlight**: Marks deletions or removed elements from the schema.
+The [compare_schema](https://api-docs.neon.tech/reference/getprojectbranchschemacomparison) endpoint lets you compare schemas between Neon branches to track schema changes. The response highlights differences in a `diff` format, making it a useful tool for integrating schema checks into CI/CD workflows.
+
+Another use case for schema diff via the Neon API is AI agent-driven workflows. The `compare_schema` endpoint allows AI agents to programmatically retrieve schema differences by comparing two branches.
+
+To compare schemas between two branches, you can cURL command similar to the one below, which compares the schema of a target branch to the schema of a base branch. For example, the target branch could be a development branch where a schema change was applied, and the base branch could be the parent of the development branch. By comparing the two, you can inspect the changes that have been made on the development branch.
+
+```bash
+curl --request GET \
+     --url 'https://console.neon.tech/api/v2/projects/wispy-butterfly-25042691/branches/br-rough-boat-a54bs9yb/compare_schema?base_branch_id=br-royal-star-a54kykl2&db_name=neondb' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' | jq -r '.diff'
+```
+
+The `compare_schema` endpoint supports the following parameters:
+
+| Parameter          | Description                                                                               | Required | Example                    |
+| ------------------ | ----------------------------------------------------------------------------------------- | -------- | -------------------------- |
+| `<project_id>`     | The ID of your Neon project.                                                              | Yes      | `wispy-butterfly-25042691` |
+| `<branch_id>`      | The ID of the target branch to compare — the branch with the modified schema.             | Yes      | `br-rough-boat-a54bs9yb`   |
+| `<base_branch_id>` | The ID of the base branch for comparison.                                                 | Yes      | `br-royal-star-a54kykl2`   |
+| `<db_name>`        | The name of the database in the target branch.                                            | Yes      | `neondb`                   |
+| `lsn`              | The LSN on the target branch for which the schema is retrieved.                           | No       | `0/1EC5378`                |
+| `timestamp`        | The point in time on the target branch for which the schema is retrieved.                 | No       | `2022-11-30T20:09:48Z`     |
+| `base_lsn`         | The LSN for the base branch schema.                                                       | No       | `0/2FC6321`                |
+| `base_timestamp`   | The point in time for the base branch schema.                                             | No       | `2022-11-30T20:09:48Z`     |
+| `Authorization`    | Bearer token for API access (your [Neon API key](https://neon.tech/docs/manage/api-keys)) | Yes      | `$NEON_API_KEY`            |
+
+<Admonition type="note" title="notes">
+- The optional `jq -r '.diff'` command appended to the example above extracts the diff field from the JSON response and outputs it as plain text to make it easier to read. This command is not  necessary when using the endpoint programmatically.
+- `timestamp` or `lsn` / `base_timestamp` or `base_lsn` values can be used to compare schemas as they existed as a precise time or [LSN](/docs/reference/glossary#lsn).  
+- `timestamp` / `base_timestamp` values must be provided in <LinkPreview href="https://en.wikipedia.org/wiki/ISO_8601" title="ISO 8601" preview="An international standard covering the worldwide exchange and communication of date and time-related data.">ISO 8601 format</LinkPreview>.
+</Admonition>
+
+Here’s an example of the `compare_schema` diff output for the `neondb` database after comparing target branch `br-rough-boat-a54bs9yb` with the base branch `br-royal-star-a54kykl2`.
+
+```diff
+--- a/neondb
++++ b/neondb
+@@ -27,7 +27,8 @@
+ CREATE TABLE public.playing_with_neon (
+     id integer NOT NULL,
+     name text NOT NULL,
+-    value real
++    value real,
++    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+ );
+```
+
+**Output explanation:**
+
+- `-` (minus) identifies Lines that were removed from the base branch schema.
+- `+` (plus) identifies lines that were added in the target branch schema.
+
+In the example above, the `created_at` column was added to the `public.playing_with_neon` table on the target branch.
 
 ## Schema Diff GitHub Action
 
@@ -17664,7 +17391,7 @@ title: Schema diff tutorial
 subtitle: Step-by-step guide showing you how to compare two development branches using
   Schema Diff
 enableTableOfContents: true
-updatedOn: '2024-12-12T15:31:10.129Z'
+updatedOn: '2025-01-06T23:39:35.456Z'
 ---
 
 In this guide we will create an initial schema on a new database called `people` on our `main` branch. We'll then create a development branch called `dev/jordan`, following our recommended convention for naming development branches. After making schema changes on `dev/jordan`, we'll use the **Schema Diff** tool on the **Branches** page to get a side-by-side, GitHub-style visual comparison between the `dev/jordan` development branch and `main`.
@@ -17683,7 +17410,7 @@ To complete this tutorial, you'll need:
 
 First, create a new database called `people` on the `main` branch and add some sample data to it.
 
-<Tabs labels={["Console", "CLI"]}>
+<Tabs labels={["Console", "CLI", "API"]}>
 
 <TabItem>
 
@@ -17734,7 +17461,7 @@ First, create a new database called `people` on the `main` branch and add some s
 
 1. Connect to the `people` database with psql:
 
-   ```bash
+   ```bash shouldWrap
    psql 'postgresql://neondb_owner:*********@ep-crimson-frost-a5i6p18z.us-east-2.aws.neon.tech/people?sslmode=require'
    ```
 
@@ -17749,6 +17476,60 @@ First, create a new database called `people` on the `main` branch and add some s
    ```
 
 </TabItem>
+
+<TabItem>
+
+1. Use the [Create database](https://api-docs.neon.tech/reference/createprojectbranchdatabase) API to create the `people` database, specifying the `project_id`, `branch_id`, database `name`, and database `owner_name` in the API call.
+
+   ```bash
+   curl --request POST \
+   --url https://console.neon.tech/api/v2/projects/royal-band-06902338/branches/br-bitter-bird-a56n6lh4/databases \
+   --header 'accept: application/json' \
+   --header 'authorization: Bearer $NEON_API_KEY' \
+   --header 'content-type: application/json' \
+   --data '{
+      "database": {
+         "name": "people",
+         "owner_name": "alex"
+      }
+   }'
+   ```
+
+2. Retrieve your database connection string using [Get connection URI](https://api-docs.neon.tech/reference/getconnectionuri) endpoint, specifying the required `project_id`, `branch_id`, `database_name`, and `role_name` parameters.
+
+   ```bash
+   curl --request GET \
+     --url 'https://console.neon.tech/api/v2/projects/royal-band-06902338/connection_uri?branch_id=br-bitter-bird-a56n6lh4&database_name=people&role_name=alex' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY'
+   ```
+
+   The API call will return an connection string similar to this one:
+
+   ```json
+   {
+     "uri": "postgresql://alex:*********@ep-green-surf-a5yaumj3-pooler.us-east-2.aws.neon.tech/people?sslmode=require"
+   }
+   ```
+
+3. Connect to the `people` database with `psql`:
+
+   ```bash shouldWrap
+   psql 'postgresql://alex:*********@ep-green-surf-a5yaumj3-pooler.us-east-2.aws.neon.tech/people?sslmode=require'
+   ```
+
+4. Create the schema:
+
+   ```sql
+   CREATE TABLE person (
+       id SERIAL PRIMARY KEY,
+       name TEXT NOT NULL,
+       email TEXT UNIQUE NOT NULL
+   );
+   ```
+
+</TabItem>
+
 </Tabs>
 
 ## Step 2: Create a development branch
@@ -17757,7 +17538,7 @@ Create a new development branch off of `main`. This branch will be an exact, iso
 
 For the purposes of this tutorial, name the branch `dev/jordan`, following our recommended convention of creating a long-lived development branch for each member of your team.
 
-<Tabs labels={["Console", "CLI"]}>
+<Tabs labels={["Console", "CLI", "API"]}>
 
 <TabItem>
 
@@ -17833,18 +17614,44 @@ For the purposes of this tutorial, name the branch `dev/jordan`, following our r
       You can do the same thing for your `main` branch and get identical results.
 
 </TabItem>
+
+<TabItem>
+
+Using the [Create branch](https://api-docs.neon.tech/reference/createprojectbranch) API, create a development branch named `dev/jordan`. You'll need to specify the `project_id`, `parent_id`, branch `name`, and add a `read_write` compute endpoint — you need a compute endpoint to connection the branch.
+
+```bash
+curl --request POST \
+--url https://console.neon.tech/api/v2/projects/royal-band-06902338/branches \
+--header 'accept: application/json' \
+--header 'authorization: Bearer $NEON_API_KEY' \
+--header 'content-type: application/json' \
+--data '{
+   "branch": {
+      "name": "dev/jordan",
+      "parent_id": "br-bitter-bird-a56n6lh4"
+   },
+   "endpoints": [
+      {
+      "type": "read_write"
+      }
+   ]
+}'
+```
+
+</TabItem>
+
 </Tabs>
 
 ## Step 3: Update schema on a dev branch
 
 Let's introduce some differences between the two branches. Add a new table to store addresses on the `dev/jordan` branch.
 
-<Tabs labels={["Console","CLI"]}>
+<Tabs labels={["Console","CLI", "API"]}>
 
 <TabItem>
 In the **SQL Editor**, make sure you select `dev/jordan` as the branch and `people` as the database.
 
-Enter this SQL statemenet to create a new `address` table.
+Enter this SQL statement to create a new `address` table.
 
 ```sql
 CREATE TABLE address (
@@ -17862,7 +17669,7 @@ CREATE TABLE address (
 
 <TabItem>
 
-1. Connect to dev/jordan
+1. Connect to your `dev/jordan` branch
 
    By adding `--psql` to the CLI command, you can start the `psql` connection without having to enter the connection string directly:
 
@@ -17896,13 +17703,55 @@ CREATE TABLE address (
    ```
 
 </TabItem>
+
+<TabItem>
+
+1. Retrieve the database connection string for the `dev/jordan` branch using [Get connection URI](https://api-docs.neon.tech/reference/getconnectionuri) endpoint:
+
+   ```bash
+   curl --request GET \
+     --url 'https://console.neon.tech/api/v2/projects/royal-band-06902338/connection_uri?branch_id=br-mute-dew-a5930esi&database_name=people&role_name=alex' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY'
+   ```
+
+   The API call will return an connection string similar to this one:
+
+   ```json
+   {
+     "uri": "postgresql://alex:*********@ep-hidden-sun-a5de9i5h-pooler.us-east-2.aws.neon.tech/people?sslmode=require"
+   }
+   ```
+
+1. Connect to the `people` database on the `dev/jordan` branch with `psql`:
+
+   ```bash shouldWrap
+   psql 'postgresql://alex:*********@ep-hidden-sun-a5de9i5h-pooler.us-east-2.aws.neon.tech/people?sslmode=require'
+   ```
+
+1. Add a new `address` table.
+
+   ```sql
+   CREATE TABLE address (
+       id SERIAL PRIMARY KEY,
+       person_id INTEGER NOT NULL,
+       street TEXT NOT NULL,
+       city TEXT NOT NULL,
+       state TEXT NOT NULL,
+       zip_code TEXT NOT NULL,
+       FOREIGN KEY (person_id) REFERENCES person(id)
+   );
+   ```
+
+</TabItem>
+
 </Tabs>
 
 ## Step 4: View the schema differences
 
 Now that you have some differences between your branches, you can view the schema differences.
 
-<Tabs labels={["Console", "CLI"]}>
+<Tabs labels={["Console", "CLI", "API"]}>
 
 <TabItem>
 
@@ -17954,6 +17803,126 @@ The result shows a comparison between the `dev/jordan` branch and its parent bra
 +ALTER TABLE public.address OWNER TO neondb_owner; // [!code ++]
 + // [!code ++]
 +... // [!code ++]
+```
+
+</TabItem>
+
+<TabItem>
+
+Compare the schema of the `dev/jordan` branch to its parent branch using the `compare-schema` API.
+
+```bash
+curl --request GET \
+     --url 'https://console.neon.tech/api/v2/projects/royal-band-06902338/branches/br-mute-dew-a5930esi/compare_schema?base_branch_id=br-bitter-bird-a56n6lh4&db_name=neondb' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' | jq -r '.diff'
+```
+
+| Parameter          | Description                                                                               | Required | Example                   |
+| ------------------ | ----------------------------------------------------------------------------------------- | -------- | ------------------------- |
+| `<project_id>`     | The ID of your Neon project.                                                              | Yes      | `royal-band-06902338`     |
+| `<branch_id>`      | The ID of the target branch to compare.                                                   | Yes      | `br-mute-dew-a5930esi`    |
+| `<base_branch_id>` | The ID of the base branch for comparison — the parent branch in this case.                | Yes      | `br-bitter-bird-a56n6lh4` |
+| `<db_name>`        | The name of the database in the target branch.                                            | Yes      | `people`                  |
+| `Authorization`    | Bearer token for API access (your [Neon API key](https://neon.tech/docs/manage/api-keys)) | Yes      | `$NEON_API_KEY`           |
+
+<Admonition type="note">
+The optional `jq -r '.diff'` command extracts the diff field from the JSON response and outputs it as plain text to make it easier to read. This command would not be necessary when using the endpoint programmatically.
+</Admonition>
+
+The result shows a comparison between the `dev/jordan` branch and its parent branch for the database `people`. The output indicates that the `address` table and its related sequences and constraints have been added to the `dev/jordan` branch but are not present in its parent branch.
+
+```diff
+--- a/people
++++ b/people
+@@ -21,6 +21,44 @@
+ SET default_table_access_method = heap;
+
+ --
++-- Name: address; Type: TABLE; Schema: public; Owner: alex
++--
++
++CREATE TABLE public.address (
++    id integer NOT NULL,
++    person_id integer NOT NULL,
++    street text NOT NULL,
++    city text NOT NULL,
++    state text NOT NULL,
++    zip_code text NOT NULL
++);
++
++
++ALTER TABLE public.address OWNER TO alex;
++
++--
++-- Name: address_id_seq; Type: SEQUENCE; Schema: public; Owner: alex
++--
++
++CREATE SEQUENCE public.address_id_seq
++    AS integer
++    START WITH 1
++    INCREMENT BY 1
++    NO MINVALUE
++    NO MAXVALUE
++    CACHE 1;
++
++
++ALTER SEQUENCE public.address_id_seq OWNER TO alex;
++
++--
++-- Name: address_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: alex
++--
++
++ALTER SEQUENCE public.address_id_seq OWNED BY public.address.id;
++
++
++--
+ -- Name: person; Type: TABLE; Schema: public; Owner: alex
+ --
+
+@@ -56,6 +94,13 @@
+
+
+ --
++-- Name: address id; Type: DEFAULT; Schema: public; Owner: alex
++--
++
++ALTER TABLE ONLY public.address ALTER COLUMN id SET DEFAULT nextval('public.address_id_seq'::regclass);
++
++
++--
+ -- Name: person id; Type: DEFAULT; Schema: public; Owner: alex
+ --
+
+@@ -63,6 +108,14 @@
+
+
+ --
++-- Name: address address_pkey; Type: CONSTRAINT; Schema: public; Owner: alex
++--
++
++ALTER TABLE ONLY public.address
++    ADD CONSTRAINT address_pkey PRIMARY KEY (id);
++
++
++--
+ -- Name: person person_email_key; Type: CONSTRAINT; Schema: public; Owner: alex
+ --
+
+@@ -79,6 +132,14 @@
+
+
+ --
++-- Name: address address_person_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: alex
++--
++
++ALTER TABLE ONLY public.address
++    ADD CONSTRAINT address_person_id_fkey FOREIGN KEY (person_id) REFERENCES public.person(id);
++
++
++--
+ -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: cloud_admin
+ --
 ```
 
 </TabItem>
@@ -18161,7 +18130,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/guides/neon-private-access
 tag: beta
-updatedOn: '2024-12-04T13:30:28.565Z'
+updatedOn: '2024-12-19T23:43:30.029Z'
 ---
 
 The **Neon Private Networking** feature enables secure connections to your Neon databases via [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html), bypassing the open internet for enhanced security.
@@ -18191,13 +18160,13 @@ To configure Neon Private Networking, perform the following steps:
 
 1.  **Create an AWS VPC endpoint**
 
-    1. Go to the **AWS VPC Dashboard** and select **Create endpoint**. Make sure you create the endpoint in the same VPC as your client application.
+    1. Go to the AWS **VPC > Endpoints** dashboard and select **Create endpoint**. Make sure you create the endpoint in the same VPC as your client application.
 
        ![VPC Dashboard](/docs/guides/pl_vpc_dashboard.png)
 
     1. Optionally, enter a **Name tag** for the endpoint (e.g., `My Neon Private Networking test`).
-    1. For **Service category**, select **Other endpoint services**.
-    1. Specify the **Service name**. It must be one of the following names, depending on your region:
+    1. For **Type**, select the **Endpoint services that use NLBs and GWLBs** category.
+    1. Under **Service settings**, specify the **Service name**. It must be one of the following names, depending on your region:
 
        - **us-east-1**: `com.amazonaws.vpce.us-east-1.vpce-svc-0ccf08d7888526333`
        - **us-east-2**: `com.amazonaws.vpce.us-east-2.vpce-svc-0fa555394e26593be`
@@ -18205,8 +18174,6 @@ To configure Neon Private Networking, perform the following steps:
        - **us-west-2**: `com.amazonaws.vpce.us-west-2.vpce-svc-05948d7514bcd0733`
        - **ap-southeast-1**: `com.amazonaws.vpce.ap-southeast-1.vpce-svc-045649a6862891b1e`
        - **ap-southeast-2**: `com.amazonaws.vpce.ap-southeast-2.vpce-svc-08e19a71d9651bde1`
-
-       ![Select the endpoint service](/docs/guides/pl_select_endpoint_service.png)
 
     1. Click **Verify service**. If successful, you should see a `Service name verified` message.
     1. Select the VPC where your application is deployed.
@@ -18218,7 +18185,7 @@ To configure Neon Private Networking, perform the following steps:
     Note the **VPC Endpoint ID** and provide it to Neon. Neon will authorize this VPC Endpoint to access the Neon Private Networking service and will notify you once authorization is complete.
 
     <Admonition type="note">
-     Please note that you must provide the **VPC Endpoint ID**, not the VPC ID. This step is specific to the Private Preview. In the final version, the allowed VPC Endpoint will be configured through the Neon Console without any manual involvement by Neon.
+     Please note that you must provide the **VPC Endpoint ID**, not the VPC ID. This step is specific to the Private Preview. In the final version, the allowed VPC Endpoint will be configured through the Neon Console or Neon CLI without any manual involvement by Neon.
     </Admonition>
 
 3.  **Enable Private DNS**
@@ -18410,7 +18377,7 @@ Easily switch between your personal account and any organization you are a Membe
 
 ## Deleting your account
 
-After deleting your account, it is suspended for 180 days; if you log back within this period your account will be reactivated. After 180 days, your account and related information is permanently purged and cannot be recovered.
+After deleting your account, you'll have a brief window to reactivate it if you change your mind. Just log back in to restore your account. Once this window closes, however, your account and related information will be permanently purged and cannot be recovered.
 
 Before deleting your account, you must take deliberate steps to remove your resources. This includes deleting all projects, leaving any organizations, and, if you're on a paid plan, downgrading to the Free Plan.
 
@@ -18437,7 +18404,7 @@ After 180 days, your account will be permanently removed.
 title: Organizations
 subtitle: Invite Members to your Organization and collaborate on projects
 enableTableOfContents: true
-updatedOn: '2024-11-29T18:50:41.469Z'
+updatedOn: '2025-01-10T18:30:20.395Z'
 ---
 
 Build your team in Neon with Organizations. Manage all of your team's projects under a single account — with billing, role management, and project collaboration capabilities in one accessible location.
@@ -18488,7 +18455,7 @@ If you're on the Free Plan, you'll need to choose a paid plan for your organizat
     You'll be prompted to select a plan and enter billing details. After confirming, you'll be directed to your organization's billing page, where you can invite [members](/docs/manage/orgs-manage#invite-members) and [transfer projects](/docs/manage/orgs-project-transfer).
   </div>
   <div style={{ flex: '0 0 55%', marginTop: '-20px' }}>
-  ![convert personal account to an organization](/docs/manage/orgs_create_with_transfer.png)
+  ![convert personal account to an organization](/docs/manage/orgs_create_with_billing.png)
   </div>
 </div>
 
@@ -18534,7 +18501,6 @@ Project transfers to an organization are one-way. You cannot move organization p
 As we continue to refine our organization features, here are some temporary limitations you should be aware of:
 
 - **Branch management** — All users are currently able to manage [protected branches](/docs/guides/protected-branches), regardless of their role or permission level. Granular permissions for this feature are not yet implemented.
-- **Project transfer restrictions** — Currently, you cannot transfer projects using either the Vercel, Outerbase, or the GitHub integrations.
 - **Permissions and roles** — The current permissions system may not meet all needs for granular control. Users are encouraged to share their feedback and requirements for more detailed permissions settings.
 
 ## Feedback
@@ -18550,7 +18516,7 @@ If you've got feature requests or feedback about what you'd like to see from Org
 title: Organizations
 subtitle: Invite Members to your Organization and collaborate on projects
 enableTableOfContents: true
-updatedOn: '2024-11-29T18:50:41.469Z'
+updatedOn: '2025-01-10T18:30:20.395Z'
 ---
 
 Build your team in Neon with Organizations. Manage all of your team's projects under a single account — with billing, role management, and project collaboration capabilities in one accessible location.
@@ -18601,7 +18567,7 @@ If you're on the Free Plan, you'll need to choose a paid plan for your organizat
     You'll be prompted to select a plan and enter billing details. After confirming, you'll be directed to your organization's billing page, where you can invite [members](/docs/manage/orgs-manage#invite-members) and [transfer projects](/docs/manage/orgs-project-transfer).
   </div>
   <div style={{ flex: '0 0 55%', marginTop: '-20px' }}>
-  ![convert personal account to an organization](/docs/manage/orgs_create_with_transfer.png)
+  ![convert personal account to an organization](/docs/manage/orgs_create_with_billing.png)
   </div>
 </div>
 
@@ -18647,7 +18613,6 @@ Project transfers to an organization are one-way. You cannot move organization p
 As we continue to refine our organization features, here are some temporary limitations you should be aware of:
 
 - **Branch management** — All users are currently able to manage [protected branches](/docs/guides/protected-branches), regardless of their role or permission level. Granular permissions for this feature are not yet implemented.
-- **Project transfer restrictions** — Currently, you cannot transfer projects using either the Vercel, Outerbase, or the GitHub integrations.
 - **Permissions and roles** — The current permissions system may not meet all needs for granular control. Users are encouraged to share their feedback and requirements for more detailed permissions settings.
 
 ## Feedback
@@ -18807,7 +18772,7 @@ For detailed information on pricing and plans, refer to [Neon plans](/docs/intro
 ---
 title: Transfer projects to an organization
 enableTableOfContents: true
-updatedOn: '2024-11-29T18:50:41.471Z'
+updatedOn: '2025-01-03T18:42:57.517Z'
 ---
 
 When creating an organization as an Admin &#8212; or as a member of an organization that's already up and running &#8212; you may need to transfer existing projects from your personal account to your target organization.
@@ -18820,8 +18785,9 @@ A few important points to keep in mind:
 
 - You must be at least a Member of the selected Organization to transfer projects to it.
 - The number of projects you can transfer is limited by the target Organization plan's allowance.
-- Projects can't be transferred between incompatible plans due to differences in usage allowances. For example, attempting to transfer projects from a Scale plan personal account to a Launch plan Organization will result in an error.
+- The billing plan of the organization must match or exceed the billing plan of the personal Neon account you are transferring projects from. For example, attempting to transfer projects from a Scale plan personal account to a Launch plan organization will result in an error.
 - If any organization members were already collaborators on the projects being transferred, we'll remove their collaborator access since they'll get full access as org members anyway.
+- Transferring projects between Organizations is currently not supported. You can only transfer projects from a personal Neon account to an Organization. If you need to move projects between Organizations, please contact [Neon Support](https://console.neon.tech/app/projects?modal=support).
 
 ## Transfer from the Neon Console
 
@@ -19068,17 +19034,21 @@ main
 </Tabs>
 
 
-# API actions
+# Organizations API
+
+# Manage organizations via API
 
 ---
-title: Manage Organizations using the Neon API
+title: Manage organizations using the Neon API
 enableTableOfContents: true
-updatedOn: '2024-12-13T21:17:10.767Z'
+updatedOn: '2025-01-07T00:14:34.999Z'
 ---
 
-Learn how to manage Neon Organizations using the Neon API, including creating and using organization-specific API keys, creating projects, transferring projects, and retrieving consumption metrics.
+Learn how to manage Neon Organizations using the Neon API, including managing organization API keys, working with organization members, and handling member invitations.
 
-You can authenticate your API requests using either of these methods:
+## Personal vs organization API keys
+
+You can authorize your API requests using either of these methods:
 
 - **Organization API key**: Automatically scopes all requests to your organization
 - **Personal API key**: Requires including an `org_id` parameter to specify which organization you're working with
@@ -19103,34 +19073,106 @@ curl --request GET \
 
 Both examples retrieve a list of projects, but notice how the personal API key request includes `org_id=org-example-12345678` to specify which organization's projects to list. With an organization API key, this parameter isn't needed because the key itself is already tied to a specific organization.
 
+### Matrix of operations and key types
+
+Some operations require a personal API key from an organization admin and cannot be performed using organization API keys. These operations are marked with ❌ in the matrix below.
+
+| Action                                                                                    | Personal API Key | Organization API Key |
+| ----------------------------------------------------------------------------------------- | ---------------- | -------------------- |
+| [Create an organization API key](#create-an-organization-api-key)                         | ✅               | ❌                   |
+| [Get a list of organization API keys](#list-organization-api-keys)                        | ✅               | ✅                   |
+| [Revoke an organization API key](#revoke-an-organization-api-key)                         | ✅               | ✅                   |
+| [Get organization details](#get-organization-details)                                     | ✅               | ✅                   |
+| [Get organization members details](#get-details-about-all-members)                        | ✅               | ✅                   |
+| [Get organization member details](#get-details-about-an-individual-member)                | ✅               | ✅                   |
+| [Update the role for an organization member](#update-the-role-for-an-organization-member) | ✅               | ✅                   |
+| [Remove member from the organization](#remove-member-from-the-organization)               | ✅               | ❌                   |
+| [Get organization invitation details](#get-organization-invitation-details)               | ✅               | ✅                   |
+| [Create organization invitations](#create-organization-invitations)                       | ✅               | ❌                   |
+
 ## Finding your org_id
 
 To find your organization's `org_id`, navigate to your Organization's **Settings** page, where you'll find it under the **General information** section. Copy and use this ID in your API requests.
 
 ![finding your organization ID from the settings page](/docs/manage/orgs_id.png)
 
-## Creating API keys
+## Create API keys
 
-Only admins can create API keys for the organization. These keys provide admin-level access to all organization resources, including projects, members, and billing information. These are **user-independent** — they are not tied to a specific user. If any user leaves the organization, including the admin who created the API key, the API key remains active.
+There are two types of organization API keys:
 
-You can also create project-scoped organization API keys, which provide member-level access to a specific project within the organization. This allows for more granular access control when needed.
+- **Organization API keys** — Provide admin-level access to all organization resources, including projects, members, and settings. Only organization admins can create these keys.
+- **Project-scoped organization API keys** — Provide limited, member-level access to specific projects within the organization. Any organization member can create a key for any organization-owned project.
 
-<Admonition type="note">Creating any type of API key (organization-wide or project-scoped) requires using a personal API key. Organization API keys cannot be used to create additional keys.</Admonition>
+The key token is only displayed once at creation time. Copy it immediately and store it securely. If lost, you’ll need to revoke the key and create a new one. For detailed instructions, see [Manage API Keys](/docs/manage/api-keys#create-an-organization-api-key).
 
-For detailed instructions on creating and managing organization API keys, see [Manage API Keys](/docs/manage/api-keys#create-an-organization-api-key).
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/createorgapikey)
 
-## Organization management actions
+## List API keys
 
-The following examples use the **organization API key** for authentication. If you're using a **personal API key**, you'll need to include the `org_id` parameter to specify which organization you're working with.
+Lists all API keys for your organization. The response does not include the actual key tokens, as these are only provided when creating a new key.
 
-### Get organization details
+```bash shouldWrap
+curl --request GET \
+     --url 'https://console.neon.tech/api/v2/organizations/{org_id}/api_keys' \
+     --header 'authorization: Bearer $PERSONAL_API_KEY' | jq
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 123456,
+    "name": "my-key-name",
+    "created_at": "2024-01-01T12:00:00Z",
+    "created_by": {
+      "id": "user-abc123de-4567-8fab-9012-3cdef4567890",
+      "name": "John Smith",
+      "image": "https://avatar.example.com/user.jpg"
+    },
+    "last_used_at": "2024-01-01T12:30:00Z",
+    "last_used_from_addr": "192.0.2.1,192.0.2.2"
+  }
+]
+```
+
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/listorgapikeys)
+
+## Revoke an API key
+
+Revokes the specified organization API key. This action cannot be reversed. You can obtain the `key_id` by listing the API keys for your organization.
+
+```bash
+curl --request DELETE \
+     --url 'https://console.neon.tech/api/v2/organizations/{org_id}/api_keys/{key_id}' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $PERSONAL_API_KEY' | jq
+```
+
+Example response:
+
+```json
+{
+  "id": 123456,
+  "name": "my-key-name",
+  "created_at": "2024-01-01T12:00:00Z",
+  "created_by": "user-abc123de-4567-8fab-9012-3cdef4567890",
+  "last_used_at": "2024-01-01T12:30:00Z",
+  "last_used_from_addr": "192.0.2.1,192.0.2.2",
+  "revoked": true
+}
+```
+
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/revokeorgapikey)
+
+## Get organization details
 
 Retrieves information about your organization, including its name, plan, and creation date.
 
 ```bash shouldWrap
 curl --request GET \
-     --url 'https://console.neon.tech/api/v2/organizations' \
-     --header 'authorization: Bearer $ORG_API_KEY'
+     --url 'https://console.neon.tech/api/v2/organizations/{org_id}' \
+     --header 'authorization: Bearer $PERSONAL_API_KEY' | jq
 ```
 
 Example response:
@@ -19149,7 +19191,7 @@ Example response:
 
 [Try in API Reference ↗](https://api-docs.neon.tech/reference/getorganization)
 
-### Get details about all members
+## List members
 
 Lists all members in your organization. Each entry includes:
 
@@ -19162,7 +19204,7 @@ Lists all members in your organization. Each entry includes:
 curl --request GET \
      --url 'https://console.neon.tech/api/v2/organizations/{org_id}/members' \
      --header 'accept: application/json' \
-     --header 'authorization: Bearer $ORG_API_KEY'
+     --header 'authorization: Bearer $ORG_API_KEY' | jq
 ```
 
 Example response:
@@ -19190,7 +19232,7 @@ Example response:
 
 <Admonition type="note">The member ID (`id`) from this response is needed for operations like updating roles or removing members.</Admonition>
 
-### Get details about an individual member
+## Get member details
 
 Retrieves information about a specific member using their member ID (obtained from the [Get all members](#get-details-about-all-members) endpoint).
 
@@ -19215,7 +19257,7 @@ Example response:
 
 [Try in API Reference ↗](https://api-docs.neon.tech/reference/getorganizationmember)
 
-### Update the role for an organization member
+## Update member role
 
 Changes a member's current role in the organization. If using your personal API key, you need to be an admin in the organization to perform this action. Note: you cannot downgrade the role of the organization's only admin.
 
@@ -19225,7 +19267,7 @@ curl --request PATCH \
      --header 'accept: application/json' \
      --header 'authorization: Bearer $ORG_API_KEY' \
      --header 'content-type: application/json' \
-     --data '{"role": "admin"}'
+     --data '{"role": "admin"}' | jq
 ```
 
 Example response:
@@ -19242,11 +19284,9 @@ Example response:
 
 [Try in API Reference ↗](https://api-docs.neon.tech/reference/updateorganizationmember)
 
-### Remove member from the organization
+## Remove member
 
-If using your personal API key, you need to be an admin in the organization to perform this action.
-
-<Admonition type="note">Organization API keys are not currently supported with this endpoint. Use your personal API key instead.</Admonition>
+You must use your personal API key and have admin-level permissions in the organization to use this endpoint. Organization API keys are not supported.
 
 ```bash shouldWrap
 curl --request DELETE \
@@ -19257,7 +19297,7 @@ curl --request DELETE \
 
 [Try in API Reference ↗](https://api-docs.neon.tech/reference/removeorganizationmember)
 
-### Get organization invitation details
+## List invitations
 
 Retrieves a list of all pending invitations for the organization.
 
@@ -19265,7 +19305,7 @@ Retrieves a list of all pending invitations for the organization.
 curl --request GET \
      --url 'https://console.neon.tech/api/v2/organizations/invitations' \
      --header 'accept: application/json' \
-     --header 'authorization: Bearer $ORG_API_KEY'
+     --header 'authorization: Bearer $ORG_API_KEY' | jq
 ```
 
 Example response:
@@ -19287,7 +19327,7 @@ Example response:
 
 [Try in API Reference ↗](https://api-docs.neon.tech/reference/getorganizationinvitations)
 
-### Create organization invitations
+## Create invitations
 
 Creates invitations for new organization members. Each invited user:
 
@@ -19295,7 +19335,7 @@ Creates invitations for new organization members. Each invited user:
 - If they have an existing Neon account, they automatically join as a member
 - If they don't have an account yet, the email invites them to create one
 
-<Admonition type="note">Organization API keys are not currently supported with this endpoint. Use your personal API key instead.</Admonition>
+You must use your personal API key and have admin-level permissions in the organization to use this endpoint. Organization API keys are not supported.
 
 ```bash shouldWrap
 curl --request POST \
@@ -19310,64 +19350,21 @@ curl --request POST \
            "role": "member"
          }
        ]
-     }'
+     }' | jq
 ```
 
 [Try in API Reference ↗](https://api-docs.neon.tech/reference/createorganizationinvitations)
 
-## General project actions
 
-These endpoints support both Organization API key and Personal API key authentication. If using a Personal API key, you need to include the `org_id` parameter to specify which organization you're working with.
+# Query organization metrics via API
 
-The following examples use the **Organization API key** method.
-
-### Creating projects
-
-Creates a new project within your organization. You can specify:
-
-- Postgres version
-- Project name (optional)
-- Region (optional)
-
-```bash shouldWrap
-curl --request POST \
-     --url https://console.neon.tech/api/v2/projects \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $ORG_API_KEY' \
-     --header 'content-type: application/json' \
-     --data '
-{
-  "project": {
-    "pg_version": 16
-  }
-}
-'
-```
-
-[Try in API Reference ↗](https://api-docs.neon.tech/reference/createproject)
-
-### Listing projects
-
-Lists all projects belonging to your organization, with a default limit of 10 projects per return:
-
-```bash
-curl --request GET \
-     --url 'https://console.neon.tech/api/v2/projects?limit=10' \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $ORG_API_KEY'
-```
-
-### Transfer projects
-
-The Project Transfer API allows you to transfer projects from your personal Neon account to a specified organization account. See [Transfer projects via API](/docs/manage/orgs-project-transfer#transfer-projects-via-api) for details.
-
-## Consumption metrics
+---
+title: Query organization usage metrics with the Neon API
+enableTableOfContents: true
+updatedOn: '2024-12-18T18:37:32.360Z'
+---
 
 You can use the Neon API to retrieve three types of consumption metrics for your organization:
-
-<Admonition type="note">
-Some metrics are only available on specific plans. Check the "Plan Availability" column for details.
-</Admonition>
 
 | Metric                                                                                           | Description                                                                              | Plan Availability |
 | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ----------------- |
@@ -19375,15 +19372,41 @@ Some metrics are only available on specific plans. Check the "Plan Availability"
 | [Project-level](https://api-docs.neon.tech/reference/getconsumptionhistoryperproject) (granular) | Project-level metrics available at hourly, daily, or monthly level of granularity        | Scale plan only   |
 | [Project-level](https://api-docs.neon.tech/reference/listprojectsconsumption) (billing period)   | Consumption metrics for each project in your Organization for the current billing period | All plans         |
 
-### Account-level metrics
+## Finding organizations for consumption queries
 
-To get global totals for all projects in the organization `org-ocean-art-12345678`, include the `org_id` in the `GET /consumption/projects` request. We also need to include:
+Before querying consumption metrics, you'll need the `org_id` values for organizations you want to query. Use your personal API key to list all organizations you have access to:
+
+```bash shouldWrap
+curl --request GET \
+     --url 'https://console.neon.tech/api/v2/users/me/organizations' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $PERSONAL_API_KEY' | jq
+```
+
+The response includes details about each organization, including the `org_id` you'll need for consumption queries:
+
+```json
+{
+  "organizations": [
+    {
+      "id": "org-morning-bread-81040908",
+      "name": "Morning Bread Organization",
+      "created_at": "2022-11-23T17:42:25Z",
+      "updated_at": "2022-12-04T02:39:25Z"
+    }
+  ]
+}
+```
+
+## Account-level metrics
+
+To get global totals for all projects in the organization `org-ocean-art-12345678`, include the `org_id` in the `GET /consumption/projects` request. Required parameters:
 
 - A start date
 - An end date
 - A level of granularity
 
-In this case, we're asking for hourly metrics between June 30th and July 2nd, 2024.
+The following example requests hourly metrics between June 30th and July 2nd, 2024:
 
 ```bash shouldWrap
 curl --request GET \
@@ -19532,35 +19555,8 @@ curl --request GET \
 
 See more details about using this endpoint on the [Manage billing with consumption limits](/docs/guides/partner-consumption-limits#retrieving-metrics-for-all-projects) page in our Partner Guide.
 
-## List all organizations you belong to
 
-You can use the `GET /users/me/organizations` request to retrieve a list of all organizations associated with your personal account.
-
-```bash shouldWrap
-curl --request GET \
-     --url 'https://console.neon.tech/api/v2/users/me/organizations' \
-     --header 'accept: application/json' \
-     --header 'authorization: Bearer $ORG_API_KEY'
-```
-
-The response will include details about each organization, including the `org_id`, name, and creation date.
-
-### Example Response
-
-```json
-{
-  "organizations": [
-    {
-      "id": "org-morning-bread-81040908",
-      "name": "Morning Bread Organization",
-      "created_at": "2022-11-23T17:42:25Z",
-      "updated_at": "2022-12-04T02:39:25Z"
-    },
-    ...
-  ]
-}
-```
-
+# CLI
 
 # CLI actions
 
@@ -20072,18 +20068,20 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/using-api-keys
   - /docs/get-started-with-neon/api-keys
-updatedOn: '2024-12-13T21:17:10.762Z'
+updatedOn: '2025-01-07T00:14:34.997Z'
 ---
 
 Most actions performed in the Neon Console can also be performed using the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api). You'll need an API key to validate your requests. Each key is a randomly-generated 64-bit token that you must include when calling Neon API methods. All keys remain valid until deliberately revoked.
 
 ## Types of API keys
 
-Neon supports these types of API keys:
+Neon supports three types of API keys:
 
-- **Personal API key** — These keys are tied to your individual Neon account. They can access your personal projects by default, and organization projects if you specify the organization ID in your API requests.
-- **Organization API key** — These keys are scoped to a specific organization. They allow full [admin-level access](/docs/manage/organizations#user-roles-and-permissions) to all projects within that organization.
-- **Project-scoped organization API key** — These keys are scoped to a specific project within an organization. They provide [member-level access](/docs/manage/organizations#user-roles-and-permissions) to the specified project, and only that project. They cannot perform organization-related actions or destructive project operations like project deletion.
+| Key Type               | Who Can Create              | Scope                                                                          | Validity                                                                 |
+| ---------------------- | --------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| Personal API Key       | Any user                    | User's personal projects and any organization projects where they are a member | Valid until revoked; org project access ends if user leaves organization |
+| Organization API Key   | Organization administrators | All projects within the organization                                           | Valid until revoked                                                      |
+| Project-scoped API Key | Any organization member     | Single specified project                                                       | Valid until revoked or project leaves organization                       |
 
 While there is no strict limit on the number of API keys you can create, we recommend keeping it under 10,000 per Neon account.
 
@@ -20180,13 +20178,13 @@ curl --request POST \
 
 ### Create project-scoped organization API keys
 
-Organization API keys can be scoped to individual projects within that organization. Project-scoped API keys have [member-level access](/docs/manage/organizations#user-roles-and-permissions), meaning they **cannot** delete the project they are associated with. These keys:
+Project-scoped API keys have [member-level access](/docs/manage/organizations#user-roles-and-permissions), meaning they **cannot** delete the project they are associated with. These keys:
 
-- Can only access and manage their specified project
+- Can only access and manage the specified project
 - Cannot perform organization-related actions or create new projects
-- Will lose access if the project is transferred out of the organization
+- Will stop working if the project is transferred out of the organization
 
-To create an API key scoped to a specific project:
+Any organization member can create an API key for any organization-owned project using the following command:
 
 ```bash shouldWrap
 curl --request POST \
@@ -21547,7 +21545,7 @@ You can verify that a branch is deleted by listing the branches for your project
 title: Manage computes
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-12-13T21:17:10.766Z'
+updatedOn: '2025-01-06T23:37:50.190Z'
 ---
 
 A primary read-write compute is created for your project's [default branch](/docs/reference/glossary#default-branch).
@@ -21682,7 +21680,7 @@ The `neon_utils` extension provides a `num_cpus()` function you can use to monit
 
 The size of your compute determines the amount of frequently accessed data you can cache in memory and the maximum number of simultaneous connections you can support. As a result, if your compute size is too small, this can lead to suboptimal query performance and connection limit issues.
 
-In Postgres, the `shared_buffers` setting defines the amount of data that can be held in memory. In Neon, the `shared_buffers` parameter is always set to 128 MB, but Neon uses a Local File Cache (LFC) to extend the amount of memory available for caching data. The LFC can use up to 80% of your compute's RAM.
+In Postgres, the `shared_buffers` setting defines the amount of data that can be held in memory. In Neon, the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size) and Neon also uses a Local File Cache (LFC) to extend the amount of memory available for caching data. The LFC can use up to 80% of your compute's RAM.
 
 The Postgres `max_connections` setting defines your compute's maximum simultaneous connection limit and is set according to your compute size. Larger computes support higher maximum connection limits.
 
@@ -21692,50 +21690,50 @@ The following table outlines the vCPU, RAM, LFC size (80% of RAM), and the `max_
 Compute size support differs by [Neon plan](https://neon.tech/docs/introduction/plans). Autoscaling is supported up to 16 CU. Neon supports fixed compute sizes (no autoscaling) for computes sizes larger than 16 CU.
 </Admonition>
 
-| Min. Compute Size (CU) | vCPU | RAM    | LFC size | max_connections |
-| ---------------------- | ---- | ------ | -------- | --------------- |
-| 0.25                   | 0.25 | 1 GB   | 0.8 GB   | 112             |
-| 0.50                   | 0.50 | 2 GB   | 1.6 GB   | 225             |
-| 1                      | 1    | 4 GB   | 3.2 GB   | 450             |
-| 2                      | 2    | 8 GB   | 6.4 GB   | 901             |
-| 3                      | 3    | 12 GB  | 9.6 GB   | 1351            |
-| 4                      | 4    | 16 GB  | 12.8 GB  | 1802            |
-| 5                      | 5    | 20 GB  | 16 GB    | 2253            |
-| 6                      | 6    | 24 GB  | 19.2 GB  | 2703            |
-| 7                      | 7    | 28 GB  | 22.4 GB  | 3154            |
-| 8                      | 8    | 32 GB  | 25.6 GB  | 3604            |
-| 9                      | 9    | 36 GB  | 28.8 GB  | 4000            |
-| 10                     | 10   | 40 GB  | 32 GB    | 4000            |
-| 11                     | 11   | 44 GB  | 35.2 GB  | 4000            |
-| 12                     | 12   | 48 GB  | 38.4 GB  | 4000            |
-| 13                     | 13   | 52 GB  | 41.6 GB  | 4000            |
-| 14                     | 14   | 56 GB  | 44.8 GB  | 4000            |
-| 15                     | 15   | 60 GB  | 48 GB    | 4000            |
-| 16                     | 16   | 64 GB  | 51.2 GB  | 4000            |
-| 18                     | 18   | 72 GB  | 57.6 GB  | 4000            |
-| 20                     | 20   | 80 GB  | 64 GB    | 4000            |
-| 22                     | 22   | 88 GB  | 70.4 GB  | 4000            |
-| 24                     | 24   | 96 GB  | 76.8 GB  | 4000            |
-| 26                     | 26   | 104 GB | 83.2 GB  | 4000            |
-| 28                     | 28   | 112 GB | 89.6 GB  | 4000            |
-| 30                     | 30   | 120 GB | 96 GB    | 4000            |
-| 32                     | 32   | 128 GB | 102.4 GB | 4000            |
-| 34                     | 34   | 136 GB | 108.8 GB | 4000            |
-| 36                     | 36   | 144 GB | 115.2 GB | 4000            |
-| 38                     | 38   | 152 GB | 121.6 GB | 4000            |
-| 40                     | 40   | 160 GB | 128 GB   | 4000            |
-| 42                     | 42   | 168 GB | 134.4 GB | 4000            |
-| 44                     | 44   | 176 GB | 140.8 GB | 4000            |
-| 46                     | 46   | 184 GB | 147.2 GB | 4000            |
-| 48                     | 48   | 192 GB | 153.6 GB | 4000            |
-| 50                     | 50   | 200 GB | 160 GB   | 4000            |
-| 52                     | 52   | 208 GB | 166.4 GB | 4000            |
-| 54                     | 54   | 216 GB | 172.8 GB | 4000            |
-| 56                     | 56   | 224 GB | 179.2 GB | 4000            |
+| Compute Size (CU) | vCPU | RAM    | LFC size | max_connections |
+| ----------------- | ---- | ------ | -------- | --------------- |
+| 0.25              | 0.25 | 1 GB   | 0.8 GB   | 112             |
+| 0.50              | 0.50 | 2 GB   | 1.6 GB   | 225             |
+| 1                 | 1    | 4 GB   | 3.2 GB   | 450             |
+| 2                 | 2    | 8 GB   | 6.4 GB   | 901             |
+| 3                 | 3    | 12 GB  | 9.6 GB   | 1351            |
+| 4                 | 4    | 16 GB  | 12.8 GB  | 1802            |
+| 5                 | 5    | 20 GB  | 16 GB    | 2253            |
+| 6                 | 6    | 24 GB  | 19.2 GB  | 2703            |
+| 7                 | 7    | 28 GB  | 22.4 GB  | 3154            |
+| 8                 | 8    | 32 GB  | 25.6 GB  | 3604            |
+| 9                 | 9    | 36 GB  | 28.8 GB  | 4000            |
+| 10                | 10   | 40 GB  | 32 GB    | 4000            |
+| 11                | 11   | 44 GB  | 35.2 GB  | 4000            |
+| 12                | 12   | 48 GB  | 38.4 GB  | 4000            |
+| 13                | 13   | 52 GB  | 41.6 GB  | 4000            |
+| 14                | 14   | 56 GB  | 44.8 GB  | 4000            |
+| 15                | 15   | 60 GB  | 48 GB    | 4000            |
+| 16                | 16   | 64 GB  | 51.2 GB  | 4000            |
+| 18                | 18   | 72 GB  | 57.6 GB  | 4000            |
+| 20                | 20   | 80 GB  | 64 GB    | 4000            |
+| 22                | 22   | 88 GB  | 70.4 GB  | 4000            |
+| 24                | 24   | 96 GB  | 76.8 GB  | 4000            |
+| 26                | 26   | 104 GB | 83.2 GB  | 4000            |
+| 28                | 28   | 112 GB | 89.6 GB  | 4000            |
+| 30                | 30   | 120 GB | 96 GB    | 4000            |
+| 32                | 32   | 128 GB | 102.4 GB | 4000            |
+| 34                | 34   | 136 GB | 108.8 GB | 4000            |
+| 36                | 36   | 144 GB | 115.2 GB | 4000            |
+| 38                | 38   | 152 GB | 121.6 GB | 4000            |
+| 40                | 40   | 160 GB | 128 GB   | 4000            |
+| 42                | 42   | 168 GB | 134.4 GB | 4000            |
+| 44                | 44   | 176 GB | 140.8 GB | 4000            |
+| 46                | 46   | 184 GB | 147.2 GB | 4000            |
+| 48                | 48   | 192 GB | 153.6 GB | 4000            |
+| 50                | 50   | 200 GB | 160 GB   | 4000            |
+| 52                | 52   | 208 GB | 166.4 GB | 4000            |
+| 54                | 54   | 216 GB | 172.8 GB | 4000            |
+| 56                | 56   | 224 GB | 179.2 GB | 4000            |
 
 When selecting a compute size, ideally, you want to keep as much of your dataset in memory as possible. This improves performance by reducing the amount of reads from storage. If your dataset is not too large, select a compute size that will hold the entire dataset in memory. For larger datasets that cannot be fully held in memory, select a compute size that can hold your [working set](/docs/reference/glossary#working-set). Selecting a compute size for a working set involves advanced steps, which are outlined below. See [Sizing your compute based on the working set](#sizing-your-compute-based-on-the-working-set).
 
-Regarding connection limits, you'll want a compute size that can support your anticipated maximum number of concurrent connections. If you are using **Autoscaling**, it is important to remember that your `max_connections` setting is based on the **minimum compute size** in your autoscaling configuration. The `max_connections` setting does not scale with your compute. To avoid the `max_connections` constraint, you can use a pooled connection with your application, which supports up to 10,000 concurrent user connections. See [Connection pooling](/docs/connect/connection-pooling).
+Regarding connection limits, you'll want a compute size that can support your anticipated maximum number of concurrent connections. If you are using **Autoscaling**, it is important to remember that your `max_connections` setting is based on the **maximum compute size** in your autoscaling configuration, so it scales as you increase maximum compute size. To avoid the `max_connections` constraint, you can use a pooled connection with your application, which supports up to 10,000 concurrent user connections. See [Connection pooling](/docs/connect/connection-pooling).
 
 #### Sizing your compute based on the working set
 
@@ -21754,7 +21752,7 @@ Autoscaling is most effective when your data (either your full dataset or your w
 
 Consider this scenario: If your data size is approximately 6 GB, starting with a compute size of .25 CU can lead to suboptimal performance because your data cannot be adequately cached. While your compute _will_ scale up from .25 CU on demand, you may experience poor query performance until your compute scales up and fully caches your working set. You can avoid this issue if your minimum compute size can hold your working set in memory.
 
-As mentioned above, your `max_connections` setting is based on the minimum compute size in your autoscaling configuration and does not scale along with your compute. To avoid this `max_connections` constraint, you can use a pooled connection for your application. See [Connection pooling](/docs/connect/connection-pooling).
+As mentioned above, your `max_connections` setting is based on the maximum compute size in your autoscaling configuration. To avoid the `max_connections` constraint, you can use a pooled connection for your application. See [Connection pooling](/docs/connect/connection-pooling).
 
 ### Scale to zero configuration
 
@@ -22920,13 +22918,13 @@ The following names are protected and cannot be given to a database:
 # Tables
 
 ---
-title: Managing your data with interactive tables
-subtitle: 'Use the Tables page to easily view, edit, and manage your database entries'
+title: Managing your data and schemas in the Neon Console
+subtitle: 'Use the Tables page to easily view, edit, and manage your data and schemas'
 enableTableOfContents: true
-updatedOn: '2024-10-07T15:22:34.955Z'
+updatedOn: '2025-01-08T12:09:24.679Z'
 ---
 
-The **Tables** page in the Neon Console offers a dynamic, visual interface for managing data. Fully interactive, this view lets you add, update, and delete records, filter data, modify columns, drop or truncate tables, as well as export data in both .json and .csv formats.
+The **Tables** page in the Neon Console offers a dynamic, visual interface for managing data and schemas. Fully interactive, this view lets you add, update, and delete records, filter data, modify columns, drop or truncate tables, export data in both .json and .csv formats, and manage schemas, tables, views, and enums.
 
 <Admonition type="note">
 The **Tables** page is powered by Drizzle Studio. For new features and updates, please refer to the [Neon Drizzle Studio Changelog](https://github.com/neondatabase/neon-drizzle-studio-changelog/blob/main/CHANGELOG.md).
@@ -22980,6 +22978,22 @@ Or just choose `Export all..` to download the entire contents of the table.
 You can export to either JSON or CSV.
 
 ![export data from table](/docs/manage/export_drizzle.png)
+
+## Manage schemas
+
+In addition to managing data, you can manage your database schema directly from the **Tables** page. Schema management options include:
+
+- Creating, altering, and dropping schemas
+- Creating and altering tables
+- Creating and altering views
+- Creating enums
+- Refreshing the database schema
+
+![Drizzle Studio Schema Management UI](/docs/relnotes/drizzle_schema_mgmt.png)
+
+## Limitations
+
+The Drizzle Studio integration that powers the **Tables** page currently does not support partitioned tables. Partitioned tables are not displayed on the **Tables** page.
 
 
 # Integrations
@@ -23065,7 +23079,7 @@ If you've got feature requests or feedback about what you'd like to see in Neon 
 ---
 title: Monitoring dashboard
 enableTableOfContents: true
-updatedOn: '2024-12-01T21:48:07.695Z'
+updatedOn: '2024-12-17T16:08:33.021Z'
 ---
 
 The **Monitoring** dashboard in the Neon console provides several graphs for monitoring system and database metrics. You can access the **Monitoring** dashboard from the sidebar in the Neon Console. Observable metrics include:
@@ -23098,8 +23112,8 @@ If your compute was idle or there has not been much activity, graphs may display
 
 All time values displayed in graphs are in [Coordinated Universal Time (UTC)](https://en.wikipedia.org/wiki/Coordinated_Universal_Time).
 
-<Admonition type="note">
-The values and plotted lines in your graphs display `0` during periods when your compute is inactive. For example, **RAM**, **CPU**, and **Database size** values lines go to `0` when a compute suspends due to inactivity. The information displayed when hovering over a graph will indicate that the endpoint is inactive, meaning there was no activity on the compute. Inactive periods are also represented in a graph by a background with a diagonal line pattern.
+<Admonition type="note" title="Endpoint Inactive: What does it mean?">
+The values and plotted lines in your graphs will drop to `0` when your compute is inactive because a compute must be active to report data. These inactive periods are also shown as a diagonal line pattern in the graph.
 </Admonition>
 
 ### RAM
@@ -23651,7 +23665,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/security/security
   - /docs/security
-updatedOn: '2024-12-04T13:30:28.568Z'
+updatedOn: '2025-01-04T12:41:02.143Z'
 ---
 
 At Neon, security is our highest priority. We are committed to implementing best practices and earning the trust of our users. A key aspect of earning this trust is by ensuring that every touchpoint in our system, from connections, to data storage, to our internal processes, adheres to the highest security standards.
@@ -23752,7 +23766,7 @@ To learn more about how we protect your data and uphold the highest standards of
 
 Neon adheres to the [securitytxt.org](https://securitytxt.org/) standard for transparent and efficient security reporting. For details on how to report potential vulnerabilities, please visit our [Security reporting](/docs/security/security-reporting) page or refer to our [security.txt](https://neon.tech/security.txt) file.
 
-Neon also has a [private bug bounty program with Hackerone](/docs/security/security-reporting#neons-private-bug-bounty-program-with-hackerone).
+Neon also has a [private bug bounty program with Hackerone](/docs/security/security-reporting#bug-bounty-program-with-hackerone).
 
 ## Questions about our security measures?
 
@@ -23764,7 +23778,7 @@ If you have any questions about our security protocols or would like a deeper di
 ---
 title: Security reporting
 enableTableOfContents: true
-updatedOn: '2024-12-04T13:30:28.568Z'
+updatedOn: '2025-01-04T12:41:02.146Z'
 ---
 
 We have established the following security reporting procedure to address security issues quickly.
@@ -23783,9 +23797,9 @@ If you have a security concern or believe you have found a vulnerability in any 
 
 We strive to resolve all problems quickly and publicize any discoveries after their resolution.
 
-## Neon's Private Bug Bounty Program with Hackerone
+## Bug bounty program with HackerOne
 
-Neon now has a private bug bounty program! If you identify a vulnerability, you can report it using our submission [form](https://hackerone.com/8777433c-7051-4c92-aed4-430278521656/embedded_submissions/new).
+Neon offers a private bug bounty program. If you discover a vulnerability, report it using our submission [form](https://hackerone.com/8777433c-7051-4c92-aed4-430278521656/embedded_submissions/new).
 
 ## How to disclose vulnerabilities
 
@@ -25267,25 +25281,25 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/conceptual-guides/regions
-updatedOn: '2024-12-12T15:31:10.131Z'
+updatedOn: '2024-12-30T21:13:29.488Z'
 ---
 
 Neon offers project deployment in multiple AWS and Azure regions. To minimize latency between your Neon database and application, we recommend choosing the region closest to your application server.
 
 ## AWS regions
 
-- AWS US East (N. Virginia) &mdash; `aws-us-east-1`
-- AWS US East (Ohio) &mdash; `aws-us-east-2`
-- AWS US West (Oregon) &mdash; `aws-us-west-2`
-- AWS Europe (Frankfurt) &mdash; `aws-eu-central-1`
-- AWS Asia Pacific (Singapore) &mdash; `aws-ap-southeast-1`
-- AWS Asia Pacific (Sydney) &mdash; `aws-ap-southeast-2`
+- 🇺🇸 AWS US East (N. Virginia) &mdash; `aws-us-east-1`
+- 🇺🇸 AWS US East (Ohio) &mdash; `aws-us-east-2`
+- 🇺🇸 AWS US West (Oregon) &mdash; `aws-us-west-2`
+- 🇩🇪 AWS Europe (Frankfurt) &mdash; `aws-eu-central-1`
+- 🇸🇬 AWS Asia Pacific (Singapore) &mdash; `aws-ap-southeast-1`
+- 🇦🇺 AWS Asia Pacific (Sydney) &mdash; `aws-ap-southeast-2`
 
 ## Azure regions
 
-- Azure East US 2 region (Virginia) &mdash; `azure-eastus2`
-- Azure Germany West Central region (Frankfurt) &mdash; `azure-gwc`
-- Azure West US 3 region (Arizona) &mdash; `azure-westus3`
+- 🇺🇸 Azure East US 2 region (Virginia) &mdash; `azure-eastus2`
+- 🇺🇸 Azure West US 3 region (Arizona) &mdash; `azure-westus3`
+- 🇩🇪 Azure Germany West Central region (Frankfurt) &mdash; `azure-gwc`
 
 <Admonition type="note" title="Deployment options on azure">
 For information about Neon deployment options on Azure, see [Neon on Azure](/docs/manage/azure).
@@ -26170,7 +26184,7 @@ We’re always looking for ways to improve our pricing model to make it as devel
 ---
 title: Usage metrics
 enableTableOfContents: true
-updatedOn: '2024-12-13T20:52:57.587Z'
+updatedOn: '2025-01-09T10:27:36.267Z'
 ---
 
 This topic describes [Storage](#storage), [Archive storage](#archive-storage), [Compute](#compute), [Data transfer](#data-transfer) and [Project](#projects) usage metrics in detail so that you can better manage your [plan](/docs/introduction/plans) allowances and extra usage.
@@ -26511,7 +26525,7 @@ You can monitor compute hour usage for a Neon project on the [Project Dashboard]
 <details>
 <summary>**What happens when I go over my plan's compute hour allowance?**</summary>
 
-On the Free Plan, if you go over the 5 compute hour allowance for non-default branch computes, those computes are suspended until the allowance resets at the beginning of the month. If you go over the 191.9 compute hour allowance, all computes are suspended until the beginning of the month.
+On the Free Plan, if you go over the 191.9 compute hour allowance, all computes are suspended until the beginning of the month.
 
 On our paid plans (Launch, Scale, and Business), you are billed automatically for any compute hours over your monthly allowance, which is 300 compute hours on Launch and 750 compute hours on Scale. The billing rate is $0.16 per compute hour.
 
@@ -26688,7 +26702,7 @@ subtitle: Monitor billing and usage metrics for your account and projects from t
 enableTableOfContents: true
 redirectFrom:
   - /docs/introduction/billing
-updatedOn: '2024-12-01T21:48:07.695Z'
+updatedOn: '2025-01-08T12:02:21.666Z'
 ---
 
 Neon exposes usage metrics in the Neon Console and through the Neon API. These metrics can answer questions like:
@@ -26717,14 +26731,22 @@ Usage metrics on the **Billing page** include:
 
 - **Storage**: Storage is the total volume of data and history stored in Neon, measured in gigabyte months (GB-month). Data is your logical data size. History is your data’s change history that is used to enable branching-related features, which you can configure for each project via the [history retention](/docs/manage/projects#configure-history-retention) setting. The displayed storage value reflects your current usage.
 - **Compute**: The total number of compute hours used during the current billing period. Compute usage is reset to zero at the beginning of each month. The monthly compute hour allowance differs by [plan](/docs/introduction/plans).
-- **Branch compute**: The total number of compute hours used by non-default branches during the current billing period. Compute usage is reset to zero at the beginning of each month. This metric only applies to the Free Plan.
-- **Archive storage**: The total number of gigabyte-months (GB-month) used for [archived branches](/docs/guides/branch-archiving). The displayed storage value reflects your current usage.
+- **Archive storage**: The total number of gigabyte-months (GB-month) used for [archived branches](/docs/guides/branch-archiving). Branches that are older than 14 days and have not been accessed for the past 24 hours are stored in cost-efficient archive storage. The displayed storage value reflects your current usage.
 - **Projects**: Number of projects currently active in your account. The displayed value reflects your current usage, including any extra projects that have been automatically added as a result of exceeding your [plan allowance](/docs/introduction/plans).
+
+  The **Peak usage** value is the highest number of projects used during the current billing period. When you exceed your plan's project allowance, extra project units are automatically allocated and billed based on the number of additional units needed to cover your extra usage, prorated from the date the extra was allocated. Project units and their cost are defined according to your [Neon plan](/docs/introduction/plans). Peak usage resets at the beginning of the next billing period.
+
 - **Data transfer** The total volume of data transferred out of Neon (egress). Neon does not charge for egress data, but there is an allowance of 5 GB per month for Free Plan users. For all other plans, Neon maintains a reasonable usage policy. For more, see [Data transfer](/docs/introduction/usage-metrics#data-transfer). This metric only applies to the Free Plan.
 
-On paid plan **Billing** pages, **Peak usage** is the highest usage level reached for projects during the current billing period. When you exceed your plan's project allowances, extra units are automatically allocated and billed based on the number of additional units needed to cover your extra usage, prorated from the date the extra was allocated.
+  <Admonition type="note" title="note: billing metrics for pre-2025 custom contract customers">
+  If you signed a contract with Neon prior to 01/01/2025, different billing metrics apply: 
+  - **Storage** is measured in GiBs instead of GB-months, and if you exceed your contract's monthly storage allowance, extra storage units are automatically allocated and billed. Extra storage charges are applied based on the number of additional storage units needed to cover peak storage usage during the current billing period, prorated from the date the extra storage was allocated. Peak usage resets at the beginning of the next billing period.
+  - **Written data** is the total volume of data written from compute to storage over the during the monthly billing period, measured in gigibytes (GiB).
 
-![Monitor billing and usage](/docs/introduction/monitor_billing_usage.png)
+  If you have questions or want to change the billing metrics defined in your contract, please contact your Neon sales representative.
+  </Admonition>
+
+  ![Monitor billing and usage](/docs/introduction/monitor_billing_usage.png)
 
 #### Interpreting usage metrics
 
@@ -27062,7 +27084,7 @@ title: Azure Marketplace
 enableTableOfContents: true
 subtitle: Neon as an Azure Native Service with unified billing through Azure Marketplace
 tag: new
-updatedOn: '2024-12-05T09:54:07.974Z'
+updatedOn: '2024-12-20T16:15:17.131Z'
 ---
 
 <PublicPreview/>
@@ -27142,13 +27164,34 @@ updatedOn: '2024-12-05T09:54:07.974Z'
 
 Neon pricing plans include allowances for compute, storage, and projects. For details on each plan's allowances, see [Neon Plans](/docs/introduction/plans). If you exceed these allowances on a paid plan, overage charges will apply to your monthly bill. You can track your usage on the **Billing** page in the Neon Console. For guidance, see [Monitoring Billing](/docs/introduction/monitor-usage).
 
+## Transfer existing Neon projects to an Azure-created Neon organization
+
+You can transfer existing Neon projects to an Azure-created organization, but note these restrictions:
+
+- The Neon project must belong to a personal Neon account, not an organization. Transfers between organizations are not yet supported.
+- The Neon project must be in an [Azure region](/docs/introduction/regions#azure-regions). Azure-created Neon organizations do not support projects created in [AWS regions](/docs/introduction/regions#aws-regions).
+- The billing plan of the Azure-managed organization must match or exceed the billing plan of the personal Neon account you are transferring projects from. For example, attempting to transfer projects from a Scale plan personal account to a Free plan organization will result in an error.
+
+For detailed transfer steps, see [Transfer projects to an organization](/docs/manage/orgs-project-transfer).
+
+If the restrictions above prevent you from transferring your project, consider these options:
+
+- Open a [support ticket](https://console.neon.tech/app/projects?modal=support) for assistance with transferring your Neon project (supported only for projects that reside in [Azure regions](/docs/introduction/regions#azure-regions)). If you're on the Neon Free Plan and can't open a support ticket, you can email Neon support at `support@neon.tech`.
+- Migrate your data to the Azure organization project using `pg_dump` and `pg_restore`. Refer to [Migrate data from Postgres with pg_dump and pg_restore](/docs/import/migrate-from-postgres#run-a-test-migration) for instructions.
+
 ## Changing your pricing plan
 
-Changing your Neon pricing plan requires [creating a new Neon Resource](#create-a-neon-resource) with the desired pricing plan and opening a [support ticket](https://console.neon.tech/app/projects?modal=support) with Neon to have your existing Neon projects transferred to the new Neon Resource — creating a Neon Resources creates an Organization in Neon. The Neon Support team will transfer your Neon projects from your existing Neon Organization to your new Neon Organization. Afterward, you can delete your old Neon resource. If your old resource was on a paid plan, deleting it will stop billing.
+Changing the Neon pricing plan for an Azure subscription involves the following steps:
 
-<Admonition type="important">
-Deleting a Neon resource from Azure removes the Neon Organization and all Neon projects and data associated with that resource. When changing a Neon plan, do not delete your old Neon resource from Azure before you have verified that your Neon projects and data have transferred successfully to the Neon Organization associated with your new Neon resource.
-</Admonition>
+1. [Creating a new Neon resource](#create-a-neon-resource) with the desired pricing plan.
+2. Opening a [support ticket](https://console.neon.tech/app/projects?modal=support) to request assistance transferring your existing Neon projects to the new Neon resource. The Neon support team will transfer your projects from the "old" Neon organization to the new one. If you're on the Neon Free Plan and can't open a support ticket, you can email Neon support at `support@neon.tech`.
+3. Once the project transfer is complete, you can [delete your old Neon resource](#deleting-a-neon-resource-in-azure). If the old resource was on a paid plan, deleting it will stop billing.
+
+   <Admonition type="important" title="Do not delete your old Neon resource until the transfer is completed">
+   Deleting a Neon resource from Azure removes the Neon organization and all associated projects and data. Before deleting your old resource, ensure your projects and data have been successfully transferred to the new organization.
+   </Admonition>
+
+Alternatively, you can perform the migration to the new Neon resource yourself. First, create a new Neon resource as described above. This will create a new organization in Neon. Add a Neon project to the new organization, then migrate your data from the project in your old organization to the project in the new organization using `pg_dump` and `pg_restore`. See [Migrate data from Postgres with pg_dump and pg_restore](/docs/import/migrate-from-postgres#run-a-test-migration) for instructions. You can [delete your old Neon resource](#deleting-a-neon-resource-in-azure) after you've migrated your data.
 
 ## Enterprise Plan
 
@@ -27188,10 +27231,8 @@ title: Neon on Azure
 enableTableOfContents: true
 tag: new
 isDraft: false
-updatedOn: '2024-12-03T15:29:17.189Z'
+updatedOn: '2024-12-17T14:21:01.045Z'
 ---
-
-<PublicPreview/>
 
 <InfoBlock>
 <DocsList title="What you will learn:">
@@ -27214,6 +27255,7 @@ updatedOn: '2024-12-03T15:29:17.189Z'
 Neon offers the following deployment options on Azure:
 
 - **Option 1: Deploy Neon as an Azure Native ISV Service** — use Neon as a native Azure service, integrated with the [Azure portal](https://portal.azure.com/#home), [CLI](https://learn.microsoft.com/en-us/cli/azure/neon?view=azure-cli-latest), and [SDKs](https://learn.microsoft.com/en-us/dotnet/api/overview/azure/neonpostgres?view=azure-dotnet-preview). This option enables you to manage Neon as part of your Azure infrastructure with unified billing in Azure.
+  <PublicPreview/>
 - **Option 2: Create Neon projects in Azure regions (no integration)** — create a Neon project in an Azure region without using the native Azure integration. Project creation and billing is managed through Neon. There is no difference from a Neon project created in an AWS region — your Neon project simply resides in an Azure region instead of AWS region.
 
 ## Option 1: Deploy Neon as an Azure Native ISV Service
@@ -28002,7 +28044,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/vercel
   - /docs/integrations/vercel
-updatedOn: '2024-10-25T10:38:21.887Z'
+updatedOn: '2024-12-17T16:19:51.366Z'
 ---
 
 Next.js by Vercel is an open-source web development framework that enables React-based web applications. This topic describes how to create a Neon project and access it from a Next.js application.
@@ -28046,7 +28088,7 @@ If you do not have one already, create a Neon project. Save your connection deta
 
 ## Store your Neon credentials
 
-Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
+Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard** and add a pooler flag to the connection string. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 ```shell shouldWrap
 DATABASE_URL="postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
@@ -28708,7 +28750,7 @@ title: Connect Nuxt to Postgres on Neon
 subtitle: Learn how to make server-side queries to Postgres using Nitro API routes
 enableTableOfContents: true
 tag: new
-updatedOn: '2024-11-09T10:04:27.008Z'
+updatedOn: '2025-01-08T13:28:42.040Z'
 ---
 
 [Nuxt](https://nuxt.com/) is an open-source full-stack meta framework that enables Vue-based web applications. This topic describes how to connect a Nuxt application to a Postgres database on Neon.
@@ -28755,19 +28797,19 @@ If you do not have one already, create a Neon project. Save your connection deta
 Add a `.env` file to your project directory and add your Neon connection string to it. You can find the connection string for your database in the **Connection Details** widget on the Neon **Dashboard**. For more information, see [Connect from any application](/docs/connect/connect-from-any-app).
 
 ```shell shouldWrap
-DATABASE_URL="postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
+NUXT_DATABASE_URL="postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
 ```
 
 ## Configure the Postgres client
 
-First, make sure you load the `DATABASE_URL` from your .env file in Nuxt’s runtime configuration:
+First, make sure you load the `NUXT_DATABASE_URL` from your .env file in Nuxt’s runtime configuration:
 
 In `nuxt.config.js`:
 
 ```javascript
 export default defineNuxtConfig({
   runtimeConfig: {
-    databaseUrl: process.env.DATABASE_URL,
+    databaseUrl: ‘’,
   },
 });
 ```
@@ -31529,6 +31571,141 @@ For schema migration with SQLAlchemy, see our guide:
 <NeedHelp/>
 
 
+# Neon Identity
+
+---
+title: About Neon Identity
+subtitle: Automatically sync user profiles from your auth provider directly to your
+  database
+enableTableOfContents: true
+tag: beta
+updatedOn: '2024-12-31T18:05:26.275Z'
+---
+
+<ComingSoon />
+
+**Neon Identity** connects your authentication provider to your Neon database, automatically synchronizing user profiles so that you own your auth data. Access your user data directly in your database environment, with no custom integration code needed.
+
+## Authentication and synchronization
+
+When implementing user authentication, it is common to use managed authentication providers like Stack Auth, Clerk, and others to handle the complexities of user identity, passwords, and security. However, keeping your database in sync with these providers typically requires additional development work.
+
+Neon Identity solves this by integrating your auth provider with your Postgres database, ensuring your application always has access to up-to-date user information right from your database.
+
+## Key benefits
+
+- Provision auth provider projects and manage your users directly from the Neon Console
+- Automated synchronization of user profiles between auth provider and your database
+- Easy database relationships, since your user profiles are available as any other table
+
+## How Neon Identity works
+
+When you set up Neon Identity, we create a `neon_identity` schema in your database. As users authenticate and manage their profiles in your auth provider, their data is automatically synchronized to your database.
+
+Here is the basic flow:
+
+1. **User profiles are created and managed in your authentication provider**
+
+   This view shows the list of users inside your auth provider (e.g. Stack Auth). When new users sign up or update their profiles in your app, their data first appears here:
+   ![Users in Auth Provider](/docs/guides/stackauth_users.png)
+
+2. **Neon Identity syncs their data to your database**
+
+   This view shows the synced user profiles in Neon Identity. This is where Neon manages the connection between your database and the authentication provider.
+   ![Same users in Neon Identity](/docs/guides/identity_users.png)
+
+3. **The data is immediately available in your database**
+
+   The synchronized data is available in the `neon_identity.users_sync` table shortly after the auth provider processes changes. Here's an example query to inspect the synchronized data:
+
+   ```sql
+   SELECT * FROM neon_identity.users_sync;
+   ```
+
+   | id          | name       | email             | created_at    | raw_json                      |
+   | ----------- | ---------- | ----------------- | ------------- | ----------------------------- |
+   | 21373f88... | Sarah Chen | sarah@acme.dev    | 2024-12-17... | \{"id": "21373f88-...", ...\} |
+   | 0310a9a5... | Alex Kumar | alex@startmeup.co | 2024-12-17... | \{"id": "0310a9a5-...", ...\} |
+
+### Table structure
+
+The following columns are included in the `neon_identity.users_sync` table:
+
+- `raw_json`: Complete user profile as JSON
+- `id`: The unique ID of the user
+- `name`: The user's display name (nullable)
+- `email`: The user's primary email (nullable)
+- `created_at`: When the user signed up (nullable)
+- `deleted_at`: When the user was deleted, if applicable (nullable)
+
+Updates to user profiles in the auth provider are automatically synchronized.
+
+## Before and after Neon Identity
+
+Let's take a look at how Neon Identiy can help simplify the code in a typical todos application:
+
+### Before Neon Identity
+
+Without Neon Identity, keeping user data in sync often involves:
+
+1. Using additional services (like Inngest) for background jobs
+2. Writing and maintaining sync logic
+
+Here's how you'd typically sync user data without Neon Identity:
+
+```typescript
+import { AuthProvider } from '@auth/sdk';
+import { BackgroundJobs } from '@jobs/sdk';
+import { db } from '@/db';
+
+// Set up sync handling
+const jobs = new BackgroundJobs();
+
+jobs.on('user.updated', async (event) => {
+  const { userId } = event;
+
+  // Fetch user data from auth provider
+  const auth = new AuthProvider();
+  const user = await auth.getUser(userId);
+
+  // Update database
+  await db.query(
+    `
+    INSERT INTO users (id, email, name)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (id) DO UPDATE 
+    SET email = $2, name = $3
+  `,
+    [user.id, user.email, user.name]
+  );
+});
+```
+
+### After Neon Identity
+
+With Neon Identity, much of this complexity is eliminated. Since user data is automatically synced to `neon_identity.users_sync`, you can just create the todo:
+
+```typescript
+async function createTodo(userId: string, task: string) {
+  return db.query(
+    `INSERT INTO todos (task, user_id) 
+     VALUES ($1, $2)`,
+    [task, userId]
+  );
+}
+```
+
+## Getting Started
+
+1. From the Neon Console, navigate to the **Identity** tab. Choose your provider and click **Connect**. Currently, only Stack Auth is available for Early Access users.
+1. You'll be asked to authenticate and select the project you want to integrate with.
+1. Once connected, you'll see the integration view. This shows your synced users, connection status, and quick links to your provider's documentation and console to help configure your application (e.g. SSO or API keys)
+
+Here's an example of Neon Identity with Stack Auth. As we add more providers and features, this interface will continue to evolve.
+
+![identity with stackauth deployed](/docs/guides/identity_stackauth.png)
+
+
 # Neon Authorize
 
 ---
@@ -31536,7 +31713,7 @@ title: About Neon Authorize
 subtitle: Secure your application at the database level using Postgres's Row-Level
   Security
 enableTableOfContents: true
-updatedOn: '2024-12-11T13:08:18.288Z'
+updatedOn: '2025-01-10T00:37:35.164Z'
 ---
 
 <InfoBlock>
@@ -31548,7 +31725,7 @@ updatedOn: '2024-12-11T13:08:18.288Z'
 
 <DocsList title="Related docs" theme="docs">
   <a href="/docs/guides/neon-authorize-tutorial">Neon Authorize Tutorial</a>
-  <a href="/docs/postgresql/postgresql-row-level-security">Postgres Row-Level Security tutorial</a>
+  <a href="/postgresql/postgresql-administration/postgresql-row-level-security">Postgres Row-Level Security tutorial</a>
   <a href="/docs/guides/neon-authorize-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 
@@ -31580,13 +31757,13 @@ Behind the scenes, the [Neon Proxy](#the-role-of-the-neon-proxy) performs the va
 
 ## Database roles
 
-Neon Authorize works with two primary database roles:
+Neon Authorize works with two database roles, identified by connection string prefixes:
 
-- **Authenticated role**: This role is intended for users who are logged in. Your application should send the authorization token when connecting using this role.
-- **Anonymous role**: This role is intended for users who are not logged in. It should allow limited access, such as reading public content (e.g., blog posts) without authentication.
+- **Authenticated role** (`authenticated@`): For users who are logged in. Requires a valid JWT token from your authentication provider.
+- **Anonymous role** (`anonymous@`): Currently requires authentication similar to the authenticated role. This implementation is under review and may change in the future to better support unauthenticated access.
 
 <Admonition type="note">
-Some authentication providers, like Firebase, support "anonymous authentication" where a unique user ID is automatically generated for visitors who haven't explicitly logged in. This is useful for features like shopping carts, where you want to track a user's actions before they create an account. These anonymous users will still have a valid JWT and can use the anonymous role, making it possible to track their actions while maintaining security.
+For now, if you need to implement public access in your application, we recommend creating a separate database role with a password. This provides a simpler alternative to using the anonymous role while we work on improving anonymous access support.
 </Admonition>
 
 ### Using Neon Authorize with custom JWTs
@@ -31657,18 +31834,15 @@ CREATE POLICY "create todos" ON "todos"
 Now, in your backend, you can simplify the logic, removing the user authentication checks and explicit authorization handling.
 
 ```typescript shouldWrap
-export async function insertTodo(newTodo: { newTodo: string }) {
+export async function insertTodo({ newTodo }: { newTodo: string }) {
   const { getToken } = auth();
   const authToken = await getToken();
+  const db = drizzle(process.env.DATABASE_AUTHENTICATED_URL!, { schema });
 
-  await fetchWithDrizzle(async (db) => {
-    return db.insert(schema.todos).values({
-      task: newTodo.newTodo,
-      isComplete: false,
-    });
+  return db.$withAuth(authToken).insert(schema.todos).values({
+    task: newTodo,
+    isComplete: false,
   });
-
-  revalidatePath('/');
 }
 ```
 
@@ -31746,6 +31920,7 @@ Here is a non-exhaustive list of authentication providers. The table shows which
 | **Azure AD**                              | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://login.microsoftonline.com/{tenantId}/discovery/v2.0/keys`</span>                          | [docs](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens)                                               |
 | **Google Identity**                       | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://www.googleapis.com/oauth2/v3/certs`</span>                                                | [docs](https://developers.google.com/identity/openid-connect/openid-connect#discovery)                                        |
 | **Descope Auth**                          | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://api.descope.com/{YOUR_DESCOPE_PROJECT_ID}/.well-known/jwks.json`</span>                   | [docs](https://docs.descope.com/project-settings/jwt-templates)                                                               |
+| **PropelAuth**                            | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://{PROPEL_AUTH_URL}/.well-known/jwks.json`</span>                                           | [docs](https://docs.propelauth.com/guides-and-examples/guides/access-tokens)                                                  |
 
 ### JWT Audience Checks
 
@@ -31766,6 +31941,7 @@ You can use these sample ToDo applications to get started using Neon Authorize w
 <a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-authorize" description="A Todo List built with Stytch, Next.js, and Neon Authorize (SQL from the Backend)" icon="github">Stytch + Neon Authorize</a>
 <a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-authorize" description="A Todo List built with Azure AD B2C, Next.js, and Neon Authorize (SQL from the Backend)" icon="github">Azure AD B2C + Neon Authorize</a>
 <a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-authorize" description="A Todo list built with Descope, Next.js, and Neon Authorize (SQL from the frontend)" icon="github">Descope + Neon Authorize</a>
+<a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-authorize" description="A Todo list built with PropelAuth, Next.js, and Neon Authorize (SQL from Frontend and Backend)" icon="github">PropelAuth + Neon Authorize</a>
 <a href="https://github.com/neondatabase-labs/authorize-demo-custom-jwt" description="A demo of Neon Authorize with custom generated JWTs" icon="github">Neon Authorize with custom JWTs</a>
 </DetailIconCards>
 
@@ -31792,7 +31968,7 @@ title: About Neon Authorize
 subtitle: Secure your application at the database level using Postgres's Row-Level
   Security
 enableTableOfContents: true
-updatedOn: '2024-12-11T13:08:18.288Z'
+updatedOn: '2025-01-10T00:37:35.164Z'
 ---
 
 <InfoBlock>
@@ -31804,7 +31980,7 @@ updatedOn: '2024-12-11T13:08:18.288Z'
 
 <DocsList title="Related docs" theme="docs">
   <a href="/docs/guides/neon-authorize-tutorial">Neon Authorize Tutorial</a>
-  <a href="/docs/postgresql/postgresql-row-level-security">Postgres Row-Level Security tutorial</a>
+  <a href="/postgresql/postgresql-administration/postgresql-row-level-security">Postgres Row-Level Security tutorial</a>
   <a href="/docs/guides/neon-authorize-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 
@@ -31836,13 +32012,13 @@ Behind the scenes, the [Neon Proxy](#the-role-of-the-neon-proxy) performs the va
 
 ## Database roles
 
-Neon Authorize works with two primary database roles:
+Neon Authorize works with two database roles, identified by connection string prefixes:
 
-- **Authenticated role**: This role is intended for users who are logged in. Your application should send the authorization token when connecting using this role.
-- **Anonymous role**: This role is intended for users who are not logged in. It should allow limited access, such as reading public content (e.g., blog posts) without authentication.
+- **Authenticated role** (`authenticated@`): For users who are logged in. Requires a valid JWT token from your authentication provider.
+- **Anonymous role** (`anonymous@`): Currently requires authentication similar to the authenticated role. This implementation is under review and may change in the future to better support unauthenticated access.
 
 <Admonition type="note">
-Some authentication providers, like Firebase, support "anonymous authentication" where a unique user ID is automatically generated for visitors who haven't explicitly logged in. This is useful for features like shopping carts, where you want to track a user's actions before they create an account. These anonymous users will still have a valid JWT and can use the anonymous role, making it possible to track their actions while maintaining security.
+For now, if you need to implement public access in your application, we recommend creating a separate database role with a password. This provides a simpler alternative to using the anonymous role while we work on improving anonymous access support.
 </Admonition>
 
 ### Using Neon Authorize with custom JWTs
@@ -31913,18 +32089,15 @@ CREATE POLICY "create todos" ON "todos"
 Now, in your backend, you can simplify the logic, removing the user authentication checks and explicit authorization handling.
 
 ```typescript shouldWrap
-export async function insertTodo(newTodo: { newTodo: string }) {
+export async function insertTodo({ newTodo }: { newTodo: string }) {
   const { getToken } = auth();
   const authToken = await getToken();
+  const db = drizzle(process.env.DATABASE_AUTHENTICATED_URL!, { schema });
 
-  await fetchWithDrizzle(async (db) => {
-    return db.insert(schema.todos).values({
-      task: newTodo.newTodo,
-      isComplete: false,
-    });
+  return db.$withAuth(authToken).insert(schema.todos).values({
+    task: newTodo,
+    isComplete: false,
   });
-
-  revalidatePath('/');
 }
 ```
 
@@ -32002,6 +32175,7 @@ Here is a non-exhaustive list of authentication providers. The table shows which
 | **Azure AD**                              | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://login.microsoftonline.com/{tenantId}/discovery/v2.0/keys`</span>                          | [docs](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens)                                               |
 | **Google Identity**                       | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://www.googleapis.com/oauth2/v3/certs`</span>                                                | [docs](https://developers.google.com/identity/openid-connect/openid-connect#discovery)                                        |
 | **Descope Auth**                          | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://api.descope.com/{YOUR_DESCOPE_PROJECT_ID}/.well-known/jwks.json`</span>                   | [docs](https://docs.descope.com/project-settings/jwt-templates)                                                               |
+| **PropelAuth**                            | ✅         | <span style={{ whiteSpace: "normal", wordBreak: "break-word" }}>`https://{PROPEL_AUTH_URL}/.well-known/jwks.json`</span>                                           | [docs](https://docs.propelauth.com/guides-and-examples/guides/access-tokens)                                                  |
 
 ### JWT Audience Checks
 
@@ -32022,6 +32196,7 @@ You can use these sample ToDo applications to get started using Neon Authorize w
 <a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-authorize" description="A Todo List built with Stytch, Next.js, and Neon Authorize (SQL from the Backend)" icon="github">Stytch + Neon Authorize</a>
 <a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-authorize" description="A Todo List built with Azure AD B2C, Next.js, and Neon Authorize (SQL from the Backend)" icon="github">Azure AD B2C + Neon Authorize</a>
 <a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-authorize" description="A Todo list built with Descope, Next.js, and Neon Authorize (SQL from the frontend)" icon="github">Descope + Neon Authorize</a>
+<a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-authorize" description="A Todo list built with PropelAuth, Next.js, and Neon Authorize (SQL from Frontend and Backend)" icon="github">PropelAuth + Neon Authorize</a>
 <a href="https://github.com/neondatabase-labs/authorize-demo-custom-jwt" description="A demo of Neon Authorize with custom generated JWTs" icon="github">Neon Authorize with custom JWTs</a>
 </DetailIconCards>
 
@@ -32045,7 +32220,7 @@ These limitations will evolve as we continue developing the feature. If you have
 title: Neon Authorize tutorial
 subtitle: Learn how Row-level Security (RLS) protects user data
 enableTableOfContents: true
-updatedOn: '2024-11-05T18:30:25.431Z'
+updatedOn: '2024-12-18T08:02:08.142Z'
 ---
 
 <InfoBlock>
@@ -32131,15 +32306,18 @@ Let's take a look at the `getTodos` function in the `actions.tsx` file:
 
 ```typescript shouldWrap
 export async function getTodos(): Promise<Array<Todo>> {
-  return fetchWithDrizzle(async (db, { userId }) => {
-    // WHERE filter is optional because of RLS. But we send it anyway for
-    // performance reasons.
-    return db
-      .select()
-      .from(schema.todos)
-      .where(eq(schema.todos.userId, sql`auth.user_id()`)) // [!code highlight]
-      .orderBy(asc(schema.todos.insertedAt));
-  });
+  const { getToken } = auth();
+  const authToken = await getToken();
+  const db = drizzle(process.env.DATABASE_AUTHENTICATED_URL!, { schema });
+
+  // WHERE filter is optional because of RLS. But we send it anyway for
+  // performance reasons.
+  return db
+    .$withAuth(authToken)
+    .select()
+    .from(schema.todos)
+    .where(eq(schema.todos.userId, sql`auth.user_id()`))
+    .orderBy(asc(schema.todos.insertedAt));
 }
 ```
 
@@ -32207,15 +32385,18 @@ Another scenario, imagine a team member writes the `getTodos` function like this
 
 ```typescript shouldWrap
 export async function getTodos(): Promise<Array<Todo>> {
-  return fetchWithDrizzle(async (db) => {
-    const todos = await db
-      .select()
-      .from(schema.todos)
-      .where(eq(schema.todos.userId, schema.todos.userId)) // Woops // [!code highlight]
-      .orderBy(asc(schema.todos.insertedAt));
+  const { getToken } = auth();
+  const authToken = await getToken();
+  const db = drizzle(process.env.DATABASE_AUTHENTICATED_URL!, { schema });
 
-    return todos;
-  });
+  const todos = await db
+    .$withAuth(authToken)
+    .select()
+    .from(schema.todos)
+    .where(eq(schema.todos.userId, schema.todos.userId)) // Woops // [!code highlight]
+    .orderBy(asc(schema.todos.insertedAt));
+
+  return todos;
 }
 ```
 
@@ -32239,15 +32420,17 @@ Order is restored, thanks to RLS. Now go fix your app before you forget:
 
 ```typescript shouldWrap
 export async function getTodos(): Promise<Array<Todo>> {
-  return fetchWithDrizzle(async (db, { userId }) => {
-    // WHERE filter is optional because of RLS. But we send it anyway for
-    // performance reasons.
-    return db
-      .select()
-      .from(schema.todos)
-      .where(eq(schema.todos.userId, sql`auth.user_id()`))
-      .orderBy(asc(schema.todos.insertedAt));
-  });
+  const { getToken } = auth();
+  const authToken = await getToken();
+  const db = drizzle(process.env.DATABASE_AUTHENTICATED_URL!, { schema });
+  // WHERE filter is optional because of RLS. But we send it anyway for
+  // performance reasons.
+  return db
+    .$withAuth(authToken)
+    .select()
+    .from(schema.todos)
+    .where(eq(schema.todos.userId, sql`auth.user_id()`))
+    .orderBy(asc(schema.todos.insertedAt));
 }
 ```
 
@@ -32336,7 +32519,7 @@ Here is the output, showing columns `policyname, cmd, qual, with_check` only:
 title: Simplify RLS with Drizzle
 subtitle: Use Drizzle crudPolicy to manage Row-Level Security with Neon Authorize
 enableTableOfContents: true
-updatedOn: '2024-12-10T19:01:34.075Z'
+updatedOn: '2025-01-10T00:37:35.164Z'
 ---
 
 <InfoBlock>
@@ -32363,7 +32546,7 @@ To illustrate, let's consider a simple **Todo** list app with RLS policies appli
 - `USING` clause — controls which existing rows can be accessed
 - `WITH CHECK` clause — controls what new or modified data can be written
 
-<Admonition type="note">To get an understanding of `auth.user_id()` and the role it plays in these policies, see this [explanation](https://neon.tech/docs/guides/neon-authorize#how-neon-authorize-gets-authuserid-from-the-jwt).</Admonition>
+<Admonition type="note">To get an understanding of `auth.user_id()` and the role it plays in these policies, see this [explanation](/docs/guides/neon-authorize#how-neon-authorize-gets-authuserid-from-the-jwt).</Admonition>
 
 Here's how these clauses apply to each operation:
 
@@ -36176,6 +36359,350 @@ GOOGLE_CLIENT_SECRET='<YOUR_GOOGLE_CLIENT_SECRET>'
 </Tabs>
 
 
+# PropelAuth
+
+---
+title: Secure your data with PropelAuth and Neon Authorize
+subtitle: Implement Row-level Security policies in Postgres using PropelAuth and Neon
+  Authorize
+enableTableOfContents: true
+updatedOn: '2024-12-30T20:44:31.647Z'
+---
+
+<InfoBlock>
+<DocsList title="Sample project" theme="repo">
+  <a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-authorize">PropelAuth + Neon Authorize</a>
+</DocsList>
+
+<DocsList title="Related docs" theme="docs">
+  <a href="/docs/guides/neon-authorize-tutorial">Neon Authorize Tutorial</a>
+  <a href="/docs/guides/neon-authorize-drizzle">Simplify RLS with Drizzle</a>
+</DocsList>
+</InfoBlock>
+
+Use PropelAuth with Neon Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using PropelAuth for user authentication. It shows you how to integrate PropelAuth with Neon Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+
+## How it works
+
+PropelAuth handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon Authorize. Neon Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+
+## Prerequisites
+
+To follow along with this guide, you will need:
+
+- A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
+- A [PropelAuth](https://www.propelauth.com/) project with an existing application (e.g., a **todos** app) that uses PropelAuth for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/propelauth-nextjs-neon-authorize) for similar schema and policies in action.
+
+## Integrate PropelAuth with Neon Authorize
+
+In this first set of steps, we’ll integrate PropelAuth as an authorization provider in Neon. When these steps are complete, PropelAuth will start passing JWTs to your Neon database, which you can then use to create policies.
+
+### 1. Get your PropelAuth JWKS URL
+
+When integrating PropelAuth with Neon, you'll need to provide the JWKS (JSON Web Key Set) URL. This allows your database to validate the JWT tokens and extract the user_id for use in RLS policies.
+
+The PropelAuth JWKS URL follows this format:
+
+```
+https://{YOUR_PROPEL_AUTH_URL}/.well-known/jwks.json
+```
+
+You can locate your PropelAuth Auth URL by navigating to the **Backend Integration** section in your PropelAuth project settings
+
+![PropelAuth Auth URL](/docs/guides/propelauth_backend_integration_page.png)
+
+Replace `{YOUR_PROPEL_AUTH_URL}` with your PropelAuth URL. For example, if your PropelAuth URL is `https://3211758.propelauthtest.com`, your JWKS URL would be:
+
+```
+https://3211758.propelauthtest.com/.well-known/jwks.json
+```
+
+### 2. Add PropelAuth as an authorization provider in the Neon Console
+
+Once you have the JWKS URL, go to the **Neon Console** and add PropelAuth as an authentication provider under the **Authorize** page. Paste your copied URL into the **Json Web Key Set (JWKS) URL** field.
+
+<div style={{ display: 'flex', justifyContent: 'center'}}>
+  <img src="/docs/guides/propelauth_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
+</div>
+
+At this point, you can use the **Get Started** setup steps from the Authorize page in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+
+### 3. Install the pg_session_jwt extension in your database
+
+Neon Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+
+To install the extension in the `neondb` database, run:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_session_jwt;
+```
+
+### 4. Set up Postgres roles
+
+The integration creates the `authenticated` and `anonymous` roles for you. Let's define table-level permissions for these roles. To allow both roles to read and write to tables in your public schema, run:
+
+```sql shouldWrap
+-- For existing tables
+GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES
+  IN SCHEMA public
+  to authenticated;
+
+GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES
+  IN SCHEMA public
+  to anonymous;
+
+-- For future tables
+ALTER DEFAULT PRIVILEGES
+  IN SCHEMA public
+  GRANT SELECT, UPDATE, INSERT, DELETE ON TABLES
+  TO authenticated;
+
+ALTER DEFAULT PRIVILEGES
+  IN SCHEMA public
+  GRANT SELECT, UPDATE, INSERT, DELETE ON TABLES
+  TO anonymous;
+
+-- Grant USAGE on "public" schema
+GRANT USAGE ON SCHEMA public TO authenticated;
+GRANT USAGE ON SCHEMA public TO anonymous;
+```
+
+- **Authenticated role**: This role is intended for users who are logged in. Your application should send the authorization token when connecting using this role.
+- **Anonymous role**: This role is intended for users who are not logged in. It should allow limited access, such as reading public content (e.g., blog posts) without authentication.
+
+### 5. Install the Neon Serverless Driver
+
+Neon’s Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon Authorize.
+
+Install it using the following command:
+
+```bash
+npm install @neondatabase/serverless
+```
+
+To learn more about the driver, see [Neon Serverless Driver](/docs/serverless/serverless-driver).
+
+### 6. Set up environment variables
+
+Here is an example of setting up administrative and authenticated database connections in your `.env` file. Copy the connection strings for both the `neondb_owner` and `authenticated` roles. You can find them from **Connection Details** in the Neon Console, or using the Neon CLI:
+
+```bash
+neonctl connection-string --role-name neondb_owner
+neonctl connection-string --role-name authenticated
+```
+
+Add these to your `.env` file.
+
+```bash shouldWrap
+# Database owner connection string
+DATABASE_URL='<DB_OWNER_CONNECTION_STRING>'
+
+# Neon "authenticated" role connection string
+DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
+```
+
+The `DATABASE_URL` is intended for admin tasks and can run any query while the `DATABASE_AUTHENTICATED_URL` should be used for connections from authorized users, where you pass the required authorization token. You can see an example in [Run your first authorized query](#2-run-your-first-authorized-query) below.
+
+## Add RLS policies
+
+Now that you’ve integrated PropelAuth with Neon Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+
+### 1. Add Row-Level Security policies
+
+Here are examples of implementing RLS policies for a **todos** table – the Drizzle example leverages the simplified `crudPolicy` function, while the SQL example demonstrates the use of individual RLS policies.
+
+<Tabs labels={["Drizzle","SQL"]}>
+
+<TabItem>
+
+```typescript shouldWrap
+import { InferSelectModel, sql } from 'drizzle-orm';
+import { bigint, boolean, pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+import { authenticatedRole, authUid, crudPolicy } from 'drizzle-orm/neon';
+
+// schema for TODOs table
+export const todos = pgTable(
+  'todos',
+  {
+    id: bigint('id', { mode: 'bigint' }).primaryKey().generatedByDefaultAsIdentity(),
+    userId: text('user_id')
+      .notNull()
+      .default(sql`(auth.user_id())`),
+    task: text('task').notNull(),
+    isComplete: boolean('is_complete').notNull().default(false),
+    insertedAt: timestamp('inserted_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  // Create RLS policy for the table
+  (table) => [
+    crudPolicy({
+      role: authenticatedRole,
+      read: authUid(table.userId),
+      modify: authUid(table.userId),
+    }),
+  ]
+);
+
+export type Todo = InferSelectModel<typeof todos>;
+```
+
+</TabItem>
+
+<TabItem>
+
+```sql shouldWrap
+-- schema for TODOs table
+CREATE TABLE todos (
+  id bigint generated by default as identity primary key,
+  user_id text not null default (auth.user_id()),
+  task text check (char_length(task) > 0),
+  is_complete boolean default false,
+  inserted_at timestamptz not null default now()
+);
+
+-- 1st enable row level security for your table
+ALTER TABLE todos ENABLE ROW LEVEL SECURITY;
+
+-- 2nd create policies for your table
+CREATE POLICY "Individuals can create todos." ON todos FOR INSERT
+TO authenticated
+WITH CHECK ((select auth.user_id()) = user_id);
+
+CREATE POLICY "Individuals can view their own todos." ON todos FOR SELECT
+TO authenticated
+USING ((select auth.user_id()) = user_id);
+
+CREATE POLICY "Individuals can update their own todos." ON todos FOR UPDATE
+TO authenticated
+USING ((select auth.user_id()) = user_id)
+WITH CHECK ((select auth.user_id()) = user_id);
+
+CREATE POLICY "Individuals can delete their own todos." ON todos FOR DELETE
+TO authenticated
+USING ((select auth.user_id()) = user_id);
+```
+
+</TabItem>
+</Tabs>
+
+The `crudPolicy` function simplifies policy creation by generating all necessary CRUD policies with a single declaration.
+
+### 2. Run your first authorized query
+
+With RLS policies in place, you can now query the database using JWTs from PropelAuth, restricting access based on the user's identity. Here are examples of how you could run authenticated queries from both the backend and the frontend of our sample **todos** application. Highlighted lines in the code samples emphasize key actions related to authentication and querying.
+
+<Tabs labels={["server-component.tsx","client-component.tsx",".env"]}>
+
+<TabItem>
+
+```typescript shouldWrap
+'use server';
+
+import { neon } from '@neondatabase/serverless';
+import { getUser, getAccessTokenAsync } from "@propelauth/nextjs/server/app-router";
+
+export default async function TodoList() {
+    const user = await getUser();
+    if (!user) {
+        throw new Error('No user');
+    }
+
+    const jwt = await getAccessTokenAsync(); // [!code highlight]
+
+    const sql = neon(process.env.DATABASE_AUTHENTICATED_URL!, {
+        authToken: async () => {
+            if (!jwt) {
+                throw new Error('No JWT token available');
+            }
+            return jwt; // [!code highlight]
+        },
+    });
+
+    // WHERE filter is optional because of RLS.
+    // But we send it anyway for performance reasons.
+    const todos = await
+        sql('SELECT * FROM todos WHERE user_id = auth.user_id()'); // [!code highlight]
+
+    return (
+        <ul>
+            {todos.map((todo) => (
+                <li key={todo.id}>{todo.task}</li>
+            ))}
+        </ul>
+    );
+}
+```
+
+</TabItem>
+
+<TabItem>
+
+```typescript shouldWrap
+'use client';
+
+import type { Todo } from '@/app/schema';
+import { neon } from '@neondatabase/serverless';
+import { useUser } from "@propelauth/nextjs/client";
+import { useEffect, useState } from 'react';
+
+const getDb = (token: string) =>
+    neon(process.env.NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL!, {
+        authToken: token, // [!code highlight]
+    });
+
+export default function TodoList() {
+    const { accessToken } = useUser();  // [!code highlight]
+    const [todos, setTodos] = useState<Array<Todo>>();
+
+    useEffect(() => {
+        async function loadTodos() {
+            if (!accessToken) {
+                return;
+            }
+
+            const sql = getDb(accessToken);
+
+            // WHERE filter is optional because of RLS.
+            // But we send it anyway for performance reasons.
+            const todosResponse = await
+                sql('select * from todos where user_id = auth.user_id()'); // [!code highlight]
+
+            setTodos(todosResponse as Array<Todo>);
+        }
+
+        loadTodos();
+    }, [accessToken]);
+
+    return (
+        <ul>
+            {todos?.map((todo) => (
+                <li key={todo.id}>
+                    {todo.task}
+                </li>
+            ))}
+        </ul>
+    );
+}
+```
+
+</TabItem>
+
+<TabItem>
+
+```bash shouldWrap
+# Used for database migrations
+DATABASE_URL='<DB_OWNER_CONNECTION_STRING>'
+
+# Used for server-side fetching
+DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
+
+# Used for client-side fetching
+NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
+```
+
+</TabItem>
+</Tabs>
+
+
 # Integrations
 
 ---
@@ -36185,7 +36712,7 @@ subtitle: Find detailed instructions for integration across various platforms an
 enableTableOfContents: true
 redirectFrom:
   - /docs/integrations/integrations-list/
-updatedOn: '2024-12-03T14:38:16.502Z'
+updatedOn: '2024-12-26T17:57:49.401Z'
 ---
 
 ## Monitor
@@ -36303,6 +36830,8 @@ updatedOn: '2024-12-03T14:38:16.502Z'
 <a href="/docs/guides/sequin" title="Sequin" description="Stream changes and rows from your database to anywhere with Sequin" icon="sequin"></a>
 
 <a href="/docs/guides/logical-replication-airbyte-snowflake" title="Snowflake" description="Replicate data from Neon to Snowflake with Airbyte" icon="snowflake"></a>
+
+<a href="/docs/guides/logical-replication-inngest" title="Inngest" description="Replicate data from Neon to Inngest" icon="inngest"></a>
 
 </TechnologyNavigation>
 
@@ -37096,7 +37625,7 @@ redirectFrom:
   - /docs/guides/vercel-postgres
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-11-25T13:41:05.634Z'
+updatedOn: '2025-01-07T21:29:43.643Z'
 ---
 
 Neon supports different options for integrating Neon and Vercel, including a native integration that you can install from the Vercel Marketplace, a "previews integration" that creates a database branch with every pull request, and a manual setup option. If you're currently a Vercel Postgres user, you'll also find information below about the upcoming transition from Vercel Postgres to Neon.
@@ -37152,8 +37681,6 @@ If you're transitioning from Vercel Postgres to Neon, welcome! We're glad you're
 <DetailIconCards>
 
 <a href="/docs/guides/vercel-postgres-transition-guide" description="Everything you need to know about transitioning from Vercel Postgres to Neon" icon="vercel">Vercel Postgres Transition Guide</a>
-
-<a href="https://neon.tech/guides/vercel-sdk-migration" description="Learn how to migrate from the Vercel SDK to the Neon serverless driver" icon="vercel">Migrating from the Vercel SDK</a>
 
 </DetailIconCards>
 
@@ -37167,7 +37694,7 @@ redirectFrom:
   - /docs/guides/vercel-postgres
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-11-25T13:41:05.634Z'
+updatedOn: '2025-01-07T21:29:43.643Z'
 ---
 
 Neon supports different options for integrating Neon and Vercel, including a native integration that you can install from the Vercel Marketplace, a "previews integration" that creates a database branch with every pull request, and a manual setup option. If you're currently a Vercel Postgres user, you'll also find information below about the upcoming transition from Vercel Postgres to Neon.
@@ -37223,8 +37750,6 @@ If you're transitioning from Vercel Postgres to Neon, welcome! We're glad you're
 <DetailIconCards>
 
 <a href="/docs/guides/vercel-postgres-transition-guide" description="Everything you need to know about transitioning from Vercel Postgres to Neon" icon="vercel">Vercel Postgres Transition Guide</a>
-
-<a href="https://neon.tech/guides/vercel-sdk-migration" description="Learn how to migrate from the Vercel SDK to the Neon serverless driver" icon="vercel">Migrating from the Vercel SDK</a>
 
 </DetailIconCards>
 
@@ -37909,14 +38434,14 @@ title: Vercel Postgres Transition Guide
 subtitle: Everything you need to know about transitioning from Vercel Postgres to Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2024-12-01T21:48:07.693Z'
+updatedOn: '2025-01-10T19:39:03.481Z'
 ---
 
 <Admonition type="warning">
-The Vercel Postgres to Neon transition has not started yet. Please be advised that until the transition starts, the content in this guide  is subject to change.
+Please be advised that the content in this guide is subject to change over the course of the transition.
 </Admonition>
 
-In Q4, 2024, Vercel is transitioning its Vercel Postgres stores to a [Vercel Native Integration for Neon Postgres](/docs/guides/vercel-native-integration).
+In Q4 2024 and Q1 2025, Vercel is transitioning its Vercel Postgres stores to a [Vercel Native Integration for Neon Postgres](/docs/guides/vercel-native-integration).
 
 In case you missed the announcements, you can read them here:
 
@@ -37931,13 +38456,13 @@ We know moving to a new platform may bring up questions, so we’ve prepared thi
 
 ### Why is this transition happening?
 
-Last year, Vercel introduced Vercel Postgres (powered by Neon) as part of their platform. Now, in order to provide a wider variety of solutions and integrations for its customers, Vercel is shifting to a different model. Instead of a Vercel-managed solution, Vercel is launching the [Vercel Marketplace](https://vercel.com/marketplace), where you can easily integrate first-party storage services, such as Neon Postgres, into your Vercel projects.
+Vercel previously introduced **Vercel Postgres** (powered by Neon) as part of their platform. Now, in order to provide a wider variety of solutions and integrations for its customers, Vercel is shifting to a different model. Instead of a Vercel-managed solution, Vercel is launching the [Vercel Marketplace](https://vercel.com/marketplace), where you can easily integrate first-party storage services, such as Neon Postgres, into your Vercel projects.
 
 By transitioning to the Vercel Native Integration for Neon Postgres, you will gain access to Neon's full feature set and usage plans, providing you with a more comprehensive database service. Vercel's new marketplace model makes this possible.
 
 ### When will the transition happen?
 
-The transition will begin in Q4, 2024. It will be a phased migration, with Vercel Postgres stores automatically migrated over to the [Vercel Native Integration for Neon Postgres](/docs/guides/vercel-native-integration) without any downtime. Stay tuned for updates from Vercel about when this will happen for your account.
+The transition will start in Q4 2024 and continue into Q1 2025. It will be a phased migration, with Vercel Postgres stores automatically migrated over to the [Vercel Native Integration for Neon Postgres](/docs/guides/vercel-native-integration) without any downtime. Stay tuned for updates from Vercel about when this will happen for your account.
 
 Until then, you can continue using Vercel Postgres as usual.
 
@@ -37950,7 +38475,7 @@ No, the transition to Neon will be fully managed by Vercel. There is nothing you
 After the migration, you will be able to access and manage your existing Databases from the **Storage** tab in the Vercel Dashboard and the Neon Console without requiring new login credentials. The **Storage** tab will include an Open in Neon button, which will open the corresponding **Project** in Neon.
 
 <Admonition type="note" title="A Database in Vercel is a Project in Neon">
-Please note that when coming to Neon from Vercel, there will be a small difference in terminology to get used to: **A "Database" in Vercel is a "Project" in Neon**.
+Please note that when coming to Neon from Vercel, there will be a small difference in terminology: **A "Database" in Vercel is a "Project" in Neon**.
 </Admonition>
 
 ### Can I still create new Databases during the transition?
@@ -37981,12 +38506,12 @@ Vercel Postgres was available with Vercel's Hobby and Pro plans. Let's take a lo
 
 The Vercel Hobby plan is free and aimed at developers with personal projects, and small-scale applications. In Neon, the equivalent plan is our [Free Plan](/docs/introduction/plans#free-plan). Here are some of the differences to be aware of:
 
-| Resource      | Vercel Hobby (Included) | Neon Free Plan (Included) |
-| :------------ | :---------------------- | :------------------------ |
-| Compute Time  | 60 Hours                | 191.9 Hours               |
-| Data Transfer | N/A                     | Up to 5 GBs per month     |
-| Database      | First Database          | 10                        |
-| Storage       | First 256 MB Included   | Up to 512 MB              |
+| **Resource**      | **Vercel Hobby (Included)** | **Neon Free Plan (Included)** |
+| :---------------- | :-------------------------- | :---------------------------- |
+| **Compute hours** | 60                          | 191.9                         |
+| **Data transfer** | N/A                         | Up to 5 GBs per month         |
+| **Database**      | First Database              | 10                            |
+| **Storage**       | First 256 MB Included       | Up to 512 MB                  |
 
 Additional use (called "Extra usage" in Neon) for a fee is not available on the Vercel Hobby Plan or the Neon Free Plan.
 
@@ -37994,23 +38519,25 @@ Additional use (called "Extra usage" in Neon) for a fee is not available on the 
 
 The Vercel Pro plan is is tailored for professional developers, freelancers, and small businesses. In Neon, the equivalent plan is our [Launch Plan](/docs/introduction/plans#launch-plan) at $19 per month. The following table provides a comparison of what's included:
 
-| Resource      | Vercel Pro (Included) | Neon Launch Plan (Included)      |
-| :------------ | :-------------------- | :------------------------------- |
-| Compute Time  | 100 Hours             | 300 Hours                        |
-| Data Transfer | 256 MB                | Reasonable usage (no hard limit) |
-| Database      | First Database        | 1000                             |
-| Storage       | First 256 MB          | Up to 10 GB                      |
+| **Resource**        | **Vercel Pro (Included)** | **Neon Launch Plan (Included)**  |
+| :------------------ | :------------------------ | :------------------------------- |
+| **Compute hours**   | 100                       | 300                              |
+| **Data transfer**   | 256 MB                    | Reasonable usage (no hard limit) |
+| **Databases**       | First database            | 100                              |
+| **Branches**        | -                         | 500                              |
+| **Storage**         | First 256 MB              | Up to 10 GB                      |
+| **Archive storage** | -                         | Up to 50 GB                      |
 
 Both the Vercel Pro and Neon Launch plans offer additional use (called "Extra usage" in Neon) for a fee, as outlined below. In Neon, additional units of compute and storage cost more, but you get more compute and storage with your plan's monthly fee, and Neon does not charge for data transfer, additional databases, or written data.
 
-| Resource      | Vercel Pro (Additional) | Neon Launch Plan (Extra usage)                |
-| :------------ | :---------------------- | :-------------------------------------------- |
-| Compute Time  | $0.10 per compute hour  | $0.16 per compute hour                        |
-| Data Transfer | $0.10 - 1 GB            | No additional cost                            |
-| Database      | $1.00 - Per 1 Database  | No additional cost for the first 100          |
-| Storage       | $0.12 - 1 GB            | First 10 GB included; afterwards $1.75 per-GB |
+| **Resource**      | **Vercel Pro (Additional)** | **Neon Launch Plan (Extra usage)**            |
+| :---------------- | :-------------------------- | :-------------------------------------------- |
+| **Compute hours** | $0.10 per compute hour      | $0.16 per compute hour                        |
+| **Data transfer** | $0.10 - 1 GB                | No additional cost                            |
+| **Database**      | $1.00 - Per 1 Database      | No additional cost for the first 100          |
+| **Storage**       | $0.12 - 1 GB                | First 10 GB included; afterwards $1.75 per-GB |
 
-Neon also offers [Scale](/docs/introduction/plans#scale-plan) and [Business](/docs/introduction/plans#business-plan) plans, which include more storage, compute hours, projects, and features. Be sure to look at these plans if the Launch plan does not meet your requirements.
+Neon also offers [Scale](/docs/introduction/plans#scale-plan) and [Business](/docs/introduction/plans#business-plan) plans, which include more storage, compute hours, projects, and features. Be sure to take a look at these plans if the Launch plan does not meet your requirements.
 
 ### What about Enterprise customers?
 
@@ -38044,9 +38571,9 @@ Once the transition to Neon Postgres is complete, you will gain access to a vari
 The transition to Neon also unblocks several limitations:
 
 - **CLI support**. The [Vercel CLI](https://vercel.com/docs/cli) did not support Vercel Postgres. With Neon Postgres, you have access to a fully featured [Neon CLI](/docs/reference/neon-cli).
-- **Terraform support**. The [Vercel Terraform Provider](https://vercel.com/guides/integrating-terraform-with-vercel) did not support Vercel Postgres. With Neon Postgres, you have access to [community-maintained and Neon-sponsored Terraform providers](/docs/reference/terraform).
-- **Larger computes**. On Vercel, databases on Hobby plans are limited to 0.25 logical CPUs. The Neon Free plan supports computes up to 2 vCPUs and [Autoscaling](/docs/introduction/autoscaling).
-- **Postgres roles**. On Vercel, you were limited to a single Postgres database access role. There is no such database access role limit on Neon. You can create additional Postgres roles as required.
+- **Terraform support**. The [Vercel Terraform Provider](https://vercel.com/guides/integrating-terraform-with-vercel) did not support Vercel Postgres. With Neon Postgres, you have access to a [Neon Terraform provider](/docs/reference/terraform).
+- **Larger computes**. On Vercel, databases on Hobby plans are limited to 0.25 logical CPUs. The Neon Free plan supports computes up to 2 vCPUs and [Autoscaling](/docs/introduction/autoscaling). Neon paid plans support much larger compute sizes.
+- **Postgres roles**. On Vercel, you were limited to a single Postgres database access role. There is no such limit on Neon. You can create additional Postgres roles as needed.
 
 ### What Postgres versions are supported?
 
@@ -38058,7 +38585,11 @@ Yes, all regions supported by Vercel Postgres are also supported by Neon Postgre
 
 ### Will the Vercel Postgres SDK continue to work?
 
-Yes, the [Vercel Postgres SDK](https://vercel.com/docs/storage/vercel-postgres/sdk) will continue to work. However, you can expect Vercel to deprecated their SDK at some point after the transition. The good news is that **the Vercel SDK is a wrapper around the the Neon serverless driver**, so it's very compatible. There's no need to switch to the Neon serverless driver right away, but if you would like to get a start on that, please refer to our [Vercel SDK to Neon serverless driver migration guide](https://neon.tech/guides/vercel-sdk-migration) for instructions.
+Yes, the [Vercel Postgres SDK (@vercel/postgres)](https://vercel.com/docs/storage/vercel-postgres/sdk) will continue to work. No immediate action is required. However, `@vercel/postgres` will no longer be actively maintained by Vercel, and it is expected to be deprecated after the transition. The good news is that **the Vercel SDK is a wrapper around the Neon serverless driver**, making it highly compatible with Neon. Here's what you can do:
+
+- For a version of `@vercel/postgres` managed by Neon in maintenance mode (maintained but no new features), you can replace `@vercel/postgres` with Neon's fully compatible version: [@neondatabase/vercel-postgres-compat](https://github.com/neondatabase/vercel-postgres-compat). Neon will maintain this version for the foreseeable future to support users transitioning from Vercel Postgres.
+- If you're building new apps, we recommend using the **Neon serverless driver** ([@neondatabase/serverless](https://github.com/neondatabase/serverless)). This driver is actively maintained and developed by Neon.
+- If you want to migrate an existing app from `@vercel/postgres` to the **Neon serverless driver**, refer to our [Vercel SDK to Neon serverless driver migration guide](https://neon.tech/guides/vercel-sdk-migration) for detailed instructions.
 
 ### Is Neon compatible with the same ORMs as Vercel Postgres?
 
@@ -41903,7 +42434,7 @@ title: Use Neon with Cloudflare Hyperdrive
 subtitle: Connect Cloudflare Hyperdrive to your Neon Postgres database for faster
   queries
 enableTableOfContents: true
-updatedOn: '2024-08-07T21:36:52.648Z'
+updatedOn: '2024-12-16T18:24:29.546Z'
 ---
 
 [Cloudflare Hyperdrive](https://developers.cloudflare.com/hyperdrive/) is a serverless application that proxies queries to your database and accelerates them. It works by maintaining a globally distributed pool of database connections, and routing queries to the closest available connection.
@@ -41936,9 +42467,9 @@ To follow along with this guide, you require:
 
    ```sql
    CREATE TABLE books_to_read (
-       id SERIAL PRIMARY KEY,
-       title TEXT,
-       author TEXT
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    author TEXT
    );
    ```
 
@@ -41958,7 +42489,7 @@ To follow along with this guide, you require:
 Log in to the Neon Console and navigate to the **Connection Details** section to find your database connection string. It should look similar to this:
 
 ```bash
-postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
+postgresql://neondb_owner:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/neondb?sslmode=require
 ```
 
 Keep your connection string handy for later use.
@@ -41983,7 +42514,7 @@ This initiates an interactive CLI prompt to generate a new project. To follow al
 │ type "Hello World" Worker
 │
 ├ Do you want to use TypeScript?
-│ no typescript
+│ Yes typescript
 ```
 
 When asked if you want to deploy your application, select `no`. We'll develop and test the application locally before deploying it to the Cloudflare Workers platform.
@@ -41991,18 +42522,33 @@ When asked if you want to deploy your application, select `no`. We'll develop an
 The `create-cloudflare` CLI also installs the `Wrangler` tool to manage the full workflow of testing and managing your Worker applications. To emulate the Node environment in the Workers runtime, we need to add the following entry to the `wrangler.toml` file.
 
 ```toml
-node_compat=true
+#:schema node_modules/wrangler/config-schema.json
+name = "with-hyperdrive"
+main = "src/index.ts"
+compatibility_date = "2024-12-05"
+compatibility_flags = ["nodejs_compat"]
 ```
 
 ### Implement the Worker script
 
-We'll use the `node-postgres` library to connect to the Postgres database (directly to Neon first, later we will connect to the Hyperdrive service), so you need to install it as a dependency. Navigate to the project directory and run the following command:
+Navigate to the project directory and run the following command:
+
+<CodeTabs reverse={true} labels={["node-postgres", "postgres.js"]}>
 
 ```bash
 npm install pg
+npm install -D @types/pg
 ```
 
+```bash
+npm install postgres
+```
+
+</CodeTabs>
+
 Now, you can update the `src/index.js` file in the project directory with the following code:
+
+<CodeTabs reverse={true} labels={["node-postgres", "postgres.js"]}>
 
 ```javascript
 import pkg from 'pg';
@@ -42013,11 +42559,25 @@ export default {
   async fetch(request, env, ctx) {
     const client = new Client({ connectionString: env.DATABASE_URL });
     await client.connect();
-    const { rows } = await client.query('SELECT * FROM books_to_read;');
+    const { rows } = await client.query('SELECT * FROM books_to_read');
     return new Response(JSON.stringify(rows));
   },
 };
 ```
+
+```javascript
+import postgres from 'postgres';
+
+export default {
+  async fetch(request, env, ctx) {
+    const sql = postgres(env.DATABASE_URL);
+    const rows = await sql`SELECT * FROM books_to_read`;
+    return new Response(JSON.stringify(rows));
+  },
+};
+```
+
+</CodeTabs>
 
 The `fetch` handler defined above gets called when the worker receives an HTTP request. It will query the Neon database to fetch the full list of books in our to-read list.
 
@@ -42067,6 +42627,8 @@ id = $id-from-previous-step
 
 Now, you can update the `src/index.js` file in the project directory to query the Neon database, through the Hyperdrive service.
 
+<CodeTabs reverse={true} labels={["node-postgres", "postgres.js"]}>
+
 ```javascript
 import pkg from 'pg';
 
@@ -42074,14 +42636,27 @@ const { Client } = pkg;
 
 export default {
   async fetch(request, env, ctx) {
-    // We replace the direct database connection with the Hyperdrive service
     const client = new Client({ connectionString: env.HYPERDRIVE.connectionString });
     await client.connect();
-    const { rows } = await client.query('SELECT * FROM books_to_read;');
+    const { rows } = await client.query('SELECT * FROM books_to_read');
     return new Response(JSON.stringify(rows));
   },
 };
 ```
+
+```javascript
+import postgres from 'postgres';
+
+export default {
+  async fetch(request, env, ctx) {
+    const sql = postgres(env.HYPERDRIVE.connectionString);
+    const rows = await sql`SELECT * FROM books_to_read`;
+    return new Response(JSON.stringify(rows));
+  },
+};
+```
+
+</CodeTabs>
 
 ### Deploy the updated Worker
 
@@ -42103,7 +42678,7 @@ To delete your Neon project, follow the steps outlined in the Neon documentation
 
 <DetailIconCards>
 
-<a href="https://github.com/neondatabase/neon-hyperdrive" description="Demonstrates using Cloudflare's Hyperdrive to access your Neon database from Cloudflare Workers" icon="github">Neon + Cloudflare Hyperdrive</a>
+<a href="https://github.com/neondatabase/examples/tree/main/with-hyperdrive" description="Demonstrates using Cloudflare's Hyperdrive to access your Neon database from Cloudflare Workers" icon="github">Neon + Cloudflare Hyperdrive</a>
 
 </DetailIconCards>
 
@@ -44193,276 +44768,6 @@ If you're using Neon's IP Allow feature, available with the Neon [Scale](/docs/i
 
 
 # ClickHouse
-
-# DoubleCloud
-
----
-title: Replicate data to a ClickHouse database on DoubleCloud
-subtitle: Learn how to replicate data from Neon to a ClickHouse database on DoubleCloud
-enableTableOfContents: true
-isDraft: false
-updatedOn: '2024-10-02T13:57:11.420Z'
----
-
-<Admonition type="warning">
-**DoubleCloud is winding down operations**. Please see the [DoubleCloud announcement](https://double.cloud/blog/posts/2024/10/doublecloud-final-update/) for details. DoubleCloud will stop creating new accounts on October 1st, and existing DoubleCloud clients will have an opportunity to transition from DoubleCloud until March 1st, 2025.
-
-Neon will remove DoubleCloud documentation from our site in the near future.
-</Admonition>
-
-Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
-
-ClickHouse is an open-source column-oriented database that allows you to query billions of rows in milliseconds.
-Its architecture is designed to handle analytical queries efficiently, which makes it ideal for data warehousing and analytics applications. Thanks to the columnar storage format, data can be compressed and retrieved more efficiently, allowing some analytical queries to execute 100 times faster compared to traditional databases like Postgres.
-
-[DoubleCloud](https://double.cloud/) is a managed data platform that helps engineering teams build data infrastructure with zero-maintenance open-source technologies.
-
-In this guide, you will learn how to replicate data from a Neon Postgres database to a managed ClickHouse cluster with DoubleCloud Transfer — a real-time data replication tool.
-It natively supports ClickHouse data types, data mutations, automated migrations (adding columns), as well as emulating insertions and deletions.
-With Transfer, you can replicate your data to both managed ClickHouse clusters on DoubleCloud and on-premise ClickHouse instances.
-
-## Prerequisites
-
-- A [DoubleCloud account](https://console.double.cloud/)
-- A [Neon account](https://console.neon.tech/)
-- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
-
-## Enable logical replication in Neon
-
-<Admonition type="important">
-Enabling logical replication modifies the Postgres `wal_level` configuration parameter, changing it from `replica` to `logical` for all databases in your Neon project. Once the `wal_level` setting is changed to `logical`, it cannot be reverted. Enabling logical replication also restarts all computes in your Neon project, meaning active connections will be temporarily dropped before automatically reconnecting.
-</Admonition>
-
-To enable logical replication in Neon:
-
-1. Select your project in the Neon Console.
-2. On the Neon **Dashboard**, select **Settings**.
-3. Select **Logical Replication**.
-4. Click **Enable** to enable logical replication.
-
-You can verify that logical replication is enabled by running the following query from the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor):
-
-```sql
-SHOW wal_level;
- wal_level
------------
- logical
-```
-
-## Create a Postgres role for replication
-
-It is recommended that you create a dedicated Postgres role for replicating data. The role must have the `REPLICATION` privilege. The default Postgres role created with your Neon project and roles created using the Neon CLI, Console, or API are granted membership in the [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role, which has the required `REPLICATION` privilege.
-
-<Tabs labels={["CLI", "Console", "API"]}>
-
-<TabItem>
-
-The following CLI command creates a role. To view the CLI documentation for this command, see [Neon CLI commands — roles](https://api-docs.neon.tech/reference/createprojectbranchrole)
-
-```bash
-neon roles create --name alex
-```
-
-</TabItem>
-
-<TabItem>
-
-To create a role in the Neon Console:
-
-1. Navigate to the [Neon Console](https://console.neon.tech).
-2. Select a project.
-3. Select **Branches**.
-4. Select the branch where you want to create the role.
-5. Select the **Roles & Databases** tab.
-6. Click **Add Role**.
-7. In the role creation dialog, specify a role name.
-8. Click **Create**. The role is created, and you are provided with the password for the role.
-
-</TabItem>
-
-<TabItem>
-
-The following Neon API method creates a role. To view the API documentation for this method, refer to the [Neon API reference](/docs/reference/cli-roles).
-
-```bash
-curl 'https://console.neon.tech/api/v2/projects/hidden-cell-763301/branches/br-blue-tooth-671580/roles' \
-  -H 'Accept: application/json' \
-  -H "Authorization: Bearer $NEON_API_KEY" \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "role": {
-    "name": "replication_user"
-  }
-}' | jq
-```
-
-</TabItem>
-
-</Tabs>
-
-## Grant schema access to your Postgres role
-
-If your replication role does not own the schemas and tables you are replicating from, make sure to grant access. For example, the following commands grant access to all tables in the `public` schema to Postgres role `replication_user`:
-
-```sql
-GRANT USAGE ON SCHEMA public TO replication_user;
-GRANT SELECT ON ALL TABLES IN SCHEMA public TO replication_user;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO replication_user;
-```
-
-Granting `SELECT ON ALL TABLES IN SCHEMA` instead of naming the specific tables avoids having to add privileges later if you add tables to your publication.
-
-Unlike replicating to other destinations, you don't need to configure a publication and replication slot manually. DoubleCloud Transfer does that for you automatically.
-
-## Add DoubleCloud Transfer's IPs to the allowlist
-
-If you are using Neon's **IP Allow** feature to limit IP addresses that can connect to Neon, add DoubleCloud Transfer's IPs to your allowlist in Neon:
-
-```
-# IPv6
-2a05:d014:e78:3500::/56
-```
-
-```
-# IPv4
-3.77.1.232
-3.74.181.206
-3.78.156.2
-3.77.29.32
-3.125.212.122
-```
-
-For instructions, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow). You'll need to do this before you can validate your connection in the next step. If you are not using Neon's **IP Allow** feature, you can skip this step.
-
-## Create a managed ClickHouse cluster on DoubleCloud
-
-<Admonition type="tip">
-If you already have a ClickHouse instance — for example, an on-premise one — and you want to transfer data there, skip this step and continue with steps described in [Create endpoints in DoubleCloud](#create-endpoints-in-doublecloud).
-</Admonition>
-
-1. Log in to the [DoubleCloud console](https://console.double.cloud/).
-1. In the left menu, select **Clusters**, click **Create cluster**, and select **ClickHouse**.
-1. Select cluster parameters.
-
-<Admonition type="note">
-If you're just testing ClickHouse, you can proceed with default parameters that will create a fully functional cluster suitable for testing and development.
-For production, make sure to select at least three replicas, 16 GB of RAM, and dedicated Keeper hosts to ensure high availability.
-</Admonition>
-
-1. Under **Basic settings**, enter the cluster name, for example `clickhouse-dev`.
-1. Click **Submit** at the bottom of the page. Creating a cluster takes around five minutes depending on the provider, region, and settings.
-1. After the cluster status changes from _Creating_ to _Alive_, select it in the cluster list.
-1. On the **Overview** tab, click **WebSQL** at the top right.
-
-   WebSQL is a DoubleCloud service that allows you to connect to your managed ClickHouse clusters from your browser tab.
-   It provides a full-fledged SQL editor that you can use to view databases and execute SQL queries.
-
-1. Select a database in the connection manager on the left to open the query editor.
-
-1. Create a database:
-
-   ```sql
-   CREATE DATABASE IF NOT EXISTS <database_name> ON CLUSTER default
-   ```
-
-1. Make sure that the database has been created:
-
-   ```sql
-   SHOW DATABASES
-   ```
-
-   ```bash
-   ┌─name───────────────┐
-   │ INFORMATION_SCHEMA │
-   │ _system            │
-   │ default            │
-   │ <database_name>    │  // your database
-   │ information_schema │
-   │ system             │
-   └────────────────────┘
-   ```
-
-## Create endpoints in DoubleCloud
-
-Before you create a transfer in DoubleCloud, you need to create a source endpoint that fetches data from Neon and a target endpoint that writes the data to ClickHouse.
-
-To create a source endpoint:
-
-1. In the left menu in the console, select **Transfer**.
-1. Click **Create** → **Source endpoint**.
-1. Under **Basic settings**, select **PostgreSQL** as the source type.
-1. Enter a name for your source endpoint, for example `neon`.
-1. Under **Endpoint parameters**, enter connection details for your Neon database. You can get these details from your Neon connection string, which you'll find in the **Connection Details** widget on the **Dashboard** of your Neon project.
-   For example, let's say this is your connection string:
-
-   ```bash shouldWrap
-   postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
-   ```
-
-   From this string, the values would show as below. Your actual values will differ, with the exception of the port number.
-
-   - **Host**: ep-cool-darkness-123456.us-east-2.aws.neon.tech
-   - **Port**: 5432
-   - **Username**: alex
-   - **Password**: AbC123dEf
-   - **Database Name**: dbname
-
-1. Click **Test connection** and if it's successful, click **Submit**.
-
-To create a target endpoint:
-
-1. In the left menu in the console, select **Transfer**.
-1. Click **Create** → **Target endpoint**.
-1. Under **Basic settings**, select **ClickHouse** as the target type.
-1. Enter a name for your source endpoint, for example `clickhouse`.
-1. If you created a managed ClickHouse cluster in DoubleCloud, select it as the target endpoint in **Connection settings** → **Managed cluster**.
-
-   If you want to transfer data to a ClickHouse instance elsewhere, select **On-premise** in **Connection settings** → **Connection type** and specify the connection details.
-
-1. Enter the database name.
-1. Click **Test connection** and if it's successful, click **Submit**.
-
-## Create a transfer in DoubleCloud
-
-1. In the left menu in the console, select **Transfer** and click **Create transfer**.
-1. Under **Endpoints**, select the source and target endpoints you created in the previous step.
-1. Enter the transfer name, for example `neon-to-clickhouse`.
-1. Under **Transfer settings**, select **Snapshot and replication** as the transfer type and specify transfer parameters if needed.
-
-<Admonition type="tip">
-Even when logical replication isn't available on the Neon side, you can schedule Transfer to copy incremental data from Postgres to ClickHouse at a given interval. For that, enable **Periodic snapshot** and specify the time period.
-</Admonition>
-
-1. Click **Submit** to create the transfer.
-1. On the transfer page, click **Activate**.
-
-   When the data has transferred, the transfer status changes to _Done_.
-
-## Query the transferred data with WebSQL
-
-<Admonition type="note">
-You can use WebSQL only to connect to managed ClickHouse clusters on DoubleCloud.
-If you've transferred data to an on-premise ClickHouse cluster,
-use the ClickHouse client or a similar tool to connect to it.
-</Admonition>
-
-1. In the left menu, select **Clusters** and select your cluster from the list.
-
-1. On the **Overview** tab, click **WebSQL** at the top right.
-
-1. Select the database you created earlier in the connection manager on the left.
-
-1. In the query editor, enter and execute your query.
-
-   The query output will be displayed under the editor.
-
-## References
-
-- [DoubleCloud get started with ClickHouse guide](https://double.cloud/docs/en/managed-clickhouse/get-started)
-- [DoubleCloud get started with Transfer guide](https://double.cloud/docs/en/transfers/get-started)
-
-<NeedHelp/>
-
 
 # Confluent
 
@@ -46630,6 +46935,121 @@ After the sync operation is complete, you can verify the replication by navigati
 <NeedHelp/>
 
 
+# Inngest
+
+---
+title: Replicate data with Inngest
+subtitle: Learn how to replicate data from Neon with Inngest
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2024-12-26T17:57:49.405Z'
+---
+
+Neon's logical replication feature allows you to replicate data from your Neon Postgres database to external destinations.
+
+[Inngest](https://www.inngest.com?utm_source=neon&utm_medium=logical-replication-guide) is a durable workflow platform that allows you to trigger workflow based on Neon database changes. With its native Neon integration, it is the easiest way to set up data replication with custom transformations or 3rd party API destinations (ex, Neon to Amplitude, Neon to S3).
+
+In this guide, you will learn how to configure your Inngest account for ingesting changes from your Neon database, enabling you to replicate data from Neon to Inngest workflows.
+
+## Prerequisites
+
+- A [Inngest account](https://www.inngest.com?utm_source=neon&utm_medium=logical-replication-guide)
+- A [Neon account](https://console.neon.tech/)
+- Read the [important notices about logical replication in Neon](/docs/guides/logical-replication-neon#important-notices) before you begin
+
+## Enabling Logical Replication on your database
+
+The Inngest Integration relies on Neon’s Logical Replication feature to get notified upon database changes.
+
+Navigate to your Neon Project using the Neon Console and open the **Settings** > **Logical Replication** page. From here, follow the instructions to enable Logical Replication:
+
+![Neon dashboard settings with option to enable logical replication](/docs/guides/neon-console-settings-logical-replication.png)
+
+## Configuring the Inngest integration
+
+Your Neon database is now ready to work with Inngest.
+
+To configure the Inngest Neon Integration, navigate to the Inngest Platform, open the [Integrations page](https://app.inngest.com/settings/integrations?utm_source=neon&utm_medium=trigger-serverless-functions-guide), and follow the instructions of the [Neon Integration installation wizard](https://app.inngest.com/settings/integrations/neon/connect?utm_source=neon&utm_medium=trigger-serverless-functions-guide):
+
+![Neon integration card inside the Inngest integrations page](/docs/guides/inngest-integrations-page.png)
+
+The Inngest Integration requires Postgres admin credentials to complete its setup. _These credentials are not stored and are only used during the installation process_.
+
+![Neon authorization step inside the Inngest integrations page](/docs/guides/inngest-integration-neon-authorize-step.png)
+
+You can find your admin Postgres credentials in your Neon project dashboard’s **Connection Details** section:
+
+![Connection details section on the Neon console dashboard](/docs/guides/neon-console-connection-details.png)
+
+## Example: Replicating data to Amplitude
+
+The below example demonstrates how to replicate new `users` table rows to Amplitude using Amplitude's API.
+
+Once the Inngest integration is installed, a flow of `"db/*"` events will be created when updates are made to your database.
+
+For example, if you create a new user in your database, a `"db/users.updated"` [event](https://www.inngest.com/docs/features/events-triggers?utm_source=neon&utm_medium=logical-replication-guide) will be created:
+
+```json
+{
+  "name": "db/users.updated",
+  "data": {
+    "new": {
+      "id": {
+        "data": 2,
+        "encoding": "i"
+      },
+      "name": {
+        "data": "Charly",
+        "encoding": "t"
+      },
+      "email": {
+        "data": "charly@inngest.com",
+        "encoding": "t"
+      }
+    },
+    "table": "users",
+    "txn_commit_time": "2024-09-24T14:41:19.75149Z",
+    "txn_id": 36530520
+  },
+  "ts": 1727146545006
+}
+```
+
+Such events can be used to trigger Inngest functions to transform and replicate data to external destinations like Amplitude:
+
+```typescript
+// inngest/functions/users-replication.ts
+import { inngest } from './client';
+
+export const updateAmplitudeUserMapping = inngest.createFunction(
+  { id: 'update-amplitude-user-mapping' },
+  { event: 'db/users.updated' },
+  async ({ event, step }) => {
+    // Extract the user data from the event
+    const { data } = event;
+    const { id, email } = data.new;
+
+    // Update the user mapping in Amplitude
+    await step.run('update-amplitude-user-mapping', async () => {
+      const response = await fetch(
+        `https://api.amplitude.com/usermap?mapping=[{"user_id":"${id}", "global_user_id": "${email}"}]&api_key=${process.env.AMPLITUDE_API_KEY}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to send user data to Amplitude: ${response.statusText}`);
+      }
+
+      return response.json();
+    });
+
+    return { success: true };
+  }
+);
+```
+
+<NeedHelp/>
+
+
 # Replicate to Neon
 
 # AlloyDB
@@ -47047,7 +47467,7 @@ CREATE TABLE IF NOT EXISTS playing_with_neon(id SERIAL PRIMARY KEY, name TEXT NO
 After creating a publication on the source database, you need to create a subscription on your Neon destination database.
 
 1. Use the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor), `psql`, or another SQL client to connect to your destination database.
-2. Create the subscription using the using a `CREATE SUBSCRIPTION` statement.
+2. Create the subscription using a `CREATE SUBSCRIPTION` statement.
 
    ```sql shouldWrap
    CREATE SUBSCRIPTION my_subscription CONNECTION 'postgresql://postgres:password@database-1.czmwaio8k05k.us-east-2.rds.amazonaws.com/postgres' PUBLICATION my_publication;
@@ -52470,7 +52890,7 @@ title: Authenticate Neon Postgres application users with Auth0
 subtitle: Learn how to add authentication to a Neon Postgres database application using
   Auth0
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.055Z'
+updatedOn: '2024-12-30T10:56:29.872Z'
 ---
 
 User authentication is an essential part of most web applications. Modern apps often require features like social login, multi-factor authentication, and secure user data management that complies with privacy regulations.
@@ -52653,9 +53073,9 @@ if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL not found in enviro
 export default {
   schema: './app/db/schema.ts',
   out: './drizzle',
-  driver: 'pg',
+  dialect: 'postgresql',
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL,
   },
   strict: true,
 } satisfies Config;
@@ -52664,13 +53084,13 @@ export default {
 Now, generate the migration files by running the following command:
 
 ```bash
-npx drizzle-kit generate:pg
+npx drizzle-kit generate
 ```
 
 This will create a `drizzle` folder at the project root with the migration files. To apply the migration to the database, run:
 
 ```bash
-npx drizzle-kit push:pg
+npx drizzle-kit push
 ```
 
 The `user_messages` table will now be visible in the Neon console.
@@ -52922,8 +53342,12 @@ title: Authenticate Neon Postgres application users with Auth.js
 subtitle: Learn how to add passwordless authentication to your Neon Postgres database
   application using Auth.js and Resend
 enableTableOfContents: true
-updatedOn: '2024-10-12T11:16:13.581Z'
+updatedOn: '2025-01-08T15:53:54.574Z'
 ---
+
+<Admonition type="tip" title="Did you know?">
+We recently introduced an Auth.js adapter for Neon, making it easier to store user and session data in Neon. For installation and setup instructions, see [Neon Adapter](https://authjs.dev/getting-started/adapters/neon).
+</Admonition>
 
 [Auth.js](https://authjs.dev/) (formerly NextAuth.js) is a popular authentication solution that supports a wide range of authentication methods, including social logins (e.g., Google, Facebook), traditional email/password, and passwordless options like magic links. For simple authentication flows, such as social logins, Auth.js can operate using only in-memory session storage (in a browser cookie). However, if you want to implement custom login flows, or persist the signed-in users' information in your database, you need to specify a database backend.
 
@@ -54199,7 +54623,7 @@ title: AI & Embeddings
 subtitle: Power AI agents with serverless Postgres — and build AI applications with Neon
   as your vector database
 enableTableOfContents: true
-updatedOn: '2024-12-12T19:49:26.793Z'
+updatedOn: '2025-01-10T15:44:20.067Z'
 ---
 
 Neon enables AI agents to provision Postgres databases in seconds, execute SQL queries, and easily manage Neon infrastructure. With one-second provision times, scale-to-zero compute, and agent-friendly Neon API interfaces, Neon lets AI agents manage database fleets at scale while minimizing costs. [Learn more about this use case](https://neon.tech/use-cases/ai-agents).
@@ -54208,16 +54632,19 @@ Neon also supports vector data, a key component for AI applications. With the **
 
 ## Neon for AI Agents
 
-Neon supports Postgres for AI agents with the following interfaces:
-
-- **@neondatabase/toolkit** — a terse client that lets you spin up a Postgres database in seconds and run SQL queries. It includes both the [Neon TypeScript SDK](/docs/reference/typescript-sdk) and the [Neon Serverless Driver](https://github.com/neondatabase/serverless), making it an perfect choice for AI agents that need to quickly set up an SQL database. [Learn more](/docs/reference/neondatabase-toolkit).
-- **Neon Model Context Protocol (MCP) server** — enables any MCP Client to interact with Neon’s API using natural language. AI agents can use Neon's MCP server to perform actions such as creating databases, running SQL queries, and managing database migrations. [Read the announcement](https://neon.tech/blog/let-claude-manage-your-neon-databases-our-mcp-server-is-here).
+Neon supports Postgres for AI agents with the following tools and interfaces:
 
 <DetailIconCards>
 
 <a href="https://github.com/neondatabase/toolkit" description="A terse client that lets you spin up a Postgres database in seconds and run SQL queries" icon="github">@neondatabase/toolkit</a>
 
 <a href="https://github.com/neondatabase/mcp-server-neon" description="A Model Context Protocol (MCP) server for Neon that lets MCP Clients interact with Neon’s API using natural language" icon="github">Neon MCP Server</a>
+
+<a href="https://github.com/neondatabase/mcp-server-neon/tree/main/mcp-client" description="A Model Context Protocol (MCP) client CLI that can be used to interact with any MCP server" icon="github">Neon MCP Client CLI</a>
+
+<a href="https://github.com/AgentOps-AI/AgentStack/blob/main/agentstack/templates/crewai/tools/neon_tool.py" description="A Neon tool for AgentStack that allows agents to create ephemeral or long-lived Postgres instances for structured data storage" icon="github">Neon tool for AgentStack</a>
+
+<a href="https://composio.dev/tools?search=neon" description="A full integration between LLMs and AI agents and Neon's API" icon="openai">Neon tool for Composio</a>
 
 </DetailIconCards>
 
@@ -56827,7 +57254,7 @@ The GitHub repository for the Neon CLI is found [here](https://github.com/neonda
 title: Neon CLI — Install and connect
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.077Z'
+updatedOn: '2024-12-20T19:12:43.516Z'
 ---
 
 This section describes how to install the Neon CLI and connect via web authentication or API key.
@@ -56989,7 +57416,48 @@ brew upgrade neonctl
 
 <TabItem>
 
-To upgrade a [binary](https://github.com/neondatabase/neonctl/releases) version, download the latest binary as described in the install instructions above, and replace your old binary with the new one.
+To upgrade a [binary](https://github.com/neondatabase/neonctl/releases) version, download the `latest` binary as described in the install instructions above, and replace your old binary with the new one.
+
+</TabItem>
+
+</Tabs>
+
+If you're using the Neon CLI in CI/CD tools like GitHub Actions, you can safely pin the Neon CLI to `latest`, as we prioritize stability for CI/CD processes.
+
+<Tabs labels={["npm", "Homebrew", "Binary"]}>
+
+<TabItem>
+
+In your GitHub Actions workflow, you can use the `latest` tag with `npm`:
+
+```yaml
+- name: Install Neon CLI
+  run: npm install -g neonctl@latest
+```
+
+</TabItem>
+
+<TabItem>
+
+Homebrew automatically fetches the latest version when running the `install` or `upgrade` command. You can include the following in your workflow:
+
+```yaml
+- name: Install Neon CLI
+  run: brew install neonctl || brew upgrade neonctl
+```
+
+</TabItem>
+
+<TabItem>
+
+If you're downloading a binary, reference the latest release from the [Releases page](https://github.com/neondatabase/neonctl/releases). For example, you can use `curl` or `wget` in your workflow:
+
+```yaml
+- name: Install Neon CLI
+  run: |
+    curl -L https://github.com/neondatabase/neonctl/releases/latest/download/neonctl-linux-amd64 -o /usr/local/bin/neon
+    chmod +x /usr/local/bin/neon
+```
 
 </TabItem>
 
@@ -61441,7 +61909,7 @@ Notice that the `serial_id` column hints at the number of rows already present i
 ---
 title: Postgres extensions
 enableTableOfContents: true
-updatedOn: '2024-10-30T23:12:55.612Z'
+updatedOn: '2025-01-10T15:44:20.070Z'
 ---
 
 Explore supported Postgres extensions by category. Also see:
@@ -61713,6 +62181,8 @@ Explore supported Postgres extensions by category. Also see:
 
 <a href="/docs/extensions/neon-utils" description="Provides a function for monitoring how Neon's Autoscaling feature allocates vCPU in response to workload" icon="wrench">neon_utils</a>
 
+<a href="https://github.com/citusdata/pg_cron" description="Lets you schedule and manage periodic jobs directly in your Postgres database" icon="wrench">pg_cron</a>
+
 <a href="https://pgtap.org/documentation.html" description="A unit testing framework for Postgres, enabling sophisticated testing of database queries and functions" icon="wrench">pgtap</a>
 
 <a href="https://www.postgresql.org/docs/current/contrib-spi.html" description="Provides functions for maintaining foreign key constraints" icon="wrench">refint</a>
@@ -61727,7 +62197,7 @@ title: Supported Postgres extensions
 enableTableOfContents: true
 redirectFrom:
   - /docs/reference/pg-extensions
-updatedOn: '2024-12-13T20:52:57.580Z'
+updatedOn: '2025-01-11T12:43:45.592Z'
 ---
 
 Neon supports the Postgres extensions shown in the following table. The supported version of the extension sometimes differs by Postgres version. A dash (`-`) indicates that an extension is not yet supported.
@@ -61738,83 +62208,85 @@ Postgres 17, released in September 2024, currently lacks support for a few exten
 
 <a id="default-extensions/"></a>
 
-| Extension                                                                                        |   PG14 |   PG15 |   PG16 |   PG17 | Notes                                                                                                                                                                                                                                        |
-| :----------------------------------------------------------------------------------------------- | -----: | -----: | -----: | -----: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [address_standardizer](https://postgis.net/docs/Extras.html#Address_Standardizer)                |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                              |
-| [address_standardizer_data_us](https://postgis.net/docs/Extras.html#Address_Standardizer_Tables) |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                              |
-| [autoinc (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                        |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [bloom](https://www.postgresql.org/docs/16/bloom.html)                                           |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [btree_gin](https://www.postgresql.org/docs/16/btree-gin.html)                                   |    1.3 |    1.3 |    1.3 |    1.3 |                                                                                                                                                                                                                                              |
-| [btree_gist](https://www.postgresql.org/docs/16/btree-gist.html)                                 |    1.6 |    1.7 |    1.7 |    1.7 |                                                                                                                                                                                                                                              |
-| [citext](/docs/extensions/citext)                                                                |    1.6 |    1.6 |    1.6 |    1.6 |                                                                                                                                                                                                                                              |
-| [cube](https://www.postgresql.org/docs/16/cube.html)                                             |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                              |
-| [dict_int](https://www.postgresql.org/docs/16/dict-int.html)                                     |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [earthdistance](https://www.postgresql.org/docs/16/earthdistance.html)                           |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                              |
-| [fuzzystrmatch](https://www.postgresql.org/docs/16/fuzzystrmatch.html)                           |    1.1 |    1.1 |    1.1 |    1.2 |                                                                                                                                                                                                                                              |
-| [h3](/docs/extensions/postgis-related-extensions#h3-and-h3-postgis)                              |  4.1.3 |  4.1.3 |  4.1.3 |  4.1.3 | Some components have been split out into the `h3_postgis` extension. Install both the `h3` and `h3_postgis` extensions.                                                                                                                      |
-| [h3_postgis](/docs/extensions/postgis-related-extensions#h3-and-h3-postgis)                      |  4.1.2 |  4.1.3 |  4.1.3 |  4.1.3 | Install with `CREATE EXTENSION h3_postgis CASCADE;` (requires `postgis` and `postgis_raster`)                                                                                                                                                |
-| [hll](https://github.com/citusdata/postgresql-hll)                                               |   2.18 |   2.18 |   2.18 |   2.18 |                                                                                                                                                                                                                                              |
-| [hstore](/docs/extensions/hstore)                                                                |    1.8 |    1.8 |    1.8 |    1.8 |                                                                                                                                                                                                                                              |
-| [hypopg](https://hypopg.readthedocs.io/en/rel1_stable/)                                          |  1.4.1 |  1.4.1 |  1.4.1 |  1.4.1 |                                                                                                                                                                                                                                              |
-| [insert_username (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [intagg](https://www.postgresql.org/docs/16/intagg.html)                                         |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                              |
-| [intarray](https://www.postgresql.org/docs/16/intarray.html)                                     |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                              |
-| [ip4r](https://github.com/RhodiumToad/ip4r)                                                      |    2.4 |    2.4 |    2.4 |    2.4 |                                                                                                                                                                                                                                              |
-| [isn](https://www.postgresql.org/docs/16/isn.html)                                               |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                              |
-| [lo](https://www.postgresql.org/docs/16/lo.html)                                                 |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                              |
-| [ltree](https://www.postgresql.org/docs/16/ltree.html)                                           |    1.2 |    1.2 |    1.2 |    1.3 |                                                                                                                                                                                                                                              |
-| [moddatetime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                    |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [neon](/docs/extensions/neon)                                                                    |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                              |
-| [neon_utils](/docs/extensions/neon-utils)                                                        |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [pg_graphql](https://github.com/supabase/pg_graphql)                                             |  1.5.9 |  1.5.9 |  1.5.9 |  1.5.9 |                                                                                                                                                                                                                                              |
-| [pg_hashids](https://github.com/iCyberon/pg_hashids)                                             |  1.2.1 |  1.2.1 |  1.2.1 |  1.2.1 |                                                                                                                                                                                                                                              |
-| [pg_hint_plan](https://github.com/ossc-db/pg_hint_plan)                                          |  1.4.1 |  1.5.0 |  1.6.0 |  1.7.0 |                                                                                                                                                                                                                                              |
-| [pg_ivm](https://github.com/sraoss/pg_ivm)                                                       |    1.9 |    1.9 |    1.9 |    1.9 |                                                                                                                                                                                                                                              |
-| [pg_jsonschema](https://github.com/supabase/pg_jsonschema)                                       |  0.3.3 |  0.3.3 |  0.3.3 |  0.3.3 |                                                                                                                                                                                                                                              |
-| [pg_mooncake](https://github.com/Mooncake-Labs/pg_mooncake)                                      |      - |  0.0.1 |  0.0.1 |  0.0.1 | This extension is **experimental**. Using a separate, dedicated Neon project is recommended. Run `SET neon.allow_unstable_extensions='true';` before installing. See the [YouTube demo](https://youtu.be/QDNsxw_3ris?feature=shared&t=2048). |
-| [pg_partman](https://github.com/pgpartman/pg_partman)                                            |  5.1.0 |  5.1.0 |  5.1.0 |  5.1.0 |                                                                                                                                                                                                                                              |
-| [pg_prewarm](/docs/extensions/pg_prewarm)                                                        |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                              |
-| [pg_roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)                               |    0.5 |    0.5 |    0.5 |    0.5 | Install with `CREATE EXTENSION roaringbitmap;`                                                                                                                                                                                               |
-| [pg_session_jwt](/docs/guides/neon-authorize#how-the-pgsessionjwt-extension-works)               |  0.1.2 |  0.1.2 |  0.1.2 |      - |                                                                                                                                                                                                                                              |
-| [pg_stat_statements](/docs/extensions/pg_stat_statements)                                        |    1.9 |   1.10 |   1.10 |   1.11 |                                                                                                                                                                                                                                              |
-| [pg_tiktoken](/docs/extensions/pg_tiktoken)                                                      |  0.0.1 |  0.0.1 |  0.0.1 |  0.0.1 | The [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role has `EXECUTE` privilege on the `pg_stat_statements_reset()` function.                                                                                                   |
-| [pg_trgm](/docs/extensions/pg_trgm)                                                              |    1.6 |    1.6 |    1.6 |    1.6 |                                                                                                                                                                                                                                              |
-| [pg_uuidv7](https://github.com/fboulnois/pg_uuidv7)                                              |    1.6 |    1.6 |    1.6 |    1.6 |                                                                                                                                                                                                                                              |
-| [pgcrypto](https://www.postgresql.org/docs/16/pgcrypto.html)                                     |    1.3 |    1.3 |    1.3 |    1.3 |                                                                                                                                                                                                                                              |
-| [pgjwt](https://github.com/michelp/pgjwt)                                                        |  0.2.0 |  0.2.0 |  0.2.0 |  0.2.0 |                                                                                                                                                                                                                                              |
-| [pgrag](/docs/extensions/pgrag)                                                                  |  0.0.0 |  0.0.0 |  0.0.0 |  0.0.0 | This extension is **experimental**. Using a separate, dedicated Neon project is recommended. Run `SET neon.allow_unstable_extensions='true';` before installing.                                                                             |
-| [pgrouting](/docs/extensions/postgis-related-extensions#pgrouting)                               |  3.4.2 |  3.4.2 |  3.4.2 |  3.6.2 | The PostGIS extension must be installed first.                                                                                                                                                                                               |
-| [pgrowlocks](https://www.postgresql.org/docs/16/pgrowlocks.html)                                 |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                              |
-| [pgstattuple](https://www.postgresql.org/docs/16/pgstattuple.html)                               |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                              |
-| [pgtap](https://pgtap.org/documentation.html)                                                    |  1.3.3 |  1.3.3 |  1.3.3 |  1.3.3 |                                                                                                                                                                                                                                              |
-| [pgvector](/docs/extensions/pgvector)                                                            |  0.7.4 |  0.7.4 |  0.7.4 |  0.7.4 | Install with `CREATE EXTENSION vector;`                                                                                                                                                                                                      |
-| [pgx_ulid](https://github.com/pksunkara/pgx_ulid)                                                |  0.1.5 |  0.1.5 |  0.1.5 |      - | Install with `CREATE EXTENSION ulid;`                                                                                                                                                                                                        |
-| [plcoffee](https://coffeescript.org/)                                                            |  3.1.5 |  3.1.5 |  3.1.8 |      - |                                                                                                                                                                                                                                              |
-| [plls](https://livescript.net/)                                                                  |  3.1.5 |  3.1.5 |  3.1.8 |      - |                                                                                                                                                                                                                                              |
-| [plpgsql](https://www.postgresql.org/docs/16/plpgsql.html)                                       |    1.0 |    1.0 |    1.0 |    1.0 | Pre-installed with Postgres.                                                                                                                                                                                                                 |
-| [plpgsql_check](https://pgxn.org/dist/plpgsql_check/)                                            | 2.7.11 | 2.7.11 | 2.7.11 |      - |                                                                                                                                                                                                                                              |
-| [plv8](https://github.com/plv8/plv8)                                                             | 3.1.10 | 3.1.10 | 3.1.10 |  3.2.3 |                                                                                                                                                                                                                                              |
-| [postgis](/docs/extensions/postgis)                                                              |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                              |
-| [postgis_raster](https://postgis.net/docs/RT_reference.html)                                     |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                              |
-| [postgis_sfcgal](/docs/extensions/postgis-related-extensions#postgis-sfcgal)                     |  1.3.8 |  1.3.8 |  1.3.8 |  3.5.0 |                                                                                                                                                                                                                                              |
-| [postgis_tiger_geocoder](/docs/extensions/postgis-related-extensions#postgis-tiger-geocoder)     |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 | Cannot be installed using the Neon SQL Editor. Use your `psql` user credentials to install this extension.                                                                                                                                   |
-| [postgis_topology](https://www.postgis.net/docs/Topology.html)                                   |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                              |
-| [prefix](https://github.com/dimitri/prefix)                                                      |  1.2.0 |  1.2.0 |  1.2.0 |  1.2.0 |                                                                                                                                                                                                                                              |
-| [rdkit](https://github.com/rdkit/rdkit)                                                          |  4.3.0 |  4.3.0 |  4.3.0 |  4.6.0 |                                                                                                                                                                                                                                              |
-| [refint (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                         |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [rum](https://github.com/postgrespro/rum)                                                        |    1.3 |    1.3 |    1.3 |  1.3.1 |                                                                                                                                                                                                                                              |
-| [seg](https://www.postgresql.org/docs/16/seg.html)                                               |    1.4 |    1.4 |    1.4 |    1.4 |                                                                                                                                                                                                                                              |
-| [semver](https://pgxn.org/dist/semver)                                                           | 0.32.1 | 0.32.1 | 0.32.1 | 0.40.0 |                                                                                                                                                                                                                                              |
-| [tablefunc](https://www.postgresql.org/docs/16/tablefunc.html)                                   |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [tcn](https://www.postgresql.org/docs/16/tcn.html)                                               |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [timescaledb](/docs/extensions/timescaledb)                                                      | 2.10.1 | 2.10.1 | 2.13.0 | 2.17.1 | Only Apache-2 licensed features are supported. Compression is not supported.                                                                                                                                                                 |
-| [tsm_system_rows](https://www.postgresql.org/docs/16/tsm-system-rows.html)                       |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [tsm_system_time](https://www.postgresql.org/docs/16/tsm-system-time.html)                       |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                              |
-| [unaccent](https://www.postgresql.org/docs/16/unaccent.html)                                     |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                              |
-| [unit](https://github.com/df7cb/postgresql-unit)                                                 |      7 |      7 |      7 |      7 |                                                                                                                                                                                                                                              |
-| [uuid-ossp](https://www.postgresql.org/docs/16/uuid-ossp.html)                                   |    1.1 |    1.1 |    1.1 |    1.1 | Double-quote the extension name when installing: `CREATE EXTENSION "uuid-ossp"`                                                                                                                                                              |
-| [wal2json](/docs/extensions/wal2json)                                                            |    2.6 |    2.6 |    2.6 |    2.6 | `CREATE EXTENSION` not required. This decoder plugin is available by default but requires enabling [logical replication](/docs/guides/logical-replication-guide) in Neon.                                                                    |
-| [xml2](https://www.postgresql.org/docs/current/xml2.html)                                        |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                              |
+| Extension                                                                                        |   PG14 |   PG15 |   PG16 |   PG17 | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| :----------------------------------------------------------------------------------------------- | -----: | -----: | -----: | -----: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [address_standardizer](https://postgis.net/docs/Extras.html#Address_Standardizer)                |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [address_standardizer_data_us](https://postgis.net/docs/Extras.html#Address_Standardizer_Tables) |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [autoinc (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                        |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [bloom](https://www.postgresql.org/docs/16/bloom.html)                                           |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [btree_gin](https://www.postgresql.org/docs/16/btree-gin.html)                                   |    1.3 |    1.3 |    1.3 |    1.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [btree_gist](https://www.postgresql.org/docs/16/btree-gist.html)                                 |    1.6 |    1.7 |    1.7 |    1.7 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [citext](/docs/extensions/citext)                                                                |    1.6 |    1.6 |    1.6 |    1.6 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [cube](https://www.postgresql.org/docs/16/cube.html)                                             |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [dict_int](https://www.postgresql.org/docs/16/dict-int.html)                                     |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [earthdistance](https://www.postgresql.org/docs/16/earthdistance.html)                           |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [fuzzystrmatch](https://www.postgresql.org/docs/16/fuzzystrmatch.html)                           |    1.1 |    1.1 |    1.1 |    1.2 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [h3](/docs/extensions/postgis-related-extensions#h3-and-h3-postgis)                              |  4.1.3 |  4.1.3 |  4.1.3 |  4.1.3 | Some components have been split out into the `h3_postgis` extension. Install both the `h3` and `h3_postgis` extensions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| [h3_postgis](/docs/extensions/postgis-related-extensions#h3-and-h3-postgis)                      |  4.1.2 |  4.1.3 |  4.1.3 |  4.1.3 | Install with `CREATE EXTENSION h3_postgis CASCADE;` (requires `postgis` and `postgis_raster`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [hll](https://github.com/citusdata/postgresql-hll)                                               |   2.18 |   2.18 |   2.18 |   2.18 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [hstore](/docs/extensions/hstore)                                                                |    1.8 |    1.8 |    1.8 |    1.8 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [hypopg](https://hypopg.readthedocs.io/en/rel1_stable/)                                          |  1.4.1 |  1.4.1 |  1.4.1 |  1.4.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [insert_username (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [intagg](https://www.postgresql.org/docs/16/intagg.html)                                         |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [intarray](https://www.postgresql.org/docs/16/intarray.html)                                     |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [ip4r](https://github.com/RhodiumToad/ip4r)                                                      |    2.4 |    2.4 |    2.4 |    2.4 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [isn](https://www.postgresql.org/docs/16/isn.html)                                               |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [lo](https://www.postgresql.org/docs/16/lo.html)                                                 |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [ltree](https://www.postgresql.org/docs/16/ltree.html)                                           |    1.2 |    1.2 |    1.2 |    1.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [moddatetime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                    |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [neon](/docs/extensions/neon)                                                                    |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [neon_utils](/docs/extensions/neon-utils)                                                        |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_cron](https://github.com/citusdata/pg_cron)                                                  |    1.6 |    1.6 |    1.6 |    1.6 | Available only on paid Neon plans. To install `pg_cron`, it must first be enabled by Neon Support. [Open a support ticket](https://console.neon.tech/app/projects?modal=support) with your endpoint ID and database name to request it. After it's enabled, you'll need to restart your compute before running `CREATE EXTENSION pg_cron;` Please note that `pg_cron` jobs will only run when your compute is active. We therefore recommend only using `pg_cron` on computes that run 24/7 or where you have disabled [scale to zero](https://neon.tech/docs/introduction/scale-to-zero). |
+|                                                                                                  |
+| [pg_graphql](https://github.com/supabase/pg_graphql)                                             |  1.5.9 |  1.5.9 |  1.5.9 |  1.5.9 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_hashids](https://github.com/iCyberon/pg_hashids)                                             |  1.2.1 |  1.2.1 |  1.2.1 |  1.2.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_hint_plan](https://github.com/ossc-db/pg_hint_plan)                                          |  1.4.1 |  1.5.0 |  1.6.0 |  1.7.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_ivm](https://github.com/sraoss/pg_ivm)                                                       |    1.9 |    1.9 |    1.9 |    1.9 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_jsonschema](https://github.com/supabase/pg_jsonschema)                                       |  0.3.3 |  0.3.3 |  0.3.3 |  0.3.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_mooncake](https://github.com/Mooncake-Labs/pg_mooncake)                                      |      - |  0.0.1 |  0.0.1 |  0.0.1 | This extension is **experimental**. Using a separate, dedicated Neon project is recommended. Run `SET neon.allow_unstable_extensions='true';` before installing. See the [YouTube demo](https://youtu.be/QDNsxw_3ris?feature=shared&t=2048) and the [pg_mooncake documentation](https://pgmooncake.com/docs).                                                                                                                                                                                                                                                                              |
+| [pg_partman](https://github.com/pgpartman/pg_partman)                                            |  5.1.0 |  5.1.0 |  5.1.0 |  5.1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_prewarm](/docs/extensions/pg_prewarm)                                                        |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)                               |    0.5 |    0.5 |    0.5 |    0.5 | Install with `CREATE EXTENSION roaringbitmap;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [pg_session_jwt](/docs/guides/neon-authorize#how-the-pgsessionjwt-extension-works)               |  0.1.2 |  0.1.2 |  0.1.2 |      - |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_stat_statements](/docs/extensions/pg_stat_statements)                                        |    1.9 |   1.10 |   1.10 |   1.11 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_tiktoken](/docs/extensions/pg_tiktoken)                                                      |  0.0.1 |  0.0.1 |  0.0.1 |  0.0.1 | The [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role has `EXECUTE` privilege on the `pg_stat_statements_reset()` function.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [pg_trgm](/docs/extensions/pg_trgm)                                                              |    1.6 |    1.6 |    1.6 |    1.6 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pg_uuidv7](https://github.com/fboulnois/pg_uuidv7)                                              |    1.6 |    1.6 |    1.6 |    1.6 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pgcrypto](https://www.postgresql.org/docs/16/pgcrypto.html)                                     |    1.3 |    1.3 |    1.3 |    1.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pgjwt](https://github.com/michelp/pgjwt)                                                        |  0.2.0 |  0.2.0 |  0.2.0 |  0.2.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pgrag](/docs/extensions/pgrag)                                                                  |  0.0.0 |  0.0.0 |  0.0.0 |  0.0.0 | This extension is **experimental**. Using a separate, dedicated Neon project is recommended. Run `SET neon.allow_unstable_extensions='true';` before installing.                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [pgrouting](/docs/extensions/postgis-related-extensions#pgrouting)                               |  3.4.2 |  3.4.2 |  3.4.2 |  3.6.2 | The PostGIS extension must be installed first.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [pgrowlocks](https://www.postgresql.org/docs/16/pgrowlocks.html)                                 |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pgstattuple](https://www.postgresql.org/docs/16/pgstattuple.html)                               |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pgtap](https://pgtap.org/documentation.html)                                                    |  1.3.3 |  1.3.3 |  1.3.3 |  1.3.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [pgvector](/docs/extensions/pgvector)                                                            |  0.8.0 |  0.8.0 |  0.8.0 |  0.8.0 | Install with `CREATE EXTENSION vector;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| [pgx_ulid](https://github.com/pksunkara/pgx_ulid)                                                |  0.1.5 |  0.1.5 |  0.1.5 |      - | Install with `CREATE EXTENSION ulid;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| [plcoffee](https://coffeescript.org/)                                                            |  3.1.5 |  3.1.5 |  3.1.8 |      - |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [plls](https://livescript.net/)                                                                  |  3.1.5 |  3.1.5 |  3.1.8 |      - |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [plpgsql](https://www.postgresql.org/docs/16/plpgsql.html)                                       |    1.0 |    1.0 |    1.0 |    1.0 | Pre-installed with Postgres.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| [plpgsql_check](https://pgxn.org/dist/plpgsql_check/)                                            | 2.7.11 | 2.7.11 | 2.7.11 |      - |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [plv8](https://github.com/plv8/plv8)                                                             | 3.1.10 | 3.1.10 | 3.1.10 |  3.2.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [postgis](/docs/extensions/postgis)                                                              |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [postgis_raster](https://postgis.net/docs/RT_reference.html)                                     |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [postgis_sfcgal](/docs/extensions/postgis-related-extensions#postgis-sfcgal)                     |  1.3.8 |  1.3.8 |  1.3.8 |  3.5.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [postgis_tiger_geocoder](/docs/extensions/postgis-related-extensions#postgis-tiger-geocoder)     |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 | Cannot be installed using the Neon SQL Editor. Use your `psql` user credentials to install this extension.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [postgis_topology](https://www.postgis.net/docs/Topology.html)                                   |  3.3.3 |  3.3.3 |  3.3.3 |  3.5.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [prefix](https://github.com/dimitri/prefix)                                                      |  1.2.0 |  1.2.0 |  1.2.0 |  1.2.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [rdkit](https://github.com/rdkit/rdkit)                                                          |  4.3.0 |  4.3.0 |  4.3.0 |  4.6.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [refint (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                         |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [rum](https://github.com/postgrespro/rum)                                                        |    1.3 |    1.3 |    1.3 |  1.3.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [seg](https://www.postgresql.org/docs/16/seg.html)                                               |    1.4 |    1.4 |    1.4 |    1.4 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [semver](https://pgxn.org/dist/semver)                                                           | 0.32.1 | 0.32.1 | 0.32.1 | 0.40.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [tablefunc](https://www.postgresql.org/docs/16/tablefunc.html)                                   |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [tcn](https://www.postgresql.org/docs/16/tcn.html)                                               |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [timescaledb](/docs/extensions/timescaledb)                                                      | 2.10.1 | 2.10.1 | 2.13.0 | 2.17.1 | Only Apache-2 licensed features are supported. Compression is not supported.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| [tsm_system_rows](https://www.postgresql.org/docs/16/tsm-system-rows.html)                       |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [tsm_system_time](https://www.postgresql.org/docs/16/tsm-system-time.html)                       |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [unaccent](https://www.postgresql.org/docs/16/unaccent.html)                                     |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [unit](https://github.com/df7cb/postgresql-unit)                                                 |      7 |      7 |      7 |      7 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [uuid-ossp](https://www.postgresql.org/docs/16/uuid-ossp.html)                                   |    1.1 |    1.1 |    1.1 |    1.1 | Double-quote the extension name when installing: `CREATE EXTENSION "uuid-ossp"`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [wal2json](/docs/extensions/wal2json)                                                            |    2.6 |    2.6 |    2.6 |    2.6 | `CREATE EXTENSION` not required. This decoder plugin is available by default but requires enabling [logical replication](/docs/guides/logical-replication-guide) in Neon.                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [xml2](https://www.postgresql.org/docs/current/xml2.html)                                        |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ## Install an extension
 
@@ -61848,7 +62320,6 @@ When Neon releases a new extension or new extension version, a compute restart i
 
 - Neon supports the `uuid-ossp` extension for generating UUIDs instead of the `uuid` extension.
 - The `sslinfo` extension is not supported. Neon handles connections via a proxy that checks SSL.
-- The `pg_cron` extension is not supported. Neon scales to zero when it is not being used, which means that a scheduler that runs inside the database cannot be implemented. Consider using an scheduler that runs externally instead.
 - The `file_fdw` extension is not supported. Files would not remain accessible when Neon scales to zero.
 - The `pg_search` extension is not supported. The extension's storage and change management is built on [Tantivy](https://github.com/quickwit-oss/tantivy), which is currently not supported by Neon.
 
@@ -62284,7 +62755,7 @@ title: The neon extension
 subtitle: An extension for Neon-specific statistics including the Local File Cache hit
   ratio
 enableTableOfContents: true
-updatedOn: '2024-12-11T19:49:53.139Z'
+updatedOn: '2025-01-06T23:37:50.189Z'
 ---
 
 The `neon` extension provides functions and views designed to gather Neon-specific metrics.
@@ -62298,7 +62769,7 @@ The `neon_stat_file_cache` view provides insights into how effectively your Neon
 
 ## What is the Local File Cache?
 
-Neon computes have a Local File Cache (LFC), which is a layer of caching that stores frequently accessed data in the local memory of the Neon compute. Like Postgres [shared buffers](/docs/reference/glossary#shared-buffers), the LFC reduces latency and improves query performance by minimizing the need to fetch data from Neon storage. The LFC acts as an add-on or extension of Postgres shared buffers. In Neon computes, the `shared_buffers` parameter is always set to 128 MB, regardless of compute size. The LFC extends the cache memory to approximately 80% of your compute's RAM. To view the LFC size for each Neon compute size, see [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
+Neon computes have a Local File Cache (LFC), which is a layer of caching that stores frequently accessed data in the local memory of the Neon compute. Like Postgres [shared buffers](/docs/reference/glossary#shared-buffers), the LFC reduces latency and improves query performance by minimizing the need to fetch data from Neon storage. The LFC acts as an add-on or extension of Postgres shared buffers. In Neon computes, the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends the cache memory to approximately 80% of your compute's RAM. To view the LFC size for each Neon compute size, see [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
 
 When data is requested, Postgres checks shared buffers first, then the LFC. If the requested data is not found in the LFC, it is read from Neon storage. Shared buffers and the LFC both cache your most recently accessed data, but they may not cache exactly the same data due to different cache eviction patterns. The LFC is also much larger than shared buffers, so it stores significantly more data.
 
@@ -79246,7 +79717,7 @@ subtitle: Learn about Neon as a managed Postgres service
 enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/compatibility
-updatedOn: '2024-12-13T20:52:57.588Z'
+updatedOn: '2025-01-09T14:12:22.673Z'
 ---
 
 **Neon is Postgres**. However, as a managed Postgres service, there are some differences you should be aware of.
@@ -79279,53 +79750,77 @@ The following table shows parameter settings that are set explicitly for your Ne
 Because Neon is a managed Postgres service, Postgres parameters are not user-configurable outside of a [session, database, or role context](#configuring-postgres-parameters-for-a-session-database-or-role), but if you are a paid plan user and require a different Postgres instance-level setting, you can contact [Neon Support](/docs/introduction/support) to see if the desired setting can be supported.
 </Admonition>
 
-| Parameter                             | Value         | Note                                                                                                                                                                          |
-| ------------------------------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `client_connection_check_interval`    | 60000         |                                                                                                                                                                               |
-| `dynamic_shared_memory_type`          | mmap          |                                                                                                                                                                               |
-| `fsync`                               | off           | Neon syncs data to the Neon Storage Engine to store your data safely and reliably                                                                                             |
-| `hot_standby`                         | off           |                                                                                                                                                                               |
-| `idle_in_transaction_session_timeout` | 300000        |                                                                                                                                                                               |
-| `listen_addresses`                    | '\*'          |                                                                                                                                                                               |
-| `log_connections`                     | on            |                                                                                                                                                                               |
-| `log_disconnections`                  | on            |                                                                                                                                                                               |
-| `log_temp_files`                      | 1048576       |                                                                                                                                                                               |
-| `maintenance_work_mem`                | 65536         | The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size).                                                                              |
-| `max_connections`                     | 112           | The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size).                                                                              |
-| `max_parallel_workers`                | 8             |                                                                                                                                                                               |
-| `max_replication_flush_lag`           | 10240         |                                                                                                                                                                               |
-| `max_replication_slots`               | 10            |                                                                                                                                                                               |
-| `max_replication_write_lag`           | 500           |                                                                                                                                                                               |
-| `max_wal_senders`                     | 10            |                                                                                                                                                                               |
-| `max_wal_size`                        | 1024          |                                                                                                                                                                               |
-| `max_worker_processes`                | 26            | The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size).                                                                              |
-| `password_encryption`                 | scram-sha-256 |                                                                                                                                                                               |
-| `restart_after_crash`                 | off           |                                                                                                                                                                               |
-| `shared_buffers`                      | 128MB         | Neon uses a [Local File Cache (LFC)](/docs/extensions/neon#what-is-the-local-file-cache) in addition to `shared_buffers` to extend cache memory to 80% of your compute's RAM. |
-| `superuser_reserved_connections`      | 4             |                                                                                                                                                                               |
-| `synchronous_standby_names`           | 'walproposer' |                                                                                                                                                                               |
-| `wal_level`                           | replica       | Support for `wal_level=logical` is coming soon. See [logical replication](/docs/introduction/logical-replication).                                                            |
-| `wal_log_hints`                       | off           |                                                                                                                                                                               |
-| `wal_sender_timeout`                  | 10000         |                                                                                                                                                                               |
+| Parameter                             | Value         | Note                                                                                                                                                                                                                                                                           |
+| ------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `client_connection_check_interval`    | 60000         |                                                                                                                                                                                                                                                                                |
+| `dynamic_shared_memory_type`          | mmap          |                                                                                                                                                                                                                                                                                |
+| `fsync`                               | off           | Neon syncs data to the Neon Storage Engine to store your data safely and reliably                                                                                                                                                                                              |
+| `hot_standby`                         | off           |                                                                                                                                                                                                                                                                                |
+| `idle_in_transaction_session_timeout` | 300000        |                                                                                                                                                                                                                                                                                |
+| `listen_addresses`                    | '\*'          |                                                                                                                                                                                                                                                                                |
+| `log_connections`                     | on            |                                                                                                                                                                                                                                                                                |
+| `log_disconnections`                  | on            |                                                                                                                                                                                                                                                                                |
+| `log_temp_files`                      | 1048576       |                                                                                                                                                                                                                                                                                |
+| `maintenance_work_mem`                | 65536         | The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size).                                                                                                                                                                               |
+| `max_connections`                     | 112           | The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size).                                                                                                                                                                               |
+| `max_parallel_workers`                | 8             |                                                                                                                                                                                                                                                                                |
+| `max_replication_flush_lag`           | 10240         |                                                                                                                                                                                                                                                                                |
+| `max_replication_slots`               | 10            |                                                                                                                                                                                                                                                                                |
+| `max_replication_write_lag`           | 500           |                                                                                                                                                                                                                                                                                |
+| `max_wal_senders`                     | 10            |                                                                                                                                                                                                                                                                                |
+| `max_wal_size`                        | 1024          |                                                                                                                                                                                                                                                                                |
+| `max_worker_processes`                | 26            | The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size).                                                                                                                                                                               |
+| `password_encryption`                 | scram-sha-256 |                                                                                                                                                                                                                                                                                |
+| `restart_after_crash`                 | off           |                                                                                                                                                                                                                                                                                |
+| `shared_buffers`                      | 128MB         | Neon uses a [Local File Cache (LFC)](/docs/extensions/neon#what-is-the-local-file-cache) in addition to `shared_buffers` to extend cache memory to 80% of your compute's RAM. The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size). |
+| `superuser_reserved_connections`      | 4             |                                                                                                                                                                                                                                                                                |
+| `synchronous_standby_names`           | 'walproposer' |                                                                                                                                                                                                                                                                                |
+| `wal_level`                           | replica       | Support for `wal_level=logical` is coming soon. See [logical replication](/docs/introduction/logical-replication).                                                                                                                                                             |
+| `wal_log_hints`                       | off           |                                                                                                                                                                                                                                                                                |
+| `wal_sender_timeout`                  | 10000         |                                                                                                                                                                                                                                                                                |
 
 ### Parameter settings that differ by compute size
 
-Of the parameter settings listed above, the `maintenance_work_mem`, `max_connections`, and `max_worker_processes` differ by compute size, which is defined in [Compute Units (CU)](/docs/reference/glossary#compute-unit-cu). The following table shows values for each compute size.
+Of the parameter settings listed above, the `max_connections`, `maintenance_work_mem`,
+`shared_buffers`, and `max_worker_processes` differ by compute size, which is defined in [Compute Units (CU)](/docs/reference/glossary#compute-unit-cu).
+The following table shows values for each compute size. If autoscaling is turned on, the following
+numbers are valid for maximum CU size.
 
-| Compute Size (CU) | `max_connections` | `maintenance_work_mem` | `max_worker_processes` |
-| :---------------- | :---------------- | :--------------------- | :--------------------- |
-| 0.25              | 112               | 64 MB                  | 10                     |
-| 0.50              | 225               | 64 MB                  | 11                     |
-| 1                 | 450               | 67 MB                  | 12                     |
-| 2                 | 901               | 134 MB                 | 14                     |
-| 3                 | 1351              | 201 MB                 | 16                     |
-| 4                 | 1802              | 268 MB                 | 18                     |
-| 5                 | 2253              | 335 MB                 | 20                     |
-| 6                 | 2703              | 402 MB                 | 22                     |
-| 7                 | 3154              | 470 MB                 | 24                     |
-| 8                 | 3604              | 537 MB                 | 26                     |
-| 9                 | 4000              | 604 MB                 | 28                     |
-| 10                | 4000              | 671 MB                 | 30                     |
+| Max. Compute Size | `max_connections` | `maintenance_work_mem` | `max_worker_processes` | `shared_buffers` |
+| :---------------- | :---------------- | :--------------------- | :--------------------- | :--------------- |
+| 0.25              | 112               | 64 MB                  | 12                     | 128 MB           |
+| 0.50              | 225               | 64 MB                  | 13                     | 128 MB           |
+| 1                 | 450               | 67 MB                  | 14                     | 128 MB           |
+| 2                 | 901               | 134 MB                 | 16                     | 230 MB           |
+| 3                 | 1351              | 201 MB                 | 18                     | 343 MB           |
+| 4                 | 1802              | 268 MB                 | 20                     | 456 MB           |
+| 5                 | 2253              | 335 MB                 | 22                     | 569 MB           |
+| 6                 | 2703              | 402 MB                 | 24                     | 682 MB           |
+| 7                 | 3154              | 470 MB                 | 26                     | 796 MB           |
+| 8                 | 3604              | 537 MB                 | 28                     | 909 MB           |
+| 9                 | 4000              | 604 MB                 | 30                     | 1008 MB          |
+| 10                | 4000              | 671 MB                 | 32                     | 1009 MB          |
+| 16                | 4000              | 671 MB                 | 44                     | 1012 MB          |
+
+The formula for `max_connections` is
+
+```go
+compute_size = min(max_compute_size, 8 * min_compute_size)
+max_connections = max(100, min(4000, 450.5 * compute_size))
+```
+
+The formula for `max_worker_processes` is
+
+```go
+max_worker_processes := 12 + floor(2 * max_compute_size)
+```
+
+The formula for `shared_buffers` is
+
+```go
+backends = 1 + max_connections + max_worker_processes
+shared_buffers_mb = max(128, (1023 + backends * 256) / 1024)
+```
 
 <Admonition type="note">
 You can use connection pooling in Neon to increase the number of supported connections. For more information, see [Connection pooling](/docs/connect/connection-pooling).
@@ -79478,7 +79973,7 @@ Neon provides a mirror of the official PostgreSQL documentation on the [Neon doc
 ---
 title: Postgres extensions
 enableTableOfContents: true
-updatedOn: '2024-10-30T23:12:55.612Z'
+updatedOn: '2025-01-10T15:44:20.070Z'
 ---
 
 Explore supported Postgres extensions by category. Also see:
@@ -79749,6 +80244,8 @@ Explore supported Postgres extensions by category. Also see:
 <a href="https://www.postgresql.org/docs/16/lo.html" description="Provides support for managing large objects (LOBs) in Postgres, including a data type lo and a trigger lo_manage" icon="wrench">lo</a>
 
 <a href="/docs/extensions/neon-utils" description="Provides a function for monitoring how Neon's Autoscaling feature allocates vCPU in response to workload" icon="wrench">neon_utils</a>
+
+<a href="https://github.com/citusdata/pg_cron" description="Lets you schedule and manage periodic jobs directly in your Postgres database" icon="wrench">pg_cron</a>
 
 <a href="https://pgtap.org/documentation.html" description="A unit testing framework for Postgres, enabling sophisticated testing of database queries and functions" icon="wrench">pgtap</a>
 
@@ -80526,12 +81023,12 @@ subtitle: Learn how to get a variety of consumption metrics using the Neon API
 redirectFrom:
   - /docs/guides/metrics-api
 enableTableOfContents: true
-updatedOn: '2024-11-25T17:33:22.608Z'
+updatedOn: '2024-12-17T13:59:40.781Z'
 ---
 
 Using the Neon API, you can query a range of account-level and project-level metrics to help gauge your resource consumption.
 
-To learn more about which metrics you can get reports on, see [Available metrics](/docs/guides/partner-consumption-limits#available-metrics) on the [Manage billing with consumption limits](/docs/manage/partner-consumption-limits) page.
+To learn more about which metrics you can get reports on, see [Available metrics](/docs/guides/partner-consumption-limits#available-metrics) on the [Configure consumption limits](/docs/guides/partner-consumption-limits) page.
 
 Here are the different ways to retrieve these metrics, depending on how you want them aggregated or broken down:
 
@@ -80866,7 +81363,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2024-12-13T20:52:57.589Z'
+updatedOn: '2025-01-06T23:37:50.191Z'
 ---
 
 ## access token
@@ -81123,7 +81620,7 @@ A feature provided by some hypervisors, such as QEMU, that allows the transfer o
 
 ## Local File Cache
 
-The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` setting is always 128 MB, regardless of compute size. The LFC extends cache memory up to 80% of your compute's RAM.
+The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 80% of your compute's RAM.
 
 ### logical data size
 
@@ -81339,7 +81836,7 @@ A cloud-based development model that enables developing and running applications
 
 ## shared buffers
 
-A memory area in Postgres for caching blocks of data from storage (disk on standalone Postgres or Pageservers in Neon). This cache enhances the performance of database operations by reducing the need to access the slower storage for frequently accessed data. Neon uses a [Local File Cache (LFC)](#local-file-cache), which acts as an add-on or extension of shared buffers. In Neon the `shared_buffers` setting is always 128 MB, regardless of compute size. The LFC extends cache memory up to 80% of your compute's RAM. For additional information about shared buffers in Postgres, see [Resource Consumption](https://www.postgresql.org/docs/current/runtime-config-resource.html), in the Postgres documentation.
+A memory area in Postgres for caching blocks of data from storage (disk on standalone Postgres or Pageservers in Neon). This cache enhances the performance of database operations by reducing the need to access the slower storage for frequently accessed data. Neon uses a [Local File Cache (LFC)](#local-file-cache), which acts as an add-on or extension of shared buffers. In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 80% of your compute's RAM. For additional information about shared buffers in Postgres, see [Resource Consumption](https://www.postgresql.org/docs/current/runtime-config-resource.html), in the Postgres documentation.
 
 ## SNI
 
@@ -81460,7 +81957,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2024-12-13T20:52:57.589Z'
+updatedOn: '2025-01-06T23:37:50.191Z'
 ---
 
 ## access token
@@ -81717,7 +82214,7 @@ A feature provided by some hypervisors, such as QEMU, that allows the transfer o
 
 ## Local File Cache
 
-The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` setting is always 128 MB, regardless of compute size. The LFC extends cache memory up to 80% of your compute's RAM.
+The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 80% of your compute's RAM.
 
 ### logical data size
 
@@ -81933,7 +82430,7 @@ A cloud-based development model that enables developing and running applications
 
 ## shared buffers
 
-A memory area in Postgres for caching blocks of data from storage (disk on standalone Postgres or Pageservers in Neon). This cache enhances the performance of database operations by reducing the need to access the slower storage for frequently accessed data. Neon uses a [Local File Cache (LFC)](#local-file-cache), which acts as an add-on or extension of shared buffers. In Neon the `shared_buffers` setting is always 128 MB, regardless of compute size. The LFC extends cache memory up to 80% of your compute's RAM. For additional information about shared buffers in Postgres, see [Resource Consumption](https://www.postgresql.org/docs/current/runtime-config-resource.html), in the Postgres documentation.
+A memory area in Postgres for caching blocks of data from storage (disk on standalone Postgres or Pageservers in Neon). This cache enhances the performance of database operations by reducing the need to access the slower storage for frequently accessed data. Neon uses a [Local File Cache (LFC)](#local-file-cache), which acts as an add-on or extension of shared buffers. In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 80% of your compute's RAM. For additional information about shared buffers in Postgres, see [Resource Consumption](https://www.postgresql.org/docs/current/runtime-config-resource.html), in the Postgres documentation.
 
 ## SNI
 
@@ -82056,25 +82553,55 @@ redirectFrom:
   - /docs/cloud/roadmap
   - /docs/conceptual-guides/roadmap
   - /docs/reference/roadmap
-updatedOn: '2024-12-13T00:44:50.987Z'
+updatedOn: '2025-01-10T15:44:20.072Z'
 ---
 
 Our development teams are focused on helping you ship faster with Postgres. This roadmap describes committed features we're working on right now, what we delivered recently, and a peek at what's on the horizon.
 
 ## What we're working on now
 
-<Admonition type="tip" title="stay tuned for 2025">
-As 2024 comes to a close, you might have noticed that our "working on now" list is winding down. But don't worry — exciting plans for the new year are just around the corner. Stay tuned for updates!
-</Admonition>
-
 Here's a snapshot of what we're working on now:
 
-- **Schema-only branches**: A feature that lets you create branches that only include your database schema—useful for workflows involving sensitive data.
-- **HIPAA compliance**: We are actively working toward achieving HIPAA readiness, with a target completion by the end of Q2 2025. For more about Neon's compliance milestones, see [Compliance](/docs/security/compliance).
+- **Schema-only branches**: Create branches that include only your database schema—ideal for workflows involving sensitive data.
+- **HIPAA compliance**: We are working toward HIPAA readiness, targeting completion by the end of Q2 2025. Learn more about Neon's compliance milestones on our [Compliance page](/docs/security/compliance).
+- **More regions**: London 🇬🇧 and São Paulo 🇧🇷 are locked in for Q1 2025. Brazilian developers: we’d love to sponsor meetups and connect! Share your thoughts via the [Feedback form](https://console.neon.tech/app/projects?modal=feedback) in the Neon Console or our [Discord feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042). If you'd like support in other regions, please [submit a request](/docs/introduction/regions#request-a-region).
+- **A GitHub Copilot extension**: This new extension provides chat-based access to the latest Neon documentation with repository context, making it easier to configure Neon for your project.
+- **Improved migration assistance**: The [Neon Migration Assistant](/docs/import/migration-assistant) was introduced in Q4 2024. More improvements are coming in 2025 to make data migration to Neon even easier and faster.
+- **Inbound logical replication GA**: Neon supports Postgres logical replication for inbound and outbound data. Outbound replication (from Neon) is GA. In 2025, inbound replication (to Neon) will also reach GA.
 
-If you have other feature ideas, [let us know](#share-your-thoughts).
+Have other feature ideas? [Let us know](#share-your-thoughts).
 
-## What we've just launched
+## What's on the horizon
+
+And here's a quick list of what we'll be taking on in the near future:
+
+- **Postgres for AI agents**: [Replit partnered with Neon to back Replit Agents](https://neon.tech/blog/looking-at-how-replit-agent-handles-databases), creating thousands of Postgres databases. If you're building AI agents that interact with infrastructure, [connect with us](https://neon.tech/agent-design-partner) as we seek design partners. Learn more in [Postgres for AI Agents](https://neon.tech/use-cases/ai-agents).
+- **Staging environments**: We're simplifying PII data anonymization to make Neon an ideal staging environment for your team's app development.
+- **Scheduled backups**: Regular backups with point-in-time recovery.
+- **Exportable logs and traces**: We're exploring features to integrate Neon with monitoring platforms via Postgres log and trace exports.
+- **Monitoring platform support**: After adding [Datadog integration](/docs/guides/datadog#steps-to-integrate-datadog-with-neon) in 2024, we're planning support for additional platforms.
+- **Foreign Data Wrapper (FDW) support**: Introducing cross-database querying capabilities.
+- **Neon on Azure GA**: Currently in public preview, we're targeting a GA release with deeper Azure integration.
+- **Larger computes GA**: Autoscaling up to 16 vCPUs and fixed compute sizes up to 56 vCPUs are currently in Beta; GA support is planned for 2025.
+- **Private Networking on Azure**: Following on [AWS PrivateLink support](/docs/guides/neon-private-networking), Azure Private Link is next.
+- **Maintenance management**: Adding user-managed maintenance windows for updates, patches, and Postgres minor upgrades.
+- **Vercel preview deployment support**: Expanding the [Neon Postgres Previews Integration](/docs/guides/vercel-previews-integration) to support preview deployments in the [Neon Native Vercel Integration](/docs/guides/vercel-native-integration).
+- **Console navigation improvements**: Enhancing navigation for multi-project organizations, branch clarity, and better SQL Editor and Tables page interactions.
+
+## What we've launched recently
+
+- **Schema Diff API**: Neon now supports schema checks in agentic systems and deployment pipelines with the new schema diff API endpoint. Learn more about [Schema Diff](/docs/guides/schema-diff), which is also available via the console and CLI.
+- **Neon Identity (Early Access)**: Sync user profiles from your auth provider to your database automatically. Currently in Early Access. See [Neon Identity](/docs/guides/neon-identity) for details.
+- **Postgres 17**: Now the default version for all newly created projects.
+- **Support for `pg_cron`**: Schedule and manage periodic jobs directly in your Postgres database with this extension.
+- **Neon on AgentStack**: Integrate Neon with AgentStack to enable AI agents to create ephemeral or long-lived Postgres instances for structured data storage. Explore the [Neon tool](https://github.com/AgentOps-AI/AgentStack/blob/main/agentstack/templates/crewai/tools/neon_tool.py) in AgentStack's repo.
+- **Neon on Composio**: Integrate Neon's API with LLMs and AI agents via Composio. Check out the [Composio integration](https://composio.dev/tools?search=neon).
+- **Higher connection limits for autoscaling configurations**: Postgres `max_connections` now scales with your maximum compute size. [Learn more](/docs/connect/connection-pooling#connection-limits-without-connection-pooling).
+- **PgBouncer `default_pool_size` scaling**: The `default_pool_size` setting now scales according to your compute's `max_connections` setting. Previously, it was fixed at `64`. [Learn more](/docs/connect/connection-pooling#neon-pgbouncer-configuration-settings).
+- **Neon Auth.js Adapter**: Simplify authentication with the new [Auth.js Neon Adapter](https://authjs.dev/getting-started/adapters/neon).
+
+<details>
+<summary>Launched in 2024</summary>
 
 - **Larger computes**: Autoscaling now supports up to 16 vCPUs, and fixed compute sizes up to 56 vCPUs are available in Beta.
 - **A Model Context Protocol (MCP) server for Neon**: We released an open-source MCP server, enabling AI agents to interact with Neon’s API using natural language for tasks like database creation, SQL queries, and migrations. Read the blog post: [Let Claude Manage Your Neon Databases: Our MCP Server is Here](https://neon.tech/blog/let-claude-manage-your-neon-databases-our-mcp-server-is-here).
@@ -82090,7 +82617,7 @@ If you have other feature ideas, [let us know](#share-your-thoughts).
 - **Neon Authorize**: This feature integrates with third-party **authentication providers** like Auth0, Clerk, and Stack Auth to bring authorization to your code base by leveraging Postgres [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html). [Read the announcement](https://neon.tech/blog/introducing-neon-authorize) and [check out the docs](/docs/guides/neon-authorize).
 - **Neon on Azure**: You can deploy Neon databases on Azure, starting with the East US 2 region. This marks the first milestone on our Azure roadmap—many more exciting updates are on the way, including deeper integrations with the Azure ecosystem. [Read the announcement](https://neon.tech/blog/first-azure-region-available-in-neon).
 - **End-to-end RAG pipelines in Postgres**: Our new and open source [pgrag](/docs/extensions/pgrag) extension lets you create end-to-end Retrieval-Augmented Generation (RAG) pipelines in Postgres. There's no need for additional programming languages or libraries. With the functions provided by `pgrag`, you can build a complete RAG pipeline directly within your SQL client.
-- **Support for Analytics with pg_mooncake**: This new extension, brought to the community by [mooncake.dev](https://mooncake.dev/), introduces native columnstore tables with DuckDB execution for _fast_ analytics directly in Postgres. [Read the announcement](https://mooncake.dev/blog/3).
+- **Support for Analytics with pg_mooncake**: This new extension, brought to the community by [mooncake.dev](https://mooncake.dev/), introduces native columnstore tables with DuckDB execution for _fast_ analytics directly in Postgres. [Read the announcement](https://www.mooncake.dev/blog/pgmooncake-neon).
 - **Datadog integration**: Scale and Business plan users can now export Neon metrics to Datadog.
 - **Deletion of backup branches created by restore operations**: To help minimize storage and keep your Neon project organized, we added support for deleting obsolete backup branches created by [restore](/docs/guides/branch-restore) operations. Previously, these backup branches could not be removed. [Learn more](/docs/guides/branch-restore#deleting-backup-branches).
 - **Read Replicas on the Free Plan**: Read Replicas are now available to all Neon users. [Read the announcement](https://neon.tech/blog/create-read-replicas-in-the-free-plan)
@@ -82102,18 +82629,9 @@ If you have other feature ideas, [let us know](#share-your-thoughts).
 - **A new Business plan with more compute and storage**: This new plan provides higher storage and compute allowances (500 GB-month storage and 1,000 compute hours) in addition to all of Neon's advanced features. It also offers potential cost savings for customers requiring more storage than our Scale plan provides. To learn more, please refer to our [Pricing](https://neon.tech/pricing) page and [Plans](/docs/introduction/plans) documentation.
 - **Data migration support with inbound logical replication**: We've introduced inbound logical replication as the first step toward enabling seamless, low-downtime migrations from your current database provider to Neon. This feature allows you to use Neon as your development environment, taking advantage of developer-friendly tools like branching and our [GitHub integration](/docs/guides/neon-github-integration), even if you keep production with your existing provider. To get started, explore our guides for replicating data from AlloyDB, Aurora, CloudSQL, and RDS. See [Replicate data to Neon](/docs/guides/logical-replication-guide#replicate-data-to-neon). Inbound logical replication also supports migrating data between Neon projects, useful for version, region, or account migrations. See [Replicate data from one Neon project to another](/docs/guides/logical-replication-neon-to-neon).
 
+</details>
+
 For more of the latest features and fixes, check our [Changelog](/docs/changelog), published weekly. Or watch for our Changelog email, also sent out weekly. You can also subscribe to updates using our [RSS feed](/docs/changelog/rss.xml).
-
-## What's on the horizon
-
-And here's a quick list of what we'll be taking on in the near future:
-
-- **More regions**: Let's us know where you would like to see Neon next: [Request a region](/docs/introduction/regions#request-a-region).
-- **Postgres for AI agents**: [Replit partnered with Neon to back Replit Agents](https://neon.tech/blog/looking-at-how-replit-agent-handles-databases), which are already creating thousands of Postgres databases. If you’re building an AI agent that interacts with infrastructure, [we’d like to connect with you](https://neon.tech/agent-design-partner) — we’re looking for design partners in this space. For more, see [Postgres for AI Agents](https://neon.tech/use-cases/ai-agents).
-- **Staging Environments**: A critical part of making it easy for you to use Neon as the staging environment for your team's app development &#8212; simple, robust anonymization of PII data. We're working on it.
-- **Snapshots**: Create regularly scheduled snapshots as a way to archive your database &#8212; a cost-effective alternative to long-lived branches.
-- **Support for exporting logs and traces**: We'd like to help users further integrate Neon into their monitoring platforms and services with exportable Postgres logs and traces.
-- **Foreign Data Wrapper (FDW) support**: Add functionality to enable cross-database querying capability.
 
 ## Join the Neon Early Access Program
 
@@ -82166,27 +82684,40 @@ For everything post-GA, please refer to our [Changelog](/docs/changelog) and the
 title: Neon community
 subtitle: Learn how to get involved in the Neon community
 enableTableOfContents: true
-updatedOn: '2024-01-11T14:49:37.558Z'
+updatedOn: '2024-12-31T16:41:10.143Z'
 ---
 
-Neon has an enthusiastic and dynamic user community worldwide. Here's how you can get involved:
+Neon is [open source](/docs/get-started-with-neon/why-neon#neon-is-open-source) and has an enthusiastic user community worldwide. Here's how you can get involved:
 
 ## Contribute
 
-There are a few ways you can contribute to the Neon community:
+There are many ways to contribute to the Neon community:
 
-- **Documentation**: Offer suggestions, or even write new guides, to assist users working with and integrating Neon. See our [Documentation Contribution Guide](/docs/community/contribution-guide) to get started.
-- **Community Guides**: Share your expertise by writing comprehensive guides on various topics related to Neon. These guides can help fellow developers learn new techniques and best practices. Submit your guides for addition to our [Community Guides](https://neon.tech/guides) page on the Neon website. You can do so by forking the [Neon website repository](https://github.com/neondatabase/website) and creating a PR to add your guide to the [/content/guides](https://github.com/neondatabase/website/tree/main/content/guides) directory.
-- **Examples and applications**: Support fellow developers by sharing new examples and applications that show how to integrate Neon with different tools and platforms. Share your examples by posting a link to our [Discord Server](https://discord.gg/92vNTzKDGp).
-- **Code contributions**: Learn about Neon's architecture by assisting with bug fixes, contributing code, or proposing new features in [Neon's GitHub repositories](https://github.com/neondatabase).
+- **Neon Docs**: Share suggestions, contribute content, or write new guides to help others working with Neon. Check out our [Documentation Contribution Guide](/docs/community/contribution-guide) to get started.
+- **Community Guides**: Share your knowledge by writing a guide about Neon or Postgres. These guides can help developers learn new technologies, techniques, and best practices. Submit your guide to our [Community Guides](https://neon.tech/guides) page by forking the [Neon website repository](https://github.com/neondatabase/website) and creating a PR to add it to the [/content/guides](https://github.com/neondatabase/website/tree/main/content/guides) directory.
+- **Examples and applications**: Share examples and applications that demonstrate how to integrate Neon with different tools and platforms. Post your examples on our [Discord Server](https://discord.gg/92vNTzKDGp) or contribute to the [Neon examples repository](https://github.com/neondatabase/examples).
+- **Code contributions**: Contribute to Neon's development by fixing bugs, proposing new features, or submitting code to [Neon's GitHub repositories](https://github.com/neondatabase). It's a great way to learn about Neon's architecture.
 
-## Join the discussion
+## Join the Discussion
 
-Join the discussion and share your knowledge on our Discord Server and on X (Twitter). Additionally, subscribe to the Neon YouTube channel for Neon videos and presentations.
+Connect with the community and share your insights on our Discord Server and X (Twitter). Also, subscribe to the Neon YouTube channel for videos and presentations.
 
 - [Neon Discord Server](https://discord.gg/92vNTzKDGp)
 - [X (Twitter)](https://twitter.com/neondatabase)
-- [Neon Youtube](https://www.youtube.com/@neondatabase)
+- [Neon YouTube](https://www.youtube.com/@neondatabase)
+
+## Join the Neon Creator Program
+
+Are you a developer using Postgres to teach, build, or create content for others? The Neon Creator program offers unique opportunities to collaborate, grow, and connect with the Neon team and community.
+
+**Why join?**
+
+- Get early access to new features.
+- Participate in feedback sessions with the Neon team.
+- Collaborate on videos, blog posts, or talks.
+- Join an exclusive Discord channel for Creators.
+
+[Apply to become a Neon Creator](https://neon.tech/creators)
 
 
 # Docs Contribution Guide
