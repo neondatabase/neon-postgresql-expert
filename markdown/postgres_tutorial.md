@@ -333,7 +333,7 @@ PostgreSQL supports the most popular programming languages:
 - Python
 - Java
 - C\#
-- C/C\+
+- C/C\+\+
 - Ruby
 - JavaScript (Node.js)
 - Perl
@@ -10530,7 +10530,7 @@ WHERE
     SELECT
       salary
     FROM
-      employees
+      managers
   );
 ```
 
@@ -30175,9 +30175,9 @@ Note that lexemes are words without the variation created by suffixes, for examp
 For example, the following uses the `to_tsvector()` function to convert the words `watches`, `watched`, and `watching` to `tsvector`:
 
 ```sql
-SELECT to_tsvector('waches'),
-       to_tsvector('wached'),
-       to_tsvector('waching');
+SELECT to_tsvector('watches'),
+       to_tsvector('watched'),
+       to_tsvector('watching');
 ```
 
 Output:
@@ -30185,7 +30185,7 @@ Output:
 ```text
  to_tsvector | to_tsvector | to_tsvector
 -------------+-------------+-------------
- 'wach':1    | 'wach':1    | 'wach':1
+ 'watch':1    | 'watch':1    | 'watch':1
 (1 row)
 ```
 
@@ -30202,7 +30202,7 @@ Output:
 ```text
                       to_tsvector
 -------------------------------------------------------
- 'brown':3 'dog':9 'fox':4 'jump':5 'lazi':8 'quick':2
+ 'brown':3 'dog':9 'fox':4 'jump':5 'lazy':8 'quick':2
 (1 row)
 ```
 
@@ -30340,8 +30340,8 @@ Output:
 ```text
  id |                                                body_search
 ----+------------------------------------------------------------------------------------------------------------
-  1 | 'basic':10 'concept':11 'cover':9 'featur':13 'introductori':4 'post':5 'postgresql':7
-  2 | 'advanc':7 'data':14 'delv':5 'effici':11 'manipul':15 'post':3 'postgresql':8 'queri':12 'techniqu':9
+  1 | 'basic':10 'concept':11 'cover':9 'featur':13 'introductory':4 'post':5 'postgresql':7
+  2 | 'advanc':7 'data':14 'delv':5 'effici':11 'manipul':15 'post':3 'postgresql':8 'query':12 'techniqu':9
   3 | 'databas':9 'effici':12 'explor':3 'optim':7 'perform':10 'post':2 'postgresql':8 'strategi':5 'various':4
 (3 rows)
 ```
@@ -30988,7 +30988,7 @@ You can specify whether the trigger is invoked before or after an event. If the 
 
 ## When to use triggers
 
-Triggers are useful in case the database is accessed by various applications, and you want to keep the cross\-functionality within the database that runs automatically whenever the data of the table is modified. For example, if you want to keep the history of data without requiring the application to have logic to check for every event such as `INSERT` or `UDPATE`.
+Triggers are useful in case the database is accessed by various applications, and you want to keep the cross\-functionality within the database that runs automatically whenever the data of the table is modified. For example, if you want to keep the history of data without requiring the application to have logic to check for every event such as `INSERT` or `UPDATE`.
 
 Also, you can use triggers to maintain complex data integrity rules which cannot implement elsewhere except at the database level. For example, when a new row is added into the `customer` table, other rows must be also created in tables of banks and credits.
 

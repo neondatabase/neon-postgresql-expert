@@ -309,13 +309,13 @@ Example file structure:
 To display images using Markdown syntax, use the following syntax: `![alt text](image url)`. Example content in `architecture-overview.md`:
 
 ```md
-![Neon architecture diagram](/guides/conceptual-guides/neon_architecture_2.png)
+![Neon architecture diagram](/guides/images/conceptual-guides/neon_architecture_2.png)
 ```
 
 If you need an image without border to show an annotated piece of UI, use the `"no-border"` attribute as in the example below:
 
 ```md
-![Neon architecture diagram](/guides/conceptual-guides/neon_architecture_2.png 'no-border')
+![Neon architecture diagram](/guides/images/conceptual-guides/neon_architecture_2.png 'no-border')
 ```
 
 With this approach, all images on your guide pages will be displayed both on the production and GitHub preview.
@@ -400,8 +400,8 @@ Create a [markdown file](https://github.com/neondatabase/website/blob/main/conte
 
 ```js
 const sharedMdxComponents = {
-  // name of component: path to component
-  NeedHelp: '../docs/shared-content/need-help',
+  // ConponentName: 'shared-content/component-filename'
+  NeedHelp: 'shared-content/need-help',
 };
 
 export default sharedMdxComponents;
@@ -416,6 +416,20 @@ Insert a shared markdown and render inline.
 - [pg_tiktoken source code on GitHub](https://github.com/kelvich/pg_tiktoken)
 
 <NeedHelp/>
+```
+
+You can pass props to the shared component:
+
+```md
+<ComponentWithProps text="The pgvector extension" />
+```
+
+`component-with-props.md`
+
+```md
+<Admonition type="note" title="Test component with props">
+  {text}
+</Admonition>
 ```
 
 ## Author data
@@ -464,10 +478,7 @@ author: rishi-raj-jain
     "name": "Rishi Raj Jain",
     "position": "Software Engineer",
     "bio": "Technical Writer",
-    "link": {
-      "title": "GitHub",
-      "url": "https://github.com/rishi-raj-jain"
-    }
+    "link": { "title": "GitHub", "url": "https://github.com/rishi-raj-jain" }
   }
 }
 ```
@@ -479,6 +490,413 @@ With this approach, all your data will be displayed in guide's author section.
 For small changes and spelling fixes, we recommend using the GitHub UI because Markdown files are relatively easy to edit.
 
 For larger contributions, consider [running the project locally](../../README.md#getting-started) to see how changes look like before making a pull request.
+
+
+# Building AI Agents with AgentStack and Neon
+
+---
+title: Building AI Agents with AgentStack and Neon
+subtitle: Build a Web scraper AI Agent in minutes with AgentStack, Neon, and Firecrawl
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-04T00:00:00.000Z'
+updatedOn: '2025-02-04T00:00:00.000Z'
+---
+
+The rapid evolution of AI agents has created a key challenge: how to build and deploy agents quickly and efficiently. Imagine creating intelligent agents that can not only perform complex tasks but also interact easily with your data infrastructure, without adding unnecessary complexity to the code.
+
+This guide introduces [**AgentStack**](https://docs.agentstack.sh/introduction), a rapid development framework, and Neon, the serverless Postgres database, and shows how they can be used together to build powerful AI agents with database integration. We'll walk through building a **Web Scraper AI Agent** using AgentStack's CLI and tool integrations.
+
+With AgentStack and Neon, you can generate complete agent workflows, create new agents and tasks with simple commands, and integrate them directly with your data layer. Let's get started.
+
+## What you will build
+
+This example will show you how to:
+
+- Set up an **AgentStack** project.
+- Use the **AgentStack CLI** to generate agents and tasks.
+- Equip your agents with **tools** like **Neon** for data storage and **Firecrawl** for web scraping.
+- Run your agent crew to scrape the [neon.tech/guides](/guides) page, extract blog post metadata (titles, authors, dates) from it, and store it in a Neon Postgres database.
+- Use **AgentOps** for observability of your agent's execution.
+
+## Prerequisites
+
+Before you start building your Web Scraper Agent, ensure you have the following prerequisites in place:
+
+- **Python 3.10 or higher:** Download from [python.org](https://www.python.org/downloads/).
+- **uv package installer (or Poetry):** Recommended for faster dependency installation. Install `uv` as described here: [astral-sh/uv](https://github.com/astral-sh/uv?tab=readme-ov-file#installation). Alternatively, use `poetry`.
+- **AgentStack CLI:** Install the AgentStack Command Line Interface (CLI). Follow the [Getting started with AgentStack](https://docs.agentstack.sh/installation) guide.
+- **Accounts and API Keys:** You will need accounts and API keys for these services:
+  - **OpenAI API key**: We will use OpenAI's `gpt-4o-mini` model to power AI agents. Get an OpenAI API key at [platform.openai.com](https://platform.openai.com).
+  - **Neon account**: Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup). You will need a Neon API key to connect to your Neon database.
+  - **Firecrawl account**: Sign up for a Firecrawl account at [firecrawl.dev](https://firecrawl.dev). You will need a Firecrawl API key to use the web scraping tool.
+  - **AgentOps account**: Sign up for an AgentOps account at [agentops.ai](https://agentops.ai) to leverage agent observability features. You will need an AgentOps API key.
+
+## Building the Web Scraper agent
+
+Let's start building our agent using AgentStack, Neon, and Firecrawl. We'll walk through each step, from initializing the project to running the agent crew.
+
+### Project setup with AgentStack CLI
+
+AgentStack simplifies project setup with its CLI. Let's start by initializing a new AgentStack project.
+
+- **Initialize AgentStack Project:**
+
+  Open your terminal and run the following command to initialize a new AgentStack project named `web_scraper`:
+
+  ```bash
+  agentstack init web_scraper
+  ```
+
+  AgentStack CLI will prompt you to select a template. Choose the **Empty Project** template for this guide.
+
+  ![AgentStack Project Template](/docs/guides/agentstack-default-template.png)
+
+- **Navigate to your project directory and activate the virtual environment:**
+
+  ```bash
+  cd web_scraper && source .venv/bin/activate
+  ```
+
+### Project structure
+
+After initialization, your project directory `web_scraper` will have the following structure:
+
+```
+web_scraper/
+├── agentstack.json     # AgentStack project configuration
+├── pyproject.toml      # Python dependencies
+├── .env                # environment variables file
+├── src/
+│   ├── crew.py         # Defines your agent crew and workflow
+│   ├── main.py         # Main script to run your agent
+│   ├── config/         # Configuration files
+│       ├── agents.yaml   # Agent configurations
+│       └── tasks.yaml    # Task configurations
+```
+
+### Generating agents with AgentStack CLI
+
+We will create 3 agents for our Web Scraper crew:
+
+- **`web_scraper`:** Responsible for web scraping and markdown extraction.
+- **`data_extractor`:** Specialized in extracting structured data from web content.
+- **`content_storer`:** Manages storing extracted data in a Neon Postgres database.
+
+Now, let's generate the agents using the AgentStack CLI.
+
+1. **Generate `web_scraper` agent:**
+
+   ```bash
+   agentstack generate agent web_scraper
+   ```
+
+   When creating the first agent, `agentstack` will ask you to choose a default Large Language Model (LLM). We recommend `openai/gpt-4o-mini` for this guide, as it offers a good balance between performance and cost. You will need to enter this model name manually, as it's not included in the default list.
+
+   ![AgentStack LLM Model](/docs/guides/agentstack-llm-model.png)
+
+2. **Generate `data_extractor` agent:**
+
+   ```bash
+   agentstack generate agent data_extractor
+   ```
+
+3. **Generate `content_storer` agent:**
+
+   ```bash
+   agentstack generate agent content_storer
+   ```
+
+   AgentStack CLI uses simple commands to generate the basic structure for your agents and tasks, significantly speeding up the development process.
+
+### Configuring agents in `agents.yaml`
+
+Open `src/config/agents.yaml` and configure the agents as follows:
+
+```yaml shouldWrap
+web_scraper:
+  role: >-
+    Web scraper specializing in markdown extraction.
+  goal: >-
+    Visit a website and accurately return its content in markdown format.
+  backstory: >-
+    You are a meticulous data entry employee with expertise in web scraping and markdown formatting. Your task is to retrieve website content and present it clearly in markdown.
+  llm: openai/gpt-4o-mini
+data_extractor:
+  role: >-
+    Data extraction expert for web content analysis.
+  goal: >-
+    Analyze web page content and extract structured information
+  backstory: >-
+    You are an expert data analyst skilled in extracting key information from web pages. You are adept at identifying and listing key details such as blog post titles, author names, and publication dates from website content.
+  llm: openai/gpt-4o-mini
+content_storer:
+  role: >-
+    Database engineer
+  goal: >-
+    Store structured web content in a Postgres database, create relevant tables, insert data, and formulate SQL queries to retrieve stored data.
+  backstory: >-
+    You are an expert database engineer. You are skilled in database design, data insertion, and writing efficient SQL queries for data retrieval.
+  llm: openai/gpt-4o-mini
+```
+
+AgentStack uses YAML configuration files to define the roles, goals, and backstories of our agents. This configuration-driven approach makes it easy to modify and extend our agent crew without changing code.
+
+### Generating tasks with AgentStack CLI
+
+Now that we have our agents defined, we need to create tasks for them. Tasks define the specific actions each agent will perform within the agent crew's workflow.
+
+For this example the task for the AI agent is simple: get the list of blog post titles, author names, and publication dates from our [guides page](/guides) and store it in a Postgres database.
+
+We will need three tasks for our Web Scraper crew:
+
+1. **Generate `scrape_site` task:**
+
+   ```bash
+   agentstack generate task scrape_site
+   ```
+
+2. **Generate `extract` task:**
+
+   ```bash
+   agentstack generate task extract
+   ```
+
+3. **Generate `store` task:**
+
+   ```bash
+   agentstack generate task store
+   ```
+
+### Configuring tasks in `tasks.yaml`
+
+Open `src/config/tasks.yaml` and configure the tasks as follows:
+
+```yaml shouldWrap
+scrape_site:
+  description: >-
+    Fetch the content of https://neon.tech/guides in markdown format. Ensure accurate and complete retrieval of website content.
+  expected_output: >-
+    The complete content of the website https://neon.tech/guides, formatted in markdown.
+  agent: >-
+    web_scraper
+extract:
+  description: >-
+    Analyze the provided website content and extract a structured list of blog post titles, author names, and publication dates. Limit the extraction to the first 20 blog posts.
+  expected_output: >-
+    A list of blog post titles, author names, and publication dates extracted from the website content.
+  agent: >-
+    data_extractor
+store:
+  description: >-
+    Store the extracted blog post data into a Postgres database within Neon. Create a table named 'posts' and corresponding schema for the posts and insert them. After inserting the data, formulate and test an SQL query to retrieve all inserted data. Provide the tested SQL query as the output.
+  expected_output: >-
+    A valid and tested SQL query that retrieves all data inserted into the 'posts' table in the Neon database.
+  agent: >-
+    content_storer
+```
+
+Similar to agents, tasks are also configured via YAML, defining the description of the task, the expected output, and the agent assigned to perform it. This makes the workflow easily understandable and modifiable.
+
+### Adding Firecrawl and Neon tools to the Crew
+
+To enable web scraping and data storage capabilities, we will integrate **Firecrawl** and **Neon** tools into our agent crew. We will use Firecrawl for web scraping the `neon.tech/guides` page and Neon for storing the extracted data in a Postgres database.
+
+- Add **Firecrawl** tool using the following command:
+
+  ```bash
+  agentstack tools add firecrawl
+  ```
+
+- Add **Neon** tool using the following command:
+
+  ```bash
+  agentstack tools add neon
+  ```
+
+The `agentstack tools add` command simplifies the integration of tools by automatically updating your project configuration and `crew.py` file to include the necessary tool classes.
+
+#### Understanding Neon Tool actions
+
+AgentStack's Neon tool integration equips the agents with a suite of pre-built actions to interact with Neon serverless Postgres databases. These actions are automatically available to any agent you equip with the Neon tool, like the `content_storer` agent in our example. The Neon tool provides the following actions:
+
+- **`create_database`**: This action allows our agent to create a new Neon project and database on demand. It returns a connection URI, which is essential for subsequent database interactions. By default, it creates a database named `neondb` with the role `neondb_owner`. This is particularly useful for agents that need to manage their own isolated databases or when the database needs to be created as part of the agent workflow.
+
+- **`execute_sql_ddl`**: Agents use this action to execute Data Definition Language (DDL) commands. DDL commands are used to define the database schema, such as creating, altering, or dropping tables. For instance, the `content_storer` agent uses this action to create the `posts` table in the Neon database.
+
+- **`run_sql_query`**: This action enables agents to run Data Manipulation Language (DML) queries like `SELECT`, `INSERT`, `UPDATE`, and `DELETE`. In the example, the `content_storer` agent uses this action to insert the scraped blog post metadata into the `posts` table and to formulate and test a `SELECT` query to retrieve the data. The results from these queries are returned to the agent as formatted strings, allowing the agent to process and reason about the data.
+
+These actions empower our agents to fully manage and utilize Neon databases within their workflows, from database creation and schema definition to data manipulation and retrieval, all without requiring manual coding of database interactions.
+
+#### Understanding Firecrawl Tool actions
+
+AgentStack's Firecrawl tool integration provides the agents with a set of actions to perform web scraping tasks. These actions are readily available to any agent equipped with the Firecrawl tool, like the `web_scraper` agent in our example. The Firecrawl tool offers the following actions:
+
+- **`web_scrape`**: This action allows our agent to scrape the content of a single webpage and retrieve it in markdown format. It's designed for efficiently extracting content from individual URLs when we need the content of a specific page. The agent provides a URL, and Firecrawl returns the webpage's content as markdown text.
+
+- **`web_crawl`**: For more extensive data gathering, the `web_crawl` action enables our agent to initiate a web crawl starting from a given URL. This action not only scrapes the initial URL but also explores and scrapes content from linked pages that are children of the starting URL. It's important to note that the crawl is limited to sublinks of the provided URL, preventing it from venturing to entirely separate sections of a website or different domains. This action is asynchronous and returns a `crawl_id`.
+
+- **`retrieve_web_crawl`**: Since `web_crawl` is an asynchronous operation, we use the `retrieve_web_crawl` action to get the results of a crawl that was initiated previously using the `web_crawl` action. This action requires the `crawl_id` that was returned by the initial `web_crawl` action. It checks the status of the crawl and returns the scraped content once the crawl is complete. Agents can use this action in a loop or after a delay to check for and retrieve crawl results, allowing for more complex workflows where web crawling is part of a longer process.
+
+These actions equip our agents with powerful web scraping capabilities, ranging from simple single-page content extraction to comprehensive crawling of website sections, enabling them to gather web data effectively as part of their tasks.
+
+We can improve the efficiency of our agents by specifying their tool usage in crew.py. Since the `web_scraper` agent only needs firecrawl, the `content_storer` agent only needs neon, and the data_extractor agent needs no tool, assigning these tools directly in the configuration will reduce agent context memory and enable more focused task execution, mirroring human specialization.
+
+Your `src/crew.py` file should now look like this, with the tools integrated into the respective agents:
+
+```python shouldWrap
+from crewai import Agent, Crew, Process, Task
+from crewai.project import CrewBase, agent, crew, task
+import agentstack
+
+
+@CrewBase
+class WebscraperCrew:
+    """web_scraper crew"""
+
+    @agent
+    def web_scraper(self) -> Agent:
+        return Agent(
+            config=self.agents_config["web_scraper"],
+            tools=[*agentstack.tools["firecrawl"]],
+            verbose=True,
+        )
+
+    @agent
+    def data_extractor(self) -> Agent:
+        return Agent(
+            config=self.agents_config["data_extractor"],
+            tools=[],
+            verbose=True,
+        )
+
+    @agent
+    def content_storer(self) -> Agent:
+        return Agent(
+            config=self.agents_config["content_storer"],
+            tools=[*agentstack.tools["neon"]],
+            verbose=True,
+        )
+
+    @task
+    def scrape_site(self) -> Task:
+        return Task(
+            config=self.tasks_config["scrape_site"],
+        )
+
+    @task
+    def extract(self) -> Task:
+        return Task(
+            config=self.tasks_config["extract"],
+        )
+
+    @task
+    def store(self) -> Task:
+        return Task(
+            config=self.tasks_config["store"],
+        )
+
+    @crew
+    def crew(self) -> Crew:
+        """Creates the Test crew"""
+        return Crew(
+            agents=self.agents,
+            tasks=self.tasks,
+            process=Process.sequential,
+            verbose=True,
+        )
+
+```
+
+### Configure API keys in `.env`
+
+To authenticate with OpenAI, Neon, and Firecrawl, you need to configure API keys. Open the `.env` file and fill in your API keys obtained in the [Prerequisites](#prerequisites) section:
+
+```env
+OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+NEON_API_KEY=YOUR_NEON_API_KEY
+FIRECRAWL_API_KEY=YOUR_FIRECRAWL_API_KEY
+AGENTOPS_API_KEY=YOUR_AGENTOPS_API_KEY
+```
+
+### Running the Web Scraper agent
+
+Now that we have set up our agents, tasks, and tools, let's run the agent crew to scrape the `neon.tech/guides` page, extract blog post metadata, and store it in a Neon Postgres database.
+
+```bash
+agentstack run
+```
+
+This command will:
+
+- Initialize the AgentStack environment.
+- Load agent and task configurations.
+- Instantiate the agent crew defined in `src/crew.py`.
+- Execute the tasks in sequence.
+- Utilize the `neon` and `firecrawl` tools within the agents' tasks as defined in `src/crew.py`.
+- Print the final output to your terminal.
+
+You should see the agent's execution logs and the final output, including the final SQL query generated by the `content_storer` agent.
+
+![Web Scraper Agent Output 1](/docs/guides/agentstack-neon-example-output-1.png)
+![Web Scraper Agent Output 2](/docs/guides/agentstack-neon-example-output-2.png)
+
+### Verifying the output
+
+After the agent run completes, check your terminal for the output. It should display the SQL query generated by the `content_storer` agent.
+
+You can verify that the data has been stored in your Neon database by:
+
+- Logging into your Neon account at [console.neon.tech](https://console.neon.tech).
+- Navigating to your project and database.
+- Clicking on the `Tables` tab to view the `posts` table created by the agent.
+
+![Neon SQL Editor](/docs/guides/agentstack-neon-database-data.png)
+
+<Admonition type="info" title="AgentOps: Gain Observability into your AI Agents">
+
+AgentStack integrates with [**AgentOps**](https://www.agentops.ai) by default to provide full observability for your AI agent development. Built by the same team behind AgentStack, AgentOps allows you to:
+
+- **Visualize agent execution:** See step-by-step execution graphs of your agents, making it easy to understand workflows and debug issues.
+- **Track LLM costs:** Monitor your spending on LLM providers to manage costs effectively.
+- **Benchmark Agent performance:** Evaluate agent performance and ensure quality.
+- **Enhance security:** Detect potential vulnerabilities like prompt injection.
+
+![AgentOps Visualization](/docs/guides/agentops-visualization.png)
+
+To use AgentOps, make sure you have your `AGENTOPS_API_KEY` configured in your `.env` file (as covered in the [Prerequisites](#prerequisites)). AgentOps automatically starts tracking your agent executions when you run `agentstack run` because of the `agentops.init()` call in `src/main.py`.
+
+Use AgentOps to gain insights into your agents' behavior and performance, allowing for continuous improvement and optimization.
+
+With a total run cost of only $0.01 in OpenAI credits (as seen in the AgentOps dashboard), this AI agent runs efficiently while requiring no custom code. It avoids complex programming for tasks like web-scraping and SQL queries, making it widely applicable.
+</Admonition>
+
+**Congratulations!** You have successfully built and run a Web Scraper agent using AgentStack, Neon, and Firecrawl, demonstrating how to automate web data extraction and storage into a serverless Postgres database with minimal effort!
+
+## Next Steps
+
+- **Explore more tools:** Browse AgentStack's [community tools](https://docs.agentstack.sh/tools/community), including Perplexity (knowledge retrieval), Composio (platform connections), and Stripe (payments).
+- **Expand your crew:** Add more agents and tasks to handle complex workflows.
+- **Monitor performance:** Use [AgentOps](https://docs.agentops.ai/) to track and optimize execution and costs.
+
+You can find the source code for the application described in this guide on GitHub.
+
+<DetailIconCards>
+    <a href="https://github.com/neondatabase-labs/neon-agenstack-example" description="AgentStack + Neon Example" icon="github">Building AI Agents with AgentStack and Neon</a>
+</DetailIconCards>
+
+## Resources
+
+- [AgentStack Documentation](https://docs.agentstack.sh/introduction)
+- [AgentOps Documentation](https://docs.agentops.ai/)
+- [Firecrawl Documentation](https://docs.firecrawl.dev/introduction)
+- [Firecrawl AgentStack Tool](https://docs.agentstack.sh/tools/tool/firecrawl)
+- [CrewAI Documentation](https://docs.crewai.com/introduction)
+- [Neon AgentStack Tool](https://docs.agentstack.sh/tools/tool/neon)
+- [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api)
+- [Neon API keys](/docs/manage/api-keys#creating-api-keys)
+
+<NeedHelp/>
 
 
 # Querying Neon Postgres with Natural Language via Amazon Q Business
@@ -1927,6 +2345,556 @@ For more information, check out:
 - [Neon Documentation](/docs)
 
 <NeedHelp />
+
+
+# Getting started with AutoGen + Neon
+
+---
+title: Getting started with AutoGen + Neon
+subtitle: A step-by-step guide to building AI agents using AutoGen and Neon
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-12T00:00:00.000Z'
+updatedOn: '2025-02-12T00:00:00.000Z'
+---
+
+This guide demonstrates how to integrate AutoGen with Neon. [AutoGen](https://microsoft.github.io/autogen/stable) is an open-source framework developed by Microsoft for building AI agents that can converse, plan, and interact with tools (APIs). Combining AutoGen with Neon allows AI agents to manage your database, execute SQL queries, and automate data-related tasks.
+
+In this guide, we'll walk through building an AI agent with a practical example: creating a system that retrieves recent machine learning papers from arXiv and stores them in a Neon database. Following this example, you will learn how to:
+
+- Create an AutoGen agent with Neon API integration.
+- Implement database operations (like project creation and SQL queries) as agent tools.
+- Set up a workflow where multiple agents work together to accomplish research tasks.
+
+## Prerequisites
+
+Before you begin, make sure you have the following prerequisites:
+
+- **Python 3.10 or higher:** This guide requires Python 3.10 or a later version. If you don't have it installed, download it from [python.org](https://www.python.org/downloads/).
+
+- **Neon account and API key:**
+
+  - Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup).
+  - After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon.
+
+- **OpenAI account and API key:**
+  - This guide uses the `gpt-4o` model from OpenAI to power the AI agent. If you don't have an OpenAI account, sign up at [platform.openai.com](https://platform.openai.com/).
+  - Generate a new API key from the [OpenAI Platform API keys section](https://platform.openai.com/api-keys). This key allows AutoGen to interact with OpenAI's models.
+
+With these prerequisites in place, you are ready to build your AI agent.
+
+## AutoGen basics
+
+Before we start building your AI agent, let's understand some fundamental concepts of AutoGen.
+
+### What is AutoGen?
+
+AutoGen is a framework designed to simplify the development of applications using LLMs. It allows you to construct AI workflows by creating **conversational agents** that are capable of:
+
+- **Conversation:** Engaging in multi-agent dialogues to solve tasks collaboratively.
+- **Planning:** Developing and executing strategic plans to achieve goals.
+- **Tool utilization:** Integrating with external tools and APIs to extend their capabilities beyond simple text generation, enabling real-world interactions.
+
+### Key components of AutoGen
+
+- **Agents:** The foundational building blocks in AutoGen. Agents are autonomous entities that can:
+
+  - **Receive and process messages:** Accept and understand messages from users or other agents.
+  - **Act autonomously:** Perform tasks, utilize tools, or generate responses based on their programmed logic and received messages.
+  - **Agent types:** AutoGen offers various agent types, including:
+    - **`AssistantAgent`:** A versatile agent powered by an LLM, capable of using tools and designed to be helpful and able to follow instructions. Ideal for general tasks and complex reasoning.
+    - **`CodeExecutorAgent`:** A specialized agent designed to execute code snippets. Useful for tasks requiring script execution or interacting with system commands.
+    - **`UserProxyAgent`:** An agent that serves as an interface for human users. It can relay communications between the user and other agents and can be configured to request human input at specific workflow stages.
+
+- **Teams (Group chat):** AutoGen facilitates forming agent teams to tackle complex problems collaboratively. Key team configurations include:
+
+  - **`RoundRobinGroupChat`:** A straightforward team setup where agents communicate in turns, following a round-robin approach to ensure balanced contribution from each member.
+  - **`SelectorGroupChat`:** A more sophisticated team configuration enabling advanced agent selection mechanisms, including LLM-driven speaker selection for dynamic conversation flow.
+
+- **Tools:** AutoGen agents can leverage tools to interact with external environments or perform specialized functions. Tools can be:
+
+  - **Python functions:** Custom Python functions that agents can call to execute specific actions or computations.
+  - **External APIs:** Integrations with external services, allowing agents to access a wide range of functionalities like web searching.
+
+- **Code execution:** AutoGen equips agents with code execution capabilities, enabling them to perform tasks involving computation, data manipulation, or system interactions, enhancing their problem-solving abilities.
+
+- **Termination conditions:** To effectively manage conversations and workflows, AutoGen allows defining termination conditions. These conditions specify criteria for ending a conversation or task, ensuring efficient resource use and task completion. Examples include:
+  - **`TextMentionTermination`:** Ends the conversation when a predefined text or phrase is detected in the dialogue (e.g., "TERMINATE").
+  - **`MaxMessageTermination`:** Automatically stops the conversation after a set number of messages have been exchanged, preventing infinite loops.
+
+Utilizing these fundamental components, AutoGen provides a robust and adaptable framework for building a diverse array of AI applications, ranging from simple interactive chatbots to intricate, collaborative multi-agent systems.
+
+## Why Neon for AI Agents?
+
+Neon's architecture is particularly well-suited for AI agent development, offering several key advantages:
+
+- **One-Second Provisioning:** Neon databases can be provisioned in about a second. This is _critical_ for AI agents that need to dynamically create databases. Traditional databases, with provisioning times often measured in minutes, create a significant bottleneck. Neon's speed keeps agents operating efficiently.
+
+- **Scale-to-Zero and Serverless Pricing:** Neon's serverless architecture automatically scales databases down to zero when idle, and you only pay for active compute time. This is cost-effective for AI agent workflows, which often involve unpredictable workloads and many short-lived database instances. It enables "database-per-agent" or "database-per-session" patterns without incurring prohibitive costs.
+
+- **Agent-Friendly API:** Neon provides a simple REST API for managing databases, roles, branches, and various other Neon platform operations. This API is easy for AI agents (and human developers) to interact with programmatically, allowing agents to manage their own database infrastructure without complex tooling.
+
+## Building the AI agent
+
+Let's start building your AI agent. First, create a new directory for your project. For example, you can name it `autogen-neon-example`. Open this new folder in your preferred code editor.
+
+### Setting up a virtual environment
+
+Creating a virtual environment is strongly recommended to manage project dependencies in isolation. Use `venv` to create a virtual environment within your project directory:
+
+```bash
+cd autogen-neon-example
+python3 -m venv venv
+source venv/bin/activate   # For macOS/Linux. On Windows, use `venv\Scripts\activate`
+```
+
+### Installing required libraries
+
+Next, install the necessary Python libraries for this project. Create a file named `requirements.txt` in your project directory and add the following dependencies:
+
+```
+autogen-agentchat[openai]
+autogen-ext[openai]
+python-dotenv
+neon-api
+psycopg2-binary
+```
+
+<Admonition type="note">
+`neon-api` is the [Python wrapper for Neon's API](https://github.com/neondatabase/neon-api-python).
+</Admonition>
+
+Install these libraries using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Configuring API keys in `.env`
+
+For secure API key management, create a `.env` file in your project directory and add your API keys as environment variables:
+
+```env
+OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+NEON_API_KEY=YOUR_NEON_API_KEY
+```
+
+**Replace the placeholders** `YOUR_OPENAI_API_KEY` and `YOUR_NEON_API_KEY` with the actual API keys you obtained in the [Prerequisites](#prerequisites) section.
+
+<Admonition type="note">
+    It is crucial to add `.env` to your `.gitignore` file if you are using Git for version control. This prevents your API keys from being inadvertently exposed in your code repository.
+</Admonition>
+
+### Creating the `main.py` file
+
+Create a Python file named `main.py` in your project's root directory and copy the following code into it:
+
+```python
+import asyncio
+import os
+
+import psycopg2
+from autogen_agentchat.agents import AssistantAgent, CodeExecutorAgent
+from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
+from autogen_agentchat.teams import RoundRobinGroupChat
+from autogen_agentchat.ui import Console
+from autogen_ext.code_executors.local import LocalCommandLineCodeExecutor
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+from dotenv import load_dotenv
+from neon_api import NeonAPI
+from psycopg2.extras import RealDictCursor
+
+load_dotenv()
+
+neon_client = NeonAPI(
+    api_key=os.environ["NEON_API_KEY"],
+)
+
+
+def create_database(project_name: str) -> str:
+    """
+    Creates a new Neon project. (this takes less than 500ms)
+    Args:
+        project_name: Name of the project to create
+    Returns:
+        the connection URI for the new project
+    """
+    try:
+        project = neon_client.project_create(project={"name": project_name}).project
+        connection_uri = neon_client.connection_uri(
+            project_id=project.id, database_name="neondb", role_name="neondb_owner"
+        ).uri
+
+        return f"Project/database created, connection URI: {connection_uri}"
+    except Exception as e:
+        return f"Failed to create project: {str(e)}"
+
+
+def run_sql_query(connection_uri: str, query: str) -> str:
+    """
+    Runs an SQL query in the Neon database.
+    Args:
+        connection_uri: The connection URI for the Neon database
+        query: The SQL query to execute
+    Returns:
+        the result of the SQL query
+    """
+    conn = psycopg2.connect(connection_uri)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute(query)
+        conn.commit()
+
+        # Try to fetch results (for SELECT queries)
+        try:
+            records = cur.fetchall()
+            return f"Query result: {records}"
+        except psycopg2.ProgrammingError:
+            # For INSERT/UPDATE/DELETE operations
+            return f"Query executed successfully"
+    except Exception as e:
+        conn.rollback()
+        return f"Failed to execute SQL query: {str(e)}"
+    finally:
+        cur.close()
+        conn.close()
+
+
+async def main() -> None:
+    model_client = OpenAIChatCompletionClient(model="gpt-4o", temperature=0.6)
+
+    assistant = AssistantAgent(
+        name="assistant",
+        system_message="""You are a helpful AI assistant.
+Solve tasks using your coding and language skills.
+You are working with two other agents:
+1. 'code_executor': Use this agent for non-database coding tasks such as general-purpose scripts, file manipulation, and system commands.
+2. 'db_admin': Use this agent for all database-related tasks.
+Do NOT generate or suggest any SQL or database connection code yourself. Clearly mention what needs to be done and send the request to 'db_admin'.
+
+In the following cases, suggest python code (in a python coding block) or shell script (in a sh coding block) for the user to execute.
+1. When you need to collect info, use the code to output the info you need, for example, browse or search the web, download/read a file, print the content of a webpage or a file, get the current date/time, check the operating system. After sufficient info is printed and the task is ready to be solved based on your language skill, you can solve the task by yourself.
+2. When you need to perform some task with code, use the code to perform the task and output the result. Finish the task smartly.
+
+Solve the task step by step if you need to. If a plan is not provided, explain your plan first. Be clear which step uses code, and which step uses your language skill.
+When using code, you must indicate the script type in the code block. The user cannot provide any other feedback or perform any other action beyond executing the code you suggest. The user can't modify your code. So do not suggest incomplete code which requires users to modify. Don't use a code block if it's not intended to be executed by the user.
+If you want the user to save the code in a file before executing it, put # filename: <filename> inside the code block as the first line. Don't include multiple code blocks in one response. Do not ask users to copy and paste the result. Instead, use 'print' function for the output when relevant, try to add print statements while sharing code with the user so it will be used for debugging. Check the execution result returned by the user.
+If the result indicates there is an error, fix the error and output the code again. Suggest the full code instead of partial code or code changes. If the error can't be fixed or if the task is not solved even after the code is executed successfully, analyze the problem, revisit your assumption, collect additional info you need, and think of a different approach to try.
+When you find an answer, verify the answer carefully. Include verifiable evidence in your response if possible.
+Reply 'TERMINATE' in the end when the task is completed by everyone.
+""",
+        model_client=model_client,
+    )
+
+    code_executor = CodeExecutorAgent(
+        name="code_executor",
+        code_executor=LocalCommandLineCodeExecutor(work_dir="coding"),
+        sources=["assistant"],
+    )
+
+    db_admin = AssistantAgent(
+        name="db_admin",
+        system_message="""You are a helpful database admin assistant with access to the following tools:
+1.  **Project Creation:** Create a new Neon project by providing a project name and receive the connection URI.
+2.  **SQL Execution:** Run SQL queries within a Neon database.
+Use these tools to fulfill user requests.  For each step, clearly describe the action taken and its result.  Include the tool output directly in the chat.  When multiple SQL queries are required, combine them into a single grouped query.  Present the output of each individual query within the grouped query's response.
+""",
+        model_client=model_client,
+        tools=[create_database, run_sql_query],
+    )
+
+    # The termination condition is a combination of text termination and max message termination, either of which will cause the chat to terminate.
+    termination = TextMentionTermination("TERMINATE") | MaxMessageTermination(20)
+
+    # The group chat will alternate between the assistant and the code executor.
+    group_chat = RoundRobinGroupChat(
+        [assistant, code_executor, db_admin], termination_condition=termination
+    )
+
+    # `run_stream` returns an async generator to stream the intermediate messages.
+    stream = group_chat.run_stream(
+        task="Get the 10 most recent Machine Learning papers from arXiv. Print the titles and links to the papers in the chat. Save them in a database named 'arxiv_papers'",
+    )
+    await Console(stream)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+Let's take a closer look at the code. While it might seem lengthy at first, we'll break it down into sections to make it easier for you to understand.
+
+### Import necessary libraries
+
+```python
+import asyncio
+import os
+
+import psycopg2
+from autogen_agentchat.agents import AssistantAgent, CodeExecutorAgent
+from autogen_agentchat.conditions import MaxMessageTermination, TextMentionTermination
+from autogen_agentchat.teams import RoundRobinGroupChat
+from autogen_agentchat.ui import Console
+from autogen_ext.code_executors.local import LocalCommandLineCodeExecutor
+from autogen_ext.models.openai import OpenAIChatCompletionClient
+from dotenv import load_dotenv
+from neon_api import NeonAPI
+from psycopg2.extras import RealDictCursor
+
+load_dotenv()
+
+neon_client = NeonAPI(
+    api_key=os.environ["NEON_API_KEY"],
+)
+```
+
+This section imports all the Python libraries required for the script. These include libraries for AutoGen agents, Neon API interaction, SQL execution, environment variable management, and asynchronous operations. It also initializes the Neon API client using your API key loaded from the `.env` file.
+
+### Define the tools for Agent interaction
+
+To enable agents to interact with the Neon database, we define specific tools. In this example, we create two primary tools: `create_database` and `run_sql_query`.
+
+#### Define `create_database` tool
+
+```python
+def create_database(project_name: str) -> str:
+    """
+    Creates a new Neon project. (this takes less than 500ms)
+    Args:
+        project_name: Name of the project to create
+    Returns:
+        the connection URI for the new project
+    """
+    try:
+        project = neon_client.project_create(project={"name": project_name}).project
+        connection_uri = neon_client.connection_uri(
+            project_id=project.id, database_name="neondb", role_name="neondb_owner"
+        ).uri
+
+        return f"Project/database created, connection URI: {connection_uri}"
+    except Exception as e:
+        return f"Failed to create project: {str(e)}"
+```
+
+This Python function defines a tool that allows agents to create new Neon projects programmatically using the `neon_api_client`.
+
+- It accepts `project_name: str` as an argument, which specifies the name for the new Neon project.
+- It utilizes `neon_client.project_create()` to send a request to the Neon API to create a new project.
+- Upon successful project creation, it retrieves the connection URI for the newly created Neon database using `neon_client.connection_uri()`.
+- It returns a formatted string that confirms the project and database creation and includes the connection URI, which is essential for connecting to the database.
+- In case of any errors during project creation, it catches the exception and returns an error message, aiding in debugging and error handling.
+
+#### Define `run_sql_query` tool
+
+```python
+def run_sql_query(connection_uri: str, query: str) -> str:
+    """
+    Runs an SQL query in the Neon database.
+    Args:
+        connection_uri: The connection URI for the Neon database
+        query: The SQL query to execute
+    Returns:
+        the result of the SQL query
+    """
+    conn = psycopg2.connect(connection_uri)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute(query)
+        conn.commit()
+
+        # Try to fetch results (for SELECT queries)
+        try:
+            records = cur.fetchall()
+            return f"Query result: {records}"
+        except psycopg2.ProgrammingError:
+            # For INSERT/UPDATE/DELETE operations
+            return f"Query executed successfully"
+    except Exception as e:
+        conn.rollback()
+        return f"Failed to execute SQL query: {str(e)}"
+    finally:
+        cur.close()
+        conn.close()
+```
+
+This Python function is defined as a tool for agents to execute SQL queries directly against a Neon database.
+
+- It takes two arguments: `connection_uri: str`, which is the URI string required to establish a database connection, and `query: str`, the SQL query intended for execution.
+- It establishes a connection to the Neon database using `psycopg2.connect(connection_uri)`
+- It creates a cursor object using `conn.cursor(cursor_factory=RealDictCursor)`. The `RealDictCursor` is specified to fetch query results as dictionaries, which is often more convenient for data manipulation in Python.
+- It executes the provided SQL query using `cur.execute(query)`.
+- It includes error handling for SQL query execution. If any exception occurs, it rolls back the transaction using `conn.rollback()` and returns an error message.
+
+### Define `main` asynchronous function
+
+```python
+async def main() -> None:
+    model_client = OpenAIChatCompletionClient(model="gpt-4o", temperature=0.6)
+
+    assistant = AssistantAgent(
+        name="assistant",
+        system_message="""... (system message content)""",
+        model_client=model_client,
+    )
+
+    code_executor = CodeExecutorAgent(
+        name="code_executor",
+        code_executor=LocalCommandLineCodeExecutor(work_dir="coding"),
+        sources=["assistant"],
+    )
+
+    db_admin = AssistantAgent(
+        name="db_admin",
+        system_message="""... (system message content)""",
+        model_client=model_client,
+        tools=[create_database, run_sql_query],
+    )
+
+    termination = TextMentionTermination("TERMINATE") | MaxMessageTermination(20)
+
+    group_chat = RoundRobinGroupChat(
+        [assistant, code_executor, db_admin], termination_condition=termination
+    )
+
+    stream = group_chat.run_stream(
+        task="Get the 10 most recent Machine Learning papers from arXiv. Print the titles and links to the papers in the chat. Save them in a database named 'arxiv_papers'",
+    )
+    await Console(stream)
+```
+
+This `async def main() -> None:` function is the core of your script, where you set up and orchestrate the AutoGen agents to perform the desired task. Let's break down what happens inside:
+
+- **Initialize model client:**
+
+  ```python
+  model_client = OpenAIChatCompletionClient(model="gpt-4o", temperature=0.6)
+  ```
+
+  This line initializes the OpenAI model client, specifying `gpt-4o` as the LLM to be used. `OpenAIChatCompletionClient` is configured to interact with OpenAI's API, using the API key you've set up.
+
+- **Create `assistant` agent:**
+
+  ```python
+  assistant = AssistantAgent(
+      name="assistant",
+      system_message="""... (system message)""",
+      model_client=model_client,
+  )
+  ```
+
+  Here, we instantiate the primary agent, `assistant`, using `AssistantAgent`. This agent is designed to be the main problem solver. The `system_message` is a crucial part of its configuration, defining its role, capabilities, and instructions on how to interact with other agents and tools. It emphasizes task planning, delegation, and using the specialized `code_executor` and `db_admin` agents for specific sub-tasks.
+
+- **Create `code_executor` agent:**
+
+  ```python
+  code_executor = CodeExecutorAgent(
+      name="code_executor",
+      code_executor=LocalCommandLineCodeExecutor(work_dir="coding"),
+      sources=["assistant"],
+  )
+  ```
+
+  We then create a `CodeExecutorAgent` named `code_executor`. This agent is specialized in executing code and is equipped with `LocalCommandLineCodeExecutor` to run code locally. The `sources=["assistant"]` configuration indicates that this agent is intended to execute code suggested by the `assistant` agent.
+
+- **Create `db_admin` agent:**
+
+  ```python
+  db_admin = AssistantAgent(
+      name="db_admin",
+      system_message="""... (system message content)""",
+      model_client=model_client,
+      tools=[create_database, run_sql_query],
+  )
+  ```
+
+  Next, you create another `AssistantAgent`, `db_admin`, which is specifically designed for database administration tasks. Critically, we equip this agent with the `tools=[create_database, run_sql_query]` we defined earlier. The `system_message` for `db_admin` instructs it on its role as a database admin assistant and how to use the provided tools.
+
+- **Define termination conditions:**
+
+  ```python
+  termination = TextMentionTermination("TERMINATE") | MaxMessageTermination(20)
+  ```
+
+  This sets up termination conditions for your group chat. The conversation will end if either the phrase "TERMINATE" is mentioned by any agent (`TextMentionTermination`) or if the conversation reaches 20 messages (`MaxMessageTermination(20)`), whichever comes first. This is important to prevent conversations from running indefinitely.
+
+- **Create `group_chat`:**
+
+  ```python
+  group_chat = RoundRobinGroupChat(
+      [assistant, code_executor, db_admin], termination_condition=termination
+  )
+  ```
+
+  We then assemble your agents into a team using `RoundRobinGroupChat`. This configuration ensures that the agents (`assistant`, `code_executor`, `db_admin`) will take turns speaking in a round-robin fashion. The `termination_condition=termination` applies the termination conditions we defined earlier to this chat.
+
+- **Run the chat:**
+
+  ```python
+  stream = group_chat.run_stream(
+      task="Get the 10 most recent Machine Learning papers from arXiv. Print the titles and links to the papers in the chat. Save them in a database named 'arxiv_papers'",
+  )
+  await Console(stream)
+  ```
+
+  Finally, we initiate and run the group chat using `group_chat.run_stream()`. We provide the initial `task` for the agents: to retrieve the 10 most recent Machine Learning papers from arXiv, display their titles and links, and then store this information in a database named `arxiv_papers`. `Console(stream)` is used to provide a real-time, streaming output of the conversation to the console, making it easy for you to follow along with the agent's interactions.
+
+    <Admonition type="warning">
+        This guide uses `LocalCommandLineCodeExecutor` for simplicity, which allows AI agents to execute commands directly on your local machine. **This setup is highly insecure and is strictly NOT recommended for production environments.**  Agents could potentially perform harmful actions on your system.
+
+        For production deployments, we strongly advise using `DockerCommandLineCodeExecutor`. This executor runs code within isolated Docker containers, significantly enhancing security by limiting the agent's access to your system.
+
+        Setting up `DockerCommandLineCodeExecutor` involves additional configuration steps, including Docker setup and image management, which are beyond the scope of this getting started guide.  Please refer to the [AutoGen documentation](https://microsoft.github.io/autogen/stable/reference/python/autogen_ext.code_executors.docker.html#autogen_ext.code_executors.docker.DockerCommandLineCodeExecutor) for detailed instructions on how to configure and use `DockerCommandLineCodeExecutor` securely.
+
+    </Admonition>
+
+### Running the example
+
+With your project set up and the `main.py` code in place, you are ready to execute the example.
+
+Open your terminal and run the script using:
+
+```bash
+python main.py
+```
+
+Executing this command will:
+
+- Launch the `main.py` script, initiating the AutoGen agent team.
+- Start the collaborative process as the agents begin to interact to achieve the defined task.
+- Display a real-time, step-by-step conversation between the agents directly in your console.
+- Showcase the `assistant` agent's role in planning and delegating sub-tasks to the `code_executor` (for coding needs) and `db_admin` (for database operations).
+- Ultimately, lead to the retrieval of recent ML papers from arXiv and their storage in a Neon database named `arxiv_papers`, demonstrating a complete workflow.
+
+### Expected output
+
+Upon running `python main.py`, you will see a detailed, turn-based conversation unfold in your console. This output will illustrate the dynamic interaction between your agents.
+
+![Autogen-Neon example output 1](/docs/guides/autogen-neon-output-1.png)
+![Autogen-Neon example output 2](/docs/guides/autogen-neon-output-2.png)
+![Autogen-Neon example output 3](/docs/guides/autogen-neon-output-3.png)
+
+You can verify the successful completion of the task by checking the [Neon Console](https://console.neon.tech/). The `arxiv_papers` project should have been created, and the recent ML papers from arXiv should be stored in the database.
+
+![Output in Neon console](/docs/guides/autogen-neon-console.png)
+
+**Congratulations!** You have successfully built and run an AutoGen agent team that effectively interacts with Neon for database management! This example serves as a foundation for creating more complex AI agents and workflows, enabling you to automate a wide range of tasks and processes.
+
+You can find the source code for the application described in this guide on GitHub.
+
+<DetailIconCards>
+    <a href="https://github.com/neondatabase-labs/autogen-neon-example" description="AutoGen + Neon AI agent example" icon="github">AI Agent with AutoGen and Neon</a>
+</DetailIconCards>
+
+## Resources
+
+- [AutoGen documentation](https://microsoft.github.io/autogen/stable/)
+- [Neon documentation](/docs)
+- [neon_api: Python API wrapper for the Neon API](https://github.com/neondatabase/neon-api-python)
+- [Neon API reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api)
+- [Neon API keys](/docs/manage/api-keys#creating-api-keys)
+- [Postgres for AI Agents](/use-cases/ai-agents)
+
+<NeedHelp/>
 
 
 # Building AI-Powered Chatbots with Azure AI Studio and Neon
@@ -3574,6 +4542,566 @@ You can extend this system by adding more analysis, visualizations, or multi-lan
 <NeedHelp />
 
 
+# Building a Robust JSON API with TypeScript, Postgres, and Azure Functions
+
+---
+title: Building a Robust JSON API with TypeScript, Postgres, and Azure Functions
+subtitle: Learn how to leverage TypeScript, Neon Postgres Databases, and Azure Functions for Next-Level API Performance
+author: jess-chadwick
+enableTableOfContents: true
+createdAt: '2025-02-01T00:00:00.000Z'
+updatedOn: '2025-02-01T00:00:00.000Z'
+---
+
+Creating scalable and maintainable APIs is a cornerstone of modern web development. In this post I will show you how to build a simple (but realistic) Recipes API using one of my favorite combinations of technologies: TypeScript for type safety, Postgres for database storage, and Azure Functions for serverless hosting.
+
+Using this combination gives a great balance of development experience and deploying your application without having to worry about managing your own infrastructure.
+
+> **Installing tooling**
+>
+> Before we get started, you'll need to have the following tools installed:
+>
+> - [Node.js](https://nodejs.org) _(specifically, the npm package manager)_
+> - [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/create-first-function-cli-typescript?pivots=nodejs-model-v4#install-the-azure-functions-core-tools) _(I'm using version 4.x)_
+
+### Setting up the project
+
+Because I're creating an application that will be deployed as an Azure Function, it makes sense to start by using the Azure Functions Core Tools to create a new project
+since that configuration can get a little overwhelming to write out yourself.
+
+I'll run the following command to create a new project folder and initialize it with everything I need to start building my API:
+
+```bash
+mkdir recipes-api
+cd recipes-api
+func init --typescript
+```
+
+That creates all of the configuration and file structure required to build and deploy an Azure Function.
+With that in place the next thing to do is add a function to the project with the command:
+
+```bash
+func new --name RecipesApi --template "HTTP trigger" --authlevel "anonymous"
+```
+
+With all that completed, I have a new Azure Function project with a single function that will respond to HTTP requests at the `/api/RecipesApi` endpoint.
+
+### Introducing an API Framework
+
+Opening up `src/functions/RecipeApi.ts`, I see that it's been implemented using the Azure Functions API.
+This is a great way to get started, but it's a little low-level for my taste, so I'd like to use an API framework to make my life easier.
+
+The first question I have to answer is: which API framework will I use? I'll be honest: for most applications I build, I reach for Express.js.
+It's a mature, flexible, easily extended, and it's got a dirt-simple API which makes it a great choice for long-running servers.
+However, serverless functions are stateless and short-lived, making it important for your deployed code to be as small as possible so that it boots up quickly.
+Not to mention, you generally pay for the amount of memory and the time your function is running so it (quite literally!) pays for your code to be small and execute as fast as possible.
+So while, yes, _no_ Express.js is not particularly slow or gigantic... but there are better options.
+
+Luckily, the creators of Express.js have created a lightweight alternative called [**Hono**](https://hono.dev/) - a fast, minimalist JavaScript web framework. It's got an API that's very similar to Express.js and (my favorite part), has first-class support for TypeScript, so that makes it the perfect choice for serverless functions.
+
+I can install Hono into my existing project by running:
+
+```bash
+npm install hono
+```
+
+However, since I'm running in an Azure Functions project, I need to install the Azure Functions adapter for Hono as well:
+
+```bash
+npm install @marplex/hono-azurefunc-adapter
+```
+
+And now that I have all my dependencies, I'll update my function to use Hono.
+
+First, I'll create a file to hold my application logic, `src/app.ts`:
+
+```typescript
+import { Hono } from 'hono';
+
+const app = new Hono();
+
+app.get('/api', (c) => c.text('Recipes API'));
+
+export default app;
+```
+
+> **IMPORTANT:** note that I'm using the route `/api` since this is the
+> prefix that Azure Functions by default for its HTTP-triggered functions.
+
+Then, replace the contents of `src/functions/RecipeApi.ts` with the following:
+
+```typescript
+import { app } from '@azure/functions';
+import { azureHonoHandler } from '@marplex/hono-azurefunc-adapter';
+import honoApp from '../app';
+
+app.http('RecipesApi', {
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
+  authLevel: 'anonymous',
+  route: '{*proxy}',
+  handler: azureHonoHandler(honoApp.fetch),
+});
+```
+
+Now, I'm not going to go into detail on this snippet because [the Hono docs](https://hono.dev/docs/getting-started/azure-functions) do a pretty great job of it.
+In short, this code replaces the original Azure Function configuration with one that simply hands off all requests to the Hono application.
+
+With everything in place, let's run the app to test it out:
+
+```bash
+npm run start
+```
+
+If everything is working correctly, when you hit the URL provided (mine is `http://localhost:7071/api`) you should see output that looks like this:
+
+```bash
+> curl http://localhost:7071/api
+Recipes API
+```
+
+Now that I've proven the base application is working, I can start building out the API logic.
+
+### Defining Data Models with TypeScript and Zod
+
+A little bit about me: I **adore** TypeScript. I adore it so much that I simply _refuse_ to write regular JavaScript anymore.
+
+So, before I even write any logic, I'm going to define the data models for my API using TypeScript interfaces.
+
+```typescript
+// src/models.d.ts
+export interface Ingredient {
+  id: number;
+  /** the name of the ingredient, e.g. "sugar" */
+  name: string;
+  /** the amount of the ingredient required */
+  quantity_amount: number;
+  /** e.g. 'g', 'ml', 'tbsp', 'cup' */
+  quantity_type: string;
+}
+
+export interface Recipe {
+  id: number;
+  /** the name of the recipe */
+  name: string;
+  /** the description or  */
+  description: string;
+  /** (optional) the URL that this recipe originated from, if applicable */
+  url: string;
+  /** the list of ingredients required for this recipe */
+  ingredients: Ingredient[];
+  /** the list of steps required to prepare this recipe */
+  preparation_steps: string[];
+}
+
+// A simple view of recipe, excluding things like ingredients and preparation steps
+// e.g. for a list of recipes
+export type RecipeOverview = Pick<Recipe, 'id' | 'name' | 'description'>;
+```
+
+Just two models: one for recipes and another to describe the ingredients of those recipes.
+I've also defined a `RecipeOverview` type that's a subset of the `Recipe` type, which I can use when I want to display a list of recipes without all the details.
+Simple enough, right? Now let's prep our database to store this data.
+
+### Creating a Postgres Database with Neon
+
+Postgres is my go-to database for most projects. And using a managed service like [Neon](https://neon.tech/) makes it even easier to get up and running Serverless Progres databases on Azure.
+So, I'm going to head over to my [Neon projects](https://console.neon.tech/app/projects) and create a new project with a Postgres database, then use the following schema to create a table to store my recipes:
+
+```sql
+CREATE TABLE recipes (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    preparation_steps TEXT[] NOT NULL,
+    url VARCHAR(255)
+);
+
+CREATE TABLE ingredients (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    quantity_amount NUMERIC NOT NULL,
+    quantity_type VARCHAR(255) NOT NULL,
+    recipe_id INTEGER REFERENCES recipes(id) ON DELETE CASCADE
+);
+```
+
+Then I'll populate it with some sample data (a delicious chocolate cake recipe!):
+
+```sql
+WITH inserted_recipe AS (
+    INSERT INTO recipes (name, description, preparation_steps)
+    VALUES (
+        'The Best Chocolate Cake EVER',
+        'A delicious chocolate cake',
+        ARRAY[
+            'Preheat oven to 350F',
+            'In a large mixing bowl, mix flour, sugar, cocoa powder',
+            'Add milk, vegetable oil, and eggs',
+            'Bake for 30 minutes, or until a toothpick comes out clean'
+        ]
+    )
+    RETURNING id
+)
+
+INSERT INTO ingredients (name, quantity_amount, quantity_type, recipe_id)
+SELECT name, quantity_amount, quantity_type, (SELECT id FROM inserted_recipe)
+FROM (VALUES
+    ('flour', 2, 'cups'),
+    ('sugar', 1, 'cup'),
+    ('cocoa powder', 0.5, 'cup'),
+    ('milk', 1, 'cup'),
+    ('vegetable oil', 0.5, 'cup'),
+    ('eggs', 2, 'large')
+) AS ingredient_data(name, quantity_amount, quantity_type);
+```
+
+### Database Interaction
+
+Neon databases are serverless, distributed, fully managed, and a whole bunch of other things, but most importantly, they're just Postgres databases.
+So, I can use the `pg` package to interact with my database just like I would with any other Postgres database.
+
+```bash
+npm install pg
+```
+
+Unfortunately, the `pg` package does not include any types (at least not as of this writing),
+so I'll also install the types for the `pg` package to give myself a better development experience:
+
+```bash
+npm install @types/pg
+```
+
+Then, I'll login to the [Neon web console](https://console.neon.tech/) and use the "Connect" button to grab my database connection string.
+I'll paste that connection string into a new setting inside of the `local.settings.json` file in my project, like this:
+
+```json
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "DATABASE_URL": "postgresql://recipes_owner:secret_password@jchadwick-pooler.eastus2.azure.neon.tech/recipes?sslmode=require",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+  }
+}
+```
+
+Finally, it's time to write some code to interact with the database.
+I'll create a new file, `src/lib/db.ts`, to hold my database connection logic:
+
+```typescript
+// src/lib/db.ts
+import { Pool } from 'pg';
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+export default pool;
+```
+
+### Querying the Database from an Azure Function
+
+Now that I have my data models and database connection set up, I can start building out the API logic, which is simple enough.
+For that, let's head back to `src/app.ts`.
+
+First, I'll import the `db` connection from `src/lib/db.ts` and the `RecipeOverview` type from `src/models.d.ts`.
+
+```typescript
+import { Hono } from 'hono';
+import db from './lib/db';
+import type { RecipeOverview } from './models';
+```
+
+Then, I'll add an endpoint to query all recipes from the database (including their ingredients):
+
+```typescript
+app.get('/api/recipes', async (c) => {
+  const { rows: recipes } = await db.query<RecipeOverview>(
+    'SELECT id, name, description FROM recipes'
+  );
+  return c.json(recipes);
+});
+```
+
+We can verify all this works by running the app, hitting the `/api/recipes` endpoint, and seeing the following output:
+
+```bash
+> curl http://localhost:7071/api/recipes
+
+# output:
+[{"id":1,"name":"The Best Chocolate Cake EVER","description":"A delicious chocolate cake"}]
+```
+
+Exciting stuff - I've now queried my database from an Azure Function using TypeScript!
+
+Let's add another endpoint to get a single recipe by its ID, including its ingredients in the response:
+
+```typescript
+app.get('/api/recipes/:id', async (c) => {
+  const recipeId = +c.req.param('id');
+
+  const [recipeResults, ingredientsResults] = await Promise.all([
+    db.query<Recipe>(
+      `SELECT id, name, description, preparation_steps, url
+       FROM recipes 
+       WHERE id = $1
+       LIMIT 1
+     `,
+      [recipeId]
+    ),
+    db.query<Ingredient>(
+      `SELECT id, name, quantity_amount, quantity_type
+       FROM ingredients
+       WHERE recipe_id = $1
+      `,
+      [recipeId]
+    ),
+  ]);
+
+  if (recipeResults.rowCount === 0) {
+    // invalid recipe ID - return a 404 result
+    return c.json(null, 404);
+  }
+
+  const recipe = {
+    ...recipeResults.rows[0],
+    ingredients: ingredientsResults.rows,
+  };
+
+  return c.json(recipe);
+});
+```
+
+Now, when I hit the `/api/recipes/1` endpoint, I should see the following output:
+
+```bash
+> curl http://localhost:7071/api/recipes/1
+
+# output:
+{ "id": 1, "name": "The Best Chocolate Cake EVER", // ... }
+```
+
+And, finally, let's add an endpoint to _create_ a new recipe:
+
+```typescript
+app.post('/api/recipes', async (c) => {
+  const { name, description, url, preparation_steps, ingredients } = await c.req.json<Recipe>();
+
+  // create the recipe, retrieving the added recipe
+  // so we can use its id to add ingredients below
+  const {
+    rows: [addedRecipe],
+  } = await db.query<Recipe>(
+    `INSERT INTO recipes (name, description, url, preparation_steps)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id, name, description, url, preparation_steps
+      `,
+    [name, description, url, preparation_steps]
+  );
+
+  // bulk insert ingredients for the recipe
+  const { rows: addedIngredients } = await db.query(
+    `
+    INSERT INTO ingredients (name, quantity_amount, quantity_type, recipe_id)
+    VALUES ${ingredients
+      .map(
+        // produces a string like ($1, $2, $3, $4) to create placeholders
+        // for each one of the ingredients, concatenating them all together
+        // with commas to produce a single string like:
+        // ($1, $2, $3, $4),($5, $6, $7, $8),($9, $10, $11, $12)
+        (_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`
+      )
+      .join(',')}
+    RETURNING id, name, quantity_amount, quantity_type
+    `,
+    ingredients.flatMap((ingredient) => [
+      ingredient.name,
+      ingredient.quantity_amount,
+      ingredient.quantity_type,
+      addedRecipe.id,
+    ])
+  );
+
+  addedRecipe.ingredients = addedIngredients;
+
+  return c.json(addedRecipe, 201);
+});
+```
+
+Although there is quite a bit more code (including some gnarly string replacements for the variable placeholders),
+this endpoint expects a JSON payload with the recipe data and ingredients, and it will insert the new recipe into the database.
+
+So when I hit the `/api/recipes` endpoint with a POST request, I should see the following output:
+
+```bash
+> curl -X POST \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "Peanut butter and jelly sandwich",
+    "description": "A classic sandwich, perfect for lunch or even just a filling snack",
+    "preparation_steps": [
+        "Smear peanut butter on one slice of bread",
+        "Smear jelly on the other slice of bread",
+        "Place the two slices of bread together, smeared sides facing each other"
+    ],
+    "ingredients": [
+        { "name": "bread", "quantity_amount": 2, "quantity_type": "slice" },
+        { "name": "peanut butter", "quantity_amount": 1, "quantity_type": "tbsp" },
+        { "name": "fruit jelly (any flavor)", "quantity_amount": 1, "quantity_type": "tbsp" }
+    ]
+  }' \
+  http://localhost:7071/api/recipes
+
+# output:
+{"id": 2, "name": "Peanut butter and jelly sandwich", "description": ... }
+```
+
+### Deploying to Azure
+
+Now that I've got the API working how I want it, it's time to bundle it up and deploy it to Azure.
+Of course, the first thing you'll need is an Azure account; if you don't already have one, sign up for a free account [here](https://azure.microsoft.com/en-us/free/).
+
+The next prerequisite to creating an Azure Function App is a resource group for it to live in.
+For this you can either choose an existing resource group or create a new one.
+I like to use the Azure CLI to do everything, so I'll create a new resource group in my preferred location (`eastus2`) using the command:
+
+```bash
+> az group create --name recipes-api-rg --location eastus2
+# output:
+{
+  "id": "/subscriptions/<subscription_id>/resourceGroups/recipes-api-rg",
+  "location": "eastus2",
+  "managedBy": null,
+  "name": "recipes-api-rg",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+```
+
+Next you'll need to create a storage account to hold your function's code.
+I'll create a new storage account in the same resource group using the command
+(ensuring that my storage account name is globally unique):
+
+```bash
+> az storage account create \
+    --name recipesapistorage2000 \
+    --resource-group recipes-api-rg \
+    --location eastus2
+```
+
+> **NOTE:**
+>
+> If this command produces an error (like mine did at first), double-check that
+> the Microsoft.Storage Resource Provider is registered for your subscription.
+>
+> You can do this through the Azure Portal:
+>
+> - Go to your subscription page
+> - Navigate to the "Resource providers" blade
+> - Find "Microsoft.Storage" in the list
+> - Click "Register" if it's not already registered
+
+Then, I'll create a new Function App in that resource group using the command below
+(again, ensuring that my function app name is globally unique):
+
+```bash
+> az functionapp create \
+    --resource-group recipes-api-rg \
+    --consumption-plan-location eastus2 \
+    --storage-account recipesapistorage2000 \
+    --name recipes-api-2000 \
+    --runtime node \
+    --runtime-version 20
+```
+
+And, finally, I can deploy my function using this command to package and upload it to my newly-created Azure Function App:
+
+```bash
+func azure functionapp publish recipes-api-2000
+```
+
+My API is now live on Azure, and I can verify it's working by hitting the URL provided by the `func azure functionapp publish` command:
+
+```bash
+> curl https://recipes-api-2000.azurewebsites.net/api
+
+# output:
+Recipes API
+```
+
+### Configuring the Azure Function App
+
+I've verified that my function app is deployed and working, so that's exciting!
+
+However, if I hit any of the endpoints that access the Postgres database, I will get a failure response.
+
+```bash
+> curl https://recipes-api-2000.azurewebsites.net/api/recipes
+
+# output:
+500 Internal Server Error
+```
+
+These endpoints work fine locally because I've set the `DATABASE_URL` environment variable in my `local.settings.json` file,
+however my deployed Function doesn't have this setting.
+
+Luckily, Azure Functions makes it easy to set environment variables for your function app.
+Just run the following command to set the `DATABASE_URL` environment variable to the connection string for my Neon database:
+
+Define an environment variable in the Azure Function App settings to store the database connection string, using this command:
+
+```bash
+> az functionapp config appsettings set \
+    --name recipes-api-2000 \
+    --resource-group recipes-api-rg \
+    --settings DATABASE_URL="postgresql://recipes_owner:9WAzoqh2NvYm@ep-black-bush-a8jqxdjf-pooler.eastus2.azure.neon.tech/recipes?sslmode=require"
+```
+
+Now when I hit the `/api/recipes` endpoint, I see the repsonse that I expect:
+
+```bash
+> curl https://recipes-api-2000.azurewebsites.net/api/recipes
+
+# output:
+[{"id":1,"name":"The Best Chocolate Cake EVER","description":"A delicious chocolate cake"}]
+```
+
+And that's it! My Recipes API is deployed and working in the cloud.
+
+### Wrapping Up
+
+The setup I've shown here provides a solid foundation for building a robust, type-safe, and scalable JSON API.
+While this is where I'm going to end this post, there is still several things I've had to leave out.
+
+Using what I've already shown in this article you should be able take care of some of these yourself, such as:
+
+- adding new endpoints to update and delete recipes
+- adding error handling
+- introducing input validation to new recipes
+- updating the `/recipes` endpoint with pagination and filtering of recipes
+
+Perhaps the biggest thing I've left out is security.  
+If you hadn't noticed, this API is completely open and doesn't require any authentication to access, meaning that anyone can come along and add recipes to the database.
+
+Now, I could have introduced some basic HTTP authentication, but one of Neon's best features is its built-in support for JWT authentication and Row Level Security, so I've decided to create an entirely separate post to cover that.
+Stay tuned for that post!
+
+In the meantime, I hope you've found this post helpful and that it inspires you to build your own APIs combining the strengths of TypeScript, Postgres (via Neon), and Azure Functions to create efficient and maintainable backend services that are super easy to develop, deploy, and scale.
+Good luck, and happy coding!
+
+## Additional Resources
+
+- [GitHub Repository for this article](https://github.com/jchadwick/neon-azure-api)
+- [Neon Documentation](/docs)
+- [Using Hono with Azure Functions](https://hono.dev/docs/getting-started/azure-functions)
+- [Azure Functions Documentation](https://learn.microsoft.com/en-us/azure/azure-functions/)
+
+<NeedHelp />
+
+
 # Building a Serverless Referral System with Neon Postgres and Azure Functions
 
 ---
@@ -5183,7 +6711,7 @@ Using a serverless Postgres database lets you scale compute resources down to ze
 
 To get started, go to the [Neon Console](https://console.neon.tech/app/projects) and create a project.
 
-You will then be presented with a dialog that provides a connection string of your database. Click on the **Pooled connection** option and the connection string automatically updates.
+You will then be presented with a dialog that provides a connection string of your database. You can enable the **Connection pooling** toggle for a pooled connection string.
 
 ![](/guides/images/chatbot-astro-postgres-llamaindex/c200c4ed-f62d-469c-9690-c572c482c536.png)
 
@@ -6052,6 +7580,826 @@ Now, push the added GitHub workflow file to your GitHub repo. Follow the steps b
 In this guide, you learned how to build a RAG Chatbot using LlamaIndex, Astro, and Neon Postgres. Additionally, you learned how to automate deployments of your Astro application using GitHub Actions to Amazon ECS on Amazon Fargate.
 
 <NeedHelp />
+
+
+# Building AI Agents with CrewAI, Composio, and Neon
+
+---
+title: Building AI Agents with CrewAI, Composio, and Neon
+subtitle: A step-by-step guide to building AI agents using CrewAI, Composio, and Neon API
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-01-31T00:00:00.000Z'
+updatedOn: '2025-01-31T00:00:00.000Z'
+---
+
+In today's AI-driven world, the ability to connect intelligent agents with powerful tools is key to building sophisticated applications. Imagine AI agents that can not only think and plan but also seamlessly interact with your database to retrieve information, manage resources, and perform complex tasks. This guide explores exactly that, demonstrating how to harness the power of **CrewAI** for agent orchestration, **Composio** for tool integration, and **Neon API** for database management.
+
+Composio acts as a crucial bridge, empowering your CrewAI agents with the ability to interact directly with the Neon API. This integration unlocks a range of possibilities, from querying your Neon project details to managing your database infrastructure programmatically through AI. By leveraging Composio's wide range of tools, you can equip your AI agents with a comprehensive suite of actions, all without needing to wrestle with complex API integrations manually.
+
+This guide provides a practical, hands-on approach to building an AI agent capable of retrieving information from your Neon account. You'll not only see how easily these technologies integrate but also gain a foundational understanding of how to extend this setup for more advanced AI-driven database interactions.
+
+## Prerequisites
+
+Before you start, make sure you have the following prerequisites in place:
+
+- **Python 3.7 or higher:** This guide uses Python. If you don't have it already, download and install it from [python.org](https://www.python.org/downloads/).
+
+- **Neon account and API Key:**
+
+  - Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup).
+  - Once signed up, you can find your Neon API Key [here](https://console.neon.tech/app/settings/profile). You'll need this key to authenticate your application with Neon.
+
+- **Composio account and API Key:**
+
+  - Create a Composio account by visiting [composio.dev](https://composio.dev/).
+  - After signing up and logging in, your Composio API key will be available in your [Composio dashboard](https://app.composio.dev/dashboard). You will need this to authenticate your application.
+
+- **OpenAI account and API Key:**
+  - This guide uses `gpt-4o-mini` from OpenAI to power the AI agent. If you don't have one, sign up for an account at [platform.openai.com](https://platform.openai.com/).
+  - Create a new API key in the [OpenAI Platform API keys section](https://platform.openai.com/api-keys). This key will allow CrewAI to interact with OpenAI's GPT-4o model.
+
+Once these prerequisites in place, you'll be ready to follow the guide and build your AI agent.
+
+## Building your AI Agent to interact with Neon API
+
+Now, let's dive into building your AI agent that can interact with Neon API using CrewAI and Composio. We'll go through each step, from setting up your project to running your first agent.
+
+### Project structure
+
+For this guide, we'll keep the project structure simple. Create a directory for your project, for example `neon-composio-crewai`, and inside it, you'll have the following files:
+
+    ```bash
+    mkdir neon-composio-crewai
+    ```
+
+    ```bash
+    neon-composio-crewai/
+    ├── main.py         # Main Python script to run the AI agent
+    ├── requirements.txt # Lists Python dependencies
+    ├── .env            # Your environment variables
+    ```
+
+### Setting up a virtual environment
+
+It's a good practice to create a virtual environment for your project to manage dependencies. You can create a virtual environment using `venv`:
+
+    ```bash
+    cd neon-composio-crewai
+    python3 -m venv venv
+    source venv/bin/activate # on Windows, use `venv\Scripts\activate`
+    ```
+
+### Installing required libraries
+
+Next, you need to install the necessary Python libraries for this project. Create a `requirements.txt` file in your project directory and add the following lines:
+
+    ```
+    composio-crewai
+    crewai
+    python-dotenv
+    ```
+
+Then, install the libraries using pip:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+### Configuring API Keys in `.env`
+
+Create a new file named `.env` in your project directory and add the following lines:
+
+    ```env
+    OPENAI_API_KEY = YOUR_OPENAI_API_KEY
+    COMPOSIO_API_KEY = YOUR_COMPOSIO_API_KEY
+    NEON_API_KEY = YOUR_NEON_API_KEY
+    ```
+
+**Replace the placeholders** `YOUR_OPENAI_API_KEY`, `YOUR_COMPOSIO_API_KEY`, and `YOUR_NEON_API_KEY` with your actual API keys that you obtained in the [Prerequisites](#prerequisites) section.
+
+<Admonition type="note">
+    Make sure you have added `.env` to your `.gitignore` file if you are using Git. This prevents your API keys from being accidentally committed to your code repository.
+</Admonition>
+
+### Creating the `main.py` file
+
+Create a new file named `main.py` in your project root directory and paste the following code into it:
+
+    ```python
+    import os
+
+    from crewai import Agent, Task, Crew
+    from composio_crewai import ComposioToolSet, App
+    from dotenv import load_dotenv
+
+    load_dotenv()
+
+    toolset = ComposioToolSet()
+
+    # To connect to Neon, either create a new connection or use an existing one configured in your Composio dashboard (Apps -> Integrations).
+    # You can comment out the connection creation if you have already created a connection in the dashboard.
+    connection = toolset.initiate_connection(
+        app=App.NEON, connected_account_params={"api_key": os.getenv("NEON_API_KEY")}
+    )
+
+    tools = toolset.get_tools(actions=["NEON_GET_CURRENT_USER_INFORMATION"])
+
+    # Define agent
+    crewai_agent = Agent(
+        role="Assistant",
+        goal="""You are an AI agent that is responsible for taking actions based on the tools you have""",
+        backstory=(
+            "You are AI agent that is responsible for taking actions based on the tools you have"
+        ),
+        verbose=True,
+        tools=tools,
+        llm="gpt-4o-mini",
+    )
+
+    task = Task(
+        description="List me my neon current user details",
+        agent=crewai_agent,
+        expected_output="All important details of the current user in a single sentence.",
+    )
+
+    my_crew = Crew(agents=[crewai_agent], tasks=[task])
+
+    result = my_crew.kickoff()
+    print(result)
+    ```
+
+Let's break down what this python script does step by step:
+
+### Import necessary libraries and load environment variables
+
+    ```python
+    import os
+
+    from crewai import Agent, Task, Crew
+    from composio_crewai import ComposioToolSet, App
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    ```
+
+Just like any Python script, we start by importing the necessary libraries. In this case, we import the CrewAI library, the Composio CrewAI library, and the `load_dotenv` function from the `python-dotenv` library. We also call `load_dotenv()` to load environment variables from the `.env` file.
+
+### Initialize `ComposioToolSet`
+
+    ```python
+    toolset = ComposioToolSet()
+    ```
+
+    This creates an instance of `ComposioToolSet`, which is the main entry point to interact with Composio tools from CrewAI.
+
+### Initiate connection to Neon
+
+    ```python
+    connection = toolset.initiate_connection(
+        app=App.NEON, connected_account_params={"api_key": os.getenv("NEON_API_KEY")}
+    )
+    ```
+
+    - `toolset.initiate_connection(...)` initiates a connection to a specific app in Composio.
+    - `app=App.NEON` specifies that the connection is for the Neon app.
+    - `connected_account_params={"api_key": os.getenv("NEON_API_KEY")}` provides the Neon API key for authentication. This API key is retrieved from your environment variables.
+
+<Admonition type="note">
+    If you have already set up a Neon connection in your [Composio dashboard](https://app.composio.dev/integrations), you can comment out these lines. The existing connection will be used automatically when you specify the app in the toolset methods. However, for the guide, we are showing how to establish a connection programmatically.
+</Admonition>
+
+### Retrieve tools
+
+    ```python
+    tools = toolset.get_tools(actions=["NEON_GET_CURRENT_USER_INFORMATION"])
+    ```
+
+    - `toolset.get_tools(actions=[...])` fetches the specified tools (actions) from the Composio toolset.
+    - `actions=["NEON_GET_CURRENT_USER_INFORMATION"]` indicates that we want to use the `NEON_GET_CURRENT_USER_INFORMATION` action, which retrieves your Neon user details. This action is part of the Neon toolset in Composio.
+
+### Define the AI Agent
+
+    ```python
+    crewai_agent = Agent(
+        role="Assistant",
+        goal="""You are an AI agent that is responsible for taking actions based on the tools you have""",
+        backstory=(
+            "You are AI agent that is responsible for taking actions based on the tools you have"
+        ),
+        verbose=True,
+        tools=tools,
+        llm="gpt-4o-mini",
+    )
+    ```
+
+This code defines a CrewAI agent named `crewai_agent`.
+
+- `role`, `goal`, `backstory`: These attributes define the agent's identity and purpose.
+- `verbose=True`: Enables detailed output from the agent, useful for debugging and understanding the agent's thought process.
+- `tools=tools`: Assigns the Composio Neon tools we retrieved in the previous step to this agent. The agent can now use these tools to perform actions.
+- `llm="gpt-4o-mini"`: Specifies that the agent will use the `gpt-4o-mini` language model from OpenAI.
+
+### Define the Task
+
+    ```python
+    task = Task(
+        description="List me my neon current user details",
+        agent=crewai_agent,
+        expected_output="All important details of the current user in a single sentence.",
+    )
+    ```
+
+This creates a task for the agent to perform.
+
+- `description`: Describes the task for the agent: "List me my neon current user details".
+- `agent=crewai_agent`: Assigns the task to the `crewai_agent` we defined.
+- `expected_output`: (Optional) Specifies the desired output format for the task.
+
+### Create and run the Crew
+
+    ```python
+    my_crew = Crew(agents=[crewai_agent], tasks=[task])
+
+    result = my_crew.kickoff()
+    print(result)
+    ```
+
+    - `my_crew = Crew(...)`: Creates a CrewAI crew with the defined agents and tasks.
+    - `result = my_crew.kickoff()`: Starts the crew execution. The agent will now execute the assigned task.
+    - `print(result)`: Prints the result returned by the agent after completing the task. This will be the Neon user information.
+
+### Running the example
+
+Now that you have set up your project, installed dependencies, and configured your API keys, you are ready to run the example
+
+In your terminal, run:
+
+```bash
+python main.py
+```
+
+This command will:
+
+- Run the `main.py` Python script.
+- The script will connect to Composio and Neon using your provided API keys.
+- It will create a CrewAI agent.
+- The agent will use the `NEON_GET_CURRENT_USER_INFORMATION` Composio tool action to retrieve your Neon user information.
+- Finally, it will print the retrieved user information in your terminal.
+
+### Expected output
+
+After running `python main.py`, you should see the information about your Neon user printed in the terminal! The output will look something like this:
+
+![Example output](/docs/guides/composio-crewai-neon-example-output.png)
+
+**Congratulations!** You have successfully built and run an AI agent that can interact with your Neon account using CrewAI and Composio!
+
+## Explore Further Neon Actions
+
+The Composio Neon tool provides a wide range of actions you can use to manage your Neon projects. The example we just ran used the `NEON_GET_CURRENT_USER_INFORMATION` action to retrieve your user details. You can modify the `main.py` script to experiment with other actions. For example, to get a list of your Neon projects, you would change the `actions` list in `toolset.get_tools(...)` to:
+
+```python
+tools = toolset.get_tools(actions=["NEON_RETRIEVE_PROJECTS_LIST"])
+```
+
+and update the task description accordingly.
+
+Here's a list of all the available actions that you can use with the Neon Composio tool:
+
+<Admonition type="important">
+    These actions are subject to change. For the latest information and a complete list of available actions, please check the availaible actions under [Neon app in your Composio dashboard](https://app.composio.dev/app/neon).
+    ![Neon Composio Tool Actions](/docs/guides/neon-composio-tool-actions.png)
+</Admonition>
+
+| Action name                                     | Description                                                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `NEON_RETRIEVE_PROJECTS_LIST`                   | Retrieves a list of all Neon projects associated with the authenticated user's account.                 |
+| `NEON_CREATE_VPC_ENDPOINT_WITH_LABEL`           | Updates the label of a specific VPC endpoint within an organization's VPC in a particular AWS region.   |
+| `NEON_RETRIEVE_ORGANIZATION_BY_ID`              | Retrieves detailed information about a specific organization within the Neon platform.                  |
+| `NEON_FETCH_VPCENDPOINT_DETAILS_BY_ID`          | Retrieves detailed information about a specific VPC endpoint within an organization's infrastructure.   |
+| `NEON_TRANSFER_USER_PROJECTS_TO_ORGANIZATION`   | Transfers multiple projects from the authenticated user's personal account to a specified organization. |
+| `NEON_CREATE_VPC_ENDPOINT_LABEL`                | Updates the label of a specific VPC endpoint within a project.                                          |
+| `NEON_GET_BRANCHES_FOR_PROJECT`                 | Retrieves a list of branches associated with a specific project.                                        |
+| `NEON_GET_CURRENT_USER_INFORMATION`             | Retrieves the profile information for the currently authenticated user.                                 |
+| `NEON_DELETE_VPC_ENDPOINT_BY_IDS`               | Deletes a specific VPC endpoint within a given organization and region.                                 |
+| `NEON_GET_USER_ORGANIZATIONS`                   | Retrieves a list of organizations associated with the currently authenticated user.                     |
+| `NEON_FETCH_ORGANIZATION_MEMBERS_BY_ID`         | Retrieves a list of all members associated with a specific organization.                                |
+| `NEON_RETRIEVE_PROJECT_OPERATIONS`              | Retrieves a list of operations associated with a specific project.                                      |
+| `NEON_GET_PROJECT_CONNECTION_URI`               | Retrieves the connection URI for a specified project.                                                   |
+| `NEON_GET_PROJECT_ENDPOINT_INFORMATION`         | Retrieves a list of all endpoints associated with a specific project.                                   |
+| `NEON_RETRIEVE_ORGANIZATION_MEMBER_INFO`        | Retrieves detailed information about a specific member within an organization.                          |
+| `NEON_RETRIEVE_ALL_REGIONS`                     | Retrieves a list of available geographic regions supported by the Neon platform.                        |
+| `NEON_UPDATE_ORGANIZATION_MEMBER_ROLE`          | Updates the role of a specific member within an organization.                                           |
+| `NEON_SEND_ORGANIZATION_INVITATIONS`            | Creates and sends invitations to join an organization.                                                  |
+| `NEON_GET_BRANCH_ROLES_FOR_PROJECT`             | Retrieves the roles associated with a specific branch within a project.                                 |
+| `NEON_LIST_SHARED_PROJECTS`                     | Retrieves a list of shared projects accessible to the authenticated user.                               |
+| `NEON_ACCESS_PROJECT_DETAILS_BY_ID`             | Retrieves detailed information about a specific project.                                                |
+| `NEON_FETCH_DATABASE_FOR_BRANCH`                | Retrieves a list of databases associated with a specific project and branch.                            |
+| `NEON_DELETE_API_KEY_BY_ID`                     | Deletes a specific API key from the Neon platform.                                                      |
+| `NEON_RETRIEVE_PROJECT_ENDPOINT_DETAILS`        | Retrieves detailed information about a specific endpoint within a project.                              |
+| `NEON_RETRIEVE_ACCOUNT_CONSUMPTION_HISTORY`     | Retrieves the consumption history for a specified account.                                              |
+| `NEON_DELETE_PROJECT_PERMISSION`                | Deletes a specific permission associated with a project.                                                |
+| `NEON_GET_SCHEMA_FOR_PROJECT_BRANCH`            | Retrieves the schema definition for a specific branch within a project.                                 |
+| `NEON_RETRIEVE_ORGANIZATION_INVITATIONS`        | Retrieves a list of all pending invitations for a specified organization.                               |
+| `NEON_DELETE_VPC_ENDPOINT_BY_PROJECT_ID`        | Deletes a specific VPC endpoint within a designated project.                                            |
+| `NEON_GET_VPC_REGION_ENDPOINTS`                 | Retrieves a list of VPC endpoints for a specified organization within a particular AWS region.          |
+| `NEON_RETRIEVE_BRANCH_DATABASE_DETAILS`         | Retrieves detailed information about a specific database within a Neon project and branch.              |
+| `NEON_RESET_ROLE_PASSWORD_FOR_BRANCH`           | Resets the password for a specific role within a project branch.                                        |
+| `NEON_DELETE_PROJECT_BRANCH_BY_ID`              | Deletes a specific branch within a project.                                                             |
+| `NEON_DELETE_PROJECT_ENDPOINT`                  | Deletes a specific endpoint within a Neon project.                                                      |
+| `NEON_LIST_API_KEYS`                            | Retrieves a list of API keys associated with the authenticated user's account.                          |
+| `NEON_ADD_NEW_JWKS_TO_PROJECT_ENDPOINT`         | Adds a new JSON Web Key Set (JWKS) to a specific endpoint of a project.                                 |
+| `NEON_CREATE_NEW_API_KEY`                       | Creates a new API key for accessing the Neon platform.                                                  |
+| `NEON_RETRIEVE_JWKS_FOR_PROJECT`                | Retrieves the JSON Web Key Set (JWKS) for a specified project.                                          |
+| `NEON_GET_CONSUMPTION_HISTORY_PROJECTS`         | Retrieves the consumption history for specified projects.                                               |
+| `NEON_SUSPEND_PROJECT_ENDPOINT_BY_ID`           | Suspends a specific endpoint within a project.                                                          |
+| `NEON_DELETE_PROJECT_JWKS_BY_ID`                | Deletes a specific JSON Web Key Set (JWKS) associated with a given project.                             |
+| `NEON_GET_PROJECT_OPERATION_BY_ID`              | Retrieves detailed information about a specific operation within a project.                             |
+| `NEON_UPDATE_PROJECT_SETTINGS_BY_ID`            | Updates the configuration and settings of a specific Neon project.                                      |
+| `NEON_GET_PROJECT_BRANCHES`                     | Retrieves detailed information about a specific branch within a Neon project.                           |
+| `NEON_DELETE_PROJECT_BY_ID`                     | Deletes a specific project from the Neon platform.                                                      |
+| `NEON_DELETE_DATABASE_FROM_BRANCH`              | Deletes a specific database from a designated branch within a project.                                  |
+| `NEON_RETRIEVE_BRANCH_ENDPOINTS`                | Retrieves a list of endpoints associated with a specific branch of a project.                           |
+| `NEON_ADD_PROJECT_EMAIL_PERMISSION`             | Adds permissions for a specified email address to a particular project.                                 |
+| `NEON_UPDATE_PROJECT_COMPUTE_ENDPOINT_SETTINGS` | Updates the configuration of a specific compute endpoint within a Neon project.                         |
+| `NEON_RETRIEVE_VPC_ENDPOINTS_FOR_PROJECT`       | Retrieves a list of VPC endpoints associated with a specific project.                                   |
+| `NEON_CREATE_BRANCH_DATABASE`                   | Creates a new database within a specified project and branch.                                           |
+| `NEON_DELETE_ORGANIZATION_MEMBER`               | Removes a specific member from an organization.                                                         |
+| `NEON_ADD_ROLE_TO_BRANCH`                       | Creates a new role within a specific branch of a project.                                               |
+| `NEON_GET_PROJECT_BRANCH_ROLE`                  | Retrieves detailed information about a specific role within a particular branch of a Neon project.      |
+| `NEON_CREATE_COMPUTE_ENDPOINT`                  | Creates a new compute endpoint for a specified branch within a Neon project.                            |
+| `NEON_RETRIEVE_PROJECT_PERMISSIONS`             | Retrieves the current permission settings for a specific project.                                       |
+| `NEON_GET_ORGANIZATION_API_KEYS`                | Retrieves a list of all API keys associated with a specific organization.                               |
+| `NEON_MODIFY_BRANCH_DETAILS_IN_PROJECT`         | Updates the details of a specific branch within a project.                                              |
+| `NEON_SET_BRANCH_AS_DEFAULT`                    | Sets a specified branch as the default branch for a given project.                                      |
+| `NEON_CREATE_API_KEY_FOR_ORGANIZATION`          | Creates a new API key for the specified organization, with optional project-specific access.            |
+| `NEON_START_ENDPOINT_FOR_PROJECT`               | Initiates a specific process or workflow associated with a particular endpoint within a project.        |
+| `NEON_DELETE_PROJECT_BRANCH_ROLE`               | Deletes a specific role from a branch within a project.                                                 |
+| `NEON_RESTORE_PROJECT_BRANCH`                   | Restores a branch to a specific state or point in time.                                                 |
+| `NEON_PATCH_BRANCH_DATABASE_INFORMATION`        | Updates the properties of a specific database within a project branch.                                  |
+| `NEON_CREATE_NEW_PROJECT_BRANCH`                | Creates a new branch in a Neon project with optional compute endpoints.                                 |
+| `NEON_RESTART_PROJECT_ENDPOINT`                 | Restarts a specific endpoint within a project.                                                          |
+| `NEON_DELETE_ORGANIZATION_API_KEY`              | Deletes a specific API key associated with an organization.                                             |
+| `NEON_CREATE_PROJECT_WITH_QUOTA_AND_SETTINGS`   | Creates a new Neon project with specified configuration settings.                                       |
+| `NEON_REVEAL_ROLE_PASSWORD_IN_BRANCH`           | Reveals the password for a specific role within a branch of a Neon project.                             |
+
+To effectively use the wide array of Neon actions available through Composio, it's important to understand that **each action may require specific input parameters**. These parameters are essential for Composio to correctly execute the desired operation against your Neon account.
+
+You can find detailed information about each action, including its required parameters and their descriptions under [Neon app in your Composio dashboard](https://app.composio.dev/app/neon)
+
+**To utilize actions that require parameters, you simply need to include these parameters within the `description` of the task you assign to your CrewAI agent.** The agent will intelligently extract these parameters from the task description when it uses the Composio tool.
+
+For instance, let's consider the `NEON_GET_PROJECT_CONNECTION_URI` action.
+
+![Composio Neon Get Connection URI Action](/docs/guides/composio-neon-get-connection-uri-action.png)
+
+This action needs the `project_id`, `database_name`, and `role_name` to retrieve the correct connection string. Here's how you would define a task to use this action, embedding the necessary parameters directly in the task description:
+
+```python
+get_connection_string_task = Task(
+    description="Get the connection string for the Neon project with ID 'crimson-sea-41647396', for the database named 'neondb', using the role 'neondb_owner'.",
+    agent=crewai_agent,
+    expected_output="The Neon connection string.",
+)
+```
+
+In this example, the task description clearly provides all the necessary information for the `NEON_GET_PROJECT_CONNECTION_URI` action. When the `crewai_agent` executes this task, it will understand from the description which action to use and what parameters are needed, making it seamless to interact with more complex Neon functionalities through your AI agents. Remember to tailor your task descriptions to accurately reflect the parameters needed for the specific Neon action you intend to use.
+
+## Summary
+
+In this guide, we've successfully built an AI agent capable of interacting with your Neon API using CrewAI and Composio. We covered the following steps:
+
+- Setting up your development environment with Python and installing the necessary libraries (`crewai`, `composio-crewai`, `python-dotenv`).
+- Configuring your API keys for Neon, Composio, and OpenAI.
+- Creating the script to define your AI agent, establish a connection to Neon via Composio, and execute a task using the `NEON_GET_CURRENT_USER_INFORMATION` action.
+- Running the example script and observing your AI agent successfully retrieve and display your Neon user information.
+- Exploring the wide range of available Neon actions within the Composio toolset, understanding how to extend your AI agent's capabilities.
+
+As a next step, consider expanding your AI agent's capabilities by utilizing more of the available Neon actions. Imagine automating project creation using `NEON_CREATE_PROJECT_WITH_QUOTA_AND_SETTINGS`, programmatically retrieving database connection URIs with `NEON_GET_PROJECT_CONNECTION_URI`, and then using a Postgres library of your choice to execute database queries. This opens the door to building sophisticated AI-driven workflows for database management, data analysis, and countless other applications tailored to your specific needs.
+
+You can find the source code for the application described in this guide on GitHub.
+
+<DetailIconCards>
+    <a href="https://github.com/neondatabase-labs/composio-tool-example" description="CrewAI + Composio + Neon Example" icon="github">Building AI Agents with CrewAI, Composio, and Neon</a>
+</DetailIconCards>
+
+## Resources
+
+- [CrewAI Documentation](https://docs.crewai.com/introduction)
+- [Composio Documentation](https://docs.composio.dev)
+- [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api)
+- [Neon API keys](/docs/manage/api-keys#creating-api-keys)
+
+<NeedHelp/>
+
+
+# Getting started with Convex and Neon
+
+---
+title: Getting started with Convex and Neon
+subtitle: A step-by-step guide to integrating Convex with Neon Postgres
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-14T00:00:00.000Z'
+updatedOn: '2025-02-14T00:00:00.000Z'
+---
+
+This guide explores Convex's self-hosting capability and demonstrates how to use it with Neon Postgres. [Convex](https://www.convex.dev) is a reactive backend platform ideal for building real-time applications. A [recent release](https://news.convex.dev/self-hosting) significantly enhances the self-hosted experience, overcoming limitations of the initial open-source version which lacked a dashboard and relied solely on SQLite. The new self-hosted Convex includes the [dashboard](https://docs.convex.dev/dashboard) and supports Postgres as a robust and scalable database option.
+
+Convex empowers developers to create dynamic, live-updating applications. Self-hosting retains these core features while granting you greater control over your deployment environment. While SQLite remains the default for simplicity, Postgres integration unlocks enhanced scalability and resilience, especially beneficial for production applications.
+
+This guide provides a step-by-step walkthrough of integrating Convex with Neon Postgres. You will learn how to:
+
+- Set up Convex for self-hosting using Docker Compose.
+- Configure Convex to utilize Neon Postgres for persistent data storage.
+- Run the Convex [chat application tutorial](https://docs.convex.dev/tutorial) as a practical example.
+- Test the integration to ensure everything functions correctly.
+
+## Prerequisites
+
+Before you begin, ensure you have the following prerequisites installed and configured:
+
+- **Neon Account:** Sign up for a free [Neon account](https://console.neon.tech/signup) if you don't have one already. Neon will provide a managed Postgres database for your Convex chat application.
+- **Docker:** Docker is essential for running the Convex backend and dashboard locally. If Docker is not installed, download and install Docker Desktop from [docker.com](https://www.docker.com/get-started). Make sure Docker is running before proceeding.
+- **Node.js v18+:** Node.js (version 18 or higher) is required to run the Convex chat application example. Download and install it from [nodejs.org](https://nodejs.org).
+
+<Admonition type="note" title="Database Location and Latency Considerations">
+
+    Remember that the physical distance between your Neon database and your self-hosted Convex backend can impact your application's performance due to latency.  Increased distance generally means higher latency and potentially slower response times.
+
+    For optimal performance, especially in production, it's highly recommended to locate your Neon database and Convex backend in the same geographical region. Convex's cloud-hosted platform achieves extremely low query times because the database and backend are co-located within their infrastructure.
+
+    While this guide focuses on setup and integration specifically for local development, for production applications, consider the physical proximity of your Neon Postgres and Convex Backend server to minimize latency.
+
+</Admonition>
+
+## Setting up Neon Database
+
+To get started with your Postgres database, create a new Neon project using [pg.new](https://pg.new). This project will provide the Postgres instance that Convex will use to store your application data. Within this Neon project, you'll need to create a database named `convex_self_hosted` – this is the specific database Convex is configured to use for storing chat messages. Follow these steps to set up your Neon Postgres database:
+
+- Navigate to the [SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) in your Neon project console to create the `convex_self_hosted` database.
+- Execute the following SQL command to create the database:
+
+  ```sql
+  CREATE DATABASE convex_self_hosted;
+  ```
+
+- Once the database is created, you can retrieve the connection string by clicking on "Connect" in the Neon project's dashboard. Select the `convex_self_hosted` database and copy the connection string. You will need this connection string later to configure the Convex backend to use Neon Postgres.
+
+  ![Neon Connection string for convex_self_hosted database](/docs/guides/neon-connection-string-for-convex-database.png)
+
+## Setting up Self-Hosted Convex with Docker Compose
+
+Now, you'll set up the self-hosted Convex backend using Docker Compose, configuring it to use your Neon Postgres database.
+
+1.  **Create a Project Directory:** Open your terminal and create a new directory for your Convex project. Navigate into it:
+
+    ```bash
+    mkdir convex-neon-integration
+    cd convex-neon-integration
+    ```
+
+2.  **Download Docker Compose Configuration:** Download the default `docker-compose.yml` file provided by Convex directly into your project directory:
+
+    ```bash
+    npx degit get-convex/convex-backend/self-hosted/docker/docker-compose.yml docker-compose.yml
+    ```
+
+    This command uses [`npx degit`](https://www.npmjs.com/package/degit) to fetch the `docker-compose.yml` file from the [Convex GitHub repository](https://github.com/get-convex/convex-backend/blob/main/self-hosted/docker/docker-compose.yml).
+
+3.  **Set up Neon connection string:** Add your Neon connection string you copied earlier to a `.env` file to configure Convex.
+
+    1.  Create a `.env` file in the same directory as `docker-compose.yml`.
+    1.  Add this line:
+        ```env
+        DATABASE_URL=[YOUR_NEON_CONNECTION_STRING]
+        ```
+    1.  Modify `[YOUR_NEON_CONNECTION_STRING]` for Convex:
+
+        Convex requires a specific connection string format for Neon:
+
+        `postgres://username:password@hostname`
+
+        Remove the database name and extra parameters from your Neon connection string.
+
+        **Neon default:**
+
+        ```bash
+        postgresql://neondb_owner:password@ep-xxxxx.aws.neon.tech/convex_self_hosted?sslmode=require
+        ```
+
+        **For Convex:**
+
+        ```bash
+        postgres://neondb_owner:password@ep-xxxxx.aws.neon.tech
+        ```
+
+4.  **Start Convex services with Docker Compose:** With the configuration in place, start the Convex backend and dashboard services using Docker Compose. Execute the following command in your terminal within the `convex-neon-integration` directory:
+
+    ```bash
+    docker compose up -d
+    ```
+
+    The `-d` flag runs the containers in detached mode (in the background). Docker Compose will download the necessary images, create containers, and start the Convex services.
+
+5.  **Access the Convex Dashboard:** Once `docker compose up -d` completes, the Convex dashboard should be accessible in your browser at [http://localhost:6791](http://localhost:6791). It might take a few moments for the services to fully start. If it's not immediately available, wait a short time and refresh the page.
+
+    You should see the Convex dashboard login screen:
+
+    ![Convex Dashboard](/docs/guides/convex-dashboard.png)
+
+    **Login to the Convex Dashboard:**
+
+    - When you access the dashboard for the first time, you will be prompted to log in.
+    - For the password, you will use the `CONVEX_SELF_HOSTED_ADMIN_KEY` generated in the next step.
+
+6.  **Verify Neon Postgres Connection (Optional but Recommended):** You can confirm that Convex is using your Neon Postgres database by checking the Docker container logs. This verifies that the `DATABASE_URL` environment variable was correctly processed.
+
+    Run this command in your terminal within the `convex-neon-integration` directory:
+
+    ```bash
+    docker compose logs -f
+    ```
+
+    Examine the logs for messages indicating a successful connection to a Postgres database, similar to the example below:
+
+    ![Convex Postgres Logs](/docs/guides/convex-postgres-logs.png)
+
+7.  **Retrieve the Admin Key:** You need the `CONVEX_SELF_HOSTED_ADMIN_KEY` to log into the Convex dashboard and configure your chat application. Execute this command to retrieve it:
+
+    ```bash
+    docker compose exec backend ./generate_admin_key.sh
+    ```
+
+    The output will display the generated admin key. **Copy this key carefully.** You'll need it in the next steps to log in to the dashboard and configure the chat application.
+
+    ```
+    convex-self-hosted|01xxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    ```
+
+    **Use this admin key as the password when logging into the Convex dashboard at http://localhost:6791**
+
+## Setting up the Convex chat application example
+
+With the self-hosted Convex backend powered by Neon running, the next step is to set up the Convex chat application example to connect to this backend and complete the chat functionality as described in the Convex tutorial.
+
+1.  **Clone the Convex tutorial repository:** Open a new terminal window, ensuring the Docker Compose process from the previous step remains running. Clone the Convex tutorial repository to your local machine. This repository contains the source code for the chat application example.
+
+    ```bash
+    git clone https://github.com/get-convex/convex-tutorial.git
+    cd convex-tutorial
+    ```
+
+2.  **Install application dependencies:** Navigate into the `convex-tutorial` directory and install the required npm packages. This step downloads all necessary JavaScript libraries and dependencies for the chat application.
+
+    ```bash
+    npm install
+    ```
+
+3.  **Update Convex library version:** It is required to update the `convex` npm package to the latest version within the `convex-tutorial` project. This is needed as the existing version present in the tutorial repository is not the latest and will cause issues with the self-hosted Convex backend.
+
+    ```bash
+    npm install convex@latest
+    ```
+
+4.  **Configure environment variables for chat app:** To connect the chat application to your self-hosted Convex backend, you need to configure specific environment variables. Create a `.env.local` file in the root of the `convex-tutorial` directory. Add the following variables to this file:
+
+    ```env
+    VITE_CONVEX_URL=http://localhost:3210
+    CONVEX_SELF_HOSTED_URL='http://localhost:3210'
+    CONVEX_SELF_HOSTED_ADMIN_KEY='<your_generated_admin_key>'
+    ```
+
+    - `VITE_CONVEX_URL`: Specifies the URL of your self-hosted Convex backend. In this case, it's set to `http://localhost:3210`, the default for local Convex backends.
+    - `CONVEX_SELF_HOSTED_URL`: Also set to the same URL, `http://localhost:3210`.
+    - `CONVEX_SELF_HOSTED_ADMIN_KEY`: This key is essential for authenticating development operations against your self-hosted Convex instance. Replace `<your_generated_admin_key>` with the admin key you generated in the previous step [Setting up self-hosted Convex with Docker Compose](#setting-up-self-hosted-convex-with-docker-compose).
+
+5.  **Initialize Convex project:** Run the following command to initialize the Convex project and generate the necessary TypeScript files for the chat application:
+
+    ```bash
+    npm run predev
+    ```
+
+    This starts the Convex server and generates the necessary TypeScript files for the chat application.
+
+6.  **Implement the `sendMessage` Mutation:** Following the [Convex tutorial - Your first mutation](https://docs.convex.dev/tutorial/#your-first-mutation) section, create a new file `convex/chat.ts` in your `convex-tutorial` project. Add the following code to this file. This code defines a Convex mutation function to insert new messages into the database:
+
+    ```typescript
+    // convex/chat.ts
+    import { mutation } from './_generated/server';
+    import { v } from 'convex/values';
+
+    export const sendMessage = mutation({
+      args: {
+        user: v.string(),
+        body: v.string(),
+      },
+      handler: async (ctx, args) => {
+        console.log('This TypeScript function is running on the server.');
+        await ctx.db.insert('messages', {
+          user: args.user,
+          body: args.body,
+        });
+      },
+    });
+    ```
+
+7.  **Update `src/App.tsx` to use `sendMessage` mutation:** Now, update the `src/App.tsx` file. Modify the `src/App.tsx` file to include the `useMutation` hook and call the `sendMessage` mutation when a user submits a message. Replace the relevant section in `src/App.tsx` with the following code:
+
+    ```tsx
+    // src/App.tsx
+    import { useMutation } from 'convex/react'; // [!code ++]
+    import { api } from '../convex/_generated/api'; // [!code ++]
+    // ... other imports and component setup
+
+    export default function App() {
+      const sendMessage = useMutation(api.chat.sendMessage); // [!code ++]
+      // ... other hooks and state variables
+
+      return (
+        <main className="chat">
+          {/* ... other JSX elements */}
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              alert('Mutation not implemented yet'); // [!code --]
+              await sendMessage({ user: NAME, body: newMessageText }); // [!code ++]
+              setNewMessageText('');
+            }}
+          >
+            {/* ... form input and button */}
+          </form>
+        </main>
+      );
+    }
+    ```
+
+8.  **Implement the `getMessages` query:** Following the [Convex tutorial - Your first query](https://docs.convex.dev/tutorial/#your-first-query) section, add a Convex query function to `convex/chat.ts` to fetch messages from the database. Add the following `getMessages` query function to your `convex/chat.ts` file:
+
+    ```typescript
+    // convex/chat.ts
+    import { query, mutation } from './_generated/server'; // [!code ++]
+    // ... existing sendMessage mutation
+
+    export const getMessages = query({
+      // [!code ++]
+      args: {}, // [!code ++]
+      handler: async (ctx) => {
+        // [!code ++]
+        const messages = await ctx.db.query('messages').order('desc').take(50); // [!code ++]
+        return messages.reverse(); // [!code ++]
+      }, // [!code ++]
+    }); // [!code ++]
+    ```
+
+9.  **Update `src/App.tsx` to Use `getMessages` query:** Finally, update `src/App.tsx` to fetch and display messages using the `useQuery` hook and the `getMessages` query function. Replace the relevant section in `src/App.tsx` with the following code:
+
+    ```tsx
+    // src/App.tsx
+    import { useQuery, useMutation } from 'convex/react'; // [!code ++]
+    // ... other imports and component setup
+
+    export default function App() {
+      const messages = [
+        // [!code --]
+        { _id: '1', user: 'Alice', body: 'Good morning!' }, // [!code --]
+        { _id: '2', user: NAME, body: 'Beautiful sunrise today' }, // [!code --]
+      ]; // [!code --]
+      const messages = useQuery(api.chat.getMessages); // [!code ++]
+
+      // ... remaining component code
+    }
+    ```
+
+10. Your `App.tsx` file should look like the following code after all updates:
+
+    ```tsx
+    import { useEffect, useState } from 'react';
+    import { faker } from '@faker-js/faker';
+    import { api } from '../convex/_generated/api';
+    import { useQuery, useMutation } from 'convex/react';
+
+    const NAME = getOrSetFakeName();
+
+    export default function App() {
+      const messages = useQuery(api.chat.getMessages);
+      const sendMessage = useMutation(api.chat.sendMessage);
+      const [newMessageText, setNewMessageText] = useState('');
+
+      useEffect(() => {
+        setTimeout(() => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }, 0);
+      }, [messages]);
+
+      return (
+        <main className="chat">
+          <header>
+            <h1>Convex Chat</h1>
+            <p>
+              Connected as <strong>{NAME}</strong>
+            </p>
+          </header>
+          {messages?.map((message) => (
+            <article key={message._id} className={message.user === NAME ? 'message-mine' : ''}>
+              <div>{message.user}</div>
+              <p>{message.body}</p>
+            </article>
+          ))}
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              await sendMessage({ user: NAME, body: newMessageText });
+              setNewMessageText('');
+            }}
+          >
+            <input
+              value={newMessageText}
+              onChange={async (e) => {
+                const text = e.target.value;
+                setNewMessageText(text);
+              }}
+              placeholder="Write a message…"
+              autoFocus
+            />
+            <button type="submit" disabled={!newMessageText}>
+              Send
+            </button>
+          </form>
+        </main>
+      );
+    }
+
+    function getOrSetFakeName() {
+      const NAME_KEY = 'tutorial_name';
+      const name = sessionStorage.getItem(NAME_KEY);
+      if (!name) {
+        const newName = faker.person.firstName();
+        sessionStorage.setItem(NAME_KEY, newName);
+        return newName;
+      }
+      return name;
+    }
+    ```
+
+11. Your `convex/chat.ts` file should look like the following code after all updates:
+
+    ```typescript
+    // convex/chat.ts
+    import { query, mutation } from './_generated/server';
+    import { v } from 'convex/values';
+
+    export const sendMessage = mutation({
+      args: {
+        user: v.string(),
+        body: v.string(),
+      },
+      handler: async (ctx, args) => {
+        console.log('This TypeScript function is running on the server.');
+        await ctx.db.insert('messages', {
+          user: args.user,
+          body: args.body,
+        });
+      },
+    });
+
+    export const getMessages = query({
+      args: {},
+      handler: async (ctx) => {
+        const messages = await ctx.db.query('messages').order('desc').take(50);
+        return messages.reverse();
+      },
+    });
+    ```
+
+12. **Run the Convex chat application** by executing the following command in your terminal within the `convex-tutorial` directory:
+
+    ```bash
+    npm run dev
+    ```
+
+## Using the chat application
+
+With the Convex chat application running and connected to your self-hosted Convex backend powered by Neon Postgres, you can now test the chat functionality.
+
+1.  **Access the Chat application in your browser:** Open your web browser and navigate to[http://localhost:5173](http://localhost:5173). You should see the Convex chat application interface.
+
+2.  **Open a second browser window:** Open a second browser window and navigate to [http://localhost:5173](http://localhost:5173).
+
+3.  **Send and receive real-time messages:** In one chat window, type and send a message. Verify that the message appears in real-time in both chat windows. Send messages from both windows and observe the bidirectional real-time updates.
+
+Congratulations! You have successfully integrated Convex with Neon Postgres and implemented a real-time chat application using Convex queries and mutations.
+
+## Resources
+
+- [Convex documentation](https://docs.convex.dev)
+- [Convex self-hosting guide](https://stack.convex.dev/self-hosted-develop-and-deploy)
+- [Neon documentation](/docs)
+- [Neon Console](https://console.neon.tech)
+- [Convex tutorial: A chat app](https://docs.convex.dev/tutorial)
+
+<NeedHelp/>
 
 
 # Using DBeaver with a Hosted Postgres
@@ -10009,7 +12357,7 @@ Using Serverless Postgres database powered by Neon helps you scale down to zero.
 
 To get started, go to the [Neon console](https://console.neon.tech/app/projects) and enter the name of your choice as the project name.
 
-You will then be presented with a dialog that provides a connecting string of your database. Click on **Pooled connection** on the top right of the dialog and the connecting string automatically updates in the box below it.
+You will then be presented with a dialog that provides a connecting string of your database. Enable the **Connection pooling** toggle for a pooled connection string.
 
 ![](/guides/images/feature-flags-sveltekit/index.png)
 
@@ -22376,7 +24724,7 @@ Using Serverless Postgres database helps you scale down to zero. With Neon, you 
 
 To get started, go to the [Neon console](https://console.neon.tech/app/projects) and enter the name of your choice as the project name.
 
-You will then be presented with a dialog that provides a connecting string of your database. Click on **Pooled connection** on the top right of the dialog and the connecting string automatically updates in the box below it.
+You will then be presented with a dialog that provides a connecting string of your database. You can enable the **Connection pooling** toggle for a pooled connection string.
 
 ![](/guides/images/llamaindex-postgres-search-images/create-database.png)
 
@@ -23237,11 +25585,11 @@ You're now ready to create a powerful development environment with Neon. Choose 
 <NeedHelp/>
 
 
-# Setting up Neon serverless Postgres as an Azure Native Integration
+# Get started with Neon Serverless Postgres on Azure
 
 ---
-title: 'Setting up Neon serverless Postgres as an Azure Native Integration'
-subtitle: "A step-by-step guide to deploying Neon's serverless Postgres via the Azure Marketplace"
+title: Get started with Neon Serverless Postgres on Azure
+subtitle: A step-by-step guide to deploying Neon's serverless Postgres via the Azure Marketplace
 author: dhanush-reddy
 enableTableOfContents: true
 createdAt: '2024-12-12T00:00:00.000Z'
@@ -23779,6 +26127,337 @@ You can find the complete source code for this example on GitHub.
 - [Neon GitHub Integration Documentation](/docs/guides/neon-github-integration)
 - [Database Branching Workflows](https://neon.tech/flow)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
+<NeedHelp/>
+
+
+# Getting started with Neon MCP server
+
+---
+title: 'Getting started with Neon MCP server'
+subtitle: 'Enable natural language interaction with your Neon Postgres databases using LLMs'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-06T00:00:00.000Z'
+updatedOn: '2025-02-06T00:00:00.000Z'
+---
+
+Imagine managing your database with natural language. Instead of complex SQL, you can simply ask your AI assistant to "create a new table for customer orders" or "show me last quarter's sales figures." This is the power of the [Model Context Protocol (MCP)](https://github.com/modelcontextprotocol), an open standard for AI interaction with external systems.
+
+This guide will introduce you to [Neon's MCP server](https://github.com/neondatabase/mcp-server-neon), which allows you to use Large Language Models (LLMs) for intuitive database management. At its core, Neon MCP server allows tools like Claude to easily communicate with the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
+
+With Neon's MCP server and an LLM like Claude, you can simplify workflows, improve productivity, and manage your Postgres databases more naturally. Let’s explore how this approach can make database management easier and more efficient.
+
+## Understanding MCP
+
+The **Model Context Protocol (MCP)** is a standard that helps LLMs communicate with external tools, like databases and APIs. It's like a translator, making it easier to connect LLMs to services and data. For the Neon MCP server, it's the protocol that lets Claude (and other LLMs) understand and control your Neon databases through the Neon API.
+
+MCP follows a client-server architecture, where a host application can connect to multiple servers. The key components include:
+
+- **Host**: These are LLM applications, such as Claude Desktop or integrated development environments (IDEs), that initiate connections to MCP servers
+- **Client**: These reside within the host application and maintain one-to-one connections with individual servers
+- **Server**: These programs provide context, tools, and prompts to clients, enabling access to external data and functionalities
+
+### Why use MCP?
+
+Traditionally, connecting AI models to different data sources required developers to create custom code for each integration. This fragmented approach led to increased development time, maintenance burdens, and limited interoperability between AI models and tools. MCP tackles this challenge by providing a standardized protocol that simplifies integration, accelerates development, and enhances the capabilities of AI assistants.
+
+### What is Neon MCP server?
+
+**Neon's MCP server** is an open-source tool that lets LLMs like **Claude manage your Neon databases using natural language by interacting with the Neon API.** It translates your simple English instructions into **Neon API calls**.
+
+Examples of natural language commands that are converted to **Neon API actions**:
+
+- **Create a Postgres database called `my-database`**: Calls the Neon API to create a database
+- **Add a column `created_at` to the 'users' table in project `my-project`**: Uses the Neon API to run an SQL command
+- **List all my Neon projects**: Calls the Neon API to fetch a project list
+
+### Why use Neon MCP server?
+
+Neon MCP server, combined with Neon, offers:
+
+- **Simple Setup:** Easily connect LLMs to **Neon API**.
+- **Natural Language:** Manage databases without direct **Neon API** coding.
+- **Empowering Non-Developers**: Intuitive database interaction for everyone.
+
+<Admonition type="warning">
+The Neon MCP server's ability to execute arbitrary commands from natural language requests requires careful attention to security.  Always review and approve actions before they are committed.  Grant access only to authorized users and applications.
+</Admonition>
+
+**Key Actions available via Neon MCP server (powered by Neon API):**
+
+Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
+
+- `list_projects`: Action to list all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account.
+- `describe_project`: Action to get detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
+- `create_project`: Action to create a new Neon project — a container in Neon for branches, databases, roles, and computes.
+- `delete_project`: Action to delete an existing Neon project.
+- `create_branch`: Action to create a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
+- `delete_branch`: Action to delete an existing branch in a Neon project.
+- `describe_branch`: Action to get details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
+- `run_sql`: Action to execute a single SQL query against a Neon database. Allows you to run read or write SQL queries.
+- `run_sql_transaction`: Action to execute a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
+- `get_database_tables`: Action to list all tables in a specified Neon database. Provides a list of tables.
+- `describe_table_schema`: Action to retrieve the schema definition of a specific table. Details the structure of a table, including columns and data types.
+- `prepare_database_migration`: Action to initiate a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
+- `complete_database_migration`: Action to apply and finalize a prepared database migration to the main branch. Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+
+These actions enable any MCP Host to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
+
+## Setting up Neon MCP server
+
+We'll use Claude Desktop to interact with Neon MCP server. Here's how to set it up:
+
+### Prerequisites
+
+- **Node.js (>= v18):** Install from [nodejs.org](https://nodejs.org/).
+- **Claude Desktop:** Install Anthropic's [Claude Desktop](https://claude.ai/download).
+- **Neon API Key:** Get your [Neon API Key](/docs/manage/api-keys#creating-api-keys).
+
+### Installation steps
+
+- In your terminal, run:
+
+  ```bash
+  npx @neondatabase/mcp-server-neon init $NEON_API_KEY
+  ```
+
+  Replace `$NEON_API_KEY` with your actual Neon API key, as shown here:
+
+  This command configures Neon MCP server to connect to your Neon account using the **Neon API Key**, as shown here:
+
+  ```bash
+  npx @neondatabase/mcp-server-neon init napi_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  Need to install the following packages:
+  @neondatabase/mcp-server-neon@0.1.9
+  Ok to proceed? (y) y
+
+  Config written to: /Users/user_name/Library/Application Support/Claude/fake_config.json
+  The Neon MCP server will start automatically the next time you open Claude.
+  ```
+
+- Restart Claude Desktop. You can do so by quitting the Claude Desktop and opening it again.
+
+- Test: Ask Claude `"List my Neon projects"`. If it works, you'll see your projects listed by Claude, fetched using the **Neon API**. For example, you might see output similar to this:
+
+  ![Claude output](/guides/images/claude_mcp/claude_list_project.png)
+
+## Using Neon MCP server
+
+Neon MCP server lets you manage Neon via **Neon API calls**
+
+### Neon platform operations
+
+- **List databases:** `"What databases do I have in my Neon project?"`
+- **Create a new Neon project**: `"Create a new Neon named my-project"`
+- **Create a new database**: `"Create a new database called my-database in the Neon project named my-project"`
+
+### Simple SQL queries
+
+- **Insert records"** `"Create a table named posts with 20 records."`
+- **Query a table:** `"Show me 10 posts from 'posts' table in database 'my-database' of project 'my-project'"` (Triggers `run_sql` action to execute query)
+
+### Schema exploration
+
+- **List tables:** `"What tables are in database 'my-database' of project 'my-project'?"` (Triggers `get_database_tables` action to get table list)
+- **Table schema:** `"Show schema of 'posts' table in database 'my-database' of project 'my-project'"` (Triggers `describe_table_schema` action to describe schema)
+
+### Quick example: Neon MCP server in action
+
+Imagine you want to add a column to a table in your Neon project. Instead of writing SQL migrations and directly calling the Neon API, with Neon MCP server and Claude, you can say: `"In my social network Neon project, edit the posts table and add a deleted_at column."`
+
+<Video  
+sources={[{src: "/videos/pages/doc/neon-mcp.mp4",type: "video/mp4",}]}
+width={960}
+height={1080}
+/>
+
+Using Neon MCP server, Claude will:
+
+1. **Confirm project:** Check which project you are referring to.
+2. **Check schema:** Look at the `posts` table structure.
+3. **Make migration:** Create the SQL to add the column
+4. **Preview changes:** Show you the changes in a safe, temporary branch leveraging Neon's branching feature.
+5. **Apply changes:** After you approve, apply the change to your database.
+6. **Confirm success:** Tell you the column is added and prompt you to commit the migration.
+
+This shows how Neon MCP server simplifies and makes database management safer with natural language, all powered by the **Neon API** under the hood.
+
+## Real-world use cases
+
+Neon MCP server can be used in various scenarios. Here are just a few possibilities:
+
+- **SaaS apps:** Faster development with natural language database management
+- **Dev/Test:** Quick database setup for testing
+- **AI agents:** Simple database backend for AI using natural language
+- **Internal tools:** Data access for non-technical teams via natural language interaction
+
+## Security considerations
+
+When Claude uses the Neon MCP tool, you'll see an authorization prompt: "Allow tool from "neon"?"
+
+![Claude output](/guides/images/claude_mcp/claude_allow_tool.png)
+
+For your security, review the tool's purpose before permitting the operation to proceed. Remember that LLMs can sometimes produce unexpected results, so careful monitoring is always recommended.
+
+## Conclusion
+
+Neon MCP server makes database management conversational and easier by enabling natural language interaction with the Neon API. It simplifies tasks, automates processes, and opens new ways to use AI with databases.
+
+## Resources
+
+- [MCP Protocol](https://modelcontextprotocol.org)
+- [Neon Docs](/docs)
+- [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api)
+- [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
+- [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
+
+<NeedHelp/>
+
+
+# Neon Database Toolkit for AI Agents
+
+---
+title: Neon Database Toolkit for AI Agents
+subtitle: Rapidly provision, manage, and interact with Neon Postgres databases in your AI agent workflows
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-01-29T00:00:00.000Z'
+updatedOn: '2025-01-29T00:00:00.000Z'
+---
+
+The AI landscape is poised for its next "ChatGPT moment" - not with smarter chatbots, but with **autonomous AI agents** that complete real-world tasks. These next-gen assistants go beyond answering questions to independently booking flights, analyzing data trends, and even managing cloud infrastructure.
+
+## The AI Agent revolution
+
+- **Task automation**: Agents now execute multi-step workflows using natural language instructions
+- **Environmental awareness**: They interact with apps/APIs like digital employees
+- **Persistent memory**: Maintain context across sessions like human colleagues
+
+## The Database challenge
+
+For these agents to thrive, they need infrastructure that matches their dynamic nature. This is where tools like Neon's database toolkit come in. The `@neondatabase/toolkit` simplifies data management for AI agents, providing them with an efficient way to create, manage, and interact with Postgres databases.
+
+As agents evolve from simple helpers to full digital coworkers, their success hinges on infrastructure that's as agile as their programming. Tools like Neon's toolkit aren't just supporting this revolution - they're building the foundation for AI's next evolutionary leap.
+
+This architectural shift isn't just about cost - it enables fundamentally new agent capabilities. When every database interaction becomes as lightweight as an API call, agents can experiment freely, chain operations without hesitation, and manage infrastructure as intuitively as humans manage browser tabs.
+There is one thing that is certain: The agent revolution won't be built on legacy infrastructure. Tools like Neon aren't just keeping pace with AI - they're redefining what's possible by making database operations as fluid as the agents themselves.
+
+## Neon: The Perfect Database for AI Agents
+
+Neon's serverless Postgres databases are built to be the ideal partner for AI agents. They offer a powerful, scalable, and cost-effective way to manage data. Here are some key benefits of using Neon databases for AI agents:
+
+| Capability           | Agent Benefit                                                                                                                                                                |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Databases in seconds | Neon lets you create fully working Postgres databases almost instantly. No more waiting around – your agent can start working with data right away.                          |
+| Scales easily        | Neon's serverless design automatically adjusts to your agent's needs, whether it's a quiet period or a busy time. You only pay for what you actually use, which saves money. |
+| Full Postgres power  | Your agents get all the reliability and features of Postgres, a database trusted by developers everywhere.                                                                   |
+| Micro Workloads      | Neon's cost-effective design is perfect for agents that only need a database for specific tasks. You don't have to pay for database resources when they aren't being used.   |
+| Cost-optimized       | Ideal for AI agents with varying workloads, which is great for agents that have quiet periods or only need a database for specific tasks.                                    |
+
+The `@neondatabase/toolkit` takes all the best things about Neon and puts them into an easy-to-use software development kit (SDK), designed to make database interaction super easy for AI agents.
+
+The toolkit can simplify the process of creating a Neon project and running SQL queries. This can also be especially helpful in test environments, where you don't want to manually set up a Neon project each time.
+
+## Getting Started with `@neondatabase/toolkit`
+
+<Admonition type="note">
+The `@neondatabase/toolkit` is in the early stages of development, so some features might change in the future.
+</Admonition>
+
+### Installation:
+
+Add the toolkit to your project:
+
+<CodeTabs labels={["npm", "yarn", "pnpm", "Deno"]}>
+
+```bash
+npm install @neondatabase/toolkit
+```
+
+```bash
+yarn add @neondatabase/toolkit
+```
+
+```bash
+pnpm add @neondatabase/toolkit
+```
+
+```bash
+deno add jsr:@neon/toolkit
+```
+
+</CodeTabs>
+
+### Usage
+
+Let's see how quickly you can get an AI agent up and running with a Neon database using the toolkit. Imagine your agent needs a database to keep track of user information. The AI agent itself will provide the instructions (SQL) to set up the database structure. Here’s how it works with `@neondatabase/toolkit`:
+
+```typescript
+import { NeonToolkit } from '@neondatabase/toolkit';
+
+// Start the toolkit with your Neon API Key
+const toolkit = new NeonToolkit(process.env.NEON_API_KEY!);
+
+async function runAgentWorkflow() {
+  // Create a Neon Project (Database) - Ready instantly!
+  const project = await toolkit.createProject();
+  console.log(`Project created: ${project.id}`);
+
+  // AI Agent Provides SQL to Create a Table
+  const agentCreateTableQuery = `
+    CREATE TABLE IF NOT EXISTS users (
+      id UUID PRIMARY KEY,
+      username VARCHAR(50) NOT NULL,
+      email VARCHAR(255) UNIQUE NOT NULL,
+      signup_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  // Run the AI Agent's SQL to create the 'users' table
+  await toolkit.sql(project, agentCreateTableQuery);
+  console.log("Table 'users' created using the AI agent's SQL.");
+
+  // AI Agent Provides SQL to Add Data
+  const agentInsertUserQuery = `
+    INSERT INTO users (id, username, email)
+    VALUES (gen_random_uuid(), 'agentUser1', 'agent.user1@example.com'),
+           (gen_random_uuid(), 'agentUser2', 'agent.user2@example.com');
+  `;
+
+  // Run the AI Agent's SQL to add user data
+  await toolkit.sql(project, agentInsertUserQuery);
+  console.log("User data added using the AI agent's SQL.");
+
+  // Perform more SQL operations as needed...
+
+  // Delete the Project (Database) - Clean up when the agent is finished
+  await toolkit.deleteProject(project);
+  console.log(`Project ${project.id} deleted.`);
+}
+
+runAgentWorkflow().catch(console.error);
+```
+
+**Key takeaways from this example**
+
+- **Quick setup:** Just a few lines of code to get a fully working database ready for your agent.
+- **Clear and simple:** The code is easy to understand, showing how the toolkit focuses on making things simple for developers and agents.
+- **Automatic cleanup:** The `deleteProject` function makes sure resources are freed up when the agent is done.
+
+## Conclusion
+
+`@neondatabase/toolkit` takes away the complexity of databases, letting you concentrate on building smarter and more powerful AI agents. It’s the fastest way to connect your agents to data, helping them learn, think, and perform using the power of serverless Postgres.
+
+For more advanced uses, remember that the toolkit gives you access to the complete [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) through `toolkit.apiClient`. This allows for more detailed customization and integration.
+
+## Resources
+
+- [@neondatabase/toolkit on npm](https://www.npmjs.com/package/@neondatabase/toolkit)
+- [@neon/toolkit on JSR](https://jsr.io/@neon/toolkit)
+- [Neon Documentation](https://neon.tech/docs/introduction)
+- [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api)
+- [Neon API keys](/docs/manage/api-keys#creating-api-keys)
 
 <NeedHelp/>
 
@@ -24389,6 +27068,528 @@ You should now be able to go through the entire workflow of selecting a file, up
 <NeedHelp />
 
 
+# Distributed hyperparameter tuning with Optuna, Neon Postgres, and Kubernetes
+
+---
+title: Distributed hyperparameter tuning with Optuna, Neon Postgres, and Kubernetes
+subtitle: Use Neon Postgres to orchestrate multi-node hyperparameter tuning for your scikit-learn, XGBoost, PyTorch, and TensorFlow/Keras models on a Kubernetes cluster
+author: sam-harri
+enableTableOfContents: true
+createdAt: '2024-10-28T00:00:00.000Z'
+updatedOn: '2024-10-28T00:00:00.000Z'
+---
+
+In this guide, you'll learn how to set up distributed hyperparameter tuning for machine learning models across multiple nodes using Kubernetes. You'll use Optuna, a bayesian optimization library, to fine-tune models built with popular libraries like scikit-learn, XGBoost, PyTorch, and TensorFlow/Keras.
+
+To orchestrate all the trials, you'll use Neon Postgres, a serverless postgres database. The combination of Neon Postgres, Kubernetes, and Docker allows for scalable, distributed hyperparameter tuning, simplifying the orchestration and management of complex machine learning workflows.
+
+## Prerequisites
+
+Before you begin, ensure you have the following tools and services set up:
+
+- `Neon Serverless Postgres`: To provision and manage your serverless PostgreSQL database. If you don't have an account yet, [sign up here](https://console.neon.tech/signup).
+- `Minikube`: For running a local Kubernetes cluster. You can install it by following the official [Minikube installation guide](https://minikube.sigs.k8s.io/docs/start).
+- `kubectl`: Kubernetes command-line tool for interacting with your cluster. Follow the [kubectl installation instructions](https://kubernetes.io/docs/tasks/tools/) to get started.
+- `Docker`: For containerizing your applications. If you don't have it installed, check out the [Docker installation guide](https://docs.docker.com/engine/install/).
+- `Python`: To create, train, and optimize machine learning models. You can download Python from the [official website](https://www.python.org/downloads/).
+
+## Overview
+
+Hyperparameters are essential to machine learning model performance. Unlike parameters learned during training, hyperparameters—like learning rates, batch sizes, or the number of layers in a neural network—need to be set in advance. Tuning these hyperparameters effectively can greatly improve model performance, squeezing out the last bit of accuracy or reducing training time.
+
+Bayesian optimization offers an efficient method for hyperparameter tuning. Unlike traditional approaches like grid or random search, Bayesian optimization builds a probabilistic model of the objective function to help it sample which hyperparameters to test next, which reduces the number of experiments needed, saving time and compute.
+
+Distributing hyperparameter tuning across multiple nodes allows each trial to run independently on its own machine, enabling multiple configurations to be tested simultaneously and speeding up the search process. However, these nodes need to be coordinated, and a serverless database like Neon Postgres is perfect. Neon offers a pay-as-you-go model that minimizes costs during idle periods,but scales when the workload demands it. This database will maintain the state of the hyperparameter tuning process, storing the results of each trial and coordinating the distribution of new trials to available nodes.
+
+These nodes are managed using Kubernetes, a container orchestration platform, which enables the same task to run concurrently across multiple nodes, allowing each node to handle a separate trial independently. It can also manage resources per node, and reboot nodes that fail, allowing for a fault tolerant training process.
+
+In this guide, you will combine Optuna, Kubernetes, and Neon Postgres to create a scalable and cost-effective system for distributed tuning of your PyTorch, TensorFlow/Keras, scikit-learn, and XGBoost models.
+
+## Hyperparameter Tuning
+
+Optuna organizes hyperparameter tuning into studies, which are collections of trials. A study represents a single optimization run, and each trial within the study corresponds to a set of hyperparameters to be evaluated. Optuna uses a study to manage the optimization process, keeping track of the trials, their results, and the best hyperparameters found so far.
+
+When you create a study, you can specify various parameters like the study name, the direction of optimization (minimize or maximize), and the storage backend. The storage backend is where Optuna stores the study data, including the trials and their results. By using a persistent storage backend like Neon Postgres, you can save the state of the optimization process, allowing all nodes to access the same study and coordinate the tuning process.
+
+A study is created like so :
+
+```python {4,5}
+if __name__ == "__main__":
+    study = optuna.create_study(
+        study_name="sklearn_example",
+        storage=os.environ["DATABASE_URL"],
+        load_if_exists=True,
+        direction="maximize",
+    )
+    study.optimize(objective, n_trials=100)
+```
+
+In the case of the distributed training, the `load_if_exists` parameter is set to `True` to load an existing study if it already exists, allowing nodes to join the optimization process.
+
+Based on your machine learning library of choice, you can define an `objective` function that takes a `trial` object as input and returns a metric to optimize. Let's dive into each library and see how to define the `objective` function for scikit-learn, XGBoost, PyTorch, and TensorFlow/Keras models using test datasets.
+
+To follow along, name your python script `hyperparam_optimization.py`.
+
+### sklearn
+
+ScikitLearn has a very wide range of models in its library, but in this you will be comparing a Support Vector Classifier and a Random Forest Classifier, and their hyperparameter configurations. For the SVC, you will optimize the strength of the regularization parameter `C`, while for the RF, you will optimize the maximum depth of the trees `max_depth`.
+
+```python
+import os
+import optuna
+import sklearn.datasets
+import sklearn.ensemble
+import sklearn.model_selection
+import sklearn.svm
+
+def objective(trial):
+    iris = sklearn.datasets.load_iris()
+    x, y = iris.data, iris.target
+
+    classifier_name = trial.suggest_categorical("classifier", ["SVC", "RandomForest"])
+    if classifier_name == "SVC":
+        svc_c = trial.suggest_float("svc_c", 1e-10, 1e10, log=True)
+        classifier_obj = sklearn.svm.SVC(C=svc_c, gamma="auto")
+    else:
+        rf_max_depth = trial.suggest_int("rf_max_depth", 2, 32, log=True)
+        classifier_obj = sklearn.ensemble.RandomForestClassifier(
+            max_depth=rf_max_depth, n_estimators=10
+        )
+
+    score = sklearn.model_selection.cross_val_score(classifier_obj, x, y, n_jobs=-1, cv=3)
+    accuracy = score.mean()
+    return accuracy
+
+
+if __name__ == "__main__":
+    study = optuna.create_study(
+        study_name="sklearn_example",
+        storage=os.environ["DATABASE_URL"],
+        load_if_exists=True,
+        direction="maximize",
+    )
+    study.optimize(objective, n_trials=100)
+    print(study.best_trial)
+```
+
+### xgboost
+
+Gradient Boosting is king in the world of tabular data, and XGBoost is one of the most popular libraries for this task. However, these models are especially sensitive to hyperparameter choice. In this example, you will optimize the booster type, regularization weights, sampling ratios, and tree complexity parameters.
+
+```python
+import numpy as np
+import os
+import optuna
+import sklearn.datasets
+import sklearn.metrics
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
+
+
+def objective(trial):
+    (data, target) = sklearn.datasets.load_breast_cancer(return_X_y=True)
+    train_x, valid_x, train_y, valid_y = train_test_split(data, target, test_size=0.25)
+    dtrain = xgb.DMatrix(train_x, label=train_y)
+    dvalid = xgb.DMatrix(valid_x, label=valid_y)
+
+    param = {
+        "verbosity": 0,
+        "objective": "binary:logistic",
+        # use exact for small dataset.
+        "tree_method": "exact",
+        # defines booster, gblinear for linear functions.
+        "booster": trial.suggest_categorical("booster", ["gbtree", "gblinear", "dart"]),
+        # L2 regularization weight.
+        "lambda": trial.suggest_float("lambda", 1e-8, 1.0, log=True),
+        # L1 regularization weight.
+        "alpha": trial.suggest_float("alpha", 1e-8, 1.0, log=True),
+        # sampling ratio for training data.
+        "subsample": trial.suggest_float("subsample", 0.2, 1.0),
+        # sampling according to each tree.
+        "colsample_bytree": trial.suggest_float("colsample_bytree", 0.2, 1.0),
+    }
+
+    if param["booster"] in ["gbtree", "dart"]:
+        # maximum depth of the tree, signifies complexity of the tree.
+        param["max_depth"] = trial.suggest_int("max_depth", 3, 9, step=2)
+        # minimum child weight, larger the term more conservative the tree.
+        param["min_child_weight"] = trial.suggest_int("min_child_weight", 2, 10)
+        param["eta"] = trial.suggest_float("eta", 1e-8, 1.0, log=True)
+        # defines how selective algorithm is.
+        param["gamma"] = trial.suggest_float("gamma", 1e-8, 1.0, log=True)
+        param["grow_policy"] = trial.suggest_categorical("grow_policy", ["depthwise", "lossguide"])
+
+    if param["booster"] == "dart":
+        param["sample_type"] = trial.suggest_categorical("sample_type", ["uniform", "weighted"])
+        param["normalize_type"] = trial.suggest_categorical("normalize_type", ["tree", "forest"])
+        param["rate_drop"] = trial.suggest_float("rate_drop", 1e-8, 1.0, log=True)
+        param["skip_drop"] = trial.suggest_float("skip_drop", 1e-8, 1.0, log=True)
+
+    bst = xgb.train(param, dtrain)
+    preds = bst.predict(dvalid)
+    pred_labels = np.rint(preds)
+    accuracy = sklearn.metrics.accuracy_score(valid_y, pred_labels)
+    return accuracy
+
+if __name__ == "__main__":
+    study = optuna.create_study(
+        study_name="xgboost_example",
+        storage=os.environ["DATABASE_URL"],
+        load_if_exists=True,
+        direction="maximize",
+    )
+    study.optimize(objective, n_trials=100)
+```
+
+### PyTorch
+
+PyTorch is now the defacto library for deep learning research, and its flexibility makes it a popular choice for many machine learning tasks. In this example, you will optimize the number of layers, hidden units, and dropout ratios in a feedforward neural network for the FashionMNIST dataset, a popular benchmark for image classification.
+
+```python
+import os
+import optuna
+from optuna.trial import TrialState
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+import torch.utils.data
+from torchvision import datasets
+from torchvision import transforms
+
+
+DEVICE = torch.device("cpu")
+BATCHSIZE = 128
+CLASSES = 10
+DIR = os.getcwd()
+EPOCHS = 10
+N_TRAIN_EXAMPLES = BATCHSIZE * 30
+N_VALID_EXAMPLES = BATCHSIZE * 10
+
+
+def define_model(trial):
+    n_layers = trial.suggest_int("n_layers", 1, 3)
+    layers = []
+
+    in_features = 28 * 28
+    for i in range(n_layers):
+        out_features = trial.suggest_int("n_units_l{}".format(i), 4, 128)
+        layers.append(nn.Linear(in_features, out_features))
+        layers.append(nn.ReLU())
+        p = trial.suggest_float("dropout_l{}".format(i), 0.2, 0.5)
+        layers.append(nn.Dropout(p))
+
+        in_features = out_features
+    layers.append(nn.Linear(in_features, CLASSES))
+    layers.append(nn.LogSoftmax(dim=1))
+
+    return nn.Sequential(*layers)
+
+
+def get_mnist():
+    train_loader = torch.utils.data.DataLoader(
+        datasets.FashionMNIST(DIR, train=True, download=True, transform=transforms.ToTensor()),
+        batch_size=BATCHSIZE,
+        shuffle=True,
+    )
+    valid_loader = torch.utils.data.DataLoader(
+        datasets.FashionMNIST(DIR, train=False, transform=transforms.ToTensor()),
+        batch_size=BATCHSIZE,
+        shuffle=True,
+    )
+
+    return train_loader, valid_loader
+
+
+def objective(trial):
+    model = define_model(trial).to(DEVICE)
+
+    # Generate the optimizers.
+    optimizer_name = trial.suggest_categorical("optimizer", ["Adam", "RMSprop", "SGD"])
+    lr = trial.suggest_float("lr", 1e-5, 1e-1, log=True)
+    optimizer = getattr(optim, optimizer_name)(model.parameters(), lr=lr)
+
+    train_loader, valid_loader = get_mnist()
+
+    for epoch in range(EPOCHS):
+        model.train()
+        for batch_idx, (data, target) in enumerate(train_loader):
+            data, target = data.view(data.size(0), -1).to(DEVICE), target.to(DEVICE)
+
+            optimizer.zero_grad()
+            output = model(data)
+            loss = F.nll_loss(output, target)
+            loss.backward()
+            optimizer.step()
+
+        model.eval()
+        correct = 0
+        with torch.no_grad():
+            for batch_idx, (data, target) in enumerate(valid_loader):
+                if batch_idx * BATCHSIZE >= N_VALID_EXAMPLES:
+                    break
+                data, target = data.view(data.size(0), -1).to(DEVICE), target.to(DEVICE)
+                output = model(data)
+                pred = output.argmax(dim=1, keepdim=True)
+                correct += pred.eq(target.view_as(pred)).sum().item()
+
+        accuracy = correct / min(len(valid_loader.dataset), N_VALID_EXAMPLES)
+
+        trial.report(accuracy, epoch)
+
+        if trial.should_prune():
+            raise optuna.exceptions.TrialPruned()
+
+    return accuracy
+
+
+if __name__ == "__main__":
+    study = optuna.create_study(
+        study_name="pytorch_example",
+        storage=os.environ["DATABASE_URL"],
+        load_if_exists=True,
+        direction="maximize",
+    )
+    study.optimize(objective, n_trials=100, timeout=600)
+```
+
+### tfkeras
+
+While PyTorch is the go-to library for research, Keras with the TensorFlow backend is popular for its simplicity and ease of use. In this example, you will optimize the number of filters, kernel size, strides, activation functions, and learning rate in a convolutional neural network for the MNIST dataset.
+
+```python
+import urllib
+import os
+
+import optuna
+from tensorflow.keras.backend import clear_session
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import RMSprop
+
+N_TRAIN_EXAMPLES = 3000
+N_VALID_EXAMPLES = 1000
+BATCHSIZE = 128
+CLASSES = 10
+EPOCHS = 10
+
+
+def objective(trial):
+    clear_session()
+
+    (x_train, y_train), (x_valid, y_valid) = mnist.load_data()
+    img_x, img_y = x_train.shape[1], x_train.shape[2]
+    x_train = x_train.reshape(-1, img_x, img_y, 1)[:N_TRAIN_EXAMPLES].astype("float32") / 255
+    x_valid = x_valid.reshape(-1, img_x, img_y, 1)[:N_VALID_EXAMPLES].astype("float32") / 255
+    y_train = y_train[:N_TRAIN_EXAMPLES]
+    y_valid = y_valid[:N_VALID_EXAMPLES]
+    input_shape = (img_x, img_y, 1)
+
+    model = Sequential()
+    model.add(
+        Conv2D(
+            filters=trial.suggest_categorical("filters", [32, 64]),
+            kernel_size=trial.suggest_categorical("kernel_size", [3, 5]),
+            strides=trial.suggest_categorical("strides", [1, 2]),
+            activation=trial.suggest_categorical("activation", ["relu", "linear"]),
+            input_shape=input_shape,
+        )
+    )
+    model.add(Flatten())
+    model.add(Dense(CLASSES, activation="softmax"))
+
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
+    model.compile(
+        loss="sparse_categorical_crossentropy",
+        optimizer=RMSprop(learning_rate=learning_rate),
+        metrics=["accuracy"],
+    )
+
+    model.fit(
+        x_train,
+        y_train,
+        validation_data=(x_valid, y_valid),
+        shuffle=True,
+        batch_size=BATCHSIZE,
+        epochs=EPOCHS,
+        verbose=False,
+    )
+
+    score = model.evaluate(x_valid, y_valid, verbose=0)
+    return score[1]
+
+if __name__ == "__main__":
+    study = optuna.create_study(
+        study_name="tfkeras_example",
+        storage=os.environ["DATABASE_URL"],
+        load_if_exists=True,
+        direction="maximize",
+    )
+    study.optimize(objective, n_trials=100, timeout=600)
+```
+
+## Creating the Docker Image
+
+To run the hyperparameter tuning process in a Kubernetes cluster, you'll need to containerize your application using Docker by creating a Docker image. The Docker image will contain your Python code, dependencies, and the necessary configuration files to run.
+
+```Dockerfile
+FROM python:3.10-slim-buster
+
+WORKDIR /usr/src/
+
+RUN pip install --no-cache-dir optuna psycopg2-binary OTHER_DEPENDENCIES
+
+COPY hyperparam_optimization.py .
+```
+
+Depending on the machine learning library you're using, you'll need to install the appropriate dependencies in the Docker image. Each of the examples above requires the `optuna`, and `psycopg2-binary` packages, but you will need additional dependencies for each of the examples :
+
+- For scikit-learn, you'll need to install `scikit-learn`
+- For XGBoost, you'll need to install `xgboost`
+- For PyTorch, you'll need to install `torch` and `torchvision`
+- For TensorFlow/Keras, you'll need to install `tensorflow`
+
+You'll want to build the Docker image later, once the Kubernetes cluster is set up, so that the image is available to the Kubernetes nodes.
+
+## Setting up Kubernetes
+
+To run distributed hyperparameter tuning across multiple nodes, you'll need a Kubernetes cluster. For this guide, you'll use Minikube to set up a local Kubernetes cluster on your machine. Minikube is a lightweight Kubernetes distribution, making it easy to get started with Kubernetes development.
+
+To start Minikube, run the following command:
+
+```bash
+minikube start
+```
+
+This command will create a new Kubernetes cluster using the default settings. Once Minikube is up and running, you can interact with the cluster using the `kubectl` command-line tool.
+
+To check the status of your cluster, run:
+
+```bash
+kubectl cluster-info
+```
+
+This command will display information about the Kubernetes cluster, including the API server address and the cluster services.
+
+Now that minikube is running, you can build your Docker using:
+
+```bash
+eval "$(minikube docker-env)"
+docker image build -t "optuna-kubernetes:example" .
+```
+
+Note the `eval "$(minikube docker-env)"` command, which sets the Docker environment variables to point to the Minikube Docker daemon. This allows you to build the Docker image inside the Minikube cluster, making it available to the Kubernetes nodes.
+
+To submit jobs to the Kubernetes cluster, you'll need to create a Kubernetes manifest file. This file describes the task you want to run, including the container image, command, and environment variables. You can define the number of parallel jobs to run and the restart policy for the job.
+
+To allow the Job to access the Neon Postgres database, you'll need to create a Kubernetes Secret containing the database credentials. You can create the secret from a `.env` file containing the database URL like so:
+
+```bash
+kubectl create secret generic optuna-postgres-secrets --from-env-file=.env
+```
+
+where your `.env` file contains the database URL from the Neon Console:
+
+```bash
+DATABASE_URL=YOUR_DATABASE_URL
+```
+
+Or from the raw string in the Neon Console like so:
+
+```bash
+kubectl create secret generic optuna-postgres-secrets \
+    --from-literal=DATABASE_URL=YOUR_DATABASE_URL
+```
+
+Now, you can create the Kubernetes Job manifest file:
+
+```yaml
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: worker
+spec:
+  parallelism: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: worker
+          image: optuna-kubernetes:example
+          imagePullPolicy: IfNotPresent
+          command:
+            - python
+            - hyperparam_optimization.py
+          envFrom:
+            - secretRef:
+                name: optuna-postgres-secrets
+```
+
+Here, the manifest tells Kubernetes to launch 3 parallel jobs, each running the `hyperparam_optimization.py` script inside the Docker container, and if the job fails, Kubernetes will restart it automatically. The `envFrom` field specifies that the Job should use the `optuna-postgres-secrets` secret you just created to access the Neon Postgres database.
+
+Finally, you can submit the Job to the Kubernetes cluster using the following command:
+
+```bash
+kubectl apply -f k8s-manifests.yaml
+```
+
+Now, if you run the following command, you should see the Job running in the Kubernetes cluster:
+
+```bash
+kubectl get jobs
+```
+
+and if you run the following command, you should see the 3 pods running the job:
+
+```bash
+kubectl get pods
+```
+
+## Monitoring
+
+To monitor your Kubernetes cluster, you can use the Kubernetes Dashboard, a web-based UI for managing and monitoring your cluster. To access the Kubernetes Dashboard, run the following command:
+
+```bash
+minikube dashboard
+```
+
+Likewise, you can monitor logs of the running pods to monitor using a tool like `stern`, which allows you to tail logs from multiple pods at once:
+
+```bash
+stern .
+```
+
+Here, you can see that the first pod creates a new study, and the other pods join the existing study. Then, each pods runs its trial, logs the result, and creates new a trial based on the results of the previous ones in the database.
+
+![Stern Logs](/guides/images/optuna-hyperprameter-kubernetes/k8s-example-logs.png)
+
+To show off the power of Kubernetes fault tolerance, you can delete one of the pods, and see that the job is automatically restarted on a new pod. First, find all the running pods and chose one to delete:
+
+```bash
+kubectl get pods
+```
+
+Then, delete the pod:
+
+```bash
+kubectl delete pod <POD_NAME>
+```
+
+In the stern logs, you can see the pod getting removed, and a new pod being created to replace it, all while continuing the same study as before.
+
+![Delete Pod Stern Logs](/guides/images/optuna-hyperprameter-kubernetes/deletepod-logs.png)
+
+## Conclusion
+
+Now, you have successfully set up distributed hyperparameter tuning using Optuna, Neon Postgres, and Kubernetes. By leveraging Kubernetes to manage multiple nodes running hyperparameter tuning jobs, you can speed up the optimization process and find the best hyperparameters for your machine learning models more efficiently. This kind of task, which sees bursts of database activity followed by long periods of inactivity, is well-suited to a serverless database like Neon Postgres, which can scale dynamically to any workload, then back to zero.
+
+To take this to the next step, you can leverage cloud Kubernetes services like Azure Kubernetes Service (AKS) or Amazon Elastic Kubernetes Service (EKS). These services offer managed Kubernetes clusters that can scale to hundreds of nodes to run your jobs at scale. You can also integrate with cloud storage services like Azure Blob Storage or Amazon S3 to store your training data and model checkpoints, making it easier to manage large datasets and distributed training workflows.
+
+
 # Using Payload CMS with Neon Postgres to Build an E-commerce Store in Next.js
 
 ---
@@ -24423,7 +27624,7 @@ Using a serverless Postgres database powered by Neon lets you scale down to zero
 
 To get started, go to the [Neon console](https://console.neon.tech/app/projects) and create a project.
 
-Enable **Pooled connection** in the **Connection String** section of the **Connection Details** panel to obtain the Postgres connection string.
+Enable the **Connection pooling** toggle on the **Connection Details** panel to obtain the Postgres connection string.
 
 ![](/guides/images/payload/98592ce7-3b8a-411b-a769-a0b89eaac8a3.png)
 
@@ -26019,6 +29220,126 @@ We have demonstrated how combining Neon and Azure Functions enables the developm
 - [Azure Functions Documentation](https://learn.microsoft.com/en-us/azure/azure-functions/)
 
 <NeedHelp />
+
+
+# Queue System using SKIP LOCKED in Neon Postgres
+
+---
+title: Queue System using SKIP LOCKED in Neon Postgres
+subtitle: A step-by-step guide describing how to structure a tasks table for use as a task queue in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-01-10T17:48:36.612Z'
+updatedOn: '2025-01-10T17:48:36.612Z'
+---
+
+The `SKIP LOCKED` clause allows concurrent transactions to skip rows currently locked by other transactions.
+This behavior makes `SKIP LOCKED` ideal for implementing a non-blocking task queue in Postgres.
+
+## Steps
+
+- Create a tasks table
+- Insert tasks into the queue
+- Fetch tasks using SKIP LOCKED
+- Mark tasks as completed
+- Track stuck tasks
+- Optimize with indexing
+
+## Create a tasks table
+
+First, you need a table to store your tasks.
+Each task should have a unique identifier, a status, and a payload containing the task to run and any parameters.
+Use the following SQL statement to create the tasks table:
+
+```sql
+CREATE TABLE tasks (
+  id SERIAL PRIMARY KEY,
+  payload JSONB NOT NULL,
+  status TEXT DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  started_at TIMESTAMP
+);
+```
+
+This table defines a tasks queue with a `payload` column containing semi-structured task-specific data as a `JSONB`.
+
+## Insert tasks into the queue
+
+Next, populate the tasks table with sample data. Each task is represented as a JSON object in the `payload` column:
+
+```sql
+INSERT INTO tasks (payload) VALUES
+  ('{"task": "email", "recipient": "user1@example.com"}'),
+  ('{"task": "email", "recipient": "user2@example.com"}'),
+  ('{"task": "report", "type": "sales"}');
+```
+
+You can then verify the rows in the task collection using the following.
+
+```sql
+SELECT * FROM tasks;
+```
+
+## Fetch tasks using `SKIP LOCKED`
+
+When implementing a task queue, it is important to ensure that only one worker can run a given task, otherwise you may end up with tasks running multiple times.
+`FOR UPDATE SKIP LOCKED` ensures that only one process retrieves and locks tasks, while others skip over already-locked rows.
+
+Here’s a query to fetch and lock a single task.
+
+```sql
+WITH cte AS (
+  SELECT id
+  FROM tasks
+  WHERE status = 'pending'
+  ORDER BY created_at
+  LIMIT 1
+  FOR UPDATE SKIP LOCKED
+)
+UPDATE tasks
+SET status = 'in_progress', started_at = CURRENT_TIMESTAMP
+FROM cte
+WHERE tasks.id = cte.id
+RETURNING tasks.*;
+```
+
+This query:
+
+1. Selects the oldest task with status `pending`.
+2. Locks the task row to prevent other transactions from processing it.
+3. Updates the task's status to `in_progress` and records the task's `started_at`.
+
+## Mark tasks as completed
+
+After processing a task, you should update the task's status to `completed` to indicate that it's finished:
+
+```sql
+UPDATE tasks
+SET status = 'completed'
+WHERE id = <task id here>;
+```
+
+## Track stuck tasks
+
+In production, tasks may get stuck `in_progress` due to worker errors.
+To identify tasks that may be hanging, you can query for tasks that have been in progress for more than 5 minutes as follows.
+
+```sql
+SELECT *
+FROM tasks
+WHERE status = 'in_progress'
+  AND started_at < NOW() - INTERVAL '5 minutes';
+```
+
+## Optimize with indexing
+
+As the number of tasks grows, queries on tasks can get slow.
+Adding an index on the `status` and `created_at` columns can help ensure consistent performance for the `SKIP LOCKED` query:
+
+```sql
+CREATE INDEX idx_tasks_status_created_at
+ON tasks (status, created_at);
+```
 
 
 # Building a Full-Stack Portfolio Website with a RAG Powered Chatbot
@@ -28274,6 +31595,300 @@ By implementing read replicas in your Laravel application, you're taking a signi
 <NeedHelp/>
 
 
+# How to Create a Reliable Testing Dataset with pg_dump and pg_restore
+
+---
+author: paul-scanlon
+enableTableOfContents: true
+createdAt: '2025-02-14T00:00:00.000Z'
+updatedOn: '2025-02-14T00:00:00.000Z'
+title: How to Create a Reliable Testing Dataset with pg_dump and pg_restore
+subtitle: A practical guide to extracting a test dataset from Postgres using pg_dump, pg_restore and psql
+---
+
+As your Postgres database grows, you'll likely need a way to generate a smaller, 'good-enough' dataset that preserves the structure and referential integrity of production but is better suited for testing.
+
+There are several ways to do this, but here's a straightforward approach using `pg_dump`, `pg_restore`, `psql` and GitHub Actions.
+
+## Running partial data dumps inside GitHub Actions
+
+You can run `pg_dump`, `pg_restore`, and `psql` from the command line, but sometimes, an automated, reproducible approach is more convenient. To better control when data dumps occur, I use a [scheduled GitHub Action](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule) to export data from my production database and restore it to a testing database. This method works across different Postgres database providers, but if you're looking for a cost-effective testing environment, consider trying Neon. Check out our [getting started guide](https://neon.tech/docs/get-started-with-neon/signing-up#sign-up) to see how easy it is to set up.
+
+## What is a scheduled GitHub Action?
+
+A scheduled GitHub Action runs automatically at a time you define. Since you're dumping data from a production database, you'll likely want to run this job when the system isn't under heavy load, typically outside of business hours. I usually schedule these jobs for midnight, but since I don't want to stay up that late, a scheduled GitHub Action takes care of it while I sleep.
+
+## Getting started with GitHub Actions
+
+To create a GitHub Action, you'll need a GitHub repository to store it. If you don't have one yet, create one now and clone it to your machine for local development.
+
+In the root of your project, create a `.github` directory. Inside it, add another directory called `workflows`. Then, within `workflows`, create a new file named `dump-test-data.yml`, for example:
+
+```
+.github
+  |-- workflows
+    |-- dump-test-data.yml
+```
+
+Now add the following code.
+
+There's a lot happening here, so before I get to the `pg_dump`, `pg_restore` and `psql` steps, let me briefly explain what this first part does.
+
+```yml
+name: Dump Test Data
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+  workflow_dispatch:
+
+env:
+  PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }} # Production or staging database
+  DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }} # Development or testing database
+  PG_VERSION: '17'
+
+jobs:
+  dump-and-restore:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install PostgreSQL
+        run: |
+          sudo apt update
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt install -y postgresql-${{ env.PG_VERSION }}
+
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+```
+
+### name
+
+This name will appear in the **Actions** section of the GitHub UI. Regardless of what you name your file, this is the name that will be displayed.
+
+## on
+
+This section of the workflow determines when the Action will run. The `schedule` field includes a `cron` expression, which uses [POSIX cron syntax](https://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html#tag_20_25_07) to specify how often the Action should execute.
+
+I've also included the `workflow_dispatch` field, which lets you manually trigger this Action from the GitHub UI—a useful feature while developing and testing the workflow.
+
+### env
+
+This workflow requires two environment variables. The first is the Postgres connection string for the source database, typically your production or staging database. The second is the connection string for the target database, which will serve as your testing database. Both need to use the same version of Postgres. Both of these variables will also need to be added to your GitHub repositories secrets.
+
+To do this, navigate to **Settings** > **Settings and variables** > **Actions** and add them under **Repository secrets**.
+
+![Screenshot of GitHub repository secrets](/guides/images/reliable-testing-dataset-with-pg-dump-and-pg-restore/screenshot-of-github-respository-secrets.jpg)
+
+The last variable defines the Postgres version to install in the Action environment. Since `pg_dump`, `pg_restore`, and `psql` depend on Postgres, you'll need to install it within the Action—I’ll cover this in more detail later. It’s also worth noting the version of Postgres you install here should be the same version used by both your source and target database. In my example, all use [Postgres 17](https://neon.tech/blog/postgres-17).
+
+### jobs/steps
+
+The job is named `dump-and-restore`, which will be displayed in the GitHub UI when the Action is running. You can choose any name you prefer.
+
+The first step in the job is to install Postgres. While there are various methods and alternative options available in the [GitHub Marketplace](https://github.com/marketplace?query=Postgres), I prefer to install directly from Apt (Advanced Packaging Tool) for added security, especially since you're providing direct access to your production database.
+
+The next step is to define a variable that is needed when using `pg_dump`, `pg_restore`, and `psql`. This variable is named `POSTGRES` and will be referenced later as `$POSTGRES/pg_dump`.
+
+Before I jump into the dump/restore parts, I'll quickly explain the schema I've used in this example. It’s important to note the foreign key relationships between the tables.
+
+In my example, the foreign key relationships are as follows:
+
+- The **transactions** table has a foreign key `user_id` that references the `user_id` column in the **users** table. This establishes a relationship where each transaction is linked to a specific user.
+- The **transactions** table is linked to the **products** table through the `product_id` foreign key. This establishes a relationship where each transaction is associated with a specific product.
+
+### users
+
+This is the schema used to create the `users` table.
+
+```sql
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### products
+
+This is the schema used to create the `products` table.
+
+```sql
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    stock_quantity INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### transactions
+
+This is the schema used to create the `transactions` table.
+
+```sql
+CREATE TABLE transactions (
+    transaction_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(user_id) ON DELETE CASCADE,
+    product_id INT REFERENCES products(product_id) ON DELETE CASCADE,
+    quantity INT NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) NOT NULL CHECK (status IN ('pending', 'completed', 'failed'))
+);
+```
+
+The **transactions** table in my example relies on data from both the **users** and **products** tables. When performing a partial data dump, it's important that transaction rows can reference either a `user_id` from the **users** table or a `product_id` from the **products** table.
+
+With this in mind, I'll start with the `transactions` table when deciding which data to include in the partial dump.
+
+## Dump and restore partial data
+
+Add the following code after the **Set PostgreSQL binary path** step.
+
+```yml {23-46}
+name: Dump Test Data
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+  workflow_dispatch:
+env:
+  PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }} # Production or staging database
+  DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }} # Development or testing database
+  PG_VERSION: '17'
+jobs:
+  dump-and-restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install PostgreSQL
+        run: |
+          sudo apt update
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt install -y postgresql-${{ env.PG_VERSION }}
+
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+
+     - name: Dump schema
+        run: |
+          $POSTGRES/w "${{ github.workspace }}/all-schema.bak" "${{ env.PROD_DATABASE_URL }}"
+
+      - name: Dump data
+        run: |
+          $POSTGRES/psql "${{ env.PROD_DATABASE_URL }}" -c "\copy (SELECT * FROM transactions ORDER BY transaction_id DESC LIMIT 50) TO '${{ github.workspace }}/transactions-subset.csv' WITH CSV HEADER"
+          $POSTGRES/psql "${{ env.PROD_DATABASE_URL }}" -c "\copy (SELECT * FROM products WHERE product_id IN (SELECT product_id FROM transactions ORDER BY transaction_id DESC LIMIT 50)) TO '${{ github.workspace }}/products-subset.csv' WITH CSV HEADER"
+          $POSTGRES/psql "${{ env.PROD_DATABASE_URL }}" -c "\copy (SELECT * FROM users WHERE user_id IN (SELECT user_id FROM transactions ORDER BY transaction_id DESC LIMIT 50)) TO '${{ github.workspace }}/users-subset.csv' WITH CSV HEADER"
+
+      - name: Drop tables and schema
+        run: |
+          $POSTGRES/psql "${{ env.DEV_DATABASE_URL }}" -c "DROP SCHEMA IF EXISTS public CASCADE;"
+          $POSTGRES/psql "${{ env.DEV_DATABASE_URL }}" -c "CREATE SCHEMA public;"
+
+      - name: Restore schema
+        run: |
+          $POSTGRES/pg_restore --clean --no-owner --no-acl --if-exists --schema-only -d "${{ env.DEV_DATABASE_URL }}" "${{ github.workspace }}/all-schema.bak"
+
+      - name: Restore data
+        run: |
+          $POSTGRES/psql "${{ env.DEV_DATABASE_URL }}" -c "\copy public.users FROM '${{ github.workspace }}/users-subset.csv' WITH CSV HEADER"
+          $POSTGRES/psql "${{ env.DEV_DATABASE_URL }}" -c "\copy public.products FROM '${{ github.workspace }}/products-subset.csv' WITH CSV HEADER"
+          $POSTGRES/psql "${{ env.DEV_DATABASE_URL }}" -c "\copy public.transactions FROM '${{ github.workspace }}/transactions-subset.csv' WITH CSV HEADER"
+```
+
+The above code snippet might look a bit complicated at first, but it’s actually not that bad—let me break it down for you.
+
+### Dump schema
+
+In this step, I use `pg_dump` to export the entire schema from the production database and save it to the GitHub workspace as a file named `all-schema.bak`. This file is stored in memory so it can be accessed later by the **Restore schema** step towards the end of the job.
+
+The flags used in this step are explained below:
+
+| Flag            | Meaning                                                                          |
+| --------------- | -------------------------------------------------------------------------------- |
+| `-Fc`           | Dumps the database in a custom format.                                           |
+| `--schema-only` | Dumps only the schema (table structures, indexes, constraints) without any data. |
+| `-f `           | Specifies the output file where the schema dump will be stored.                  |
+
+### Dump data
+
+In this step, I use `psql` to query the data. This is the most complex step, involving three SQL queries, each targeting one of the three tables. The queries are as follows:
+
+#### Transactions query
+
+This query selects the 50 most recent **transactions** from the `transactions` table. Depending on your requirements, you can increase the `LIMIT` or modify the query.
+
+```sql
+SELECT * FROM transactions ORDER BY transaction_id DESC LIMIT 50
+```
+
+The results are saved to the GitHub workspace memory as a file called `transactions-subset.csv`, which will be used in a later step.
+
+#### Products query
+
+This query selects **products**, but only those with a `product_id` present in the 50 most recent **transactions**:
+
+```sql
+SELECT * FROM products WHERE product_id IN (SELECT product_id FROM transactions ORDER BY transaction_id DESC LIMIT 50)
+```
+
+The results are saved to the GitHub workspace memory as a file called `products-subset.csv`, which will be used in a later step.
+
+#### Users query
+
+This query selects **users**, but only those with a `user_id` present in the 50 most recent **transactions**:
+
+```sql
+SELECT * FROM users WHERE user_id IN (SELECT user_id FROM transactions ORDER BY transaction_id DESC LIMIT 50)
+```
+
+The results are saved to the GitHub workspace memory as a file called `users-subset.csv`, which will be used in a later step.
+
+### Drop tables and schema
+
+In this step, I use `psql` to drop the schema and create a fresh one. Since this Action runs on a schedule, this cleanup ensures the target database is ready for new schema and data, avoiding any errors from schema changes since the last run.
+
+The queries used in this step are explained below:
+
+| Step                                    | Effect                                                   |
+| --------------------------------------- | -------------------------------------------------------- |
+| `DROP SCHEMA IF EXISTS public CASCADE;` | Removes the public schema and everything inside it.      |
+| `CREATE SCHEMA public;`                 | Recreates the public schema for a clean restore process. |
+
+### Restore schema
+
+In this step, I use `pg_restore` to restore the schema from the `all-schema.bak` file, which was saved to the GitHub workspace during the Dump schema step.
+
+The flags used in this step are explained below:
+
+| Flag            | Meaning                                                                                                        |
+| --------------- | -------------------------------------------------------------------------------------------------------------- |
+| `--clean`       | Drops existing database objects before recreating them, ensuring a clean restore.                              |
+| `--no-owner`    | Ignores ownership information in the dump file, so restored objects are owned by the user running the restore. |
+| `--no-acl`      | Excludes access control (GRANT/REVOKE) statements from the restore, preventing permission changes.             |
+| `–if-exits`     | Ensures that DROP commands (used with --clean) only execute if the object exists, preventing errors.           |
+| `--schema-only` | Restores only the schema (table structures, indexes, constraints) without inserting any data.                  |
+| `-d`            | Specifies the target database to restore into.                                                                 |
+
+## Restore data
+
+In this step, I use `psql` to restore the data to the target database from the `.csv` files generated in the **Dump data** step.
+
+## Finished
+
+Once the Action completes successfully, your target database will have a fresh test data set ready for use!
+
+This Action is part of our [Dev/Test use case](/use-cases/dev-test), widely used by Neon customers who face limitations with traditional databases for testing. By leveraging a dedicated Neon database, while leaving production environments where they are, developers gain access to Neon's full suite of features, including the [built-in SQL editor](/docs/get-started-with-neon/query-with-neon-sql-editor), [table explorer](/docs/guides/tables), and [branching](/docs/introduction/branching).
+
+If you'd like to learn more about using Neon for testing, check out our [docs](/docs/use-cases/dev-test) or contact our [sales team](/contact-sales).
+
+
 # Run your own analytics with Umami, Fly.io and Neon
 
 ---
@@ -28315,7 +31930,7 @@ Using a serverless Postgres database powered by Neon allows you to scale down to
 
 To get started, go to the [Neon Console](https://console.neon.tech/app/projects) and enter a name for your project.
 
-You will be presented with a dialog that provides a connection string of your database. Click on the **Pooled connection** option and the connecting string automatically changes to a pooled connection string.
+You will be presented with a dialog that provides a connection string of your database. Enable the **Connection pooling** toggle for a pooled connection string.
 
 ![](/guides/images/self-hosting-umami-neon/1689d44f-4c5d-4b2a-8d13-32407f9c8781.png)
 
@@ -29294,7 +32909,7 @@ Using a serverless Postgres database powered by Neon lets you scale compute reso
 
 To get started, go to the [Neon console](https://console.neon.tech/app/projects) and create a project.
 
-You will then be presented with a dialog that provides a connection string of your database. Click on **Pooled connection** option and the connection string automatically updates to a pooled connection string.
+You will then be presented with a dialog that provides a connection string of your database. Enable the **Connection pooling** toggle for a pooled connection string.
 
 ![Neon Connection Details](/guides/images/strapi-cms/20b94d5f-aff4-4594-b60b-3a65d4fc884c.png)
 
@@ -30209,6 +33824,130 @@ By following these steps, you can easily create sensors, stream sensor data, and
 Now, you have created and tested an API for managing, streaming, and querying sensor data into `TimescaleDB` using `FastAPI`. By leveraging TimescaleDB for time-series data storage, you now have a high-performance solution for handling sensor data at scale.
 
 As a next step, you can look into streaming data into the database using a distributed event platform like `Kafka` or `Red Panda`, or using `Timescale` to monitor the sensor data with `Apache Superset` or `Grafana`.
+
+
+# Vector Search in Postgres
+
+---
+title: Vector Search in Postgres
+subtitle: A step-by-step guide describing how to use pgvector for vector search in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-02-04T13:24:36.612Z'
+updatedOn: '2025-02-04T13:24:36.612Z'
+---
+
+Vector search enables you to perform similarity searches on vectors stored in Postgres.
+With the [pgvector](https://github.com/pgvector/pgvector) extension, you can store and efficiently query vector embeddings, making Postgres a viable option for AI-driven applications like retrieval-augmented generation (RAG) and semantic search.
+
+## Steps
+
+- Install and enable pgvector
+- Create a table with a vector column
+- Insert and retrieve vector data
+- Perform nearest neighbor searches
+- Index using HNSW indexes
+- Insert and retrieve embeddings
+
+## Install and enable pgvector
+
+Before using vector search, you need to install the [`pgvector` extension](https://github.com/pgvector/pgvector).
+The `pgvector` extension adds a `vector` data type, operators for similarity search (`<->`, `<#>`, `<=>`) , and support for ANN indexes.
+In Neon, `pgvector` is already installed, you just need to enable it using the following command.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+## Create a table with a vector column
+
+To store vector embeddings, create a table with a vector column.
+You must specify the size (also known as _dimensionality_) of the vectors when defining the column.
+
+```sql
+CREATE TABLE embeddings (
+  id SERIAL PRIMARY KEY,
+  data VECTOR(3) -- 3-dimensional vector example
+);
+```
+
+## Insert and retrieve vector data
+
+You can insert vectors as arrays using the following command.
+Under the hood, vectors are just fixed-length arrays of floats.
+
+```sql
+INSERT INTO embeddings (data)
+VALUES ('[0.1, 0.2, 0.3]'),
+       ('[0.5, 0.1, 0.8]');
+```
+
+You can retrieve all stored vectors using the following command.
+
+```sql
+SELECT * FROM embeddings;
+```
+
+## Perform nearest neighbor searches
+
+Vector search typically means finding the closest vectors in the database to a given vector.
+There are different distance metrics to calculate which vector is closest, like Euclidean distance (`<->`), cosine similarity (`<#>`), and inner product (`<=>`).
+
+For example, the following command runs nearest neighbor search to find the most similar vector to `[0.2, 0.1, 0.3]` using Euclidean distance, which is `[0.1, 0.2, 0.3]`.
+
+```sql
+SELECT * FROM embeddings
+ORDER BY data <-> '[0.2, 0.1, 0.3]'
+LIMIT 1;
+```
+
+## Index using HNSW indexes
+
+For large datasets, exact nearest neighbor search can be slow.
+`pgvector` supports two different indexes for nearest neighbor search: HNSW and IVFFlat.
+
+The following command creates a HNSW index.
+
+```sql
+CREATE INDEX ON embeddings USING hnsw (data);
+```
+
+## Insert and retrieve embeddings
+
+Vector databases are typically used to store _embeddings_.
+An embedding is a numerical representation of data in a high-dimensional space that captures semantic relationships and similarities between entities.
+First, run the following command to recreate the `embeddings` table to store vectors with dimensionality 512.
+
+```sql
+DROP TABLE embeddings;
+
+CREATE TABLE embeddings (
+  id SERIAL PRIMARY KEY,
+  data VECTOR(512)
+);
+```
+
+For example, the following command inserts a pair of 512 dimensionality vectors containing text embeddings pulled from the [Nomic API](https://docs.nomic.ai/reference/api/embed-text-v-1-embedding-text-post).
+The first embedding represents the string "i like to eat tacos", the second represents the string "An embedding is a numerical representation of data in a high-dimensional space that captures semantic relationships and similarities between entities."
+
+```sql
+INSERT INTO embeddings (data)
+VALUES
+  /* Embedding representation of "i like to eat tacos" */
+  ('[0.017120361,0.09112549,-0.24157715,0.0045776367,-0.024642944,0.0062828064,-0.06707764,0.022094727,-0.022232056,-0.019546509,0.010147095,0.05722046,0.027832031,0.07006836,-0.0051574707,-0.041259766,0.0008292198,-0.08605957,0.014213562,0.10180664,-0.045318604,-0.046447754,-0.002002716,-0.04144287,0.11590576,0.0093688965,-0.019638062,0.08929443,-0.057739258,0.031173706,-0.030471802,-0.07293701,0.019317627,0.100097656,0.017288208,-0.053222656,0.082092285,0.018234253,0.024536133,-0.0541687,-0.027191162,0.038635254,0.05657959,-0.050445557,0.06378174,-0.015579224,0.0736084,0.059173584,0.029037476,-0.03451538,-0.030151367,-0.027633667,-0.038604736,-0.06750488,-0.0038433075,-0.06210327,0.055664062,-0.06677246,-0.01828003,0.025848389,0.10809326,0.021942139,0.016067505,0.08532715,0.02708435,0.031311035,-0.046691895,0.078125,-0.07287598,-0.021347046,0.07159424,-0.0037384033,0.03878784,0.014350891,-0.02381897,-0.04309082,-0.031463623,-0.00541687,-0.03274536,-0.015464783,-0.0046539307,-0.017654419,0.08538818,-0.025238037,0.035949707,-0.012565613,0.0625,-0.057647705,-0.0418396,0.052825928,0.024276733,0.002412796,0.051452637,0.01663208,-0.029724121,0.035247803,-0.025817871,0.046081543,-0.007888794,-0.05114746,-0.036346436,0.017074585,0.009651184,-0.010925293,0.103759766,0.022567749,0.056121826,-0.0058555603,0.0362854,0.0031356812,0.03062439,0.042755127,-0.026870728,-0.05215454,-0.006095886,0.00006586313,0.010673523,-0.09136963,0.033721924,0.040740967,-0.01991272,-0.01953125,0.00033140182,0.05831909,0.015686035,0.024383545,-0.005264282,0.022613525,-0.048858643,-0.028945923,-0.002817154,0.03781128,0.014976501,-0.014030457,0.011795044,0.06008911,0.03262329,-0.066101074,0.015686035,0.008361816,0.005657196,0.06335449,0.051635742,-0.015274048,0.02571106,-0.044281006,0.0140686035,-0.09503174,0.011451721,-0.039886475,-0.02571106,0.0073432922,-0.0067329407,0.042541504,-0.022781372,-0.061798096,0.025634766,-0.05718994,-0.0023117065,0.015312195,0.04937744,-0.029815674,-0.009246826,0.05505371,0.014663696,-0.049468994,-0.0051002502,0.06573486,0.030593872,0.07922363,-0.026885986,-0.019348145,-0.051452637,-0.06427002,-0.04324341,-0.076171875,-0.09637451,-0.03753662,0.04888916,-0.017456055,0.02520752,-0.070129395,0.0022792816,0.08203125,-0.038635254,-0.044769287,-0.0020809174,0.025283813,-0.06549072,-0.028427124,0.011878967,0.010292053,-0.07965088,-0.05239868,-0.03062439,0.025115967,0.033081055,0.0035209656,0.014038086,-0.038909912,-0.023147583,-0.03616333,-0.10192871,0.027648926,-0.054382324,0.030395508,-0.05493164,-0.0048446655,-0.03756714,0.022705078,0.06274414,-0.030807495,-0.023605347,-0.02330017,-0.026519775,-0.034210205,-0.004245758,-0.014305115,-0.014213562,0.03845215,0.045684814,-0.014465332,0.009208679,-0.032562256,0.022567749,-0.027557373,-0.0033683777,-0.038085938,-0.04937744,-0.022033691,-0.014198303,-0.07611084,0.14099121,0.003921509,0.034576416,0.05404663,0.066345215,0.0847168,-0.0026435852,-0.051452637,-0.013175964,0.01701355,0.034820557,-0.039642334,-0.05734253,0.039093018,-0.004928589,-0.052215576,-0.027740479,0.050689697,0.049041748,-0.016693115,0.015731812,-0.01158905,0.024597168,-0.01878357,-0.012107849,0.040100098,0.031158447,-0.06994629,0.045135498,-0.10028076,0.033843994,-0.08734131,-0.021850586,-0.009010315,-0.03894043,0.052642822,-0.015525818,-0.07067871,0.023330688,0.011230469,-0.00018012524,0.046447754,-0.06591797,0.019104004,0.02494812,-0.0345459,-0.03277588,-0.0038433075,0.031051636,-0.03744507,-0.011779785,0.031234741,0.0041542053,0.070373535,0.023498535,0.0054016113,-0.011703491,-0.0067710876,0.04724121,0.06185913,-0.025558472,0.040130615,0.03439331,0.013008118,0.08886719,-0.032836914,-0.032958984,-0.043029785,-0.009384155,0.04269409,0.037475586,0.022415161,-0.038513184,0.035064697,0.07702637,-0.057861328,0.06274414,-0.028869629,0.0027332306,-0.024215698,-0.0067977905,0.07885742,-0.047668457,0.03137207,-0.020477295,0.0036449432,0.053375244,-0.002811432,0.03074646,-0.051513672,-0.0021152496,-0.05166626,-0.03869629,0.012924194,0.03878784,0.05831909,0.014884949,-0.07141113,0.001496315,0.01776123,0.03353882,-0.030471802,-0.028747559,0.028167725,0.068725586,0.025894165,-0.030807495,0.05807495,-0.007843018,-0.028762817,0.018737793,-0.04714966,-0.03149414,-0.007259369,-0.057128906,0.014770508,0.095458984,0.016723633,-0.039123535,0.02015686,-0.022628784,0.04852295,-0.0047912598,-0.026687622,0.055267334,-0.048736572,0.014633179,-0.005859375,0.02470398,-0.026916504,0.01083374,-0.010940552,-0.007030487,0.027557373,0.027526855,-0.015853882,0.013328552,0.030960083,-0.048919678,-0.051086426,-0.017242432,0.04147339,-0.004863739,0.017288208,-0.13586426,-0.035247803,0.057891846,-0.037750244,-0.0022220612,0.01576233,-0.057861328,0.039489746,0.055114746,0.037200928,0.04522705,0.0023956299,-0.030136108,-0.004131317,-0.006034851,-0.02619934,-0.07397461,-0.008293152,0.027572632,-0.061828613,0.07537842,-0.038635254,0.031341553,-0.002708435,-0.022384644,-0.057861328,0.00024557114,-0.024810791,-0.047729492,0.06677246,-0.030838013,-0.052520752,0.0579834,-0.03805542,-0.010284424,0.06323242,0.04699707,-0.030380249,-0.0010614395,0.0057678223,0.04824829,-0.014038086,0.016036987,-0.026031494,0.02708435,0.05987549,-0.0025463104,0.030838013,-0.046691895,0.041381836,-0.008102417,0.08227539,0.006324768,-0.07458496,-0.058410645,-0.0014505386,0.04196167,-0.014968872,-0.04714966,-0.03579712,-0.085876465,0.013183594,-0.005340576,0.06896973,0.012649536,-0.029388428,-0.11816406,-0.044128418,0.052124023,0.074645996,0.06384277,-0.023330688,0.019119263,-0.0146865845,0.02279663,0.015640259,0.05090332,0.021072388,0.09814453,-0.066711426,0.02671814,-0.027130127,0.038757324,-0.019317627,0.03741455,0.02746582,-0.03463745,0.00001001358,0.01638794,-0.0362854,0.02861023,0.0057754517,0.045562744,0.013206482,-0.010543823,0.03213501,0.044952393,-0.00018644333,-0.0040397644,-0.027236938,-0.026794434,0.004016876,0.016860962,0.0949707,-0.0129852295,0.024124146,-0.06185913,-0.08068848,-0.005054474,0.037353516,0.028411865,0.008850098,0.04940796,0.018356323,0.008979797,0.016098022,0.013702393,-0.03942871,0.03463745,0.006729126,-0.042541504,0.02607727,0.06451416,-0.029632568,-0.029647827,-0.014167786,-0.01675415,-0.0017442703,0.07269287,0.00013709068,-0.044708252,-0.059417725,-0.097839355,0.013648987,-0.0041923523,0.0025196075]'),
+  /* Embedding representation of "An embedding is a numerical representation of data in a high-dimensional space that captures semantic relationships and similarities between entities." */
+  ('[0.043701172,0.09063721,-0.24499512,-0.1385498,0.025177002,-0.020385742,0.0074653625,-0.016143799,-0.08294678,-0.03427124,-0.04864502,0.003490448,0.1060791,0.035461426,-0.023712158,0.04220581,-0.016342163,-0.039001465,-0.06008911,0.034362793,-0.048858643,0.023666382,0.012779236,0.012001038,0.057250977,0.038970947,0.08312988,-0.046936035,-0.02229309,0.00674057,0.04751587,-0.015289307,0.0027866364,-0.028762817,-0.043548584,-0.037200928,-0.0045547485,0.09539795,0.026290894,0.018051147,0.0000140070915,-0.002450943,-0.04751587,0.013076782,-0.031982422,-0.0035572052,0.044952393,-0.04220581,0.08660889,-0.037109375,-0.010673523,-0.013221741,-0.015609741,-0.028411865,0.11138916,0.02218628,0.008255005,0.015991211,0.043395996,-0.044189453,0.09460449,0.1005249,-0.06817627,0.09283447,0.0625,0.026916504,-0.097961426,0.05682373,-0.011253357,-0.085510254,0.10241699,-0.010391235,0.03656006,0.028320312,-0.025604248,-0.0149383545,-0.00881958,0.0362854,-0.002401352,0.052734375,0.04220581,0.03640747,0.09686279,-0.040527344,0.09460449,0.045043945,-0.010475159,0.00006771088,-0.06567383,0.060913086,0.016830444,0.009277344,0.02458191,0.05444336,-0.024734497,0.006401062,-0.00166893,0.028289795,-0.033447266,-0.03704834,-0.055389404,-0.01486969,-0.021697998,0.01322937,-0.005695343,0.053649902,-0.000044941902,0.026565552,-0.06561279,0.022399902,-0.022094727,0.015525818,-0.06402588,-0.06585693,-0.0055732727,-0.018295288,0.09020996,-0.07720947,-0.014472961,0.057434082,0.01537323,-0.041870117,0.042419434,0.05392456,0.007080078,0.011199951,-0.020095825,0.007774353,-0.044433594,-0.04031372,-0.016448975,-0.060394287,-0.009780884,0.010131836,0.005207062,0.038879395,-0.048675537,-0.024917603,-0.0069351196,0.08514404,-0.0041885376,-0.015586853,-0.0029888153,-0.0546875,0.008361816,-0.09490967,0.035705566,-0.02935791,0.009742737,-0.015213013,-0.00970459,0.08270264,-0.03753662,-0.045074463,0.01612854,-0.0030441284,0.024749756,0.0041542053,0.064697266,-0.007019043,0.038970947,0.04284668,-0.030029297,0.04623413,0.019699097,-0.074523926,-0.0024147034,0.019836426,0.011489868,0.009597778,-0.04751587,-0.03125,-0.023025513,-0.0064201355,0.0007266998,-0.007888794,0.036834717,-0.068359375,0.056671143,0.006175995,0.021530151,-0.04324341,0.07232666,-0.004169464,-0.025619507,-0.019226074,-0.007259369,-0.01902771,-0.060760498,-0.03161621,-0.055877686,0.012390137,-0.031280518,-0.00705719,-0.019470215,-0.00061893463,0.06774902,-0.034301758,-0.003293991,-0.023925781,-0.007820129,0.011604309,-0.024002075,0.05206299,-0.012214661,0.043304443,-0.04232788,-0.0005931854,-0.050872803,0.04647827,0.06555176,-0.017486572,0.001001358,0.010131836,0.04776001,-0.0076560974,0.0063323975,-0.04147339,-0.02243042,-0.00008791685,0.028717041,-0.01927185,0.039794922,-0.0769043,0.03289795,-0.019439697,-0.03137207,0.047088623,-0.045532227,0.0011854172,-0.03768921,-0.04663086,0.044525146,-0.031173706,0.011817932,0.06109619,-0.01701355,0.06524658,0.006614685,0.037841797,0.018707275,0.053833008,-0.02468872,-0.03387451,-0.02897644,0.05923462,0.024429321,-0.060516357,-0.0435791,0.07159424,-0.04446411,-0.036712646,0.012107849,0.007286072,0.07183838,-0.031829834,-0.047790527,-0.07092285,0.014518738,-0.008964539,0.05621338,-0.017486572,-0.0129470825,-0.036499023,-0.06890869,-0.021835327,0.027175903,-0.007709503,0.02960205,-0.02003479,0.01058197,0.017303467,0.018112183,0.019622803,0.011024475,-0.013412476,0.02229309,-0.012329102,-0.05053711,0.01197052,-0.05316162,-0.018341064,-0.07086182,0.0146865845,-0.018798828,0.021240234,0.036895752,0.020812988,0.025863647,0.031097412,0.037475586,-0.042053223,-0.03768921,0.04321289,-0.00054073334,0.045806885,0.06732178,-0.001572609,0.049682617,-0.064086914,-0.010314941,0.049835205,0.099975586,0.011741638,-0.0135269165,-0.033843994,0.040924072,-0.056121826,0.020202637,-0.04135132,-0.06286621,-0.0056762695,-0.054840088,0.0025749207,-0.0647583,0.051208496,0.027694702,-0.00026249886,0.03201294,-0.07409668,-0.005104065,-0.12463379,0.036010742,-0.031173706,0.0036354065,0.07354736,-0.050201416,0.013839722,-0.01612854,0.021835327,-0.039001465,0.012069702,0.055603027,-0.005886078,-0.034606934,0.017791748,-0.02961731,-0.033721924,0.011795044,0.0029697418,0.08337402,-0.008636475,0.02470398,-0.09301758,0.026794434,0.03869629,-0.061767578,-0.004070282,0.04171753,0.021850586,-0.03186035,0.00680542,0.009895325,-0.032104492,0.022888184,-0.0076675415,0.0440979,-0.00548172,-0.006793976,-0.0138168335,0.060913086,-0.0035152435,-0.02609253,-0.053619385,-0.0090789795,0.012084961,0.03604126,0.040924072,0.020462036,0.031585693,0.0057411194,-0.0006456375,-0.060272217,0.042297363,0.04827881,-0.0340271,-0.087646484,-0.06738281,0.005554199,-0.014373779,-0.017181396,0.03753662,0.015686035,0.005493164,0.037750244,-0.0031909943,0.035125732,0.00712204,0.017791748,0.007865906,0.004673004,-0.015129089,-0.052978516,0.01751709,0.026031494,-0.06939697,-0.018112183,0.010276794,0.03741455,-0.010620117,-0.014030457,-0.066223145,0.0015687943,-0.023376465,-0.0043296814,-0.029556274,-0.008255005,-0.07354736,0.044281006,-0.031341553,-0.0026378632,0.049835205,0.03503418,-0.10040283,0.0003578663,0.039642334,0.037841797,0.040100098,-0.017211914,0.014572144,0.019897461,0.101989746,-0.03503418,0.025268555,0.040802002,-0.015068054,0.006248474,0.0960083,0.016464233,-0.050231934,-0.015098572,0.041625977,0.062927246,0.0340271,-0.034210205,-0.026412964,-0.045013428,-0.0032138824,-0.0058021545,0.07849121,0.009056091,-0.06359863,-0.019699097,-0.016143799,0.016113281,0.12384033,-0.0044937134,-0.01789856,-0.08276367,0.069885254,0.07110596,0.018173218,-0.0017271042,0.033447266,0.12609863,-0.036712646,-0.012878418,-0.042633057,-0.00087690353,-0.00091171265,0.002943039,0.04800415,-0.08984375,0.035003662,-0.004058838,-0.058410645,-0.007270813,-0.07141113,0.068237305,0.10491943,-0.012290955,0.02571106,0.020767212,-0.03253174,0.04916382,0.05633545,-0.008430481,-0.052886963,0.026992798,0.016601562,0.014930725,0.0026130676,-0.07116699,-0.031280518,0.0006713867,0.049682617,0.012771606,0.00046944618,0.034973145,0.02885437,0.020858765,-0.050842285,0.04437256,0.015289307,-0.027572632,-0.11541748,-0.008483887,0.005844116,0.037109375,-0.0057868958,0.03164673,0.06451416,0.000603199,0.004924774,0.053344727,-0.027374268,0.08270264,-0.04724121,-0.11883545,-0.010147095,0.008865356,0.044281006]');
+```
+
+You can then query for which embeddings are closest to a new vector.
+For example, the following query finds the closest vector to the embedding for "burgers are tasty" using cosine similarity `<#>`.
+Unsurprisingly, Postgres returns the "i like to eat tacos" vector.
+
+```sql
+SELECT * FROM embeddings
+ORDER BY data <#> '[0.001080513,0.08959961,-0.29296875,0.0014181137,-0.019119263,0.021392822,-0.015617371,0.0345459,-0.0690918,0.009246826,-0.018981934,0.091796875,0.0041160583,0.02947998,-0.021835327,-0.03503418,-0.07702637,-0.07989502,-0.021102905,0.09667969,0.024597168,0.0124053955,0.027420044,-0.039001465,0.10235596,0.008583069,-0.06512451,0.08111572,-0.031982422,0.013595581,0.009635925,-0.036315918,-0.08148193,-0.014015198,0.0082092285,-0.0793457,0.0597229,0.024673462,-0.032440186,-0.047332764,0.0021572113,0.037597656,0.009010315,-0.019104004,0.03967285,0.011817932,0.02178955,0.06695557,0.091308594,-0.020004272,-0.022216797,-0.051361084,-0.031402588,-0.076416016,0.050109863,-0.00223732,0.07714844,0.0385437,0.032440186,0.016860962,0.08496094,0.039123535,-0.026733398,0.044921875,0.034698486,-0.025970459,-0.046142578,0.09326172,-0.030349731,0.022888184,0.06933594,-0.04663086,0.049987793,-0.011802673,-0.015655518,0.013885498,-0.04559326,0.00554657,-0.032836914,-0.007724762,0.013305664,0.01574707,0.0519104,0.024887085,0.044128418,0.010795593,0.055603027,-0.054901123,-0.045837402,0.036468506,0.047302246,0.024810791,0.05645752,0.062805176,-0.07165527,0.027282715,-0.011566162,0.040283203,-0.019454956,-0.04058838,-0.032196045,0.024856567,0.0023899078,0.016921997,0.062316895,0.054748535,0.04498291,0.012550354,-0.0043678284,-0.01309967,0.010169983,0.011619568,-0.022766113,-0.032806396,0.016647339,0.049713135,0.03414917,-0.07495117,0.027526855,0.07147217,0.037597656,-0.015792847,-0.0010890961,0.024108887,0.015419006,0.041870117,-0.035705566,0.015434265,-0.038238525,-0.03668213,-0.0011501312,-0.0234375,0.013130188,-0.054748535,0.010276794,0.074523926,0.015075684,0.01109314,0.047698975,0.0103302,0.03717041,0.030288696,0.0032520294,-0.025756836,-0.019424438,-0.05316162,0.04171753,-0.061798096,-0.014389038,0.039855957,0.003578186,0.018844604,0.032562256,0.04837036,-0.0023269653,-0.08227539,0.0446167,-0.042022705,0.016723633,0.023666382,0.03869629,-0.053985596,0.0029525757,0.052124023,0.024337769,-0.03427124,0.0262146,0.057861328,-0.020095825,0.10736084,-0.08642578,-0.07116699,-0.06298828,-0.039398193,0.0034751892,-0.0927124,-0.03677368,-0.026733398,0.044769287,-0.020767212,-0.02268982,-0.020584106,0.015777588,0.1083374,0.015617371,-0.02407837,-0.009567261,0.03842163,-0.0597229,-0.044799805,-0.013885498,0.045318604,-0.070373535,-0.06274414,-0.02027893,0.015327454,0.060546875,-0.0058174133,0.056396484,-0.04336548,-0.036346436,-0.044036865,-0.08642578,-0.017105103,-0.060516357,0.06915283,-0.027557373,0.068359375,0.010856628,-0.007587433,0.043945312,-0.03378296,0.031951904,-0.044433594,0.009857178,-0.013473511,0.00003117323,-0.004611969,-0.006034851,0.021774292,0.018936157,0.036132812,-0.03555298,-0.014785767,0.057800293,-0.036895752,-0.050323486,-0.020721436,-0.016647339,0.030593872,-0.0025672913,-0.05908203,0.06549072,-0.0019426346,0.009986877,0.022094727,0.053375244,0.09222412,0.025772095,0.033935547,-0.0058135986,0.031402588,-0.00065660477,-0.019119263,-0.05419922,0.029510498,0.022735596,-0.04534912,0.018798828,0.04397583,0.03881836,0.0067596436,0.035339355,0.03378296,0.07281494,-0.037597656,-0.035064697,-0.006439209,0.015007019,-0.07867432,-0.015945435,-0.10491943,0.019180298,-0.04498291,0.0010375977,-0.020828247,-0.045959473,0.0075912476,0.007785797,-0.056365967,0.012489319,-0.01574707,-0.014175415,0.07446289,-0.0058784485,-0.015113831,0.0082473755,0.010566711,-0.026016235,-0.007232666,-0.0340271,-0.04611206,-0.05783081,0.027282715,0.00010895729,0.07336426,0.06262207,0.00085544586,0.011199951,0.018447876,0.023620605,0.016677856,0.0335083,0.057250977,0.0013751984,0.0012817383,0.07122803,-0.030960083,-0.0058670044,-0.079589844,0.031188965,-0.023361206,0.054901123,0.03768921,-0.049957275,0.03604126,0.038604736,-0.022659302,0.085510254,-0.03479004,-0.031951904,0.015419006,-0.024887085,0.025009155,-0.06262207,0.01574707,0.015945435,0.031982422,0.09954834,-0.032714844,0.00178051,-0.046905518,-0.011581421,-0.039367676,-0.013847351,0.028335571,0.012199402,0.024276733,0.010948181,-0.03036499,0.0079956055,0.06933594,0.0062446594,-0.055786133,-0.031677246,0.030548096,0.029815674,0.0021915436,-0.032196045,0.07525635,0.022064209,-0.014625549,0.03717041,-0.02999878,-0.072631836,0.0010557175,-0.07318115,-0.05340576,0.050201416,0.016723633,-0.06274414,0.042419434,-0.004119873,0.014839172,-0.042175293,-0.041503906,0.040527344,-0.03591919,0.036987305,-0.0005173683,0.072265625,-0.021835327,-0.01689148,-0.005054474,-0.03012085,-0.002128601,-0.0046463013,-0.011474609,0.041534424,0.026062012,-0.03286743,-0.024169922,-0.005432129,0.014198303,0.024719238,-0.034698486,-0.13830566,-0.037750244,0.0053977966,-0.015106201,-0.012840271,-0.01802063,-0.004131317,0.0043945312,0.00042247772,0.050933838,-0.015274048,-0.0026550293,-0.012771606,0.024887085,-0.012039185,0.014595032,-0.06744385,0.039398193,0.035858154,-0.049957275,0.084106445,-0.014602661,0.009880066,0.04208374,-0.0637207,-0.07525635,-0.015319824,-0.052612305,-0.0031909943,0.038116455,-0.019561768,-0.054351807,0.020751953,-0.024337769,-0.0069236755,0.04043579,0.061676025,-0.052978516,-0.0061302185,0.022094727,0.03894043,-0.03213501,-0.026260376,-0.03050232,0.019104004,0.06640625,0.0076293945,0.040527344,-0.0357666,0.007484436,0.008728027,0.09289551,-0.02178955,-0.07244873,-0.009490967,0.014511108,-0.0084991455,0.0057640076,-0.02168274,0.008926392,-0.084350586,-0.008476257,0.009986877,0.09112549,0.05078125,-0.08001709,-0.046722412,-0.050933838,0.04296875,0.09881592,0.072631836,-0.09197998,0.0047340393,-0.025939941,0.048919678,0.017501831,-0.0037174225,0.046661377,0.13549805,-0.08215332,0.0181427,-0.015930176,0.022705078,0.004009247,-0.030014038,0.014945984,-0.04776001,-0.008041382,-0.054473877,-0.042633057,0.037994385,-0.012489319,0.051116943,0.06933594,0.01612854,0.07757568,0.047698975,-0.019378662,-0.019744873,0.0015363693,-0.021011353,0.0021209717,0.07318115,0.061920166,0.026687622,-0.024475098,-0.027694702,-0.07867432,-0.02645874,0.02218628,0.007041931,-0.018508911,0.05105591,-0.01612854,-0.0007419586,0.018554688,0.025772095,0.0012435913,-0.010955811,-0.024887085,-0.088012695,0.0077705383,0.056915283,-0.011207581,0.0073928833,-0.011749268,-0.0021152496,-0.008453369,-0.019515991,0.020965576,0.042022705,-0.08166504,-0.07745361,0.009712219,-0.03048706,0.026046753]'
+LIMIT 1;
+```
 
 
 # Migrate from Vercel Postgres SDK to the Neon serverless driver

@@ -201,18 +201,20 @@ author={{
 }}
 />
 
-<CTA title="Next Steps" description="Sign up here to get the Free Plan plus $100 credit.<br/> Or <a href='/contact-sales'>talk to our team</a> if you have any questions." buttonText="Get the Free Plan + $100 Credit" buttonUrl="https://fyi.neon.tech/credits" />
+<CTA title="Next Steps" description="Sign up here to get the Free Plan plus $100 credit. Or&nbsp;<a href='/contact-sales'>talk to our team</a> if you have any questions." buttonText="Get the Free Plan + $100 Credit" buttonUrl="https://fyi.neon.tech/credits" />
 
 
-# Optimize Dev/Test
+# Neon for Development and Testing
 
 ---
-title: 'Optimize Dev/Test'
-subtitle: Use Neon for your ephemeral environments
+title: Neon for Development and Testing
+subtitle: Boost developer productivity with Neon—a flexible development sandbox for running non-production workloads.
 enableTableOfContents: true
 updatedOn: '2024-08-23T09:00:00.000Z'
 image: '/images/social-previews/use-cases/dev-test.jpg'
 ---
+
+![Dev/Test branching](/use-cases/dev-test-branching.jpg)
 
 <Admonition type="note" title="TL;DR">
 Database branching is a game-changer for dev/test environments: there's no need to manage seed data, keep environments in sync, or wait for instances to be available. What you get: more developer velocity with +75% less costs.
@@ -270,6 +272,8 @@ url="/blog/how-opusflow-achieves-tenant-isolation-in-postgres-without-managing-s
 
 **These problems get worse over time, not better**. As your number of instances grows, the manual setup and configuration work grows too.
 
+![Persistent environments in AWS RDS](/use-cases/aws-rds-environments.jpg)
+
 ## Use Neon Branches For Your Dev/Test Workflows
 
 ---
@@ -308,6 +312,8 @@ Neon is a Postgres provider that offers a much more modern developer experience 
 2. **Database branching for ephemeral environments**. Neon's copy-on-write branching allows devs to create full copies of their testing dataset instantly and without consuming extra storage. This eliminates the operational load that comes with keeping testing data in sync across environments: In Neon, you can sync data with parent in one click. Branches are also extremely affordable.
 3. **Non-prod environments are automatically paused when unused**. If a database branch is idle, Neon pauses it automatically to save costs (and management work).
 4. **Intuitive DX with CI/CD integration**. Neon comes with a modern interface and APIs (no need to waste time navigating AWS obscurities). You can add Neon to your CI/CD pipelines to automate branch creation /deletion.
+
+![Ephemeral environments in Neon](/use-cases/ephemeral-environments.jpg)
 
 ### How does it work?
 
@@ -618,6 +624,6 @@ Pay via AWS/Azure Marketplace
 
 </DefinitionList>
 
-<CTA title="Next Steps" description="Sign up here to get the Free Plan plus $100 credit.<br/> Or <a href='/contact-sales'>talk to our team</a> if you have any questions." buttonText="Get the Free Plan + $100 Credit" buttonUrl="https://fyi.neon.tech/credits" />
+<CTA title="Next Steps" description="Sign up here to get the Free Plan plus $100 credit. Or&nbsp;<a href='/contact-sales'>talk to our team</a> if you have any questions." buttonText="Get the Free Plan + $100 Credit" buttonUrl="https://fyi.neon.tech/credits" />
 
 
