@@ -4542,6 +4542,1051 @@ You can extend this system by adding more analysis, visualizations, or multi-lan
 <NeedHelp />
 
 
+# Full-Text Search with Neon and Azure AI Search
+
+---
+title: Full-Text Search with Neon and Azure AI Search
+subtitle: Build a powerful hybrid search system for developer resources with Neon and Azure AI Search
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-01-05T00:00:00.000Z'
+updatedOn: '2025-01-05T00:00:00.000Z'
+---
+
+In this guide you will learn how to implement a hybrid search functionality using Neon and Azure AI Search.
+
+For the purpose of this guide, we will create a Node.js application that will allow you to search through your database. We will use the Azure SDK to interact with Azure AI Search. The application itself will represent a developer learning platform, which contains resources such as tutorials, cheat sheets, videos, and interactive code examples.
+
+We will be using Neon for efficient full-text search and Azure AI Search for the AI-driven capabilities.
+
+### What You'll Learn
+
+- Configure Neon for full-text search
+- Set up Azure AI Search and use the Azure SDK
+- Implement hybrid search combining both systems
+- Build a Node.js service to handle search requests
+
+---
+
+## Prerequisites
+
+To follow this guide, ensure you have:
+
+- A [Neon account](https://console.neon.tech/signup) with an active project.
+- An [Azure account](https://azure.microsoft.com/free/) with Azure AI Search enabled.
+- [Node.js](https://nodejs.org/) 18.x or later.
+- Basic knowledge of SQL and JavaScript.
+
+---
+
+## Step 1: Set Up Neon for Full-Text Search
+
+Let's start by creating our database schema and configuring Neon for [full-text search](/guides/full-text-search).
+
+We'll create a schema to store and organize developer learning resources. The schema will include tables for technologies and tutorials, which will allow us to have an efficient categorization and search functionalities. We'll also set up a GIN index for full-text search.
+
+```sql
+-- Technologies Table
+CREATE TABLE technologies (
+    tech_id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    category TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tutorials Table
+CREATE TABLE tutorials (
+    tutorial_id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    tech_id INTEGER REFERENCES technologies(tech_id),
+    tags TEXT[],
+    difficulty_level TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- GIN Index for Full-Text Search
+CREATE INDEX idx_tutorials_search ON tutorials
+    USING GIN (to_tsvector('english', title || ' ' || content));
+```
+
+With the above schema, we will be able to store technologies and tutorials. The `tags` column will be used for categorization, and the `difficulty_level` column will help users filter resources based on their skill level.
+
+The index here is using the `to_tsvector` function to create a GIN index for efficient full-text search. This index will allow us to search through the `title` and `content` columns of the `tutorials` table. For more information on full-text search in PostgreSQL, check out the [Neon Full-Text Search guide](/guides/full-text-search).
+
+Next, you can insert developer resources into the `technologies` and `tutorials` tables.
+
+```sql
+-- Insert more Technologies
+INSERT INTO technologies (name, category) VALUES ('React', 'Frontend');
+INSERT INTO technologies (name, category) VALUES ('Python', 'Backend');
+
+-- Insert Tutorials
+INSERT INTO tutorials (title, content, tech_id, tags, difficulty_level)
+VALUES ('Getting Started with Node.js', 'Learn the basics of Node.js', 1, ARRAY['Node.js', 'Backend'], 'Beginner');
+
+INSERT INTO tutorials (title, content, tech_id, tags, difficulty_level)
+VALUES ('Building a React App', 'Step-by-step guide to building a React application', 1, ARRAY['React', 'Frontend'], 'Intermediate');
+
+INSERT INTO tutorials (title, content, tech_id, tags, difficulty_level)
+VALUES ('Python for Data Science', 'Introduction to using Python for data science', 2, ARRAY['Python', 'Data Science'], 'Advanced');
+```
+
+Feel free to add more resources to the tables to test the search functionality.
+
+## Step 2: Configure Azure AI Search
+
+With the database schema set up, let's configure Azure AI Search to index and search through our developer resources.
+
+If you haven't already, create an Azure account and enable Azure AI Search. Also, make sure you have the [Azure CLI installed](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
+
+### Setting Up Azure AI Search
+
+1. Verify your Azure CLI installation and login to your Azure account:
+
+   ```bash
+   az --version
+   az login
+   ```
+
+1. You can start by creating an Azure AI Search Resource.
+   You can reference the [latest Azure documentation](https://learn.microsoft.com/en-us/azure/search/search-create-service-portal) to create a search service. Use the "Basic" SKU for testing or scale up for production depending on your requirements.
+
+   ```bash
+   az search service create \
+       --name developer-search \
+       --resource-group <your-resource-group> \
+       --sku Basic \
+       --location eastus2
+   ```
+
+   This command creates a new Azure AI Search service named `developer-search` in the `eastus2` region. You might have to choose a different name based on availability. Also, make sure to replace `<your-resource-group>` with your Azure resource group as per the Azure documentation above.
+
+   Alternatively, you can create the search service using the [Azure Portal](https://learn.microsoft.com/en-us/azure/search/search-create-service-portal).
+
+1. To get your service endpoint, you can the Azure portal and [find your search service](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/%7E/CognitiveSearch).
+
+   - Under the Overview section, copy the URL and save it for a later step.
+   - Also grab the API key of your Azure AI Search service from the Azure Portal. In the 'Settings' > 'Keys' section, copy and save an admin key for full rights to create and delete objects. There are two interchangeable primary and secondary keys. Choose either one.
+
+### Creating an Index
+
+In Azure AI Search, an index is your searchable data. It defines the structure of your data and the fields you can search on. You can learn more about [indexing in Azure AI Search](https://learn.microsoft.com/en-us/azure/search/search-what-is-an-index) in the official documentation.
+
+There are a few ways to create an index in Azure AI Search. You can use the Azure Portal, Azure CLI, or the Azure SDK.
+
+For a quick start, you can use the Azure Portal, to create an index schema.
+
+1. [Find your search service](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/%7E/CognitiveSearch) and navigate to the "Indexes" section to create a new index:
+
+1. Here's an example schema for the developer resources:
+
+   ```json
+   {
+     "name": "developer-index",
+     "fields": [
+       { "name": "id", "type": "Edm.String", "key": true },
+       { "name": "title", "type": "Edm.String", "searchable": true, "sortable": true },
+       { "name": "description", "type": "Edm.String", "searchable": true },
+       { "name": "tags", "type": "Collection(Edm.String)", "facetable": true },
+       { "name": "type", "type": "Edm.String", "searchable": false, "filterable": true },
+       { "name": "content", "type": "Edm.String", "searchable": true }
+     ],
+     "suggesters": [
+       {
+         "name": "suggester",
+         "searchMode": "analyzingInfixMatching",
+         "sourceFields": ["title", "description"]
+       }
+     ]
+   }
+   ```
+
+   The above schema defines an index named `developer-index` with fields for `id`, `title`, `description`, `tags`, `type`, and `content`. The `suggesters` section enables auto-suggestions based on the `title` and `description` fields.
+
+   We will reference the `developer-index` index in our Node.js application to query the Azure AI Search service so if you choose a different name, make sure to update the application accordingly.
+
+Rather than creating the index manually, you can also use the Azure SDK as well.
+
+1. First, install the Azure SDK for JavaScript:
+
+   ```bash
+   npm install @azure/search-documents
+   ```
+
+1. Then, initialize the search client:
+
+   ```js
+   const { SearchIndexClient, AzureKeyCredential } = require('@azure/search-documents');
+
+   const endpoint = 'YOUR_SEARCH_ENDPOINT';
+   const apiKey = 'YOUR_ADMIN_API_KEY';
+   const indexName = 'developer-index';
+
+   const searchClient = new SearchIndexClient(endpoint, new AzureKeyCredential(apiKey));
+   ```
+
+1. Create an index schema that defines the structure of your searchable content:
+
+   ```js
+   const indexDefinition = {
+     name: 'developer-index',
+     fields: [
+       {
+         name: 'id',
+         type: 'Edm.String',
+         key: true,
+         searchable: false,
+       },
+       {
+         name: 'title',
+         type: 'Edm.String',
+         searchable: true,
+         filterable: true,
+         sortable: true,
+       },
+       {
+         name: 'content',
+         type: 'Edm.String',
+         searchable: true,
+         filterable: false,
+       },
+       {
+         name: 'tags',
+         type: 'Collection(Edm.String)',
+         searchable: true,
+         filterable: true,
+         facetable: true,
+       },
+       {
+         name: 'category',
+         type: 'Edm.String',
+         searchable: true,
+         filterable: true,
+         facetable: true,
+       },
+     ],
+     suggesters: [
+       {
+         name: 'sg',
+         searchMode: 'analyzingInfixMatching',
+         sourceFields: ['title'],
+       },
+     ],
+   };
+
+   async function createSearchIndex() {
+     try {
+       await searchClient.createIndex(indexDefinition);
+       console.log(`Index ${indexName} created successfully`);
+     } catch (error) {
+       console.error('Error creating index:', error);
+     }
+   }
+   ```
+
+You can use the `createSearchIndex` function to create the index schema in Azure AI Search. Note that you need to replace `YOUR_SEARCH_ENDPOINT` and `YOUR_ADMIN_API_KEY` with your Azure AI Search service endpoint and admin API key.
+
+Run the function to create the index schema in Azure AI Search. You can verify the index creation in the Azure Portal under the "Indexes" section of your search service.
+
+### Adding Data to the Index
+
+As of the time of writing, Azure AI Search does not support direct indexing from PostgreSQL, but to populate your index, you can use the Azure Search REST API to upload data to Azure AI Search or use the Azure SDK as well.
+
+Alternatively, you can export data from PostgreSQL to [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/search/search-blob-storage-integration) and then add the blob storage as a data source to Azure AI Search. This method is useful for large datasets or when you need to sync data periodically.
+
+Here's how you can add data to the index using the Azure SDK:
+
+1. First, create a utility function to upload documents to your search index using the Azure SDK:
+
+   ```javascript
+   const { SearchClient, AzureKeyCredential } = require('@azure/search-documents');
+
+   async function uploadToSearchIndex(documents, endpoint, indexName, apiKey) {
+     const searchClient = new SearchClient(endpoint, indexName, new AzureKeyCredential(apiKey));
+
+     try {
+       const uploadResult = await searchClient.uploadDocuments(documents);
+       console.log(`Uploaded ${uploadResult.results.length} documents`);
+
+       // Check for any failed uploads
+       const failedUploads = uploadResult.results.filter((r) => !r.succeeded);
+       if (failedUploads.length > 0) {
+         console.warn(`Failed to upload ${failedUploads.length} documents`);
+         console.warn(failedUploads);
+       }
+
+       return uploadResult;
+     } catch (error) {
+       console.error('Error uploading documents:', error);
+       throw error;
+     }
+   }
+   ```
+
+2. For testing purposes, let's create sample documents directly in the script itself:
+
+   ```javascript
+   const sampleDocuments = [
+     {
+       id: '1',
+       title: 'Introduction to PostgreSQL',
+       description: 'Learn the basics of PostgreSQL, an open-source relational database system.',
+       tags: ['postgresql', 'database'],
+       type: 'tutorial',
+       content: 'PostgreSQL is a powerful, open-source relational database system.',
+     },
+     {
+       id: '2',
+       title: 'Advanced SQL Queries',
+       description: 'Master complex SQL queries for data analysis.',
+       tags: ['sql', 'data analysis'],
+       type: 'tutorial',
+       content: 'Learn about joins, subqueries, and window functions in SQL.',
+     },
+   ];
+
+   // Upload the sample documents
+   await uploadToSearchIndex(
+     sampleDocuments,
+     process.env.AZURE_SEARCH_ENDPOINT,
+     'developer-index',
+     process.env.AZURE_SEARCH_KEY
+   );
+   ```
+
+3. Feel free to replace the sample documents with your own data and run the script to upload the documents to your Azure AI Search index.
+
+4. After that, you can use the Azure portal or CLI to query the index and verify the data upload.
+
+If you wanted to you could also directly use the REST API itself, you can find more information on the [Azure Search docs](https://learn.microsoft.com/en-us/rest/api/searchservice/create-data-source) about uploading data to Azure AI Search.
+
+Now that you have your data indexed in Azure AI Search, let's move on to building the hybrid search service that combines Neon and Azure AI Search.
+
+Make sure to go over the [data import strategies](https://learn.microsoft.com/en-us/azure/search/search-what-is-data-import) to understand how to import data into Azure AI Search efficiently.
+
+## Step 3: Build the Hybrid Search Service
+
+For this demo we will build a Node.js application, but Azure AI Search can be integrated with any programming language or framework.
+
+For Node.js Azure provides an [official SDK](https://www.npmjs.com/package/@azure/search-documents) that you can use to interact with the Azure AI Search service. Besides JavaScript, Azure provides SDKs for different languages like Java, Python, and .NET to interact with the search service.
+
+### Project Structure
+
+First, let's set up a clear project structure that will help us organize our code:
+
+```plaintext
+hybrid-search/
+├─ src/
+│   ├─ config/
+│   │   └─ database.js     # Database configuration
+│   ├─ services/
+│   │   ├─ neonService.js  # Neon search implementation
+│   │   └─ azureService.js # Azure AI Search implementation
+│   ├─ routes/
+│   │   └─ searchRoutes.js # API endpoints
+│   ├─ utils/
+│   │   └─ searchUtils.js  # Shared utilities
+│   └─ app.js             # Main application file
+├─ .env                   # Environment variables
+└─ package.json
+```
+
+### Setting Up Dependencies
+
+First, install the required packages:
+
+```bash
+npm install @azure/search-documents pg express dotenv cors
+```
+
+We are using the following packages:
+
+- `@azure/search-documents`: Official Azure AI Search client library
+- `pg`: PostgreSQL client for Node.js
+- `express`: Web framework for Node.js
+- `dotenv`: Environment variable loader
+- `cors`: Cross-origin resource sharing middleware
+
+### Database Configuration
+
+The database configuration module will handle our connection to Neon:
+
+```javascript
+// src/config/database.js
+const { Pool } = require('pg');
+require('dotenv').config();
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+  // Connection pool settings
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+// Helper function to query the database
+async function query(text, params) {
+  const client = await pool.connect();
+  try {
+    const result = await client.query(text, params);
+    return result;
+  } finally {
+    client.release();
+  }
+}
+
+module.exports = { pool, query };
+```
+
+This configuration:
+
+- Creates a connection pool with optimal settings for a web application
+- Implements a helper function for executing queries
+- Handles client release to prevent connection leaks
+
+### Implementing Neon Search Service
+
+The Neon service which we will create will handle full-text search using Postgres's built-in capabilities:
+
+```javascript
+// src/services/neonService.js
+const { query } = require('../config/database');
+
+class NeonSearchService {
+  async search(searchQuery, filters = {}, limit = 10) {
+    try {
+      let sql = `
+        WITH RankedResults AS (
+          SELECT
+            t.tutorial_id,
+            t.title,
+            t.content,
+            t.difficulty_level,
+            t.tags,
+            tech.name as technology,
+            ts_rank_cd(
+              setweight(to_tsvector('english', title), 'A') ||
+              setweight(to_tsvector('english', content), 'B'),
+              plainto_tsquery('english', $1)
+            ) as rank
+          FROM tutorials t
+          JOIN technologies tech ON t.tech_id = tech.tech_id
+          WHERE to_tsvector('english', title || ' ' || content) @@ plainto_tsquery($1)
+      `;
+
+      const values = [searchQuery];
+      let paramIndex = 2;
+
+      // Add filters if provided
+      if (filters.difficulty) {
+        sql += ` AND difficulty_level = $${paramIndex}`;
+        values.push(filters.difficulty);
+        paramIndex++;
+      }
+
+      if (filters.technology) {
+        sql += ` AND tech.name = $${paramIndex}`;
+        values.push(filters.technology);
+        paramIndex++;
+      }
+
+      if (filters.tags && filters.tags.length > 0) {
+        sql += ` AND tags && $${paramIndex}`;
+        values.push(filters.tags);
+        paramIndex++;
+      }
+
+      sql += `
+        )
+        SELECT *,
+          CASE
+            WHEN title ILIKE '%' || $1 || '%' THEN rank * 2  -- Boost exact title matches
+            ELSE rank
+          END as final_rank
+        FROM RankedResults
+        ORDER BY final_rank DESC
+        LIMIT $${paramIndex}
+      `;
+      values.push(limit);
+
+      const result = await query(sql, values);
+      return result.rows;
+    } catch (error) {
+      console.error('Neon search error:', error);
+      throw error;
+    }
+  }
+}
+
+module.exports = new NeonSearchService();
+```
+
+This implementation includes several features:
+
+- Uses a [CTE](/postgresql/postgresql-tutorial/postgresql-cte) for better query organization
+- Implements weighted ranking for title and content
+- Supports filtering by difficulty, technology, and tags
+- Handles SQL injection through parameterized queries
+
+### Implementing Azure AI Search Service
+
+With the Neon service in place, let's create the Azure service to handle AI-powered search features:
+
+```javascript
+// src/services/azureService.js
+const { SearchClient, AzureKeyCredential } = require('@azure/search-documents');
+require('dotenv').config();
+
+class AzureSearchService {
+  constructor() {
+    this.client = new SearchClient(
+      process.env.AZURE_SEARCH_ENDPOINT,
+      'developer-index',
+      new AzureKeyCredential(process.env.AZURE_SEARCH_KEY)
+    );
+  }
+
+  async search(searchQuery, filters = {}, limit = 10) {
+    try {
+      const searchOptions = {
+        select: ['id', 'title', 'description', 'content', 'tags', 'type'],
+        queryType: 'simple',
+        semanticConfiguration: 'default',
+        highlightFields: 'content',
+        top: limit,
+        includeTotalCount: true,
+        captions: 'extractive',
+        answers: 'extractive',
+        filter: this.buildFilter(filters),
+      };
+
+      const searchResults = await this.client.search(searchQuery, searchOptions);
+      return this.processResults(searchResults);
+    } catch (error) {
+      console.error('Azure search error:', error);
+      throw error;
+    }
+  }
+
+  buildFilter(filters) {
+    const filterConditions = [];
+
+    if (filters.difficulty) {
+      filterConditions.push(`difficulty eq '${filters.difficulty}'`);
+    }
+
+    if (filters.type) {
+      filterConditions.push(`type eq '${filters.type}'`);
+    }
+
+    if (filters.tags && filters.tags.length > 0) {
+      const tagConditions = filters.tags.map((tag) => `tags/any(t: t eq '${tag}')`).join(' or ');
+      filterConditions.push(`(${tagConditions})`);
+    }
+
+    return filterConditions.length > 0 ? filterConditions.join(' and ') : undefined;
+  }
+
+  async processResults(searchResults) {
+    const results = [];
+    for await (const result of searchResults.results) {
+      results.push({
+        id: result.document.id,
+        title: result.document.title,
+        description: result.document.description,
+        content: result.document.content,
+        tags: result.document.tags,
+        highlights: result.highlights,
+        captions: result.captions,
+        score: result.score,
+      });
+    }
+    return results;
+  }
+}
+
+module.exports = new AzureSearchService();
+```
+
+This implementation includes:
+
+- Azure AI search client initialization
+- Result highlighting for better user experience
+- Extractive captions for quick content preview
+- Filtering options
+- Score normalization for better integration with Neon results
+
+For the complete list of search options and features, refer to the [Azure AI Search documentation](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search).
+
+### Implementing the Search Routes
+
+With both Neon and Azure services ready, let's create the routes module to handle search requests:
+
+```javascript
+// src/routes/searchRoutes.js
+const express = require('express');
+const neonSearch = require('../services/neonService');
+const azureSearch = require('../services/azureService');
+const { mergeResults } = require('../utils/searchUtils');
+
+const router = express.Router();
+
+router.post('/search', async (req, res) => {
+  try {
+    const { query, filters = {}, limit = 10, searchType = 'hybrid' } = req.body;
+
+    // Validate the search query
+    if (!query || query.trim().length === 0) {
+      return res.status(400).json({
+        error: 'Search query is required',
+      });
+    }
+
+    // Determine search strategy
+    let results;
+    switch (searchType) {
+      case 'hybrid':
+        const [neonResults, azureResults] = await Promise.all([
+          neonSearch.search(query, filters, limit),
+          azureSearch.search(query, filters, limit),
+        ]);
+        results = mergeResults(neonResults, azureResults);
+        break;
+
+      case 'neon':
+        results = await neonSearch.search(query, filters, limit);
+        break;
+
+      case 'azure':
+        results = await azureSearch.search(query, filters, limit);
+        break;
+
+      default:
+        return res.status(400).json({
+          error: 'Invalid search type',
+        });
+    }
+
+    res.json({
+      query,
+      results,
+      metadata: {
+        total: results.length,
+        searchType,
+        executionTime: process.hrtime()[1] / 1000000,
+      },
+    });
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({
+      error: 'An error occurred during search',
+    });
+  }
+});
+
+module.exports = router;
+```
+
+This implementation includes:
+
+- Supports different search strategies (hybrid, Neon-only, Azure-only)
+- Includes error handling and validation
+- Provides execution metadata
+- Handles result merging for hybrid searches depending on the search strategy
+
+### Utility Functions
+
+With everything in place, let's also create some utility functions to handle common operations:
+
+```javascript
+// src/utils/searchUtils.js
+
+function mergeResults(neonResults, azureResults) {
+  const merged = new Map();
+
+  // Process Neon results
+  neonResults.forEach((result) => {
+    merged.set(result.tutorial_id.toString(), {
+      ...result,
+      neon_rank: result.rank,
+      azure_score: 0,
+      final_score: normalizeNeonScore(result.rank),
+    });
+  });
+
+  // Process Azure results
+  azureResults.forEach((result) => {
+    const existingResult = merged.get(result.id);
+    if (existingResult) {
+      existingResult.azure_score = result.score;
+      existingResult.highlights = result.highlights;
+      existingResult.final_score = calculateHybridScore(existingResult.neon_rank, result.score);
+    } else {
+      merged.set(result.id, {
+        ...result,
+        neon_rank: 0,
+        final_score: normalizeAzureScore(result.score),
+      });
+    }
+  });
+
+  // Sort by final score and convert to array
+  return Array.from(merged.values()).sort((a, b) => b.final_score - a.final_score);
+}
+
+function normalizeNeonScore(rank) {
+  return Math.min(rank, 1);
+}
+
+function normalizeAzureScore(score) {
+  return score;
+}
+
+function calculateHybridScore(neonRank, azureScore) {
+  const normalizedNeon = normalizeNeonScore(neonRank);
+  const normalizedAzure = normalizeAzureScore(azureScore);
+
+  const NEON_WEIGHT = 0.4;
+  const AZURE_WEIGHT = 0.6;
+
+  return normalizedNeon * NEON_WEIGHT + normalizedAzure * AZURE_WEIGHT;
+}
+
+module.exports = {
+  mergeResults,
+  calculateHybridScore,
+};
+```
+
+These utilities handle:
+
+- Result merging from both search engines
+- Score normalization and weighting
+- Proper sorting of combined results
+
+### Main Application File
+
+Finally, let's tie everything together in a main application file where we set up our Express server:
+
+```javascript
+// src/app.js
+const express = require('express');
+const cors = require('cors');
+const searchRoutes = require('./routes/searchRoutes');
+
+const app = express();
+
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Routes
+app.use('/api', searchRoutes);
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    error: 'Something went wrong!',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined,
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Search service running on port ${PORT}`);
+});
+
+module.exports = app;
+```
+
+This main file:
+
+- Sets up our middleware
+- Configures the routes
+- Adds error handling
+
+Each component of this implementation is designed to be maintainable. You can easily extend the search service with additional features like data imports to Azure AI Search from PostgreSQL for example.
+
+### Testing the Search Service
+
+Create a `.env` file in the project root with the following environment variables:
+
+```plaintext
+DATABASE_URL=postgres://user:password@localhost:5432/developer_resources
+AZURE_SEARCH_ENDPOINT=https://<developer-search>.search.windows.net
+AZURE_SEARCH_KEY=your-azure-search-key
+PORT=3000
+```
+
+Start the application by running:
+
+```bash
+node src/app.js
+```
+
+To test the search service, run the application and send a POST request to the `/api/search` endpoint with a search query:
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Node.js", "limit": 5, "searchType": "hybrid"}' \
+  http://localhost:3000/api/search
+```
+
+This request will search for resources related to Node.js using the hybrid search strategy. You can also test the Neon and Azure search strategies by changing the `searchType` parameter.
+
+Feel free to customize the search query, filters, and limit to test different scenarios. Also, consider adding more resources to the database and Azure AI Search index to see the hybrid search in action.
+
+## Conclusion
+
+In this guide, you learned how to build a hybrid search service using Neon and Azure AI Search.
+
+As a next step, you can check out the [Full-Text Search guide](/guides/full-text-search) to learn more about Neon's capabilities and how to optimize your search queries. Additionally, you can explore the [Azure AI Search documentation](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search) to discover more advanced features and integrations.
+
+## Additional Resources
+
+- [Azure AI Language Documentation](https://learn.microsoft.com/en-us/azure/search/search-what-is-azure-search)
+- [Neon Documentation](/docs)
+- [Azure AI Language Client Library](https://learn.microsoft.com/en-us/javascript/api/overview/azure/search-documents-readme)
+
+<NeedHelp />
+
+
+# Database Migrations with Entity Framework Core and Azure Pipelines for Neon
+
+---
+title: Database Migrations with Entity Framework Core and Azure Pipelines for Neon
+subtitle: Automating schema changes with EF Core and Azure Pipelines in Neon Postgres
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-01-18T00:00:00.000Z'
+updatedOn: '2025-01-18T00:00:00.000Z'
+---
+
+[Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) provides a great migration system for managing database schema changes in .NET applications. When combined with [Azure Pipelines](https://azure.microsoft.com/en-us/products/devops/pipelines#overview), you can automate database migrations as part of a CI/CD pipeline, ensuring that schema changes are safely applied to your Neon Postgres database.
+
+In this guide, you'll learn how to use EF Core to create and apply database migrations in Neon and automate the process using Azure Pipelines.
+
+## Prerequisites
+
+To follow along, you'll need the following:
+
+- A [Neon account](https://neon.tech) with an active project.
+- [.NET 8.0](https://dotnet.microsoft.com/en-us/download/dotnet) installed.
+- A [GitHub](https://github.com/) or [Azure DevOps](https://dev.azure.com/) repository for version control.
+- An active [Azure DevOps](https://azure.microsoft.com/en-us/products/devops/) account with access to Azure Pipelines.
+
+## Setting Up the Entity Framework Core Project
+
+If you don't already have a .NET project, you can follow these steps to create a new one and set up EF Core for database migrations.
+
+### Create a New .NET Project
+
+Start by creating a new .NET project:
+
+```bash
+dotnet new webapi -n NeonMigrations
+cd NeonMigrations
+```
+
+### Install Required Packages
+
+Add the necessary EF Core and PostgreSQL packages:
+
+```bash
+dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
+dotnet add package dotenv.net
+```
+
+The packages that we are installing are:
+
+- `Microsoft.EntityFrameworkCore`: The core EF package.
+- `Microsoft.EntityFrameworkCore.Design`: Required for EF Core CLI tools.
+- `Npgsql.EntityFrameworkCore.PostgreSQL`: The PostgreSQL provider for EF Core.
+- `dotenv.net`: A library for loading environment variables from a `.env` file.
+
+Install the EF Core CLI tools:
+
+```bash
+dotnet tool install --global dotnet-ef
+```
+
+### Configure the Database Connection
+
+Retrieve your Neon database connection string from the [Neon Console](https://console.neon.tech) and store it in the `.env` file:
+
+```bash
+DATABASE_URL=Host=<your-host>;Database=<your-database>;Username=<your-username>;Password=<your-password>;SSLMode=Require
+```
+
+Then, configure your database context in `ApplicationDbContext.cs`:
+
+```csharp
+using Microsoft.EntityFrameworkCore;
+using dotenv.net;
+
+public class ApplicationDbContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        DotEnv.Load();
+        optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"));
+    }
+
+    public DbSet<Product> Products { get; set; }
+}
+```
+
+## Creating and Applying Migrations
+
+Migration files are used to define schema changes in your database. In this section, let's create a simple `Product` entity and apply a migration to your Neon database.
+
+### Define the Data Model
+
+Create a simple `Product` entity:
+
+```csharp
+public class Product
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public decimal Price { get; set; }
+}
+```
+
+That represents a product table with an `Id`, `Name`, and `Price`.
+
+### Generate a Migration
+
+Run the following command to create a migration:
+
+```bash
+dotnet ef migrations add InitialCreate
+```
+
+### Apply the Migration
+
+Run the following command to apply the migration to your Neon database:
+
+```bash
+dotnet ef database update
+```
+
+To learn more about migrations in Entity Framework Core, refer to the [Neon documentation](https://neon.tech/docs/guides/entity-migrations) guide which provides a detailed explanation of the migration process.
+
+At this point, your database schema is set up. Next, we'll automate this process using Azure Pipelines.
+
+## Creating an Azure DevOps Project
+
+If you don't already have a project set up, follow these steps:
+
+1. Navigate to [Azure DevOps](https://dev.azure.com/) and sign in.
+2. Click **New Project**, give it a name, select visibility (private or public), and choose Git as the version control option.
+3. Once the project is created, go to **Repos** and initialize a new repository (or push an existing one).
+
+For more details, refer to the official [Azure DevOps documentation](https://learn.microsoft.com/en-us/azure/devops/organizations/projects/create-project?view=azure-devops&tabs=browser) and the [Azure Repos guide](https://learn.microsoft.com/en-us/azure/devops/repos/get-started/?view=azure-devops).
+
+## Automating Migrations with Azure Pipelines
+
+With your migrations set up and the project in Azure DevOps, you can now automate the process using [Azure Pipelines](https://learn.microsoft.com/en-us/azure/devops/pipelines/?view=azure-devops). This way, any new migrations will be applied automatically when you push changes to your repository.
+
+### Create an Azure Pipeline
+
+Similar to GitHub Actions, Azure Pipelines use a YAML configuration file to define the build process.
+
+In your repository, create a `azure-pipelines.yml` file with the following content:
+
+```yaml
+trigger:
+  - main
+
+variables:
+  DATABASE_URL: $(DATABASE_URL)
+
+steps:
+  - task: UseDotNet@2
+    inputs:
+      packageType: 'sdk'
+      version: '8.x'
+      installationPath: $(Agent.ToolsDirectory)/dotnet
+
+  - script: |
+      dotnet restore
+      dotnet build --configuration Release
+    displayName: 'Build Application'
+
+  - script: |
+      dotnet tool install --global dotnet-ef
+      dotnet ef database update
+    displayName: 'Apply Database Migrations'
+    env:
+      DATABASE_URL: $(DATABASE_URL)
+```
+
+This pipeline configuration:
+
+- Triggers on new commits to the `main` branch. You can adjust the trigger as needed. For a complete list of triggers, refer to the [Azure Pipelines documentation](https://learn.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops).
+- Sets the `DATABASE_URL` variable from the Azure DevOps pipeline.
+- Installs the EF Core CLI tools and applies the migrations.
+
+### Configure Pipeline Variables
+
+To securely store your database connection string, create a variable group in Azure DevOps:
+
+1. Go to **Pipelines** → **Library** → **+ Variable Group**.
+1. Set the name to `NeonMigrations`.
+1. Create a variable named `DATABASE_URL` and set it to your Neon database connection string.
+1. Mark it as a **secret** to protect sensitive information.
+1. Save the variable group.
+
+### Run the Pipeline
+
+Commit the `azure-pipelines.yml` file to your repository. The pipeline will trigger on new commits to `main`, applying any pending migrations automatically.
+
+If you were to go to the Azure DevOps Pipelines section, you would see the pipeline running and applying the migrations. If the pipeline is not triggered automatically, you can manually run it from the Azure DevOps UI.
+
+Note that if you've just created the pipeline, Azure DevOps might limit the number of parallel pipelines you can run. You can request additional pipelines parallelism via the form [here](https://aka.ms/azpipelines-parallelism-request) or upgrade your Azure DevOps plan.
+
+## Handling Migration Conflicts
+
+When working in a team, conflicts may arise due to multiple migration files being generated. You can check out the Entity [Framework Core documentation for some best practices](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/teams) but here are some general tips:
+
+1. Before adding a new migration, apply any existing ones using:
+   ```bash
+   dotnet ef database update
+   ```
+1. If conflicting migration files exist, delete and regenerate them:
+   ```bash
+   dotnet ef migrations remove
+   dotnet ef migrations add NewMigration
+   ```
+
+In addition, consider the following:
+
+- When applying migrations, use a direct Neon connection instead of a [pooled one](https://neon.tech/docs/connect/connection-pooling).
+- Before applying changes to production, test them in a staging environment or using a [Neon branch](https://neon.tech/docs/introduction/branching).
+
+## Conclusion
+
+By integrating Entity Framework Core with Azure Pipelines, you can simplify database migrations and ensure schema changes are consistently applied to your Neon Postgres database. Automating migrations reduces the risk of human error and helps maintain database integrity across environments.
+
+As a next step, make sure to explore [Neon branches](https://neon.tech/docs/introduction/branching), so you can test your migrations in a staging environment before deploying to production.
+
+## Additional Resources
+
+- [Entity Framework Core Migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli)
+- [Azure Pipelines Overview](https://azure.microsoft.com/en-us/products/devops/pipelines#overview)
+- [Neon Documentation](/docs)
+
+<NeedHelp />
+
+
 # Building a Robust JSON API with TypeScript, Postgres, and Azure Functions
 
 ---
@@ -5898,6 +6943,229 @@ As a next step, you can add more features to your referral system, such as authe
 - [Neon Documentation](/docs)
 - [Azure Functions Documentation](https://docs.microsoft.com/en-us/azure/azure-functions/)
 - [Node-Postgres Documentation](https://node-postgres.com/)
+
+<NeedHelp />
+
+
+# Automating Workflows with Azure Logic Apps and Neon
+
+---
+title: Automating Workflows with Azure Logic Apps and Neon
+subtitle: Learn how to automate database operations and processes by connecting Azure Logic Apps with Neon Postgres
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-01-26T00:00:00.000Z'
+updatedOn: '2025-01-26T00:00:00.000Z'
+---
+
+Azure Logic Apps provides a way to build automated workflows that integrate apps, data, services, and systems.
+
+When you combine it with Neon's serverless Postgres, you can create automation solutions that handle database operations based on various triggers and events.
+
+In this guide, you'll learn how to create Logic Apps workflows that interact with Neon Postgres to automate common processes and database operations.
+
+## Prerequisites
+
+Before starting this guide, ensure you have:
+
+- [Azure account](https://azure.microsoft.com/free/) with an active subscription
+- [Neon account](https://console.neon.tech/signup) and project
+- Basic familiarity with SQL and Azure services
+
+## Understanding Azure Logic Apps
+
+[Azure Logic Apps](https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-overview) is a cloud service that helps you schedule, automate, and orchestrate tasks, business processes, and workflows. With Logic Apps, you can:
+
+- Trigger workflows based on events or schedules
+- Connect to various services and APIs
+- Process data using built-in operations and custom implementations
+- Handle errors, implement retries, and monitor your workflow execution
+
+## Setting Up Your Environment
+
+Before you can start creating workflows with Azure Logic Apps and Neon, you need to set up your environment.
+
+### Step 1: Create a Neon Project
+
+1. Log in to the [Neon Console](https://console.neon.tech)
+2. Click "New Project"
+3. Select Azure as your cloud provider and pick a region
+4. Name your project
+5. Click "Create Project"
+
+Save your connection details - you'll need them to connect Logic Apps to your database.
+
+### Step 2: Create Database Schema
+
+For the purpose of this guide, let's create a sample schema for tracking customer orders. This will help demonstrate various automation scenarios:
+
+```sql
+CREATE TABLE orders (
+    customer_email VARCHAR(255) NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    quantity INTEGER NOT NULL,
+    status VARCHAR(50) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+You can run the SQL statement in the Neon Console's SQL editor to create the schema. This table will store order details, including the customer's email, product name, quantity, status, and creation timestamp.
+
+### Step 3: Set Up Azure Logic Apps
+
+With your Neon project and database schema in place, you can now set up Azure Logic Apps.
+
+1. Go to the [Azure Portal](https://portal.azure.com)
+1. Search for "Logic Apps" and select it
+1. Click "Add" to create a new Logic App
+1. Select "Consumption" plan type
+1. Fill in the basics:
+   - Choose your subscription
+   - Select or create a resource group
+   - Name your Logic App
+   - Choose the region, best to pick the same region as your Neon project
+1. Click "Review + create" and then "Create"
+
+This will take a few moments to deploy your Logic App. Once it's ready, you can start building workflows.
+
+## Creating Your First Workflow
+
+Before you start building your first workflow, let's understand the key components of an Azure Logic App:
+
+- **Trigger**: An event that starts the workflow. It could be a timer, HTTP request, or a change in a service. Each workflow must have at least one trigger.
+- **Action**: A step that performs a specific operation, such as sending an email, updating a database, or calling an API.
+
+You can chain multiple actions together to create complex workflows that automate business processes.
+
+Let's create a workflow that automatically processes new orders. For our fictional store the workflow will:
+
+1. Trigger when a new order record is created
+1. Update the order status in the database
+1. Send a notification email to the customer
+
+### Step 1: Configure a Trigger
+
+Every Logic App workflow starts with a trigger and each workflow needs at least one trigger.
+
+For our order processing workflow, we'll use an HTTP trigger that listens for new orders:
+
+1. Open your Logic App in the Azure Portal
+1. Go to the Logic App Designer, it is under "Development Tools"
+1. Click "Add a trigger"
+1. Search for "When an HTTP request is received" and select it
+1. For the payload schema you can use the following example:
+   ```json
+   {
+     "type": "object",
+     "properties": {
+       "customerEmail": {
+         "type": "string"
+       },
+       "productName": {
+         "type": "string"
+       },
+       "quantity": {
+         "type": "integer"
+       }
+     },
+     "required": ["customer_email", "product_name", "quantity"]
+   }
+   ```
+1. Click "Save" which will generate a URL that you can use to trigger the workflow
+
+### Step 2: Add a Postgres Connection
+
+With the trigger in place, you can now add actions to the workflow. Let's start by connecting to your Neon Postgres database where you store order data:
+
+1. While in the Logic App Designer, click "Add an action"
+1. Search for "PostgreSQL" and select "Insert row"
+1. Configure the connection:
+   - Connection Name: "NeonConnection"
+   - Server: Your Neon host (e.g., "ep-cool-smoke-123456.eastus2.azure.neon.tech")
+   - Database name: Your database name
+   - Username: Your Neon database username
+   - Password: Your Neon database password
+   - Encrypt connection: Yes
+1. Click "Create"
+
+### Step 3: Insert Order Data
+
+One important limitation to note in the [Azure Logic Apps PostgreSQL connector](https://learn.microsoft.com/en-gb/connectors/postgresql/#insert-row) is that insert row operation requires you to provide explicit value for Primary Key column, even though default/autoincrement value is defined.
+
+With the database connection set up, you can now insert the order data into the database using the trigger payload:
+
+1. While still in the Logic App Designer, from the "Table name" dropdown, select the "orders" table you created earlier
+1. For the "Columns" field, set the values:
+   - customer_email: `@triggerBody()?['customerEmail']`
+   - product_name: `@triggerBody()?['productName']`
+   - quantity: `@triggerBody()?['quantity']`
+1. If you were to check "Code View", you would see the following JSON:
+   ```json
+   {
+     "type": "ApiConnection",
+     "inputs": {
+       "host": {
+         "connection": {
+           "referenceName": "postgresql"
+         }
+       },
+       "method": "post",
+       "body": {
+         "customer_email": "@triggerBody()?['customerEmail']",
+         "product_name": "@triggerBody()?['productName']",
+         "quantity": "@triggerBody()?['quantity']"
+       },
+       "path": "/datasets/default/tables/@{encodeURIComponent(encodeURIComponent('[public].[orders]'))}/items"
+     },
+     "runAfter": {}
+   }
+   ```
+1. After adding the database action, click "Save"
+
+### Step 3: Test the Workflow
+
+To test the workflow, let's use the Azure Logic Apps run interface:
+
+1. Go to the Logic App Designer
+1. Click the "Run" dropdown and select "Run with payload" to trigger the workflow
+1. Under "Request body", enter sample order data:
+   ```json
+   {
+     "customerEmail": "test@example.com",
+     "productName": "Laptop",
+     "quantity": 2
+   }
+   ```
+1. Click "Run" to execute the workflow
+1. Check the database to verify that the order was inserted
+
+## Extending Your Workflow
+
+Once your basic workflow is working, you can extend it by integrating additional actions. One common enhancement is sending an email notification when a new order is placed.
+
+### Adding an Email Notification
+
+You can use the built-in email actions in Azure Logic Apps to notify customers when their order is received:
+
+1. In the Logic App Designer, click **Add an action** after the database insertion step.
+2. Search for "Send an email" and select your preferred email service (e.g., **Outlook.com**, **Gmail**, or **SendGrid**).
+3. Follow the prompts to connect your email provider.
+4. Depending on the service you choose, you may need to authorize Azure Logic Apps to send emails on your behalf. For example, if you're using Gmail, you can follow [this guide](https://learn.microsoft.com/en-gb/connectors/gmail/) to set up the email action.
+5. Click "Save".
+
+Now, every time a new order is placed, the Logic App will automatically insert the order into your Neon Postgres database and send a confirmation email to the customer.
+
+## Conclusion
+
+Azure Logic Apps and Neon Postgres provide a straightforward way to automate workflows and database operations. Whether you need to process orders, send notifications, or connect different services, this approach allows you to set up reliable automation with minimal effort.
+
+Thanks to the Azure Logic Apps PostgreSQL connector, you can easily integrate your Neon Postgres database into your workflows and build powerful automation solutions without writing code or managing infrastructure. Azure Logic Apps has a large number of connectors available, so you can easily integrate with other services and systems to create complex workflows.
+
+## Additional Resources
+
+- [Azure Logic Apps Documentation](https://docs.microsoft.com/azure/logic-apps/)
+- [Neon Documentation](/docs)
+- [PostgreSQL Connector Documentation](https://docs.microsoft.com/connectors/postgresql/)
 
 <NeedHelp />
 
@@ -7582,6 +8850,228 @@ In this guide, you learned how to build a RAG Chatbot using LlamaIndex, Astro, a
 <NeedHelp />
 
 
+# Get started with Cline and Neon Postgres MCP Server
+
+---
+title: 'Get started with Cline and Neon Postgres MCP Server'
+subtitle: 'Make schema changes with natural language using Cline and Neon MCP Server'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-22T00:00:00.000Z'
+updatedOn: '2025-02-22T00:00:00.000Z'
+---
+
+Imagine adjusting your database schema simply by describing the change in plain English. This is possible by combining [Cline](https://cline.bot) with the [Neon MCP Server](https://github.com/neondatabase/mcp-server-neon).
+
+This guide demonstrates how to use [Cline](https://docs.cline.bot/mcp-servers/mcp) and Neon's MCP server to perform database migrations in your Neon project.
+
+## Key components
+
+Let's break down the key components in this setup:
+
+- **Cline**: Cline is an autonomous coding agent streamlining your development process within your IDE. It offers powerful features for creating, editing, executing, and even browsing, all under your guidance. Cline has support for the Model Context Protocol (MCP), facilitating seamless interaction with external tools.
+
+- **Neon MCP Server**: Neon's MCP server acts as a bridge between MCP clients like Cline and [Neon's API](https://api-docs.neon.tech/reference/getting-started-with-neon-api), letting you work with Neon databases using natural language commands.
+
+- **Model Context Protocol (MCP)**: MCP is a lightweight communication standard that allows Cline and Neon MCP Server to work together.
+
+## Setting up Neon MCP Server in Cline
+
+The following steps show how to set up Neon MCP Server in Cline.
+
+### Prerequisites
+
+Before you begin, ensure you have the following:
+
+1.  **Cline extension and Setup:**
+    - Download and install the Cline VS Code extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev).
+    - Set up Cline by following the [Getting Started guide](https://docs.cline.bot/getting-started/getting-started-new-coders#setting-up-openrouter-api-key) which involves obtaining an [OpenRouter API key](https://openrouter.ai) to work with Cline.
+2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
+3.  **Neon API Key:** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+    <Admonition type="warning" title="Neon API Key Security">
+    Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
+    </Admonition>
+4.  **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
+
+### Installation and Configuration
+
+**Configure Neon MCP Server in Cline:**
+
+1. Open Cline by clicking on the Cline icon in the VS Code sidebar.
+2. To configure MCP Servers in Cline, you need to modify the `cline_mcp_settings.json` file.
+   ![Cline Add MCP Tool](/docs/guides/cline-add-mcp.gif)
+3. This will open the `cline_mcp_settings.json` file.
+4. In the `cline_mcp_settings.json` file, you need to specify a list of MCP servers. Use the following JSON structure as a template, replacing `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+
+   ```json
+   {
+     "mcpServers": {
+       "neon": {
+         "command": "npx",
+         "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+       }
+     }
+   }
+   ```
+
+   - **`neon`**: This is a name you choose for your MCP server connection.
+   - **`command`**: This is the command Cline will execute to start the Neon MCP server. It includes the `npx` command to run the `@neondatabase/mcp-server-neon` package and passes your Neon API key as an argument.
+   - Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+
+5. **Save** the `cline_mcp_settings.json` file.
+6. If the integration is successful, you should see the Neon MCP server listed in the Cline MCP Servers Installed section.
+
+![Cline Available MCP Tools](/docs/guides/cline-available-mcp-tools.png)
+
+You've now configured Neon MCP Server in Cline and can manage your Neon Postgres databases using AI.
+
+## Neon MCP Server Tools
+
+Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
+
+- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account. _Note: This particular action is still under development. It's not yet returning results as expected._
+- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
+- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
+- `delete_project`: Deletes an existing Neon project.
+- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
+- `delete_branch`: Deletes an existing branch in a Neon project.
+- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
+- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
+- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
+- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
+- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
+- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
+- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
+- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+
+These actions enable any MCP client like Cline to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
+
+## Development Workflow: Adding a Column with Cline and Neon MCP
+
+Let's walk through a typical development scenario: Quickly adding a column for prototyping using natural language within Cline. The following chat log demonstrates a real interaction with Cline and the Neon MCP server.
+
+**Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
+
+Check out the video below to see how Cline and Neon MCP Server can help you add a new column to your database table using natural language commands.
+
+<video autoPlay playsInline muted loop width="800" height="600" controls>
+  <source type="video/mp4" src="/videos/pages/doc/cline-neon-mcp.mp4"/>
+</video>
+
+<Admonition type="tip" title="Security Reminder">
+For your security, review the tool's purpose before permitting the operation to proceed. Remember that LLMs can sometimes produce unexpected results, so careful monitoring is always recommended.
+</Admonition>
+
+Here's the conversation log between the user and Cline:
+
+```text shouldWrap
+User: in my neon project id: fancy-bush-59303206, list all my tables
+Cline: I need to list all tables in the specified Neon project. Since I have access to the Neon MCP server, I can use the get_database_tables tool to accomplish this task. The tool requires:
+> projectId - which the user provided: "fancy-bush-59303206"
+> databaseName - which I can default to "neondb" as it's the standard default database name in Neon
+> Cline wants to use a tool on the neon MCP server: get_database_tables
+> Your Neon project (fancy-bush-59303206) has 1 table in the public schema:
+> - playing_with_neon (Base Table)
+
+
+User: can you show me first 5 rows in it?
+Cline: I'll use the run_sql tool to execute a SELECT statement that retrieves the first 5 rows from the playing_with_neon table. I'll use LIMIT 5 to ensure we only get the first 5 rows.
+> Cline wants to use a tool on the neon MCP server: run_sql
+> I have successfully retrieved the first 5 rows from the playing_with_neon table. I'll present this data in a clear, formatted way.
+> | id | name       | value     |
+> |----|------------|-----------|
+> | 1  | c4ca4238a0 | 0.857180 |
+> | 2  | c81e728d9d | 0.416151 |
+> | 3  | eccbc87e4b | 0.440935 |
+> | 4  | a87ff679a2 | 0.438505 |
+> | 5  | e4da3b7fbb | 0.686455 |
+
+User: can you add a created_at column, use a temporary branch
+Cline: I'll use the prepare_database_migration tool to add a created_at column to the playing_with_neon table. This tool will automatically create a temporary branch for safety. After the migration is prepared, I'll need to verify it before completing it.
+> Cline wants to use a tool on the neon MCP server: prepare_database_migration
+> Let me verify the migration by checking the table structure in the temporary branch. I'll use run_sql to describe the table and ensure the created_at column was added correctly.
+> Cline wants to use a tool on the neon MCP server: run_sql
+> The created_at column has been successfully added to the table in the temporary branch with the correct data type and default value. Let me verify the data by selecting a few rows to ensure everything looks correct.
+> Cline wants to use a tool on the neon MCP server: run_sql
+> The migration looks good - the created_at column has been added successfully and is populated with timestamps. Now I can complete the migration to apply these changes to the main branch.
+> Cline wants to use a tool on the neon MCP server: complete_database_migration
+> The migration has been successfully completed and the temporary branch has been deleted. Let me verify the changes in the main branch and show the updated table structure.
+> Cline wants to use a tool on the neon MCP server: run_sql
+> The migration has been successfully completed. The created_at column has been added to the table and is populated with timestamps.
+```
+
+**Key takeaways:**
+
+- **Natural language interaction:** You can use simple, conversational English to interact with your database through Cline.
+- **Step-by-step guidance:** Cline confirms each step and provides details like branch names and migration IDs.
+- **MCP Tools in Action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the main branch.
+
+You can verify the changes in your Neon Console or by querying the database directly.
+
+![Neon Console with added column](/docs/guides/neon-cursor-mcp-added-column.png)
+
+<Admonition type="note">
+While the Neon MCP server allows you to utilize all of Neon's functionalities, you can also use a [generic Postgres MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres) to connect to Neon.
+</Admonition>
+
+## Bonus: Creating a project and branch
+
+Beyond schema changes, you can also manage your Neon projects and branches directly within Cline using natural language commands. This can be useful for quickly setting up a new development or test environment.
+
+### Creating a new project
+
+Let's say you want to create a new Neon project named "my-new-project". You can simply tell Cline:
+
+```text shouldWrap
+User: Create a Neon project named "my-new-project"
+Cline: I see that I have access to the Neon MCP server which provides tools for interacting with Neon's API. Looking at the available tools, I can use the create_project tool to create a new Neon project with the specified name "my-new-project".
+> Cline wants to use a tool on the neon MCP server:
+> create_project ARGUMENTS: { "name": "my-new-project" }
+> I've created a new Neon project named "my-new-project". Here are the project details:
+> Project ID: muddy-bar-98083629
+> Default branch: main
+> Default database: neondb
+```
+
+![Cline creating a new Neon project](/docs/guides/cline-mcp-create-new-project.png)
+
+Cline will then use the `create_project` MCP tool to initiate the project creation. It will provide you with a project ID and name.
+
+### Creating a New Branch
+
+Once you have a project, you can easily create new branches for development or experimentation. For example, to create a branch named "feature-x" in your "my-new-project" project:
+
+```text shouldWrap
+User: Create a branch named "feature-x"
+Cline: I'll use the create_branch tool from the Neon MCP server to create a new branch named "feature-x" in the project we just created (project ID: muddy-bar-98083629).
+> Cline wants to use a tool on the neon MCP server:
+> create_branch ARGUMENTS: { "project_id": "muddy-bar-98083629", branchName": "feature-x" }
+> I've created a new branch named "feature-x" in your Neon project. Here are the branch details:
+> Branch ID: br-broad-base-a5kh7wyi
+> Branch name: feature-x
+> Parent branch: br-lively-cherry-a5kz48n6
+```
+
+![Cline creating a new Neon branch](/docs/guides/cline-mcp-create-new-branch.png)
+
+Cline will use the `create_branch` MCP tool to create the branch and provide you with the branch name and ID. Notice how we don't need to specify the project ID, as Cline remembers the active project context.
+
+## Conclusion
+
+Cline with Neon MCP Server lets you use natural language to interact with your database and take advantage of Neon's branching capabilities for fast iteration. This approach is ideal for quickly testing database ideas and making schema changes during development.
+
+## Resources
+
+- [MCP Protocol](https://modelcontextprotocol.org)
+- [Cline Documentation](https://docs.cline.bot)
+- [Neon Docs](/docs)
+- [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
+- [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
+
+<NeedHelp/>
+
+
 # Building AI Agents with CrewAI, Composio, and Neon
 
 ---
@@ -8073,7 +9563,7 @@ Now, you'll set up the self-hosted Convex backend using Docker Compose, configur
     1.  Create a `.env` file in the same directory as `docker-compose.yml`.
     1.  Add this line:
         ```env
-        DATABASE_URL=[YOUR_NEON_CONNECTION_STRING]
+        POSTGRES_URL=[YOUR_NEON_CONNECTION_STRING]
         ```
     1.  Modify `[YOUR_NEON_CONNECTION_STRING]` for Convex:
 
@@ -8114,7 +9604,7 @@ Now, you'll set up the self-hosted Convex backend using Docker Compose, configur
     - When you access the dashboard for the first time, you will be prompted to log in.
     - For the password, you will use the `CONVEX_SELF_HOSTED_ADMIN_KEY` generated in the next step.
 
-6.  **Verify Neon Postgres Connection (Optional but Recommended):** You can confirm that Convex is using your Neon Postgres database by checking the Docker container logs. This verifies that the `DATABASE_URL` environment variable was correctly processed.
+6.  **Verify Neon Postgres Connection (Optional but Recommended):** You can confirm that Convex is using your Neon Postgres database by checking the Docker container logs. This verifies that the `POSTGRES_URL` environment variable was correctly processed.
 
     Run this command in your terminal within the `convex-neon-integration` directory:
 
@@ -8398,6 +9888,244 @@ Congratulations! You have successfully integrated Convex with Neon Postgres and 
 - [Neon documentation](/docs)
 - [Neon Console](https://console.neon.tech)
 - [Convex tutorial: A chat app](https://docs.convex.dev/tutorial)
+
+<NeedHelp/>
+
+
+# Get started with Cursor and Neon Postgres MCP Server
+
+---
+title: 'Get started with Cursor and Neon Postgres MCP Server'
+subtitle: 'Make schema changes with natural language using Cursor and Neon MCP Server'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-20T00:00:00.000Z'
+updatedOn: '2025-02-20T00:00:00.000Z'
+---
+
+Imagine adjusting your database schema simply by describing the change in plain English. This is possible by combining [Cursor](https://cursor.com) with the [Neon MCP Server](https://github.com/neondatabase/mcp-server-neon).
+
+This guide demonstrates how to use [Cursor's Composer](https://docs.cursor.com/composer) and Neon's MCP server to perform database migrations in your Neon project.
+
+## Key components
+
+Let's break down the key components in this setup:
+
+- **Cursor**: Cursor is an AI-first code editor that supports Model Context Protocol (MCP) for interfacing with external tools (APIs, databases, etc.)
+
+- **Neon MCP Server**: Neon's MCP server acts as a bridge between MCP clients like Cursor and [Neon's API](https://api-docs.neon.tech/reference/getting-started-with-neon-api), letting you work with Neon databases using natural language commands.
+
+- **Model Context Protocol (MCP)**: MCP is a lightweight communication standard that allows Cursor and Neon MCP Server to work together.
+
+## Setting up Neon MCP Server in Cursor
+
+The following steps show how to set up Neon MCP Server in Cursor.
+
+### Prerequisites
+
+Before you begin, ensure you have the following:
+
+1.  **Cursor Editor:** Download and install Cursor from [cursor.com](https://cursor.com).
+2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
+3.  **Neon API Key:** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+
+    <Admonition type="warning" title="Neon API Key Security">
+    Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
+    </Admonition>
+
+4.  **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
+
+### Installation and Configuration
+
+**Add Neon MCP Server to Cursor:**
+
+1. Open Cursor and go to **Cursor Settings** in the Navbar.
+1. In Settings, navigate to **Features**.
+1. Scroll to the **MCP Servers** section.
+   ![Cursor MCP Servers section](/docs/guides/cursor-settings-features.png)
+1. Click **+ Add new MCP server**.
+
+1. In the "Add MCP Server" modal:
+
+   - **Name:** Give your server a descriptive name (e.g., `Neon`).
+   - **Type:** Select `command`.
+   - **Command:** Enter the following command, replacing `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained earlier in the [Prerequisites](#prerequisites) section.
+
+     ```bash
+     npx -y @neondatabase/mcp-server-neon start <YOUR_NEON_API_KEY>
+     ```
+
+   - Click **Add**.
+
+     ![Add Neon MCP Server in Cursor](/docs/guides/cursor-add-mcp-server.png)
+
+   Cursor will attempt to connect. Your new "Neon" MCP server should appear in the MCP Servers list with all the available tools.
+
+   ![Cursor with Neon MCP Tools](/docs/guides/cursor-with-neon-mcp-tools.png)
+
+   You've now configured Neon MCP Server in Cursor and can manage your Neon Postgres databases using AI.
+
+1. Open the Cursor **Composer** view using the keyboard shortcut **Command + I** (on Mac) or **Control + I** (on Windows).
+
+   ![Cursor Composer view](/docs/guides/cursor_composer_view.png)
+
+1. Type `List your available MCP tools` in the Composer text field, select the **agent** option in the corner of the field, and click **Submit**.
+
+   **_Note: The agent option here is tiny and easy to miss!_**
+
+   ![Cursor list available tools](/docs/guides/cursor_list_tools.png)
+
+1. Try out an Neon MCP Server tool by typing `Tell me about my Neon project <project_id>`. **You'll need to provide your Neon project ID.**
+
+   ![Cursor list project details](/docs/guides/cursor_project_details.png)
+
+   Cursor uses the Neon MCP Server `describe_project` tool to retrieve your project's details.
+
+## Neon MCP Server Tools
+
+Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
+
+- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account. **_Note: This particular action is still under development. It's not yet listing projects as expected._**
+- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
+- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
+- `delete_project`: Deletes an existing Neon project.
+- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
+- `delete_branch`: Deletes an existing branch in a Neon project.
+- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
+- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
+- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
+- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
+- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
+- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
+- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
+- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+
+These actions enable any MCP client like Cursor to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
+
+## Development Workflow: Adding a Column with Cursor and Neon MCP
+
+Let's walk through a typical development scenario: Quickly adding a column for prototyping using natural language within Cursor. The following chat log demonstrates a real interaction with Cursor and the Neon MCP server.
+
+**Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
+
+Check out the video below to see how Cursor and Neon MCP Server can help you add a new column to your database table using natural language commands.
+
+<Admonition type="tip">
+Use `⌘I` to open Cursor's Composer and `⌘N` to create a new Composer.
+</Admonition>
+
+<video autoPlay playsInline muted loop width="800" height="600" controls>
+  <source type="video/mp4" src="/videos/pages/doc/cursor-neon-mcp.mp4"/>
+</video>
+
+<Admonition type="tip" title="Security Reminder">
+For your security, review the tool's purpose before permitting the operation to proceed. Remember that LLMs can sometimes produce unexpected results, so careful monitoring is always recommended.
+</Admonition>
+
+Here's the conversation log between the user and Cursor:
+
+```text shouldWrap
+User: In my neon project id: round-salad-44063611 list all the tables
+Cursor: I'll help you list all the tables in your Neon project. I'll use the default database name 'neondb' since none was specified.
+> Called MCP Tool (get_database_tables)
+> I found one table in your database:
+> playing_with_neon (in the public schema)
+> Would you like to see more details about this table's structure or perform any other operations with it?
+
+User: Can you show me first 5 rows?
+Cursor: I'll query the first 5 rows from the playing_with_neon table.
+> Called MCP Tool (run_sql)
+> Here are the first 5 rows from the table. The table has three columns:
+> id (sequential numbers)
+> name (string values)
+> value (decimal numbers)
+> Would you like to perform any other operations with this data?
+
+User: can you add a created_at column?
+Cursor: I'll help you add a created_at column to the playing_with_neon table. I'll set it up with a timestamp data type and set it to automatically record the creation time of new rows.
+> Called MCP Tool (prepare_database_migration)
+> Let me verify the change in the temporary branch to make sure it was applied correctly.
+> Called MCP Tool (run_sql)
+> I've added the created_at column to the playing_with_neon table in a temporary branch. Would you like to commit this migration to the main branch?
+> Migration Details:
+> Migration ID: a65babcd-d1cc-401f-89b5-762570570102
+> Temporary Branch Name: br-silent-cherry-a1eqrl6i
+> Temporary Branch ID: br-silent-cherry-a1eqrl6i
+> Migration Result: Success
+> Please let me know if you'd like to proceed with applying this change to the main branch.
+
+User: yeah do it
+Cursor: I'll complete the migration and apply the changes to the main branch.
+> Called MCP Tool (complete_database_migration)
+> The migration has been successfully completed! The created_at column has been added to your table in the main branch, and the temporary branch has been cleaned up.
+```
+
+**Key takeaways:**
+
+- **Natural language interaction:** You can use simple, conversational English to interact with your database.
+- **Step-by-step guidance:** Cursor (Claude) confirms each step and provides details like branch names and migration IDs.
+- **MCP Tools in Action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the main branch.
+
+You can verify the changes in your Neon Console or by querying the database directly.
+
+![Neon Console with added column](/docs/guides/neon-cursor-mcp-added-column.png)
+
+<Admonition type="note">
+While the Neon MCP server allows you to utilize all of Neon's functionalities, you can also use a [generic Postgres MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres) to connect to Neon.
+</Admonition>
+
+## Bonus: Creating a project and branch
+
+Beyond schema changes, you can also manage your Neon projects and branches directly within Cursor using natural language commands. This can be useful for quickly setting up a new development or test environment.
+
+### Creating a new project
+
+Let's say you want to create a new Neon project named "my-new-project". You can simply tell Cursor:
+
+```text shouldWrap
+User: Create a Neon project named "my-new-project"
+Cursor: I'll help you create a new Neon project with the specified name.
+> Called MCP Tool (create_project)
+> Great! I've created a new Neon project for you with the name "my-new-project". Here are the important details:
+> Project ID: orange-dawn-33739962
+> Default branch: main
+> Default database: neondb
+> The project is ready to use. You can start creating tables and working with your database right away.
+```
+
+![Cursor creating a new Neon project](/docs/guides/cursor-mcp-create-new-project.png)
+
+Cursor will then use the `create_project` MCP tool to initiate the project creation. It will provide you with a project ID and name.
+
+### Creating a New Branch
+
+Once you have a project, you can easily create new branches for development or experimentation. For example, to create a branch named "feature-x" in your "my-new-project" project:
+
+```text shouldWrap
+User: Create a branch named "feature-x"
+Cursor: Perfect! I've created a new branch named "feature-x". Here are the details:
+> Branch ID: br-cold-mountain-a523ka2w
+> Branch name: feature-x
+> Parent branch ID: br-odd-pine-a5y53krm
+> The branch has been created successfully and is ready for use.
+```
+
+![Cursor creating a new Neon branch](/docs/guides/cursor-mcp-create-new-branch.png)
+
+Cursor will use the `create_branch` MCP tool to create the branch and provide you with the branch name and ID. Notice how we don't need to specify the project ID, as Cursor remembers the active project context.
+
+## Conclusion
+
+Cursor with Neon MCP Server lets you use natural language to interact with your database and take advantage of Neon's branching capabilities for fast iteration. This approach is ideal for quickly testing database ideas and making schema changes during development.
+
+## Resources
+
+- [MCP Protocol](https://modelcontextprotocol.org)
+- [Adding an MCP Server to Cursor](https://docs.cursor.com/context/model-context-protocol)
+- [Neon Docs](https://neon.tech/docs)
+- [Neon API Keys](https://neon.tech/docs/manage/api-keys#creating-api-keys)
+- [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
 
 <NeedHelp/>
 
@@ -10460,17 +12188,17 @@ services:
   postgres:
     image: 'postgres:latest'
     environment:
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: postgres
-    POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     ports:
       - '5432:5432'
   pg_proxy:
     image: ghcr.io/neondatabase/wsproxy:latest
     environment:
-    APPEND_PORT: 'postgres:5432'
-    ALLOW_ADDR_REGEX: '.*'
-    LOG_TRAFFIC: 'true'
+      APPEND_PORT: 'postgres:5432'
+      ALLOW_ADDR_REGEX: '.*'
+      LOG_TRAFFIC: 'true'
     ports:
       - '5433:80'
     depends_on:
@@ -14190,6 +15918,352 @@ Execution Time: 0.105 ms
 ```
 
 
+# Geospatial Search in Postgres
+
+---
+title: Geospatial Search in Postgres
+subtitle: A step-by-step guide describing how to use PostGIS for geospatial search in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-02-16T13:24:36.612Z'
+updatedOn: '2025-02-16T13:24:36.612Z'
+---
+
+Geospatial queries enable you to perform searches on geographical data stored in Postgres.
+With the [PostGIS extension](https://postgis.net/), you can query for which rows are within 10 kilometers of a given point or which rows are within a given geospatial rectangle.
+This makes Postgres a great option for applications involving maps, location-based services, and geographic analysis.
+
+## Steps
+
+- Install and enable PostGIS
+- Create a table with a geometry column
+- Insert and retrieve geospatial data
+- Perform geospatial queries using `ST_DWithin`
+- Sort locations by distance using `ST_Distance`
+- Find locations within a polygon using `ST_MakeEnvelope`
+- Index using GiST indexes
+
+### Install and enable PostGIS
+
+Before using geospatial queries, you need to install the [PostGIS extension](https://postgis.net/).
+PostGIS adds geospatial data types like `GEOMETRY` and `GEOGRAPHY`, geospatial query functions like `ST_DWithin` and `ST_MakeEnvelope`, and GiST indexes.
+In Neon, PostGIS is already installed, you just need to enable it using the following command.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS postgis;
+```
+
+### Create a table with a geometry column
+
+To store geospatial data, create a table with a geometry column.
+The `GEOMETRY` type can be used to store points, lines, or polygons.
+The following command creates a `geom` column that stores latitude/longitude points.
+
+```sql
+CREATE TABLE locations (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  geom GEOMETRY(Point, 4326) -- WGS 84 spatial reference system
+);
+```
+
+The `4326` magic number is a Spatial Reference System Identifier (SRID) that represents the WGS 84 coordinate system.
+In PostGIS, `4326` indicates that `geom` represents degrees of latitude and longitude, rather than meters or feet.
+
+### Insert and retrieve geospatial data
+
+You can insert geographic points using the `ST_GeomFromText` function as follows.
+The two rows inserted below contain the approximate latitude and longitude of New York and San Francisco.
+
+```sql
+INSERT INTO locations (name, geom)
+VALUES ('New York', ST_GeomFromText('POINT(-74.006 40.7128)', 4326)),
+       ('San Francisco', ST_GeomFromText('POINT(-122.4194 37.7749)', 4326));
+```
+
+You can retrieve all stored locations using the following.
+
+```sql
+SELECT id, name, ST_AsText(geom) FROM locations;
+```
+
+### Perform geospatial queries using `ST_DWithin`
+
+You can find all locations within a certain distance of a point using `ST_DWithin`.
+The following query finds all locations that are within 4000 kilometers of New York, which is just New York.
+
+```sql
+SELECT name FROM locations
+WHERE ST_DWithin(
+  geom,
+  ST_GeomFromText('POINT(-74.006 40.7128)', 4326),
+  4000000, -- in meters
+  true -- use_spheroid
+);
+```
+
+The `use_spheroid` parameter ensures that `ST_DWithin` interprets the 3rd parameter as meters, and uses a more accurate spheroid model of the Earth which accounts for Earth's flattening at the poles.
+
+San Francisco is approximately 4100 kilometers from New York, so if you instead query for all points that are within 4200 kilometers of New York then Postgres will return both New York and San Francisco.
+
+```sql
+SELECT name FROM locations
+WHERE ST_DWithin(
+  geom,
+  ST_GeomFromText('POINT(-74.006 40.7128)', 4326),
+  4200000, -- in meters
+  true -- use_spheroid
+);
+```
+
+### Sort locations by distance using `ST_Distance`
+
+To sort locations based on their proximity to a given point, use `ST_Distance`.
+The following query sorts locations by their distance from Miami, New York is closer.
+
+```sql
+SELECT name, ST_Distance(geom, ST_GeomFromText('POINT(-80.1918 25.7617)', 4326)) AS distance
+FROM locations
+ORDER BY distance ASC;
+```
+
+The following query sorts locations by their distance from Seattle, San Francisco is closer.
+
+```sql
+SELECT name, ST_Distance(geom, ST_GeomFromText('POINT(-122.3321 47.6062)', 4326)) AS distance
+FROM locations
+ORDER BY distance ASC;
+```
+
+### Find locations within a polygon using `ST_MakeEnvelope`
+
+PostGIS provides support for more sophisticated queries than simple distances.
+PostGIS has functions to check if lines and polygons intersect, contain, or touch each other.
+For example, the following query finds all locations within a rectangle longitude -124 to -119 and latitude 36 to 39.
+This rectangle roughly covers Northern California, including San Francisco.
+
+```sql
+SELECT name FROM locations
+WHERE geom && ST_MakeEnvelope(-124, 36, -119, 39, 4326);
+```
+
+Below is what the `ST_MakeEnvelope` rectangle looks like on a map.
+
+![Northern California Rectangle](https://codebarbarian-images.s3.us-east-1.amazonaws.com/ca-rectangle.png)
+
+### Index using GiST indexes
+
+For large datasets, geospatial queries can be slow without an index.
+PostGIS supports the GiST index for efficient geospatial lookups.
+You can create a GiST index on locations' `geom` property using the following command.
+
+```sql
+CREATE INDEX locations_gist ON locations USING GIST(geom);
+```
+
+
+# How to use self-hosted runners with GitHub Actions
+
+---
+author: paul-scanlon
+enableTableOfContents: true
+createdAt: '2025-03-01T00:00:00.000Z'
+updatedOn: '2025-03-01T00:00:00.000Z'
+title: How to use self-hosted runners with GitHub Actions
+subtitle: Take full control of your GitHub Action's runner environment with DigitalOcean
+---
+
+In this guide, I'll walk you through setting up a Linux server on a DigitalOcean Droplet with Ubuntu installed, which you can use as a self-hosted runner for GitHub Actions.
+
+## What is a self-hosted runner?
+
+[Self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners#about-self-hosted-runners) work similarly to GitHub's default runners, but with the key difference that you manage the server yourself. While the default runners are convenient, they come with some limitations—most notably, they timeout after six hours.
+
+This can be a challenge for long-running jobs, particularly for users of our [Neon Twin](docs/guides/neon-twin-intro) workflow who may encounter issues with large databases. In these scenarios, setting up your own self-hosted runner is a more reliable solution.
+
+<CTA title="Create a Neon Twin" description="A Neon Twin is a full or partial clone of your production or staging database, providing developers and teams with isolated, sandboxed environments that closely mirror production. <br><br>Learn how to create a Twin <a href='/docs/guides/neon-twin-intro'>here</a>." isIntro />
+
+GitHub's default runners come with several preinstalled packages and dependencies, which you can review in the [GitHub runner-images repository README](https://github.com/actions/runner-images?tab=readme-ov-file#package-managers-usage). The default runner image also includes specific user permissions. To set up an effective self-hosted runner, you'll need to manually configure these packages, dependencies, and permissions. But don't worry—I'll guide you through each step.
+
+## Getting started with Digital Ocean
+
+If you don't have a Digital Ocean account already, create one [here](https://cloud.digitalocean.com/registrations/new). You will need to enter payment details before continuing to the next step.
+
+### Create a Droplet
+
+From the navigation list on the left hand side select **Droplets**, then click **Create Droplet**.
+
+![Screenshot of Digital Ocean Create Droploet](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-create-droplet.jpg)
+
+On the next screen you'll have a number of options to choose from. In this example I'll be deploying the Droplet to Digital Ocean's New York **Datacenter** and using **Ubuntu** for the Droplet **image**.
+
+![Screenshot of Digital Ocean Droplet Config - Datacenter](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-droplet-config-1.jpg)
+
+Scroll down to the next section and choose the **Droplet Size** and **CPU Options**. In ths example, I've chosen to use a **Shared CPU** and The smallest **Disk size**.
+
+![Screenshot of Digital Ocean Droplet Config - CPU Size](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-droplet-config-2.jpg)
+
+The next step is to select an authentication method. Choose **Password** and set a password that you'll use to log in as the `root` user.
+
+![Screenshot of Digital Ocean Droplet Config - Auth Method](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-auth-method.jpg)
+
+The final step is to give your Droplet a name—I've chosen `self-hosted-actions-runner`. This name will appear in the GitHub UI, which I'll explain in a later step. Once you're ready, click **Create Droplet**.
+
+![Screenshot of Digital Ocean Droplet Config- Droplet Name](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-droplet-name.jpg)
+
+After your Droplet is created, it will appear in the DigitalOcean UI. From there, you can copy the **IP address**, which you'll need for the next step.
+
+![Screenshot of Digital Ocean Droplet Config- Droplet IP](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-droplet-ip.jpg)
+
+## Configure Droplet
+
+Now that your Droplet is created, run the following command in your terminal to log in as the `root` user. You'll be prompted for your password—enter it to complete the login.
+
+```shell
+ssh root@<Your Droplet's IP address>
+```
+
+## Create a new user
+
+It's generally not recommended to provide external services with `root` access to your server. In this step, you'll create a new user named `runneruser` and grant it the necessary privileges to function as a self-hosted runner for GitHub Actions.
+
+In your terminal, run the following command to create the `runneruser` and set a password.
+
+```shell
+adduser runneruser
+```
+
+You'll be asked to re-enter the password. For the following prompts, you can simply press `ENTER` to accept the default values for fields like `Full Name`, `Room Number`, `Work Phone`, and so on. When prompted, press `Y` to confirm that all the information is correct.
+
+### Add user to sudo group
+
+The `runneruser` needs to be added to the `sudo` group and granted permission to install packages without being prompted for a password.
+
+To add the `runneruser` to the sudo group, run the following command in your terminal.
+
+```shell
+adduser runneruser sudo
+```
+
+Next you need to update the permissions. To do this run the following in the terminal.
+
+```shell
+visudo
+```
+
+### Granting privileges
+
+Scroll down until you find the following section, then update the configuration to grant `runneruser` permission to execute specific `sudo` commands.
+
+In this guide, I’m allowing `runneruser` to:
+
+- Use the `apt` command
+- Run a specific command to install the `postgresql-common` package
+- Execute these commands without being prompted for a password using `NOPASSWD`
+
+The exact permissions you need to grant will depend on the specific requirements of your Action.
+
+```shell {3}
+# Allow members of group sudo to execute any command
+%sudo   ALL=(ALL:ALL) ALL
+runneruser ALL=(ALL) NOPASSWD: /usr/bin/apt, /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+```
+
+To exit `visudo`, press `^X` and confirm the changes. Once you're done, log out as the `root` user by typing `exit` in your terminal.
+
+## Log in as runneruser
+
+Now that the `runneruser` has been created, you can log in to configure the system for the self-hosted runner. Run the following command in your terminal to log in as `runneruser`.
+
+```shell
+ssh runneruser@<Your Droplet's IP address>
+```
+
+After logging in, got back to GitHub and navigate to **Settings** > **Actions** > **Runners**, then click **New self-hosted runner**.
+
+From the options select **Linux** under the **Runner Image** section and **x64** in the **Architecture** section.
+
+![Screenshot of GitHub - Self-hosted Runners](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-github-runner-instructions.jpg)
+
+Follow the **Download** and **Configure** steps. When you reach the final step, **Create the runner and start the configuration experience**, press **Enter** to accept the default options. However, skip the last step, which runs `./run.sh`—I'll explain why next.
+
+### Running the Self-Hosted Runner
+
+While running `./run.sh` is the simplest way to start your self-hosted runner on your Droplet, it operates as a foreground process. This means that once you close your terminal, the runner stops. If you intend to use the runner for long-running workflows, you’ll need to ensure it runs in the background.
+
+To do this, you can set up your self-hosted runner to run as a service. This involves an additional setup step, and the method for starting the service is slightly different, but it guarantees the runner continues to operate in the background even after you close your terminal.
+
+For further details, refer to the GitHub documentation: [Configuring the self-hosted runner application as a service](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service#installing-the-service). Just keep in mind, you'll need to change directories before running any of the commands listed on that page.
+
+To change the directory, run the following in your terminal:
+
+```shell
+cd actions-runner
+```
+
+After completing these steps, refresh the GitHub page. Your Droplet should now appear in the UI with an **Idle** status.
+
+![Screenshot of GitHub - Runner Idle](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-github-runner-idle.jpg)
+
+## Creating a test GitHub Action
+
+This test Action installs Postgres using [APT](<https://en.wikipedia.org/wiki/APT_(software)>), then echoes both the `DEV_DATABASE_URL`'s Postgres version and the version of Postgres installed in the Action environment.
+
+To use this Action, you'll need to create an environment variable named `DEV_DATABASE_URL` with a valid Postgres connection string and add it to your GitHub Repository Secrets.
+
+To do this navigate to **Settings** > **Secrets and variables** > **Actions** and add the environment variable under **Repository secrets**.
+
+![Screenshot of GitHub - Repository secrets](/guides/images/gihub-actions-self-hosted-runners/gihub-actions-self-hosted-runners-github-screts.jpg)
+
+One key detail to note is the line: `runs-on: self-hosted`. This tells GitHub that the Action should run on your self-hosted runner rather than the default shared infrastructure.
+
+```yml
+name: Self Hosted Runner
+
+on:
+  workflow_dispatch:
+
+env:
+  DEV_DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+  PG_VERSION: 16
+
+jobs:
+  check-pg-version:
+    runs-on: self-hosted
+
+    steps:
+      - name: Install PostgreSQL Common Package
+        run: |
+          sudo apt update
+          sudo apt install -y postgresql-common
+
+      - name: Install PostgreSQL
+        run: |
+          sudo apt update
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt install -y postgresql-${{ env.PG_VERSION }}
+
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+
+      - name: PostgreSQL version
+        run: |
+          "$POSTGRES/psql" "$DEV_DATABASE_URL" -c "SELECT version();"
+
+      - name: Check psql Version
+        run: |
+          $POSTGRES/psql --version
+```
+
+## Finished
+
+While this Action may seem somewhat complex, it effectively demonstrates how the steps within the workflow align with the permissions set on the Droplet.
+
+Only the commands explicitly allowed for `runneruser` are permitted to run. If you need to add more steps to your Action that require extra permissions, you’ll need to update `runneruser`'s sudo privileges accordingly.
+
+That said, with a self-hosted runner, you have full control. You can deploy a high-performance Droplet capable of running longer and faster than GitHub's default shared infrastructure runner, helping to overcome any limitations you may have encountered.
+
+
 # Setting up GitHub Codespaces with Neon Database Branching for Pull Requests
 
 ---
@@ -14537,6 +16611,2216 @@ This workflow can be adapted to work with other languages and frameworks. You ca
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 
 <NeedHelp />
+
+
+# Implementing Database Migrations in Go Applications with Neon
+
+---
+title: Implementing Database Migrations in Go Applications with Neon
+subtitle: Learn how to manage database schema changes in Go applications using Neon's serverless Postgres
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-02-22T00:00:00.000Z'
+updatedOn: '2025-02-22T00:00:00.000Z'
+---
+
+Database migrations are essential for managing schema evolution in applications as they grow and change over time. When working with Go applications and Neon's serverless Postgres, implementing a good migration strategy allows you to have smooth deployments and database changes without disruption.
+
+This guide will walk you through implementing and managing database migrations for Go applications using Neon Postgres, covering everything from basic concepts to advanced production deployment strategies.
+
+## Prerequisites
+
+Before diving into database migrations, make sure you have:
+
+- [Go](https://golang.org/dl/) 1.18 or later installed
+- A [Neon](https://console.neon.tech/signup) account and project
+- Basic understanding of SQL and database schemas
+- Familiarity with Go programming
+
+## Understanding Database Migrations
+
+Database migrations provide a structured approach to evolve your database schema over time. Each migration represents a discrete change to your database structure, such as adding a table, modifying a column, or creating an index.
+
+Some of the main benefits of using database migrations include:
+
+- Track changes to your schema alongside your application code.
+- Easily set up new development or production databases.
+- Apply changes incrementally with the ability to roll back.
+- Multiple developers can make schema changes without conflicts.
+- Integrate database changes into your CI/CD pipeline.
+
+Without migrations, managing database schema changes becomes increasingly challenging as applications grow and team sizes increase.
+
+## Migration Tools for Go
+
+As with many programming languages, Go has a rich ecosystem of tools for managing database migrations. These tools help you create, apply, and roll back migrations in a controlled and repeatable manner.
+
+Let's explore the most popular options:
+
+### golang-migrate
+
+[golang-migrate](https://github.com/golang-migrate/migrate) is one of the most widely used migration tools in the Go ecosystem. It provides:
+
+- Support for multiple databases including Postgres
+- Migration files in SQL or Go formats
+- CLI tools for migration management
+- A Go library for programmatic migration control
+- Versioned migrations with up/down operations
+
+### Other Options
+
+While we'll focus on golang-migrate in this guide, other notable migration tools include:
+
+- **[sql-migrate](https://github.com/rubenv/sql-migrate)**: Uses goose-style migrations with support for multiple databases
+- **[goose](https://github.com/pressly/goose)**: A migration tool with support for Go or SQL migrations
+- **[atlas](https://github.com/ariga/atlas)**: A newer tool that provides declarative schema migrations
+- **[dbmate](https://github.com/amacneil/dbmate)**: A database migration tool that's language-agnostic
+
+## Setting Up golang-migrate
+
+Let's set up golang-migrate to work with your Neon Postgres database. It can be used both from the command line and programmatically within your Go code. We'll cover both approaches in this guide.
+
+Let's start by installing the golang-migrate CLI.
+
+### Install the Migration Tool
+
+First, install the golang-migrate CLI. You can do this using `go install`:
+
+```bash
+go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+```
+
+Or alternatively, you can also use a package manager or follow the [installation instructions](https://github.com/golang-migrate/migrate/blob/master/cmd/migrate/README.md) from the golang-migrate repository depending on your operating system.
+
+### Project Structure
+
+Create a structure for your migrations in your Go project:
+
+```
+your-go-project/
+├── cmd/
+│   └── main.go
+├── internal/
+│   └── app/
+├── migrations/
+│   ├── 000001_create_users_table.up.sql
+│   ├── 000001_create_users_table.down.sql
+│   ├── 000002_add_user_roles.up.sql
+│   └── 000002_add_user_roles.down.sql
+└── go.mod
+```
+
+The `migrations` directory will store all your migration files. Each migration consists of two files:
+
+- `NNNNNN_name.up.sql`: Contains SQL to apply the migration
+- `NNNNNN_name.down.sql`: Contains SQL to revert the migration
+
+### Creating Your First Migration
+
+Next, let's create your first migration to establish a users table:
+
+```bash
+# Create the migrations directory if it doesn't exist
+mkdir -p migrations
+
+# Create the migration files
+migrate create -ext sql -dir migrations -seq create_users_table
+```
+
+This command creates two files:
+
+- `migrations/000001_create_users_table.up.sql`
+- `migrations/000001_create_users_table.down.sql`
+
+Now, edit the up migration file with the SQL to create your users table:
+
+```sql
+-- migrations/000001_create_users_table.up.sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Add an index on email for faster lookups
+CREATE INDEX idx_users_email ON users(email);
+
+-- Add a trigger to update the updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_users_updated_at
+    BEFORE UPDATE ON users
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column();
+```
+
+And edit the down migration to reverse these changes:
+
+```sql
+-- migrations/000001_create_users_table.down.sql
+DROP TRIGGER IF EXISTS update_users_updated_at ON users;
+DROP FUNCTION IF EXISTS update_updated_at_column();
+DROP TABLE IF EXISTS users;
+```
+
+A few important points about this migration:
+
+1. We're creating a table with a primary key and various constraints
+2. We're adding an index for performance optimization
+3. We're creating a trigger to automatically update the `updated_at` timestamp
+4. The down migration reverses all changes in the correct order
+
+Notice how the down migration drops objects in reverse order compared to how they were created in the up migration. This is important to avoid dependency issues when rolling back.
+
+## Connecting to Neon Postgres
+
+To run migrations against your Neon database, you'll need to construct a proper connection string. Neon provides a secure, TLS-enabled connection:
+
+```
+postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+```
+
+Replace the placeholders with your actual Neon connection details, which you can find in the Neon Console under your project's connection settings.
+
+For convenience, you might want to store this connection string in an environment variable:
+
+```bash
+export NEON_DB_URL="postgresql://user:password@ep-example-123456.us-east-2.aws.neon.tech/neondb?sslmode=require"
+```
+
+## Running Migrations
+
+With your migration files created and your connection string ready, you can now run migrations against your Neon database.
+
+### Running Migrations from CLI
+
+To apply all pending migrations:
+
+```bash
+migrate -database "${NEON_DB_URL}" -path ./migrations up
+```
+
+To roll back the most recent migration:
+
+```bash
+migrate -database "${NEON_DB_URL}" -path ./migrations down 1
+```
+
+To migrate to a specific version:
+
+```bash
+migrate -database "${NEON_DB_URL}" -path ./migrations goto 2
+```
+
+To check the current migration version:
+
+```bash
+migrate -database "${NEON_DB_URL}" -path ./migrations version
+```
+
+Having the ability to run migrations from the command line is useful for local development and debugging. However, for production deployments, let's look at how to run migrations programmatically from your Go code.
+
+### Running Migrations from Go Code
+
+For many applications, you'll want to run migrations programmatically from your Go code, especially during application startup or as part of CI/CD processes.
+
+Create a `migrations.go` file in your project:
+
+```go
+package migrations
+
+import (
+	"errors"
+	"log"
+
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+)
+
+// RunMigrations applies database migrations to the specified database
+func RunMigrations(dbURL, migrationsPath string) error {
+	m, err := migrate.New("file://"+migrationsPath, dbURL)
+	if err != nil {
+		return err
+	}
+
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		return err
+	}
+
+	srcErr, dbErr := m.Close()
+	if srcErr != nil {
+		return srcErr
+	}
+	if dbErr != nil {
+		return dbErr
+	}
+
+	log.Println("Migrations applied successfully")
+	return nil
+}
+```
+
+Then call this function during your application startup:
+
+```go
+package main
+
+import (
+	"log"
+	"os"
+
+	"your-module/migrations"
+)
+
+func main() {
+	dbURL := os.Getenv("NEON_DB_URL")
+	if dbURL == "" {
+		log.Fatal("NEON_DB_URL environment variable is not set")
+	}
+
+	err := migrations.RunMigrations(dbURL, "./migrations")
+	if err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
+	// Continue with application startup...
+}
+```
+
+This approach allows you to run migrations as part of your application's initialization process. You can also integrate this code into your CI/CD pipeline to ensure migrations are applied consistently across environments.
+
+## Creating Additional Migrations
+
+As your application evolves, you'll need to create additional migrations to modify your database schema. Let's create a second migration to add user roles:
+
+```bash
+migrate create -ext sql -dir migrations -seq add_user_roles
+```
+
+Edit the up migration:
+
+```sql
+-- migrations/000002_add_user_roles.up.sql
+CREATE TABLE roles (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_roles (
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role_id INT NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
+);
+
+-- Insert default roles
+INSERT INTO roles (name) VALUES ('user'), ('admin'), ('editor');
+
+-- Add a default role for existing users
+INSERT INTO user_roles (user_id, role_id)
+SELECT u.id, r.id FROM users u, roles r WHERE r.name = 'user';
+```
+
+And the down migration:
+
+```sql
+-- migrations/000002_add_user_roles.down.sql
+DROP TABLE IF EXISTS user_roles;
+DROP TABLE IF EXISTS roles;
+```
+
+This migration shows a few common patterns:
+
+1. Creating related tables with foreign key constraints
+2. Seeding tables with initial data
+3. Migrating existing data to maintain consistency
+
+## Best Practices for Migrations
+
+When working with migrations in Go applications and Neon Postgres, follow these best practices:
+
+### 1. Keep Migrations Small and Focused
+
+Each migration should do one thing and do it well. Small, focused migrations are:
+
+- Easier to review
+- Quicker to apply
+- Simpler to roll back if needed
+- Less likely to cause problems
+
+For example, split adding a table and populating it with data into separate migrations when possible.
+
+### 2. Make Migrations Idempotent When Possible
+
+Idempotent migrations can be applied multiple times without changing the result. Use conditionals in your SQL to make migrations more robust:
+
+```sql
+-- Check if the index exists before creating it
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes WHERE indexname = 'idx_users_email'
+    ) THEN
+        CREATE INDEX idx_users_email ON users(email);
+    END IF;
+END
+$$;
+```
+
+### 3. Use Transactions for Safety
+
+Ensure your migrations run within transactions to maintain database consistency. If a migration fails partway through, all changes should be rolled back.
+
+The golang-migrate tool automatically wraps each migration in a transaction by default, but you can also explicitly include transactions in your SQL:
+
+```sql
+BEGIN;
+
+-- Migration steps here
+
+COMMIT;
+```
+
+There has been a feature request to add support for transactions in the golang-migrate tool, you can track the progress [here](https://github.com/golang-migrate/migrate/issues/196) but for now, you would need to handle transactions manually in your SQL.
+
+### 4. Test Migrations Before Applying to Production
+
+Always test migrations in a non-production environment first. Ideally, have a staging environment that mirrors production as closely as possible.
+
+You can achieve this by setting up a separate Neon branch to test migrations before applying them to your main branch. You can learn more about Neon branches in the [Neon documentation](https://neon.tech/docs/introduction/branching).
+
+### 5. Version Control Your Migrations
+
+Store migrations in version control alongside your application code to make sure that:
+
+- Changes are tracked
+- Code reviewers can see database changes
+- Migration history is preserved
+
+### 6. Never Edit Existing Migrations
+
+Once a migration has been applied to any environment, consider it immutable. If you need to change something, create a new migration. This avoids inconsistencies between environments.
+
+## Integrating with CI/CD Pipelines
+
+Automating migrations as part of your CI/CD pipeline ensures database changes are applied consistently across environments.
+
+### Example GitHub Actions Workflow
+
+Here's an example GitHub Actions workflow that runs migrations during deployment:
+
+```yaml
+name: Deploy with Migrations
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: Install migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate /usr/bin/migrate
+          which migrate
+
+      - name: Run migrations
+        run: migrate -database "${NEON_DB_URL}" -path ./migrations up
+        env:
+          NEON_DB_URL: ${{ secrets.NEON_DB_URL }}
+
+      # Continue with application deployment...
+```
+
+The workflow will trigger on pushes to the main branch, then perform the following steps:
+
+1. Fetch the repository code
+2. Prepare the Go environment
+3. Download and install the `migrate` tool
+4. Apply migrations to the database using the connection string stored in a GitHub secret
+5. Continue with the deployment process
+
+Running your database migrations directly on your production database can be risky. For a safer approach, let's look at how to test migrations on a Neon branch before deploying them to production.
+
+### Running Migrations on a Neon Branch
+
+For a more robust approach, you can use Neon's branching capabilities to test migrations before applying them to your production database.
+
+Neon has a set of [GitHub Actions](https://neon.tech/docs/guides/branching-github-actions) that allow you to create, delete, and compare branches programmatically. Here's an extended GitHub Actions workflow that uses Neon's branching actions to spin up a temporary branch for testing migrations:
+
+```yaml
+name: Test and Deploy Migrations
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'migrations/**'
+  push:
+    branches: [main]
+    paths:
+      - 'migrations/**'
+
+jobs:
+  migration-test:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'
+
+      - name: Install migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate /usr/bin/migrate
+
+      # Create a temporary branch for testing migrations
+      - name: Create Neon branch for testing
+        id: create-branch
+        uses: neondatabase/create-branch-action@v5
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          parent: main
+          branch_name: migration-test-${{ github.run_id }}
+          username: ${{ vars.NEON_DB_USER }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - name: Run migrations on test branch
+        run: |
+          migrate -database "${{ steps.create-branch.outputs.db_url }}" -path ./migrations up
+          echo "Migrations applied successfully to test branch"
+
+      # Run tests against the migrated schema
+      - name: Run database schema tests
+        run: |
+          go test ./tests/db/... -db-url="${{ steps.create-branch.outputs.db_url }}"
+
+      # For pull requests, generate a schema diff
+      - name: Generate schema diff
+        if: github.event_name == 'pull_request'
+        uses: neondatabase/schema-diff-action@v1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          compare_branch: migration-test-${{ github.run_id }}
+          base_branch: main
+          api_key: ${{ secrets.NEON_API_KEY }}
+          database: ${{ vars.NEON_DB_NAME || 'neondb' }}
+          username: ${{ vars.NEON_DB_USER }}
+
+      # Clean up the test branch
+      - name: Delete test branch
+        if: always()
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch: migration-test-${{ github.run_id }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+  # Only run on push to main
+  deploy-production:
+    needs: migration-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.18.2/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate /usr/bin/migrate
+
+      # Run migrations on production database
+      - name: Run migrations on production
+        run: migrate -database "${NEON_PROD_DB_URL}" -path ./migrations up
+        env:
+          NEON_PROD_DB_URL: ${{ secrets.NEON_PROD_DB_URL }}
+
+      # Continue with application deployment...
+```
+
+This extended workflow does the following:
+
+1. Triggers on both pull requests affecting migration files and pushes to the main branch
+2. Creates a temporary branch specifically for testing migrations using Neon's create-branch-action
+3. Runs migrations on the test branch to verify they apply correctly
+4. Executes schema tests to ensure the migrated schema works as expected
+5. Generates a schema diff for pull requests, providing reviewers with a clear view of the proposed changes
+6. Cleans up by deleting the test branch after testing
+7. Deploys to production only when changes are pushed to the main branch, after successful testing
+
+This approach provides several benefits:
+
+- Migrations are thoroughly tested before being applied to production
+- Pull request reviewers can see exactly what schema changes are being proposed
+- Failed migrations don't affect your production database
+- The workflow is fully automated as part of your CI/CD pipeline
+
+To use this workflow, you'll need to set up the following GitHub repository secrets and variables:
+
+- **Secrets**:
+
+  - `NEON_API_KEY`: Your Neon API key
+  - `NEON_PROD_DB_URL`: Production database connection string
+
+- **Variables**:
+  - `NEON_PROJECT_ID`: Your Neon project ID
+  - `NEON_DB_USER`: Database username
+  - `NEON_DB_NAME`: Database name (defaults to 'neondb' if not specified)
+
+You can add more steps to this workflow depending on your specific deployment needs, such as building and deploying your application after successful migrations.
+
+## Working with Multiple Environments
+
+Most applications require different database configurations for development, testing, staging, and production environments.
+
+### Environment-Specific Configurations
+
+Manage environment-specific database URLs using environment variables or configuration files:
+
+```go
+package config
+
+import (
+	"os"
+	"fmt"
+)
+
+// GetDatabaseURL returns the appropriate database URL for the current environment
+func GetDatabaseURL() string {
+	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = "development" // Default
+	}
+
+	switch env {
+	case "production":
+		return os.Getenv("NEON_PROD_DB_URL")
+	case "staging":
+		return os.Getenv("NEON_STAGING_DB_URL")
+	case "test":
+		return os.Getenv("NEON_TEST_DB_URL")
+	default:
+		return os.Getenv("NEON_DEV_DB_URL")
+	}
+}
+```
+
+## Conclusion
+
+Database migrations are a critical part of managing application evolution. When working with Go applications and Neon Postgres, a well-implemented migration strategy ensures that your schema changes are version-controlled and applied consistently across environments.
+
+The combination of Go's strong tooling, the flexibility of golang-migrate, and Neon's powerful Postgres capabilities provides an excellent foundation for managing database schema changes throughout your application's lifecycle.
+
+## Additional Resources
+
+- [golang-migrate documentation](https://github.com/golang-migrate/migrate)
+- [Neon Documentation](/docs)
+- [PostgreSQL Alter Table documentation](https://www.postgresql.org/docs/current/ddl-alter.html)
+- [PostgreSQL schema design best practices](https://www.postgresql.org/docs/current/ddl-schemas.html)
+
+<NeedHelp />
+
+
+# Using GORM with Neon Postgres
+
+---
+title: Using GORM with Neon Postgres
+subtitle: Learn how to use GORM, Go's most popular ORM, with Neon's serverless Postgres for efficient database operations
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-02-15T00:00:00.000Z'
+updatedOn: '2025-02-15T00:00:00.000Z'
+---
+
+[GORM](https://gorm.io/) is Go's most popular ORM library, providing a developer-friendly interface to interact with databases. When combined with Neon's serverless Postgres, it creates a great foundation for building scalable Go applications with minimal database management overhead.
+
+This guide walks you through the process of integrating GORM with Neon Postgres, we will cover everything that you need to know to get started with GORM and Neon Postgres.
+
+## Prerequisites
+
+Before getting started, make sure you have:
+
+- [Go](https://golang.org/dl/) 1.18 or later installed
+- A [Neon](https://console.neon.tech/signup) account
+- Basic familiarity with Go and SQL
+
+## Setting Up Your Environment
+
+### Create a Neon Project
+
+If you don't have one already, create a Neon project:
+
+1. Navigate to the [Projects page](https://console.neon.tech/app/projects) in the Neon Console
+2. Click **New Project**
+3. Specify your project settings and click **Create Project**
+
+Save your connection details including your password. You'll need these when configuring your Go application.
+
+### Initialize Your Go Project
+
+Let's begin by setting up your project structure. In Go, projects are organized as modules, which manage dependencies and package versioning. A module is initialized with a unique module path that distinguishes your project in the Go ecosystem.
+
+Start by creating a new directory for your project and initializing a Go module:
+
+```bash
+mkdir neon-gorm-example
+cd neon-gorm-example
+go mod init example.com/neon-gorm
+```
+
+This creates a `go.mod` file that will track your project's dependencies. The `example.com/neon-gorm` is the module path and should be replaced with your own domain or GitHub repository if you plan to publish your code.
+
+### Install Required Packages
+
+Now we need to install the packages our application will depend on. For this guide, we'll need two main packages:
+
+1. **GORM** - The ORM library that provides a developer-friendly interface to interact with the database
+2. **GORM Postgres Driver** - The database driver that allows GORM to connect to Postgres databases
+
+Run the following commands to install these packages:
+
+```bash
+go get -u gorm.io/gorm
+go get -u gorm.io/driver/postgres
+```
+
+These commands fetch the latest versions of the packages and add them to your project's `go.mod` file. The `-u` flag ensures you get the most recent version of each package.
+
+## Connecting to Neon with GORM
+
+### Basic Connection Setup
+
+Now let's establish a connection to your Neon Postgres database using GORM. This is an essential step that initializes the database connection that we'll use throughout our application.
+
+Create a new file named `main.go` with the following code:
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+)
+
+func main() {
+	// Connection string for Neon Postgres
+	dsn := "postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
+
+	// Connect to the database
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info), // Set to Info level for development
+	})
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// Get the underlying SQL DB object
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatalf("Failed to get DB object: %v", err)
+	}
+
+	// Verify connection
+	if err := sqlDB.Ping(); err != nil {
+		log.Fatalf("Failed to ping DB: %v", err)
+	}
+
+	fmt.Println("Successfully connected to Neon Postgres database!")
+}
+```
+
+In this code, we're performing several important steps:
+
+1. Defining a DSN - this is the connection string that contains all the information needed to connect to your Neon database
+2. Using `gorm.Open()` to establish a connection with the Postgres driver
+3. Configuring GORM's logger to show SQL queries during development, which helps with debugging
+4. Getting the underlying `*sql.DB` object to access lower-level database functions
+5. Verifying the connection is active by pinging the database
+
+Make sure to replace `[user]`, `[password]`, `[neon_hostname]`, and `[dbname]` with your actual Neon database credentials. The `?sslmode=require` part of the connection string ensures secure communication with your Neon database.
+
+Replace `[user]`, `[password]`, `[neon_hostname]`, and `[dbname]` with your actual Neon connection details. You can find these by clicking the **Connect** button on your Neon **Project Dashboard**.
+
+### Connection Pooling and Configuration
+
+Connection pooling is a technique that maintains a set of reusable database connections. This significantly improves performance by avoiding the overhead of establishing a new database connection for each operation.
+
+#### Neon Connection Pooling
+
+Neon provides a **built-in connection pooler**, powered by PgBouncer, to efficiently manage database connections. This pooler reduces connection overhead by reusing a limited number of persistent Postgres connections while supporting thousands of client sessions.
+
+Instead of each request opening a new database connection, the pooler transparently distributes queries across existing backend connections, improving performance and scalability. To use it, simply enable connection pooling in the Neon console and update your connection string to include `-pooler` in the hostname.
+
+This approach helps applications handle high concurrency while minimizing latency and resource consumption. However, since Neon's pooler operates in **transaction pooling mode**, session-based features like `LISTEN/NOTIFY`, `SET search_path`, and server-side prepared statements are not supported. For operations that require session persistence, it's best to use a direct (non-pooled) connection. You can find more details in the [Neon connection pooling documentation](https://neon.tech/docs/connect/connection-pooling).
+
+#### Configuring Connection Pooling in GORM
+
+When using Go with Neon, GORM offers built-in connection pooling that works seamlessly with Neon's pooler. By configuring settings like `SetMaxOpenConns` and `SetConnMaxIdleTime`, developers can fine-tune how connections are managed within their application before they reach the database layer.
+
+Since Neon already optimizes pooling on the database side, applications should maintain a moderate number of open connections to avoid excessive connection churn.
+
+The recommended approach is to use a pooled connection string for normal queries and switch to a direct connection for migration tasks that require session state. For guidance on configuring connection pooling in Go, refer to the [GORM connection documentation](https://gorm.io/docs/generic_interface.html#Connection-Pool).
+
+## Defining Models
+
+In GORM, models are Go structs that represent tables in your database. Each field in the struct maps to a column in the table, and GORM uses struct tags (annotations enclosed in backticks) to configure how these fields are handled in the database.
+
+Let's create a simple blogging application with `User` and `Post` models. These models will define the structure of our database tables and establish relationships between them.
+
+```go
+package main
+
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
+
+// User represents a user in the system
+type User struct {
+	ID        uint           `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Name      string         `gorm:"size:255;not null"`
+	Email     string         `gorm:"size:255;not null;uniqueIndex"`
+	Posts     []Post         `gorm:"foreignKey:UserID"`
+}
+
+// Post represents a blog post
+type Post struct {
+	ID        uint           `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+	Title     string         `gorm:"size:255;not null"`
+	Content   string         `gorm:"type:text"`
+	UserID    uint           `gorm:"not null"`
+	User      User           `gorm:"foreignKey:UserID"`
+}
+```
+
+Let's examine the key components of these models:
+
+1. **Basic Fields**: `ID`, `CreatedAt`, `UpdatedAt`, and `DeletedAt` are standard fields in GORM models. They handle primary keys, timestamps, and soft deletion.
+
+2. **Field Tags**: The struct tags like `gorm:"size:255;not null"` define constraints and properties for each field:
+
+   - `primaryKey`: Designates a field as the table's primary key
+   - `size:255`: Sets the column's maximum length
+   - `not null`: Ensures the field cannot be empty
+   - `uniqueIndex`: Creates a unique index on the column
+   - `type:text`: Specifies the SQL data type
+
+3. **Relationships**: The `Posts` field in the User model and the `User` field in the Post model establish a one-to-many relationship. The `foreignKey` tag specifies which field serves as the foreign key.
+
+By default, GORM will pluralize struct names to create table names (e.g., "User" becomes "users"), but you can customize this using the `TableName` method or the `gorm:"tableName:custom_name"` tag. This is similar to how other ORMs like Sequelize and Elequent work.
+
+GORM provides sensible defaults for table names (pluralized struct names) and column names (field names), but you can customize these using struct tags.
+
+## Automatic Migrations
+
+Migrations are a way to manage database schema changes over time. GORM provides a convenient `AutoMigrate` feature that automatically creates tables, indexes, constraints, and foreign keys based on your model definitions.
+
+While this automation is extremely useful during development, it's worth noting that for production environments, you'll typically want more control over schema changes. We'll cover structured migrations for production later in this guide, but for now, let's see how to use GORM's automatic migrations for development.
+
+Here's how to set up automatic migrations:
+
+```go
+func main() {
+	// Connection setup (as shown above)
+
+	// Auto-migrate the schema
+	err = db.AutoMigrate(&User{}, &Post{})
+	if err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
+
+	fmt.Println("Database migrated successfully!")
+}
+```
+
+When you run this code, GORM will:
+
+1. Check if the tables exist, and create them if they don't
+2. Add missing columns to existing tables
+3. Create indexes and constraints
+4. Establish foreign key relationships between tables
+
+The `AutoMigrate` function works by comparing your Go struct definitions to the actual database schema and making necessary changes to align them. It accepts a list of model struct pointers and returns an error if something goes wrong.
+
+Note that `AutoMigrate` only adds things that are missing—it won't delete columns or tables that exist in the database but not in your models. This is a safety feature to prevent accidental data loss.
+
+This will create the necessary tables if they don't exist and update them to match your model definitions.
+
+## Basic CRUD Operations
+
+Now that we have our models and database connection set up, let's perform basic Create, Read, Update, and Delete (CRUD) operations:
+
+### Creating Records
+
+Now that we have our models defined and tables created, let's start adding data to our database. GORM makes it straightforward to create new records with the `Create` method.
+
+Let's add a user and a blog post to our database:
+
+```go
+// Create a new user
+user := User{
+	Name:  "John Doe",
+	Email: "john@example.com",
+}
+result := db.Create(&user)
+if result.Error != nil {
+	log.Fatalf("Failed to create user: %v", result.Error)
+}
+fmt.Printf("Created user with ID: %d\n", user.ID)
+
+// Create a post for the user
+post := Post{
+	Title:   "Getting Started with GORM and Neon",
+	Content: "GORM makes it easy to work with databases in Go...",
+	UserID:  user.ID,
+}
+result = db.Create(&post)
+if result.Error != nil {
+	log.Fatalf("Failed to create post: %v", result.Error)
+}
+fmt.Printf("Created post with ID: %d\n", post.ID)
+```
+
+Here's what happens in this code:
+
+1. We create a new `User` struct instance with basic information
+2. We pass a pointer to this struct to the `db.Create()` method, which inserts it into the database
+3. GORM automatically handles generating the primary key ID, timestamps, and other default values
+4. After successful creation, the user's generated ID is populated in the `user.ID` field
+5. We then create a `Post` struct, setting the `UserID` field to establish the relationship with our user
+6. We insert the post into the database using the same `Create` method
+
+Notice how GORM returns a `result` object that contains an `Error` field. Always check this field to ensure your database operations succeeded. The result object also provides other useful information like the number of rows affected by the operation.
+
+### Reading Records
+
+Reading data from the database is one of the most common operations in any application. GORM provides several methods for retrieving data, from simple lookups to complex queries.
+
+Let's look at different ways to retrieve data from our database:
+
+```go
+// Retrieve a user by ID
+var retrievedUser User
+result = db.First(&retrievedUser, user.ID)
+if result.Error != nil {
+	log.Fatalf("Failed to retrieve user: %v", result.Error)
+}
+fmt.Printf("Retrieved user: %s (%s)\n", retrievedUser.Name, retrievedUser.Email)
+
+// Retrieve a user with their posts
+var userWithPosts User
+result = db.Preload("Posts").First(&userWithPosts, user.ID)
+if result.Error != nil {
+	log.Fatalf("Failed to retrieve user with posts: %v", result.Error)
+}
+fmt.Printf("User %s has %d posts\n", userWithPosts.Name, len(userWithPosts.Posts))
+
+// Find users with specific criteria
+var users []User
+result = db.Where("name LIKE ?", "%John%").Find(&users)
+if result.Error != nil {
+	log.Fatalf("Failed to find users: %v", result.Error)
+}
+fmt.Printf("Found %d users with 'John' in their name\n", len(users))
+```
+
+Let's break down these query operations:
+
+1. **Simple Retrieval**: The `First` method retrieves the first record that matches the condition. In our first example, we're finding a user by their ID, which should return exactly one record since IDs are unique.
+
+2. **Eager Loading with Preload**: The `Preload` method allows us to load related records in a single query. In our second example, we load a user and all their posts in one go. This is more efficient than performing separate queries for the user and their posts.
+
+3. **Conditional Queries with Where**: The `Where` method allows us to specify conditions for our queries. In our third example, we're using the SQL `LIKE` operator to find users whose names contain "John". The `?` is a placeholder that helps prevent SQL injection attacks.
+
+GORM provides many other query methods that we haven't covered here, such as:
+
+- `Last`: Retrieves the last record matching the condition
+- `Take`: Retrieves a record without any specified order
+- `Pluck`: Retrieves a single column from the database as a slice
+- `Count`: Returns the number of records matching the condition
+
+All these methods return a result object that contains an `Error` field, which should be checked to ensure the query was successful.
+
+### Updating Records
+
+GORM provides several methods for updating records in the database. You can update a single field, multiple fields, or even use more complex update operations.
+
+Let's look at how to update our user and post records:
+
+```go
+// Update a user's email
+result = db.Model(&user).Update("email", "johndoe@example.com")
+if result.Error != nil {
+	log.Fatalf("Failed to update user: %v", result.Error)
+}
+
+// Update multiple fields at once
+result = db.Model(&post).Updates(Post{
+	Title:   "Updated: Getting Started with GORM and Neon",
+	Content: "Updated content about GORM and Neon...",
+})
+if result.Error != nil {
+	log.Fatalf("Failed to update post: %v", result.Error)
+}
+```
+
+Here's what's happening in these update operations:
+
+1. **Single Field Update**: The `Update` method allows us to change a single column's value. In the first example, we're updating the user's email address. We use the `Model` method to specify which record to update (based on its primary key).
+
+2. **Multiple Field Update**: The `Updates` method allows us to change multiple columns at once. We provide a struct with the fields we want to update. Note that GORM will only update non-zero fields by default, which means fields with their zero values (empty string, 0, false, etc.) won't be updated unless you use `Updates` with a map.
+
+GORM also offers other update methods:
+
+- **Update with conditions**: `db.Model(&User{}).Where("name = ?", "john").Update("name", "jane")`
+- **Batch updates**: `db.Table("users").Where("role = ?", "admin").Update("active", true)`
+- **Raw SQL updates**: `db.Exec("UPDATE users SET name = ? WHERE age > ?", "Jane", 20)`
+
+When updating records, GORM automatically sets the `UpdatedAt` field to the current time if your model includes this field. This helps track when records were last modified.
+
+### Deleting Records
+
+GORM provides two types of deletion: soft deletion and hard deletion. Soft deletion marks records as deleted without actually removing them from the database, while hard deletion permanently removes records.
+
+Let's see how to perform both types of deletions:
+
+```go
+// Soft delete a post (with GORM's DeletedAt field)
+result = db.Delete(&post)
+if result.Error != nil {
+	log.Fatalf("Failed to delete post: %v", result.Error)
+}
+
+// Hard delete a post (permanently remove from database)
+result = db.Unscoped().Delete(&post)
+if result.Error != nil {
+	log.Fatalf("Failed to permanently delete post: %v", result.Error)
+}
+```
+
+Here's what's happening in these deletion operations:
+
+1. **Soft Deletion**: When we call `Delete` on a model that has a `DeletedAt` field (like our models do thanks to `gorm.Model`), GORM performs a soft delete. This doesn't actually remove the record from the database; instead, it sets the `DeletedAt` field to the current time. Subsequent queries will automatically exclude these "deleted" records unless you explicitly include them.
+
+2. **Hard Deletion**: The `Unscoped` method tells GORM to ignore the soft delete mechanism and perform a true deletion, permanently removing the record from the database. This is used when you really want to delete data, not just hide it.
+
+Soft deletion is particularly useful for:
+
+- Keeping an audit trail of records
+- Allowing data to be restored if deleted accidentally
+- Maintaining referential integrity in related data
+- Meeting regulatory requirements that prohibit true deletion
+
+By default, GORM queries won't return soft-deleted records. If you need to include them, you can use the `Unscoped` method: `db.Unscoped().Where("name = ?", "John").Find(&users)`.
+
+## Advanced GORM Features
+
+With the basics covered, let's explore some advanced features of GORM that can help you build more robust and efficient applications.
+
+### Transactions
+
+Transactions are a way to group multiple database operations into a single unit of work. They ensure that either all operations succeed or none of them do, maintaining data consistency. This is especially important when you have multiple related changes that need to happen together.
+
+GORM provides comprehensive support for database transactions:
+
+```go
+// Begin a transaction
+tx := db.Begin()
+
+// Perform operations within the transaction
+user := User{Name: "Transaction User", Email: "tx@example.com"}
+if err := tx.Create(&user).Error; err != nil {
+	tx.Rollback() // Rollback if there's an error
+	log.Fatalf("Failed to create user in transaction: %v", err)
+}
+
+post := Post{
+	Title:   "Post in Transaction",
+	Content: "This post is created in a transaction",
+	UserID:  user.ID,
+}
+if err := tx.Create(&post).Error; err != nil {
+	tx.Rollback() // Rollback if there's an error
+	log.Fatalf("Failed to create post in transaction: %v", err)
+}
+
+// Commit the transaction
+if err := tx.Commit().Error; err != nil {
+	log.Fatalf("Failed to commit transaction: %v", err)
+}
+```
+
+Let's break down how transactions work in GORM:
+
+1. **Begin a Transaction**: The `Begin` method starts a new transaction and returns a transaction object.
+2. **Perform Operations**: Use the transaction object (instead of the regular db object) to perform database operations. All operations will be part of the transaction.
+3. **Rollback or Commit**: If any operation fails, call `Rollback` to cancel all changes. If all operations succeed, call `Commit` to permanently apply the changes to the database.
+
+Transactions are essential in scenarios like:
+
+- Creating a user and their profile simultaneously
+- Transferring funds between accounts
+- Processing an order with multiple line items
+
+They help maintain data integrity by ensuring that related operations either all succeed or all fail, preventing partial updates that could leave your database in an inconsistent state.
+
+For a more elegant and concise approach, GORM provides a transaction helper method that automatically handles the begin, commit, and rollback operations:
+
+```go
+err := db.Transaction(func(tx *gorm.DB) error {
+	user := User{Name: "Transaction User", Email: "tx@example.com"}
+	if err := tx.Create(&user).Error; err != nil {
+		return err
+	}
+
+	post := Post{
+		Title:   "Post in Transaction",
+		Content: "This post is created in a transaction",
+		UserID:  user.ID,
+	}
+	if err := tx.Create(&post).Error; err != nil {
+		return err
+	}
+
+	return nil
+})
+
+if err != nil {
+	log.Fatalf("Transaction failed: %v", err)
+}
+```
+
+This approach is generally preferred for several reasons:
+
+1. **Simplified Error Handling**: You simply return an error from the closure function, and GORM automatically rolls back the transaction if an error is returned.
+2. **Cleaner Code**: The transaction logic is encapsulated in a single function, making the code more readable.
+3. **Automatic Resource Management**: GORM ensures that the transaction is properly closed whether it succeeds or fails, preventing resource leaks.
+
+With this method, you focus on the business logic inside the transaction rather than managing the transaction lifecycle. If the function returns nil, the transaction is committed; if it returns an error, the transaction is rolled back automatically.
+
+### Raw SQL and Complex Queries
+
+While GORM's built-in query methods are powerful and cover most common scenarios, sometimes you need more control or have complex requirements that are best expressed in raw SQL. GORM provides several ways to work with raw SQL while still benefiting from its safety features and result handling.
+
+Here are different approaches to executing raw SQL and complex queries:
+
+```go
+// Execute raw SQL
+var result []map[string]interface{}
+db.Raw("SELECT u.name, COUNT(p.id) as post_count FROM users u LEFT JOIN posts p ON u.id = p.user_id GROUP BY u.name").Scan(&result)
+
+// Combined with GORM methods
+var users []User
+db.Raw("SELECT * FROM users WHERE name = ?", "John").Scan(&users)
+
+// Complex queries
+var userStats []struct {
+	UserName  string
+	PostCount int
+}
+db.Table("users").
+	Select("users.name as user_name, COUNT(posts.id) as post_count").
+	Joins("left join posts on posts.user_id = users.id").
+	Where("users.deleted_at IS NULL").
+	Group("users.name").
+	Having("COUNT(posts.id) > ?", 1).
+	Find(&userStats)
+```
+
+Let's examine these different approaches:
+
+1. **Raw SQL with Generic Results**: The first example executes a raw SQL query and scans the results into a slice of maps. This is useful when you don't have a predefined struct for the result or need flexibility in handling different result shapes.
+
+2. **Raw SQL with Model Mapping**: The second example shows how you can execute raw SQL but still map the results to your model structs. GORM handles the mapping between column names and struct fields.
+
+3. **Query Builder API**: The third example demonstrates GORM's query builder API, which provides a fluent interface for constructing complex queries. This approach offers:
+   - Type safety and IDE auto-completion
+   - SQL injection protection with parameter placeholders
+   - Readability for complex queries
+   - The ability to build queries dynamically based on conditions
+
+When should you use raw SQL versus GORM's query builder?
+
+- **Use raw SQL when**: You have complex queries that are difficult to express with the query builder, or when you're optimizing performance with database-specific features.
+- **Use the query builder when**: You want type safety, need to build queries dynamically, or prefer a more Go-idiomatic approach.
+
+In either case, GORM handles parameter binding to protect against SQL injection, making both approaches secure when used correctly.
+
+### Hooks
+
+Hooks (also known as callbacks) are functions that are called at specific stages of the database operation lifecycle. They allow you to inject custom logic before or after these operations, such as validation, data transformation, or triggering side effects.
+
+GORM provides a comprehensive set of hooks for various operations, you can find the full list of hooks in the [GORM documentation](https://gorm.io/docs/hooks.html). But let's look at a couple of common hooks:
+
+```go
+// Define hooks in your model
+type User struct {
+	// ... fields as defined earlier
+	Password string `gorm:"size:255;not null"`
+}
+
+// BeforeCreate is called before a record is created
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	// For demonstration purposes - in real apps use proper password hashing!
+	u.Password = "hashed_" + u.Password
+	return
+}
+
+// AfterFind is called after a record is retrieved
+func (u *User) AfterFind(tx *gorm.DB) (err error) {
+	// Custom logic after a user is found
+	return
+}
+```
+
+Hooks are a great way to keep your business logic consistent and avoid duplicating code across your application. By defining these methods directly on your model structs, the behavior is encapsulated with the data it operates on.
+
+## Structured Migrations for Production
+
+While `AutoMigrate` is convenient for development, production systems need more controlled migration management. In production environments, you need precise control over when and how database changes occur, with the ability to roll back changes if something goes wrong.
+
+[Golang-migrate](https://github.com/golang-migrate/migrate) is a popular migration tool for Go applications that provides version-controlled, reversible database migrations. Let's set up proper migrations using this tool:
+
+1. Install the migrate CLI:
+
+   ```bash
+   go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+   ```
+
+   This installs the migration tool globally on your system, allowing you to run migrations from the command line.
+
+2. Create the `migrations` directory:
+
+   ```bash
+   mkdir -p migrations
+   ```
+
+   This directory will store all your migration files in a structured, version-controlled format.
+
+3. Create your first migration:
+
+   ```bash
+   migrate create -ext sql -dir migrations -seq create_users_table
+   ```
+
+   This creates two files: an "up" migration for applying changes and a "down" migration for reverting them. The `-seq` flag ensures migrations are numbered sequentially, which helps maintain the order of execution.
+
+4. Edit the up migration (`migrations/000001_create_users_table.up.sql`):
+
+   ```sql
+   CREATE TABLE users (
+       id SERIAL PRIMARY KEY,
+       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+       updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+       deleted_at TIMESTAMP,
+       name VARCHAR(255) NOT NULL,
+       email VARCHAR(255) NOT NULL UNIQUE
+   );
+
+   CREATE INDEX idx_users_deleted_at ON users(deleted_at);
+   ```
+
+   The "up" migration contains SQL to create new database objects or modify existing ones. Here, we're creating a users table with the necessary columns and an index.
+
+5. Edit the down migration (`migrations/000001_create_users_table.down.sql`):
+
+   ```sql
+   DROP TABLE IF EXISTS users;
+   ```
+
+   The "down" migration contains SQL to undo the changes made by the corresponding "up" migration. This ensures you can roll back changes if needed. In this case, we're dropping the users table.
+
+6. Create a migration for the posts table:
+
+   ```bash
+   migrate create -ext sql -dir migrations -seq create_posts_table
+   ```
+
+   Now we'll create the second migration for the posts table, which depends on the users table created in the first migration.
+
+7. Edit the up migration (`migrations/000002_create_posts_table.up.sql`):
+
+   ```sql
+   CREATE TABLE posts (
+       id SERIAL PRIMARY KEY,
+       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+       updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
+       deleted_at TIMESTAMP,
+       title VARCHAR(255) NOT NULL,
+       content TEXT,
+       user_id INTEGER NOT NULL REFERENCES users(id)
+   );
+
+   CREATE INDEX idx_posts_deleted_at ON posts(deleted_at);
+   ```
+
+   Note the foreign key reference to the users table (`REFERENCES users(id)`). This ensures referential integrity between the two tables.
+
+8. Edit the down migration (`migrations/000002_create_posts_table.down.sql`):
+
+   ```sql
+   DROP TABLE IF EXISTS posts;
+   ```
+
+   Again, the down migration simply drops the table to reverse the changes.
+
+9. Run the migrations:
+
+   ```bash
+   export POSTGRESQL_URL="postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
+   migrate -database ${POSTGRESQL_URL} -path migrations up
+   ```
+
+   This command applies all pending migrations to your database. The `up` argument tells the tool to apply migrations that haven't been applied yet. You can also use `down` to reverse migrations, or specify a version number to migrate to a specific version.
+
+The migrate tool keeps track of which migrations have been applied in a special table called `schema_migrations` in your database. This ensures that migrations are only applied once and in the correct order.
+
+For more complex applications, you might want to create a Go function to run migrations programmatically. This approach offers several advantages:
+
+1. Migrations can be run as part of your application startup
+2. The same code can be used in different environments (development, staging, production)
+3. You can implement custom logic around migrations, like waiting for the database to be ready
+
+Here's how to create a Go function to run migrations programmatically:
+
+```go
+package main
+
+import (
+	"log"
+
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+)
+
+func runMigrations() {
+	m, err := migrate.New(
+		"file://migrations",
+		"postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require",
+	)
+	if err != nil {
+		log.Fatalf("Failed to create migration instance: %v", err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+
+	log.Println("Migrations completed successfully")
+}
+
+func main() {
+	runMigrations()
+
+	// Continue with your application...
+}
+```
+
+This function:
+
+1. Creates a new migration instance that reads migration files from the local filesystem
+2. Configures the database connection using your Neon credentials
+3. Runs all pending migrations with `m.Up()`
+4. Handles errors appropriately, distinguishing between actual errors and the "no changes" case
+
+You would typically call this function early in your application's startup process, before initializing your GORM instance. This ensures that your database schema is up-to-date before your application starts using it.
+
+For more advanced scenarios, you might want to add features like:
+
+- Checking database connectivity before running migrations
+- Adding retry logic for transient connection issues
+- Implementing a "migrate and seed" function for development environments
+- Adding version reporting to track which migrations have been applied
+
+## Performance Optimization with Neon
+
+When working with Neon and GORM, consider these performance optimization techniques:
+
+### Efficient Querying
+
+One of the most effective ways to improve performance is to be selective about what data you retrieve from the database. Fetching only the specific fields you need reduces the amount of data transferred between Neon and your application, resulting in faster queries and less memory usage.
+
+Let's look at how to query efficiently with GORM:
+
+```go
+var users []struct {
+	ID    uint
+	Name  string
+	Email string
+}
+db.Model(&User{}).Select("id", "name", "email").Where("id > ?", 10).Find(&users)
+```
+
+In this example, instead of selecting all fields with `Find(&users)`, we're using the `Select` method to specify exactly which columns we want. This has several benefits:
+
+1. **Reduced Data Transfer**: Only the specified columns are fetched, reducing network bandwidth usage.
+2. **Improved Query Performance**: The database can optimize the query better when it knows exactly which columns to return.
+3. **Lower Memory Usage**: Your application only stores the data it actually needs.
+
+Notice that we're also using an anonymous struct that contains only the fields we're interested in, rather than using the full `User` model. This is another optimization that ensures we're not allocating memory for fields we don't need.
+
+### Batch Processing
+
+When working with large datasets, processing all the data at once can lead to performance issues, including high memory usage and long-running queries. Instead, you can use batch processing to handle large datasets in smaller, more manageable chunks.
+
+GORM provides the `FindInBatches` method to simplify this pattern:
+
+```go
+// Find in batches
+db.Model(&User{}).Where("active = ?", true).FindInBatches(&results, 100, func(tx *gorm.DB, batch int) error {
+	for _, result := range results {
+		// Process result...
+	}
+	return nil
+})
+```
+
+Here's what this code does:
+
+1. We start a query on the User model for active users
+2. Instead of fetching all results at once, we use `FindInBatches` to retrieve them in batches of 100 records
+3. For each batch, GORM calls the provided callback function with the batch results
+4. Inside the callback, we process each result individually
+
+Batch processing is particularly important when dealing with operations that might affect millions of records, such as data migrations, report generation, or bulk updates. It's also useful when you need to perform complex processing on each record that might be resource-intensive.
+
+For more information on batch processing and other advanced querying techniques, refer to the [GORM documentation](https://gorm.io/docs/advanced_query.html#FindInBatches).
+
+### Indexing
+
+Proper indexing is essential for query performance. With GORM, you can define indexes in your models:
+
+```go
+type User struct {
+	ID      uint   `gorm:"primaryKey"`
+	Name    string `gorm:"index:idx_name_email,unique"`
+	Email   string `gorm:"index:idx_name_email,unique"`
+	Address string `gorm:"index"`
+}
+```
+
+For more complex indexing requirements, use migrations as shown in the previous section.
+
+For more information on indexing and optimizing database performance, refer to the [Neon indexing documentation](https://neon.tech/postgresql/postgresql-indexes).
+
+## Complete Application Example
+
+Let's put everything together in a complete application example:
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"time"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+)
+
+// User model
+type User struct {
+	gorm.Model
+	Name     string `gorm:"size:255;not null"`
+	Email    string `gorm:"size:255;not null;uniqueIndex"`
+	Password string `gorm:"size:255;not null"`
+	Posts    []Post `gorm:"foreignKey:UserID"`
+}
+
+// BeforeCreate hook for User
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	// Simulate password hashing
+	u.Password = "hashed_" + u.Password
+	return
+}
+
+// Post model
+type Post struct {
+	gorm.Model
+	Title   string `gorm:"size:255;not null"`
+	Content string `gorm:"type:text"`
+	UserID  uint   `gorm:"not null"`
+	User    User   `gorm:"foreignKey:UserID"`
+}
+
+func main() {
+	// Connection string for Neon Postgres
+	dsn := "postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
+
+	// Connect to the database
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+
+	// Get the underlying SQL DB object
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatalf("Failed to get DB object: %v", err)
+	}
+
+	// Configure connection pool
+	sqlDB.SetMaxIdleConns(5)
+	sqlDB.SetMaxOpenConns(10)
+	sqlDB.SetConnMaxLifetime(time.Hour)
+	sqlDB.SetConnMaxIdleTime(30 * time.Minute)
+
+	// Auto-migrate the schema
+	err = db.AutoMigrate(&User{}, &Post{})
+	if err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
+
+	// Create a new user
+	user := User{
+		Name:     "John Doe",
+		Email:    "john@example.com",
+		Password: "secret123",
+	}
+
+	result := db.Create(&user)
+	if result.Error != nil {
+		log.Fatalf("Failed to create user: %v", result.Error)
+	}
+	fmt.Printf("Created user with ID: %d\n", user.ID)
+
+	// Create posts for the user
+	posts := []Post{
+		{Title: "First Post", Content: "Content of first post", UserID: user.ID},
+		{Title: "Second Post", Content: "Content of second post", UserID: user.ID},
+	}
+
+	result = db.Create(&posts)
+	if result.Error != nil {
+		log.Fatalf("Failed to create posts: %v", result.Error)
+	}
+
+	// Retrieve user with posts
+	var userWithPosts User
+	result = db.Preload("Posts").First(&userWithPosts, user.ID)
+	if result.Error != nil {
+		log.Fatalf("Failed to retrieve user with posts: %v", result.Error)
+	}
+
+	fmt.Printf("Retrieved user: %s (%s)\n", userWithPosts.Name, userWithPosts.Email)
+	fmt.Printf("User has %d posts:\n", len(userWithPosts.Posts))
+
+	for i, post := range userWithPosts.Posts {
+		fmt.Printf("  %d. %s: %s\n", i+1, post.Title, post.Content)
+	}
+
+	// Use transactions for related operations
+	err = db.Transaction(func(tx *gorm.DB) error {
+		// Update user's email
+		if err := tx.Model(&user).Update("email", "john.doe@example.com").Error; err != nil {
+			return err
+		}
+
+		// Update first post's title
+		if err := tx.Model(&posts[0]).Update("title", "Updated: First Post").Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		log.Fatalf("Transaction failed: %v", err)
+	}
+
+	fmt.Println("Transaction completed successfully")
+
+	// Query with raw SQL
+	var stats []struct {
+		UserName  string
+		PostCount int
+	}
+
+	db.Raw(`
+		SELECT u.name as user_name, COUNT(p.id) as post_count
+		FROM users u
+		LEFT JOIN posts p ON u.id = p.user_id
+		WHERE u.deleted_at IS NULL
+		GROUP BY u.name
+	`).Scan(&stats)
+
+	for _, stat := range stats {
+		fmt.Printf("User %s has written %d posts\n", stat.UserName, stat.PostCount)
+	}
+}
+```
+
+Save this code in a file named `main.go`, run `go mod tidy` to download the necessary dependencies, and run it with `go run main.go`. This application puts everything we've covered into practice: connecting to the database, defining models, performing CRUD operations, using transactions, and executing raw SQL queries.
+
+## Conclusion
+
+GORM with Neon Postgres provides a great combination for building scalable Go applications. GORM's developer-friendly API simplifies database interactions, while Neon's serverless architecture ensures your database scales according to demand.
+
+By following the steps in this guide, you can build robust applications that efficiently interact with your Neon database. As your application grows, you can leverage additional GORM features such as plugins, hooks, and more advanced querying techniques to meet your evolving needs.
+
+## Additional Resources
+
+- [GORM Documentation](https://gorm.io/docs/)
+- [Neon Documentation](/docs)
+- [Go Database/SQL Documentation](https://golang.org/pkg/database/sql/)
+- [Effective Go](https://golang.org/doc/effective_go)
+
+<NeedHelp />
+
+
+# Graph Queries in Postgres
+
+---
+title: Graph Queries in Postgres
+subtitle: A step-by-step guide describing how to use ltree and pgRouting for analyzing graph data in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-02-28T13:24:36.612Z'
+updatedOn: '2025-02-28T13:24:36.612Z'
+---
+
+Graph databases are used to store and analyze data that is connected in a network-like structure.
+For example, cities connected by roads, people in a social network, or category hierarchies where categories have sub-categories.
+While there are dedicated graph databases, extensions like [ltree](https://www.postgresql.org/docs/current/ltree.html) and [pgRouting](https://pgrouting.org/) add graph functionality to Postgres.
+
+## Steps
+
+- Enable the `ltree` and `pgrouting` extensions
+- Create a table to store hierarchical data
+- Insert and retrieve hierarchical data
+- Perform hierarchical queries using ltree
+- Create a table to store network data
+- Insert and query network data
+
+## Enable ltree and pgRouting
+
+`ltree` adds a new `LTREE` type to Postgres for storing hierarchies, like categories.
+In Neon, `ltree` is already installed, you just need to enable it using the following command.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS ltree;
+```
+
+`pgrouting` is a separate extension that can be used for routing and shortest path calculations in network data, like finding the shortest path between two cities.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pgrouting;
+```
+
+## Create a table to store hierarchical data
+
+With `ltree`, you can store hierarchical relationships such as category trees, organizational charts, or file directories.
+You can create a table to store a category tree using the following command.
+
+```sql
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  path LTREE
+);
+```
+
+## Insert and retrieve hierarchical data
+
+The `ltree` type allows inserting hierarchical paths:
+
+```sql
+INSERT INTO categories (name, path) VALUES
+  ('Electronics', 'Electronics'),
+  ('Laptops', 'Electronics.Laptops'),
+  ('Gaming Laptops', 'Electronics.Laptops.Gaming');
+```
+
+You can retrieve all subcategories under a given path using `<@` as follows.
+
+```sql
+SELECT * FROM categories WHERE path <@ 'Electronics.Laptops';
+```
+
+| id  | name           | path                       |
+| --- | -------------- | -------------------------- |
+| 2   | Laptops        | Electronics.Laptops        |
+| 3   | Gaming Laptops | Electronics.Laptops.Gaming |
+
+## Create a table to store network data
+
+With `pgrouting`, you can model roads, social networks, or any graph-like data structure.
+For example, the following table stores a graph of roads that have an associated `cost`.
+Each road has a source and a target, and an associated `cost`.
+
+```sql
+CREATE TABLE roads (
+  id SERIAL PRIMARY KEY,
+  source INT,
+  target INT,
+  cost FLOAT
+);
+```
+
+## Insert and query network data
+
+Insert edges representing connections between nodes using the following command.
+
+```sql
+INSERT INTO roads (source, target, cost) VALUES
+  (1, 2, 4.0),
+  (2, 3, 3.0),
+  (3, 4, 2.5),
+  (1, 4, 10.0);
+```
+
+You can then find the minimal cost path between two nodes using the `pgr_dijkstra()` function, which is an implementation of [Dijkstra's Algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm).
+
+```sql
+SELECT * FROM pgr_dijkstra(
+  'SELECT id, source, target, cost FROM roads',
+  1, 4, false
+);
+```
+
+The above query returns the following, which shows the shortest path from node 1 to node 4 is by visiting each node in order (1, 2, 3, 4) with an aggregate cost of 9.5.
+
+| seq | path_seq | node | edge | cost | agg_cost |
+| --- | -------- | ---- | ---- | ---- | -------- |
+| 1   | 1        | 1    | 1    | 4    | 0        |
+| 2   | 2        | 2    | 2    | 3    | 4        |
+| 3   | 3        | 3    | 3    | 2.5  | 7        |
+| 4   | 4        | 4    | 4    | 0    | 9.5      |
+
+
+# Getting started with LangGraph + Neon
+
+---
+title: Getting started with LangGraph + Neon
+subtitle: A step-by-step guide to building AI agents with LangGraph and Neon
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-21T00:00:00.000Z'
+updatedOn: '2025-02-21T00:00:00.000Z'
+---
+
+This guide demonstrates how to integrate LangGraph with Neon. [LangGraph](https://www.langchain.com/langgraph) is a library in the [LangChain](https://www.langchain.com/langchain) ecosystem that simplifies the development of complex, multi-agent LLM applications by using a directed graph structure for efficient coordination and state management.
+
+This guide walks through building a simple [ReAct (Reason + Act)](https://arxiv.org/abs/2210.03629) agent using LangGraph that interacts with Neon to create a database and perform SQL queries. It builds upon the concepts demonstrated in the [prebuilt ReAct agent from LangGraph](https://langchain-ai.github.io/langgraph/how-tos/create-react-agent).
+
+## Prerequisites
+
+Before you begin, make sure you have the following prerequisites:
+
+- **Python 3.10 or higher:** This guide requires Python 3.10 or a later version. If you don't have it installed, download it from [python.org](https://www.python.org/downloads/).
+
+- **Neon account and API key:**
+
+  - Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup).
+  - After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon.
+
+- **Google API key:**
+  - This guide utilizes the `gemini-2.0-flash` model from Google. You'll need a Google API key to proceed. If you don't already have one, get an API key from the [Google AI Studio](https://aistudio.google.com/apikey).
+  - The free tier is sufficient for the example in this guide.
+
+## LangGraph basics
+
+Before building your AI agent workflows, it's important to understand the core concepts behind LangGraph.
+
+### What is LangGraph?
+
+LangGraph is an open‐source orchestration framework for building stateful, multi-actor applications with large language models (LLMs). It enables you to create complex agentic workflows by modeling your application as a graph of interconnected nodes. With LangGraph, you can:
+
+- **Manage state:** Persist and update the conversation and workflow state across interactions.
+- **Customize workflows:** Design flexible control flows—including conditional branching, loops, and hierarchical structures—to suit your specific use case.
+- **Stream agent reasoning:** Deliver real-time, token-by-token streaming of agent actions to enhance user experience.
+
+### Key components of LangGraph
+
+- **Nodes:** The fundamental units of work. Each node represents a distinct operation (such as an LLM call or tool execution) that processes inputs and updates the application state.
+- **Edges:** These define the transitions between nodes, enabling the workflow to branch conditionally or iterate as needed.
+- **State persistence:** A central persistence layer that saves the state of your workflow, allowing you to resume or “time-travel” across interactions.
+- **Tools:** Integration points for external functionalities (like web search, code execution, or API calls) that extend the agent’s capabilities beyond simple text generation.
+- **Human-in-the-loop workflows:** Built-in mechanisms that allow human oversight, ensuring that agent decisions can be validated, corrected, or enhanced before proceeding.
+
+By leveraging these powerful components, LangGraph empowers you to build reliable, scalable, and highly customizable AI agent applications—from prototyping to production.
+
+## Why Neon for AI Agents?
+
+Neon's architecture is particularly well-suited for AI agent development, offering several key advantages:
+
+- **One-Second Provisioning:** Neon databases can be provisioned in about a second. This is _critical_ for AI agents that need to dynamically create databases. Traditional databases, with provisioning times often measured in minutes, create a significant bottleneck. Neon's speed keeps agents operating efficiently.
+
+- **Scale-to-Zero and Serverless Pricing:** Neon's serverless architecture automatically scales databases down to zero when idle, and you only pay for active compute time. This is cost-effective for AI agent workflows, which often involve unpredictable workloads and many short-lived database instances. It enables "database-per-agent" or "database-per-session" patterns without incurring prohibitive costs.
+
+- **Agent-Friendly API:** Neon provides a simple REST API for managing databases, roles, branches, and various other Neon platform operations. This API is easy for AI agents (and human developers) to interact with programmatically, allowing agents to manage their own database infrastructure without complex tooling.
+
+## Building a LangGraph agent with Neon tools integration
+
+Let's build a LangGraph agent that can provision a Neon database and interact with it using SQL queries. This agent will use the LangGraph framework to manage the agent's state and workflow, while functions derived from Neon's API will handle the database operations.
+
+### Setting up the project
+
+Create a new Python project directory and navigate to it:
+
+```bash
+mkdir langgraph-neon-example
+cd langgraph-neon-example
+```
+
+Creating a virtual environment is strongly recommended to manage project dependencies in isolation. Use `venv` to create a virtual environment within your project directory:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate   # For macOS/Linux. On Windows, use `venv\Scripts\activate`
+```
+
+### Installing required libraries
+
+Next, install the necessary Python libraries for this project. Create a file named `requirements.txt` in your project directory and add the following dependencies:
+
+```
+python-dotenv
+neon-api
+psycopg2-binary
+langchain
+langgraph
+langchain-google-genai
+```
+
+<Admonition type="note">
+`neon-api` is the [Python wrapper for Neon's API](https://github.com/neondatabase/neon-api-python).
+</Admonition>
+
+Install these libraries using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Configuring API keys in `.env`
+
+For secure API key management, create a `.env` file in your project directory and add your API keys as environment variables:
+
+```env
+GOOGLE_API_KEY=YOUR_GOOGLE_API
+NEON_API_KEY=YOUR_NEON_API_KEY
+```
+
+**Replace the placeholders** `YOUR_GOOGLE_API_KEY` and `YOUR_NEON_API_KEY` with the actual API keys you obtained in the [Prerequisites](#prerequisites) section.
+
+<Admonition type="note">
+    It is crucial to add `.env` to your `.gitignore` file if you are using Git for version control. This prevents your API keys from being inadvertently exposed in your code repository.
+</Admonition>
+
+### Creating the `main.py` script
+
+Now, let's create the `main.py` script that defines the LangGraph agent and its interactions with Neon.
+
+```python
+import os
+
+import psycopg2
+from dotenv import load_dotenv
+from langchain_core.tools import tool
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import SystemMessage
+from langgraph.prebuilt import create_react_agent
+from neon_api import NeonAPI
+from psycopg2.extras import RealDictCursor
+
+load_dotenv()
+
+neon_client = NeonAPI(
+    api_key=os.environ["NEON_API_KEY"],
+)
+
+
+@tool
+def create_database(project_name: str) -> str:
+    """
+    Creates a new Neon project. (this takes less than 500ms)
+    Args:
+        project_name: Name of the project to create
+    Returns:
+        the connection URI for the new project
+    """
+    try:
+        project = neon_client.project_create(project={"name": project_name}).project
+        connection_uri = neon_client.connection_uri(
+            project_id=project.id, database_name="neondb", role_name="neondb_owner"
+        ).uri
+
+        return f"Project/database created, connection URI: {connection_uri}"
+    except Exception as e:
+        return f"Failed to create project: {str(e)}"
+
+
+@tool
+def run_sql_query(connection_uri: str, query: str) -> str:
+    """
+    Runs an SQL query in the Neon database.
+    Args:
+        connection_uri: The connection URI for the Neon database
+        query: The SQL query to execute
+    Returns:
+        the result of the SQL query
+    """
+    conn = psycopg2.connect(connection_uri)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute(query)
+        conn.commit()
+        try:
+            records = cur.fetchall()
+            return f"Query result: {records}"
+        except psycopg2.ProgrammingError:
+            return f"Query executed successfully"
+    except Exception as e:
+        conn.rollback()
+        return f"Failed to execute SQL query: {str(e)}"
+    finally:
+        cur.close()
+        conn.close()
+
+
+available_tools = [create_database, run_sql_query]
+
+system_prompt = SystemMessage(
+    f"You are a helpful AI assistant. You will be assisting users with all of your available tools. You can help users by using the following tools: {', '.join([f"\n{tool.name}: {tool.description}" for tool in available_tools])}."
+)
+
+model = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
+agent_graph = create_react_agent(
+    model=model,
+    tools=available_tools,
+    prompt=system_prompt,
+)
+
+inputs = {
+    "messages": [
+        (
+            "user",
+            "Create a new Neon project called langgraph and create a table named users. Add 10 sample records to the table. Then print the records as a markdown table.",
+        )
+    ]
+}
+result = agent_graph.invoke(inputs)
+
+print("Step by Step execution : ")
+for message in result["messages"]:
+    print(message.pretty_repr())
+```
+
+Let's examine the code step by step to understand each component.
+
+#### Import necessary libraries
+
+```python
+import os
+
+import psycopg2
+from dotenv import load_dotenv
+from langchain_core.tools import tool
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.messages import SystemMessage
+from langgraph.prebuilt import create_react_agent
+from neon_api import NeonAPI
+from psycopg2.extras import RealDictCursor
+
+load_dotenv()
+
+neon_client = NeonAPI(
+    api_key=os.environ["NEON_API_KEY"],
+)
+```
+
+This section imports all the required Python libraries such as `os`, `psycopg2`, `dotenv`, and LangChain modules. These libraries are essential for interacting with Neon, managing environment variables, and creating LangGraph agents.
+
+#### Define `create_database` tool
+
+```python
+@tool
+def create_database(project_name: str) -> str:
+    """
+    Creates a new Neon project. (this takes less than 500ms)
+    Args:
+        project_name: Name of the project to create
+    Returns:
+        the connection URI for the new project
+    """
+    try:
+        project = neon_client.project_create(project={"name": project_name}).project
+        connection_uri = neon_client.connection_uri(
+            project_id=project.id, database_name="neondb", role_name="neondb_owner"
+        ).uri
+
+        return f"Project/database created, connection URI: {connection_uri}"
+    except Exception as e:
+        return f"Failed to create project: {str(e)}"
+```
+
+This Python function, decorated with LangChain's `@tool`, allows LangGraph agents to create a Neon project and retrieve its connection URI. It takes a `project_name` as input and uses `neon_client` to interact with the Neon API. If the project is created successfully, the function returns the connection URI; otherwise, it returns an error message.
+
+#### Define `run_sql_query` tool
+
+```python
+@tool
+def run_sql_query(connection_uri: str, query: str) -> str:
+    """
+    Runs an SQL query in the Neon database.
+    Args:
+        connection_uri: The connection URI for the Neon database
+        query: The SQL query to execute
+    Returns:
+        the result of the SQL query
+    """
+    conn = psycopg2.connect(connection_uri)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute(query)
+        conn.commit()
+        try:
+            records = cur.fetchall()
+            return f"Query result: {records}"
+        except psycopg2.ProgrammingError:
+            return f"Query executed successfully"
+    except Exception as e:
+        conn.rollback()
+        return f"Failed to execute SQL query: {str(e)}"
+    finally:
+        cur.close()
+        conn.close()
+```
+
+Similarily, `run_sql_query` decorated with LangChain's `@tool`, executes an SQL query on a Neon database. It takes a `connection_uri` and a `query` as input, connects to the database using `psycopg2`, and runs the query. If the query returns results, they are fetched and returned; otherwise, a success message is provided. In case of an error, the function rolls back the transaction and returns an error message.
+
+#### Define agent setup and graph invocation
+
+```python
+available_tools = [create_database, run_sql_query]
+
+system_prompt = SystemMessage(
+    f"You are a helpful AI assistant. You will be assisting users with all of your available tools. You can help users by using the following tools: {', '.join([f"\n{tool.name}: {tool.description}" for tool in available_tools])}."
+)
+
+model = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
+agent_graph = create_react_agent(
+    model=model,
+    tools=available_tools,
+    prompt=system_prompt,
+)
+
+inputs = {
+    "messages": [
+        (
+            "user",
+            "Create a new Neon project called langgraph and create a table named users. Add 10 sample records to the table. Then print the records as a markdown table.",
+        )
+    ]
+}
+result = agent_graph.invoke(inputs)
+
+print("Step by Step execution : ")
+for message in result["messages"]:
+    print(message.pretty_repr())
+```
+
+This is the core part of the script where the LangGraph agent is set up and invoked. Let's break down this section:
+
+- `available_tools = [create_database, run_sql_query]`: Creates a list of tools that will be made available to the agent. This list includes the `create_database` and `run_sql_query` functions defined earlier.
+- `system_prompt = SystemMessage(...)`: Defines the system message for the AI agent. This message is crucial as it sets the agent's persona and provides instructions on how to use the available tools. It dynamically lists the tools and their descriptions in the prompt, instructing the agent on its capabilities.
+- `model = ChatGoogleGenerativeAI(model="gemini-2.0-flash")`: Initializes the language model that will power the agent. Here, `ChatGoogleGenerativeAI` is used to specify Google's Gemini `gemini-2.0-flash` model.
+- `agent_graph = create_react_agent(...)`: This line is where the LangGraph agent is created using the `create_react_agent` function.
+  - `model=model`: Specifies the language model (`gemini-2.0-flash`) to be used by the agent for reasoning and generating responses.
+  - `tools=available_tools`: Passes the list of tools (`create_database`, `run_sql_query`) that the agent can use.
+  - `prompt=system_prompt`: Sets the system prompt that defines the agent's behavior and instructions.
+- `inputs = {"messages": [...]}`: Defines the input to the agent. In this case, it's a user message asking the agent to perform a series of database tasks: create a Neon project, create a table named `users`, add 10 sample records, and then print these records as a Markdown table.
+- `result = agent_graph.invoke(inputs)`: Invokes the LangGraph agent with the specified input. This starts the agent's execution, processing the user's request and orchestrating the use of tools to fulfill the task. The `invoke` method runs the agent and returns the final state, which includes the conversation history and the outcomes of the agent's actions.
+- `for message in result["messages"]: print(message.pretty_repr())`: Iterates through the messages in the `result["messages"]` list, which contains the history of the agent's conversation and actions. `message.pretty_repr()` is used to print each message in a human-readable format, showing the step-by-step execution of the agent's thought process and actions.
+
+#### Visualizing the agent's graph (optional)
+
+You can visualize the agent's graph using LangGraph's built-in visualization tools. To do this, add the following code snippet at the end of the `main.py` script:
+
+```python
+with open("graph.png", "wb") as f:
+    f.write(agent_graph.get_graph().draw_mermaid_png())
+```
+
+<img width="200" height="200" src="/docs/guides/langgraph-graph.png" alt="LangGraph Agent Graph" />
+
+The graph visually represents the cyclical workflow of the LangGraph agent. Let's break down the key components of the graph:
+
+- **`__start__` Node:** This is the entry point of the graph. Execution begins here when a task is initiated. It represents the starting point of the agent's workflow.
+
+- **`agent` Node:** This node represents the core reasoning component of the agent, powered by the Gemini model.
+
+  - **Decision Point:** The `agent` node is responsible for processing user input and deciding the next course of action. It determines whether to:
+    - **Engage tools:** If the task requires database operations (like creating a project or running SQL queries), the agent decides to use the available tools. This is represented by the dotted line leading to the `tools` node.
+    - **Respond directly:** If the agent can directly answer the user or has completed the task without needing further tool use, it can proceed to the `__end__` node. This is represented by the dotted line leading directly to the `__end__` node.
+
+- **`tools` Node:** This node is activated when the `agent` node decides to use a tool.
+
+  - **Tool execution:** Within the `tools` node, the appropriate tool (either `create_database` or `run_sql_query` in this example) is executed based on the agent's decision.
+  - **Feedback loop:** After executing the tool and obtaining results, the workflow loops back to the `agent` node (solid line). This allows the agent to process the tool's output, reason further, and decide on the next step based on the new information. This loop is central to the ReAct (Reason and Act) pattern, enabling iterative problem-solving.
+
+- **`__end__` Node:** This is the termination point of the graph. When the workflow reaches this node, it signifies that the agent has completed its task or conversation according to the defined termination conditions.
+
+### Running the agent
+
+You can now run the `main.py` script to execute the LangGraph agent. Run the following command in your terminal:
+
+```bash
+python main.py
+```
+
+The agent will then create a new Neon project, create a table named `users`, insert 10 sample records, and print the records as a markdown table.
+
+Here's the entire conversation log showing the step-by-step execution of the agent:
+
+```text shouldWrap
+Step by Step execution :
+================================ Human Message =================================
+
+Create a new Neon project called langgraph and create a table named users. Add 10 sample records to the table. Then print the records as a markdown table.
+================================== Ai Message ==================================
+
+I can create a Neon project and a table named users, and add 10 sample records to the table. However, I cannot automatically print the records as a markdown table. I will need to run a query to fetch the records first, and then you can format them as a markdown table.
+
+First, I will create the project:
+Tool Calls:
+  create_database (b9e5d9f7-5b8c-40f0-af6c-7ec095ba2da9)
+ Call ID: b9e5d9f7-5b8c-40f0-af6c-7ec095ba2da9
+  Args:
+    project_name: langgraph
+================================= Tool Message =================================
+Name: create_database
+
+Project/database created, connection URI: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+================================== Ai Message ==================================
+
+OK. I've created the project and the connection URI is postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require. Now, I will create the table and add the records.
+Tool Calls:
+  run_sql_query (c3346333-b024-4fc5-99ba-d745e0108bb8)
+ Call ID: c3346333-b024-4fc5-99ba-d745e0108bb8
+  Args:
+    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+    query: CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255), email VARCHAR(255));
+================================= Tool Message =================================
+Name: run_sql_query
+
+Query executed successfully
+================================== Ai Message ==================================
+Tool Calls:
+  run_sql_query (4be2ae12-adfe-45ed-bba3-d321073902ef)
+ Call ID: 4be2ae12-adfe-45ed-bba3-d321073902ef
+  Args:
+    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+    query: INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john.doe@example.com'), (2, 'Jane Smith', 'jane.smith@example.com'), (3, 'Robert Jones', 'robert.jones@example.com'), (4, 'Emily Brown', 'emily.brown@example.com'), (5, 'Michael Davis', 'michael.davis@example.com'), (6, 'Jessica Wilson', 'jessica.wilson@example.com'), (7, 'Christopher Garcia', 'christopher.garcia@example.com'), (8, 'Ashley Rodriguez', 'ashley.rodriguez@example.com'), (9, 'Matthew Williams', 'matthew.williams@example.com'), (10, 'Brittany Miller', 'brittany.miller@example.com');
+================================= Tool Message =================================
+Name: run_sql_query
+
+Query executed successfully
+================================== Ai Message ==================================
+Tool Calls:
+  run_sql_query (f6484943-0dcc-4059-b794-2dc83ae31b1a)
+ Call ID: f6484943-0dcc-4059-b794-2dc83ae31b1a
+  Args:
+    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+    query: SELECT * FROM users;
+================================= Tool Message =================================
+Name: run_sql_query
+
+Query result: [RealDictRow({'id': 1, 'name': 'John Doe', 'email': 'john.doe@example.com'}), RealDictRow({'id': 2, 'name': 'Jane Smith', 'email': 'jane.smith@example.com'}), RealDictRow({'id': 3, 'name': 'Robert Jones', 'email': 'robert.jones@example.com'}), RealDictRow({'id': 4, 'name': 'Emily Brown', 'email': 'emily.brown@example.com'}), RealDictRow({'id': 5, 'name': 'Michael Davis', 'email': 'michael.davis@example.com'}), RealDictRow({'id': 6, 'name': 'Jessica Wilson', 'email': 'jessica.wilson@example.com'}), RealDictRow({'id': 7, 'name': 'Christopher Garcia', 'email': 'christopher.garcia@example.com'}), RealDictRow({'id': 8, 'name': 'Ashley Rodriguez', 'email': 'ashley.rodriguez@example.com'}), RealDictRow({'id': 9, 'name': 'Matthew Williams', 'email': 'matthew.williams@example.com'}), RealDictRow({'id': 10, 'name': 'Brittany Miller', 'email': 'brittany.miller@example.com'})]
+================================== Ai Message ==================================
+
+| id | name               | email                        |
+| -- | ------------------ | ---------------------------- |
+| 1  | John Doe           | john.doe@example.com         |
+| 2  | Jane Smith          | jane.smith@example.com        |
+| 3  | Robert Jones        | robert.jones@example.com       |
+| 4  | Emily Brown         | emily.brown@example.com        |
+| 5  | Michael Davis       | michael.davis@example.com      |
+| 6  | Jessica Wilson      | jessica.wilson@example.com     |
+| 7  | Christopher Garcia  | christopher.garcia@example.com |
+| 8  | Ashley Rodriguez    | ashley.rodriguez@example.com   |
+| 9  | Matthew Williams    | matthew.williams@example.com   |
+| 10 | Brittany Miller     | brittany.miller@example.com    |
+```
+
+Notice how with just a single user input, the agent orchestrates multiple tools to create a Neon project, provision a database, create a table, insert records, and query the records. The agent finally formats the query results as a markdown table as requested.
+
+### Verifying the agent's actions
+
+You can verify the successful completion of the task by checking the [Neon Console](https://console.neon.tech/). The `langgraph` project should have been created, and the `users` table should contain 10 sample records.
+
+![Output in Neon console](/docs/guides/langgraph-neon-console.png)
+
+**Congratulations!** You have successfully built and executed a LangGraph agent that interacts with tools (Neon API here) to perform actions based on user input. This example serves as a foundation for creating more complex AI agents and workflows, enabling you to automate a wide range of tasks and processes.
+
+You can find the source code for the application described in this guide on GitHub.
+
+<DetailIconCards>
+    <a href="https://github.com/neondatabase-labs/langgraph-neon-example" description="LangGraph + Neon AI agent example" icon="github">AI Agent with LangGraph and Neon</a>
+</DetailIconCards>
+
+## Conclusion
+
+This guide has provided an introductory exploration into building AI agents using LangGraph and Neon. You have now seen how to construct an agent capable of performing database operations within Neon, driven by natural language commands. This example illustrates the fundamental structure of LangGraph, demonstrating its approach to managing workflows through interconnected [Nodes](https://langchain-ai.github.io/langgraph/concepts/low_level/#nodes) and [Edges](https://langchain-ai.github.io/langgraph/concepts/low_level/#edges).
+
+While this guide covers the basics, LangGraph offers a range of features for developing more advanced applications. To expand your understanding and capabilities, it is recommended to further investigate several key aspects of the framework. [Checkpointers](https://langchain-ai.github.io/langgraph/concepts/persistence) provide a mechanism for state persistence, enabling agents to retain context across sessions and resume operations. The use of [Command](https://langchain-ai.github.io/langgraph/how-tos/command) objects allows for control over workflow and state updates within nodes, enhancing agent responsiveness.
+
+For optimizing application performance and user experience, LangGraph supports [Streaming](https://langchain-ai.github.io/langgraph/concepts/streaming), which can provide real-time outputs and token-by-token updates during agent execution. Understanding the [Recursion Limit](https://langchain-ai.github.io/langgraph/concepts/low_level/#recursion-limit) is important for managing the execution depth of complex workflows and ensuring predictable behavior. Furthermore, [Human-in-the-Loop](https://langchain-ai.github.io/langgraph/concepts/human_in_the_loop) workflows, facilitated by the `interrupt` function and `Command` objects, offer options for integrating human oversight into agent processes, which may be necessary for applications requiring validation or control. Consider adding it for `DELETE` and `UPDATE` operations to the `run_sql_query` tool to enhance the agent's capabilities.
+
+## Resources
+
+- [LangGraph Github](https://github.com/langchain-ai/langgraph)
+- [LangGraph Documentation](https://python.langchain.com/docs/langgraph)
+- [LangGraph Conceptual Guide](https://langchain-ai.github.io/langgraph/concepts)
+- [LangGraph Glossary](https://langchain-ai.github.io/langgraph/concepts/low_level/#langgraph-glossary)
+- [Neon Documentation](/docs)
+- [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api)
+- [Neon API keys](/docs/manage/api-keys#creating-api-keys)
+
+<NeedHelp/>
 
 
 # Implementing Fine-Grained Authorization in Laravel with Neon Postgres
@@ -26131,10 +30415,10 @@ You can find the complete source code for this example on GitHub.
 <NeedHelp/>
 
 
-# Getting started with Neon MCP server
+# Get started with Claude Desktop and Neon MCP Server
 
 ---
-title: 'Getting started with Neon MCP server'
+title: 'Get started with Claude Desktop and Neon MCP Server'
 subtitle: 'Enable natural language interaction with your Neon Postgres databases using LLMs'
 author: dhanush-reddy
 enableTableOfContents: true
@@ -26195,6 +30479,7 @@ Neon MCP server exposes the following actions, which primarily map to **Neon API
 - `create_branch`: Action to create a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
 - `delete_branch`: Action to delete an existing branch in a Neon project.
 - `describe_branch`: Action to get details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
+- `get_connection_string`: Action to retrieve a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
 - `run_sql`: Action to execute a single SQL query against a Neon database. Allows you to run read or write SQL queries.
 - `run_sql_transaction`: Action to execute a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
 - `get_database_tables`: Action to list all tables in a specified Neon database. Provides a list of tables.
@@ -31595,6 +35880,662 @@ By implementing read replicas in your Laravel application, you're taking a signi
 <NeedHelp/>
 
 
+# Building Real-Time Comments with a Serverless Postgres
+
+---
+author: rishi-raj-jain
+enableTableOfContents: true
+createdAt: '2025-01-07T00:00:00.000Z'
+updatedOn: '2025-01-07T00:00:00.000Z'
+title: Building Real-Time Comments with a Serverless Postgres
+subtitle: A guide to building your own real-time comments in a Next.js application with Ably LiveSync and Postgres.
+---
+
+Can a serverless Postgres database really handle the demands of a real-time application? The answer lies in pairing it with the right publish-subscribe model. In this guide, you will learn how to combine the real-time capabilities of Ably LiveSync with the structured power of Neon Postgres to build a optimistic and scalable comment system in your Next.js application.
+
+## Prerequisites
+
+To follow this guide, you’ll need the following:
+
+- [Node.js 18](https://nodejs.org/en) or later
+- A [Neon](https://console.neon.tech/signup) account
+- An [Ably](https://ably.com) account
+- A [Vercel](https://vercel.com) account
+
+## Create the Next.js application
+
+Let’s get started by cloning the Next.js project with the following command:
+
+```shell shouldWrap
+git clone https://github.com/neondatabase-labs/ably-livesync-neon
+```
+
+Once that is done, move into the project directory and install the necessary dependencies with the following command:
+
+```shell shouldWrap
+cd ably-livesync-neon
+npm install
+```
+
+The libraries installed include:
+
+- `ws`: A WebSocket library for Node.js.
+- `ably`: A real-time messaging and data synchronization library.
+- `@neondatabase/serverless`: A serverless Postgres client designed for Neon.
+- `@prisma/client`: Prisma’s auto-generated client for interacting with your database.
+- `@prisma/adapter-neon`: A Prisma adapter for connecting with Neon serverless Postgres.
+- `@ably-labs/models`: A library for working with data models and real-time updates in Ably.
+
+The development-specific libraries include:
+
+- `tsx`: A fast TypeScript runtime for development and rebuilding.
+- `prisma`: A toolkit for Prisma schema management, migrations, and generating clients.
+
+Once that's done, copy the `.env.example` to `.env` via the following command:
+
+```shell shouldWrap
+cp .env.example .env
+```
+
+## Provision a Serverless Postgres
+
+To set up a serverless Postgres, go to the [Neon console](https://console.neon.tech/app/projects) and create a new project. Once your project is created, you will receive a connection string that you can use to connect to your Neon database. The connection string will look like this:
+
+```bash shouldWrap
+postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+```
+
+Replace `<user>`, `<password>`, `<endpoint_hostname>`, `<port>`, and `<dbname>` with your specific details.
+
+Use this connection string as an environment variable designated as `DATABASE_URL` in the `.env` file.
+
+## Set up Ably LiveSync with Neon Postgres
+
+Sign in into the [Ably Dashboard](https://ably.com/login), and click on `+ Create new app`.
+
+![](/guides/images/real-time-comments/create.png)
+
+Next, name the application and select `Data Sync` as the type of application you are building.
+
+![](/guides/images/real-time-comments/name.png)
+
+Next, go to the **Integrations** tab and click on `+ New integration rule`.
+
+![](/guides/images/real-time-comments/rule.png)
+
+Next, click the `Choose` button in the **Postgres (Alpha)** card.
+
+![](/guides/images/real-time-comments/postgres.png)
+
+Next, in the integration rule, enter the `DATABASE_URL` environment variable value obtained and proceed.
+
+![](/guides/images/real-time-comments/values.png)
+
+Finally, go to the **API Keys** tab and copy the API Key which has the capabilities as `channel metadata, history, presence, privileged headers, publish, push admin, push subscribe, statistics, subscribe`.
+
+![](/guides/images/real-time-comments/api_keys.png)
+
+Use this API Key as an environment variable designated as `NEXT_PUBLIC_ABLY_API_KEY` in the `.env` file.
+
+## Set up Database Schema
+
+In the file named `schema.tsx`, you would see the following code:
+
+```tsx
+// File: schema.tsx
+
+import 'dotenv/config';
+import { WebSocket } from 'ws';
+import { neon, neonConfig } from '@neondatabase/serverless';
+
+neonConfig.webSocketConstructor = WebSocket;
+neonConfig.poolQueryViaFetch = true;
+
+async function prepare() {
+  if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL environment variable not found.');
+  const sql = neon(process.env.DATABASE_URL);
+  await Promise.all([
+    sql`CREATE TABLE IF NOT EXISTS nodes (id TEXT PRIMARY KEY, expiry TIMESTAMP WITHOUT TIME ZONE NOT NULL);`,
+    sql`CREATE TABLE IF NOT EXISTS outbox (sequence_id  serial PRIMARY KEY, mutation_id  TEXT NOT NULL, channel TEXT NOT NULL, name TEXT NOT NULL, rejected boolean NOT NULL DEFAULT false, data JSONB, headers JSONB, locked_by TEXT, lock_expiry TIMESTAMP WITHOUT TIME ZONE, processed BOOLEAN NOT NULL DEFAULT false);`,
+  ]);
+  await sql`CREATE OR REPLACE FUNCTION public.outbox_notify() RETURNS trigger AS $$ BEGIN PERFORM pg_notify('ably_adbc'::text, ''::text); RETURN NULL; EXCEPTION WHEN others THEN RAISE WARNING 'unexpected error in %s: %%', SQLERRM; RETURN NULL; END; $$ LANGUAGE plpgsql;`;
+  await sql`CREATE OR REPLACE TRIGGER public_outbox_trigger AFTER INSERT ON public.outbox FOR EACH STATEMENT EXECUTE PROCEDURE public.outbox_notify();`;
+  console.log('Database schema set up succesfully.');
+}
+
+prepare();
+```
+
+The code above defines a function that connects to a Neon serverless Postgres database using a `DATABASE_URL` environment variable and sets up the necessary schema for the real-time application. It creates two tables, `nodes` and `outbox`, to store data and manage message processing, respectively. A trigger function, `outbox_notify`, is implemented to send notifications using `pg_notify` whenever new rows are inserted into the `outbox` table. This ensures the database is ready for real-time updates and WebSocket-based communication.
+
+To run the schema against your Neon Postgres, execute the following command:
+
+```
+npm run db
+```
+
+If it runs succesfully, you should see `Database schema set up succesfully.` in the terminal.
+
+## Set up Prisma for Neon Postgres
+
+In the directory `lib/prisma`, you would see the following code in `index.ts` file:
+
+```tsx
+// File: lib/prisma/index.ts
+
+import { neonConfig, Pool } from '@neondatabase/serverless';
+import { PrismaNeon } from '@prisma/adapter-neon';
+import { PrismaClient } from '@prisma/client';
+import { WebSocket } from 'ws';
+
+declare global {
+  var prisma: PrismaClient | undefined;
+}
+
+const connectionString = `${process.env.DATABASE_URL}`;
+
+neonConfig.webSocketConstructor = WebSocket;
+neonConfig.poolQueryViaFetch = true;
+
+const pool = new Pool({ connectionString });
+const adapter = new PrismaNeon(pool);
+const prisma = global.prisma || new PrismaClient({ adapter });
+
+if (process.env.NODE_ENV === 'development') global.prisma = prisma;
+
+export default prisma;
+```
+
+The code above sets up a Prisma client for Neon Postgres. It configures the Neon database connection using the `@neondatabase/serverless` library, with WebSocket and `fetch` support to execute queries. A global `prisma` instance is created using the `PrismaNeon` adapter, ensuring reuse in development to avoid multiple instances. Finally, the configured `prisma` client is exported for use throughout the application.
+
+In the same directory, you would see the following code in the `api.ts` file:
+
+```tsx
+// File: lib/prisma/api.ts
+
+import prisma from '@/lib/prisma';
+import { Prisma, PrismaClient } from '@prisma/client';
+import * as runtime from '@prisma/client/runtime/library';
+
+export type Author = {
+  id: number;
+  image: string;
+  username: string;
+};
+
+export type Comment = {
+  id: number;
+  postId: number;
+  author: Author;
+  content: string;
+  createdAt: Date;
+  optimistic?: boolean;
+};
+
+export type Post = {
+  id: number;
+  title: string;
+  content: string;
+  comments: Comment[];
+};
+
+export async function getPosts(): Promise<Post[]> {
+  return await prisma.post.findMany({
+    include: {
+      comments: {
+        include: {
+          author: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getPost(id: number): Promise<[Post, number]> {
+  return await prisma.$transaction(async (tx) => {
+    const post = await getPostTx(tx, id);
+    type r = { nextval: number };
+    const [{ nextval }] = await tx.$queryRaw<
+      r[]
+    >`SELECT nextval('outbox_sequence_id_seq')::integer`;
+    return [post, nextval];
+  });
+}
+
+async function getPostTx(tx: TxClient, id: number) {
+  return await tx.post.findUniqueOrThrow({
+    where: { id },
+    include: {
+      comments: {
+        include: {
+          author: true,
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+      },
+    },
+  });
+}
+
+export async function getRandomUser() {
+  const count = await prisma.user.count();
+  return await prisma.user.findFirstOrThrow({
+    skip: Math.floor(Math.random() * count),
+  });
+}
+
+export type TxClient = Omit<PrismaClient, runtime.ITXClientDenyList>;
+
+export async function addComment(
+  tx: TxClient,
+  mutationId: string,
+  postId: number,
+  authorId: number,
+  content: string
+): Promise<Prisma.outboxCreateInput> {
+  const comment = await tx.comment.create({
+    data: { postId, authorId, content },
+    include: { author: true },
+  });
+  return {
+    mutation_id: mutationId,
+    channel: `post:${comment.postId}`,
+    name: 'addComment',
+    data: comment,
+    headers: {},
+  };
+}
+
+export async function editComment(
+  tx: TxClient,
+  mutationId: string,
+  id: number,
+  content: string
+): Promise<Prisma.outboxCreateInput> {
+  await tx.comment.findUniqueOrThrow({ where: { id } });
+  const comment = await tx.comment.update({
+    where: { id },
+    data: { content },
+    include: { author: true },
+  });
+  return {
+    mutation_id: mutationId,
+    channel: `post:${comment.postId}`,
+    name: 'editComment',
+    data: comment,
+    headers: {},
+  };
+}
+
+export async function deleteComment(
+  tx: TxClient,
+  mutationId: string,
+  id: number
+): Promise<Prisma.outboxCreateInput> {
+  const comment = await tx.comment.delete({
+    where: { id },
+  });
+  return {
+    mutation_id: mutationId,
+    channel: `post:${comment.postId}`,
+    name: 'deleteComment',
+    data: comment,
+    headers: {},
+  };
+}
+
+export async function withOutboxWrite(
+  op: (tx: TxClient, ...args: any[]) => Promise<Prisma.outboxCreateInput>,
+  ...args: any[]
+) {
+  return await prisma.$transaction(async (tx) => {
+    const { mutation_id, channel, name, data, headers } = await op(tx, ...args);
+    await tx.outbox.create({
+      data: { mutation_id, channel, name, data, headers },
+    });
+  });
+}
+```
+
+The code above interacts with the Postgres database using Prisma to manage comments. It implements operations like fetching, adding, editing, and deleting comments, with an emphasis on ensuring these operations are recorded in the `outbox` table for the event-driven system to capturing changes and reflect them in rest of the web clients. Let's understand each function in the code above:
+
+- `withOutboxWrite()`: **This higher-order function wraps any operation that modifies the database (such as adding, editing, or deleting a comment) and ensures that the change is also written to the outbox table.** It first performs the operation, retrieves the necessary outbox details, and then writes the entry to the outbox table within the same transaction.
+
+- `getPosts()`: Fetches all posts from the database, along with their associated comments and the authors of those comments. The function returns a list of posts, each containing its comments and authors.
+
+- `getPost(id: number): Promise<[Post, number]>`: Fetches a single post by its ID, along with the associated comments and authors. Additionally, it executes a raw SQL query within a transaction to get the next value from a PostgreSQL sequence (`outbox_sequence_id_seq`), returning this value alongside the post. This ensures that the operation has both the requested post and sequence number, which may be used in event-driven systems for ordering.
+
+- `getPostTx(tx: TxClient, id: number)`: A helper function used by `getPost()` to retrieve a post within a transaction (`tx`). It ensures the post's comments are fetched in ascending order of their creation timestamp.
+
+- `getRandomUser()`: Retrieves a random user from the database. The function first counts the total number of users and then selects one randomly based on the count.
+
+- `TxClient`: This type represents a transaction client, which is essentially a modified version of the PrismaClient excluding certain methods that are restricted during transactions (`ITXClientDenyList`).
+
+- `addComment()`: Adds a new comment to a post within a transaction. The function takes in several parameters, such as the transaction client (`tx`), mutation ID, post ID, author ID, and comment content. It returns an `outbox` entry that can be used in an event-driven system for tracking the mutation. The outbox entry includes details like the mutation ID, channel (based on the post), event name (`addComment`), and the newly created comment.
+
+- `editComment()`: Edits an existing comment. It accepts the transaction client (`tx`), mutation ID, comment ID, and new content. After updating the comment, it returns an outbox entry similar to `addComment()`, but with the event name `editComment`.
+
+- `deleteComment()`: Deletes a comment. It takes in the transaction client (`tx`), mutation ID, and the comment ID to be deleted. Like the other mutation functions, it returns an outbox entry, but with the event name `deleteComment`.
+
+## Create a Real-Time Data Model Client with Ably
+
+In the directory `lib/models`, you would see the following code in `modelsClient.ts` file:
+
+```tsx
+// File: lib/models/modelsClient.ts
+
+import ModelsClient from '@ably-labs/models';
+import { Realtime } from 'ably';
+
+let client: ModelsClient;
+
+export const modelsClient = () => {
+  const ably = new Realtime({ key: process.env.NEXT_PUBLIC_ABLY_API_KEY });
+  if (!client) client = new ModelsClient({ ably });
+  return client;
+};
+```
+
+In the code above, a function `modelsClient` is defined which initializes and returns a singleton instance of the `ModelsClient` from the `@ably-labs/models` library, using an Ably Realtime connection. It ensures that the client is only instantiated once, leveraging the Ably API key stored in environment variables to create the Realtime connection.
+
+In the same directory, you would see the following code in the `mutations.ts` file:
+
+```tsx
+// File: lib/models/mutations.ts
+
+import { ConfirmedEvent, OptimisticEvent } from '@ably-labs/models';
+import cloneDeep from 'lodash/cloneDeep';
+import type { Post as PostType } from '@/lib/prisma/api';
+import type { Author as AuthorType } from '@/lib/prisma/api';
+import { Comment } from '@/lib/prisma/api';
+
+export async function addComment(
+  mutationId: string,
+  author: AuthorType,
+  postId: number,
+  content: string
+) {
+  const response = await fetch('/api/comments', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mutationId, authorId: author.id, postId, content }),
+  });
+  if (!response.ok)
+    throw new Error(
+      `POST /api/comments: ${response.status} ${JSON.stringify(await response.json())}`
+    );
+  return response.json();
+}
+
+export async function editComment(mutationId: string, id: number, content: string) {
+  const response = await fetch(`/api/comments/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mutationId, content }),
+  });
+  if (!response.ok)
+    throw new Error(
+      `PUT /api/comments/:id: ${response.status} ${JSON.stringify(await response.json())}`
+    );
+  return response.json();
+}
+
+export async function deleteComment(mutationId: string, id: number) {
+  const response = await fetch(`/api/comments/${id}`, {
+    method: 'DELETE',
+    headers: { 'x-mutation-id': mutationId },
+  });
+  if (!response.ok)
+    throw new Error(
+      `DELETE /api/comments/:id: ${response.status} ${JSON.stringify(await response.json())}`
+    );
+  return response.json();
+}
+
+export function merge(existingState: PostType, event: OptimisticEvent | ConfirmedEvent): PostType {
+  // Optimistic and confirmed events use the same merge function logic.
+  // The models function keeps track of the state before events are applied
+  // to make sure the rollback of unconfirmed events works, we need to clone
+  // the state here. Our state contains an array of objects so we don't use
+  // the regular object spread operator.
+  const state = cloneDeep(existingState);
+  switch (event.name) {
+    case 'addComment':
+      const newComment = event.data! as Comment;
+      state.comments.push(newComment);
+      break;
+    case 'editComment':
+      const editComment = event.data! as Comment;
+      const editIdx = state.comments.findIndex((c) => c.id === editComment.id);
+      state.comments[editIdx] = editComment;
+      break;
+    case 'deleteComment':
+      const { id } = event.data! as { id: number };
+      const deleteIdx = state.comments.findIndex((c) => c.id === id);
+      state.comments.splice(deleteIdx, 1);
+      break;
+    default:
+      console.error('unknown event', event);
+  }
+  state.comments.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+  return state;
+}
+```
+
+In the code above, three asynchronous functions to handle CRUD operations for comments are defined:
+
+- **addComment**: Sends a POST request to add a new comment, including the author's details and content, identified by a `mutationId`.
+- **editComment**: Sends a PUT request to update an existing comment's content by its `id`.
+- **deleteComment**: Sends a DELETE request to remove a comment by its `id`.
+
+Each function validates the server response and throws an error for unsuccessful requests. Additionally, the `merge` function handles state updates by applying optimistic or confirmed events, ensuring that the state reflects comment additions, edits, or deletions accurately.
+
+In the same directory, you would see the following code in the `hook.ts` file:
+
+```tsx
+// File: lib/models/hook.ts
+
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Model, SyncReturnType } from '@ably-labs/models';
+import { modelsClient } from './modelsClient';
+import { merge } from '@/lib/models/mutations';
+import type { Post as PostType } from '@/lib/prisma/api';
+
+export type ModelType = Model<(id: number) => SyncReturnType<PostType>>;
+
+export async function getPost(id: number) {
+  const response = await fetch(`/api/posts/${id}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok)
+    throw new Error(
+      `GET /api/posts/:id: ${response.status} ${JSON.stringify(await response.json())}`
+    );
+  const { sequenceId, data } = (await response.json()) as {
+    sequenceId: string;
+    data: PostType;
+  };
+  return { sequenceId, data };
+}
+
+export const useModel = (id: number | null): [PostType | undefined, ModelType | undefined] => {
+  const [postData, setPostData] = useState<PostType>();
+  const [model, setModel] = useState<ModelType>();
+
+  useEffect(() => {
+    if (!id) return;
+    const model: ModelType = modelsClient().models.get({
+      channelName: `post:${id}`,
+      sync: async () => getPost(id),
+      merge,
+    });
+    setModel(model);
+  }, [id]);
+
+  useEffect(() => {
+    if (!id || !model) return;
+    const getPost = async (id: number) => await model.sync(id);
+    getPost(id);
+  }, [id, model]);
+
+  useEffect(() => {
+    if (!model) return;
+    const subscribe = (err: Error | null, data?: PostType | undefined) => {
+      if (err) return console.error(err);
+      setPostData(data);
+    };
+    model.subscribe(subscribe);
+
+    return () => model.unsubscribe(subscribe);
+  }, [model]);
+
+  return [postData, model];
+};
+```
+
+In the code above, the following function and hook are defined:
+
+1. **getPost**: Fetches the initial post data and its sequence ID from an API endpoint.
+2. **useModel**: Manages a model instance and its associated state. The hook returns the synchronized post data and model instance for use in components. It:
+   - Initializes the model with a channel name, `sync` function (to fetch data), and merge logic.
+   - Synchronizes the model with the latest data when the `id` changes.
+   - Subscribes to real-time updates from the model, updating the component state accordingly.
+
+## API Routes for Comments and Real-Time Synchronization
+
+To perform server-side operations as a result of user interaction on the webpage, a common pattern is to use API routes. In Next.js, API Routes (aka Endpoint Handlers) can be created by creating a file named `route.ts` in any directory in the `app` directory.
+
+To allow dynamic updates and the ability to delete comments, you would see the following code in `route.ts` file in the `app/api/comments/[id]` directory:
+
+```tsx
+// File: app/api/comments/[id]/route.ts
+
+export const dynamic = 'force-dynamic';
+
+export const fetchCache = 'force-no-store';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { withOutboxWrite, editComment, deleteComment } from '@/lib/prisma/api';
+
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const id = Number((await params).id);
+    const comment: { mutationId: string; content: string } = await request.json();
+    const data = await withOutboxWrite(editComment, comment.mutationId, id, comment.content);
+    return NextResponse.json({ data });
+  } catch (error) {
+    console.error('failed to update comment', error);
+    return NextResponse.json({ message: 'failed to update comment', error }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const id = Number((await params).id);
+    const mutationId = request.headers.get('x-mutation-id') || 'missing';
+    const data = await withOutboxWrite(deleteComment, mutationId, id);
+    return NextResponse.json({ data });
+  } catch (error) {
+    console.error('failed to delete comment', error);
+    return NextResponse.json({ message: 'failed to delete comment', error }, { status: 500 });
+  }
+}
+```
+
+In the code above, there are two endpoints, `PUT` and `DELETE`, both of which parse the `id` param in the request. The `PUT` endpoint extracts the comment properties (`mutationId`, `content`) to edit the comment in Postgres and sync the changes to the rest of the web clients that are actively looking to stream comment changes in real-time.
+
+To allow the ability to insert comments, you would see the following code in `route.ts` file in the `app/api/comments` directory:
+
+```tsx
+// File: app/api/comments/route.ts
+
+export const dynamic = 'force-dynamic';
+
+export const fetchCache = 'force-no-store';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { withOutboxWrite, addComment } from '@/lib/prisma/api';
+
+export async function POST(request: NextRequest) {
+  try {
+    const comment: {
+      mutationId: string;
+      postId: number;
+      authorId: number;
+      content: string;
+    } = await request.json();
+    const data = await withOutboxWrite(
+      addComment,
+      comment.mutationId,
+      comment.postId,
+      comment.authorId,
+      comment.content
+    );
+    return NextResponse.json({ data });
+  } catch (error) {
+    console.error('failed to add comment', error);
+    return NextResponse.json({ message: 'failed to add comment', error }, { status: 500 });
+  }
+}
+```
+
+In the code above, the endpoint parses the request's body to extract the comment properties (`mutationID`, `postId`, `authorId`, `content`). Further, it inserts into Postgres using the `withOutboxWrite` helper function which makes sure to sync it in Postgres and rest of the web clients that are actively looking to stream comments in real-time.
+
+Similarly, you would see the following code in `route.ts` file in the `app/api/posts/[id]` directory:
+
+```tsx
+// File: app/api/posts/[id]/route.ts
+
+export const dynamic = 'force-dynamic';
+
+export const fetchCache = 'force-no-store';
+
+import { NextRequest, NextResponse } from 'next/server';
+import { getPost } from '@/lib/prisma/api';
+
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const id = Number((await params).id);
+    const [data, sequenceId] = await getPost(id);
+    return NextResponse.json({ sequenceId, data });
+  } catch (error) {
+    return NextResponse.json({ message: 'failed to get post', error }, { status: 500 });
+  }
+}
+```
+
+In the code above, the endpoint parses the `id` param in the request and returns the `sequenceId` and the comment details associated with that ID in Postgres.
+
+## Deploy to Vercel
+
+The repository is now ready to deploy to Vercel. Use the following steps to deploy:
+
+- Start by creating a GitHub repository containing your app's code.
+- Then, navigate to the Vercel Dashboard and create a **New Project**.
+- Link the new project to the GitHub repository you've just created.
+- In **Settings**, update the **Environment Variables** to match those in your local `.env` file.
+- Deploy.
+
+<DetailIconCards>
+
+<a target="_blank" href="https://github.com/neondatabase-labs/ably-livesync-neon" description="A Real-Time Comments Application" icon="github">Real-Time Comments Application</a>
+
+</DetailIconCards>
+
+## Summary
+
+In this guide, you learned how to build a real-time comment system for a Next.js application by integrating Ably LiveSync with a serverless Neon Postgres database. The tutorial covered setting up the database schema, configuring Prisma for streamlined database access, and implementing Ably for real-time updates. You also explored how to handle optimistic updates, ensure data synchronization, and deploy the application to Vercel.
+
+<NeedHelp />
+
+
 # How to Create a Reliable Testing Dataset with pg_dump and pg_restore
 
 ---
@@ -31639,7 +36580,7 @@ name: Dump Test Data
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+    - cron: '0 0 * * *' # Runs at midnight UTC
   workflow_dispatch:
 
 env:
@@ -31757,7 +36698,7 @@ Add the following code after the **Set PostgreSQL binary path** step.
 name: Dump Test Data
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+    - cron: '0 0 * * *' # Runs at midnight UTC
   workflow_dispatch:
 env:
   PROD_DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }} # Production or staging database
@@ -33826,6 +38767,138 @@ Now, you have created and tested an API for managing, streaming, and querying se
 As a next step, you can look into streaming data into the database using a distributed event platform like `Kafka` or `Red Panda`, or using `Timescale` to monitor the sensor data with `Apache Superset` or `Grafana`.
 
 
+# Timeseries Data in Postgres
+
+---
+title: Timeseries Data in Postgres
+subtitle: A step-by-step guide describing how to use TimescaleDB for timeseries data in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-02-24T13:24:36.612Z'
+updatedOn: '2025-02-24T13:24:36.612Z'
+---
+
+Timeseries queries allow you to efficiently query measurements over time stored in Postgres, like stock prices or temperature measurements.
+With the [TimescaleDB extension](https://www.timescale.com/), you can you can efficiently store, query, and analyze time-series data in PostgreSQL using automatic partitioning, compression, and advanced query optimizations.
+
+## Steps
+
+- Install and enable TimescaleDB
+- Create a hypertable
+- Insert and retrieve timeseries data
+- Query time-based aggregations
+- Use `last()` to find the most recent value
+- Generate histograms for data analysis
+
+### Install and enable TimescaleDB
+
+Before using timeseries queries, you need to install the TimescaleDB extension.
+TimescaleDB extends PostgreSQL with hypertables, which optimize storage and queries for timeseries data.
+In Neon, TimescaleDB is already installed, you just need to enable it using the following command.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+```
+
+### Create a hypertable
+
+TimescaleDB introduces hypertables, which automatically partition data by time for better performance.
+To create a hypertable, first define a Postgres table with a timestamp column as follows.
+Note that the timestamp `ts` is part of the primary key.
+
+```sql
+CREATE TABLE stock_prices (
+  id SERIAL,
+  ticker TEXT NOT NULL,
+  ts TIMESTAMPTZ NOT NULL,
+  price DOUBLE PRECISION NOT NULL,
+  PRIMARY KEY (id, ts)
+);
+```
+
+Then, convert the table into a hypertable:
+
+```sql
+SELECT create_hypertable('stock_prices', 'ts');
+```
+
+### Insert and retrieve timeseries data
+
+You can insert timeseries data as you would in a normal Postgres table.
+The following command inserts multiple stock price records, including multiple entries for AAPL on the same day:
+
+```sql
+INSERT INTO stock_prices (ticker, ts, price)
+VALUES ('AAPL', '2025-02-22 09:30:00', 174.8),
+       ('AAPL', '2025-02-22 10:00:00', 175.3),
+       ('AAPL', '2025-02-22 15:59:00', 176.1),
+       ('GOOGL', '2025-02-22 10:05:00', 2823.1);
+```
+
+You can retrieve rows from the `stock_prices` hypertable using normal SQL queries like the following, which returns all rows where `ts` is after February 22, 2025.
+
+```sql
+SELECT * FROM stock_prices WHERE ts >= '2025-02-22';
+```
+
+### Query time-based aggregations
+
+TimescaleDB provides efficient ways to aggregate data over time.
+The following query calculates the average stock price per day:
+
+```sql
+SELECT time_bucket('1 day', ts) AS bucket,
+       ticker,
+       AVG(price) AS avg_price
+FROM stock_prices
+GROUP BY bucket, ticker
+ORDER BY bucket;
+```
+
+The above query outputs the following results.
+The `avg_price` for AAPL is the average of the 3 `stock_prices` rows for AAPL on February 22.
+
+| bucket                 | ticker | avg_price |
+| ---------------------- | ------ | --------- |
+| 2025-02-22 00:00:00+00 | AAPL   | 175.4     |
+| 2025-02-22 00:00:00+00 | GOOGL  | 2823.1    |
+
+### Use `last()` to find the most recent value
+
+To find the most recent stock price for each ticker, you can use TimescaleDB's `last()` function as shown below.
+There is also a corresponding `first()` function, which would return the first stock price for each ticker.
+
+```sql
+SELECT ticker, last(price, ts) AS last_price
+FROM stock_prices
+GROUP BY ticker;
+```
+
+### Generate histograms for data analysis
+
+TimescaleDB's `histogram()` function calculates how many times a value falls into a given "bucket".
+In other words, `histogram()` returns how many times a value falls into a given range.
+For example, the following query breaks up the price range 170-180 into 10 buckets, and returns how many times the price of AAPL falls into each bucket.
+
+```sql
+SELECT ticker, width_bucket(price, 170, 180, 10) AS bucket, COUNT(*) AS frequency
+FROM stock_prices
+WHERE ticker = 'AAPL'
+GROUP BY ticker, bucket
+ORDER BY ticker, bucket;
+```
+
+The following is the result of the above query.
+AAPL has one price in the 5th bucket (174.8), one in the 6th bucket (175.3), and one in the 7th bucket (176.1).
+Buckets are 0-indexed, so 170-171 is bucket 0, 171-172 is bucket 1, and so on.
+
+| ticker | bucket | frequency |
+| ------ | ------ | --------- |
+| AAPL   | 5      | 1         |
+| AAPL   | 6      | 1         |
+| AAPL   | 7      | 1         |
+
+
 # Vector Search in Postgres
 
 ---
@@ -34124,6 +39197,223 @@ For most cases, using neon serverless driver is straightforward without needing 
 - **wsProxy**: This option is for connecting via a WebSocket proxy deployed in front of your your own Postgres instance, which allows you to use the Neon serverless driver with a local development environment.
 
 For more information about these options, see [Advanced configuration](https://github.com/neondatabase/serverless/blob/main/CONFIG.md#advanced-configuration).
+
+<NeedHelp/>
+
+
+# Get started with Windsurf and Neon Postgres MCP Server
+
+---
+title: 'Get started with Windsurf and Neon Postgres MCP Server'
+subtitle: 'Make schema changes with natural language using Codeium Windsurf and Neon MCP Server'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-02-22T00:00:00.000Z'
+updatedOn: '2025-02-22T00:00:00.000Z'
+---
+
+Imagine adjusting your database schema simply by describing the change in plain English. This is possible by combining [Codeium Windsurf](https://codeium.com/windsurf) with the [Neon MCP Server](https://github.com/neondatabase/mcp-server-neon).
+
+This guide demonstrates how to use [Windsurf's Cascade](https://docs.codeium.com/windsurf/cascade) and Neon's MCP server to perform database migrations in your Neon project.
+
+## Key components
+
+Let's break down the key components in this setup:
+
+- **Codeium Windsurf**: Windsurf is Codeium's next-generation AI IDE, featuring Cascade, an agentic chatbot that supports Model Context Protocol (MCP) for interfacing with external tools.
+
+- **Neon MCP Server**: Neon's MCP server acts as a bridge between MCP clients like Windsurf and [Neon's API](https://api-docs.neon.tech/reference/getting-started-with-neon-api), letting you work with Neon databases using natural language commands.
+
+- **Model Context Protocol (MCP)**: MCP is a lightweight communication standard that allows Windsurf and Neon MCP Server to work together.
+
+## Setting up Neon MCP Server in Windsurf
+
+The following steps show how to set up Neon MCP Server in Windsurf.
+
+### Prerequisites
+
+Before you begin, ensure you have the following:
+
+1.  **Codeium Windsurf Editor:** Download and install Windsurf from [codeium.com/windsurf](https://codeium.com/windsurf).
+2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
+3.  **Neon API Key:** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+
+    <Admonition type="warning" title="Neon API Key Security">
+    Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
+    </Admonition>
+
+4.  **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
+
+### Installation and Configuration
+
+**Configure Neon MCP Server in Windsurf:**
+
+1. Open Windsurf.
+2. Open Cascade by using `⌘L`.
+3. To configure MCP Servers in Windsurf, you need to modify the `~/.codeium/windsurf/mcp_config.json` file.
+4. To quickly access this file, find the toolbar above the Cascade input and click the hammer icon (🔨), then click the **"Configure"** button.
+   ![Windsurf Cascade Add MCP Tool](/docs/guides/windsurf-cascade-add-mcp-tool.gif)
+5. This will open the `~/.codeium/windsurf/mcp_config.json` file in the IDE.
+6. In the `mcp_config.json` file, you need to specify a list of MCP servers. Use the following JSON structure as a template, replacing `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+
+   ```json
+   {
+     "mcpServers": {
+       "neon": {
+         "command": "npx",
+         "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+       }
+     }
+   }
+   ```
+
+   - **`neon`**: This is a name you choose for your MCP server connection.
+   - **`command`**: This is the command Windsurf will execute to start the Neon MCP server. It includes the `npx` command to run the `@neondatabase/mcp-server-neon` package and passes your Neon API key as an argument.
+   - Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+
+7. **Save** the `mcp_config.json` file.
+8. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade.
+9. If the integration is successful, the toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
+
+![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
+
+You've now configured Neon MCP Server in Windsurf and can manage your Neon Postgres databases using AI.
+
+## Neon MCP Server Tools
+
+Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
+
+- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account. _Note: This particular action is still under development. It's not yet returning results as expected._
+- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
+- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
+- `delete_project`: Deletes an existing Neon project.
+- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
+- `delete_branch`: Deletes an existing branch in a Neon project.
+- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
+- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
+- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
+- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
+- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
+- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
+- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
+- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+
+These actions enable any MCP client like Windsurf to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
+
+## Development Workflow: Adding a Column with Windsurf and Neon MCP
+
+Let's walk through a typical development scenario: Quickly adding a column for prototyping using natural language within Windsurf's Cascade. The following chat log demonstrates a real interaction with Windsurf and the Neon MCP server.
+
+**Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
+
+Check out the video below to see how Windsurf and Neon MCP Server can help you add a new column to your database table using natural language commands.
+
+<video autoPlay playsInline muted loop width="800" height="600" controls>
+  <source type="video/mp4" src="/videos/pages/doc/windsurf-neon-mcp.mp4"/>
+</video>
+
+<Admonition type="tip" title="Security Reminder">
+Be aware that Cascade currently executes commands directly from your prompts without confirmation unlike other IDE's and apps like [Cursor](/guides/cursor-mcp-neon) and [Claude](/guides/neon-mcp-server).  Review your requests thoroughly to avoid unintended or unwanted actions.
+</Admonition>
+
+Here's the conversation log between the user and Cascade:
+
+```text shouldWrap
+User: in my neon project id: fancy-bush-59303206, list all the tables
+Cascade: I'll help you list all the tables in your Neon project. I'll use the default database name 'neondb' since it wasn't specified.
+> MCP Tool: neon / get_database_tables
+> I found 1 table in your Neon project:
+> - playing_with_neon (in the public schema)
+> Would you like to see more details about this table or perform any operations on it?
+
+User: can you show me first 5 rows?
+Cascade: I'll query the first 5 rows from the playing_with_neon table.
+> MCP Tool: neon / run_sql
+> Here are the first 5 rows from the table. The table has three columns:
+> id: An integer identifier
+> name: A string column containing what appears to be hash-like values
+> value: A numeric column with decimal values between 0 and 1
+> Would you like to perform any other operations on this table?
+
+User: can you add created_at column?
+Cascade: I'll help you add a created_at column to the playing_with_neon table. I'll create a migration to add this column with a timestamp data type.
+> MCP Tool: neon / prepare_database_migration
+> Let me verify the changes in the temporary branch to make sure the column was added correctly.
+> I've verified that the created_at column has been added successfully in the temporary branch. Would you like me to commit this migration to the main branch?
+> The migration has been completed successfully! The created_at column has been added to the playing_with_neon table. Let's verify the change in the main branch:
+> Perfect! The created_at column has been successfully added and populated with timestamps. For existing rows, it was set to the time when the column was added. Any new rows added to the table will automatically get their creation timestamp.
+```
+
+**Key takeaways:**
+
+- **Natural language interaction:** You can use simple, conversational English to interact with your database through Windsurf's Cascade.
+- **MCP Tools in Action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes and tests them before committing to the main branch.
+
+You can verify the changes in your Neon Console or by querying the database directly.
+
+![Neon Console with added column](/docs/guides/neon-cursor-mcp-added-column.png)
+
+<Admonition type="note">
+While the Neon MCP server allows you to utilize all of Neon's functionalities, you can also use a [generic Postgres MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres) to connect to Neon.
+</Admonition>
+
+## Bonus: Creating a project and branch
+
+Beyond schema changes, you can also manage your Neon projects and branches directly within Windsurf using natural language commands. This can be useful for quickly setting up a new development or test environment.
+
+### Creating a new project
+
+Let's say you want to create a new Neon project named "my-new-project". You can simply tell Cascade:
+
+```text shouldWrap
+User: Create a Neon project named "my-new-project"
+Cascade: I'll help you create a new Neon project with the specified name.
+> MCP Tool: neon / create_project
+> Tool Arguments: { "name": "my-new-project" }
+> Great! I've created a new Neon project for you with the following details:
+> Project Name: `my-new-project`
+> Project ID: `restless-butterfly-08800888`
+> Default Branch: `main`
+> Default Database: `neondb`
+> The project is now ready for use. You can start creating tables, running queries, or creating additional databases as needed. Would you like to do anything specific with your new project?
+```
+
+![Windsurf creating a new Neon project](/docs/guides/windsurf-mcp-create-new-project.png)
+
+Cascade will then use the `create_project` MCP tool to initiate the project creation. It will provide you with a project ID and name.
+
+### Creating a New Branch
+
+Once you have a project, you can easily create new branches for development or experimentation. For example, to create a branch named "feature-x" in your "my-new-project" project:
+
+```text shouldWrap
+User: Create a branch named "feature-x"
+Cascade: I'll create a new branch named "feature-x" in your Neon project.
+> MCP Tool: neon / create_branch
+> Tool Arguments: { "projectId": "restless-butterfly-08800888", "branchName": "feature-x" }
+> Perfect! I've created a new branch with the following details:
+> Branch Name: `feature-x`
+> Branch ID: `br-aged-sun-a5woam3c`
+> Project ID: `restless-butterfly-08800888`
+> The branch has been created successfully and is ready for use. You can now make changes to this branch without affecting the main branch. Would you like to do anything with this new branch?
+```
+
+![Windsurf creating a new Neon branch](/docs/guides/windsurf-mcp-create-new-branch.png)
+
+Cascade will use the `create_branch` MCP tool to create the branch and provide you with the branch name and ID. Notice how we don't need to specify the project ID, as Cascade remembers the active project context.
+
+## Conclusion
+
+Windsurf with Neon MCP Server lets you use natural language to interact with your database and take advantage of Neon's branching capabilities for fast iteration. This approach is ideal for quickly testing database ideas and making schema changes during development.
+
+## Resources
+
+- [MCP Protocol](https://modelcontextprotocol.org)
+- [Codeium Windsurf Documentation](https://docs.codeium.com/windsurf/getting-started)
+- [Neon Docs](/docs)
+- [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
+- [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
 
 <NeedHelp/>
 

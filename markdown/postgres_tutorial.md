@@ -2999,7 +2999,7 @@ Output:
 
 How it works.
 
-- First, sort all the films by rental rates from high to low using the `ORDER BY rental_rate` clause.
+- First, sort all the films by rental rates from high to low using the `ORDER BY rental_rate DESC` clause.
 - Second, take only 10 rows from the top using the `LIMIT 10` clause.
 
 ## Summary
@@ -10411,10 +10411,7 @@ Output:
  10 | Kate       | Hill      | 44000.00
  11 | Liam       | Clark     | 59000.00
  12 | Mia        | Parker    | 42000.00
- 13 | John       | Doe       | 60000.00
- 14 | Jane       | Smith     | 55000.00
- 15 | Alice      | Johnson   | 58000.00
-(15 rows)
+(12 rows)
 ```
 
 Third, retrieve the data from the `managers` table:
@@ -11260,7 +11257,7 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to use the PostgreSQL `SELECT INTO` statement to create a new table from the result set of a query.
 
-If you want to select data into variables, check out the [PL/pgSQL SELECT INTO statement](https://neon.tech/postgresql/plpgsql-select-into/).
+If you want to select data into variables, check out the [PL/pgSQL SELECT INTO statement](https://neon.tech/postgresql/postgresql-plpgsql/pl-pgsql-select-into/).
 
 ## Introduction to PostgreSQL SELECT INTO statement
 
@@ -11290,7 +11287,7 @@ The [`WHERE`](postgresql-where) clause allows you to specify a condition that de
 
 Besides the `WHERE` clause, you can use other clauses in the `SELECT` statement for the `SELECT INTO` statement such as [`INNER JOIN`](postgresql-inner-join), [`LEFT JOIN`](postgresql-left-join), [`GROUP BY`](postgresql-group-by), and [`HAVING`](postgresql-having).
 
-Note that you cannot use the [`SELECT INTO`](https://neon.tech/postgresql/plpgsql-select-into/) statement in PL/pgSQL because it interprets the `INTO` clause differently. In this case, you can use the [`CREATE TABLE AS`](postgresql-create-table-as) statement which provides more functionality than the `SELECT INTO` statement.
+Note that you cannot use the [`SELECT INTO`](https://neon.tech/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement in PL/pgSQL because it interprets the `INTO` clause differently. In this case, you can use the [`CREATE TABLE AS`](postgresql-create-table-as) statement which provides more functionality than the `SELECT INTO` statement.
 
 ## PostgreSQL SELECT INTO examples
 
@@ -25103,6 +25100,10 @@ In PostgreSQL, a superuser is a special role with the highest privileges. A supe
 
 In other words, a superuser can bypass all security checks except the right to log in.
 
+<Admonition type="tip" title="Neon Note">
+Neon is a managed Postgres service, so you cannot access the host operating system or connect using the Postgres `superuser` account like you can in a standalone Postgres installation. Instead, Neon provides the `neon_superuser` role with elevated privileges. For more information about roles in Neon, see [Manage roles](https://neon.tech/docs/manage/roles).
+</Admonition>
+
 By default, PostgreSQL has a superuser role called `postgres`. Typically, you use the `postgres` user role for performing administrative tasks and don’t need to create additional users with the superuser privilege.
 
 However, if you need additional superuser roles, you can create them using the `CREATE ROLE` statement or change a regular user to a superuser using the `ALTER ROLE` statement.
@@ -29166,7 +29167,7 @@ Therefore, it’s recommended to use the indexes on expressions when prioritizin
 We’ll use the `customer` table from the [sample database](../postgresql-getting-started/postgresql-sample-database).
 
 ![customer table](/postgresqltutorial/customer-table.png)
-The `customer` table has a b\-tree index defined for the `first_name` column.
+The `customer` table has a b\-tree index defined for the `last_name` column.
 
 First, retrieve the customers with the last names are `Purdy`:
 
@@ -29411,7 +29412,7 @@ Additionally, only B\-tree, GIST, GIN, and BRIN index types support multicolumn 
 
 The following shows the syntax for creating a multicolumn index:
 
-```csssql
+```sql
 CREATE INDEX [IF NOT EXISTS] index_name
 ON table_name(column1, column2, ...);
 ```
@@ -29423,43 +29424,53 @@ In this syntax:
 
 When defining a multicolumn index, you should place the columns that are frequently used in the [`WHERE`](../postgresql-tutorial/postgresql-where) clause at the beginning of the column list, followed by the columns that are less frequently used in the `WHERE` clause.
 
-In the above syntax, the query optimizer will consider using the index in the following cases:
+In general, the query optimizer can use the index when the query’s conditions involve the index’s leading (leftmost) column. For example, if you have an index on `(column1, column2, column3)`, it will be considered for queries such as:
 
-```php
+```sql
 WHERE column1 = v1 AND column2 = v2 AND column3 = v3;
 ```
 
 Or
 
-```
+```sql
 WHERE column1 = v1 AND column2 = v2;
 ```
 
 Or
 
-```
+```sql
 WHERE column1 = v1;
 ```
 
-However, it will not consider using the index in the following cases:
+In these cases, the condition on `column1` (and optionally on `column2`) allows PostgreSQL to efficiently narrow down the portion of the index that needs to be scanned.
 
-```
+However, if a query does _not_ constrain the first column of the index, PostgreSQL must evaluate whether a full index scan on this index is more efficient than alternative indexes or a table scan.
+
+For instance, consider a query with only later columns in the `WHERE` clause:
+
+```sql
 WHERE column3 = v3;
 ```
 
 or
 
-```
+```sql
 WHERE column2 = v2 and column3 = v3;
 ```
 
 Note that you can also use the `WHERE` clause to define a partially multicolumn index.
 
+In such scenarios, PostgreSQL will still consider using the index, but scanning the whole index may have a higher cost than other options. The planner evaluates different execution paths, and if an index scan is not the most efficient, it may choose a sequential scan instead.
+
+<Admonition type="note">
+You can also use a `WHERE` clause to define a partial multicolumn index (an index on multiple columns that only includes rows satisfying a given condition).
+</Admonition>
+
 ## PostgreSQL Multicolumn Index example
 
 First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `people` using the following `CREATE TABLE` statement:
 
-```
+```sql
 CREATE TABLE people (
     id INT GENERATED BY DEFAULT AS IDENTITY,
     first_name VARCHAR(50) NOT NULL,
@@ -29475,7 +29486,7 @@ Second, execute the `INSERT` statement in the following file to load `10,000` ro
 
 Third, show the query plan that finds the person whose last name is `Adams`:
 
-```php
+```sql
 EXPLAIN SELECT
   id,
   first_name,
@@ -29498,16 +29509,16 @@ Here is the output:
 
 The output indicates that PostgreSQL performs a sequential scan on the `people` table to find the matching rows because there is no index defined for the `last_name` column.
 
-Fourth, create an index that includes both the `last_name` and `first_name` columns. Assuming that searching for people by their last name is more common than by their first name, we define the index with the following column order:
+Fourth, create a multicolumn index that includes both the `last_name` and `first_name` columns. Assuming that searching for people by their last name is more common than by their first name, we define the index with the following column order:
 
-```php
+```sql
 CREATE INDEX idx_people_names
 ON people (last_name, first_name);
 ```
 
-Fifth, show the plan of the query that searches for the person whose last name is `Adams`:
+Fifth, show the plan of the query that searches for the person whose last name is `Adams` (using the new index):
 
-```
+```sql
 EXPLAIN SELECT
   id,
   first_name,
@@ -29530,11 +29541,11 @@ Output:
 (4 rows)
 ```
 
-The output indicates that the query optimizer uses the `idx_people_names` index.
+The output indicates that the query optimizer uses the `idx_people_names` index for the `last_name = 'Adams'` query.
 
-Sixth, find the person whose last name is `Adams` and the first name is `Lou`.
+Sixth, find the person whose first name is `Lou` (without specifying the last name):
 
-```php
+```sql
 EXPLAIN SELECT
   id,
   first_name,
@@ -29560,7 +29571,7 @@ The output indicates that the query optimizer will use the index because both co
 
 Seventh, search for the person whose first name is `Lou`:
 
-```php
+```sql
 EXPLAIN SELECT
   id,
   first_name,
@@ -29581,7 +29592,7 @@ Output:
 (2 rows)
 ```
 
-The output indicates that PostgreSQL performs a sequential scan of the `people` table instead of using the index even though the `first_name` column is a part of the index.
+The output indicates that PostgreSQL performs a sequential scan instead of using the index, because the first column of the index (`last_name`) is not constrained. Since using the index would require scanning all its entries, the planner determined that a sequential scan on the table was more efficient.
 
 ## Summary
 
@@ -30307,7 +30318,7 @@ CREATE TABLE posts(
    title TEXT NOT NULL,
    body TEXT,
    body_search TSVECTOR
-      GENERATED ALWAYS AS (to_tsvector(body)) STORED
+      GENERATED ALWAYS AS (to_tsvector('english',body)) STORED
 );
 ```
 
@@ -50452,7 +50463,7 @@ INNER JOIN product_groups USING (group_id);
 ```
 
 ![PostgreSQL Window Function - RANK function](/postgresqltutorial/PostgreSQL-Window-Function-RANK-function.png)
-In the laptop product group, both `Dell Vostro` and `Sony VAIO` products have the same price, therefore, they receive the same rank 1\. The next row in the group is `HP Elite` that receives the rank 3 because the rank 2 is skipped.
+In the laptop product group, both `Sony VAIO` and `Lenovo Thinkpad` products have the same price, therefore, they receive the same rank 1\. The next row in the group is `Dell Vostro` that receives the rank 3 because the rank 2 is skipped.
 
 Similar to the `RANK()` function, the [`DENSE_RANK()`](postgresql-window-function/postgresql-dense_rank-function) function assigns a rank to each row within an ordered partition, but the ranks have no gap. In other words, the same ranks are assigned to multiple rows and no ranks are skipped.
 
@@ -50472,7 +50483,7 @@ INNER JOIN product_groups USING (group_id);
 ```
 
 ![PostgreSQL Window Function - DENSE_RANK function](/postgresqltutorial/PostgreSQL-Window-Function-DENSE_RANK-function.png)
-Within the laptop product group, rank 1 is assigned twice to `Dell Vostro` and `Sony VAIO`. The next rank is 2 assigned to `HP Elite`.
+Within the laptop product group, rank 1 is assigned twice to `Sony VAIO` and `Lenovo Thinkpad`. The next rank is 2 assigned to `Dell Vostro`.
 
 ## The FIRST_VALUE and LAST_VALUE functions
 

@@ -1,16 +1,24 @@
-# Postgres for AI Agents
+# The Postgres API for Agents
 
 ---
-title: 'Postgres for AI Agents'
-subtitle: Neon databases are fast to provision, easy to manage, and they scale to zero — perfect for AI agents.
+title: 'The Postgres API for Agents'
+subtitle: Join Replit Agent and Create.xyz and let your agent deploy Neon databases with no friction for the user.
 enableTableOfContents: true
 updatedOn: '2024-10-09T09:00:00.000Z'
 image: '/images/social-previews/use-cases/ai-agents.jpg'
 ---
 
 <Admonition type="note" title="TL;DR">
-Replit partnered with Neon to back Replit Agents, which are already creating thousands of Postgres databases. If you’re building an AI agent that interacts with infrastructure, [we’d love to connect](/agent-design-partner) — we’re looking for design partners in this space.
+Replit Agent and Create.xyz have deeply integrated Neon into their agentic experience. The apps their agents build come with a Postgres database powered by Neon—without requiring the end-user to sign up with an external third party. If you're looking to build something similar, reach out to us.
 </Admonition>
+
+<Testimonial
+text="The speed of provisioning and serverless scale-to-zero of Neon is critical for us. We can serve users iterating on quick ideas efficiently while also supporting them as they scale, without making them think about database setup."
+author={{
+  name: 'Dhruv Amin',
+  company: 'Co-founder at Create.xyz',
+}}
+/>
 
 ---
 
@@ -43,6 +51,26 @@ Just like developers appreciate a simple, clear API, so do AI agents. If it’s 
 
 With the Neon API, you can not only create and delete databases but also track usage, limit resources, and handle configuration.
 
+### Neon is 100% Postgres
+
+The most-loved database by developers worldwide is also the best choice for AI agents, thanks to its versatility (it works for almost any app) and the vast amount of resources, examples, and training datasets available.
+
+Neon is simply Postgres. Everything an agent knows about Postgres is available in Neon, from extensions to full SQL syntax.
+
+## AI agents are now provisioning more databases on Neon than humans—many thousands per day.
+
+---
+
+The scale is massive, and Neon is built to handle it.
+
+### Purpose-built interfaces for AI Agents.
+
+Neon offers dedicated interfaces that make it easy for AI agents to deploy and manage databases:
+
+**[Model Context Protocol (MCP) server](https://github.com/neondatabase-labs/mcp-server-neon):** Enables any MCP Client to interact with Neon's API using natural language. AI agents can use Neon's MCP server to automate tasks such as creating databases, running SQL queries, and managing database migrations. [Explore our MCP guides](https://neon.tech/blog?query=MCP).
+
+**[@neondatabase/toolkit](https://github.com/neondatabase/toolkit):** A lightweight client designed for AI agents that need to spin up Postgres databases in seconds and run SQL queries. It includes both the Neon TypeScript SDK and the Neon Serverless Driver.
+
 ```jsx showLineNumbers
 import { NeonToolkit } from "@neondatabase/toolkit";
 
@@ -70,15 +98,28 @@ await toolkit.deleteProject(project);
 
 ```
 
-<p className="text-sm tracking-extra-tight text-center text-gray-new-50 mt-3.5">We recently published a package on NPM called <a href="https://github.com/neondatabase/toolkit" target="_blank" rel="noopener noreferrer">@neondatabase/toolkit</a>, merging the already existing packages into a single SDK that is easier for AI agents to consume. <a href="/blog/why-neondatabase-toolkit">Read more</a>.</p>
+### Control resource consumption at scale.
 
-### Neon is 100% Postgres
+Managing thousands of databases requires predictable resource allocation. With Neon’s API, you can:
 
-The most-loved database by developers worldwide is also the best choice for AI agents, thanks to its versatility (it works for almost any app) and the vast amount of resources, examples, and training datasets available.
+- Set limits on compute uptime, CPU usage, data writes, storage, and data transfer
+- Define different quota tiers (e.g. for free, pro, and enterprise plans)
 
-Neon is simply Postgres. Everything an agent knows about Postgres is available in Neon, from extensions to full SQL syntax.
+### Define compute configuration.
 
-<SubscriptionForm title="If you’re building an AI agent, let’s talk!" description="We’re working closely with design partners to make Neon even better for agents, in exchange for discounts and other services. Let’s work together and make your AI project a success." />
+AI agents need flexibility in how they allocate and scale database resources. Neon enables precise compute management:
+
+- Configure autoscaling limits to control min/max CPU allocation
+- Adjust scale to zero behavior
+
+### Monitor the fleet.
+
+Tracking thousands of databases requires visibility:
+
+- Monitor total compute uptime, CPU seconds used, and data written/transferred
+- Notify users before they hit hard limits
+
+<CTA title="Next Steps" description="Meet with our team to explore possibilities for your own project." buttonText="Book time with us" buttonUrl="https://neon.tech/contact-sales" />
 
 
 # Database Per User at Scale
@@ -113,8 +154,10 @@ Companies are managing fleets of thousands of Neon databases with very small tea
 2. **Instant provisioning**: Databases are ready in under a second.
 3. **Autoscaling w/ scale-to-zero**: Neon databases pause automatically to eliminate fixed costs, and CPU/memory scale up and down automatically per-customer.
 
-In Neon, **1 tenant = 1 project**. Our $69 /month pricing plan includes 1,000 projects — [sign up](https://console.neon.tech/signup) and [follow this guide](https://neon.tech/docs/use-cases/database-per-user) to get started.
+In Neon, **1 tenant = 1 project**. Our pricing plans include thousands of projects — follow this guide](https://neon.tech/docs/use-cases/database-per-user) to get started.
 </Admonition>
+
+<CTA title="Get $100 in credits" description="Sign up today and get $100 in credits when you upgrade." buttonText="Claim offer" buttonUrl="https://fyi.neon.tech/credits" />
 
 <Testimonial
 text="We’ve been able to automate virtually all database management tasks via the Neon API. We manage +300,000 projects with minimal engineering overhead"
@@ -201,7 +244,7 @@ author={{
 }}
 />
 
-<CTA title="Next Steps" description="Sign up here to get the Free Plan plus $100 credit. Or&nbsp;<a href='/contact-sales'>talk to our team</a> if you have any questions." buttonText="Get the Free Plan + $100 Credit" buttonUrl="https://fyi.neon.tech/credits" />
+<CTA title="Next Steps" description="Sign up to Neon and get $100 in credits when you upgrade." buttonText="Claim offer" buttonUrl="https://fyi.neon.tech/credits" />
 
 
 # Neon for Development and Testing
@@ -223,8 +266,10 @@ Database branching is a game-changer for dev/test environments: there's no need 
   - You "move" your non-prod environments to Neon (i.e. by syncing a subset of data daily)
   - To build / test / debug in Neon
   - Once the changes are tested, you apply them back to prod
-Try this workflow in Neon right away ([we have a Free plan](https://console.neon.tech/signup)). Follow the steps [in this guide](https://neon.tech/docs/use-cases/dev-test) to set things up.
+Try this workflow in Neon right away. You can follow the steps [in this guide](https://neon.tech/docs/use-cases/dev-test) to set things up.
 </Admonition>
+
+<CTA title="Get $100 in credits" description="Sign up now and get $100 in credits when you upgrade." buttonText="Claim the offer" buttonUrl="https://fyi.neon.tech/credits" />
 
 ## Ephemeral Environments Are Inefficient in Traditional Postgres
 
@@ -449,7 +494,7 @@ url="/blog/how-dispatch-speeds-up-development-with-neon-while-keeping-workloads-
 ---
 
 <Admonition type="note" title="Get $100 in credits">
-Neon offers a Free Plan, and we’ll discount up to $100 off your first invoice when you upgrade. Claim the offer by signing up through [this link](https://fyi.neon.tech/credits).
+Neon offers a Free Plan, and we’ll give you $100 in credits when you first upgrade. Claim the offer by signing up through [this link](https://fyi.neon.tech/credits).
 </Admonition>
 
 ---
@@ -494,6 +539,8 @@ author={{
   company: 'CTO of Comigo.ai',
 }}
 />
+
+<CTA title="Get $100 in credits" description="Sign up now and get $100 in credits when you upgrade." buttonText="Claim offer" buttonUrl="https://fyi.neon.tech/credits" />
 
 ## Key features
 
@@ -624,6 +671,6 @@ Pay via AWS/Azure Marketplace
 
 </DefinitionList>
 
-<CTA title="Next Steps" description="Sign up here to get the Free Plan plus $100 credit. Or&nbsp;<a href='/contact-sales'>talk to our team</a> if you have any questions." buttonText="Get the Free Plan + $100 Credit" buttonUrl="https://fyi.neon.tech/credits" />
+<CTA title="Next Steps" description="Start in our Free Plan and get $100 in credits when you upgrade." buttonText="Claim offer" buttonUrl="https://fyi.neon.tech/credits" />
 
 

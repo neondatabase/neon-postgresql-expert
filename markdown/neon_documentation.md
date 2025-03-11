@@ -489,7 +489,7 @@ redirectFrom:
   - /docs/cloud/getting-started/
   - /docs/cloud/getting_started/
   - /docs/get-started-with-neon/setting-up-a-project
-updatedOn: '2025-02-07T19:29:48.915Z'
+updatedOn: '2025-03-06T11:08:51.319Z'
 ---
 
 <InfoBlock>
@@ -506,7 +506,7 @@ updatedOn: '2025-02-07T19:29:48.915Z'
 </DocsList>
 </InfoBlock>
 
-This tutorial walks you through your first steps using Neon as your Postgres database. You’ll explore the Neon object hierarchy and learn how database branching can simplify your development workflow.
+This tutorial walks you through your first steps using Neon as your Postgres database. You'll explore the Neon object hierarchy and learn how database branching can simplify your development workflow.
 
 ## About branching
 
@@ -541,7 +541,7 @@ After signing up, you'll start with a `main` branch and the empty database `neon
 
 ## Onboarding in the Neon Console
 
-After you sign up, you are guided through some onboarding steps that ask you to create a **Project**. After that, you are presented with the project **Quickstart**.
+After you sign up, you are guided through some onboarding steps that ask you to create a **Project**.
 
 ![onboarding](/docs/get-started-with-neon/onboarding.png)
 
@@ -569,6 +569,8 @@ The first time you open the SQL Editor for a new project, the editor includes pl
 
 For this tutorial, go ahead and create this sample table: click **Run**.
 
+Every query you run in the SQL Editor is automatically saved with an AI-generated description, making it easy to find and reference your work later. For example, the sample table creation above will be saved with a description like "create and populate sample table in Neon". You can view your query history anytime by clicking the **History** button in the SQL Editor.
+
 Or if you want to add the table from the command line and you already have `psql` installed:
 
 ```sql shouldWrap
@@ -579,11 +581,38 @@ INSERT INTO playing_with_neon(name, value)
 
 Your default branch `main` now has a table with some data.
 
+## Try the AI Assistant
+
+Now that you have some sample data, let's explore how the AI Assistant can help you write SQL queries using natural language prompts.
+
+From the SQL Editor, click the **AI Assistant** button in the top-right corner and try a few prompts:
+
+- _Add three more rows to the playing_with_neon table with tech company names_
+- _Show me the highest value in the table_
+- _Calculate the average value grouped by the first letter of the name_
+
+![Neon SQL Editor AI Assistant](/docs/get-started-with-neon/sql_assistant.png)
+
+Each query you run is automatically saved with an AI-generated description, making it easy to find and reuse queries later. For example, when you ask the AI Assistant to add company data, you should see a response like:
+
+```sql
+-- Text to SQL original prompt:
+-- Add three more rows to the playing_with_neon table with tech company names
+INSERT INTO public.playing_with_neon (name, value) VALUES
+('Google', 1000.5),
+('Apple', 1200.75),
+('Microsoft', 950.25);
+```
+
+With the description: "Add tech companies to playing_with_neon table"
+
+Learn more about AI features in the [SQL Editor documentation](/docs/get-started-with-neon/query-with-neon-sql-editor#ai-features).
+
 ## View and modify data in the console
 
 Now that you have some data to play with, let's take a look at it on the **Tables** page in the Neon Console. The **Tables** page, powered by [Drizzle Studio](https://orm.drizzle.team/drizzle-studio/overview), provides a visual interface for exploring and modifying data directly from the console. The integration with Drizzle Studio provides the ability to add, update, and delete records, filter data, add or remove columns, drop or truncate tables, and export data in `.json` and `.csv` formats.
 
-![Tables page Drizzle integration](/docs/relnotes/tables_page_drizzle.png)
+![Tables page Drizzle integration](/docs/get-started-with-neon/tables_drizzle.png)
 
 For a detailed guide on how to interact with your data using the **Tables** page, visit [Managing your data with interactive tables](/docs/guides/tables).
 
@@ -631,7 +660,7 @@ You can create and manage branches from the Neon Console, but here we'll use the
    neon branches create --name dev/alex
    ```
 
-   The command output provides details about your new branch, including the branch ID, compute ID, and the connection URI that you can use to connect to this branch's database.
+   The command output provides details about your new branch, including the branch ID, compute endpoint ID, and the connection URI that you can use to connect to this branch's database.
 
 There are other branch creation options available when using the CLI. See [Create a branch with the CLI](/docs/guides/branching-neon-cli#create-a-branch-with-the-cli) for more.
 
@@ -807,7 +836,7 @@ redirectFrom:
   - /docs/cloud/getting-started/
   - /docs/cloud/getting_started/
   - /docs/get-started-with-neon/setting-up-a-project
-updatedOn: '2025-02-07T19:29:48.915Z'
+updatedOn: '2025-03-06T11:08:51.319Z'
 ---
 
 <InfoBlock>
@@ -824,7 +853,7 @@ updatedOn: '2025-02-07T19:29:48.915Z'
 </DocsList>
 </InfoBlock>
 
-This tutorial walks you through your first steps using Neon as your Postgres database. You’ll explore the Neon object hierarchy and learn how database branching can simplify your development workflow.
+This tutorial walks you through your first steps using Neon as your Postgres database. You'll explore the Neon object hierarchy and learn how database branching can simplify your development workflow.
 
 ## About branching
 
@@ -859,7 +888,7 @@ After signing up, you'll start with a `main` branch and the empty database `neon
 
 ## Onboarding in the Neon Console
 
-After you sign up, you are guided through some onboarding steps that ask you to create a **Project**. After that, you are presented with the project **Quickstart**.
+After you sign up, you are guided through some onboarding steps that ask you to create a **Project**.
 
 ![onboarding](/docs/get-started-with-neon/onboarding.png)
 
@@ -887,6 +916,8 @@ The first time you open the SQL Editor for a new project, the editor includes pl
 
 For this tutorial, go ahead and create this sample table: click **Run**.
 
+Every query you run in the SQL Editor is automatically saved with an AI-generated description, making it easy to find and reference your work later. For example, the sample table creation above will be saved with a description like "create and populate sample table in Neon". You can view your query history anytime by clicking the **History** button in the SQL Editor.
+
 Or if you want to add the table from the command line and you already have `psql` installed:
 
 ```sql shouldWrap
@@ -897,11 +928,38 @@ INSERT INTO playing_with_neon(name, value)
 
 Your default branch `main` now has a table with some data.
 
+## Try the AI Assistant
+
+Now that you have some sample data, let's explore how the AI Assistant can help you write SQL queries using natural language prompts.
+
+From the SQL Editor, click the **AI Assistant** button in the top-right corner and try a few prompts:
+
+- _Add three more rows to the playing_with_neon table with tech company names_
+- _Show me the highest value in the table_
+- _Calculate the average value grouped by the first letter of the name_
+
+![Neon SQL Editor AI Assistant](/docs/get-started-with-neon/sql_assistant.png)
+
+Each query you run is automatically saved with an AI-generated description, making it easy to find and reuse queries later. For example, when you ask the AI Assistant to add company data, you should see a response like:
+
+```sql
+-- Text to SQL original prompt:
+-- Add three more rows to the playing_with_neon table with tech company names
+INSERT INTO public.playing_with_neon (name, value) VALUES
+('Google', 1000.5),
+('Apple', 1200.75),
+('Microsoft', 950.25);
+```
+
+With the description: "Add tech companies to playing_with_neon table"
+
+Learn more about AI features in the [SQL Editor documentation](/docs/get-started-with-neon/query-with-neon-sql-editor#ai-features).
+
 ## View and modify data in the console
 
 Now that you have some data to play with, let's take a look at it on the **Tables** page in the Neon Console. The **Tables** page, powered by [Drizzle Studio](https://orm.drizzle.team/drizzle-studio/overview), provides a visual interface for exploring and modifying data directly from the console. The integration with Drizzle Studio provides the ability to add, update, and delete records, filter data, add or remove columns, drop or truncate tables, and export data in `.json` and `.csv` formats.
 
-![Tables page Drizzle integration](/docs/relnotes/tables_page_drizzle.png)
+![Tables page Drizzle integration](/docs/get-started-with-neon/tables_drizzle.png)
 
 For a detailed guide on how to interact with your data using the **Tables** page, visit [Managing your data with interactive tables](/docs/guides/tables).
 
@@ -949,7 +1007,7 @@ You can create and manage branches from the Neon Console, but here we'll use the
    neon branches create --name dev/alex
    ```
 
-   The command output provides details about your new branch, including the branch ID, compute ID, and the connection URI that you can use to connect to this branch's database.
+   The command output provides details about your new branch, including the branch ID, compute endpoint ID, and the connection URI that you can use to connect to this branch's database.
 
 There are other branch creation options available when using the CLI. See [Create a branch with the CLI](/docs/guides/branching-neon-cli#create-a-branch-with-the-cli) for more.
 
@@ -1739,10 +1797,10 @@ subtitle: Find detailed instructions for connecting to Neon from various languag
 enableTableOfContents: true
 redirectFrom:
   - /docs/guides/guides-intro
-updatedOn: '2024-11-03T11:19:09.438Z'
+updatedOn: '2025-02-24T15:53:13.356Z'
 ---
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/dotnet-npgsql" title=".NET" description="Connect a .NET (C#) application to Neon" icon="dotnet"></a>
 
@@ -1758,7 +1816,7 @@ updatedOn: '2024-11-03T11:19:09.438Z'
 
 <a href="/docs/guides/rust" title="Rust" description="Connect a Rust application to Neon" icon="rust"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # .NET
@@ -2334,7 +2392,7 @@ Refer to the [Connect with JDBC](#connect-with-jdbc) section above for informati
 title: Connect a JavaScript application to Neon
 subtitle: Set up a Neon project in seconds and connect from a JavaScript application
 enableTableOfContents: true
-updatedOn: '2025-01-25T22:10:34.145Z'
+updatedOn: '2025-02-24T15:53:13.358Z'
 ---
 
 Neon Postgres should be accessed from the server-side in JavaScript applications. Using the following JavaScript frameworks, you can easily configure a server-side connection to a Neon Postgres database.
@@ -2343,7 +2401,7 @@ Neon Postgres should be accessed from the server-side in JavaScript applications
 
 Find detailed instructions for connecting to Neon from various JavaScript frameworks.
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
 
@@ -2351,7 +2409,7 @@ Find detailed instructions for connecting to Neon from various JavaScript framew
 
 <a href="/docs/guides/bun" title="Bun" description="Connect a Bun application to Neon" icon="bun"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 <NeedHelp/>
 
@@ -2814,10 +2872,10 @@ You can find the connection details for your database by clicking the **Connect*
 title: Neon framework guides
 subtitle: Find detailed instructions for connecting to Neon from various frameworks
 enableTableOfContents: false
-updatedOn: '2024-11-28T11:50:49.801Z'
+updatedOn: '2025-02-24T15:53:13.354Z'
 ---
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
 
@@ -2851,7 +2909,7 @@ updatedOn: '2024-11-28T11:50:49.801Z'
 
 <a href="/docs/guides/sveltekit" title="Sveltekit" description="Connect a Sveltekit application to Neon" icon="svelte"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Astro
@@ -3675,7 +3733,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/vercel
   - /docs/integrations/vercel
-updatedOn: '2025-02-03T20:41:57.331Z'
+updatedOn: '2025-02-18T15:25:38.976Z'
 ---
 
 Next.js by Vercel is an open-source web development framework that enables React-based web applications. This topic describes how to create a Neon project and access it from a Next.js application.
@@ -3697,7 +3755,7 @@ If you do not have one already, create a Neon project. Save your connection deta
 
 ## Create a Next.js project and add dependencies
 
-1. Create a Next.js project if you do not have one. For instructions, see [Create a Next.js App](https://nextjs.org/learn/basics/create-nextjs-app/setup), in the Vercel documentation.
+1. Create a Next.js project if you do not have one. For instructions, see [Create a Next.js App](https://nextjs.org/docs/app/getting-started/installation), in the Vercel documentation.
 
 2. Add project dependencies using one of the following commands:
 
@@ -4105,8 +4163,7 @@ You can find the source code for the applications described in this guide on Git
 title: Connect Nuxt to Postgres on Neon
 subtitle: Learn how to make server-side queries to Postgres using Nitro API routes
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-03T20:41:57.332Z'
+updatedOn: '2025-03-05T21:09:38.752Z'
 ---
 
 [Nuxt](https://nuxt.com/) is an open-source full-stack meta framework that enables Vue-based web applications. This topic describes how to connect a Nuxt application to a Postgres database on Neon.
@@ -4723,7 +4780,7 @@ PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1
 title: Connect a React application to Neon
 subtitle: Set up a Neon project in seconds and connect from a React application
 enableTableOfContents: true
-updatedOn: '2024-11-28T11:50:49.803Z'
+updatedOn: '2025-02-24T15:53:13.359Z'
 ---
 
 React by Facebook is an open-source front-end JavaScript library for building user interfaces based on components.
@@ -4734,7 +4791,7 @@ Neon Postgres should be accessed from the server side in React applications. Usi
 
 Find detailed instructions for connecting to Neon from various React meta-frameworks.
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/nextjs" title="Next.js" description="Connect a Next.js application to Neon" icon="next-js"></a>
 
@@ -4742,7 +4799,7 @@ Find detailed instructions for connecting to Neon from various React meta-framew
 
 <a href="/docs/guides/sveltekit" title="Sveltekit" description="Connect a Sveltekit application to Neon" icon="svelte"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 <NeedHelp/>
 
@@ -5618,8 +5675,7 @@ For schema migration with SQLAlchemy, see our guide:
 title: Connect a Sveltekit application to Neon
 subtitle: Set up a Neon project in seconds and connect from a Sveltekit application
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-03T20:41:57.338Z'
+updatedOn: '2025-03-05T21:09:38.752Z'
 ---
 
 Sveltekit is a modern JavaScript framework that compiles your code to tiny, framework-less vanilla JS. This guide explains how to connect Sveltekit with Neon using a secure server-side request.
@@ -5933,7 +5989,7 @@ Optimize your connections by enabling connection pooling.
 title: Choosing your driver and connection type
 subtitle: How to select the right driver and connection type for your application
 enableTableOfContents: true
-updatedOn: '2025-01-31T21:06:22.108Z'
+updatedOn: '2025-03-09T18:17:39.110Z'
 ---
 
 When setting up your application’s connection to your Neon Postgres database, you need to make two main choices:
@@ -5971,10 +6027,6 @@ If you are using the serverless driver, you also need to choose whether to query
 
   If you require session or interactive transaction support or compatibility with [node-postgres](https://node-postgres.com/) (the popular **npm** `pg` package), use WebSockets. See [Use the driver over WebSockets](/docs/serverless/serverless-driver#use-the-driver-over-websockets).
 
-<Admonition type="note">
-We are working on automatic switching between HTTP and WebSocket as needed. Check our [roadmap](/docs/introduction/roadmap) to see what's coming soon and our Friday [Changelog](/docs/changelog) for the features-of-the-week.
-</Admonition>
-
 ### Next, choose your connection type: direct or pooled
 
 You then need to decide whether to use direct connections or pooled connections (using PgBouncer for Neon-side pooling):
@@ -5988,7 +6040,7 @@ You then need to decide whether to use direct connections or pooled connections 
   If your application is focused mainly on tasks like migrations or administrative operations that require stable and long-lived connections, use an unpooled connection.
 
 <Admonition type="note">
-Connection pooling is not a magic bullet. PgBouncer can keep many application connections open (up to 10,000) concurrently, but only a limited number of these can be actively querying the Postgres server at any given time. For example, 64 active backend connections (transactions between PgBouncer and Postgres) per user-database pair, as determined by the PgBouncer's `default_pool_size` setting, mean that Postgres user `alex` can hold up to 64 connections to a single database at one time.
+PgBouncer can keep many application connections open (up to 10,000) concurrently, but only a certain number of these can be actively querying the Postgres server at any given time. This number is defined by the PgBouncer `default_pool_size` setting. See [Neon PgBouncer configuration settings](/docs/connect/connection-pooling#neon-pgbouncer-configuration-settings) for details.
 </Admonition>
 
 For more information on these choices, see:
@@ -6387,7 +6439,7 @@ For additional details, see [Options and configuration](https://github.com/neond
 
 The `transaction(queriesOrFn, options)` function is exposed as a property on the query function. It allows multiple queries to be executed within a single, non-interactive transaction.
 
-The first argument to `transaction(), queriesOrFn`, is either an array of queries or a non-async function that receives a query function as its argument and returns an array of queries.
+The first argument to `transaction()`, `queriesOrFn`, is either an array of queries or a non-async function that receives a query function as its argument and returns an array of queries.
 
 The array-of-queries case looks like this:
 
@@ -6414,7 +6466,7 @@ const [authors, tags] = await neon(process.env.DATABASE_URL).transaction((txn) =
 ]);
 ```
 
-The optional second argument to `transaction()`, `options`, has the same keys as the options to the ordinary query function -- `arrayMode`, `fullResults` and `fetchOptions` — plus three additional keys that concern the transaction configuration. These transaction-related keys are: `isolationMode`, `readOnly` and `deferrable`.
+The optional second argument to `transaction()`, `options`, has the same keys as the options to the ordinary query function — `arrayMode`, `fullResults` and `fetchOptions` — plus three additional keys that concern the transaction configuration. These transaction-related keys are: `isolationMode`, `readOnly` and `deferrable`.
 
 Note that options **cannot** be supplied for individual queries within a transaction. Query and transaction options must instead be passed as the second argument of the `transaction()` function. For example, this `arrayMode` setting is ineffective (and TypeScript won't compile it): `await sql.transaction([sql('SELECT now()', [], { arrayMode: true })])`. Instead, use `await sql.transaction([sql('SELECT now()')], { arrayMode: true })`.
 
@@ -7397,14 +7449,14 @@ subtitle: Learn how connection pooling works in Neon
 enableTableOfContents: true
 redirectFrom:
   - /docs/get-started-with-neon/connection-pooling
-updatedOn: '2025-02-03T20:41:57.301Z'
+updatedOn: '2025-03-09T18:17:39.113Z'
 ---
 
 Neon uses [PgBouncer](https://www.pgbouncer.org/) to support connection pooling, enabling up to 10,000 concurrent connections. PgBouncer is a lightweight connection pooler for Postgres.
 
 ## How to use connection pooling
 
-To use connection pooling with Neon, use a pooled connection string instead of a regular connection string. A pooled connection string adds the `-pooler` option to your compute ID, as shown below:
+To use connection pooling with Neon, use a pooled connection string instead of a regular connection string. A pooled connection string adds the `-pooler` option to your endpoint ID, as shown below:
 
 ```text shouldWrap
 postgresql://alex:AbC123dEf@ep-cool-darkness-123456-pooler.us-east-2.aws.neon.tech/dbname?sslmode=require
@@ -7420,7 +7472,7 @@ The `-pooler` option routes the connection to a connection pooling port at the N
 
 ## Connection limits without connection pooling
 
-Each Postgres connection creates a new process in the operating system, which consumes resources. Postgres limits the number of open connections for this reason. The Postgres connection limit is defined by the Postgres `max_connections` parameter. In Neon, `max_connections` is set according to your compute size. However, if you are using Neon's Autoscaling feature, `max_connections` is determined by both your minimum and maximum compute size — you can find the formula here: [Parameter settings that differ by compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size).
+Each Postgres connection creates a new process in the operating system, which consumes resources. Postgres limits the number of open connections for this reason. The Postgres connection limit is defined by the Postgres `max_connections` parameter. In Neon, `max_connections` is set according to your compute size or autoscaling configuration — you can find the formula here: [Parameter settings that differ by compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size).
 
 | Compute size | vCPU | RAM    | max_connections |
 | :----------- | :--- | :----- | :-------------- |
@@ -7482,16 +7534,17 @@ Even with the largest compute size, the `max_connections` limit may not be suffi
 
 ## Connection pooling
 
-Some applications open numerous connections, with most eventually becoming inactive. This behavior can often be attributed to database driver limitations, running many instances of an application, or applications with serverless functions. With regular Postgres, new connections are rejected when reaching the `max_connections` limit. To overcome this limitation, Neon supports connection pooling using [PgBouncer](https://www.pgbouncer.org/), which allows Neon to support up to 10,000 concurrent connections to the pooler endpoint.
+Some applications open numerous connections, with most eventually becoming inactive. This behavior can often be attributed to database driver limitations, running many instances of an application, or applications with serverless functions. With regular Postgres, new connections are rejected when reaching the `max_connections` limit. To overcome this limitation, Neon supports connection pooling using [PgBouncer](https://www.pgbouncer.org/), which allows Neon to support up to 10,000 concurrent connections.
 
-The use of connection pooling, however, is not a magic bullet: As the name implies, connections to the pooler endpoint together share a pool of connections to the normal Postgres endpoint, so they still consume some connections to the main Postgres instance.
+Connection pooling, however, is not a magic bullet: As the name implies, connections share a pool of connections to Postgres — a pool of connections sitting in front of a limited number of direct connections to Postgres.
 
-To ensure that direct access to Postgres is still possible for administrative tasks or similar, the pooler is configured to only open up to [`default_pool_size`](#neon-pgbouncer-configuration-settings) to Postgres for each user to each database. For example, if `default_pool_size` is 64, there can be only 64 active connections from role `alex` to the `neondb` database through the pooler. All other connections by `alex` to the `neondb` database will have to wait for one of those 64 active connections to complete their transactions before the next connection's work is started.  
-At the same time, role `dana` will also be able to connect to the `neondb` database through the pooler and have up to 64 concurrent active transactions across 64 connections, assuming the endpoint started with a high enough maximum Neon compute size to have a high enough `max_connections` setting to support those 128 concurrent connections from the two roles.
+To ensure that direct access to Postgres is still possible for administrative tasks or similar, the pooler is configured to only open up a certain number of direct Postgres connections for each user to each database. This number of direct Postgres connections is determined by the PgBouncer [`default_pool_size`](#neon-pgbouncer-configuration-settings) setting, which is in turn determined by your compute's `max_connections` setting. For example, if `default_pool_size` is _100_, there can be only _100_ active connections from role `alex` to any particular database through the pooler. All other connections by `alex` to that database will have to wait for one of those _100_ active connections to complete their transactions before the next connection's work is started.
 
-Similarly, even if role `alex` has 64 concurrently active transactions through the pooler to the `neondb` database, that role can still start up to 64 concurrent transactions in the `alex_db` database (a different database) when connected through the pooler; but again, only if the Postgres `max_connections` limit can support the number of connections managed by the pooler.
+At the same time, role `dana` will also be able to connect to the same database database through the pooler and have up to _100_ concurrent active transactions across the same number of connections.
 
-For further information, see [PgBouncer](#pgbouncer).
+Similarly, even if role `alex` has _100_ concurrently active transactions through the pooler to the same database database, that role can still start up to _100_ concurrent transactions to a different database when connected through the pooler.
+
+The `max_connections` setting still applies for direct Postgres connections.
 
 <Admonition type="important">
 You will not be able to get interactive results from all 10,000 connections at the same time. Connections to the pooler endpoint still consume connections on the main Postgres endpoint: PgBouncer forwards operations from a role's connections through its own pool of connections to Postgres, and adaptively adds more connections to Postgres as needed by other concurrently active role connections. The 10,000 connection limit is therefore most useful for "serverless" applications and application-side connection pools that have many open connections but infrequent and short [transactions](/docs/postgresql/query-reference#transactions).
@@ -7520,7 +7573,7 @@ The following list describes each setting. For a full explanation of each parame
 
 - `pool_mode=transaction`: The pooling mode PgBouncer uses, set to `transaction` pooling.
 - `max_client_conn=10000`: Maximum number of client connections allowed.
-- `default_pool_size`: Default number of server connections to allow per user/database pair.
+- `default_pool_size`: Default number of server connections to allow per user/database pair. The formula is 0.9 \* `max_connections`. For `max_connections` details, see [Parameter settings](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size).
 - `max_prepared_statements=0`: Maximum number of prepared statements a connection is allowed to have at the same time. `0` means prepared statements are disabled.
 - `query_wait_timeout=120`: Maximum time queries are allowed to spend waiting for execution. Neon uses the default setting of `120` seconds.
 
@@ -8199,7 +8252,7 @@ subtitle: Learn how to migrate data to Neon Postgres from different database pro
 redirectFrom:
   - /docs/import/import-intro
 enableTableOfContents: true
-updatedOn: '2025-02-11T15:10:57.065Z'
+updatedOn: '2025-03-06T19:30:39.636Z'
 ---
 
 Find instructions for migrating data from Postgres, CSV, other Neon projects, and other database providers. For near-zero downtime data migrations from other Postgres providers, consider using logical replication. Additionally, if you're new to Neon and want to try it out, our sample data guide provides datasets for exploration and testing.
@@ -8212,7 +8265,7 @@ If you're planning to migrate a production workload to Neon, let us know&#8212;w
 
 <DetailIconCards>
 
-<a href="/docs/import/migration-assistant" description="Move your existing database to Neon using our guided migration tool" icon="neon">Neon Migration Assistant</a>
+<a href="/docs/import/import-data-assistant" description="Move your existing database to Neon using our guided migration tool" icon="neon">Import Data Assistant</a>
 
 <a href="/docs/import/migrate-from-postgres" description="Migrate data from another Postgres database using pg_dump and pg_restore" icon="postgres">Migrate with pg_dump and pg_restore</a>
 
@@ -8246,7 +8299,7 @@ If you're planning to migrate a production workload to Neon, let us know&#8212;w
 
 Postgres logical replication in Neon provides an efficient way to migrate data from other Postgres providers with minimal downtime. By replicating data in real-time, this method allows you to transition your applications to Neon without interrupting your services. Please refer to our logical replication guides for instructions.
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/logical-replication-alloydb" title="AlloyDB" description="Replicate data from AlloyDB to Neon" icon="alloydb"></a>
 
@@ -8262,21 +8315,23 @@ Postgres logical replication in Neon provides an efficient way to migrate data f
 
 <a href="/docs/import/migrate-from-azure-postgres" title="Azure PostgreSQL" description="Replicate data from Azure PostgreSQL to Neon" icon="azure"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Import utilities
 
-# Migration Assistant
+# Import Data Assistant
 
 ---
-title: Neon Migration Assistant
+title: Import Data Assistant
 subtitle: Move your existing database to Neon using our guided tool
 enableTableOfContents: true
-updatedOn: '2025-01-24T20:21:43.511Z'
+updatedOn: '2025-03-06T19:30:39.633Z'
+redirectFrom:
+  - /docs/import/migration-assistant
 ---
 
-When you're ready to move your data to Neon, our Migration Assistant can help. You need only the connection string to your existing database to get started.
+When you're ready to move your data to Neon, our Import Data Assistant can help. You need only the connection string to your existing database to get started.
 
 <FeatureBeta/>
 
@@ -8286,7 +8341,7 @@ Enter your current database connection string, and the Assistant will:
 
 1. Run some preliminary checks on your database. If necessary, you'll be prompted to make changes to your source database before proceeding. Note that these are information checks only; the Assistant does not make any changes to your source database.
 1. Based on these initial checks, the Assistant tries to create a Neon project that best matches your environment, such as region and Postgres version.
-1. The Migration Assistant provides `pg_dump` and `pg_restore` commands to transfer your data, pre-populated with the correct connection strings.
+1. The Import Data Assistant provides `pg_dump` and `pg_restore` commands to transfer your data, pre-populated with the correct connection strings.
 
 Future versions will add more automation to these steps, and also add support for **logical replication** to help minimize downtime during larger transfers.
 
@@ -10460,8 +10515,7 @@ title: Replicate data from Aurora PostgreSQL
 subtitle: Learn how to replicate data from Aurora PostgreSQL to Neon
 enableTableOfContents: true
 isDraft: false
-tag: new
-updatedOn: '2025-02-14T17:05:09.997Z'
+updatedOn: '2025-03-05T21:09:38.751Z'
 ---
 
 <MigrationAssistant/>
@@ -11689,8 +11743,7 @@ title: Replicate data from Supabase
 subtitle: Learn how to replicate data from Supabase to Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-14T17:05:10.002Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.752Z'
 ---
 
 This guide describes how to replicate data from Supabase to Neon using native Postgres logical replication. The steps in this guide follow those described in [Replicate to another Postgres database using Logical Replication](https://supabase.com/docs/guides/database/postgres/setup-replication-external), in the _Supabase documentation_.
@@ -12856,30 +12909,30 @@ For more, see [Session context](/docs/reference/compatibility#session-context).
 title: High Availability (HA) in Neon
 subtitle: Understanding Neon's approach to High Availability
 enableTableOfContents: true
-updatedOn: '2024-10-08T17:24:35.409Z'
+updatedOn: '2025-02-21T19:10:29.546Z'
 ---
 
-At Neon, our serverless architecture is resilient by default, with the separation of storage from compute giving us flexibility in designing High Availability (HA) solutions for each layer.
+At Neon, our serverless architecture takes a different approach to high availability. Instead of maintaining idle standby compute replicas, we achieve multi-AZ resilience through our separation of storage and compute.
 
 ![Neon architecture diagram](/docs/introduction/neon_architecture_4.jpg)
 
-Based on this separation, we can break HA into two main parts:
+Based on this separation, we can break our approach into two main parts:
 
 - **Storage redundancy** &#8212; _Protecting both your long-term and active data_
 
   On the storage side, all data is backed by cloud object storage for long-term safety, while Pageserver and Safekeeper services are distributed across [Availability Zones](https://en.wikipedia.org/wiki/Availability_zone) to provide redundancy for the cached data used by compute.
 
-- **Compute resiliency** &#8212; _Keeping your application continuously connected_
+- **Compute resiliency** &#8212; _Keeping your application running_
 
-  Our architecture scales to handle traffic spikes and automatically restarts your compute if Postgres crashes or your compute becomes unavailable.
+  Our architecture scales to handle traffic spikes and restarts or reschedules compute instances when issues occur, with recovery times typically ranging from a few seconds to a few minutes. While this means your application needs to handle brief disconnections, it provides cost efficiency by eliminating the need for continuously running standby compute instances.
 
 ## Storage redundancy
 
-By distributing storage components across multiple Availability Zones (AZs), Neon ensures both data durability and operational continuity.
+By distributing storage components across multiple Availability Zones (AZs), Neon ensures both data durability and continuous data access.
 
 ### General storage architecture
 
-This diagram shows a simplified view of how failures of Safekeeper or Pageserver services are recovered across Availability Zones:
+This diagram shows how Neon handles Safekeeper or Pageserver service recovery across Availability Zones:
 
 ![HA storage failover](/docs/introduction/HA-storage-failover.png)
 
@@ -12897,29 +12950,65 @@ In this architecture:
 
 - **Object storage**
 
-  The primary, long-term copy of your data resides in **cloud object storage**, with **99.999999999%** durability, ensuring protection against permanent data loss in the event of Pageserver or Safekeeper failure.
+  Your data's primary, long-term storage is in **cloud object storage**, with **99.999999999%** durability, protecting against data loss regardless of Pageserver or Safekeeper status.
 
-## Compute resiliency
+#### Recap of storage recovery times
 
-While the compute layer doesn’t provide traditional high availability, it’s built for resiliency and quick recovery from failures. A Neon compute is stateless, meaning failures do not affect your data. In the most common compute failures, _your connection remains stable_. However, as with any stateless service, your application should be configured to reconnect automatically. Downtime usually lasts seconds, and your connection string stays the same.
+Here's a summary of how different storage components handle and recover from failures:
 
-### Compute endpoints as metadata
+| Component      | Failure impact                                 | Recovery mechanism                  | Recovery time |
+| -------------- | ---------------------------------------------- | ----------------------------------- | ------------- |
+| Safekeeper     | WAL writes continue to other Safekeepers       | Automatic redistribution across AZs | Seconds       |
+| Pageserver     | Read requests automatically route to secondary | Automatic failover to secondary     | Seconds       |
+| Object storage | No impact - 99.999999999% durability           | Multi-AZ redundancy built-in        | Immediate     |
 
-Think of your compute endpoint as metadata — with your connection string being the core element. The endpoint isn't permanently tied to any specific resource but can be reassigned as needed. When you first connect to your database, Neon assigns a pre-created VM from a pool and attaches your compute endpoint to this VM.
+## Compute failover
 
-#### Postgres failure
+Our serverless architecture manages compute failures through rapid recovery and automatic traffic redirection, without the need to maintain idle standby replicas. Because compute instances are stateless, failures don't affect your data, and your connection string remains unchanged. The system typically resolves issues within seconds to minutes, depending on the type of failure. However, your application should be configured to handle brief disconnections and reconnect automatically.
+
+### Compute endpoints are ephemeral
+
+Your compute endpoint exists essentially as metadata — with your connection string being the core element. This design means endpoints can be instantly reassigned to new compute resources without changing your application's configuration. When you first connect, Neon assigns your endpoint to an available VM from our ready-to-use pool, eliminating traditional provisioning delays.
+
+### Postgres failure
 
 Postgres runs inside the VM. If Postgres crashes, an internal Neon process detects the issue and automatically restarts Postgres. This recovery process typically completes within a few seconds.
 
 ![Postgres restarting after failure](/docs/introduction/postgres_fails.png)
 
-#### VM failure
+### VM failure
 
 In rarer cases, the VM itself may fail due to issues like a kernel panic or the host's termination. When this happens, Neon recreates the VM and reattaches your compute endpoint. This process may take a little longer than restarting Postgres, but it still typically resolves in seconds.
 
 ![VM restarting after failure](/docs/introduction/vm_fails.png)
 
-### Impact on session data after a failure?
+### Unresponsive endpoints
+
+If a compute endpoint becomes unhealthy or unresponsive, we will automatically detect and reattach it to a new compute after 5 minutes. Your application may experience connectivity issues until the endpoint is restored.
+
+### Node failures
+
+Kubernetes nodes are the underlying infrastructure hosting multiple compute instances. When a node becomes unavailable, Neon automatically reschedules compute instances to other healthy nodes, a process that typically takes 1-2 minutes. While your data remains safe during this process, compute availability will be temporarily affected until rescheduling is complete.
+
+### Availability Zone failures
+
+Availability Zones are physically separate data centers within a cloud region. When an AZ becomes unavailable, compute instances in that AZ will be automatically rescheduled to healthy AZs. Recovery time typically takes 1-10 minutes, depending on node availability in the destination AZs. Your connection string remains stable, and new connections will be routed to the recovered instance.
+
+Multi-AZ support is available in all regions for recovery purposes. While compute instances run in a single AZ at any given time, storage components are continuously distributed across multiple AZs, and compute can be automatically rescheduled to other AZs if needed.
+
+### Recap of failover times
+
+Here's a summary of how different types of compute failures are handled and their expected recovery times:
+
+| Failure type              | Impact                             | Recovery mechanism                      | Recovery time |
+| ------------------------- | ---------------------------------- | --------------------------------------- | ------------- |
+| Postgres crash            | Brief interruption                 | Automatic restart                       | Seconds       |
+| VM failure                | Brief interruption                 | VM recreation and endpoint reattachment | Seconds       |
+| Unresponsive endpoint     | Intermittent connectivity          | Automatic recovery initiation           | 5 minutes     |
+| Node failure              | Compute unavailable                | Rescheduling to healthy nodes           | 1-2 minutes   |
+| Availability Zone failure | Compute unavailable in affected AZ | Rescheduling to healthy AZs             | 1-10 minutes  |
+
+### Impact on session data after failover?
 
 While your application should handle reconnections automatically, session-specific data like temporary tables, prepared statements, and the Local File Cache ([LFC](/docs/reference/glossary#local-file-cache)), which stores frequently accessed data, will not persist across a failover. As a result, queries may initially run more slowly until the Postgres memory buffers and cache are rebuilt.
 
@@ -13369,7 +13458,7 @@ Another tool for understanding usage, the `neon_utils` extension provides a `num
 title: Understanding Neon’s autoscaling algorithm
 subtitle: How Neon’s algorithm scales resources to match your workload
 enableTableOfContents: true
-updatedOn: '2024-12-01T21:48:07.691Z'
+updatedOn: '2025-02-18T19:59:08.873Z'
 ---
 
 <InfoBlock>
@@ -13435,7 +13524,7 @@ An important part of the scaling algorithm is estimating your current working se
 Every 20 seconds, the autoscaler-agent checks the working set size across a variety of time windows, ranging from 1 to 60 minutes. The goal is to fit your working set within 75% of the compute’s RAM allocated to the LFC. If your working set exceeds this threshold, the algorithm increases compute size to expand the LFC, keeping frequently accessed data in memory for faster access. To learn more about how we do this, see [Dynamically estimating and scaling Postgres’ working set size](https://neon.tech/blog/dynamically-estimating-and-scaling-postgres-working-set-size).
 
 <Admonition type="note">
-If your dataset is small enough, you can improve performance by keeping the entire dataset in memory. Check your database size on the Monitoring [dashboard](/docs/introduction/monitoring-page#database-size) and adjust your minimum compute size accordingly. For example, a 6.4 GB database can comfortably fit within a compute size of 2 vCPU with 8 GB of RAM (where the LFC can use up to 80% of the available RAM).
+If your dataset is small enough, you can improve performance by keeping the entire dataset in memory. Check your database size on the Monitoring [dashboard](/docs/introduction/monitoring-page#database-size) and adjust your minimum compute size accordingly. For example, a 6.4 GB database can comfortably fit within a compute size of 2 vCPU with 8 GB of RAM (where the LFC can use up to 75% of the available RAM).
 </Admonition>
 
 ## How often the metrics are polled
@@ -13774,7 +13863,7 @@ Find out more about the different branch reset and restore features that Neon pr
 title: Reset from parent
 subtitle: Learn how to reset a branch from its parent
 enableTableOfContents: true
-updatedOn: '2024-10-16T12:24:24.103Z'
+updatedOn: '2025-02-21T18:32:44.263Z'
 ---
 
 Neon's **Reset from parent** feature lets you instantly reset all databases on a branch to the latest schema and data from its parent branch, helping you recover from issues, start on new feature development, or keep the different branches in your environment in sync.
@@ -13796,6 +13885,7 @@ When you reset a branch to its parent, the data and schema is completely replace
 - You can only reset a branch to the latest data from its parent. Point-in-time resets based on timestamp or LSN are possible using [Branch Restore](/docs/guides/branch-restore), a similar feature, with some differences: branch restore leaves a backup branch and is in general is intended more for data recovery than development workflow.
 - This reset is a complete overwrite, not a refresh or a merge. Any local changes made to the child branch are lost during this reset.
 - Existing connections will be temporarily interrupted during the reset. However, your connection details _do not change_. All connections are re-established as soon as the reset is done.
+- Root branches (like your project's `main` branch or schema-only branches) cannot be reset because they have no parent branch to reset to.
 
 ## How to Reset from parent
 
@@ -13898,7 +13988,7 @@ redirectFrom:
   - /docs/guides/branching-pitr
   - /docs/guides/branch-refresh
   - /docs/guides/branch-promote
-updatedOn: '2024-10-22T15:41:04.374Z'
+updatedOn: '2025-02-28T11:10:41.825Z'
 ---
 
 With Neon's branch restore capability, you can easily restore a branch to an earlier state in its own or another branch's history. You can use Time Travel Assist to connect to a specific point in your history retention window, where you can run read-only queries to pinpoint the exact moment you need to restore to. You can also use Schema Diff to get a side-by-side, GitHub-style visual comparison of your selected branches before restoring.
@@ -14158,7 +14248,7 @@ There are minimal impacts to billing from the branch restore and Time Travel Ass
 
 ## Limitations
 
-- Deleting backup branches is currently only supported for Early Access users, and it's only supported for backups created by restore operations on root branches. See [Deleting backup branches](#deleting-backup-branches) for details.
+- Deleting backup branches is only supported for backups created by restore operations on root branches. See [Deleting backup branches](#deleting-backup-branches) for details.
 - [Reset from parent](/docs/manage/branches#reset-a-branch-from-parent) restores from the parent branch, which may be a backup branch if you performed a restore operation on the parent branch.
 
   For example, let's say you have a `main` branch with a child development branch `dev/alex`. You are working on `dev/alex` and decide to restore to an earlier point in time to fix something during development. At this point, `dev/alex`'s parent switches from `main` to the backup `dev/alex_old_timestamp`. A day later, you want to refresh `dev/alex` with the latest data from `main`. You can't use **Reset from parent**, since the backup is now the parent. Instead, use **Branch Restore** and select the original parent `main` as the source.
@@ -14337,7 +14427,7 @@ This example shows a branch that is currently `archived`. The `state_changed_at`
 title: Branching with the Neon CLI
 subtitle: Learn how to create and delete branches with the Neon CLI
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.058Z'
+updatedOn: '2025-03-06T11:08:51.320Z'
 ---
 
 The examples in this guide demonstrate creating, viewing, and deleting branches using the Neon CLI. For other branch-related CLI commands, refer to [Neon CLI commands — branches](/docs/reference/cli-branches). This guide also describes how to use the `--api-key` option to authenticate CLI branching commands from the command line.
@@ -14352,7 +14442,7 @@ The examples show the default `table` output format. The Neon CLI also supports 
 ## Create a branch with the CLI
 
 The following Neon CLI command creates a branch. If your Neon account has more than one project, you will be required to specify a project ID using the `--project-id` option. To view the CLI documentation for this command, refer to the [Neon CLI reference](/docs/reference/cli-branches#create).
-The command response includes the branch ID, the compute ID, and and the connection URI for connecting to the branch.
+The command response includes the branch ID, the compute endpoint ID, and and the connection URI for connecting to the branch.
 
 <Admonition type="tip">
 You can use the `--name` option with a `neon branches create` command to specify your own branch name instead of using the name generated by Neon. For example: `neon branches create --name mybranch`. Also, for any Neon CLI command, you can specify `--output json` to change the command output from the default table format to JSON format.
@@ -14821,7 +14911,7 @@ curl --request POST \
 title: Automate branching with GitHub Actions
 subtitle: Create and delete branches with GitHub Actions
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.057Z'
+updatedOn: '2025-03-07T16:35:14.151Z'
 ---
 
 Neon provides the following GitHub Actions for working with Neon branches, which you can add to your CI workflows:
@@ -14840,7 +14930,7 @@ Neon supports a GitHub integration that connects your Neon project to a GitHub r
 This GitHub Action creates a new branch in your Neon project.
 
 <Admonition type="tip" title="GitHub Actions Marketplace">
-You can find this action on the **GitHub Actions Marketplace**: [Neon Database Create Branch Action](https://github.com/marketplace/actions/neon-database-create-branch-action).
+You can find this action on the **GitHub Actions Marketplace**: [Neon Database Create Branch Action](https://github.com/marketplace/actions/neon-create-branch-github-action).
 </Admonition>
 
 ### Prerequisites
@@ -15407,10 +15497,14 @@ curl --request DELETE \
 title: Schema-only branches
 subtitle: Protect sensitive data with schema-only branches
 enableTableOfContents: true
-updatedOn: '2025-02-07T17:55:42.638Z'
+updatedOn: '2025-03-05T17:24:03.376Z'
 ---
 
 <EarlyAccess />
+
+<Admonition type="important">
+The schema-only branch feature is temporarily unavailable while we make updates. Existing schema-only branches will continue to work, but new ones cannot be created. We plan to reenable this feature soon.
+</Admonition>
 
 Neon supports creating schema-only branches, letting you create branches that replicate only the database schema from a source branch — without copying any of the actual data. This feature is ideal for working with confidential information. Instead of duplicating this sensitive data, you can now create a branch with just the database structure and populate it with randomized or anonymized data instead. This provides your team with a secure and compliant environment for developing and testing using Neon branches.
 
@@ -15578,7 +15672,7 @@ isDraft: false
 redirectFrom:
   - /docs/introduction/logical-replication
   - /docs/guides/logical-replication-clickhouse
-updatedOn: '2025-02-14T17:05:09.999Z'
+updatedOn: '2025-02-24T15:53:13.359Z'
 ---
 
 Neon's logical replication feature, available to all Neon users, allows you to replicate data to and from your Neon Postgres database:
@@ -15613,7 +15707,7 @@ To get started, jump into one of our step-by-step logical replication guides.
 
 ## Replicate data from Neon
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/logical-replication-airbyte" title="Airbyte" description="Replicate data from Neon with Airbyte" icon="airbyte"></a>
 
@@ -15643,11 +15737,11 @@ To get started, jump into one of our step-by-step logical replication guides.
 
 <a href="/docs/guides/logical-replication-inngest" title="Inngest" description="Replicate data from Neon to Inngest" icon="inngest"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Replicate data to Neon
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/logical-replication-alloydb" title="AlloyDB" description="Replicate data from AlloyDB to Neon" icon="alloydb"></a>
 
@@ -15665,7 +15759,7 @@ To get started, jump into one of our step-by-step logical replication guides.
 
 <a href="/docs/guides/logical-replication-supabase-to-neon" title="Supabase" description="Replicate data from Supabase to Neon" icon="supabase"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Concepts
@@ -18589,30 +18683,28 @@ subtitle: Learn how to connect to your Neon database via AWS PrivateLink
 enableTableOfContents: true
 redirectFrom:
   - /docs/guides/neon-private-access
-tag: beta
-updatedOn: '2025-01-20T19:57:47.361Z'
+updatedOn: '2025-02-22T09:59:21.105Z'
 ---
 
-The **Neon Private Networking** feature enables secure connections to your Neon databases via [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html), bypassing the open internet for enhanced security.
-
-<Admonition type="note" title="Public Beta">
-This feature is in Public Beta. Any member of a Neon Organization account can apply to participate in this Public Beta by requesting access via the **Organization Settings** page in the Console. Please note that Neon will enable billing for the feature at the end of the Public Beta period.
-
-![Requesting Private Networking Access](/docs/guides/private_networking_request_access.png)
+<Admonition type="comingSoon" title="Private Networking availability">
+Private Networking is available on Neon's [Business](/docs/introduction/plans#business) and [Enterprise](/docs/introduction/plans#enterprise) plans.
 </Admonition>
+
+The **Neon Private Networking** feature enables secure connections to your Neon databases via [AWS PrivateLink](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html), bypassing the open internet for enhanced security.
 
 ## Overview
 
 In a standard setup, the client application connects to a Neon database over the open internet via the Neon proxy.
 
-With **Neon Private Networking**, you can connect to your database via AWS PrivateLink instead of the open internet. In this setup, the client application connects through an [AWS endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html) (provided by Neon) to a Neon proxy instance that is not accessible from the public internet. This endpoint service is available only within the same AWS region as your client application and is restricted to Neon-authorized customers. With **Neon Private Networking**, all traffic between the client application and the Neon database stays within AWS's private network, rather than crossing the public internet.
+With **Neon Private Networking**, you can connect to your database via AWS PrivateLink instead of the open internet. In this setup, the client application connects through an [AWS endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html) (provided by Neon) to a Neon proxy instance that is not accessible from the public internet. This endpoint service is available only within the same AWS region as your client application. With **Neon Private Networking**, all traffic between the client application and the Neon database stays within AWS's private network, rather than crossing the public internet.
 
 ![Neon Private Networking diagram](/docs/guides/neon_private_access.jpg)
 
 ## Prerequisites
 
-- Ensure that your **client application is deployed on AWS** in the same region as the Neon database you plan to connect to. The Private Networking feature is available in all [Neon-supported AWS regions](/docs/introduction/regions#aws-regions). Both your private access client application and Neon database must be in one of these regions.
-- Add a [VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html#concepts-vpc-endpoints) to the AWS Virtual Private Cloud ([VPC](https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html)) where your client application is deployed. The steps are outlined below.
+- You must be a Neon [Business](/docs/introduction/plans#business) and [Enterprise](/docs/introduction/plans#enterprise) account user, and your user account must be [Neon organization](/docs/manage/organizations) Admin account. You'll encounter an access error if you attempt the setup from a personal Neon account or on a Neon plan that does not offer Private Networking.
+- **Ensure that your client application is deployed on AWS in the same region as the Neon database you plan to connect to.** The Private Networking feature is available in all [Neon-supported AWS regions](/docs/introduction/regions#aws-regions). Both your private access client application and Neon database must be in one of these regions.
+- Install the Neon CLI. You will use it to add your VPC endpoint ID to your Neon organization. For installation instructions, see [Neon CLI — Install and connect](/docs/reference/cli-install).
 
 ## Configuration steps
 
@@ -18626,9 +18718,12 @@ To configure Neon Private Networking, perform the following steps:
 
        ![VPC Dashboard](/docs/guides/pl_vpc_dashboard.png)
 
-    1. Optionally, enter a **Name tag** for the endpoint (e.g., `My Neon Private Networking test`).
+    1. Optionally, enter a **Name tag** for the endpoint (e.g., `My Neon Private Networking`).
     1. For **Type**, select the **Endpoint services that use NLBs and GWLBs** category.
-    1. Under **Service settings**, specify the **Service name**. It must be one of the following names, depending on your region:
+
+       ![VPC Create endpoint](/docs/guides/pl_vpc_create_endpoint.png)
+
+    1. Under **Service settings**, specify the **Service name**. It must be one of the following serice names, depending on your region:
 
        - **us-east-1**: `com.amazonaws.vpce.us-east-1.vpce-svc-0de57c578b0e614a9`
        - **us-east-2**: `com.amazonaws.vpce.us-east-2.vpce-svc-010736480bcef5824`
@@ -18638,21 +18733,63 @@ To configure Neon Private Networking, perform the following steps:
        - **ap-southeast-2**: `com.amazonaws.vpce.ap-southeast-2.vpce-svc-031161490f5647f32`
 
     1. Click **Verify service**. If successful, you should see a `Service name verified` message.
+
+        ![VPC Create endpoint](/docs/guides/pl_vpc_service_name_verified.png)
+
+        If not successful, ensure that your service name matches the region where you're creating the VPC endpoint.
+
     1. Select the VPC where your application is deployed.
     1. Add the availability zones and associated subnets you want to support.
     1. Click **Create endpoint** to complete the setup of the endpoint service.
 
-## Provide the VPC Endpoint ID to Neon
+        ![VPC Create endpoint](/docs/guides/pl_vpc_network_settings.png)
 
-    Note the **VPC Endpoint ID** and provide it to Neon. Neon will authorize this VPC Endpoint to access the Neon Private Networking service and will notify you once authorization is complete.
+    1. Note your **VPC Endpoint ID**. You will need it in the next step.
+
+        ![VPC Create endpoint](/docs/guides/pl_vpc_endpoint_id.png)
+
+## Add your VPC Endpoint ID to your Neon organization
+
+    Assign your **VPC Endpoint ID** to your Neon organization. You can do this using the Neon CLI or API.
 
     <Admonition type="note">
-     Please note that you must provide the **VPC Endpoint ID**, not the VPC ID. This step is specific to the Private Preview. In the final version, the allowed VPC Endpoint will be configured through the Neon Console or Neon CLI without any manual involvement by Neon.
+     Please note that you must assign the **VPC Endpoint ID**, not the VPC ID.
     </Admonition>
+
+    <Tabs labels={["CLI", "API"]}>
+
+    <TabItem>
+
+    In the following example, the VCP endpoint ID is assigned to a Neon organization in the specified AWS region using the [neon vpc endpoint](/docs/reference/cli-vpc#the-vpc-endpoint-subcommand) command.
+
+    ```bash shouldWrap
+    neon vpc endpoint assign vpce-1234567890abcdef0 --org-id org-bold-bonus-12345678 --region-id aws-us-east-2
+    ```
+
+    You can find your Neon organization ID in your Neon organization settings, or you can run this Neon CLI command: `neon orgs list`
+
+    </TabItem>
+
+    <TabItem>
+
+    You can use the [Assign or update a VPC endpoint](https://api-docs.neon.tech/reference/assignorganizationvpcendpoint) API to assign a VCP endpoint ID to a Neon organization. You will need to provide your Neon organization ID, region ID, VPC endpoint ID, Neon project ID, and a [Neon API key](https://neon.tech/docs/manage/api-keys).
+
+    ```bash
+    curl --request POST \
+     --url https://console.neon.tech/api/v2/organizations/org-bold-bonus-12345678/vpc/region/aws-us-east-2/vpc_endpoints/vpce-1234567890abcdef0 \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json'
+    ```
+    </TabItem>
+
+    </Tabs>
+
+    Optionally, you can limit access to a Neon project by allowing connections only from a specific VPC endpoint. For instructions, see [Assigning a VPC endpoint restrictions](#assigning-a-vpc-endpoint-restriction).
 
 ## Enable Private DNS
 
-    After Neon authorizes your endpoint (wait for confirmation from Neon), enable private DNS lookup for the endpoint.
+    After adding you VPC endpoint ID to your Neon organization, enable private DNS lookup for the VPC endpoint in AWS.
 
     1. In AWS, select the VPC endpoint you created.
     1. Choose **Modify private DNS name**.
@@ -18666,31 +18803,151 @@ To configure Neon Private Networking, perform the following steps:
 
     To verify that your connection is working correctly, you can perform a DNS lookup on your Neon endpoint hostname from within your AWS VPC. It should resolve to the private IP address of the VPC endpoint.
 
+    For example, if your Neon database connection string is:
+
+    ```bash
+    postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname
+    ```
+
+    You can run the following command from an EC2 instance inside your AWS VPC:
+
+    ```bash
+    nslookup ep-cool-darkness-123456.us-east-2.aws.neon.tech
+    ```
+
 ## Restrict public internet access
 
-    At this point, it's still possible to connect to your Neon database over the public internet using the original Neon database connection string.
+    At this point, it's still possible to connect to a database in your Neon project over the public internet using a database connection string.
 
-    To restrict public internet access via this connection string, use Neon's [IP Allow](/docs/introduction/ip-allow) feature in the Neon Console. For IP Allow configuration instructions, see [Configure IP Allow](/docs/manage/projects#configure-ip-allow).
+    You can restrict public internet access to your Neon project via the Neon CLI or API.
 
-    You can access your **IP Allow** configuration from your Neon's project's **Settings** page.
+    <Tabs labels={["CLI", "API"]}>
 
-    Enter **0.0.0.0** in the allowlist to block all connections over the public internet, and click **Save changes**.
+    <TabItem>
 
-    <Admonition type="note">
-     The Private Networking connection is not affected by this IP Allow configuration.
-    </Admonition>
+    To block access via the Neon CLI, use the [neon projects update](/docs/reference/cli-projects#update) command with the `--block-public-connections` option.
 
-    ![Neon IP Allow configuration](/docs/guides/pl_neon_ip_allow.png)
+    ```bash
+    neon projects update orange-credit-12345678 --block-vpc-connections true
+    ```
 
-    <Admonition type="note">
-     Using the IP allowlist feature for blocking access from the public internet is only for the Private Preview. In the final version of this feature, there will be a dedicated option in the Neon Console for this purpose.
-    </Admonition>
+    In the example above, `orange-credit-12345678` is the Neon project ID. You can find _your_ Neon project ID under your project's settings in the Neon Console, or by running this Neon CLI command: `neon projects list`
+
+    </TabItem>
+
+    <TabItem>
+
+    To block access via the Neon API, use the [Update project](https://api-docs.neon.tech/reference/updateproject) endpoint with the `block_public_connections` settings object attribute.
+
+    ```bash
+    curl --request PATCH \
+     --url https://console.neon.tech/api/v2/projects/orange-credit-12345678 \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json' \
+     --data '
+    {
+    "project": {
+        "settings": {
+        "block_public_connections": true
+        }
+    }
+    }
+    '
+    ```
+
+    </TabItem>
+
+    </Tabs>
 
 </Steps>
 
+## Assigning a VPC endpoint restriction
+
+You can limit access to a Neon project by allowing connections only from specified VPC endpoints. Use the Neon CLI or API to set a restriction.
+
+<Tabs labels={["CLI", "API"]}>
+
+<TabItem>
+
+You can specify a CLI command similar to the following to restrict project access:
+
+```bash
+neon vpc project restrict vpce-1234567890abcdef0 --project-id orange-credit-12345678
+```
+
+You will need to provide the VPC endpoint ID and your Neon project ID. You can find your Neon project ID under your project's settings in the Neon Console, or by running this Neon CLI command: `neon projects list`
+
+After adding a restriction, you can check the status of the VPC endpoint to view the restricted project using the [vpc endpoint status` command](/docs/reference/cli-vpc#the-vpc-endpoint-subcommand). You will need to provide your VPC endpoint ID, region ID, and Neon organization ID.
+
+```bash
+neonctl vpc endpoint status vpce-1234567890abcdef0 --region-id=aws-eu-central-1 --org-id=org-nameless-block-72040075
+┌────────────────────────┬───────┬─────────────────────────┬─────────────────────────────┐
+│ Vpc Endpoint Id        │ State │ Num Restricted Projects │ Example Restricted Projects │
+├────────────────────────┼───────┼─────────────────────────┼─────────────────────────────┤
+│ vpce-1234567890abcdef0 │ new   │ 1                       │ orange-credit-12345678      │
+└────────────────────────┴───────┴─────────────────────────┴─────────────────────────────┘
+```
+
+</TabItem>
+
+<TabItem>
+
+The Neon API supports managing project restrictions using the [Assign or update a VPC endpoint restriction](https://api-docs.neon.tech/reference/assignprojectvpcendpoint) endpoint. You will need to provide your VPC endpoint ID, Neon project ID, and a [Neon API key](https://neon.tech/docs/manage/api-keys).
+
+```bash
+curl --request POST \
+     --url https://console.neon.tech/api/v2/projects/orange-credit-12345678/vpc_endpoints/vpce-1234567890abcdef0 \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json' \
+     --data '{"label":"my_vpc"}'
+```
+
+After adding a restriction, you can check the status of the VPC endpoint to view the restricted project using the [Retrieve VPC endpoint details](https://api-docs.neon.tech/reference/getorganizationvpcendpointdetails) API. You will need to provide your VPC endpoint ID, region ID, Neon organization ID, and a Neon API key.
+
+```bash
+curl --request GET \
+     --url https://console.neon.tech/api/v2/organizations/org-nameless-block-72040075/vpc/region/aws-eu-central-1/vpc_endpoints/vpce-1234567890abcdef0 \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY'
+```
+
+</TabItem>
+
+</Tabs>
+
+## Managing Private Networking using the Neon CLI
+
+You can use the Neon CLI `vpc` command to manage Private Networking configurations in Neon.
+
+The `vpc` command includes `endpoint` and `project` subcommands for managing VPC endpoints and project-level VPC endpoint restrictions:
+
+- **`vpc endpoint`** – List, assign, remove, and retrieve the status of VPC endpoints for a Neon organization.
+- **`vpc project`** – List, configure, or remove VPC endpoint restrictions for specific Neon projects.
+
+For more details and examples, see [Neon CLI commands — vpc](/docs/reference/cli-vpc).
+
+## Managing Private Networking using the Neon API
+
+The Neon API provides endpoints for managing VPC endpoints and project-level VPC endpoint restrictions:
+
+### APIs for managing VPC endpoints
+
+- [List VPC endpoints](https://api-docs.neon.tech/reference/listorganizationvpcendpoints)
+- [Assign or update a VPC endpoint](https://api-docs.neon.tech/reference/assignorganizationvpcendpoint)
+- [Retrieve VPC endpoint configuration details](https://api-docs.neon.tech/reference/getorganizationvpcendpointdetails)
+- [Delete a VPC endpoint](https://api-docs.neon.tech/reference/deleteorganizationvpcendpoint)
+
+### APIs for managing VPC endpoint restrictions
+
+- [Get VPC endpoint restrictions](https://api-docs.neon.tech/reference/listprojectvpcendpoints)
+- [Assign or update a VPC endpoint restriction](https://api-docs.neon.tech/reference/assignprojectvpcendpoint)
+- [Delete a VPC endpoint restriction](https://api-docs.neon.tech/reference/deleteprojectvpcendpoint)
+
 ## Limits
 
-The Private Networking feature supports a maximum of **10 private networking configurations per AWS region**. Supported AWS regions are listed in the preceding section.
+The Private Networking feature supports a maximum of **10 private networking configurations per AWS region**. Supported AWS regions are listed [above](#create-an-aws-vpc-endpoint).
 
 <NeedHelp />
 
@@ -18702,7 +18959,7 @@ title: Platform overview
 enableTableOfContents: true
 subtitle: Find information about managing all aspects of your database using the Neon
   platform
-updatedOn: '2025-02-05T21:06:28.072Z'
+updatedOn: '2025-03-05T21:09:38.755Z'
 ---
 
 ## Access control
@@ -18785,6 +19042,18 @@ Learn how Neon secures your projects and data, and explore the security features
 
 </DetailIconCards>
 
+## Maintenance & updates
+
+<DetailIconCards>
+
+<a href="/docs/manage/maintenance-updates-overview" description="Overview of Neon platform maintenance and compute updates" icon="research">Overview</a>
+
+<a href="/docs/manage/platform-maintenance" description="Find out how Neon manages essential platform maintenance and critical security updates" icon="gui">Platform maintenance</a>
+
+<a href="/docs/manage/updates" description="Learn about updates for Neon computes ond Postgres" icon="import">Updates</a>
+
+</DetailIconCards>
+
 
 # Access control
 
@@ -18794,7 +19063,7 @@ Learn how Neon secures your projects and data, and explore the security features
 title: Accounts
 subtitle: Find out which account type is right for you
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.074Z'
+updatedOn: '2025-03-07T12:50:26.778Z'
 ---
 
 Neon offers two account types for you to choose from:
@@ -18849,9 +19118,9 @@ Here's where to go in the Neon Console to complete these actions:
 | **Delete all projects**     | Go to the **Projects** page and manually [delete](/docs/manage/projects#delete-a-project) each project from **Settings → Delete**.                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | **Downgrade your account**  | Go to **Billing → Change plan** and select **Downgrade to Free plan**. <br/> ![downgrade to free plan](/docs/manage/downgrade_to_free.png)                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
-Once all conditions are met and all your checkmarks show green, you can safely deactivate your account. You'll get a confirmation email soon afterwards. If you change your mind, just log back in within 180 days to reactivate your account with your personal info intact. API keys, however, will not be restored.
+Once all conditions are met and all your checkmarks show green, you can safely deactivate your account. You'll get a confirmation email soon afterwards. If you change your mind, just log back in within 30 days to reactivate your account with your personal info intact. API keys, however, will not be restored.
 
-After 180 days, your account will be permanently removed.
+After 30 days, your account will be permanently removed.
 
 
 # Organizations
@@ -18860,14 +19129,14 @@ After 180 days, your account will be permanently removed.
 title: Organizations
 subtitle: Invite Members to your Organization and collaborate on projects
 enableTableOfContents: true
-updatedOn: '2025-02-13T13:32:35.155Z'
+updatedOn: '2025-02-28T20:32:00.525Z'
 ---
 
 Build your team in Neon with Organizations. Manage all of your team's projects under a single account — with billing, role management, and project collaboration capabilities in one accessible location.
 
 ## About Neon Organizations
 
-In the Neon Console, the Organizations page provides a centralized view of all your team's projects. From there, you can create new projects, manage existing ones, as well as oversee your organization's members and your billing information.
+In the Neon Console, the Organizations page provides a centralized view of all your team's projects. From there, you can create new projects, manage existing ones, as well as oversee your organization's members, your billing information, and access to preview features through the Early Access Program.
 
 ![organizations projects tab](/docs/manage/org_projects.png)
 
@@ -18875,22 +19144,24 @@ In the Neon Console, the Organizations page provides a centralized view of all y
 
 Each organization is made up of three types of users:
 
-- **Admin** — Administrators have access to all projects in the organization. Additionally, admins manage all permissions, invitations, and billing details.
+- **Admin** — Administrators have access to all projects in the organization. Additionally, admins manage all permissions, invitations, billing details, and Early Access Program enrollment.
 - **Members** — Members have access to all the projects that belong to the organization. They need to be invited to the organization by an Admin.
 - **Collaborators** — Collaborators are people given limited access to particular projects. See [Collaborators](/docs/guides/project-collaboration-guide). They do not have access to the Organization dashboard. Projects will appear under the **Shared with you** grouping in their personal account.
 
 Here's a breakdown of what actions each role can take:
 
-| Action                                                                                 | Admin | Member | Collaborator |
-| -------------------------------------------------------------------------------------- | :---: | :----: | :----------: |
-| [Create projects](/docs/manage/orgs-manage#create-and-delete-projects)                 |  ✅   |   ✅   |      ❌      |
-| [Delete projects](/docs/manage/orgs-manage#create-and-delete-projects)                 |  ✅   |   ❌   |      ❌      |
-| [Transfer projects](/docs/manage/orgs-project-transfer)\*                              |  ✅   |   ✅   |      ❌      |
-| Manage [members](/docs/manage/orgs-manage#invite-members)                              |  ✅   |   ❌   |      ❌      |
-| Manage [collaborators](/docs/manage/orgs-manage#invite-collaborators) (share projects) |  ✅   |   ✅   |      ✅      |
-| [Set permissions](/docs/manage/orgs-manage#set-permissions)                            |  ✅   |   ❌   |      ❌      |
-| [Manage billing](/docs/manage/orgs-manage#billing)                                     |  ✅   |   ❌   |      ❌      |
-| [Delete organization](/docs/manage/orgs-manage#delete-an-organization)                 |  ✅   |   ❌   |      ❌      |
+| Action                                                                                       | Admin | Member | Collaborator |
+| -------------------------------------------------------------------------------------------- | :---: | :----: | :----------: |
+| [Create projects](/docs/manage/orgs-manage#create-and-delete-projects)                       |  ✅   |   ✅   |      ❌      |
+| [Delete projects](/docs/manage/orgs-manage#create-and-delete-projects)                       |  ✅   |   ❌   |      ❌      |
+| [Transfer projects](/docs/manage/orgs-project-transfer)\*                                    |  ✅   |   ✅   |      ❌      |
+| Manage [members](/docs/manage/orgs-manage#invite-members)                                    |  ✅   |   ❌   |      ❌      |
+| Manage [collaborators](/docs/manage/orgs-manage#invite-collaborators) (share projects)       |  ✅   |   ✅   |      ✅      |
+| [Set permissions](/docs/manage/orgs-manage#set-permissions)                                  |  ✅   |   ❌   |      ❌      |
+| [Manage billing](/docs/manage/orgs-manage#billing)                                           |  ✅   |   ❌   |      ❌      |
+| [Delete organization](/docs/manage/orgs-manage#delete-an-organization)                       |  ✅   |   ❌   |      ❌      |
+| [Enable Early Access Program](/docs/introduction/roadmap#join-the-neon-early-access-program) |  ✅   |   ❌   |      ❌      |
+| [Install/Remove Neon Auth](/docs/guides/neon-auth)                                           |  ✅   |   ❌   |      ❌      |
 
 \* Some restrictions apply. See the [Transfer projects to an organization](/docs/manage/orgs-project-transfer) for details.
 
@@ -18975,14 +19246,14 @@ If you've got feature requests or feedback about what you'd like to see from Org
 title: Organizations
 subtitle: Invite Members to your Organization and collaborate on projects
 enableTableOfContents: true
-updatedOn: '2025-02-13T13:32:35.155Z'
+updatedOn: '2025-02-28T20:32:00.525Z'
 ---
 
 Build your team in Neon with Organizations. Manage all of your team's projects under a single account — with billing, role management, and project collaboration capabilities in one accessible location.
 
 ## About Neon Organizations
 
-In the Neon Console, the Organizations page provides a centralized view of all your team's projects. From there, you can create new projects, manage existing ones, as well as oversee your organization's members and your billing information.
+In the Neon Console, the Organizations page provides a centralized view of all your team's projects. From there, you can create new projects, manage existing ones, as well as oversee your organization's members, your billing information, and access to preview features through the Early Access Program.
 
 ![organizations projects tab](/docs/manage/org_projects.png)
 
@@ -18990,22 +19261,24 @@ In the Neon Console, the Organizations page provides a centralized view of all y
 
 Each organization is made up of three types of users:
 
-- **Admin** — Administrators have access to all projects in the organization. Additionally, admins manage all permissions, invitations, and billing details.
+- **Admin** — Administrators have access to all projects in the organization. Additionally, admins manage all permissions, invitations, billing details, and Early Access Program enrollment.
 - **Members** — Members have access to all the projects that belong to the organization. They need to be invited to the organization by an Admin.
 - **Collaborators** — Collaborators are people given limited access to particular projects. See [Collaborators](/docs/guides/project-collaboration-guide). They do not have access to the Organization dashboard. Projects will appear under the **Shared with you** grouping in their personal account.
 
 Here's a breakdown of what actions each role can take:
 
-| Action                                                                                 | Admin | Member | Collaborator |
-| -------------------------------------------------------------------------------------- | :---: | :----: | :----------: |
-| [Create projects](/docs/manage/orgs-manage#create-and-delete-projects)                 |  ✅   |   ✅   |      ❌      |
-| [Delete projects](/docs/manage/orgs-manage#create-and-delete-projects)                 |  ✅   |   ❌   |      ❌      |
-| [Transfer projects](/docs/manage/orgs-project-transfer)\*                              |  ✅   |   ✅   |      ❌      |
-| Manage [members](/docs/manage/orgs-manage#invite-members)                              |  ✅   |   ❌   |      ❌      |
-| Manage [collaborators](/docs/manage/orgs-manage#invite-collaborators) (share projects) |  ✅   |   ✅   |      ✅      |
-| [Set permissions](/docs/manage/orgs-manage#set-permissions)                            |  ✅   |   ❌   |      ❌      |
-| [Manage billing](/docs/manage/orgs-manage#billing)                                     |  ✅   |   ❌   |      ❌      |
-| [Delete organization](/docs/manage/orgs-manage#delete-an-organization)                 |  ✅   |   ❌   |      ❌      |
+| Action                                                                                       | Admin | Member | Collaborator |
+| -------------------------------------------------------------------------------------------- | :---: | :----: | :----------: |
+| [Create projects](/docs/manage/orgs-manage#create-and-delete-projects)                       |  ✅   |   ✅   |      ❌      |
+| [Delete projects](/docs/manage/orgs-manage#create-and-delete-projects)                       |  ✅   |   ❌   |      ❌      |
+| [Transfer projects](/docs/manage/orgs-project-transfer)\*                                    |  ✅   |   ✅   |      ❌      |
+| Manage [members](/docs/manage/orgs-manage#invite-members)                                    |  ✅   |   ❌   |      ❌      |
+| Manage [collaborators](/docs/manage/orgs-manage#invite-collaborators) (share projects)       |  ✅   |   ✅   |      ✅      |
+| [Set permissions](/docs/manage/orgs-manage#set-permissions)                                  |  ✅   |   ❌   |      ❌      |
+| [Manage billing](/docs/manage/orgs-manage#billing)                                           |  ✅   |   ❌   |      ❌      |
+| [Delete organization](/docs/manage/orgs-manage#delete-an-organization)                       |  ✅   |   ❌   |      ❌      |
+| [Enable Early Access Program](/docs/introduction/roadmap#join-the-neon-early-access-program) |  ✅   |   ❌   |      ❌      |
+| [Install/Remove Neon Auth](/docs/guides/neon-auth)                                           |  ✅   |   ❌   |      ❌      |
 
 \* Some restrictions apply. See the [Transfer projects to an organization](/docs/manage/orgs-project-transfer) for details.
 
@@ -19234,13 +19507,13 @@ For detailed information on pricing and plans, refer to [Neon plans](/docs/intro
 ---
 title: Transfer projects to an organization
 enableTableOfContents: true
-updatedOn: '2025-02-13T13:32:35.159Z'
+updatedOn: '2025-02-28T20:32:00.526Z'
 ---
 
 As an Admin or Member of an organization, you can transfer projects in the following ways:
 
 - From personal accounts to organizations
-- Between different organizations (via API)
+- Between different organizations
 
 This guide explains how to transfer projects using both the UI and API methods, and covers important requirements and limitations.
 
@@ -19260,7 +19533,8 @@ The number of projects you can transfer is limited by the target Organization pl
 
 ### Requirements
 
-- Minimum **Member** role in the target Organization. **Admin** role if tranferring from an organization.
+- Minimum **Member** role in the target Organization
+- **Admin** role in the source organization when transferring between organizations
 - Compatible billing plans (can transfer from higher to lower tier, not vice versa)
 - Projects must not have GitHub or Vercel integrations
 - Vercel-managed organizations are not supported
@@ -19272,11 +19546,15 @@ The number of projects you can transfer is limited by the target Organization pl
 
 ## Transfer from the Neon Console
 
-You can transfer individual projects by selecting each project to transfer from your personal account, or you can transfer in bulk by starting from the destination Organization.
+You can transfer projects in a few ways:
+
+- Individual projects from your personal account to an organization
+- Individual projects between organizations
+- Bulk transfers from your personal account to an organization
 
 ### Transfer a single project
 
-Make sure you're in your personal account. Find the project you want to transfer, then start the Transfer from under projects settings.
+From your project's **Settings** page, select the **Transfer** tab and choose a destination from your member organizations. For organization projects, Admin permissions are required to initiate the transfer.
 
 ![transfer single project](/docs/manage/transfer_single.gif)
 
@@ -19345,7 +19623,7 @@ And here's a sample response showing incompatible subscription types:
 
 Use the Organization Transfer API to transfer projects between two specified organization accounts.
 
-`POST /organizations/{destination_org_id}/projects/transfer`
+`POST /organizations/{source_org_id}/projects/transfer`
 
 This requires:
 
@@ -19360,7 +19638,7 @@ This requires:
 
 ```bash
 curl --request POST \
-     --url 'https://console.neon.tech/api/v2/organizations/{destination_org_id}/projects/transfer' \
+     --url 'https://console.neon.tech/api/v2/organizations/{source_org_id}/projects/transfer' \
      --header 'accept: application/json' \
      --header 'authorization: Bearer $PERSONAL_API_KEY' \
      --header 'content-type: application/json' \
@@ -19368,12 +19646,14 @@ curl --request POST \
   "project_ids": [
     "project-id-1",
     "project-id-2"
-  ]
+  ],
+  "destination_org_id": "destination-org-id"
 }'
 ```
 
 Where:
 
+- `source_org_id` (in URL path) is the organization where projects currently reside
 - `destination_org_id` is the organization receiving the projects
 - `project_ids` is an array of up to 400 project IDs to transfer
 
@@ -22136,7 +22416,7 @@ You can verify that a branch is deleted by listing the branches for your project
 title: Manage computes
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-10T14:29:38.087Z'
+updatedOn: '2025-03-06T11:08:51.321Z'
 ---
 
 A compute is a virtualized service that runs applications. In Neon, a compute runs Postgres.
@@ -22166,7 +22446,7 @@ Compute details shown on the **Computes** tab include:
 
 - The type of compute, which can be **Primary** (read-write) or **Read Replica** (read-only).
 - The compute status, typically **Active** or **Idle**.
-- **Compute ID**: The compute ID, which always starts with an `ep-` prefix; for example: `ep-quiet-butterfly-w2qres1h`
+- **Compute ID**: The compute endpoints ID, which always starts with an `ep-` prefix; for example: `ep-quiet-butterfly-w2qres1h`
 - **Size**: The size of the compute. Shows autoscaling minimum and maximum vCPU values if autoscaling is enabled.
 - **Last active**: The date and time the compute was last active.
 
@@ -22273,56 +22553,49 @@ For information about monitoring your compute as it scales up and down, see [Mon
 
 The size of your compute determines the amount of frequently accessed data you can cache in memory and the maximum number of simultaneous connections you can support. As a result, if your compute size is too small, this can lead to suboptimal query performance and connection limit issues.
 
-In Postgres, the `shared_buffers` setting defines the amount of data that can be held in memory. In Neon, the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size) and Neon also uses a Local File Cache (LFC) to extend the amount of memory available for caching data. The LFC can use up to 80% of your compute's RAM.
+In Postgres, the `shared_buffers` setting defines the amount of data that can be held in memory. In Neon, the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size) and Neon also uses a Local File Cache (LFC) to extend the amount of memory available for caching data. The LFC can use up to 75% of your compute's RAM.
 
 The Postgres `max_connections` setting defines your compute's maximum simultaneous connection limit and is set according to your compute size configuration.
 
-The following table outlines the vCPU, RAM, LFC size (80% of RAM), and the `max_connections` limit for each compute size that Neon supports. To understand how `max_connections` is determined for an autoscaling configuration, see [Parameter settings that differ by compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size).
+The following table outlines the vCPU, RAM, LFC size (75% of RAM), and the `max_connections` limit for each compute size that Neon supports. To understand how `max_connections` is determined for an autoscaling configuration, see [Parameter settings that differ by compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size).
 
 <Admonition type="note">
 Compute size support differs by [Neon plan](https://neon.tech/docs/introduction/plans). Autoscaling is supported up to 16 CU. Neon supports fixed compute sizes (no autoscaling) for computes sizes larger than 16 CU.
 </Admonition>
 
-| Compute Size (CU) | vCPU | RAM    | LFC size | max_connections |
-| ----------------- | ---- | ------ | -------- | --------------- |
-| 0.25              | 0.25 | 1 GB   | 0.8 GB   | 112             |
-| 0.50              | 0.50 | 2 GB   | 1.6 GB   | 225             |
-| 1                 | 1    | 4 GB   | 3.2 GB   | 450             |
-| 2                 | 2    | 8 GB   | 6.4 GB   | 901             |
-| 3                 | 3    | 12 GB  | 9.6 GB   | 1351            |
-| 4                 | 4    | 16 GB  | 12.8 GB  | 1802            |
-| 5                 | 5    | 20 GB  | 16 GB    | 2253            |
-| 6                 | 6    | 24 GB  | 19.2 GB  | 2703            |
-| 7                 | 7    | 28 GB  | 22.4 GB  | 3154            |
-| 8                 | 8    | 32 GB  | 25.6 GB  | 3604            |
-| 9                 | 9    | 36 GB  | 28.8 GB  | 4000            |
-| 10                | 10   | 40 GB  | 32 GB    | 4000            |
-| 11                | 11   | 44 GB  | 35.2 GB  | 4000            |
-| 12                | 12   | 48 GB  | 38.4 GB  | 4000            |
-| 13                | 13   | 52 GB  | 41.6 GB  | 4000            |
-| 14                | 14   | 56 GB  | 44.8 GB  | 4000            |
-| 15                | 15   | 60 GB  | 48 GB    | 4000            |
-| 16                | 16   | 64 GB  | 51.2 GB  | 4000            |
-| 18                | 18   | 72 GB  | 57.6 GB  | 4000            |
-| 20                | 20   | 80 GB  | 64 GB    | 4000            |
-| 22                | 22   | 88 GB  | 70.4 GB  | 4000            |
-| 24                | 24   | 96 GB  | 76.8 GB  | 4000            |
-| 26                | 26   | 104 GB | 83.2 GB  | 4000            |
-| 28                | 28   | 112 GB | 89.6 GB  | 4000            |
-| 30                | 30   | 120 GB | 96 GB    | 4000            |
-| 32                | 32   | 128 GB | 102.4 GB | 4000            |
-| 34                | 34   | 136 GB | 108.8 GB | 4000            |
-| 36                | 36   | 144 GB | 115.2 GB | 4000            |
-| 38                | 38   | 152 GB | 121.6 GB | 4000            |
-| 40                | 40   | 160 GB | 128 GB   | 4000            |
-| 42                | 42   | 168 GB | 134.4 GB | 4000            |
-| 44                | 44   | 176 GB | 140.8 GB | 4000            |
-| 46                | 46   | 184 GB | 147.2 GB | 4000            |
-| 48                | 48   | 192 GB | 153.6 GB | 4000            |
-| 50                | 50   | 200 GB | 160 GB   | 4000            |
-| 52                | 52   | 208 GB | 166.4 GB | 4000            |
-| 54                | 54   | 216 GB | 172.8 GB | 4000            |
-| 56                | 56   | 224 GB | 179.2 GB | 4000            |
+| Compute Size (CU) | vCPU | RAM (GB) | LFC size (GB) | max_connections |
+| :---------------- | :--- | :------- | :------------ | :-------------- |
+| 0.25              | 0.25 | 1        | 0.75          | 112             |
+| 0.50              | 0.50 | 2        | 1.5           | 225             |
+| 1                 | 1    | 4        | 3             | 450             |
+| 2                 | 2    | 8        | 6             | 901             |
+| 3                 | 3    | 12       | 9             | 1351            |
+| 4                 | 4    | 16       | 12            | 1802            |
+| 5                 | 5    | 20       | 15            | 2253            |
+| 6                 | 6    | 24       | 18            | 2703            |
+| 7                 | 7    | 28       | 21            | 3154            |
+| 8                 | 8    | 32       | 24            | 3604            |
+| 9                 | 9    | 36       | 27            | 4000            |
+| 10                | 10   | 40       | 30            | 4000            |
+| 11                | 11   | 44       | 33            | 4000            |
+| 12                | 12   | 48       | 36            | 4000            |
+| 13                | 13   | 52       | 39            | 4000            |
+| 14                | 14   | 56       | 42            | 4000            |
+| 15                | 15   | 60       | 45            | 4000            |
+| 16                | 16   | 64       | 48            | 4000            |
+| 18                | 18   | 72       | 54            | 4000            |
+| 20                | 20   | 80       | 60            | 4000            |
+| 22                | 22   | 88       | 66            | 4000            |
+| 24                | 24   | 96       | 72            | 4000            |
+| 26                | 26   | 104      | 78            | 4000            |
+| 28                | 28   | 112      | 84            | 4000            |
+| 30                | 30   | 120      | 90            | 4000            |
+| 32                | 32   | 128      | 96            | 4000            |
+| 34                | 34   | 136      | 102           | 4000            |
+| 36                | 36   | 144      | 108           | 4000            |
+| 38                | 38   | 152      | 114           | 4000            |
+
+|
 
 When selecting a compute size, ideally, you want to keep as much of your dataset in memory as possible. This improves performance by reducing the amount of reads from storage. If your dataset is not too large, select a compute size that will hold the entire dataset in memory. For larger datasets that cannot be fully held in memory, select a compute size that can hold your [working set](/docs/reference/glossary#working-set). Selecting a compute size for a working set involves advanced steps, which are outlined below. See [Sizing your compute based on the working set](#sizing-your-compute-based-on-the-working-set).
 
@@ -22374,15 +22647,20 @@ Restarting a compute interrupts any connections currently using the compute. To 
 
 You can restart a compute using one of the following methods:
 
-- Issue a [Restart endpoint](https://api-docs.neon.tech/reference/restartprojectendpoint) call using the Neon API. You can do this directly from the Neon API Reference using the **Try It!** feature or via the command line with a cURL command similar to the one shown below. You'll need your [project ID](/docs/reference/glossary#project-id), compute [endpoint ID](/docs/reference/glossary#endpoint-id), and an [API key](/docs/manage/api-keys#create-an-api-key).
+- Issue a [Restart compute endpoint](https://api-docs.neon.tech/reference/restartprojectendpoint) call using the Neon API. You can do this directly from the Neon API Reference using the **Try It!** feature or via the command line with a cURL command similar to the one shown below. You'll need your [project ID](/docs/reference/glossary#project-id), compute [endpoint ID](/docs/reference/glossary#endpoint-id), and an [API key](/docs/manage/api-keys#create-an-api-key).
+
   ```bash
   curl --request POST \
      --url https://console.neon.tech/api/v2/projects/cool-forest-86753099/endpoints/ep-calm-flower-a5b75h79/restart \
      --header 'accept: application/json' \
      --header 'authorization: Bearer $NEON_API_KEY'
   ```
+
+  <Admonition type="note">
+  The [Restart compute endpoint](https://api-docs.neon.tech/reference/restartprojectendpoint) API only works on an active compute. If you're compute is idle, you can wake it up with a query or the [Start compute endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API. 
+  </Admonition>
+
 - Stop activity on your compute (stop running queries) and wait for your compute to suspend due to inactivity. By default, Neon suspends a compute after 5 minutes of inactivity. You can watch the status of your compute on the **Branches** page in the Neon Console. Select your branch and monitor your compute's **Status** field. Wait for it to report an `Idle` status. The compute will restart the next time it's accessed, and the status will change to `Active`.
-- Temporarily resizing your compute or changing your autoscaling minimum or maximum compute size setting restarts a compute. For compute resize instructions, see [Edit a compute](/docs/manage/endpoints#edit-a-compute).
 
 ## Delete a compute
 
@@ -23538,13 +23816,13 @@ The following names are protected and cannot be given to a database:
 title: Managing your data and schemas in the Neon Console
 subtitle: 'Use the Tables page to easily view, edit, and manage your data and schemas'
 enableTableOfContents: true
-updatedOn: '2025-01-08T12:09:24.679Z'
+updatedOn: '2025-02-21T20:49:03.647Z'
 ---
 
 The **Tables** page in the Neon Console offers a dynamic, visual interface for managing data and schemas. Fully interactive, this view lets you add, update, and delete records, filter data, modify columns, drop or truncate tables, export data in both .json and .csv formats, and manage schemas, tables, views, and enums.
 
 <Admonition type="note">
-The **Tables** page is powered by Drizzle Studio. For new features and updates, please refer to the [Neon Drizzle Studio Changelog](https://github.com/neondatabase/neon-drizzle-studio-changelog/blob/main/CHANGELOG.md).
+The **Tables** page is powered by a Drizzle Studio integration. For tracking updates, see [Tables page enhancements and updates](#tables-page-enhancements-and-updates).
 </Admonition>
 
 ## Edit records
@@ -23608,9 +23886,29 @@ In addition to managing data, you can manage your database schema directly from 
 
 ![Drizzle Studio Schema Management UI](/docs/relnotes/drizzle_schema_mgmt.png)
 
-## Limitations
+## Tables page updates
 
-The Drizzle Studio integration that powers the **Tables** page currently does not support partitioned tables. Partitioned tables are not displayed on the **Tables** page.
+The **Tables** page in the Neon Console is powered by a Drizzle Studio integration. You can check the Drizzle Studio integration version in your browser by inspecting the Tables page. For example, in Chrome, right-click, select **Inspect**, and go to the **Console** tab to view the current `Tables version`. You can cross-reference this version with the [Neon Drizzle Studio Integration Changelog](https://github.com/neondatabase/neon-drizzle-studio-changelog/blob/main/CHANGELOG.md) to track updates.
+
+## Reporting errors
+
+If you see an **Unexpected error happened** message on the **Tables** page, follow the steps below:
+
+![Unexpected error happened on Tables page](/docs/guides/tables_error.png)
+
+1. Click **Download Error Context** to download the error context file.
+2. [Open a support ticket](https://console.neon.tech/app/projects?modal=support) and provide a details description of what were doing when the error occurred. Please include any screen captures or files that will help us reproduce the issue. We'll work with our partners at Drizzle to investigate and resolve the issue.
+3. If you're on the Free Plan, you can report the issue with your context file on [Discord](https://discord.gg/92vNTzKDGp).
+
+If you encounter a **"Something went wrong"** error on the **Tables** page, try the following troubleshooting steps:
+
+- **Refresh the page** — This can resolve temporary glitches.
+- **Clear browser cache** — Cached files might cause issues, so clearing the cache could help.
+- **Disable browser extensions** — Extensions may interfere with the page’s functionality.
+- **Use a different browser or device** — Check if the issue occurs on another browser or device.
+- **Try incognito mode** — Using an incognito window can help bypass issues related to cookies or extensions.
+
+If the issue persists, please reach out to [Neon support](https://console.neon.tech/app/projects?modal=support) or on [Discord](https://discord.gg/92vNTzKDGp), and we’ll investigate further.
 
 
 # Integrations
@@ -23700,7 +23998,7 @@ If you've got feature requests or feedback about what you'd like to see in Neon 
 ---
 title: Monitoring dashboard
 enableTableOfContents: true
-updatedOn: '2025-02-14T19:32:07.601Z'
+updatedOn: '2025-02-22T21:54:33.849Z'
 ---
 
 The **Monitoring** dashboard in the Neon console provides several graphs for monitoring system and database metrics. You can access the **Monitoring** dashboard from the sidebar in the Neon Console. Observable metrics include:
@@ -23818,6 +24116,10 @@ Deadlocks occur in a database when two or more transactions simultaneously block
 The **Rows** graph shows the number of rows deleted, updated, and inserted over time for the named database on the selected branch. The named database is always the oldest database on the selected branch. Row metrics are reset to zero whenever your compute restarts.
 
 Tracking rows inserted, updated, and deleted over time provides insights into your database's activity patterns. You can use this data to identify trends or irregularities, such as insert spikes or an unusual number of deletions.
+
+<Admonition type="note">
+Row metrics only capture row-level changes (`INSERT`, `UPDATE`, `DELETE`, etc.) and exclude table-level operations such as `TRUNCATE`.
+</Admonition>
 
 ### Replication delay bytes
 
@@ -24195,11 +24497,8 @@ Possible operation `status` values include `running`, `finished`, `failed`, `sch
 title: Monitor active queries
 subtitle: View and analyze running queries in your database
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-05T21:06:28.070Z'
+updatedOn: '2025-03-05T21:09:38.753Z'
 ---
-
-<EarlyAccess />
 
 You can monitor active queries for your Neon project from the **Monitoring** page in the Neon Console.
 
@@ -24226,11 +24525,8 @@ In Neon, the `pg_stat_activity` system view only holds data on currently running
 title: Monitor query history
 subtitle: View and analyze query history for your Neon database
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-07T17:55:42.639Z'
+updatedOn: '2025-03-05T21:09:38.754Z'
 ---
-
-<EarlyAccess />
 
 You can monitor query history for your Neon project from the **Monitoring** page in the Neon Console.
 
@@ -24356,16 +24652,12 @@ Neon uses the default Postgres port: `5432`
 title: Neon Slack App
 enableTableOfContents: true
 subtitle: Track your Neon projects and organizations from Slack
-updatedOn: '2025-01-27T19:45:55.719Z'
+updatedOn: '2025-03-07T19:33:48.344Z'
 ---
 
 The Neon Slack App allows you to monitor your Neon usage and manage organization membership directly from Slack. Get quick access to project information and resource usage metrics without leaving your workspace.
 
-<img
-src="/docs/manage/slack_app_overview.png"
-alt="Neon Slack App showing authentication and usage commands in action"
-style={{ width: "75%", display: "block", margin: "40px auto" }}
-/>
+![Neon Slack App commands](/docs/manage/slack_app_overview.png)
 
 ## Setup
 
@@ -24396,9 +24688,6 @@ Once authenticated, you're ready to use all available commands.
 | `/neon feedback`        | Share your thoughts to improve the Neon Slack App |
 | `/neon projects usage`  | View resource usage for a specific project        |
 | `/neon projects shared` | See projects others have shared with you          |
-| `/neon org set`         | Set your active organization                      |
-| `/neon org`             | View your active organization                     |
-| `/neon org clear`       | Clear your active organization                    |
 | `/neon invite user`     | Invite a user to your organization                |
 
 ## Example workflows
@@ -24411,21 +24700,7 @@ Open a DM with the Neon Slack App and run the following command to instantly vie
 /neon usage
 ```
 
-<img src="/docs/manage/slack_app_usage.png" alt="results of /neon usage showing compute, storage, and data transfer" style={{ display: "block", margin: "1rem 0", width: "80%" }} />
-
-### Switching between organizations
-
-To take actions on behalf of a specific organization, set your context using the following command:
-
-```bash
-/neon org set
-```
-
-When finished, you can return to your personal view by clearing your defaults:
-
-```bash
-/neon org clear
-```
+![results of neon usage command](/docs/manage/slack_app_usage.png)
 
 ### Usage notifications
 
@@ -24440,9 +24715,8 @@ The Neon Slack App allows you to:
 
 - View project information and resource usage
 - Monitor system status
-- Manage organization membership
 - Access shared projects
-- Switch between organizations
+- Invite users to your organization
 
 </details>
 
@@ -24468,11 +24742,12 @@ Currently, all users receive usage limit notifications. There's no way to custom
 ---
 title: Backups
 enableTableOfContents: true
-updatedOn: '2024-12-06T12:16:56.091Z'
+updatedOn: '2025-02-22T16:36:52.249Z'
 ---
 
 <InfoBlock>
 <DocsList title="What you will learn:">
+<p>About backup strategies</p>
 <p>About built-in backups with point-in-time restore</p>
 <p>Creating backups using pg_dump</p>
 <p>How to automate backups with GitHub Actions</p>
@@ -24485,60 +24760,562 @@ updatedOn: '2024-12-06T12:16:56.091Z'
 
 </InfoBlock>
 
-## Built-in backups with Neon's point-in-time restore feature
+Neon offers two primary backup strategies, which you can use separately or in combination, depending on your requirements.
 
-Neon retains a history for all branches, allowing you to restore your data to a particular date and time or Log Sequence Number (LSN). The history retention period is configurable. The supported limits are up to 24 hours for [Neon Free Plan](/docs/introduction/plans#free-plan) users, 7 days for [Launch](/docs/introduction/plans#launch), 14 days for [Scale](/docs/introduction/plans#scale), and 30 days for [Business](/docs/introduction/plans#business) plan users. With this backup option, no action or automation is required. You can restore your data to a past state at any time by creating a database branch, which is a near-instant operation. This feature is referred to as [Point-in-time restore](/docs/introduction/point-in-time-restore).
+<Steps>
 
-For information about creating a point-in-time restore branch, see [Branching — Point-in-time restore](/docs/guides/branching-pitr).
+## Instant Point-in-Time Restore (PITR)
 
-## pg_dump
+    With Neon's instant point-in-time restore capability, you can automatically retain a "history" of changes—ranging from 1 day up to 30 days, depending on your Neon plan. This feature lets you recover your database to any specific moment without the need for traditional database backups or separate backup automation. It's ideal if your primary concern is fast recovery after an unexpected event.
 
-You can backup a database using `pg_dump`, in the same way backups are created for a standalone Postgres instance.
+    By default, Neon projects retain **1 day** of history. You can increase your history retention period on Neon as follows:
 
-<Admonition type="important">
-Avoid using `pg_dump` over a [pooled Neon connection](/docs/connect/connection-pooling) (see PgBouncer issues [452](https://github.com/pgbouncer/pgbouncer/issues/452) & [976](https://github.com/pgbouncer/pgbouncer/issues/976) for details). Use an unpooled connection instead.
+    | Plan                                                   | History Retention Limit  |
+    | :----------------------------------------------------- | :----------------------- |
+    | [Free](/docs/introduction/plans#free-plan)             | 1 day                    |
+    | [Launch](/docs/introduction/plans#launch)              | 7 days                   |
+    | [Scale](/docs/introduction/plans#scale)                | 14 days                  |
+    | [Business](/docs/introduction/plans#business)          | 30 days                  |
+
+    With this strategy, the only required action is setting your desired history retention period. Please keep in mind that increasing your history retention period also increases storage, as changes to your data are retained for a longer period.
+
+    ![History retention](/docs/manage/backups_history_retention.png)
+
+    To get started, see [Point-in-time restore](/docs/introduction/point-in-time-restore).
+
+## Backups with `pg_dump`
+
+    For scenarios that require a more traditional approach to backups—such as business continuity, disaster recovery, or compliance with regulatory requirements—you can use traditional methods, such as creating regular backups using the Postgres `pg_dump` utility.
+
+    For information about using `pg_dump` with Neon, you can refer to our [Migrate data from Postgres with pg_dump and pg_restore](/docs/import/migrate-from-postgres) guide.
+
+    **Automating backups to S3 with `pg_dump` and GitHub Actions**
+
+    If you need to automate `pg_dump` backups to remote storage, this two-part guide walks you through setting up an S3 bucket and a GitHub Action to automate backups on a recurring schedule. You'll also learn how to configure retention settings to manage how long `pg_dump` backups are stored before being deleted.
+
+    1. [Create an S3 bucket to store Postgres backups](/docs/manage/backups-aws-s3-backup-part-1)
+    2. [Set up a GitHub Action to perform nightly Postgres backups](/docs/manage/backups-aws-s3-backup-part-2)
+
+</Steps>
+
+<Admonition type="note" title="Backup & Restore Questions?">
+If you have questions about backups, please reach out to [Neon Support](https://console.neon.tech/app/projects?modal=support).
 </Admonition>
 
-This method dumps a single database in a single branch of your Neon project. If you need to create backups for multiple databases in multiple branches, you must perform a dump operation for each database in each branch separately.
 
-To dump a database from your Neon project, please refer to the `pg_dump` instructions in our [Migrate data from Postgres with pg_dump and pg_restore](/docs/import/migrate-from-postgres) guide.
+# Part 1 - Create an S3 bucket
 
-<Admonition type="tip">
-When restoring a database dumped from Neon, you may encounter `ALTER OWNER` errors related to a `cloud_admin` role; for example:
+---
+title: Create an S3 bucket to store Postgres backups
+enableTableOfContents: true
+tag: new
+updatedOn: '2025-02-22T14:55:35.229Z'
+---
 
-```bash
-pg_restore: error: could not execute query: ERROR: permission denied to change default privileges
-Command was: ALTER DEFAULT PRIVILEGES FOR ROLE cloud_admin IN SCHEMA public GRANT ALL ON SEQUENCES TO neon_superuser WITH GRANT OPTION;
+This guide will walk you through setting up an AWS S3 bucket to store your Postgres backups.
+
+<Admonition type="note">
+This is part one of a two-part guide.
+Continue to part two [here](/docs/manage/backups-aws-s3-backup-part-2).
+</Admonition>
+
+## Prerequisites
+
+To complete this guide, you’ll need an AWS user with the appropriate permissions to:
+
+- **Manage IAM resources**: Create an OpenID Connect (OIDC) identity provider and IAM roles.
+- **Manage S3**: Create an S3 bucket and update its bucket policy.
+
+These actions typically require AdministratorAccess or a custom IAM policy granting the necessary permissions. If you’re not an administrator, ensure your user has IAM management privileges and S3 permissions.
+
+## Setup AWS Providers and Roles
+
+There are three parts to the AWS setup, they are:
+
+1. Creating an OIDC Identity Provider
+2. Creating a Role
+3. Creating an S3 bucket and updating the S3 bucket policy
+
+## Add an Identity provider
+
+An OIDC (OpenID Connect) Identity Provider (IdP) in AWS is a third-party service that handles authentication. To allow GitHub Actions to authenticate with AWS, you must add GitHub as an identity provider..
+
+To create a new Identity Provider, navigate to: **IAM** > **Access Management** > **Identity Providers**, and click **Add provider**.
+
+![AWS Access Management](/docs/manage/1-s3-backups-github-actions-01-identity-provider-1.jpg)
+
+On the next screen select OpenID Connect and add the following to the Provider URL and Audience fields.
+
+1. Provider URL: `https://token.actions.githubusercontent.com`
+2. Audience: `sts.amazonaws.com`
+
+When you’re done, click **Add Provider**.
+
+![AWS Identity Provider](/docs/manage/1-s3-backups-github-actions-02-identity-provider-2.jpg)
+
+You should now see this provider is visible in the list under: **IAM** > **Access Management** > **Identity Providers**.
+
+## Create Role
+
+A Role is an identity that you can assume to obtain temporary security credentials for specific tasks or actions within AWS. Roles are used to delegate permissions and grant access to AWS services without the need for credentials like passwords or access keys.
+
+To create a new Role, navigate to: **IAM** > **Access Management** > **Roles**, and click **Create role**.
+
+![AWS Identity Role](/docs/manage/1-s3-backups-github-actions-03-role-1.jpg)
+
+On the next screen you can create a **Trusted Identity** for the Role.
+
+## Select Trusted Identity
+
+On this screen select **Web Identity**, then select `token.actions.githubusercontent.com` from the **Identity Provider** dropdown menu.
+
+![AWS Trust Identity 1](/docs/manage/1-s3-backups-github-actions-04-trust-identity-1.jpg)
+
+Once you select the **Identity Provider**, you’ll be shown a number of fields to fill out.
+
+Select `sts.amazonaws.com` from the **Audience dropdown** menu, then fill out the GitHub repository details as per your requirements.
+
+When you’re ready, click **Next**.
+![AWS Trust Identity 2](/docs/manage/1-s3-backups-github-actions-05-trust-identity-2.jpg)
+
+## Add Permissions — Skip
+
+You can skip selecting anything from this screen and click **Next** to continue.
+
+## Name, review and create
+
+On this screen give the **Role** a name and description. You’ll use the **Role** name in the code for the GitHub Action. Consider naming this role using specifics as to avoid confusion later down the line.
+
+When you’re ready click **Create role**.
+
+![AWS Trust Identity 3](/docs/manage/1-s3-backups-github-actions-06-trust-identity-3.jpg)
+
+## Setup AWS S3 bucket
+
+There are two parts to creating an S3 bucket, they are:
+
+1. Creating an S3 bucket
+2. Updating the bucket policy
+
+## Create S3 bucket
+
+AWS S3 (Simple Storage Service) buckets are storage containers used to store objects in Amazon’s cloud storage service. An S3 bucket can store any amount of data, from files and documents to images and videos, or in the case of a database backup, a .gz (​​[GNU zip](https://www.gnu.org/software/gzip/)) file.
+
+To create a new bucket, navigate to: **S3** > **buckets**, and click **Create bucket**.
+
+![AWS S3 Bucket](/docs/manage/1-s3-backups-github-actions-07-bucket-1.jpg)
+
+On the next screen select **General Purpose** for the bucket Type and then give your bucket a name.
+
+The most important thing to notice on this screen is the **region** where you’re creating the bucket.
+
+![AWS S3 Bucket](/docs/manage/1-s3-backups-github-actions-08-bucket-2.jpg)
+
+It's recommended that you deploy your bucket to the same region as your database to minimize latency and reduce backup times. While having an S3 bucket in `us-east-1` and a database in `ap-southeast-1` isn't necessarily a problem, cross-region data transfers can take longer and may introduce additional costs.
+
+## S3 bucket Policy
+
+To ensure the **Role** being used in the GitHub Action can perform actions on the S3 bucket, you’ll need to update the bucket policy.
+
+Select your bucket then select the **Permissions** tab and click **Edit**.
+
+![AWS S3 Bucket Policy](/docs/manage/1-s3-backups-github-actions-09-bucket-3.jpg)
+
+You can now add the following policy which grants the **Role** you created earlier access to perform S3 **List**, **Get**, **Put** and **Delete** actions.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::627917386332:role/neon-s3-backup-github-actions"
+      },
+      "Action": ["s3:ListBucket", "s3:GetObject", "s3:PutObject", "s3:DeleteObject"],
+      "Resource": ["arn:aws:s3:::neon-s3-backup", "arn:aws:s3:::neon-s3-backup/*"]
+    }
+  ]
+}
 ```
 
-This is a protected role in Neon that cannot be modified. To avoid this issue, you can add a `-O` or `--no-owner` option to your `pg_restore` command, as described [Database object ownership consideration](/docs/import/migrate-from-postgres#database-object-ownership-considerations).
+From the snippet above replace the Role name `neon-s3-backup-github-actions` with your **Role** name and replace the S3 bucket name `neon-s3-backup` with your S3 bucket name. When you’re ready click **Save changes**.
+
+## Next steps
+
+There are a couple of things to note before moving on to the second part of this guide. You’ll be creating several GitHub Secrets to hold various values that you likely won’t want to expose or repeat in code. These are:
+
+- `AWS_ACCOUNT_ID`: This can be found by clicking on your user name in the AWS console.
+- `S3_BUCKET_NAME`: In this example, this value would be, `neon-s3-backup`
+- `IAM_ROLE`: In this example this value would be, `neon-s3-backup-github-action`
+
+Make a note of these values before you proceed to [part two](/docs/manage/backups-aws-s3-backup-part-2).
+
+
+# Part 2 - Automate nightly backups
+
+---
+title: Set up a GitHub Action to perform nightly Postgres backups
+enableTableOfContents: true
+tag: new
+updatedOn: '2025-02-22T14:55:35.232Z'
+---
+
+In this guide, you'll learn how to configure nightly Postgres backups using a scheduled GitHub Action and `pg_dump`.
+
+<Admonition type="note">
+This is part two of a two-part guide.
+Go back to part one [here](/docs/manage/backups-aws-s3-backup-part-1).
 </Admonition>
 
-## Automate Postgres Backups with a GitHub Action
+## Prerequisites
 
-These blog posts from Neon community members describe how you can schedule a backup to an Amazon S3 storage bucket using a GitHub Action:
+Setting up a scheduled backup involves three key components:
 
-- [How To Use GitHub Actions To Schedule PostgreSQL Backups](https://thenewstack.io/how-to-schedule-postgresql-backups-with-github-actions/)
-- [Nightly Postgres Backups via GitHub Actions](https://joshstrange.com/2024/04/26/nightly-postgres-backups-via-github-actions/)
+### 1. AWS Requirements
+
+- You’ll need your **AWS Account ID** and permissions to:
+  - Create **IAM Roles** and **Identity Providers**
+  - Create and manage **S3 buckets**
+  - Update **S3 bucket policies**
+
+### 2. Postgres Database
+
+- Ensure you have:
+  - The **connection string** for your database
+  - The **AWS region** where your database is deployed
+  - The **Postgres version** your database is running
+
+### 3. GitHub Action
+
+- You’ll need **repository access** with permission to manage:
+  - **Actions** and **Settings** > **Secrets and variables**
+
+## Neon project setup
+
+Before looking at the code, first take a look at your Neon console dashboard. In our example there is only one project, with a single database named `acme-co-prod`. This database is running Postgres 17 and deployed in the `us-east-1` region.
+
+The goal is to backup this database to it's own folder inside an S3 bucket using the same name.
+
+![Neon Console](/docs/manage/2-s3-backups-github-actions-01-neon-projects.jpg)
+
+## Scheduled GitHub Action
+
+Using the same database naming convention as above, create a new file for the GitHub Action using the following folder structure.
+
+```shell
+.github
+  |-- workflows
+      |-- acme-co-prod-backup.yml
+```
+
+![Neon Console](/docs/manage/2-s3-backups-github-actions-02-github-workflows.jpg)
+
+This GitHub Action will run on a recurring schedule and save the backup file to a S3 bucket as defined by the environment variables. Below the code snippet we've explained what each part of the Action does.
+
+```yml
+name: acme-co-prod-backup
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Runs at midnight EST (us-east-1)
+  workflow_dispatch:
+
+jobs:
+  db-backup:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+
+    env:
+      RETENTION: 7
+      DATABASE_URL: ${{ secrets.ACME_CO_PROD }}
+      IAM_ROLE: ${{ secrets.IAM_ROLE }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+      AWS_REGION: 'us-east-1'
+      PG_VERSION: '17'
+
+    steps:
+      - name: Install PostgreSQL
+        run: |
+          sudo apt update
+          yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+          sudo apt install -y postgresql-${{ env.PG_VERSION }}
+
+      - name: Set PostgreSQL binary path
+        run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.IAM_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set file, folder and path variables
+        run: |
+          GZIP_NAME="$(date +'%B-%d-%Y@%H:%M:%S').gz"
+          FOLDER_NAME="${{ github.workflow }}"
+          UPLOAD_PATH="s3://${{ env.S3_BUCKET_NAME }}/${FOLDER_NAME}/${GZIP_NAME}"
+
+          echo "GZIP_NAME=${GZIP_NAME}" >> $GITHUB_ENV
+          echo "FOLDER_NAME=${FOLDER_NAME}" >> $GITHUB_ENV
+          echo "UPLOAD_PATH=${UPLOAD_PATH}" >> $GITHUB_ENV
+
+      - name: Create folder if it doesn't exist
+        run: |
+          if ! aws s3api head-object --bucket ${{ env.S3_BUCKET_NAME }} --key "${{ env.FOLDER_NAME }}/" 2>/dev/null; then
+            aws s3api put-object --bucket ${{ env.S3_BUCKET_NAME }} --key "${{ env.FOLDER_NAME }}/"
+          fi
+
+      - name: Run pg_dump
+        run: |
+          $POSTGRES/pg_dump ${{ env.DATABASE_URL }} | gzip > "${{ env.GZIP_NAME }}"
+
+      - name: Empty bucket of old files
+        run: |
+          THRESHOLD_DATE=$(date -d "-${{ env.RETENTION }} days" +%Y-%m-%dT%H:%M:%SZ)
+          aws s3api list-objects --bucket ${{ env.S3_BUCKET_NAME }} --prefix "${{ env.FOLDER_NAME }}/" --query "Contents[?LastModified<'${THRESHOLD_DATE}'] | [?ends_with(Key, '.gz')].{Key: Key}" --output text | while read -r file; do
+            aws s3 rm "s3://${{ env.S3_BUCKET_NAME }}/${file}"
+          done
+
+      - name: Upload to bucket
+        run: |
+          aws s3 cp "${{ env.GZIP_NAME }}" "${{ env.UPLOAD_PATH }}" --region ${{ env.AWS_REGION }}
+```
+
+## Action configuration
+
+The first part of the GitHub Action specifies the name of the Action and sets the schedule for when it should run.
+
+```yml
+name: acme-co-prod-backup
+
+on:
+  schedule:
+    - cron: '0 5 * * *' # Runs at midnight EST (us-east-1)
+  workflow_dispatch:
+```
+
+- `name` : The workflow name and will also be used when creating the folder in the S3 bucket
+- `cron`: This determines how often the Action will run, take a look a the GitHub docs where the [POSIX cron syntax](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule) is explained
+- `workflow_dispatch`: This allows you to trigger the workflow manually from the GitHub UI
+
+## Environment variables
+
+The next part deals with environment variables. Some variables are set inline in the Action but others are defined using [GitHub Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository).
+
+```yml
+env:
+  RETENTION: 7
+  DATABASE_URL: ${{ secrets.ACME_CO_PROD }}
+  IAM_ROLE: ${{ secrets.IAM_ROLE }}
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
+  AWS_REGION: 'us-east-1'
+  PG_VERSION: '17'
+```
+
+- `RETENTION`: Determines how long a backup file should be retained before it’s deleted
+- `DATABASE_URL`: The Neon Postgres connection string for the database you’re backing up
+- `IAM_ROLE`: The name of the AWS IAM Role
+- `AWS_ACCOUNT_ID`: Your AWS Account Id
+- `S3_BUCKET_NAME`: The name of the S3 bucket where all backups are being stored
+- `AWS_REGION`: The region where the S3 bucket is deployed
+- `PG_VERSION`: The version of Postgres to install in the GitHub Action environment
+
+## GitHub Secrets
+
+As mentioned earlier, several of the environment variables in the Action are defined using GitHub secrets. These secrets can be added to your repository by navigating to **Settings** > **Secrets and variables** > **Actions**.
+
+![GitHub Secrets](/docs/manage/2-s3-backups-github-actions-03-github-secrets.jpg)
+
+## Install PostgreSQL
+
+This step installs Postgres into the GitHub Action’s virtual environment. The version to install is defined by the `PG_VERSION` environment variable.
+
+```yml
+- name: Install PostgreSQL
+  run: |
+    sudo apt update
+    yes '' | sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+    sudo apt install -y postgresql-${{ env.PG_VERSION }}
+```
+
+## Set PostgreSQL binary path
+
+This step sets the `$POSTGRES` variable, allowing easy access to the Postgres binaries in the GitHub Action's environment.
+
+```yml
+- name: Set PostgreSQL binary path
+  run: echo "POSTGRES=/usr/lib/postgresql/${{ env.PG_VERSION }}/bin" >> $GITHUB_ENV
+```
+
+## Configure AWS credentials
+
+This step configures the AWS credentials, enabling secure interaction between the GitHub Action and AWS services.
+
+```yml
+- name: Configure AWS credentials
+  uses: aws-actions/configure-aws-credentials@v4
+  with:
+    role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.IAM_ROLE }}
+    aws-region: ${{ env.AWS_REGION }}
+```
+
+## Set file, folder and path variables
+
+This step involves setting three variables that are all output to `GITHUB_ENV`. This allows other steps in the Action to access them.
+
+```yml
+- name: Set file, folder and path variables
+  run: |
+    GZIP_NAME="$(date +'%B-%d-%Y@%H:%M:%S').gz"
+    FOLDER_NAME="${{ github.workflow }}"
+    UPLOAD_PATH="s3://${{ env.S3_BUCKET_NAME }}/${FOLDER_NAME}/${GZIP_NAME}"
+
+    echo "GZIP_NAME=${GZIP_NAME}" >> $GITHUB_ENV
+    echo "FOLDER_NAME=${FOLDER_NAME}" >> $GITHUB_ENV
+    echo "UPLOAD_PATH=${UPLOAD_PATH}" >> $GITHUB_ENV
+```
+
+The three variables are as follows:
+
+1. `GZIP_NAME`: The name of the `.gz` file derived from the date e.g, `February-20-2025@07:53:02.gz`
+2. `FOLDER_NAME`: The folder where the `.gz` files are to be uploaded
+3. `UPLOAD_PATH`: This is the full path that includes the S3 bucket name, folder name and `.gz` file
+
+## Create folder if it doesn’t exist
+
+This step creates a new folder (if one doesn’t already exist) inside the S3 bucket using the `FOLDER_NAME` as defined in the previous step.
+
+```yml
+- name: Create folder if it doesn't exist
+  run: |
+    if ! aws s3api head-object --bucket ${{ env.S3_BUCKET_NAME }} --key "${{ env.FOLDER_NAME }}/" 2>/dev/null; then
+      aws s3api put-object --bucket ${{ env.S3_BUCKET_NAME }} --key "${{ env.FOLDER_NAME }}/"
+    fi
+```
+
+## Run pg_dump
+
+This step runs `pg_dump` and saves the output in the Action's virtual memory using the `GZIP_NAME` as defined in the previous step.
+
+```yml
+- name: Run pg_dump
+  run: |
+    $POSTGRES/$pg_dump ${{ env.DATABASE_URL }} | gzip > "${{ env.GZIP_NAME }}"
+```
+
+## Empty bucket of old files
+
+This optional step automatically removes `.gz` files older than the retention period specified by the `RETENTION` variable. It checks the `FOLDER_NAME` directory and deletes outdated backups to save storage space.
+
+```yml
+- name: Empty bucket of old files
+  run: |
+    THRESHOLD_DATE=$(date -d "-${{ env.RETENTION }} days" +%Y-%m-%dT%H:%M:%SZ)
+    aws s3api list-objects --bucket ${{ env.S3_BUCKET_NAME }} --prefix "${{ env.FOLDER_NAME }}/" --query "Contents[?LastModified<'${THRESHOLD_DATE}'] | [?ends_with(Key, '.gz')].{Key: Key}" --output text | while read -r file; do
+      aws s3 rm "s3://${{ env.S3_BUCKET_NAME }}/${file}"
+    done
+```
+
+## Upload to bucket
+
+This step uploads the `.gz` file created by the `pg_dump` step and uploads it to the correct folder within the S3 bucket.
+
+```yml
+- name: Upload to bucket
+  run: |
+    aws s3 cp "${{ env.GZIP_NAME }}" "${{ env.UPLOAD_PATH }}" --region ${{ env.AWS_REGION }}
+```
+
+## Finished
+
+After committing and pushing the workflow to your GitHub repository, the Action will automatically run on the specified schedule, ensuring your Postgres backups are performed regularly.
+
+
+# Maintenance & updates
+
+# Overview
+
+---
+title: Maintenance & updates overview
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2025-03-05T21:09:38.755Z'
+---
+
+Neon performs two types of updates: **platform maintenance** and **updates** to your Neon [computes](/docs/reference/glossary#compute). While both are essential for maintaining a stable, secure, and optimized environment, they serve different purposes.
+
+- **Platform maintenance** includes updates to Neon's infrastructure, resource management operations, and critical security patches. These changes ensure platform stability and security. To learn more, see [Platform maintenance](/docs/manage/platform-maintenance).
+
+- **Updates** apply improvements and updates to individual Neon computes, including Postgres updates, operating system patches, and new Neon features. These updates keep your Neon compute environment and Postgres instances current and optimized. To learn more, see [Updates](/docs/manage/updates).
+
+For both types of updates, we strive to minimize disruption to database operations and provide advanced notification. The table below outlines where you can check for upcoming maintenance and updates.
+
+### Where to check for maintenance and updates
+
+| Type                     | Where to check                                         | Details                                                                                                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Platform maintenance** | [Neon Status](https://neonstatus.com/)                 | Check the regional status page where your Neon project resides for upcoming platform maintenance. Optionally, subscribe to a regional status page to receive status updates. See [Neon Status](/docs/introduction/status) for details. |
+| **Updates**              | [Neon Console](https://console.neon.tech/app/projects) | On your Neon project dashboard, go to **Settings** > **Updates** to view your update window and check for update notices. Paid plans allow you to select a preferred update window.                                                    |
+
+
+# Platform maintenance
+
+---
+title: Platform maintenance
+enableTableOfContents: true
+isDraft: false
+tag: new
+updatedOn: '2025-03-06T17:12:06.387Z'
+---
+
+Neon occasionally performs essential **platform maintenance** outside of [scheduled updates](/docs/manage/updates) performed on Neon computes. This means that you may experience brief disruptions from time to time for these important updates.
+
+Platform maintenance may include any of the following:
+
+- Neon infrastructure updates and upgrades (e.g., updates to Neon Kubernetes clusters or compute nodes)
+- Resource management updates (e.g., rebalancing of compute nodes)
+- Critical security patches (e.g., addressing a zero-day vulnerability)
+
+We strive to avoid disruptions as much as possible, but certain updates may require compute restarts or result in temporary latency for operations like compute starts, queries, or API requests.
+
+<Admonition type="note">
+Whenever possible, we perform platform maintenance outside of normal business hours in affected regions to minimize disruption.
+</Admonition>
+
+## Where to check for maintenance
+
+For notification of planned platform maintenance, you can monitor or subscribe to the [Neon Status page](https://neonstatus.com/) for your region. To learn more, see [Neon Status](/docs/introduction/status).
+
+If there is ongoing maintenance, you'll see a **Maintenance** indicator at the top of the Neon Console. Clicking on the indicator takes you to the Neon Status page where you can read the maintenance notification.
+
+![Maintenance indicator](/docs/manage/maintenance_indicator.png)
+
+## Handling disruptions and latency during platform maintenance
+
+Most Postgres connection drivers include built-in retry mechanisms that automatically handle short-lived interruptions. This means that most applications are able to transparently reconnect to a Neon database following a brief disruption.
+
+However, if your application has strict availability requirements, you may want to ensure that your connection settings are configured to allow for connection retries. Check your driver's documentation for options like connection timeouts, retry intervals, and connection pooling strategies. Your configuration should account for occasional disruptions. For related information, see [Build connection timeout handling into your application](/docs/connect/connection-latency#build-connection-timeout-handling-into-your-application).
+
+If your application or integration uses the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) or [SDKs](https://neon.tech/docs/reference/sdk) that wrap the Neon API, we recommend building in the same type of retry logic.
 
 <NeedHelp/>
 
 
 # Updates
 
-# Updates
-
 ---
-title: Manage updates
+title: Updates
 enableTableOfContents: true
 isDraft: false
 tag: new
-updatedOn: '2025-02-14T10:02:52.634Z'
+updatedOn: '2025-03-05T21:09:38.756Z'
 ---
-
-<Admonition type="note" title="updates coming soon">
-Free Plan accounts can expect to see update notices in early February, at least 24 hours before any planned update. Update notices for Neon's Launch and Scale plans will start rolling out in the second week of February, with at least 7 days' notice before a planned update. Business and Enterprise plan accounts will see update notices toward the end of February. For the latest information about updates, follow our announcements in the [Neon Changelog](https://neon.tech/docs/changelog).
-</Admonition>
 
 To keep your Neon [computes](/docs/reference/glossary#compute) and Postgres instances up to date with the latest patches and features, Neon applies updates to your project's computes. We notify you of updates in advance so that you can plan for them if necessary. On Neon's paid plans, you can select an update window — a specific day and hour for updates.
 
@@ -24546,11 +25323,15 @@ Neon briefly restarts a compute to apply an update. The entire process takes jus
 
 ## What updates are included?
 
-Updates may include some or all of the following:
+Updates to Neon computes may include some or all of the following:
 
 - Postgres minor version upgrades, typically released quarterly
-- Security patches and fixes
+- Security patches and updates
+- Operating system updates
 - Neon features and enhancements
+- Updates to other tools and components included in Neon compute images
+
+Neon compute updates do not include [Neon platform maintenance](/docs/manage/platform-maintenance).
 
 ## How often are updates applied?
 
@@ -24561,12 +25342,12 @@ Neon applies updates to computes based on the following rules:
 - Computes that have been active for 30 days or more receive updates.
 - Computes that are restarted receive available updates immediately.
 - Computes in a transition state (e.g., shutting down or restarting) at the time of an update are not updated.
-- Computes larger than 8 CU are not updated.
+- Computes larger than 8 CU or that can scale past 8 CU are not updated automatically. See [Updating large computes](#updating-large-computes).
 
 If a compute is excluded from an update, Neon will apply the missed update with the next update, assuming the compute meets the update criteria mentioned above.
 
 <Admonition type="important" title="updates outside of scheduled update windows">
-Please be aware that Neon may occasionally restart computes outside scheduled update windows to address critical security issues or perform essential platform maintenance.
+Please be aware that Neon must occasionally perform essential **platform maintenance** outside the scheduled updates performed on Neon computes. This means that you may experience brief disruptions from time to time. To learn more, see [Platform maintenance](/docs/manage/platform-maintenance).
 </Admonition>
 
 ## Updates on the Free Plan
@@ -24676,11 +25457,21 @@ If a compute regularly scales to zero, it will receive updates when it starts up
 
 For compute restart instructions, see [Restart a compute](/docs/manage/endpoints#restart-a-compute).
 
-## Handling connection disruptions
+## Updating large computes
+
+Computes larger than 8 CU or set to scale beyond 8 CU are not updated automatically (_scheduled updates do not apply_). To apply updates, you'll need to restart them manually. A restart may occur automatically due to [scale to zero](/docs/introduction/scale-to-zero), but if scale to zero is disabled or your compute runs continuously, please plan for manual restarts.
+
+Neon typically releases compute updates weekly, so we recommend scheduling weekly compute restarts.
+
+For restart instructions, see [Restart a compute](/docs/manage/endpoints#restart-a-compute).
+
+## Handling connection disruptions during compute updates
 
 Most Postgres connection drivers include built-in retry mechanisms that automatically handle short-lived connection interruptions. This means that for most applications, a brief restart should result in minimal disruption, as the driver will transparently reconnect.
 
-However, if your application has strict availability requirements, you may want to ensure that your connection settings are configured to allow for retries. Check your driver's documentation for options like connection timeouts, retry intervals, and connection pooling strategies. Your retry configuration should account for the few seconds it takes to apply updates to your Neon compute. For related information, see [Build connection timeout handling into your application](/docs/connect/connection-latency#build-connection-timeout-handling-into-your-application).
+However, if your application has strict availability requirements, you may want to ensure that your connection settings are configured to allow for retries. Check your driver's documentation for options like connection timeouts, retry intervals, and connection pooling strategies. Your configuration should account for the few seconds it takes to apply updates to your Neon compute. For related information, see [Build connection timeout handling into your application](/docs/connect/connection-latency#build-connection-timeout-handling-into-your-application).
+
+If your application or integration uses the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) or [SDKs](https://neon.tech/docs/reference/sdk) that wrap the Neon API, we recommend building in the same type of retry logic.
 
 <NeedHelp/>
 
@@ -24718,7 +25509,7 @@ title: Neon for SaaS apps
 subtitle: Build SaaS apps faster on Neon with autoscaling, database branching, and the
   serverless operating model
 enableTableOfContents: true
-updatedOn: '2025-01-22T08:45:40.806Z'
+updatedOn: '2025-03-10T17:50:45.192Z'
 ---
 
 Teams are accelerating development workflows and reducing operational overhead with Neon’s database branching, autoscaling, and serverless operating model. Learn how you can do the same.
@@ -24867,8 +25658,8 @@ IP Allow List
 SOC 2 Type 2 Compliant
 : Neon has been SOC 2 Type 2 Compliant since Dec 2, 2023. View full compliance details in the [Trust Center](https://trust.neon.tech/).
 
-HIPAA compliance in-progress
-: Neon is actively pursuing attaining HIPAA compliance. [Contact our team](/contact-sales) to get notified of updates.
+HIPAA Compliant
+: Neon is HIPAA compliant. For more information about our compliance certifications, visit our [Trust Center](https://trust.neon.tech/).
 
 </DefinitionList>
 
@@ -24939,7 +25730,7 @@ If you're looking for a Postgres database with autoscaling, likely you've also c
 title: Neon for Database-per-user
 subtitle: How to configure Neon for multi-tenancy - plus a few design tips
 enableTableOfContents: true
-updatedOn: '2024-12-12T19:49:26.797Z'
+updatedOn: '2025-02-25T18:52:09.458Z'
 ---
 
 With its serverless and API-first nature, Neon is an excellent choice for building database-per-user applications (or apps where each user/customer has their own Postgres database). Neon is particularly well-suited for architectures that prioritize maximum database isolation, achieving the equivalent of instance-level isolation.
@@ -25547,7 +26338,7 @@ name: acme-analytics-prod
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight
+    - cron: '0 0 * * *' # Runs at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -25621,7 +26412,7 @@ name: acme-analytics-prod
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight
+    - cron: '0 0 * * *' # Runs at midnight UTC
   workflow_dispatch:
 ```
 
@@ -25725,7 +26516,7 @@ GitHub Actions will timeout after ~6 hours. The size of your database is and how
 title: Neon for AI Agents
 subtitle: Use Neon as the Postgres backend for your agents
 enableTableOfContents: true
-updatedOn: '2024-12-12T19:49:26.796Z'
+updatedOn: '2025-03-07T21:44:32.257Z'
 ---
 
 AI agents can now provision infrastructure, including databases. With AI agents already creating databases every few seconds, they are poised to manage a significant portion of the web's infrastructure in the future — and, like developers, AI agents love working with Neon: **Replit partnered with Neon to back Replit Agents, which are already creating thousands of Postgres databases per day**. [Learn more](https://neon.tech/blog/looking-at-how-replit-agent-handles-databases).
@@ -25772,7 +26563,7 @@ console.log(await toolkit.sql(project, `SELECT name FROM users`));
 await toolkit.deleteProject(project);
 ```
 
-Neon also supports a [Model Context Protocol (MCP) server](https://github.com/neondatabase/mcp-server-neon) that lets you use any MCP Client, such as Claude Desktop, to manage Postgres databases with Neon using natural language; for example:
+Neon also supports a [Model Context Protocol (MCP) server](https://github.com/neondatabase/mcp-server-neon) that lets you use any MCP Client, such as Cursor or Claude Desktop, to manage Postgres databases with Neon using natural language; for example:
 
 - `Create a new Postgres database, and call it "my-database". Let's then create a table called users with the following columns: id, name, email, and password.`
 - `I want to run a migration on my project called "my-project" that alters the users table to add a new column called "created_at".`
@@ -25784,7 +26575,7 @@ Both tools are open source. You can find them on GitHub.
 
 <a href="https://github.com/neondatabase/toolkit" description="A terse client that lets you spin up a Postgres database in seconds and run SQL queries" icon="github">@neondatabase/toolkit</a>
 
-<a href="https://github.com/neondatabase/mcp-server-neon" description="A Model Context Protocol (MCP) server for Neon that lets MCP Clients interact with Neon’s API using natural language" icon="github">Neon MCP Server</a>
+<a href="/docs/ai/neon-mcp-server" description="A Model Context Protocol (MCP) server for Neon that lets MCP Clients interact with Neon’s API using natural language" icon="openai">Neon MCP Server</a>
 
 </DetailIconCards>
 
@@ -25835,7 +26626,7 @@ title: Neon for Development and Testing
 subtitle: Boost developer productivity with Neon—a flexible development sandbox for
   running non-production workloads.
 enableTableOfContents: true
-updatedOn: '2025-02-11T18:04:21.936Z'
+updatedOn: '2025-02-20T12:23:17.868Z'
 ---
 
 What sets Neon apart from other Postgres providers, beyond its true serverless nature, is its focus on delivering an exceptional developer experience.
@@ -25857,6 +26648,8 @@ Together, these features create a fast, flexible, and developer-friendly databas
 ## Move non-production to Neon
 
 Not every team is ready for a full database migration. However, even if teams aren’t ready to migrate their production databases, they can still improve efficiency by moving their non-production workloads to Neon using a [Neon Twin](/docs/guides/neon-twin-intro).
+
+![Dev/Test Twin Workflow](/use-cases/dev-test-twin-workflow.png)
 
 <CTA title="Create a Neon Twin" description="A Neon Twin is a full or partial clone of your production or staging database, providing developers and teams with isolated, sandboxed environments that closely mirror production. <br><br>Learn how to create a Twin <a href='/docs/guides/neon-twin-intro'>here</a>." isIntro />
 
@@ -25896,7 +26689,7 @@ enableTableOfContents: true
 isDraft: false
 redirectFrom:
   - /docs/conceptual-guides/regions
-updatedOn: '2025-02-13T21:16:16.153Z'
+updatedOn: '2025-03-10T09:35:47.088Z'
 ---
 
 Neon offers project deployment in multiple AWS and Azure regions. To minimize latency between your Neon database and application, we recommend choosing the region closest to your application server.
@@ -25910,6 +26703,7 @@ Neon offers project deployment in multiple AWS and Azure regions. To minimize la
 - 🇬🇧 AWS Europe (London) &mdash; `aws-eu-west-2`
 - 🇸🇬 AWS Asia Pacific (Singapore) &mdash; `aws-ap-southeast-1`
 - 🇦🇺 AWS Asia Pacific (Sydney) &mdash; `aws-ap-southeast-2`
+- 🇧🇷 AWS South America (São Paulo) &mdash; `aws-sa-east-1`
 
 ## Azure regions
 
@@ -25923,7 +26717,7 @@ For information about Neon deployment options on Azure, see [Neon on Azure](/doc
 
 ## Request a region
 
-<RegionRequest />
+<RequestForm type="region" />
 
 ## Select a region for your Neon project
 
@@ -25954,6 +26748,7 @@ If you are unsure of your project's region, you can find this information in the
 | AWS Europe (London) — aws-eu-west-2               | 3.10.42.8, 18.133.205.39, 52.56.191.86                                                 |
 | AWS Asia Pacific (Singapore) — aws-ap-southeast-1 | 54.254.50.26, 54.254.92.70, 54.255.161.23                                              |
 | AWS Asia Pacific (Sydney) — aws-ap-southeast-2    | 13.237.134.148, 13.55.152.144, 54.153.185.87                                           |
+| AWS South America (São Paulo) — aws-sa-east-1     | 18.230.1.215, 52.67.202.176, 54.232.117.41                                             |
 
 ### Azure NAT Gateway IP Addresses
 
@@ -25988,7 +26783,7 @@ As an alternative to the dump and restore method described above, you can use **
 ---
 title: Support
 enableTableOfContents: true
-updatedOn: '2025-02-11T22:04:31.743Z'
+updatedOn: '2025-02-21T13:47:57.046Z'
 ---
 
 This page outlines Neon's support plans, available channels, and policies. To learn how to access support, please refer to the [Support channels](#support-channels) section. Identify the channels available to you based on your plan and follow the links to navigate to the relevant information.
@@ -26059,10 +26854,10 @@ Neon AI chat is not an official Neon Support channel.
 
 Paying users can contact support by opening a support ticket in the Neon Console. Select **Support** from the **?** menu at the top of the Neon Console. This will open the **Create Support Ticket** modal, where you can describe your issue.
 
-To access the modal directly, click here: [Open Support Ticket](https://console.neon.tech/app/projects?modal=support).
+To access the modal directly, click here: [Open Support Ticket](https://console.neon.tech/app/projects?modal=support). If you are a paying user and cannot access the support ticket modal, you can contact Neon support at `support@neon.tech`.
 
-<Admonition type="note">
-If you are a paying user and cannot access the support ticket form in the Neon Console for some reason, you can contact Neon support at the following email address: `support@neon.tech`.
+<Admonition type="note" title="Receiving support under an SLA">
+To receive support under an [SLA](#slas), you must submit a ticket through the Neon Console or email `support@neon.tech`. These are the only channels that integrate with Neon's internal escalation system, ensuring your issue is tracked and prioritized appropriately.
 </Admonition>
 
 ![Support ticket modal](/docs/introduction/neon_support_modal.png)
@@ -26084,6 +26879,10 @@ Video chat is available to Priority and Enterprise support plan customers and ma
 ### SLAs
 
 Support Level Agreements (SLAs) are available to Business and Enterprise support plan customers. For Business plan, see [Business Plan SLA](https://neon.tech/neon-business-sla). If you are interested in exploring an Enterprise-level SLA, [get in touch with our sales team](/contact-sales).
+
+<Admonition type="note" title="Receiving support under an SLA">
+To receive support under an SLA, you must submit a ticket through the Neon Console or email `support@neon.tech`. These are the only channels that integrate with Neon's internal escalation system, ensuring your issue is tracked and prioritized appropriately.
+</Admonition>
 
 ### Dedicated Support Engineer
 
@@ -26214,20 +27013,36 @@ We reserve the right to modify, amend, or update this Support Policy, including 
 title: Neon status
 subtitle: Stay informed about the performance and availability of Neon
 enableTableOfContents: true
-updatedOn: '2023-10-07T10:43:33.416Z'
+updatedOn: '2025-03-05T21:09:38.754Z'
 ---
 
-For our customers to stay informed about the performance and availability of Neon, we provide a dedicated status page where you can monitor the health of our service in real-time.
+To stay informed about Neon's status, we provide a dedicated status page for each region that Neon supports. To view the Neon Status page, navigate to [https://neonstatus.com/](https://neonstatus.com/).
 
-The status page includes the status for:
+Remember to bookmark the Neon Status page for easy access.
 
-- Console and API Requests
-- Database Operations
+![Neon status page](/docs/introduction/neon_status_page.png)
+
+For status information applicable to your Neon project, monitor the status page for the region where your Neon project resides. If you don't know the region, you can find it on the **Project Dashboard** in the Neon Console.
+
+Status pages provide status for:
+
 - Database Connectivity
+- Database Operations
+- Console and API Requests
 
-To view the Neon Status page, please click [here](https://neonstatus.com/).
+<Admonition type="note" title="platform maintenance notices">
+You can monitor or subscribe to your region's [status page](/docs/manage/platform-maintenance) to stay informed about upcoming platform maintenance. See [Subscribing to Neon status pages](#subscribing-to-neon-status-pages) below.
 
-We strive to maintain the highest level of service availability and performance, but in the case of interruptions or maintenance, you'll be able to find the information you need promptly and accurately. Please remember to bookmark the link for easy access.
+Neon also applies regular updates to your project's computes, but these updates are not posted to regional status pages since they are specific to your Neon project. To stay informed about these updates, watch for update notices in your project's settings in the Neon Console. See [Updates](/docs/manage/updates) for details.
+</Admonition>
+
+## Subscribing to Neon status pages
+
+Follow the instructions from the **Subscribe to updates** link on a regional status page to subscribe to updates via email, RSS, or Slack.
+
+![Neon status page](/docs/introduction/neon_status_subscribe.png)
+
+<NeedHelp/>
 
 
 # Plans and billing
@@ -27332,7 +28147,7 @@ subtitle: Monitor billing and usage metrics for your account and projects from t
 enableTableOfContents: true
 redirectFrom:
   - /docs/introduction/billing
-updatedOn: '2025-01-08T12:02:21.666Z'
+updatedOn: '2025-03-02T15:57:43.215Z'
 ---
 
 Neon exposes usage metrics in the Neon Console and through the Neon API. These metrics can answer questions like:
@@ -27359,9 +28174,9 @@ Here you will find the current bill and total usage for all projects in your Neo
 
 Usage metrics on the **Billing page** include:
 
-- **Storage**: Storage is the total volume of data and history stored in Neon, measured in gigabyte months (GB-month). Data is your logical data size. History is your data’s change history that is used to enable branching-related features, which you can configure for each project via the [history retention](/docs/manage/projects#configure-history-retention) setting. The displayed storage value reflects your current usage.
+- **Storage**: Storage is the total volume of data and history stored in Neon, measured in gigabyte months ([GB-month](/docs/reference/glossary#gb-month). Data is your logical data size. History is your data’s change history that is used to enable branching-related features, which you can configure for each project via the [history retention](/docs/manage/projects#configure-history-retention) setting. The displayed storage value reflects your current usage.
 - **Compute**: The total number of compute hours used during the current billing period. Compute usage is reset to zero at the beginning of each month. The monthly compute hour allowance differs by [plan](/docs/introduction/plans).
-- **Archive storage**: The total number of gigabyte-months (GB-month) used for [archived branches](/docs/guides/branch-archiving). Branches that are older than 14 days and have not been accessed for the past 24 hours are stored in cost-efficient archive storage. The displayed storage value reflects your current usage.
+- **Archive storage**: The total number of gigabyte-months ([GB-month](/docs/reference/glossary#gb-month) used for [archived branches](/docs/guides/branch-archiving). Branches that are older than 14 days and have not been accessed for the past 24 hours are stored in cost-efficient archive storage. The displayed storage value reflects your current usage.
 - **Projects**: Number of projects currently active in your account. The displayed value reflects your current usage, including any extra projects that have been automatically added as a result of exceeding your [plan allowance](/docs/introduction/plans).
 
   The **Peak usage** value is the highest number of projects used during the current billing period. When you exceed your plan's project allowance, extra project units are automatically allocated and billed based on the number of additional units needed to cover your extra usage, prorated from the date the extra was allocated. Project units and their cost are defined according to your [Neon plan](/docs/introduction/plans). Peak usage resets at the beginning of the next billing period.
@@ -27370,7 +28185,7 @@ Usage metrics on the **Billing page** include:
 
   <Admonition type="note" title="note: billing metrics for pre-2025 custom contract customers">
   If you signed a contract with Neon prior to 01/01/2025, different billing metrics apply: 
-  - **Storage** is measured in GiBs instead of GB-months, and if you exceed your contract's monthly storage allowance, extra storage units are automatically allocated and billed. Extra storage charges are applied based on the number of additional storage units needed to cover peak storage usage during the current billing period, prorated from the date the extra storage was allocated. Peak usage resets at the beginning of the next billing period.
+  - **Storage** is measured in GiBs instead of [GB-month](/docs/reference/glossary#gb-month, and if you exceed your contract's monthly storage allowance, extra storage units are automatically allocated and billed. Extra storage charges are applied based on the number of additional storage units needed to cover peak storage usage during the current billing period, prorated from the date the extra storage was allocated. Peak usage resets at the beginning of the next billing period.
   - **Written data** is the total volume of data written from compute to storage over the during the monthly billing period, measured in gigibytes (GiB).
 
   If you have questions or want to change the billing metrics defined in your contract, please contact your Neon sales representative.
@@ -27721,8 +28536,7 @@ If you have any questions or require assistance during this process, please feel
 title: Azure Marketplace
 enableTableOfContents: true
 subtitle: Neon as an Azure Native Service with unified billing through Azure Marketplace
-tag: new
-updatedOn: '2024-12-20T16:15:17.131Z'
+updatedOn: '2025-03-05T21:09:38.753Z'
 ---
 
 <PublicPreview/>
@@ -27867,9 +28681,8 @@ If you have questions or need further guidance on setting up Neon through Azure 
 ---
 title: Neon on Azure
 enableTableOfContents: true
-tag: new
 isDraft: false
-updatedOn: '2025-02-12T10:58:29.263Z'
+updatedOn: '2025-03-05T21:09:38.754Z'
 ---
 
 <InfoBlock>
@@ -27986,7 +28799,7 @@ For supported Azure regions, refer to our [Regions](/docs/introduction/regions) 
 
 ## Azure examples
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="https://neon.tech/guides/neon-azure-integration" title="Get started with Neon on Azure" description="Deploy Neon's serverless Postgres via the Azure Marketplace" icon="azure"></a>
 
@@ -28006,11 +28819,11 @@ For supported Azure regions, refer to our [Regions](/docs/introduction/regions) 
 
 <a href="https://neon.tech/guides/azure-ai-language" title="Azure AI Language" description="Learn how to analyze customer feedback using Azure AI Language and store results in Neon Postgres" icon="azure"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Related resources
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/dotnet-npgsql" title=".NET" description="Connect a .NET (C#) application to Neon" icon="dotnet"></a>
 
@@ -28026,7 +28839,7 @@ For supported Azure regions, refer to our [Regions](/docs/introduction/regions) 
 
 <a href="https://neon.tech/guides/read-replica-entity-framework" title="Neon Read Replicas with Entity Framework" description="Scale your .NET application with Entity Framework and Neon Postgres Read Replicas" icon="entity"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Develop
@@ -28037,10 +28850,10 @@ For supported Azure regions, refer to our [Regions](/docs/introduction/regions) 
 title: Neon framework guides
 subtitle: Find detailed instructions for connecting to Neon from various frameworks
 enableTableOfContents: false
-updatedOn: '2024-11-28T11:50:49.801Z'
+updatedOn: '2025-02-24T15:53:13.354Z'
 ---
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
 
@@ -28074,7 +28887,7 @@ updatedOn: '2024-11-28T11:50:49.801Z'
 
 <a href="/docs/guides/sveltekit" title="Sveltekit" description="Connect a Sveltekit application to Neon" icon="svelte"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Astro
@@ -28704,7 +29517,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/quickstart/vercel
   - /docs/integrations/vercel
-updatedOn: '2025-02-03T20:41:57.331Z'
+updatedOn: '2025-02-18T15:25:38.976Z'
 ---
 
 Next.js by Vercel is an open-source web development framework that enables React-based web applications. This topic describes how to create a Neon project and access it from a Next.js application.
@@ -28726,7 +29539,7 @@ If you do not have one already, create a Neon project. Save your connection deta
 
 ## Create a Next.js project and add dependencies
 
-1. Create a Next.js project if you do not have one. For instructions, see [Create a Next.js App](https://nextjs.org/learn/basics/create-nextjs-app/setup), in the Vercel documentation.
+1. Create a Next.js project if you do not have one. For instructions, see [Create a Next.js App](https://nextjs.org/docs/app/getting-started/installation), in the Vercel documentation.
 
 2. Add project dependencies using one of the following commands:
 
@@ -29409,8 +30222,7 @@ You can find the source code for the application described in this guide on GitH
 title: Connect Nuxt to Postgres on Neon
 subtitle: Learn how to make server-side queries to Postgres using Nitro API routes
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-03T20:41:57.332Z'
+updatedOn: '2025-03-05T21:09:38.752Z'
 ---
 
 [Nuxt](https://nuxt.com/) is an open-source full-stack meta framework that enables Vue-based web applications. This topic describes how to connect a Nuxt application to a Postgres database on Neon.
@@ -29898,7 +30710,7 @@ PostgreSQL 15.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 10.2.1-6) 10.2.1
 title: Connect a React application to Neon
 subtitle: Set up a Neon project in seconds and connect from a React application
 enableTableOfContents: true
-updatedOn: '2024-11-28T11:50:49.803Z'
+updatedOn: '2025-02-24T15:53:13.359Z'
 ---
 
 React by Facebook is an open-source front-end JavaScript library for building user interfaces based on components.
@@ -29909,7 +30721,7 @@ Neon Postgres should be accessed from the server side in React applications. Usi
 
 Find detailed instructions for connecting to Neon from various React meta-frameworks.
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/nextjs" title="Next.js" description="Connect a Next.js application to Neon" icon="next-js"></a>
 
@@ -29917,7 +30729,7 @@ Find detailed instructions for connecting to Neon from various React meta-framew
 
 <a href="/docs/guides/sveltekit" title="Sveltekit" description="Connect a Sveltekit application to Neon" icon="svelte"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 <NeedHelp/>
 
@@ -30539,8 +31351,7 @@ You can find the source code for the application described in this guide on GitH
 title: Connect a Sveltekit application to Neon
 subtitle: Set up a Neon project in seconds and connect from a Sveltekit application
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-03T20:41:57.338Z'
+updatedOn: '2025-03-05T21:09:38.752Z'
 ---
 
 Sveltekit is a modern JavaScript framework that compiles your code to tiny, framework-less vanilla JS. This guide explains how to connect Sveltekit with Neon using a secure server-side request.
@@ -30774,10 +31585,10 @@ subtitle: Find detailed instructions for connecting to Neon from various languag
 enableTableOfContents: true
 redirectFrom:
   - /docs/guides/guides-intro
-updatedOn: '2024-11-03T11:19:09.438Z'
+updatedOn: '2025-02-24T15:53:13.356Z'
 ---
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/dotnet-npgsql" title=".NET" description="Connect a .NET (C#) application to Neon" icon="dotnet"></a>
 
@@ -30793,7 +31604,7 @@ updatedOn: '2024-11-03T11:19:09.438Z'
 
 <a href="/docs/guides/rust" title="Rust" description="Connect a Rust application to Neon" icon="rust"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Elixir
@@ -31139,7 +31950,7 @@ Refer to the [Connect with JDBC](#connect-with-jdbc) section above for informati
 title: Connect a JavaScript application to Neon
 subtitle: Set up a Neon project in seconds and connect from a JavaScript application
 enableTableOfContents: true
-updatedOn: '2025-01-25T22:10:34.145Z'
+updatedOn: '2025-02-24T15:53:13.358Z'
 ---
 
 Neon Postgres should be accessed from the server-side in JavaScript applications. Using the following JavaScript frameworks, you can easily configure a server-side connection to a Neon Postgres database.
@@ -31148,7 +31959,7 @@ Neon Postgres should be accessed from the server-side in JavaScript applications
 
 Find detailed instructions for connecting to Neon from various JavaScript frameworks.
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/node" title="Node.js" description="Connect a Node.js application to Neon" icon="node-js"></a>
 
@@ -31156,7 +31967,7 @@ Find detailed instructions for connecting to Neon from various JavaScript framew
 
 <a href="/docs/guides/bun" title="Bun" description="Connect a Bun application to Neon" icon="bun"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 <NeedHelp/>
 
@@ -31422,10 +32233,10 @@ You can find the connection details for your database by clicking the **Connect*
 title: Neon ORM guides
 subtitle: Find detailed instructions for connecting to Neon from various ORMs
 enableTableOfContents: true
-updatedOn: '2024-11-28T11:18:12.622Z'
+updatedOn: '2025-02-24T15:53:13.356Z'
 ---
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/django" title="Django" description="Connect a Django application to Neon" icon="django"></a>
 
@@ -31439,7 +32250,7 @@ updatedOn: '2024-11-28T11:18:12.622Z'
 
 <a href="/docs/guides/sqlalchemy" title="SQLAlchemy" description="Connect a SQLAlchemy application to Neon" icon="sqlalchemy"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Django (Django ORM)
@@ -32239,14 +33050,1100 @@ For schema migration with SQLAlchemy, see our guide:
 
 # Neon Auth
 
-# Neon RLS Authorize
+---
+title: About Neon Auth
+subtitle: Automatically sync user profiles from your auth provider directly to your
+  database
+enableTableOfContents: true
+redirectFrom:
+  - /docs/guides/neon-identity
+tag: beta
+updatedOn: '2025-03-07T21:27:12.098Z'
+---
+
+<FeatureBetaProps feature_name="Neon Auth" />
+
+**Neon Auth** connects your authentication provider to your Neon database, automatically synchronizing user profiles so that you own your auth data. Access your user data directly in your database environment, with no custom integration code needed.
+
+## Authentication and synchronization
+
+When implementing user authentication, it is common to use managed authentication providers like Stack Auth, Clerk, and others to handle the complexities of user identity, passwords, and security. However, keeping your database in sync with these providers typically requires additional development work.
+
+Neon Auth solves this by integrating your auth provider with your Postgres database, ensuring your application always has access to up-to-date user information right from your database.
+
+## Key benefits
+
+- Provision auth provider projects and manage your users directly from the Neon Console
+- Automated synchronization of user profiles between auth provider and your database
+- Easy database relationships, since your user profiles are available as any other table
+
+## How Neon Auth works
+
+When you set up Neon Auth, we create a `neon_auth` schema in your database. As users authenticate and manage their profiles in your auth provider, their data is automatically synchronized to your database.
+
+Here is the basic flow:
+
+1. **User profiles are created and managed in your authentication provider**
+
+   This view shows the list of users inside your auth provider (e.g. Stack Auth). When new users sign up or update their profiles in your app, their data first appears here:
+   ![Users in Auth Provider](/docs/guides/stackauth_users.png)
+
+2. **Neon Auth syncs their data to your database**
+
+   This view shows the synced user profiles in Neon Auth. This is where Neon manages the connection between your database and the authentication provider.
+   ![Same users in Neon Auth](/docs/guides/identity_users.png)
+
+3. **The data is immediately available in your database**
+
+   The synchronized data is available in the `neon_auth.users_sync` table shortly after the auth provider processes changes. Here's an example query to inspect the synchronized data:
+
+   ```sql
+   SELECT * FROM neon_auth.users_sync;
+   ```
+
+   | id          | name          | email             | created_at          | updated_at          | deleted_at | raw_json                     |
+   | ----------- | ------------- | ----------------- | ------------------- | ------------------- | ---------- | ---------------------------- |
+   | d37b6a30... | Jordan Rivera | jordan@company.co | 2025-02-12 19:44... | null                | null       | \{"id": "d37b6a30...", ...\} |
+   | 0153cc96... | Alex Kumar    | alex@acme.com     | 2025-02-12 19:44... | null                | null       | \{"id": "0153cc96...", ...\} |
+   | 51e491df... | Sam Patel     | sam@startup.dev   | 2025-02-12 19:43... | 2025-02-12 19:46... | null       | \{"id": "51e491df...", ...\} |
+
+### Table structure
+
+The following columns are included in the `neon_auth.users_sync` table:
+
+- `raw_json`: Complete user profile as JSON
+- `id`: The unique ID of the user
+- `name`: The user's display name
+- `email`: The user's primary email
+- `created_at`: When the user signed up
+- `deleted_at`: When the user was deleted, if applicable (nullable)
+- `updated_at`: When the user was last updated, if applicable (nullable)
+
+Updates to user profiles in the auth provider are automatically synchronized.
+
+<Admonition type="note">
+Do not try to change the `neon_auth.users_sync` table name. It's needed for the synchronization process to work correctly.
+</Admonition>
+
+## Before and after Neon Auth
+
+Let's take a look at how Neon Auth simplifies database operations in a typical todos application, specifically when associating todos with users.
+
+### Before Neon Auth
+
+Without Neon Auth, you would typically need to:
+
+1. **Create and manage your own `users` table** to store user information in your database.
+2. **Implement synchronization logic** to keep this `users` table in sync with your authentication provider. This includes handling user creation and, crucially, **user updates** and deletions.
+3. **Create a `todos` table** that references your `users` table using a foreign key.
+
+Here's how you would structure your database and perform insert operations _without_ Neon Auth:
+
+#### 1. Create a `users` table:
+
+```sql
+CREATE TABLE users (
+    id TEXT PRIMARY KEY, -- User ID from your auth provider (TEXT type)
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    -- ... other user fields
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ
+);
+```
+
+#### 2. Insert a user into the `users` table:
+
+To insert this user into your database when a new user is created in your auth provider, you might set up a webhook endpoint. Here’s an example of a simplified webhook handler that would receive a `user.created` event from your auth provider and insert the user into your `users` table:
+
+```typescript
+// Webhook handler to insert a user into the 'users' table for a 'user.created' event
+
+import { db } from '@/db';
+
+export async function POST(request: Request) {
+  await checkIfRequestIsFromAuthProvider(request); // Validate request authenticity using headers, etc.
+  const payload = await request.json(); // Auth Provider webhook payload
+
+  // Extract user data from the webhook payload
+  const userId = payload.user_id;
+  const email = payload.email_address;
+  const name = payload.name;
+
+  try {
+    await db.query(
+      `INSERT INTO users (id, email, name)
+       VALUES ($1, $2, $3)`,
+      [userId, email, name]
+    );
+    return new Response('User added successfully', { status: 200 });
+  } catch (error) {
+    console.error('Database error inserting user:', error);
+
+    // Retry logic, error handling, etc. as needed
+    // Send notification to on-call team, etc to check why the insert operation failed
+
+    return new Response('Error inserting user into database', { status: 500 });
+  }
+}
+```
+
+<Admonition type="note">
+- This code snippet only handles the `user.created` event. To achieve complete synchronization, you would need to write separate webhook handlers for `user.updated`, `user.deleted`, and potentially other event types. Each handler adds complexity and requires careful error handling, security considerations, and ongoing maintenance.
+- The provided webhook example is a simplified illustration, and a production-ready solution would necessitate more robust error handling, security measures, and potentially queueing mechanisms to ensure reliable synchronization.
+</Admonition>
+
+#### 3. Create a `todos` table with a foreign key to the `users` table:
+
+```sql
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### 4. Insert a todo, referencing the `users` table:
+
+```sql
+INSERT INTO todos (task, user_id)
+VALUES ('Buy groceries', 'user-id-123');
+```
+
+### After Neon Auth
+
+With Neon Auth, Neon automatically creates and manages the `neon_auth.users_sync` table, keeping it synchronized with your connected authentication provider. You can directly rely on this table for user data, significantly simplifying your database operations.
+
+Here's how you would structure your `todos` table and perform insert operations _with_ Neon Auth:
+
+#### Users table
+
+`neon_auth.users_sync` table is automatically created and kept in sync by Neon Auth (no action needed from you) and is available for direct use in your schema and queries. Here is the table structure as [discussed above](#table-structure):
+
+```sql
+-- schema of neon_auth.users_sync table ( automatically created by Neon Auth )
+id TEXT PRIMARY KEY,
+raw_json JSONB,
+name TEXT,
+email TEXT,
+created_at TIMESTAMPTZ,
+deleted_at TIMESTAMPTZ,
+updated_at TIMESTAMPTZ
+```
+
+#### 1. Create a `todos` table with a foreign key to the `neon_auth.users_sync` table:
+
+```sql
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES neon_auth.users_sync(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### 2. Insert a todo, referencing the `neon_auth.users_sync` table:
+
+```sql
+INSERT INTO todos (task, user_id)
+VALUES ('Buy groceries', 'user-id-123');
+```
+
+<Admonition type="tip" title="Simplified operations">
+With Neon Auth, you skip the complexities of creating and synchronizing your own `users` table and implementing webhook handlers. Neon Auth handles the synchronization for you, making it much easier to build applications that rely on user data. This means you can directly reference the `neon_auth.users_sync` table in your schema and queries, and **updates to user profiles are automatically reflected** without you writing any synchronization code.  This significantly reduces development and maintenance overhead.
+</Admonition>
+
+For a more detailed walkthrough, see the [Neon Auth Tutorial](/docs/guides/neon-auth-tutorial).
+
+## Getting started
+
+Neon Auth offers two ways to connect your authentication provider:
+
+1. **Quick Start (Recommended)**
+
+   - Automatically provision a pre-configured Stack Auth project, managed by Neon
+   - Includes recommended security settings
+   - Best for new projects or first-time Stack Auth users
+
+2. **Manual Setup**
+   - Connect your existing Stack Auth project
+   - Configure authentication settings to match your needs
+   - Provide your Stack Auth project details during setup
+
+Choose your setup option in the Neon Console under the **Auth** page.
+
+<Admonition type="note">
+Only [organization admins](/docs/manage/organizations#user-roles-and-permissions) can install or remove Neon Auth. Organization members and [project collaborators](/docs/guides/project-collaboration-guide) do not have permission to modify Neon Auth settings.
+</Admonition>
+
+## Transfer ownership
+
+When you create a Neon Auth integration using the **Quick Start** option from the **Auth** page (or using the [Create integration API](/docs/guides/neon-auth-api#create-integration)), Neon manages the auth project for you.
+
+<Tabs labels={["Neon Console", "API"]}>
+
+<TabItem>
+
+You can claim ownership of the project to your own Stack Auth account by clicking **Transfer ownership** in the **Auth** page.
+
+![The Transfer ownership button appears when your integration is Neon managed](/docs/guides/auth-transfer-ownership.png)
+
+This opens a transfer confirmation page where you can select which Stack Auth account should receive ownership of the project. After confirming the transfer, you'll have direct access to manage your project in the Stack Auth dashboard while maintaining the integration with your Neon database.
+
+</TabItem>
+
+<TabItem>
+
+Request a transfer URL using the transfer ownership endpoint:
+
+```bash shouldWrap
+curl --request POST \
+     --url 'https://console.neon.tech/api/v2/projects/auth/transfer_ownership' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --data '{
+       "project_id": "project-id",
+       "auth_provider": "stack"
+     }'
+```
+
+Then open the returned URL in a browser to complete the transfer. See [Transfer ownership using the API](/docs/guides/neon-auth-api#transfer-to-your-auth-provider-optional) for details.
+
+</TabItem>
+</Tabs>
+
+<Admonition type="note">
+After transfer, you'll still be able to access your project from the Neon Console, but you'll also have direct access from the Stack Auth dashboard.
+</Admonition>
+
+## Creating users
+
+You can create new users directly from the Neon Console, whether you're using a Neon-managed auth project or your own auth provider. This can be useful during development and testing.
+
+![Create user in Neon Auth](/docs/guides/neon_auth_create_user.png)
+
+The user will be created in your `neon_auth.users_sync` table and automatically propagated to your auth project (Neon-managed or provider-owned).
+
+You can also create users from the API. See the next section for details.
+
+## Using the API
+
+You can manage your Neon Auth integration programmatically using the API. This includes creating integrations, managing users, and transferring ownership.
+
+Key operations:
+
+- Create or remove a Neon-managed auth integration
+- Generate SDK keys for your integration
+- Create users in your auth provider
+- Transfer ownership to your auth provider
+
+See [Manage Neon Auth using the API](/docs/guides/neon-auth-api) for more information.
+
+## Best practices
+
+### Foreign keys and the users_sync table
+
+Since the `neon_auth.users_sync` table is updated asynchronously, there may be a brief delay (usually less than 1 second) before a user's data appears in the table. Consider this possible delay when deciding whether to use foreign keys in your schema.
+
+If you do choose to use foreign keys, make sure to specify an `ON DELETE` behavior that matches your needs: for example, `CASCADE` for personal data like todos or user preferences, and `SET NULL` for content like blog posts or comments that should persist after user deletion.
+
+```sql
+-- For personal data that should be removed with the user (e.g., todos)
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    user_id UUID NOT NULL REFERENCES neon_auth.users_sync(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- For content that should persist after user deletion (e.g., blog posts)
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    author_id UUID REFERENCES neon_auth.users_sync(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Querying user data
+
+When querying data that relates to users:
+
+- Use LEFT JOINs instead of INNER JOINs with the `users_sync` table in case of any sync delays. This ensures that all records from the main table (e.g., posts) are returned even if there's no matching user in the `users_sync` table yet.
+- Filter out deleted users since the table uses soft deletes (users are marked with a `deleted_at` timestamp when deleted).
+
+Here's an example of how to handle both in your queries:
+
+```sql
+SELECT posts.*, neon_auth.users_sync.name as author_name
+FROM posts
+LEFT JOIN neon_auth.users_sync ON posts.author_id = neon_auth.users_sync.id
+WHERE neon_auth.users_sync.deleted_at IS NULL;
+```
+
+## Limitations
+
+<Admonition type="important">
+Neon Auth is not compatible with Private Link (Neon Private Networking). If you have Private Link enabled for your Neon project, Neon Auth will not work. This is because Neon Auth requires internet access to connect to third-party authentication providers, while Private Link restricts connections to private AWS networks.
+</Admonition>
+
+
+# About
 
 ---
-title: About Neon RLS Authorize
-subtitle: Secure your application at the database level using Postgres's Row-Level Security
+title: About Neon Auth
+subtitle: Automatically sync user profiles from your auth provider directly to your
+  database
 enableTableOfContents: true
-updatedOn: '2025-01-21T01:48:50.914Z'
 redirectFrom:
+  - /docs/guides/neon-identity
+tag: beta
+updatedOn: '2025-03-07T21:27:12.098Z'
+---
+
+<FeatureBetaProps feature_name="Neon Auth" />
+
+**Neon Auth** connects your authentication provider to your Neon database, automatically synchronizing user profiles so that you own your auth data. Access your user data directly in your database environment, with no custom integration code needed.
+
+## Authentication and synchronization
+
+When implementing user authentication, it is common to use managed authentication providers like Stack Auth, Clerk, and others to handle the complexities of user identity, passwords, and security. However, keeping your database in sync with these providers typically requires additional development work.
+
+Neon Auth solves this by integrating your auth provider with your Postgres database, ensuring your application always has access to up-to-date user information right from your database.
+
+## Key benefits
+
+- Provision auth provider projects and manage your users directly from the Neon Console
+- Automated synchronization of user profiles between auth provider and your database
+- Easy database relationships, since your user profiles are available as any other table
+
+## How Neon Auth works
+
+When you set up Neon Auth, we create a `neon_auth` schema in your database. As users authenticate and manage their profiles in your auth provider, their data is automatically synchronized to your database.
+
+Here is the basic flow:
+
+1. **User profiles are created and managed in your authentication provider**
+
+   This view shows the list of users inside your auth provider (e.g. Stack Auth). When new users sign up or update their profiles in your app, their data first appears here:
+   ![Users in Auth Provider](/docs/guides/stackauth_users.png)
+
+2. **Neon Auth syncs their data to your database**
+
+   This view shows the synced user profiles in Neon Auth. This is where Neon manages the connection between your database and the authentication provider.
+   ![Same users in Neon Auth](/docs/guides/identity_users.png)
+
+3. **The data is immediately available in your database**
+
+   The synchronized data is available in the `neon_auth.users_sync` table shortly after the auth provider processes changes. Here's an example query to inspect the synchronized data:
+
+   ```sql
+   SELECT * FROM neon_auth.users_sync;
+   ```
+
+   | id          | name          | email             | created_at          | updated_at          | deleted_at | raw_json                     |
+   | ----------- | ------------- | ----------------- | ------------------- | ------------------- | ---------- | ---------------------------- |
+   | d37b6a30... | Jordan Rivera | jordan@company.co | 2025-02-12 19:44... | null                | null       | \{"id": "d37b6a30...", ...\} |
+   | 0153cc96... | Alex Kumar    | alex@acme.com     | 2025-02-12 19:44... | null                | null       | \{"id": "0153cc96...", ...\} |
+   | 51e491df... | Sam Patel     | sam@startup.dev   | 2025-02-12 19:43... | 2025-02-12 19:46... | null       | \{"id": "51e491df...", ...\} |
+
+### Table structure
+
+The following columns are included in the `neon_auth.users_sync` table:
+
+- `raw_json`: Complete user profile as JSON
+- `id`: The unique ID of the user
+- `name`: The user's display name
+- `email`: The user's primary email
+- `created_at`: When the user signed up
+- `deleted_at`: When the user was deleted, if applicable (nullable)
+- `updated_at`: When the user was last updated, if applicable (nullable)
+
+Updates to user profiles in the auth provider are automatically synchronized.
+
+<Admonition type="note">
+Do not try to change the `neon_auth.users_sync` table name. It's needed for the synchronization process to work correctly.
+</Admonition>
+
+## Before and after Neon Auth
+
+Let's take a look at how Neon Auth simplifies database operations in a typical todos application, specifically when associating todos with users.
+
+### Before Neon Auth
+
+Without Neon Auth, you would typically need to:
+
+1. **Create and manage your own `users` table** to store user information in your database.
+2. **Implement synchronization logic** to keep this `users` table in sync with your authentication provider. This includes handling user creation and, crucially, **user updates** and deletions.
+3. **Create a `todos` table** that references your `users` table using a foreign key.
+
+Here's how you would structure your database and perform insert operations _without_ Neon Auth:
+
+#### 1. Create a `users` table:
+
+```sql
+CREATE TABLE users (
+    id TEXT PRIMARY KEY, -- User ID from your auth provider (TEXT type)
+    email VARCHAR(255) UNIQUE NOT NULL,
+    name VARCHAR(255),
+    -- ... other user fields
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ
+);
+```
+
+#### 2. Insert a user into the `users` table:
+
+To insert this user into your database when a new user is created in your auth provider, you might set up a webhook endpoint. Here’s an example of a simplified webhook handler that would receive a `user.created` event from your auth provider and insert the user into your `users` table:
+
+```typescript
+// Webhook handler to insert a user into the 'users' table for a 'user.created' event
+
+import { db } from '@/db';
+
+export async function POST(request: Request) {
+  await checkIfRequestIsFromAuthProvider(request); // Validate request authenticity using headers, etc.
+  const payload = await request.json(); // Auth Provider webhook payload
+
+  // Extract user data from the webhook payload
+  const userId = payload.user_id;
+  const email = payload.email_address;
+  const name = payload.name;
+
+  try {
+    await db.query(
+      `INSERT INTO users (id, email, name)
+       VALUES ($1, $2, $3)`,
+      [userId, email, name]
+    );
+    return new Response('User added successfully', { status: 200 });
+  } catch (error) {
+    console.error('Database error inserting user:', error);
+
+    // Retry logic, error handling, etc. as needed
+    // Send notification to on-call team, etc to check why the insert operation failed
+
+    return new Response('Error inserting user into database', { status: 500 });
+  }
+}
+```
+
+<Admonition type="note">
+- This code snippet only handles the `user.created` event. To achieve complete synchronization, you would need to write separate webhook handlers for `user.updated`, `user.deleted`, and potentially other event types. Each handler adds complexity and requires careful error handling, security considerations, and ongoing maintenance.
+- The provided webhook example is a simplified illustration, and a production-ready solution would necessitate more robust error handling, security measures, and potentially queueing mechanisms to ensure reliable synchronization.
+</Admonition>
+
+#### 3. Create a `todos` table with a foreign key to the `users` table:
+
+```sql
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### 4. Insert a todo, referencing the `users` table:
+
+```sql
+INSERT INTO todos (task, user_id)
+VALUES ('Buy groceries', 'user-id-123');
+```
+
+### After Neon Auth
+
+With Neon Auth, Neon automatically creates and manages the `neon_auth.users_sync` table, keeping it synchronized with your connected authentication provider. You can directly rely on this table for user data, significantly simplifying your database operations.
+
+Here's how you would structure your `todos` table and perform insert operations _with_ Neon Auth:
+
+#### Users table
+
+`neon_auth.users_sync` table is automatically created and kept in sync by Neon Auth (no action needed from you) and is available for direct use in your schema and queries. Here is the table structure as [discussed above](#table-structure):
+
+```sql
+-- schema of neon_auth.users_sync table ( automatically created by Neon Auth )
+id TEXT PRIMARY KEY,
+raw_json JSONB,
+name TEXT,
+email TEXT,
+created_at TIMESTAMPTZ,
+deleted_at TIMESTAMPTZ,
+updated_at TIMESTAMPTZ
+```
+
+#### 1. Create a `todos` table with a foreign key to the `neon_auth.users_sync` table:
+
+```sql
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    user_id TEXT NOT NULL REFERENCES neon_auth.users_sync(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+#### 2. Insert a todo, referencing the `neon_auth.users_sync` table:
+
+```sql
+INSERT INTO todos (task, user_id)
+VALUES ('Buy groceries', 'user-id-123');
+```
+
+<Admonition type="tip" title="Simplified operations">
+With Neon Auth, you skip the complexities of creating and synchronizing your own `users` table and implementing webhook handlers. Neon Auth handles the synchronization for you, making it much easier to build applications that rely on user data. This means you can directly reference the `neon_auth.users_sync` table in your schema and queries, and **updates to user profiles are automatically reflected** without you writing any synchronization code.  This significantly reduces development and maintenance overhead.
+</Admonition>
+
+For a more detailed walkthrough, see the [Neon Auth Tutorial](/docs/guides/neon-auth-tutorial).
+
+## Getting started
+
+Neon Auth offers two ways to connect your authentication provider:
+
+1. **Quick Start (Recommended)**
+
+   - Automatically provision a pre-configured Stack Auth project, managed by Neon
+   - Includes recommended security settings
+   - Best for new projects or first-time Stack Auth users
+
+2. **Manual Setup**
+   - Connect your existing Stack Auth project
+   - Configure authentication settings to match your needs
+   - Provide your Stack Auth project details during setup
+
+Choose your setup option in the Neon Console under the **Auth** page.
+
+<Admonition type="note">
+Only [organization admins](/docs/manage/organizations#user-roles-and-permissions) can install or remove Neon Auth. Organization members and [project collaborators](/docs/guides/project-collaboration-guide) do not have permission to modify Neon Auth settings.
+</Admonition>
+
+## Transfer ownership
+
+When you create a Neon Auth integration using the **Quick Start** option from the **Auth** page (or using the [Create integration API](/docs/guides/neon-auth-api#create-integration)), Neon manages the auth project for you.
+
+<Tabs labels={["Neon Console", "API"]}>
+
+<TabItem>
+
+You can claim ownership of the project to your own Stack Auth account by clicking **Transfer ownership** in the **Auth** page.
+
+![The Transfer ownership button appears when your integration is Neon managed](/docs/guides/auth-transfer-ownership.png)
+
+This opens a transfer confirmation page where you can select which Stack Auth account should receive ownership of the project. After confirming the transfer, you'll have direct access to manage your project in the Stack Auth dashboard while maintaining the integration with your Neon database.
+
+</TabItem>
+
+<TabItem>
+
+Request a transfer URL using the transfer ownership endpoint:
+
+```bash shouldWrap
+curl --request POST \
+     --url 'https://console.neon.tech/api/v2/projects/auth/transfer_ownership' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --data '{
+       "project_id": "project-id",
+       "auth_provider": "stack"
+     }'
+```
+
+Then open the returned URL in a browser to complete the transfer. See [Transfer ownership using the API](/docs/guides/neon-auth-api#transfer-to-your-auth-provider-optional) for details.
+
+</TabItem>
+</Tabs>
+
+<Admonition type="note">
+After transfer, you'll still be able to access your project from the Neon Console, but you'll also have direct access from the Stack Auth dashboard.
+</Admonition>
+
+## Creating users
+
+You can create new users directly from the Neon Console, whether you're using a Neon-managed auth project or your own auth provider. This can be useful during development and testing.
+
+![Create user in Neon Auth](/docs/guides/neon_auth_create_user.png)
+
+The user will be created in your `neon_auth.users_sync` table and automatically propagated to your auth project (Neon-managed or provider-owned).
+
+You can also create users from the API. See the next section for details.
+
+## Using the API
+
+You can manage your Neon Auth integration programmatically using the API. This includes creating integrations, managing users, and transferring ownership.
+
+Key operations:
+
+- Create or remove a Neon-managed auth integration
+- Generate SDK keys for your integration
+- Create users in your auth provider
+- Transfer ownership to your auth provider
+
+See [Manage Neon Auth using the API](/docs/guides/neon-auth-api) for more information.
+
+## Best practices
+
+### Foreign keys and the users_sync table
+
+Since the `neon_auth.users_sync` table is updated asynchronously, there may be a brief delay (usually less than 1 second) before a user's data appears in the table. Consider this possible delay when deciding whether to use foreign keys in your schema.
+
+If you do choose to use foreign keys, make sure to specify an `ON DELETE` behavior that matches your needs: for example, `CASCADE` for personal data like todos or user preferences, and `SET NULL` for content like blog posts or comments that should persist after user deletion.
+
+```sql
+-- For personal data that should be removed with the user (e.g., todos)
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    task TEXT NOT NULL,
+    user_id UUID NOT NULL REFERENCES neon_auth.users_sync(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- For content that should persist after user deletion (e.g., blog posts)
+CREATE TABLE posts (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    author_id UUID REFERENCES neon_auth.users_sync(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Querying user data
+
+When querying data that relates to users:
+
+- Use LEFT JOINs instead of INNER JOINs with the `users_sync` table in case of any sync delays. This ensures that all records from the main table (e.g., posts) are returned even if there's no matching user in the `users_sync` table yet.
+- Filter out deleted users since the table uses soft deletes (users are marked with a `deleted_at` timestamp when deleted).
+
+Here's an example of how to handle both in your queries:
+
+```sql
+SELECT posts.*, neon_auth.users_sync.name as author_name
+FROM posts
+LEFT JOIN neon_auth.users_sync ON posts.author_id = neon_auth.users_sync.id
+WHERE neon_auth.users_sync.deleted_at IS NULL;
+```
+
+## Limitations
+
+<Admonition type="important">
+Neon Auth is not compatible with Private Link (Neon Private Networking). If you have Private Link enabled for your Neon project, Neon Auth will not work. This is because Neon Auth requires internet access to connect to third-party authentication providers, while Private Link restricts connections to private AWS networks.
+</Admonition>
+
+
+# Tutorial
+
+---
+title: Neon Auth Tutorial
+subtitle: See how Neon Auth eliminates the complexity of manual user data
+  synchronization, making your development faster and your applications more
+  robust.
+enableTableOfContents: true
+tag: beta
+updatedOn: '2025-03-04T15:01:14.286Z'
+---
+
+<FeatureBetaProps feature_name="Neon Auth" />
+
+Modern application development is becoming increasingly reliant on third-party authentication providers like [Clerk](https://clerk.com), [Stack Auth](https://stack-auth.com), etc., to handle secure user management. While these platforms excel at streamlining login workflows and protecting sensitive data, developers frequently encounter a hidden challenge: maintaining parity between external identity records and their application's database.
+
+Profile updates, role changes, and user deletions in your authentication service don’t automatically reflect in your application’s data layer. Today, developers typically address this gap through several approaches:
+
+- **Webhooks**: Many providers offer real-time event notifications (e.g., `user.updated`) to trigger immediate updates in your system.
+- **Polling**: Periodically querying the auth provider’s API checks for changes, but this approach introduces latency and risks hitting rate limits.
+- **Login-time sync**: Fetching fresh profile data during authentication ensures accuracy for active users at the expense of increased latency while also leaving stale data for inactive accounts.
+
+While these methods partially mitigate the problem, they often require writing custom synchronization scripts, implementing brittle listeners, and manually reconciling data discrepancies – turning a theoretical time-saver into an ongoing maintenance burden.
+
+Neon Auth offers a streamlined solution to this common challenge. Instead of grappling with complex synchronization methods, Neon Auth automatically synchronizes user profiles directly from your authentication provider to your Neon Postgres database. This eliminates the need for manual updates, ensuring accurate, real-time data. You gain the benefits of efficient, automated user data management while retaining complete control over your core application information
+
+<Admonition type="note">
+Currently, Neon Auth is available for use with Stack Auth, with support for additional authentication providers coming soon.
+</Admonition>
+
+## A typical user data synchronization scenario
+
+To illustrate the benefits of Neon Auth, let’s consider a common scenario where you need to synchronize user data between your authentication provider and your application’s database.
+
+### Scenario overview
+
+You are building a social media platform where users can create profiles, post content, and interact with others. You use Clerk as your authentication provider to handle user registration, login, and password management. Your application’s database stores user profiles, posts, comments, and other social data.
+
+### Data synchronization requirements
+
+- **User profiles**: When a user registers or updates their profile on Clerk, you need to synchronize their profile data to your application’s database. This includes user ID, name, email, profile picture, and other relevant information.
+
+- **User deletion**: If a user deletes their account, you must remove their profile and associated data from your application’s database.
+
+- **Data consistency**: Ensure that user data in your application’s database remains consistent with the latest information from Clerk. Any changes to user profiles should reflect immediately in your database.
+
+### Challenges with manual synchronization
+
+Without Neon Auth, you would typically address these requirements using manual synchronization methods like webhooks, polling, or login-time sync. However, these approaches introduce several challenges:
+
+![Typical User Data Synchronization Challenges](/docs/guides/typical-way-of-syncing-data.svg)
+
+- **Infrastructure and maintenance burden**: Setting up and maintaining a robust synchronization system manually involves significant infrastructure overhead. This includes configuring secure webhook endpoints, managing job queues for retries and background processing, and deploying worker processes – all adding to operational complexity. Consider the example of a webhook handler, demonstrating just a fraction of the code needed for basic user synchronization and validation:
+
+  ```typescript
+  // Webhook handler for a `user.created` event
+
+  import { WebhookEvent, UserJSON } from '@clerk/nextjs/server';
+  import { headers } from 'next/headers';
+  import { Webhook } from 'svix';
+  import { db } from '@/app/db/server';
+  import { User, users } from '@/app/schema';
+
+  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET || '';
+
+  async function validateRequest(request: Request) {
+    const payloadString = await request.text();
+    const headerPayload = await headers();
+
+    const svixHeaders = {
+      'svix-id': headerPayload.get('svix-id')!,
+      'svix-timestamp': headerPayload.get('svix-signature')!,
+      'svix-signature': headerPayload.get('svix-signature')!,
+    };
+    const wh = new Webhook(webhookSecret);
+    return wh.verify(payloadString, svixHeaders) as WebhookEvent;
+  }
+
+  export async function POST(request: Request) {
+    const payload = await validateRequest(request);
+    const payloadData = payload.data as UserJSON;
+    const user = {
+      userId: payload.data.id,
+      name: `${payloadData.first_name} ${payloadData.last_name}`,
+      email: payloadData.email_addresses[0].email_address,
+    } as User;
+    await db.insert(users).values(user);
+    return Response.json({ message: 'User added' });
+  }
+  ```
+
+    <Admonition type="important" title="Complexity Multiplies with Event Types">
+    Crucially, this code only handles a single event: `user.created`. *To achieve complete synchronization, you would need to write separate webhook handlers for `user.updated`, `user.deleted`, and potentially other event types* (like role changes, email updates, profile changes, etc.), depending on your application's needs and the capabilities of your auth provider. Each new webhook handler multiplies the complexity of your synchronization system and introduces more potential points of failure. This quickly becomes a brittle and unwieldy system where, inevitably, **everything that is bound to fail will fail.**
+    </Admonition>
+
+- **Development overhead**: Building custom synchronization logic requires significant development effort. You need to write code for event parsing, data mapping, database updates, and complex error handling. Polling and login-time sync, while alternatives, introduce their own complexities in terms of rate limit management, latency, and data consistency.
+
+- **Query inefficiency**: Without synchronized data, applications often resort to fetching user data from the auth provider API at runtime, leading to increased latency and complex queries. This dependency on external APIs can impact performance and reliability.
+
+- **Data Inconsistency risks**: Manual synchronization methods are inherently prone to inconsistencies. Webhook failures, polling delays, or errors in custom logic can lead to your database containing stale or inaccurate user data, potentially causing application errors and data integrity issues.
+
+## Streamlining user data sync
+
+Neon Auth offers a streamlined solution to these challenges by automating user data synchronization. Let’s examine how Neon Auth simplifies the process and eliminates the complexities associated with manual methods.
+
+### Simplified Architecture
+
+Neon Auth introduces a simplified architecture that removes the need for webhooks, polling, and custom synchronization scripts. As shown in the diagram below, Neon Auth acts as an intermediary layer that automatically synchronizes user data from your authentication provider to your Neon Postgres database.
+
+![How Neon Auth Simplifies User Data Synchronization](/docs/guides/sync-via-neon-auth.svg)
+
+With Neon Auth, the architecture is significantly cleaner and more efficient:
+
+- **Automated synchronization**: Neon Auth handles the entire synchronization process automatically in the background. You no longer need to set up and maintain complex synchronization logic.
+- **No webhooks or polling**: No need to develop and maintain webhook endpoints for different user events (e.g., `user.created`, `user.updated`, `user.deleted`). Neon Auth automatically syncs user data changes to your database without requiring external triggers.
+- **Direct database access**: Your application can directly query user data from the `neon_auth.users_sync` table in your Neon Postgres database. This simplifies data access and improves query performance.
+- **Error handling and retries**: Neon Auth includes built-in error handling and retry mechanisms to ensure data consistency without requiring custom code.
+
+### Enhanced data consistency
+
+Neon Auth ensures enhanced data consistency by providing a reliable and automated synchronization mechanism. Neon Auth continuously monitors for user data changes in your authentication provider and automatically synchronizes these changes to your Neon Postgres database.
+
+## Get started with Neon Auth
+
+Watch the following video to see how Neon Auth simplifies user data synchronization:
+
+<video autoPlay playsInline muted loop width="800" height="600" controls>
+  <source type="video/mp4" src="https://neondatabase.wpengine.com/wp-content/uploads/2025/02/Neon-Auth.mp4#t=15"/>
+</video>
+
+## Accessing synchronized user data
+
+With Neon Auth, accessing synchronized user data becomes incredibly straightforward. You can directly query the `neon_auth.users_sync` table within your Neon Postgres database.
+
+Neon Auth automatically creates and manages this table, populating it with user data from your connected authentication provider. The table schema including the following columns:
+
+- `id`: The unique user ID from your authentication provider.
+- `name`: The user's display name.
+- `email`: The user's email address.
+- `created_at`: Timestamp of user creation in the auth provider.
+- `updated_at`: Timestamp of the last user profile update.
+- `deleted_at`: Timestamp indicating user deletion (if applicable).
+- `raw_json`: A JSON column containing the full raw user data received from the authentication provider.
+
+You can query this table using standard SQL, just like any other table in your Postgres database.
+
+**Example Query:**
+
+To retrieve all user information, you can use a simple `SELECT` statement:
+
+```sql
+SELECT * FROM neon_auth.users_sync;
+```
+
+This query will return a result set similar to the example below:
+
+| id          | name          | email             | created_at          | updated_at          | deleted_at | raw_json                     |
+| ----------- | ------------- | ----------------- | ------------------- | ------------------- | ---------- | ---------------------------- |
+| d37b6a30... | Jordan Rivera | jordan@company.co | 2025-02-12 19:44... | null                | null       | \{"id": "d37b6a30...", ...\} |
+| 0153cc96... | Alex Kumar    | alex@acme.com     | 2025-02-12 19:44... | null                | null       | \{"id": "0153cc96...", ...\} |
+| 51e491df... | Sam Patel     | sam@startup.dev   | 2025-02-12 19:43... | 2025-02-12 19:46... | null       | \{"id": "51e491df...", ...\} |
+
+**Efficient queries with JOINs**: You can easily join user data with other application tables to build complex queries. For example, to retrieve posts along with the author's name, you can use a simple `JOIN` statement:
+
+```sql
+SELECT posts.*, neon_auth.users_sync.name AS author_name
+FROM posts
+JOIN neon_auth.users_sync ON posts.author_id = neon_auth.users_sync.id;
+```
+
+## Conclusion
+
+Neon Auth streamlines user data synchronization, replacing cumbersome manual methods with an automated, efficient solution. This simplifies development, accelerates query performance, ensures data consistency, and minimizes infrastructure costs.
+
+By leveraging Neon Auth, you can focus on building your application's core features while leaving the complexities of user data management to Neon.
+
+
+# API
+
+---
+title: Manage Neon Auth using the API
+enableTableOfContents: true
+updatedOn: '2025-02-21T13:30:24.355Z'
+---
+
+Learn how to manage your Neon Auth integration using the Neon API. Create a new integration, generate SDK keys, add users, and claim ownership of your Neon-managed auth project to your auth provider.
+
+## Prerequisites
+
+- A Neon API key (see [Create an API Key](/docs/manage/api-keys#create-an-organization-api-key))
+- A Neon project
+
+## Common parameters
+
+Several endpoints require these parameters:
+
+- `project_id`: Your Neon project ID. You can find it in the Neon Console on the **Settings** page, or use the [List Projects endpoint](https://api-docs.neon.tech/reference/listprojects).
+- `auth_provider`: The authentication provider you're using. Currently supported providers:
+  - `stack`: Stack Auth integration
+
+## Create integration
+
+Creates a Neon-managed authentication project for your database (currently supporting Stack Auth). This endpoint performs the same action as using Quick Start in the Console, automatically provisioning and configuring a new auth provider project that Neon manages for you.
+
+<Admonition type="note">
+To create an integration, you'll need:
+- Your main branch ID. Get it from the Neon Console on the **Branches** page, or use the [List Branches endpoint](https://api-docs.neon.tech/reference/listprojectbranches) (look for `"default": true`)
+- Your database name and role name. Get them by clicking on the **Connect** button on your **Project Dashboard** in the Neon Console, or use the [List Databases endpoint](https://api-docs.neon.tech/reference/listprojectbranches)
+</Admonition>
+
+Required parameters:
+
+- `project_id`: Your Neon project ID
+- `branch_id`: Your project's main branch ID
+- `database_name`: Name of your database (defaults to `"neondb"`)
+- `role_name`: Database role for authenticated users (defaults to `"neondb_owner"`)
+
+```bash shouldWrap
+curl --request POST \
+     --url 'https://console.neon.tech/api/v2/projects/auth/create' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json' \
+     --data '{
+       "auth_provider": "stack",
+       "project_id": "project-id",
+       "branch_id": "br-example-123",
+       "database_name": "neondb",
+       "role_name": "neondb_owner"
+     }' | jq
+```
+
+Example response:
+
+```json shouldWrap
+{
+  "auth_provider": "stack",
+  "auth_provider_project_id": "proj-example-123",
+  "pub_client_key": "pck_example123",
+  "secret_server_key": "ssk_example123",
+  "jwks_url": "https://api.stack-auth.com/api/v1/projects/proj-example-123/.well-known/jwks.json",
+  "schema_name": "neon_auth",
+  "table_name": "users_sync"
+}
+```
+
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/createProjectIdentityIntegration)
+
+## List integrations
+
+Lists all active auth provider integrations for your project.
+
+```bash shouldWrap
+curl --request GET \
+     --url 'https://console.neon.tech/api/v2/projects/{project_id}/auth/integrations' \
+     --header 'authorization: Bearer $NEON_API_KEY' | jq
+```
+
+Example response:
+
+```json shouldWrap
+{
+  "data": [
+    {
+      "auth_provider": "stack",
+      "auth_provider_project_id": "proj-example-123",
+      "branch_id": "br-example-123",
+      "db_name": "neondb",
+      "created_at": "2024-03-19T12:00:00Z",
+      "owned_by": "neon",
+      "jwks_url": "https://api.stack-auth.com/api/v1/projects/proj-example-123/.well-known/jwks.json"
+    }
+  ]
+}
+```
+
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/listProjectIdentityIntegrations)
+
+## Generate SDK keys
+
+Generates SDK keys for your auth provider integration. These keys are used to set up your frontend and backend SDKs.
+
+Required parameters:
+
+- `project_id`: Your Neon project ID
+- `auth_provider`: The authentication provider (currently `"stack"`)
+
+```bash shouldWrap
+curl --request POST \
+     --url 'https://console.neon.tech/api/v2/projects/auth/keys' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json' \
+     --data '{
+       "project_id": "project-id",
+       "auth_provider": "stack"
+     }' | jq
+```
+
+Example response:
+
+```json shouldWrap
+{
+  "auth_provider": "stack",
+  "auth_provider_project_id": "project-id-123",
+  "pub_client_key": "pck_example...",
+  "secret_server_key": "ssk_example...",
+  "jwks_url": "https://api.stack-auth.com/api/v1/projects/project-id-123/.well-known/jwks.json",
+  "schema_name": "neon_auth",
+  "table_name": "users_sync"
+}
+```
+
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/createProjectIdentityAuthProviderSDKKeys)
+
+## Create users
+
+Creates a new user in your auth provider's system.
+
+Required parameters:
+
+- `project_id`: Your Neon project ID
+- `auth_provider`: The authentication provider (currently `"stack"`)
+- `email`: User's email address
+
+Optional parameters:
+
+- `name`: User's display name (1-255 characters)
+
+```bash shouldWrap
+curl --request POST \
+     --url 'https://console.neon.tech/api/v2/projects/auth/user' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json' \
+     --data '{
+       "project_id": "project-id",
+       "auth_provider": "stack",
+       "email": "user@example.com",
+       "name": "Example User"
+     }' | jq
+```
+
+Example response:
+
+```json shouldWrap
+{
+  "id": "user-id-123"
+}
+```
+
+You can verify the user was synchronized to your database by connecting to your project and querying the `neon_auth.users_sync` table:
+
+```bash shouldWrap
+psql postgres://[user]:[password]@[hostname]/[database]
+```
+
+```sql shouldWrap
+SELECT id, email, name, created_at FROM neon_auth.users_sync;
+```
+
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/createProjectIdentityNewUser)
+
+## Transfer to your auth provider
+
+Transfer ownership of your Neon-managed auth project to your own auth provider account. This is a two-step process:
+
+1. Request a transfer URL:
+
+```bash shouldWrap
+curl --request POST \
+     --url 'https://console.neon.tech/api/v2/projects/auth/transfer_ownership' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json' \
+     --data '{
+       "project_id": "project-id",
+       "auth_provider": "stack"
+     }' | jq
+```
+
+Example response:
+
+```json shouldWrap
+{
+  "url": "https://app.stack-auth.com/integrations/neon/projects/transfer/confirm?code=example123"
+}
+```
+
+2. Open the returned URL in a browser to complete the transfer. You'll be asked to confirm which Stack Auth account should receive ownership of the project.
+
+<Admonition type="note">
+After the transfer, you'll still be able to access your project from the Neon dashboard, but you'll also have direct access from the Stack Auth dashboard.
+</Admonition>
+
+## Delete integration
+
+Removes an integration with a specific auth provider.
+
+```bash shouldWrap
+curl --request DELETE \
+     --url 'https://console.neon.tech/api/v2/projects/{project_id}/auth/integration/{auth_provider}' \
+     --header 'authorization: Bearer $NEON_API_KEY' | jq
+```
+
+[Try in API Reference ↗](https://api-docs.neon.tech/reference/deleteProjectIdentityIntegration)
+
+
+# Neon RLS
+
+---
+title: About Neon RLS
+subtitle: Secure your application at the database level using Postgres's Row-Level
+  Security
+enableTableOfContents: true
+updatedOn: '2025-03-06T15:24:01.906Z'
+redirectFrom:
+  - /docs/guides/neon-rls-authorize
   - /docs/guides/neon-authorize
 ---
 
@@ -32254,28 +34151,28 @@ redirectFrom:
 <DocsList title="What you will learn:">
 <p>JSON Web Tokens (JWT)</p>
 <p>Row-level Security (RLS)</p>
-<p>How Neon RLS Authorize works</p>
+<p>How Neon RLS works</p>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
   <a href="/postgresql/postgresql-administration/postgresql-row-level-security">Postgres Row-Level Security tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 
 </InfoBlock>
 
-**Neon RLS Authorize** integrates with third-party **JWT-based authentication providers** like Auth0 and Clerk, bringing authorization closer to your data by leveraging [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) at the database level.
+**Neon RLS** integrates with third-party **JWT-based authentication providers** like Auth0 and Clerk, bringing authorization closer to your data by leveraging [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) at the database level.
 
 ## Authentication and authorization
 
-When implementing user authentication in your application, third-party authentication providers like **Clerk**, **Auth0**, and others simplify the process of managing user identities, passwords, and security tokens. Once a user's identity is confirmed, the next step is **authorization** — controlling who can do what in your app based on their user type or role — for example, admins versus regular users. With Neon RLS Authorize, you can manage authorization directly within Postgres, either alongside or as a complete replacement for security at other layers.
+When implementing user authentication in your application, third-party authentication providers like **Clerk**, **Auth0**, and others simplify the process of managing user identities, passwords, and security tokens. Once a user's identity is confirmed, the next step is **authorization** — controlling who can do what in your app based on their user type or role — for example, admins versus regular users. With Neon RLS, you can manage authorization directly within Postgres, either alongside or as a complete replacement for security at other layers.
 
-## How Neon RLS Authorize works
+## How Neon RLS works
 
 Most authentication providers issue **JSON Web Tokens (JWTs)** on user authentication to convey user identity and claims. The JWT is a secure way of proving that logged-in users are who they say they are &#8212; and passing that proof on to other entities.
 
-With **Neon RLS Authorize**, the JWT is passed on to Neon, where you can make use of the validated user identity directly in Postgres. To integrate with an authentication provider, you will add your provider's JWT discovery URL to your Neon project. This lets Neon retrieve the necessary keys to validate the JWTs.
+With **Neon RLS**, the JWT is passed on to Neon, where you can make use of the validated user identity directly in Postgres. To integrate with an authentication provider, you will add your provider's JWT discovery URL to your Neon project. This lets Neon retrieve the necessary keys to validate the JWTs.
 
 ```typescript shouldWrap
 import { neon } from '@neondatabase/serverless';
@@ -32285,13 +34182,13 @@ const sql = neon(process.env.DATABASE_AUTHENTICATED_URL, { authToken: myAuthProv
 await sql(`select * from todos`);
 ```
 
-Behind the scenes, the [Neon Proxy](#the-role-of-the-neon-proxy) performs the validation, while Neon's open source [pg_session_jwt](/docs/guides/neon-rls-authorize#how-the-pgsessionjwt-extension-works) extension makes the extracted `user_id` available to Postgres. You can then use **Row-Level Security (RLS)** policies in Postgres to enforce access control at the row level, ensuring that users can only access or modify data according to the defined rules. Since these rules are implemented directly in the database, they can offer a secure fallback — or even a primary authorization solution — in case security in other layers of your application fail. See [when to rely on RLS](#when-to-rely-on-rls) for more information.
+Behind the scenes, the [Neon Proxy](#the-role-of-the-neon-proxy) performs the validation, while Neon's open source [pg_session_jwt](/docs/guides/neon-rls#how-the-pgsessionjwt-extension-works) extension makes the extracted `user_id` available to Postgres. You can then use **Row-Level Security (RLS)** policies in Postgres to enforce access control at the row level, ensuring that users can only access or modify data according to the defined rules. Since these rules are implemented directly in the database, they can offer a secure fallback — or even a primary authorization solution — in case security in other layers of your application fail. See [when to rely on RLS](#when-to-rely-on-rls) for more information.
 
-![Neon RLS Authorize architecture](/docs/guides/neon_authorize_architecture.png)
+![Neon RLS architecture](/docs/guides/neon_authorize_architecture.png)
 
 ## Database roles
 
-Neon RLS Authorize works with two database roles, identified by connection string prefixes:
+Neon RLS works with two database roles, identified by connection string prefixes:
 
 - **Authenticated role** (`authenticated@`): For users who are logged in. Requires a valid JWT token from your authentication provider.
 - **Anonymous role** (`anonymous@`): Currently requires authentication similar to the authenticated role. This implementation is under review and may change in the future to better support unauthenticated access.
@@ -32300,15 +34197,15 @@ Neon RLS Authorize works with two database roles, identified by connection strin
 For now, if you need to implement public access in your application, we recommend creating a separate database role with a password. This provides a simpler alternative to using the anonymous role while we work on improving anonymous access support.
 </Admonition>
 
-### Using Neon RLS Authorize with custom JWTs
+### Using Neon RLS with custom JWTs
 
 If you don't want to use a third-party authentication provider, you can build your application to generate and sign its own JWTs. Here's a sample application that demonstrates this approach: [See demo](https://github.com/neondatabase/authorize-demo-custom-jwt)
 
-## Before and after Neon RLS Authorize
+## Before and after Neon RLS
 
-Let's take a **before/after** look at moving authorization from the application level to the database to demonstrate how Neon RLS Authorize offers a different approach to securing your application.
+Let's take a **before/after** look at moving authorization from the application level to the database to demonstrate how Neon RLS offers a different approach to securing your application.
 
-### Before Neon RLS Authorize (application-level checks):
+### Before Neon RLS (application-level checks):
 
 In a traditional setup, you might handle authorization for a function directly in your backend code:
 
@@ -32335,9 +34232,9 @@ In this case, you have to:
 - Check if the user is authenticated and their `userId` matches the data they are trying to modify.
 - Handle both task creation and authorization in the backend code.
 
-### After Neon RLS Authorize (RLS in the database):
+### After Neon RLS (RLS in the database):
 
-With Neon RLS Authorize, you only need to pass the JWT to the database - authorization checks happen automatically through RLS policies:
+With Neon RLS, you only need to pass the JWT to the database - authorization checks happen automatically through RLS policies:
 
 <Tabs labels={["Drizzle", "SQL"]}>
 
@@ -32382,9 +34279,9 @@ export async function insertTodo({ newTodo }: { newTodo: string }) {
 
 This approach is flexible: you can manage RLS policies directly in SQL, or use an ORM like Drizzle to centralize them within your schema. Keeping both schema and authorization in one place can make it easier to maintain security. Some ORMs like [Drizzle](https://orm.drizzle.team/docs/rls#using-with-neon) are adding support for declaritive RLS, which makes the logic easier to scan and scale.
 
-## How Neon RLS Authorize gets `auth.user_id()` from the JWT
+## How Neon RLS gets `auth.user_id()` from the JWT
 
-Let's break down the RLS policy controlling who can **view todos** to see what Neon RLS Authorize is actually doing:
+Let's break down the RLS policy controlling who can **view todos** to see what Neon RLS is actually doing:
 
 <Tabs labels={["Drizzle", "SQL"]}>
 
@@ -32439,7 +34336,7 @@ RLS can also act as a backstop or final guarantee to prevent data leaks. Even if
 
 ## Supported providers
 
-Here is a non-exhaustive list of authentication providers. The table shows which providers Neon RLS Authorize supports, links out to provider documentation for details, and the discovery URL pattern each provider typically uses.
+Here is a non-exhaustive list of authentication providers. The table shows which providers Neon RLS supports, links out to provider documentation for details, and the discovery URL pattern each provider typically uses.
 
 | Provider                                  | Supported? | JWKS URL                                                                                                                                                           | Documentation                                                                                                                 |
 | ----------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -32460,27 +34357,27 @@ Here is a non-exhaustive list of authentication providers. The table shows which
 
 ### JWT Audience Checks
 
-Neon RLS Authorize can also verify the `aud` claim in the JWT. This is useful if you want to restrict access to a specific application or service.
+Neon RLS can also verify the `aud` claim in the JWT. This is useful if you want to restrict access to a specific application or service.
 
-For authentication providers such as Firebase Auth and GCP Cloud Identity, Neon RLS Authorize **mandates** the definition of an expected audience. This is because these providers share the same JWKS URL for all of their projects.
+For authentication providers such as Firebase Auth and GCP Cloud Identity, Neon RLS **mandates** the definition of an expected audience. This is because these providers share the same JWKS URL for all of their projects.
 
-The configuration of the expected audience can be done via the Neon RLS Authorize UI or via the [Neon RLS Authorize API](https://api-docs.neon.tech/reference/addprojectjwks).
+The configuration of the expected audience can be done via the Neon RLS UI or via the [Neon RLS API](https://api-docs.neon.tech/reference/addprojectjwks).
 
 ## Sample applications
 
-You can use these sample ToDo applications to get started using Neon RLS Authorize with popular authentication providers.
+You can use these sample ToDo applications to get started using Neon RLS with popular authentication providers.
 
 <DetailIconCards>
-<a href="https://github.com/neondatabase-labs/clerk-nextjs-frontend-neon-rls-authorize" description="A Todo List built with Clerk, Next.js, and Neon RLS Authorize (SQL from the Frontend)" icon="github">Clerk (Frontend) + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/stack-nextjs-neon-rls-authorize" description="A Todo List built with Stack Auth, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Stack Auth + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/auth0-nextjs-neon-rls-authorize" description="A Todo List built with Auth0, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Auth0 + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-rls-authorize" description="A Todo List built with Stytch, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Stytch + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-rls-authorize" description="A Todo List built with Azure AD B2C, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Azure AD B2C + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-rls-authorize" description="A Todo list built with Descope, Next.js, and Neon RLS Authorize (SQL from the frontend)" icon="github">Descope + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls-authorize" description="A Todo list built with PropelAuth, Next.js, and Neon RLS Authorize (SQL from Frontend and Backend)" icon="github">PropelAuth + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/supertokens-nestjs-solidjs-drizzle-neon-rls-authorize" description="A Demo app built with SuperTokens, Nest.js, Solid.js, Drizzle, and Neon RLS Authorize (SQL from the Backend)" icon="github">SuperTokens + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/workos-drizzle-sveltekit-neon-rls-authorize" description="A Demo Post App built with WorkOS, SvelteKit, Neon RLS Authorize (SQL from the Backend)" icon="github">WorkOS + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/authorize-demo-custom-jwt" description="A demo of Neon RLS Authorize with custom generated JWTs" icon="github">Neon RLS Authorize with custom JWTs</a>
+<a href="https://github.com/neondatabase-labs/clerk-nextjs-frontend-neon-rls" description="A Todo List built with Clerk, Next.js, and Neon RLS (SQL from the Frontend)" icon="github">Clerk (Frontend) + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/stack-nextjs-neon-rls" description="A Todo List built with Stack Auth, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Stack Auth + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/auth0-nextjs-neon-rls" description="A Todo List built with Auth0, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Auth0 + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-rls" description="A Todo List built with Stytch, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Stytch + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-rls" description="A Todo List built with Azure AD B2C, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Azure AD B2C + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-rls" description="A Todo list built with Descope, Next.js, and Neon RLS (SQL from the frontend)" icon="github">Descope + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls" description="A Todo list built with PropelAuth, Next.js, and Neon RLS (SQL from Frontend and Backend)" icon="github">PropelAuth + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/supertokens-nestjs-solidjs-drizzle-neon-rls" description="A Demo app built with SuperTokens, Nest.js, Solid.js, Drizzle, and Neon RLS (SQL from the Backend)" icon="github">SuperTokens + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/workos-drizzle-sveltekit-neon-rls" description="A Demo Post App built with WorkOS, SvelteKit, Neon RLS (SQL from the Backend)" icon="github">WorkOS + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/authorize-demo-custom-jwt" description="A demo of Neon RLS with custom generated JWTs" icon="github">Neon RLS with custom JWTs</a>
 </DetailIconCards>
 
 ## Current limitations
@@ -32502,11 +34399,13 @@ These limitations will evolve as we continue developing the feature. If you have
 # About
 
 ---
-title: About Neon RLS Authorize
-subtitle: Secure your application at the database level using Postgres's Row-Level Security
+title: About Neon RLS
+subtitle: Secure your application at the database level using Postgres's Row-Level
+  Security
 enableTableOfContents: true
-updatedOn: '2025-01-21T01:48:50.914Z'
+updatedOn: '2025-03-06T15:24:01.906Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize
   - /docs/guides/neon-authorize
 ---
 
@@ -32514,28 +34413,28 @@ redirectFrom:
 <DocsList title="What you will learn:">
 <p>JSON Web Tokens (JWT)</p>
 <p>Row-level Security (RLS)</p>
-<p>How Neon RLS Authorize works</p>
+<p>How Neon RLS works</p>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
   <a href="/postgresql/postgresql-administration/postgresql-row-level-security">Postgres Row-Level Security tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 
 </InfoBlock>
 
-**Neon RLS Authorize** integrates with third-party **JWT-based authentication providers** like Auth0 and Clerk, bringing authorization closer to your data by leveraging [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) at the database level.
+**Neon RLS** integrates with third-party **JWT-based authentication providers** like Auth0 and Clerk, bringing authorization closer to your data by leveraging [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html) at the database level.
 
 ## Authentication and authorization
 
-When implementing user authentication in your application, third-party authentication providers like **Clerk**, **Auth0**, and others simplify the process of managing user identities, passwords, and security tokens. Once a user's identity is confirmed, the next step is **authorization** — controlling who can do what in your app based on their user type or role — for example, admins versus regular users. With Neon RLS Authorize, you can manage authorization directly within Postgres, either alongside or as a complete replacement for security at other layers.
+When implementing user authentication in your application, third-party authentication providers like **Clerk**, **Auth0**, and others simplify the process of managing user identities, passwords, and security tokens. Once a user's identity is confirmed, the next step is **authorization** — controlling who can do what in your app based on their user type or role — for example, admins versus regular users. With Neon RLS, you can manage authorization directly within Postgres, either alongside or as a complete replacement for security at other layers.
 
-## How Neon RLS Authorize works
+## How Neon RLS works
 
 Most authentication providers issue **JSON Web Tokens (JWTs)** on user authentication to convey user identity and claims. The JWT is a secure way of proving that logged-in users are who they say they are &#8212; and passing that proof on to other entities.
 
-With **Neon RLS Authorize**, the JWT is passed on to Neon, where you can make use of the validated user identity directly in Postgres. To integrate with an authentication provider, you will add your provider's JWT discovery URL to your Neon project. This lets Neon retrieve the necessary keys to validate the JWTs.
+With **Neon RLS**, the JWT is passed on to Neon, where you can make use of the validated user identity directly in Postgres. To integrate with an authentication provider, you will add your provider's JWT discovery URL to your Neon project. This lets Neon retrieve the necessary keys to validate the JWTs.
 
 ```typescript shouldWrap
 import { neon } from '@neondatabase/serverless';
@@ -32545,13 +34444,13 @@ const sql = neon(process.env.DATABASE_AUTHENTICATED_URL, { authToken: myAuthProv
 await sql(`select * from todos`);
 ```
 
-Behind the scenes, the [Neon Proxy](#the-role-of-the-neon-proxy) performs the validation, while Neon's open source [pg_session_jwt](/docs/guides/neon-rls-authorize#how-the-pgsessionjwt-extension-works) extension makes the extracted `user_id` available to Postgres. You can then use **Row-Level Security (RLS)** policies in Postgres to enforce access control at the row level, ensuring that users can only access or modify data according to the defined rules. Since these rules are implemented directly in the database, they can offer a secure fallback — or even a primary authorization solution — in case security in other layers of your application fail. See [when to rely on RLS](#when-to-rely-on-rls) for more information.
+Behind the scenes, the [Neon Proxy](#the-role-of-the-neon-proxy) performs the validation, while Neon's open source [pg_session_jwt](/docs/guides/neon-rls#how-the-pgsessionjwt-extension-works) extension makes the extracted `user_id` available to Postgres. You can then use **Row-Level Security (RLS)** policies in Postgres to enforce access control at the row level, ensuring that users can only access or modify data according to the defined rules. Since these rules are implemented directly in the database, they can offer a secure fallback — or even a primary authorization solution — in case security in other layers of your application fail. See [when to rely on RLS](#when-to-rely-on-rls) for more information.
 
-![Neon RLS Authorize architecture](/docs/guides/neon_authorize_architecture.png)
+![Neon RLS architecture](/docs/guides/neon_authorize_architecture.png)
 
 ## Database roles
 
-Neon RLS Authorize works with two database roles, identified by connection string prefixes:
+Neon RLS works with two database roles, identified by connection string prefixes:
 
 - **Authenticated role** (`authenticated@`): For users who are logged in. Requires a valid JWT token from your authentication provider.
 - **Anonymous role** (`anonymous@`): Currently requires authentication similar to the authenticated role. This implementation is under review and may change in the future to better support unauthenticated access.
@@ -32560,15 +34459,15 @@ Neon RLS Authorize works with two database roles, identified by connection strin
 For now, if you need to implement public access in your application, we recommend creating a separate database role with a password. This provides a simpler alternative to using the anonymous role while we work on improving anonymous access support.
 </Admonition>
 
-### Using Neon RLS Authorize with custom JWTs
+### Using Neon RLS with custom JWTs
 
 If you don't want to use a third-party authentication provider, you can build your application to generate and sign its own JWTs. Here's a sample application that demonstrates this approach: [See demo](https://github.com/neondatabase/authorize-demo-custom-jwt)
 
-## Before and after Neon RLS Authorize
+## Before and after Neon RLS
 
-Let's take a **before/after** look at moving authorization from the application level to the database to demonstrate how Neon RLS Authorize offers a different approach to securing your application.
+Let's take a **before/after** look at moving authorization from the application level to the database to demonstrate how Neon RLS offers a different approach to securing your application.
 
-### Before Neon RLS Authorize (application-level checks):
+### Before Neon RLS (application-level checks):
 
 In a traditional setup, you might handle authorization for a function directly in your backend code:
 
@@ -32595,9 +34494,9 @@ In this case, you have to:
 - Check if the user is authenticated and their `userId` matches the data they are trying to modify.
 - Handle both task creation and authorization in the backend code.
 
-### After Neon RLS Authorize (RLS in the database):
+### After Neon RLS (RLS in the database):
 
-With Neon RLS Authorize, you only need to pass the JWT to the database - authorization checks happen automatically through RLS policies:
+With Neon RLS, you only need to pass the JWT to the database - authorization checks happen automatically through RLS policies:
 
 <Tabs labels={["Drizzle", "SQL"]}>
 
@@ -32642,9 +34541,9 @@ export async function insertTodo({ newTodo }: { newTodo: string }) {
 
 This approach is flexible: you can manage RLS policies directly in SQL, or use an ORM like Drizzle to centralize them within your schema. Keeping both schema and authorization in one place can make it easier to maintain security. Some ORMs like [Drizzle](https://orm.drizzle.team/docs/rls#using-with-neon) are adding support for declaritive RLS, which makes the logic easier to scan and scale.
 
-## How Neon RLS Authorize gets `auth.user_id()` from the JWT
+## How Neon RLS gets `auth.user_id()` from the JWT
 
-Let's break down the RLS policy controlling who can **view todos** to see what Neon RLS Authorize is actually doing:
+Let's break down the RLS policy controlling who can **view todos** to see what Neon RLS is actually doing:
 
 <Tabs labels={["Drizzle", "SQL"]}>
 
@@ -32699,7 +34598,7 @@ RLS can also act as a backstop or final guarantee to prevent data leaks. Even if
 
 ## Supported providers
 
-Here is a non-exhaustive list of authentication providers. The table shows which providers Neon RLS Authorize supports, links out to provider documentation for details, and the discovery URL pattern each provider typically uses.
+Here is a non-exhaustive list of authentication providers. The table shows which providers Neon RLS supports, links out to provider documentation for details, and the discovery URL pattern each provider typically uses.
 
 | Provider                                  | Supported? | JWKS URL                                                                                                                                                           | Documentation                                                                                                                 |
 | ----------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
@@ -32720,27 +34619,27 @@ Here is a non-exhaustive list of authentication providers. The table shows which
 
 ### JWT Audience Checks
 
-Neon RLS Authorize can also verify the `aud` claim in the JWT. This is useful if you want to restrict access to a specific application or service.
+Neon RLS can also verify the `aud` claim in the JWT. This is useful if you want to restrict access to a specific application or service.
 
-For authentication providers such as Firebase Auth and GCP Cloud Identity, Neon RLS Authorize **mandates** the definition of an expected audience. This is because these providers share the same JWKS URL for all of their projects.
+For authentication providers such as Firebase Auth and GCP Cloud Identity, Neon RLS **mandates** the definition of an expected audience. This is because these providers share the same JWKS URL for all of their projects.
 
-The configuration of the expected audience can be done via the Neon RLS Authorize UI or via the [Neon RLS Authorize API](https://api-docs.neon.tech/reference/addprojectjwks).
+The configuration of the expected audience can be done via the Neon RLS UI or via the [Neon RLS API](https://api-docs.neon.tech/reference/addprojectjwks).
 
 ## Sample applications
 
-You can use these sample ToDo applications to get started using Neon RLS Authorize with popular authentication providers.
+You can use these sample ToDo applications to get started using Neon RLS with popular authentication providers.
 
 <DetailIconCards>
-<a href="https://github.com/neondatabase-labs/clerk-nextjs-frontend-neon-rls-authorize" description="A Todo List built with Clerk, Next.js, and Neon RLS Authorize (SQL from the Frontend)" icon="github">Clerk (Frontend) + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/stack-nextjs-neon-rls-authorize" description="A Todo List built with Stack Auth, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Stack Auth + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/auth0-nextjs-neon-rls-authorize" description="A Todo List built with Auth0, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Auth0 + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-rls-authorize" description="A Todo List built with Stytch, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Stytch + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-rls-authorize" description="A Todo List built with Azure AD B2C, Next.js, and Neon RLS Authorize (SQL from the Backend)" icon="github">Azure AD B2C + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-rls-authorize" description="A Todo list built with Descope, Next.js, and Neon RLS Authorize (SQL from the frontend)" icon="github">Descope + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls-authorize" description="A Todo list built with PropelAuth, Next.js, and Neon RLS Authorize (SQL from Frontend and Backend)" icon="github">PropelAuth + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/supertokens-nestjs-solidjs-drizzle-neon-rls-authorize" description="A Demo app built with SuperTokens, Nest.js, Solid.js, Drizzle, and Neon RLS Authorize (SQL from the Backend)" icon="github">SuperTokens + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/workos-drizzle-sveltekit-neon-rls-authorize" description="A Demo Post App built with WorkOS, SvelteKit, Neon RLS Authorize (SQL from the Backend)" icon="github">WorkOS + Neon RLS Authorize</a>
-<a href="https://github.com/neondatabase-labs/authorize-demo-custom-jwt" description="A demo of Neon RLS Authorize with custom generated JWTs" icon="github">Neon RLS Authorize with custom JWTs</a>
+<a href="https://github.com/neondatabase-labs/clerk-nextjs-frontend-neon-rls" description="A Todo List built with Clerk, Next.js, and Neon RLS (SQL from the Frontend)" icon="github">Clerk (Frontend) + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/stack-nextjs-neon-rls" description="A Todo List built with Stack Auth, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Stack Auth + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/auth0-nextjs-neon-rls" description="A Todo List built with Auth0, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Auth0 + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-rls" description="A Todo List built with Stytch, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Stytch + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-rls" description="A Todo List built with Azure AD B2C, Next.js, and Neon RLS (SQL from the Backend)" icon="github">Azure AD B2C + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-rls" description="A Todo list built with Descope, Next.js, and Neon RLS (SQL from the frontend)" icon="github">Descope + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls" description="A Todo list built with PropelAuth, Next.js, and Neon RLS (SQL from Frontend and Backend)" icon="github">PropelAuth + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/supertokens-nestjs-solidjs-drizzle-neon-rls" description="A Demo app built with SuperTokens, Nest.js, Solid.js, Drizzle, and Neon RLS (SQL from the Backend)" icon="github">SuperTokens + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/workos-drizzle-sveltekit-neon-rls" description="A Demo Post App built with WorkOS, SvelteKit, Neon RLS (SQL from the Backend)" icon="github">WorkOS + Neon RLS</a>
+<a href="https://github.com/neondatabase-labs/authorize-demo-custom-jwt" description="A demo of Neon RLS with custom generated JWTs" icon="github">Neon RLS with custom JWTs</a>
 </DetailIconCards>
 
 ## Current limitations
@@ -32760,21 +34659,22 @@ These limitations will evolve as we continue developing the feature. If you have
 # Tutorial
 
 ---
-title: Neon RLS Authorize tutorial
+title: Neon RLS tutorial
 subtitle: Learn how Row-level Security (RLS) protects user data
 enableTableOfContents: true
-updatedOn: '2025-02-05T00:04:30.542Z'
+updatedOn: '2025-03-06T15:24:01.905Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-tutorial
   - /docs/guides/neon-authorize-tutorial
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/clerk-nextjs-neon-rls-authorize">Clerk + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/clerk-nextjs-neon-rls">Clerk + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize">About Neon RLS Authorize</a>
+  <a href="/docs/guides/neon-rls">About Neon RLS</a>
   <a href="https://orm.drizzle.team/docs/rls">Row-Level security in Drizzle</a>
 </DocsList>
 </InfoBlock>
@@ -32789,17 +34689,19 @@ This `todos` app is built with Next.js and Drizzle ORM, using Clerk for user aut
 
 To get started, you'll need:
 
-- **Neon account**: Sign up at [Neon](https://neon.tech) and create your first project in **AWS** (note: [Azure](/docs/guides/neon-rls-authorize#current-limitations) regions are not currently supported).
+- **Neon account**: Sign up at [Neon](https://neon.tech) and create your first project in **AWS** (note: [Azure](/docs/guides/neon-rls#current-limitations) regions are not currently supported).
 - **Clerk account**: Sign up for a [Clerk](https://clerk.com/) account and application. Clerk provides a free plan to get you started.
-- **Neon RLS Authorize + Clerk example application**: Clone the sample [Clerk + Neon RLS Authorize repository](https://github.com/neondatabase-labs/clerk-nextjs-neon-rls-authorize):
+- **Neon RLS + Clerk example application**: Clone the sample [Clerk + Neon RLS repository](https://github.com/neondatabase-labs/clerk-nextjs-neon-rls):
 
   ```bash
-  git clone https://github.com/neondatabase-labs/clerk-nextjs-neon-rls-authorize.git
+  git clone https://github.com/neondatabase-labs/clerk-nextjs-neon-rls.git
   ```
 
-  Follow the instructions in the readme to set up Clerk, configure environment variables, and start the application. You can also find more info in our [Clerk and Neon RLS Authorize Quickstart](/docs/guides/neon-rls-authorize-clerk).
+  Follow the instructions in the readme to set up Clerk, configure environment variables, and start the application. You can also find more info in our [Clerk and Neon RLS Quickstart](/docs/guides/neon-rls-clerk).
 
-## Step 1 — Create test users
+<Steps>
+
+## Create test users
 
 Start the sample application:
 
@@ -32837,7 +34739,7 @@ When each user creates a todo, it's securely linked to their `userId` in the dat
 
 The `userId` column is populated directly from the authenticated `(auth.user_id())` in the Clerk JWT, linking each todo to the correct user.
 
-## Step 2 — Create todos
+## Create todos
 
 Let's create some sample Todos for both Alice and Bob.
 
@@ -32884,7 +34786,7 @@ pgPolicy('view todos', {
 
 This policy ensures that each `SELECT` query only returns rows where the `user_id` matches the `auth.user_id()` derived from the authenticated user’s JWT. This means that users can only access their own Todos. By enforcing this rule at the database level, the RLS policy provides an extra layer of security beyond the application layer.
 
-## Step 3 — Remove access control from application code
+## Remove access control from application code
 
 Now, let's test what happens when we remove access control from the application layer to rely solely on RLS at the database level.
 
@@ -32912,7 +34814,7 @@ Check your two open Todo users, reload the page, and see what happens:
 
 Nothing happens. RLS is still in place, and isolation is maintained: no data leaks. 💪
 
-## Step 4 — Disable RLS
+## Disable RLS
 
 Let's see what happens when we disable RLS on our todos table. Go to your Clerk project in the Neon Console and in the SQL Editor run:
 
@@ -32924,7 +34826,7 @@ ALTER TABLE public.todos DISABLE ROW LEVEL SECURITY;
 
 Bob sees all of Alice's todos, and Alice now knows about her birthday party. Disabling RLS removed all RLS policies, including the `view todos` policy on `SELECT` queries that helped enforce data isolation. Birthday surprise is _ruined_.
 
-## Step 5 — RLS as a safety net
+## RLS as a safety net
 
 Another scenario, imagine a team member writes the `getTodos` function like this, thinking it's filtering todos by the current user:
 
@@ -32978,6 +34880,8 @@ export async function getTodos(): Promise<Array<Todo>> {
     .orderBy(asc(schema.todos.insertedAt));
 }
 ```
+
+</Steps>
 
 ## Appendix: Understanding RLS policies in Drizzle
 
@@ -33057,17 +34961,18 @@ Here is the output, showing columns `policyname, cmd, qual, with_check` only:
 (4 rows)
 ```
 
-To get an understanding of `auth.user_id()` and the role it plays in these policies, see this [explanation](/docs/guides/neon-rls-authorize#how-neon-rls-authorize-gets-authuserid-from-the-jwt).
+To get an understanding of `auth.user_id()` and the role it plays in these policies, see this [explanation](/docs/guides/neon-rls#how-neon-rls-gets-authuserid-from-the-jwt).
 
 
 # Drizzle RLS
 
 ---
 title: Simplify RLS with Drizzle
-subtitle: Use Drizzle crudPolicy to manage Row-Level Security with Neon RLS Authorize
+subtitle: Use Drizzle crudPolicy to manage Row-Level Security with Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-01-10T00:37:35.164Z'
+updatedOn: '2025-03-06T15:24:01.899Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-drizzle
   - /docs/guides/neon-authorize-drizzle
 ---
 
@@ -33078,7 +34983,7 @@ redirectFrom:
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize">About Neon RLS Authorize</a>
+  <a href="/docs/guides/neon-rls">About Neon RLS</a>
   <a href="https://orm.drizzle.team/docs/rls">RLS in Drizzle</a>
 </DocsList>
 
@@ -33095,7 +35000,7 @@ To illustrate, let's consider a simple **Todo** list app with RLS policies appli
 - `USING` clause — controls which existing rows can be accessed
 - `WITH CHECK` clause — controls what new or modified data can be written
 
-<Admonition type="note">To get an understanding of `auth.user_id()` and the role it plays in these policies, see this [explanation](/docs/guides/neon-rls-authorize#how-neon-rls-authorize-gets-authuserid-from-the-jwt).</Admonition>
+<Admonition type="note">To get an understanding of `auth.user_id()` and the role it plays in these policies, see this [explanation](/docs/guides/neon-rls#how-neon-rls-gets-authuserid-from-the-jwt).</Admonition>
 
 Here's how these clauses apply to each operation:
 
@@ -33188,7 +35093,7 @@ export const authUid = (userIdColumn: AnyPgColumn) =>
 
 This helper:
 
-1. Wraps Neon RLS Authorize's `auth.user_id()` function (from the [pg_session_jwt](/docs/guides/neon-rls#how-the-pgsessionjwt-extension-works) extension)
+1. Wraps Neon RLS's `auth.user_id()` function (from the [pg_session_jwt](/docs/guides/neon-rls#how-the-pgsessionjwt-extension-works) extension)
 2. Compares the authenticated user's ID with a table column
 3. Returns a SQL expression suitable for use in `read` and `modify` parameters
 
@@ -33260,7 +35165,7 @@ export const posts = pgTable(
 
 ## Example application
 
-Check out our [social wall sample application](https://github.com/neondatabase-labs/social-wall-drizzle-neon-rls), a simple schema that demonstrates RLS policies with `crudPolicy`. It implements a social wall where:
+Check out our [social wall sample application](https://github.com/neondatabase-labs/social-wall-drizzle-neon-rls-authorize), a simple schema that demonstrates RLS policies with `crudPolicy`. It implements a social wall where:
 
 - Anyone can view the wall
 - Authenticated users can modify their own posts
@@ -33271,15 +35176,16 @@ Check out our [social wall sample application](https://github.com/neondatabase-l
 # Troubleshooting
 
 ---
-title: Troubleshooting Neon RLS Authorize
-subtitle: Common issues and solutions when using Neon RLS Authorize
+title: Troubleshooting Neon RLS
+subtitle: Common issues and solutions when using Neon RLS
 enableTableOfContents: true
-updatedOn: '2024-10-30T14:14:05.674Z'
+updatedOn: '2025-03-10T18:26:02.771Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-troubleshooting
   - /docs/guides/neon-authorize-troubleshooting
 ---
 
-This page covers common errors you might encounter when implementing Row-Level Security (RLS) policies with Neon RLS Authorize and your authentication provider.
+This page covers common errors you might encounter when implementing Row-Level Security (RLS) policies with Neon RLS and your authentication provider.
 
 Errors:
 
@@ -33301,7 +35207,7 @@ This issue typically occurs when:
 
 1. **JWKS URL not configured or incorrect**
 
-   You did not add the JWKS URL in the RLS Authorize settings, or the configured JWKS URL is not returning the key associated with the `kid` field in your JWT.
+   You did not add the JWKS URL in the RLS settings, or the configured JWKS URL is not returning the key associated with the `kid` field in your JWT.
 
 2. **JWT and JWKS mismatch**
 
@@ -33309,7 +35215,7 @@ This issue typically occurs when:
 
 3. **Unsupported role name**
 
-   The Postgres username used in your connection string is not a role registered for Neon RLS Authorize. Currently, only the roles `anonymous` and `authenticated` are supported. Make sure that the role name in your connection string matches one of these supported roles.
+   The Postgres username used in your connection string is not a role registered for Neon RLS. Currently, only the roles `anonymous` and `authenticated` are supported. Make sure that the role name in your connection string matches one of these supported roles.
 
 **Solution:**
 
@@ -33362,7 +35268,7 @@ TO anonymous;
 ```
 
 <Admonition type="note">
-Neon RLS Authorize prompts you to run these commands when you first set up your authentication provider on the Neon RLS Authorize drawer in the Neon Console. If you're using a different database, you will have to run these commands manually.
+Neon RLS prompts you to run these commands when you first set up your authentication provider on the Neon RLS drawer in the Neon Console. If you're using a different database, you will have to run these commands manually.
 </Admonition>
 
 ---
@@ -33373,7 +35279,7 @@ Neon RLS Authorize prompts you to run these commands when you first set up your 
 invalid RSA signing algorithm
 ```
 
-Neon RLS Authorize only supports JWTs signed with the `ES256` and `RS256` algorithms. If the Neon Proxy receives a JWT signed with any other algorithm, it will produce an error.
+Neon RLS only supports JWTs signed with the `ES256` and `RS256` algorithms. If the Neon Proxy receives a JWT signed with any other algorithm, it will produce an error.
 
 **Solution:**
 
@@ -33383,45 +35289,46 @@ Ensure your JWTs are signed using either the `ES256` or `RS256` algorithms.
 # What's next
 
 ---
-title: Neon RLS Authorize roadmap
-subtitle: Learn about upcoming features and improvements for Neon RLS Authorize
+title: Neon RLS roadmap
+subtitle: Learn about upcoming features and improvements for Neon RLS
 enableTableOfContents: true
-updatedOn: '2024-12-03T17:00:08.179Z'
+updatedOn: '2025-03-06T15:24:01.901Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-future
   - /docs/guides/neon-authorize-future
 ---
 
-[Neon RLS Authorize](/docs/guides/neon-rls-authorize) is an exciting feature, and we want to build more capabilities on top of it.
+[Neon RLS](/docs/guides/neon-rls) is an exciting feature, and we want to build more capabilities on top of it.
 
 Here are some ideas of things we could build next — in no particular order (unless stated otherwise). If you see something you like, or something you'd like to see but don't, let us know in [Discord](https://discord.com/channels/1176467419317940276/1176788564890112042)!
 
 ## Accepting JWTs for TCP and WebSocket connections
 
-We want Neon RLS Authorize to work over any type of connection: TCP, HTTP, or WebSockets. This is probably our highest priority. Accepting JWTs over TCP (in the password field for the Postgres role) would mean that any Postgres SDK in any programming language could support Neon RLS Authorize.
+We want Neon RLS to work over any type of connection: TCP, HTTP, or WebSockets. This is probably our highest priority. Accepting JWTs over TCP (in the password field for the Postgres role) would mean that any Postgres SDK in any programming language could support Neon RLS.
 
 ## Local development experience
 
-We'd like to offer a very easy experience for developers to use Neon RLS Authorize in their local machines without an Internet connection.
+We'd like to offer a very easy experience for developers to use Neon RLS in their local machines without an Internet connection.
 
 ## Custom roles
 
-We aim to introduce custom roles for Neon RLS Authorize, in addition to the "authenticated" and "anonymous" roles we have now. We're also exploring the idea of adding "Neon-managed" roles, which would be managed by our platform and included by default in every branch and read replica.
+We aim to introduce custom roles for Neon RLS, in addition to the "authenticated" and "anonymous" roles we have now. We're also exploring the idea of adding "Neon-managed" roles, which would be managed by our platform and included by default in every branch and read replica.
 
 ## Automatic installation of `pg_session_jwt` and set up of role grants
 
-The `pg_session_jwt` extension is required for Neon RLS Authorize to work. We're exploring the idea of automatically installing the extension and setting up the role grants for the `authenticated` and `anonymous` roles.
+The `pg_session_jwt` extension is required for Neon RLS to work. We're exploring the idea of automatically installing the extension and setting up the role grants for the `authenticated` and `anonymous` roles.
 
-## Multi-tenancy through Neon RLS Authorize
+## Multi-tenancy through Neon RLS
 
-We've discussed supporting multi-tenancy via Neon RLS Authorize, allowing users to configure how their JWTs should trigger Neon to route database requests to different Neon instances.
+We've discussed supporting multi-tenancy via Neon RLS, allowing users to configure how their JWTs should trigger Neon to route database requests to different Neon instances.
 
 ## Neon CLI for configuration
 
-We would like to add support for configuring Neon RLS Authorize from the Neon CLI.
+We would like to add support for configuring Neon RLS from the Neon CLI.
 
-## Neon RLS Authorize for Neon Console frontend database requests
+## Neon RLS for Neon Console frontend database requests
 
-Using Neon RLS Authorize for database requests from the Neon SQL Editor can help map the Neon Console user to the individual who issued the request.
+Using Neon RLS for database requests from the Neon SQL Editor can help map the Neon Console user to the individual who issued the request.
 
 ## Proxy rate limiting
 
@@ -33449,46 +35356,47 @@ We'd like to add a user-friendly UI for managing RLS policies with AI assistance
 # Clerk
 
 ---
-title: Secure your data with Clerk and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Clerk and Neon RLS Authorize
+title: Secure your data with Clerk and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Clerk and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.326Z'
+updatedOn: '2025-03-10T18:26:02.765Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-clerk
   - /docs/guides/neon-authorize-clerk
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/clerk-nextjs-neon-rls-authorize">Clerk + Neon RLSAuthorize</a>
+  <a href="https://github.com/neondatabase-labs/clerk-nextjs-neon-rls-authorize">Clerk + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
   <a href="https://clerk.com/docs/backend-requests/handling/manual-jwt">Manual JWT verification</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use Clerk with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Clerk for user authentication. It shows you how to integrate Clerk with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Clerk with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Clerk for user authentication. It shows you how to integrate Clerk with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-Clerk handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+Clerk handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
 To follow along with this guide, you will need:
 
 - A Neon account. If you do not have one, sign up at [Neon](https://neon.tech).
-- A [Clerk](https://clerk.com/) account and an existing application (e.g., a **todos** app) that uses Clerk for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/clerk-nextjs-neon-rls-authorize) for similar schema and policies in action.
+- A [Clerk](https://clerk.com/) account and an existing application (e.g., a **todos** app) that uses Clerk for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/clerk-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate Clerk with Neon RLS Authorize
+## Integrate Clerk with Neon RLS
 
 In this first set of steps, we'll integrate Clerk as an authorization provider in Neon. When these steps are complete, Clerk will start passing JWTs to your Neon database, which you can then use to create policies.
 
 ### 1. Get your Clerk JWKS URL
 
-For a basic integration, the default JWT claims from Clerk, including the `user_id`, are all you need for Neon RLS Authorize. Use the following JWKS URL format:
+For a basic integration, the default JWT claims from Clerk, including the `user_id`, are all you need for Neon RLS. Use the following JWKS URL format:
 
 ```bash shouldWrap
 https://{YOUR_CLERK_DOMAIN}/.well-known/jwks.json
@@ -33506,17 +35414,17 @@ For advanced JWT configuration, such as adding claims or setting token lifespans
 
 ### 2. Add Clerk as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Clerk as an authentication provider. Paste your copied URL and Clerk will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Clerk as an authentication provider. Paste your copied URL and Clerk will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/clerk_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -33559,7 +35467,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -33592,7 +35500,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query, while the 
 
 ## Add RLS policies
 
-Now that you've integrated Clerk with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Clerk with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -33783,39 +35691,41 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Stack Auth
 
 ---
-title: Secure your data with Stack Auth and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Stack Auth and Neon RLS Authorize
+title: Secure your data with Stack Auth and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Stack Auth and Neon
+  RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.329Z'
+updatedOn: '2025-03-10T18:26:02.769Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-stack-auth
   - /docs/guides/neon-authorize-stack-auth
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/stack-nextjs-neon-rls-authorize">Stack Auth + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/stack-nextjs-neon-rls-authorize">Stack Auth + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-   <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+   <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use Stack Auth with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Stack Auth for user authentication. It shows you how to integrate Stack Auth with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Stack Auth with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Stack Auth for user authentication. It shows you how to integrate Stack Auth with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-Stack Auth handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+Stack Auth handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
 To follow along with this guide, you will need:
 
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
-- A [Stack Auth](https://stack-auth.com/) account with an existing application (e.g., a **todos** app) that uses Stack Auth for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/stack-nextjs-neon-rls-authorize) for similar schema and policies in action.
+- A [Stack Auth](https://stack-auth.com/) account with an existing application (e.g., a **todos** app) that uses Stack Auth for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/stack-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate Stack Auth with Neon RLS Authorize
+## Integrate Stack Auth with Neon RLS
 
 In this first set of steps, we'll integrate Stack Auth as an authorization provider in Neon. When these steps are complete, Stack Auth will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -33837,17 +35747,17 @@ https://api.stack-auth.com/api/v1/projects/my-awesome-project/.well-known/jwks.j
 
 ### 2. Add Stack Auth as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Stack Auth as an authentication provider. Paste your copied URL and Stack Auth will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Stack Auth as an authentication provider. Paste your copied URL and Stack Auth will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/stack_auth_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -33890,7 +35800,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -33923,7 +35833,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated Stack Auth with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Stack Auth with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -34121,30 +36031,31 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Auth0
 
 ---
-title: Secure your data with Auth0 and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Auth0 and Neon RLS Authorize
+title: Secure your data with Auth0 and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Auth0 and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.324Z'
+updatedOn: '2025-03-10T18:26:02.759Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-auth0
   - /docs/guides/neon-authorize-auth0
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/auth0-nextjs-neon-rls-authorize">Auth0 + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/auth0-nextjs-neon-rls-authorize">Auth0 + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use Auth0 with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Auth0 for user authentication. It shows you how to integrate Auth0 with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Auth0 with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Auth0 for user authentication. It shows you how to integrate Auth0 with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-Auth0 handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+Auth0 handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
@@ -34153,7 +36064,7 @@ To follow along with this guide, you will need:
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
 - An [Auth0](https://auth0.com/) account with an existing application (e.g., a **todos** app) that uses Auth0 for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/auth0-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate Auth0 with Neon RLS Authorize
+## Integrate Auth0 with Neon RLS
 
 In this first set of steps, we'll integrate Auth0 as an authorization provider in Neon. When these steps are complete, Auth0 will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -34175,7 +36086,7 @@ Copy your **Domain** and use that to form your JWKS URL. For example, here's the
 
 ### 2. Add Auth0 as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Auth0 as an authentication provider. Paste your copied URL and Auth0 will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Auth0 as an authentication provider. Paste your copied URL and Auth0 will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/auth0_neon_add_jwks.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
@@ -34185,7 +36096,7 @@ At this point, you can use the **Get Started** setup steps from the **Authorize*
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -34228,7 +36139,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access Neon's HTTP API without using our driver, we recommend using the driver for best performance. The driver supports connecting over both WebSockets and HTTP, so make sure you use the [HTTP connection method](/docs/serverless/serverless-driver#use-the-driver-over-http) when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access Neon's HTTP API without using our driver, we recommend using the driver for best performance. The driver supports connecting over both WebSockets and HTTP, so make sure you use the [HTTP connection method](/docs/serverless/serverless-driver#use-the-driver-over-http) when working with Neon RLS.
 
 Install it using the following command:
 
@@ -34261,7 +36172,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated Auth0 with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Auth0 with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -34460,39 +36371,40 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Stytch
 
 ---
-title: Secure your data with Stytch and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Stytch and Neon RLS Authorize
+title: Secure your data with Stytch and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Stytch and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.329Z'
+updatedOn: '2025-03-10T18:26:02.770Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-stytch
   - /docs/guides/neon-authorize-stytch
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-rls-authorize">Stytch + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/stytch-nextjs-neon-rls-authorize">Stytch + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use Stytch with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Stytch for user authentication. It shows you how to integrate Stytch with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Stytch with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Stytch for user authentication. It shows you how to integrate Stytch with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-Stytch handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+Stytch handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
 To follow along with this guide, you will need:
 
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
-- A [Stytch](https://stytch.com/) account with an existing application (e.g., a **todos** app) that uses Stytch for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/stytch-nextjs-neon-rls-authorize) for similar schema and policies in action.
+- A [Stytch](https://stytch.com/) account with an existing application (e.g., a **todos** app) that uses Stytch for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/stytch-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate Stytch with Neon RLS Authorize
+## Integrate Stytch with Neon RLS
 
 In this first set of steps, we'll integrate Stytch as an authorization provider in Neon. When these steps are complete, Stytch will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -34518,17 +36430,17 @@ The Stytch URL provided here corresponds to a test environment and should be upd
 
 ### 2. Add Stytch as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Stytch as an authentication provider. Paste your copied URL and Stytch will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Stytch as an authentication provider. Paste your copied URL and Stytch will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/stytch_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -34571,7 +36483,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -34604,7 +36516,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated Stytch with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Stytch with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -34823,26 +36735,27 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Keycloak
 
 ---
-title: Secure your data with Keycloak and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Keycloak and Neon RLS Authorize
+title: Secure your data with Keycloak and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Keycloak and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.328Z'
+updatedOn: '2025-03-10T18:26:02.767Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-keycloak
   - /docs/guides/neon-authorize-keycloak
 ---
 
 <InfoBlock>
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use Keycloak with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Keycloak for user authentication. It shows you how to integrate Keycloak with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Keycloak with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Keycloak for user authentication. It shows you how to integrate Keycloak with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-Keycloak handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+Keycloak handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
@@ -34851,14 +36764,14 @@ To follow along with this guide, you will need:
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
 - A [Keycloak](https://www.keycloak.org/) instance with an existing application (e.g., a todos app) that uses Keycloak for user authentication.
 
-## Integrate Keycloak with Neon RLS Authorize
+## Integrate Keycloak with Neon RLS
 
 In this first set of steps, we'll integrate Keycloak as an authorization provider in Neon. When these steps are complete, Keycloak will start passing JWTs to your Neon database, which you can then use to create policies.
 
 ### 1. Get your Keycloak JWKS
 
 <Admonition type="note">
-  To ensure compatibility with Neon RLS Authorize, configure Keycloak to use only one signing algorithm (RS256 or ES256). You can verify this by opening the JWKS URL and checking the keys manually.
+  To ensure compatibility with Neon RLS, configure Keycloak to use only one signing algorithm (RS256 or ES256). You can verify this by opening the JWKS URL and checking the keys manually.
 </Admonition>
 
 When integrating Keycloak with Neon, you'll need to provide the JWKS (JSON Web Key Set) URL. This allows your database to validate the JWT tokens and extract the user_id for use in RLS policies.
@@ -34873,17 +36786,17 @@ Replace `{YOUR_KEYCLOAK_DOMAIN}` with your Keycloak domain and `{YOUR_REALM}` wi
 
 ### 2. Add Keycloak as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Keycloak as an authentication provider. Paste your copied URL and Keycloak will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Keycloak as an authentication provider. Paste your copied URL and Keycloak will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/keycloak_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -34926,7 +36839,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -34959,7 +36872,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated Keycloak with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Keycloak with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -35159,30 +37072,32 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # AWS Cognito
 
 ---
-title: Secure your data with AWS Cognito and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using AWS Cognito and Neon RLS Authorize
+title: Secure your data with AWS Cognito and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using AWS Cognito and Neon
+  RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.325Z'
+updatedOn: '2025-03-10T18:26:02.763Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-aws-cognito
   - /docs/guides/neon-authorize-aws-cognito
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/aws-cognito-express-htmx-neon-rls-authorize">AWS Cognito + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/aws-cognito-express-htmx-neon-rls-authorize">AWS Cognito + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use AWS Cognito with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using AWS Cognito for user authentication. It shows you how to integrate AWS Cognito with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use AWS Cognito with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using AWS Cognito for user authentication. It shows you how to integrate AWS Cognito with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-AWS Cognito handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+AWS Cognito handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
@@ -35191,7 +37106,7 @@ To follow along with this guide, you will need:
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
 - A [AWS Cognito](https://aws.amazon.com/pm/cognito/) account with an existing application (e.g., a **todos** app) that uses AWS Cognito for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/stytch-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate AWS Cognito with Neon RLS Authorize
+## Integrate AWS Cognito with Neon RLS
 
 In this first set of steps, we'll integrate AWS Cognito as an authorization provider in Neon. When these steps are complete, AWS Cognito will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -35217,17 +37132,17 @@ https://cognito-idp.us-east-1.amazonaws.com/us-east-1_XXXXXXXXX/.well-known/jwks
 
 ### 2. Add AWS Cognito as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add AWS Cognito as an authentication provider. Paste your copied URL and AWS Cognito will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add AWS Cognito as an authentication provider. Paste your copied URL and AWS Cognito will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/aws_cognito_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -35270,7 +37185,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -35303,7 +37218,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated AWS Cognito with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated AWS Cognito with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -35520,30 +37435,32 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Azure Active Directory
 
 ---
-title: Secure your data with Azure Active Directory and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Azure Active Directory and Neon RLS Authorize
+title: Secure your data with Azure Active Directory and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Azure Active Directory
+  and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.325Z'
+updatedOn: '2025-03-10T18:26:02.764Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-azure-ad
   - /docs/guides/neon-authorize-azure-ad
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-rls-authorize">Azure Active Directory + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/azure-ad-b2c-nextjs-neon-rls-authorize">Azure Active Directory + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use Azure Active Directory with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Azure Active Directory for user authentication. It shows you how to integrate Azure Active Directory with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Azure Active Directory with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Azure Active Directory for user authentication. It shows you how to integrate Azure Active Directory with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-Azure Active Directory handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+Azure Active Directory handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
@@ -35552,7 +37469,7 @@ To follow along with this guide, you will need:
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
 - A [Azure Active Directory](https://aws.amazon.com/pm/cognito/) account with an existing application (e.g., a **todos** app) that uses Azure Active Directory for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/stytch-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate Azure Active Directory with Neon RLS Authorize
+## Integrate Azure Active Directory with Neon RLS
 
 In this first set of steps, we'll integrate Azure Active Directory as an authorization provider in Neon. When these steps are complete, Azure Active Directory will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -35574,17 +37491,17 @@ https://login.microsoftonline.com/12345678-1234-1234-1234-1234567890ab/discovery
 
 ### 2. Add Azure Active Directory as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Azure Active Directory as an authentication provider. Paste your copied URL and Azure Active Directory will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Azure Active Directory as an authentication provider. Paste your copied URL and Azure Active Directory will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/azure_ad_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -35627,7 +37544,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -35660,7 +37577,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated Azure Active Directory with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Azure Active Directory with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -35867,30 +37784,31 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Descope
 
 ---
-title: Secure your data with Descope and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Descope and Neon RLS Authorize
+title: Secure your data with Descope and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Descope and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.326Z'
+updatedOn: '2025-03-10T18:26:02.766Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-descope
   - /docs/guides/neon-authorize-descope
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-rls-authorize">Descope + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/descope-react-frontend-neon-rls-authorize">Descope + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use Descope with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Descope for user authentication. It shows you how to integrate Descope with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Descope with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Descope for user authentication. It shows you how to integrate Descope with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-Descope handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+Descope handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
@@ -35899,7 +37817,7 @@ To follow along with this guide, you will need:
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
 - A [Descope](https://www.descope.com/) account with an existing application (e.g., a **todos** app) that uses Descope for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/stytch-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate Descope with Neon RLS Authorize
+## Integrate Descope with Neon RLS
 
 In this first set of steps, we'll integrate Descope as an authorization provider in Neon. When these steps are complete, Descope will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -35925,17 +37843,17 @@ https://api.descope.com/1234/.well-known/jwks.json
 
 ### 2. Add Descope as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Descope as an authentication provider. Paste your copied URL and Descope will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Descope as an authentication provider. Paste your copied URL and Descope will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/descope_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -35978,7 +37896,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -36011,7 +37929,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated Descope with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Descope with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -36212,11 +38130,12 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Firebase / GCP Identity Platform
 
 ---
-title: Secure your data with Firebase and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using Firebase and Neon RLS Authorize
+title: Secure your data with Firebase and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using Firebase and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.327Z'
+updatedOn: '2025-03-10T18:26:02.766Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-firebase-gcp
   - /docs/guides/neon-authorize-firebase-gcp
   - /docs/guides/neon-authorize-google-identity
 ---
@@ -36229,23 +38148,23 @@ redirectFrom:
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
   <a href="https://firebase.google.com/docs/auth">Firebase Authentication documentation</a>
   <a href="https://cloud.google.com/identity-platform/docs/sign-in-user-email">GCP Identity Platform Quickstart</a>
 </DocsList>
 </InfoBlock>
 
-Use Firebase or Google Cloud Identity Platform with Neon RLS Authorize to add secure, database-level authorization to your application.
+Use Firebase or Google Cloud Identity Platform with Neon RLS to add secure, database-level authorization to your application.
 
-This guide assumes you already have an application using Firebase or GCP Identity Platform for user authentication. It shows you how to integrate with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+This guide assumes you already have an application using Firebase or GCP Identity Platform for user authentication. It shows you how to integrate with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
 Firebase and Google Cloud Identity Platform share the same underlying authentication infrastructure, but focus on different use cases: Firebase for mobile and web application developers, and GCP Identity Platform for enterprise-level identity management (leveraging Firebase in its implementation).
 
-Both services generate JSON Web Tokens (JWTs) for user authentication, which are passed to Neon RLS Authorize. Unlike some other authentication providers that issue a dedicated JWKS URL per project, Firebase and GCP Identity Platform use a common JWKS URL and rely on the Project ID in the JWT's Audience claim to identify specific projects.
+Both services generate JSON Web Tokens (JWTs) for user authentication, which are passed to Neon RLS. Unlike some other authentication providers that issue a dedicated JWKS URL per project, Firebase and GCP Identity Platform use a common JWKS URL and rely on the Project ID in the JWT's Audience claim to identify specific projects.
 
-When you make a database request, Neon RLS Authorize validates these JWTs and uses the embedded user identity metadata to enforce [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) (RLS) policies in Postgres, securing database queries based on user identity. This flow is enabled by the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension.
+When you make a database request, Neon RLS validates these JWTs and uses the embedded user identity metadata to enforce [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) (RLS) policies in Postgres, securing database queries based on user identity. This flow is enabled by the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension.
 
 ## Prerequisites
 
@@ -36256,7 +38175,7 @@ To follow along with this guide, you will need:
   - [Set up Firebase Authentication](https://firebase.google.com/docs/auth)
   - [Set up Identity Platform](https://cloud.google.com/identity-platform/docs/sign-in-user-email)
 
-## Integrate Firebase/GCP Identity Platform with Neon RLS Authorize
+## Integrate Firebase/GCP Identity Platform with Neon RLS
 
 In this first set of steps, we'll integrate Firebase/GCP Identity Platform as an authorization provider in Neon. When these steps are complete, your authentication service (whether Firebase or GCP Identity Platform) will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -36285,17 +38204,17 @@ You'll need two pieces of information:
 
 ### 2. Add Firebase/GCP Identity Platform as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add Firebase/GCP Identity Platform as an authentication provider. Paste your copied URL and Firebase/GCP Identity Platform will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add Firebase/GCP Identity Platform as an authentication provider. Paste your copied URL and Firebase/GCP Identity Platform will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/firebase_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -36338,7 +38257,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon’s Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon’s Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -36371,7 +38290,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you’ve integrated Firebase with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you’ve integrated Firebase with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -36569,11 +38488,13 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Google Identity
 
 ---
-title: Secure Your Data with Neon RLS Authorize and Firebase or GCP Identity Platform
-subtitle: Implement Row-Level Security in Postgres using Firebase or GCP Identity Platform
+title: Secure Your Data with Neon RLS and Firebase or GCP Identity Platform
+subtitle: Implement Row-Level Security in Postgres using Firebase or GCP Identity
+  Platform
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.328Z'
+updatedOn: '2025-03-10T18:26:02.767Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-google-identity
   - /docs/guides/neon-authorize-google-identity
 ---
 
@@ -36585,16 +38506,16 @@ redirectFrom:
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
   <a href="https://developers.google.com/identity/openid-connect/openid-connect">Google Identity Quickstart</a>
 </DocsList>
 </InfoBlock>
 
-Use Google Identity with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using Google Identity for user authentication. It shows you how to integrate Google Identity with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use Google Identity with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using Google Identity for user authentication. It shows you how to integrate Google Identity with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-[Google Identity](https://developers.google.com/identity) handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt).
+[Google Identity](https://developers.google.com/identity) handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt).
 
 ## Prerequisites
 
@@ -36615,7 +38536,7 @@ To follow along with this guide, you will need:
      </Admonition>
   6. Save your `Client ID` and `Client Secret` for later use
 
-## Integrate Google Identity with Neon RLS Authorize
+## Integrate Google Identity with Neon RLS
 
 In this first set of steps, we'll integrate Google Identity as an authorization provider in Neon. When these steps are complete, Google Identity will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -36630,7 +38551,7 @@ https://www.googleapis.com/oauth2/v3/certs
 ```
 
 <Admonition type="note" title="Note">
-For the JWT Audience value required by Neon RLS Authorize, you'll use the **OAuth 2.0 Client ID** which was saved earlier.
+For the JWT Audience value required by Neon RLS, you'll use the **OAuth 2.0 Client ID** which was saved earlier.
 </Admonition>
 
 ### 2. Add Google Identity as an authorization provider in the Neon Console
@@ -36641,11 +38562,11 @@ Once you have the JWKS URL, go to the **Neon Console** and add Google Identity a
   <img src="/docs/guides/google_identity_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -36688,7 +38609,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -36725,7 +38646,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated Google Identity with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated Google Identity with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -36927,39 +38848,41 @@ GOOGLE_CLIENT_SECRET='<YOUR_GOOGLE_CLIENT_SECRET>'
 # PropelAuth
 
 ---
-title: Secure your data with PropelAuth and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using PropelAuth and Neon RLS Authorize
+title: Secure your data with PropelAuth and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using PropelAuth and Neon
+  RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.328Z'
+updatedOn: '2025-03-10T18:26:02.768Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-propelauth
   - /docs/guides/neon-authorize-propelauth
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls-authorize">PropelAuth + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls-authorize">PropelAuth + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use PropelAuth with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using PropelAuth for user authentication. It shows you how to integrate PropelAuth with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use PropelAuth with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using PropelAuth for user authentication. It shows you how to integrate PropelAuth with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-PropelAuth handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+PropelAuth handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
 To follow along with this guide, you will need:
 
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
-- A [PropelAuth](https://www.propelauth.com/) project with an existing application (e.g., a **todos** app) that uses PropelAuth for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls-authorize) for similar schema and policies in action.
+- A [PropelAuth](https://www.propelauth.com/) project with an existing application (e.g., a **todos** app) that uses PropelAuth for user authentication. If you don't have an app, check our [demo](https://github.com/neondatabase-labs/propelauth-nextjs-neon-rls) for similar schema and policies in action.
 
-## Integrate PropelAuth with Neon RLS Authorize
+## Integrate PropelAuth with Neon RLS
 
 In this first set of steps, we'll integrate PropelAuth as an authorization provider in Neon. When these steps are complete, PropelAuth will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -36985,17 +38908,17 @@ https://3211758.propelauthtest.com/.well-known/jwks.json
 
 ### 2. Add PropelAuth as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add PropelAuth as an authentication provider. Paste your copied URL and PropelAuth will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add PropelAuth as an authentication provider. Paste your copied URL and PropelAuth will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/propelauth_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -37038,7 +38961,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -37071,7 +38994,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated PropelAuth with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated PropelAuth with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -37272,30 +39195,32 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # SuperTokens
 
 ---
-title: Secure your data with SuperTokens and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using SuperTokens and Neon RLS Authorize
+title: Secure your data with SuperTokens and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using SuperTokens and Neon
+  RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.330Z'
+updatedOn: '2025-03-10T18:26:02.770Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-supertokens
   - /docs/guides/neon-authorize-supertokens
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/supertokens-nestjs-solidjs-drizzle-neon-rls-authorize">SuperTokens + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/supertokens-nestjs-solidjs-drizzle-neon-rls-authorize">SuperTokens + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use SuperTokens with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using SuperTokens for user authentication. It shows you how to integrate SuperTokens with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use SuperTokens with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using SuperTokens for user authentication. It shows you how to integrate SuperTokens with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-SuperTokens handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+SuperTokens handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
@@ -37304,7 +39229,7 @@ To follow along with this guide, you will need:
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
 - A [SuperTokens](https://www.supertokens.com) service either managed/self-hosted with an existing application (e.g., a todos app) that uses SuperTokens for user authentication.
 
-## Integrate SuperTokens with Neon RLS Authorize
+## Integrate SuperTokens with Neon RLS
 
 In this first set of steps, we'll integrate SuperTokens as an authorization provider in Neon. When these steps are complete, SuperTokens will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -37330,17 +39255,17 @@ https://try.supertokens.io/.well-known/jwks.json
 
 ### 2. Add SuperTokens as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add SuperTokens as an authentication provider. Paste your copied URL and SuperTokens will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add SuperTokens as an authentication provider. Paste your copied URL and SuperTokens will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/supertokens_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -37383,7 +39308,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -37416,7 +39341,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated SuperTokens with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated SuperTokens with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -37615,30 +39540,31 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # WorkOS
 
 ---
-title: Secure your data with WorkOS and Neon RLS Authorize
-subtitle: Implement Row-level Security policies in Postgres using WorkOS and Neon RLS Authorize
+title: Secure your data with WorkOS and Neon RLS
+subtitle: Implement Row-level Security policies in Postgres using WorkOS and Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.330Z'
+updatedOn: '2025-03-10T18:26:02.771Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-workos
   - /docs/guides/neon-authorize-workos
 ---
 
 <InfoBlock>
 <DocsList title="Sample project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/workos-drizzle-sveltekit-neon-rls-authorize">WorkOS + Neon RLS Authorize</a>
+  <a href="https://github.com/neondatabase-labs/workos-drizzle-sveltekit-neon-rls-authorize">WorkOS + Neon RLS</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-Use WorkOS with Neon RLS Authorize to add secure, database-level authorization to your application. This guide assumes you already have an application using WorkOS for user authentication. It shows you how to integrate WorkOS with Neon RLS Authorize, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
+Use WorkOS with Neon RLS to add secure, database-level authorization to your application. This guide assumes you already have an application using WorkOS for user authentication. It shows you how to integrate WorkOS with Neon RLS, then provides sample Row-level Security (RLS) policies to help you model your own application schema.
 
 ## How it works
 
-WorkOS handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS Authorize. Neon RLS Authorize validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
+WorkOS handles user authentication by generating JSON Web Tokens (JWTs), which are securely passed to Neon RLS. Neon RLS validates these tokens and uses the embedded user identity metadata to enforce the [Row-Level Security](https://neon.tech/postgresql/postgresql-administration/postgresql-row-level-security) policies that you define directly in Postgres, securing database queries based on that user identity. This authorization flow is made possible using the Postgres extension [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt), which you'll install as part of this guide.
 
 ## Prerequisites
 
@@ -37647,7 +39573,7 @@ To follow along with this guide, you will need:
 - A Neon account. Sign up at [Neon](https://neon.tech) if you don't have one.
 - A [WorkOS](https://www.workos.com) Workspace with an existing application (e.g., a **todos** app) that uses WorkOS for user authentication.
 
-## Integrate WorkOS with Neon RLS Authorize
+## Integrate WorkOS with Neon RLS
 
 In this first set of steps, we'll integrate WorkOS as an authorization provider in Neon. When these steps are complete, WorkOS will start passing JWTs to your Neon database, which you can then use to create policies.
 
@@ -37673,17 +39599,17 @@ https://api.workos.com/sso/jwks/client_12345
 
 ### 2. Add WorkOS as an authorization provider in the Neon Console
 
-Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**, and add WorkOS as an authentication provider. Paste your copied URL and WorkOS will be automatically recognized and selected.
+Once you have the JWKS URL, go to the **Neon Console**, navigate to **Settings** > **RLS**, and add WorkOS as an authentication provider. Paste your copied URL and WorkOS will be automatically recognized and selected.
 
 <div style={{ display: 'flex', justifyContent: 'center'}}>
   <img src="/docs/guides/workos_jwks_url_in_neon.png" alt="Add Authentication Provider" style={{ width: '60%', maxWidth: '600px', height: 'auto' }} />
 </div>
 
-At this point, you can use the **Get Started** setup steps from RLS Authorize in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
+At this point, you can use the **Get Started** setup steps from RLS in Neon to complete the setup — this guide is modeled on those steps. Or feel free to keep following along in this guide, where we'll give you a bit more context.
 
 ### 3. Install the pg_session_jwt extension in your database
 
-Neon RLS Authorize uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
+Neon RLS uses the [pg_session_jwt](https://github.com/neondatabase/pg_session_jwt) extension to handle authenticated sessions through JSON Web Tokens (JWTs). This extension allows secure transmission of authentication data from your application to Postgres, where you can enforce Row-Level Security (RLS) policies based on the user's identity.
 
 To install the extension in the `neondb` database, run:
 
@@ -37726,7 +39652,7 @@ GRANT USAGE ON SCHEMA public TO anonymous;
 
 ### 5. Install the Neon Serverless Driver
 
-Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS Authorize, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS Authorize.
+Neon's Serverless Driver manages the connection between your application and the Neon Postgres database. For Neon RLS, you must use HTTP. While it is technically possible to access the HTTP API without using our driver, we recommend using the driver for best performance. The driver also supports WebSockets and TCP connections, so make sure you use the HTTP method when working with Neon RLS.
 
 Install it using the following command:
 
@@ -37759,7 +39685,7 @@ The `DATABASE_URL` is intended for admin tasks and can run any query while the `
 
 ## Add RLS policies
 
-Now that you've integrated WorkOS with Neon RLS Authorize, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
+Now that you've integrated WorkOS with Neon RLS, you can securely pass JWTs to your Neon database. Let's start looking at how to add RLS policies to your schema and how you can execute authenticated queries from your application.
 
 ### 1. Add Row-Level Security policies
 
@@ -37960,32 +39886,33 @@ NEXT_PUBLIC_DATABASE_AUTHENTICATED_URL='<AUTHENTICATED_CONNECTION_STRING>'
 # Custom JWT
 
 ---
-title: Using Custom JWTs with Neon RLS Authorize
-subtitle: A step-by-step guide for using custom JWTs with Neon RLS Authorize
+title: Using Custom JWTs with Neon RLS
+subtitle: A step-by-step guide for using custom JWTs with Neon RLS
 enableTableOfContents: true
-updatedOn: '2025-01-27T19:31:29.572Z'
+updatedOn: '2025-03-10T18:26:02.765Z'
 redirectFrom:
+  - /docs/guides/neon-rls-authorize-custom-jwt
   - /docs/guides/neon-authorize-custom-jwt
 ---
 
 <InfoBlock>
 <DocsList title="Demo project" theme="repo">
-  <a href="https://github.com/neondatabase-labs/rls-authorize-demo-custom-jwt">Neon RLS Authorize with custom generated JWTs</a>
+  <a href="https://github.com/neondatabase-labs/rls-authorize-demo-custom-jwt">Neon RLS with custom generated JWTs</a>
 </DocsList>
 
 <DocsList title="Related docs" theme="docs">
-  <a href="/docs/guides/neon-rls-authorize-tutorial">Neon RLS Authorize Tutorial</a>
-  <a href="/docs/guides/neon-rls-authorize-drizzle">Simplify RLS with Drizzle</a>
+  <a href="/docs/guides/neon-rls-tutorial">Neon RLS Tutorial</a>
+  <a href="/docs/guides/neon-rls-drizzle">Simplify RLS with Drizzle</a>
 </DocsList>
 </InfoBlock>
 
-[Neon RLS Authorize](/docs/guides/neon-rls-authorize) lets you implement authorization directly within your Postgres database using Row-Level Security (RLS). While it works well with authentication providers like [Auth0](https://auth0.com) and [Clerk](https://clerk.com), you can also use your own custom-generated JSON Web Tokens (JWTs). This gives you fine-grained control over how tokens are created and validated, ideal for specific application needs or when you prefer to manage authentication independently.
+[Neon RLS](/docs/guides/neon-rls) lets you implement authorization directly within your Postgres database using Row-Level Security (RLS). While it works well with authentication providers like [Auth0](https://auth0.com) and [Clerk](https://clerk.com), you can also use your own custom-generated JSON Web Tokens (JWTs). This gives you fine-grained control over how tokens are created and validated, ideal for specific application needs or when you prefer to manage authentication independently.
 
-This guide walks you through using custom JWTs with Neon RLS Authorize, covering:
+This guide walks you through using custom JWTs with Neon RLS, covering:
 
 - Generating keys for JWT signing
 - Creating custom JWTs with specific claims
-- Configuring Neon RLS Authorize to validate your JWTs
+- Configuring Neon RLS to validate your JWTs
 - Authenticating requests and enforcing RLS policies based on JWT claims
 
 ## When to use custom JWTs
@@ -38007,7 +39934,7 @@ Before starting, make sure you have:
 JWTs are digitally signed to ensure they're authentic and haven't been tampered with. You'll need a public/private key pair for this:
 
 - **Private key:** Used to sign your JWTs. Keep this secret!
-- **Public key:** Used by Neon RLS Authorize to verify the signatures.
+- **Public key:** Used by Neon RLS to verify the signatures.
 
 We'll use the `jose` library in TypeScript to generate an RSA key pair. Here's a simple way to do it:
 
@@ -38028,7 +39955,7 @@ async function generateAndExportKeys() {
   // Add metadata to the private key JWK.
   // 'use': Indicates the key's intended use (e.g., 'sig' for signing).
   // 'kid': A unique identifier for the key, useful for key management and rotation.
-  // 'alg': Specifies the algorithm to be used with the key (Neon RLS Authorize supports only RS256 and ES256 currently).
+  // 'alg': Specifies the algorithm to be used with the key (Neon RLS supports only RS256 and ES256 currently).
   privateJwk.use = 'sig';
   privateJwk.kid = 'my-key-id';
   privateJwk.alg = 'RS256';
@@ -38064,7 +39991,7 @@ generateAndExportKeys();
 
 ## Create your custom JWTs
 
-Now, let's create JWTs in your application. These JWTs will contain "claims" – pieces of information that Neon RLS Authorize will use to enforce your security rules.
+Now, let's create JWTs in your application. These JWTs will contain "claims" – pieces of information that Neon RLS will use to enforce your security rules.
 
 Here's an example using `jose`, adapted from the demo app:
 
@@ -38106,13 +40033,13 @@ console.log('JWT:', token);
 - `role`: User's role (e.g., "admin", "viewer").
 - `permissions`: Specific actions the user can perform.
 
-## Set up Neon RLS Authorize
+## Set up Neon RLS
 
-Now, let's configure Neon RLS Authorize to trust your custom JWTs:
+Now, let's configure Neon RLS to trust your custom JWTs:
 
 ### Expose Your Public Key
 
-Neon RLS Authorize needs your public key to verify JWT signatures. You'll usually expose it via a JWKS (JSON Web Key Set) endpoint. A JWKS endpoint is a standard way to publish your public keys so that services like Neon RLS Authorize can retrieve them. The demo app uses a [Cloudflare Worker](https://workers.cloudflare.com/) for this, serving the key at `/.well-known/jwks.json`.
+Neon RLS needs your public key to verify JWT signatures. You'll usually expose it via a JWKS (JSON Web Key Set) endpoint. A JWKS endpoint is a standard way to publish your public keys so that services like Neon RLS can retrieve them. The demo app uses a [Cloudflare Worker](https://workers.cloudflare.com/) for this, serving the key at `/.well-known/jwks.json`.
 
 ```typescript
 // Example from the demo app (src/index.ts)
@@ -38125,14 +40052,14 @@ app.get('/.well-known/jwks.json', async (c) => {
 
 This makes the public key available at `https://your-app.com/.well-known/jwks.json`.
 
-### Add JWKS url to Neon RLS Authorize
+### Add JWKS url to Neon RLS
 
-1. Go to the **Neon Console**, navigate to **Settings** > **RLS Authorize**.
+1. Go to the **Neon Console**, navigate to **Settings** > **RLS**.
 2. Click **Add Provider**.
 3. Set the **JWKS URL** to your endpoint (e.g., `https://your-app.com/.well-known/jwks.json`).
    ![Custom JWT JWKS url in Neon](/docs/guides/custom_jwt_jwks_url_in_neon.png)
 4. Click **Set Up**
-5. Follow the steps in the UI to set up roles for Neon RLS Authorize. You can ignore the schema-related steps for this guide.
+5. Follow the steps in the UI to set up roles for Neon RLS. You can ignore the schema-related steps for this guide.
 6. Note down the connection strings for the `neondb_owner` and `authenticated, passwordless` roles. You'll need both:
    - **`neondb_owner`:** Full privileges, used for migrations.
    - **`authenticated`:** Used by your application, access restricted by RLS.
@@ -38214,7 +40141,7 @@ const users = await db.select().from(usersTable);
 
 **How it works:**
 
-1. When you send a request with a JWT, Neon RLS Authorize verifies the signature using the public key.
+1. When you send a request with a JWT, Neon RLS verifies the signature using the public key.
 2. If the signature is valid and the JWT hasn't expired, the claims are extracted.
 3. The `pg_session_jwt` extension makes the claims available to RLS policies via `auth.session()` and `auth.user_id()`.
 4. RLS policies evaluate the claims to allow or deny access.
@@ -38264,13 +40191,13 @@ export default app;
 
 ## Conclusion
 
-Using custom JWTs with Neon RLS Authorize offers a powerful way to implement fine-grained authorization in Postgres. By controlling JWT generation and combining it with the security of RLS, you can build robust applications that enforce data access rules at the database level. Remember to secure your private key, design your JWT claims thoughtfully, and test your RLS policies thoroughly.
+Using custom JWTs with Neon RLS offers a powerful way to implement fine-grained authorization in Postgres. By controlling JWT generation and combining it with the security of RLS, you can build robust applications that enforce data access rules at the database level. Remember to secure your private key, design your JWT claims thoughtfully, and test your RLS policies thoroughly.
 
-We hope this guide has helped you understand how to use custom JWTs with Neon RLS Authorize.
+We hope this guide has helped you understand how to use custom JWTs with Neon RLS.
 
 ## Additional Resources
 
-- [Neon RLS Authorize Tutorial](/docs/guides/neon-rls-authorize-tutorial)
+- [Neon RLS Tutorial](/docs/guides/neon-rls-tutorial)
 - [WTF are JWTs?](/blog/wtf-are-jwts)
 - [jose library](https://github.com/panva/jose)
 
@@ -38286,20 +40213,20 @@ subtitle: Find detailed instructions for integration across various platforms an
 enableTableOfContents: true
 redirectFrom:
   - /docs/integrations/integrations-list/
-updatedOn: '2024-12-26T17:57:49.401Z'
+updatedOn: '2025-02-24T15:53:13.357Z'
 ---
 
 ## Monitor
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/datadog" title="Datadog" description="Send metrics and events from Neon Postgres to Datadog" icon="datadog"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Deploy
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/vercel-overview" title="Vercel" description="Learn how to integrate Neon with Vercel" icon="vercel"></a>
 
@@ -38319,23 +40246,23 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 
 <a href="/docs/guides/render" title="Render" description="Use Neon Postgres with Render" icon="render"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Serverless
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/serverless/serverless-driver" title="Neon" description="Connect with the Neon serverless driver" icon="neon"></a>
 
 <a href="/docs/guides/aws-lambda" title="AWS Lambda" description="Connect from AWS Lambda to Neon" icon="aws-lambda"></a>
 
-<a href="https://neon.tech/guides/query-postgres-azure-functions" title="Azure Functions" description="Connect from Azure Functions to Neon" icon="azure"></a>
+<a href="/guides/query-postgres-azure-functions" title="Azure Functions" description="Connect from Azure Functions to Neon" icon="azure"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Query
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/exograph" title="Exograph" description="Use Exograph with Neon" icon="exograph"></a>
 
@@ -38355,11 +40282,11 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 
 <a href="/docs/guides/outerbase" title="Outerbase" description="Connect Outerbase to Neon" icon="outerbase"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Develop
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/neon-github-app" title="GitHub integration" description="Use the Neon GitHub integration" icon="github"></a>
 
@@ -38373,11 +40300,13 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 
 <a href="/docs/guides/knex" title="Knex" description="Connect from Knex to Neon" icon="knex"></a>
 
-</TechnologyNavigation>
+<a href="/guides/convex-neon" title="Convex" description="Integrate Convex with Neon Postgres" icon="convex"></a>
+
+</TechCards>
 
 ## Replicate data from Neon
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/logical-replication-airbyte" title="Airbyte" description="Replicate data from Neon with Airbyte" icon="airbyte"></a>
 
@@ -38407,11 +40336,11 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 
 <a href="/docs/guides/logical-replication-inngest" title="Inngest" description="Replicate data from Neon to Inngest" icon="inngest"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Replicate data to Neon
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/logical-replication-alloydb" title="AlloyDB" description="Replicate data from AlloyDB to Neon" icon="alloydb"></a>
 
@@ -38425,11 +40354,11 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 
 <a href="/docs/guides/logical-replication-rds-to-neon" title="RDS" description="Replicate data from AWS RDS PostgreSQL to Neon" icon="aws-rds"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Schema Migration
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/django-migrations" title="Django" description="Connect a Django application to Neon" icon="django"></a>
 
@@ -38451,11 +40380,11 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 
 <a href="/docs/guides/sqlalchemy" title="SQLAlchemy" description="Connect an SQLAlchemy application to Neon" icon="sqlalchemy"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 ## Authenticate
 
-<TechnologyNavigation open>
+<TechCards>
 
 <a href="/docs/guides/auth-auth0" title="Auth0" description="Authenticate Neon Postgres application users with Auth0" icon="auth0"></a>
 
@@ -38465,7 +40394,7 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 
 <a href="/docs/guides/auth-okta" title="Okta" description="Authenticate Neon Postgres application users with Okta" icon="okta"></a>
 
-</TechnologyNavigation>
+</TechCards>
 
 
 # Monitor
@@ -38476,8 +40405,7 @@ updatedOn: '2024-12-26T17:57:49.401Z'
 title: The Neon Datadog integration
 subtitle: Send metrics and events from Neon Postgres to Datadog
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-14T19:32:07.597Z'
+updatedOn: '2025-03-05T21:09:38.751Z'
 ---
 
 <InfoBlock>
@@ -39195,18 +41123,20 @@ redirectFrom:
   - /docs/guides/vercel-postgres
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-13T13:15:08.386Z'
+updatedOn: '2025-02-27T14:57:44.624Z'
 ---
 
 Neon supports different options for integrating Neon and Vercel, including a native integration that you can install from the Vercel Marketplace, a "previews integration" that creates a database branch with every pull request, and a manual setup option. If you're currently a Vercel Postgres user, you'll also find information below about the upcoming transition from Vercel Postgres to Neon.
 
-## Option 1: Add the Native Integration on Vercel
+## Option 1: Vercel Native Integration
 
-This integration is intended for Vercel users who want to add Neon Postgres to their Vercel project as a [first-party native integration](https://vercel.com/docs/integrations/install-an-integration/product-integration). The integration creates a Neon Postgres account for you if you do not have one. You get access to Neon features and plans. **Billing is managed through Vercel**.
+This integration is intended for Vercel users who want to add Neon Postgres to their Vercel project as a [first-party native integration](https://vercel.com/docs/integrations/install-an-integration/product-integration). The integration creates a Neon Postgres account for you if you do not have one. You get access to Neon features and plans. **Billing is managed through Vercel**. The integration also supports automatic creation of a database branch with each Vercel preview deployment so that you can preview application and database changes together without impacting your production database.
 
 <DetailIconCards>
 
 <a href="/docs/guides/vercel-native-integration" description="Learn how to install the Neon Postgres Native Integration from the Vercel Marketplace" icon="vercel">Vercel Native Integration</a>
+
+<a href="/docs/guides/vercel-native-integration-previews" description="Create a database branch for every preview deployment with the Neon Postgres Native Integration" icon="vercel">Preview deployments</a>
 
 </DetailIconCards>
 
@@ -39256,18 +41186,20 @@ redirectFrom:
   - /docs/guides/vercel-postgres
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-13T13:15:08.386Z'
+updatedOn: '2025-02-27T14:57:44.624Z'
 ---
 
 Neon supports different options for integrating Neon and Vercel, including a native integration that you can install from the Vercel Marketplace, a "previews integration" that creates a database branch with every pull request, and a manual setup option. If you're currently a Vercel Postgres user, you'll also find information below about the upcoming transition from Vercel Postgres to Neon.
 
-## Option 1: Add the Native Integration on Vercel
+## Option 1: Vercel Native Integration
 
-This integration is intended for Vercel users who want to add Neon Postgres to their Vercel project as a [first-party native integration](https://vercel.com/docs/integrations/install-an-integration/product-integration). The integration creates a Neon Postgres account for you if you do not have one. You get access to Neon features and plans. **Billing is managed through Vercel**.
+This integration is intended for Vercel users who want to add Neon Postgres to their Vercel project as a [first-party native integration](https://vercel.com/docs/integrations/install-an-integration/product-integration). The integration creates a Neon Postgres account for you if you do not have one. You get access to Neon features and plans. **Billing is managed through Vercel**. The integration also supports automatic creation of a database branch with each Vercel preview deployment so that you can preview application and database changes together without impacting your production database.
 
 <DetailIconCards>
 
 <a href="/docs/guides/vercel-native-integration" description="Learn how to install the Neon Postgres Native Integration from the Vercel Marketplace" icon="vercel">Vercel Native Integration</a>
+
+<a href="/docs/guides/vercel-native-integration-previews" description="Create a database branch for every preview deployment with the Neon Postgres Native Integration" icon="vercel">Preview deployments</a>
 
 </DetailIconCards>
 
@@ -39316,7 +41248,7 @@ subtitle: Add Neon Postgres storage to your Vercel project as a first-party nati
   integration
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-01T11:52:41.013Z'
+updatedOn: '2025-02-26T11:09:50.489Z'
 ---
 
 <InfoBlock>
@@ -39353,7 +41285,7 @@ The **Neon Postgres Native Integration** is intended for Vercel users who want t
 
 To install the **Neon Postgres Native Integration** from the Vercel Marketplace:
 
-1. Navigate to the [Vercel Marketplace](https://vercel.com/marketplace) or to the [Integrations Console](https://vercel.com/neondatabase/~/integrations/console) on your Vercel Dashboard.
+1. Navigate to the [Vercel Marketplace](https://vercel.com/marketplace).
 2. Locate the **Neon** integration.
 3. Click **Install**.
 4. On the **Install Neon** modal, you are presented with two options. Select **Create New Neon Account**, and click **Continue**.
@@ -39421,6 +41353,30 @@ As a user of the Neon Postgres Native Integration, you have access to all Neon f
 - **Billing & Payments**:
   - Invoices, payments, and plan changes (upgrades/downgrades) are managed in Vercel.
 
+## Connect a Vercel project to a Neon database
+
+You can connect your a Vercel project to a Neon database and optionally create a database branch for each Vercel preview deployment.
+
+To connect your Vercel project to your Neon database:
+
+1. From the **Storage** tab in the Vercel Dashboard, select your Database.
+2. On your Database page, select **Connect Project**.
+3. Select the Vercel project you want to connect and the environments you want to add database environment variables to (**Development**, **Preview**, **Production**).
+4. Optionally, under **Advanced Options**, you can:
+
+   - Specify an **Environment Variables Prefix** for the database environment variables that will be added to your Vercel project. A prefix is not required but may help you track and identify variables later.
+   - Under **Deployments Configuration**, you can toggle the **Required** option and select **Preview** to create a Neon branch with every preview deployment (the **Development** and **Production** options here do not do anything — you can ignore them). Enabling the **Required** option means that a database branch must be created for each preview deployment.
+
+   <Admonition type="note" title="A database branch for every preview deployment">
+   A Neon branch with every Vercel preview deployment creates an isolated copy of your database that you can modify without affecting your production database. This means you can preview both application and database changes together.
+   </Admonition>
+
+5. Click **Connect** to finish the setup.
+
+   If you enabled database branching for preview deployments, each commit to a new branch in GitHub creates a database branch in Neon.
+
+   For more about this database branching setup, refer to our detailed guide: [Vercel Native Integration Previews](/docs/guides/vercel-native-integration-previews).
+
 ## Changing your Database configuration
 
 Configuration changes you can make include:
@@ -39476,10 +41432,18 @@ To monitor usage in Vercel:
 
 When you install the Neon Postgres Native Integration from the Vercel Marketplace, you have access to all the same Neon plans that are available to anyone signing up for Neon directly. Changing your plan (upgrading or downgrading) is performed in Vercel.
 
-1. On the Vercel Dashboard, navigate to **Storage** tab.
-2. Select **Settings**.
-3. In the **Update configuration** section, select **Change Configuration**.
-4. Select the desired **Installation plan**, and click **Save**.
+1. On the Vercel Dashboard, navigate to the **Storage** tab.
+2. Select your Neon Database.
+3. Select **Settings** from the sidebar.
+
+   ![Vercel settings](/docs/guides/vercel_settings.png)
+
+4. In the **Update configuration** section, select **Change Configuration**.
+
+   ![Vercel update configuration modal](/docs/guides/vercel_update_configuration.png)
+
+5. Select the desired **Installation plan**, and click **Save**.
+6. Follow the prompts to complete the plan change, providing your payment method if necessary.
 
 For an overview of Neon's plans, please visit our [Pricing](https://neon.tech/pricing) page.
 
@@ -39531,8 +41495,168 @@ POSTGRES_PRISMA_URL
 
 ## Limitations
 
-- When using the Neon Postgres Native Integration, installing the [Neon Postgres Previews Integration](/docs/guides/vercel-previews-integration) on the same Vercel Project is not supported.
+- When using the Neon Postgres Native Integration, installing the [Neon Postgres Previews Integration](/docs/guides/vercel-previews-integration) on the same Vercel Project is not supported. However, the Neon Postgres Native Integration also supports database branches for preview deployments. See [Vercel Native Integration Previews](/docs/guides/vercel-native-integration-previews).
+
 - To use the Neon CLI with the Neon Postgres Native Integration, you must authenticate connections from the CLI client using a Neon API key. Please see [Neon CLI — API keys](/docs/reference/cli-install#api-key). The `neon auth` command requires an account registered through Neon rather than Vercel.
+
+<NeedHelp/>
+
+
+# Vercel Native Integration Previews
+
+---
+title: Vercel Native Integration Previews
+subtitle: Create a database branch for every preview deployment with Neon's native
+  Vercel integration
+enableTableOfContents: true
+isDraft: false
+updatedOn: '2025-03-06T12:39:04.895Z'
+---
+
+<InfoBlock>
+<DocsList title="What you will learn:">
+<p>How to create a database branch for each preview deployment</p>
+<p>The benefits of a branch for every preview deployment</p>
+</DocsList>
+
+<DocsList title="Related topics" theme="docs">
+<a href="/docs/guides/vercel-native-integration">Neon Postgres Native Integration</a>
+</DocsList>
+</InfoBlock>
+
+The [Neon Postgres Native Integration](https://vercel.com/marketplace/neon), available on the Vercel Marketplace, allows you to add a Postgres database to your Vercel project. You can optionally configure the integration to create a database branch for each Vercel preview deployment. This guide explains how to set up that configuration.
+
+<Admonition type="note">
+The database branching preview feature is only supported for users on a Neon plan. If you are on a Vercel Postgres legacy plan, you will need to [change your plan](https://neon.tech/docs/guides/vercel-native-integration#changing-your-plan).
+</Admonition>
+
+<details>
+<summary>Why create a database branch with each preview deployment?</summary>
+
+- **Each preview deployment gets its own database**: Every Vercel preview deployment has its own dedicated database branch, keeping environments isolated.
+
+- **No more shared database problems**: Using a single shared database can lead to issues across all preview deployments if something goes wrong. With branches, each preview has its own independent database.
+
+- **Easier debugging and testing**: Database branches let you preview schema changes and migrations in isolation, so issues don’t spill over into other environments.
+
+- **No need to set up preview databases manually**: Neon branches are created instantly as copies of the parent database, saving you the hassle of seeding data or setting up databases from scratch.
+
+- **Works automatically with Vercel**: The integration connects Neon database branches to Vercel preview deployments and sets the environment variables for you.
+
+- **Great for teams**: Isolated branches let team members test their changes independently without stepping on each other’s toes.
+
+- **Automatic schema migrations**: You can add database migration commands to your Vercel deployment setup to apply schema changes to your database branch automatically with each preview deployment.
+
+</details>
+
+## Prerequisites
+
+- You're a Vercel user and you've installed Neon's [Native Vercel Integration](https://vercel.com/marketplace/neon) from the Vercel Marketplace. For instructions, see [Install the Neon Postgres Native Integration on Vercel](/docs/guides/vercel-native-integration).
+- You have an existing Neon Database in Vercel, accessible from the **Storage** tab on the Vercel Dashboard. If not, see [Adding Databases](/docs/guides/vercel-native-integration#adding-more-databases).
+- Your Vercel project is **not** yet connected to a Neon Database in Vercel. If your database is already connected, you will need to disconnect before performing the setup. See [Disconnecting a database](#disconnecting-a-database).
+
+## Connect your Vercel project to a Neon database
+
+To connect your Vercel project to your Neon database:
+
+1. On the Vercel Dashboard, open your Vercel project.
+2. Navigate to the **Storage** tab and select your Database (or create a Database if you do not have one).
+3. Find the Database you want to connect to, and click **Connect**.
+
+   ![Connect a Vercel Project](/docs/guides/vercel_native_connect_project.png)
+
+4. On the **Connect Project** dialog:
+
+   1. Select the Vercel project you want to connect to.
+   1. Under **Environments**, choose the Vercel environments you want to make your database available to (**Development**, **Preview**, **Production**). This will add a set of database [environment variables](/docs/guides/vercel-native-integration#environment-variables-set-by-the-integration) to the selected environments in your Vercel project.
+
+   1. Under **Deployments**:
+
+      - Enable the **Resource is required to be in an active state before deployment can start** option. This setting ensures that a database branch can be created.
+      - Under **Choose actions to enable for this integration**, select the **Preview** option. This setting creates a database branch for **preview deployments** only. Leave the **Production** option unchecked — you don't need to create database branches for your Production environment.
+
+      ![Vercel deployment configuration](/docs/guides/vercel_native_deployments_configuration.png)
+
+5. Click **Connect** to finish the setup.
+
+   Now, with each commit to a branch in your application's GitHub repository, preview deployments will be created with their own isolated database branch. You can follow the steps in the next section to test the setup.
+
+   <Admonition type="tip">
+   To learn how you can apply schema changes to database branches automatically, see [Applying schema changes to database branches](#applying-schema-changes-to-database-branches). 
+   </Admonition>
+
+## Testing the database branching setup
+
+After enabling database branches for preview deployments, a database branch is created when you push commits from your local git branch to your source code repository. To see the integration in action, follow these steps:
+
+1. Create a branch in your local source code repository.
+
+   ```bash
+   cd myapp
+   git checkout -b patch-1
+   ```
+
+2. Make changes to your application code on the local branch. This could be any change to your application or database schema, assuming your database schema is managed in code (see [Applying schema changes to database branches](#applying-schema-changes-to-database-branches).
+3. Commit the changes. For example:
+
+   ```bash
+   git commit -a -m "Update my app"
+   ```
+
+4. Push your commit to the remote repository:
+
+   ```bash
+   git push
+   ```
+
+   Pushing the commit triggers the following actions:
+
+   - The commit triggers a preview deployment in Vercel, as would occur without the Neon integration, which you can view on the **Deployments** tab on the Vercel Dashboard.
+   - The integration creates a branch in Neon. This branch is an isolated copy of your default branch, with its own dedicated compute. The branch is created with the same name as your `git` branch but includes a `preview/` prefix. You can view branches in the Neon Console, on your Neon project's **Branches** page.
+   - The integration automatically passes environment variables for your database branch to connect the preview deployment to the database branch.
+     <Admonition type="info" title="How are database variables set for preview deployments?">
+     Vercel calls a webhook before the preview deployment build stage. During this call, environment variables for the new database branch are created. These variables override the existing preview environment variables in Vercel but apply only to the specific preview deployment they were created for. The environment variables visible in Vercel remain unchanged.
+     </Admonition>
+
+## Applying schema changes to database branches
+
+If you're managing your database schema in code using a tool like Prisma Migrate or Drizzle ORM, you can add build commands, including a schema migration command, to your Vercel deployment configuration. This way, you can preview application and database changes together.
+
+To add build commands to your Vercel project previews:
+
+1. On the Vercel Dashboard, open your Vercel project.
+2. Navigate to the **Settings** tab.
+3. On the **General** page, navigate to the **Build & Development Settings** section.
+4. Enable the **Override** option and enter your build commands, including your schema migration command. For example, if you're using Prisma, you might enter the following commands to apply database migrations, generate the Prisma Client, and run your build:
+
+   ```text
+   npx prisma migrate deploy && npx prisma generate && next build
+   ```
+
+   As shown below:
+
+   ![Vercel build commands](/docs/guides/vercel_build_command.png)
+
+   This setup applies any schema changes in your commits to the database branch created for your preview deployment.
+
+## Disconnecting a database
+
+To disconnect a Neon database from a Vercel project:
+
+1. On the Vercel Dashboard, open your Vercel project.
+2. Navigate to the **Storage** tab and select your Database.
+3. In the left-hand navigation on your database page, select **Projects**.
+4. Under **Projects**, select your project, and select **Remove Project Connection** from the menu.
+
+This will disconnect the database from your Vercel project by removing all of the Neon database environment variables from your Vercel project. After disconnecting a database, branches will no longer be created with each preview deployment. However, any previously created database branches will not be deleted. You have to remove those branches manually if you no longer want them.
+
+## Manage branches created by the integration
+
+The integration creates a database branch for each preview deployment. To avoid using up your storage allowances or hitting branch limits, you should delete database branches that are no longer required. Branches can be deleted via the [Neon Console](/docs/manage/branches#delete-a-branch), [CLI](/docs/reference/cli-branches#delete), or [API](https://neon.tech/docs/manage/branches#delete-a-branch-with-the-api).
+
+<Admonition type="note" title="What happens to branches if you don't remove them?">
+Unused branches are eventually archived, consuming space in archive storage. For more information, see [Branch archiving](/docs/guides/branch-archiving).
+</Admonition>
 
 <NeedHelp/>
 
@@ -39545,7 +41669,7 @@ subtitle: Create a database branch for each preview deployment in Vercel
 redirectFrom:
   - /docs/guides/vercel
 enableTableOfContents: true
-updatedOn: '2025-02-07T19:29:48.916Z'
+updatedOn: '2025-02-20T02:00:36.061Z'
 ---
 
 <InfoBlock>
@@ -39701,6 +41825,21 @@ After you add the integration to a Vercel project, Neon creates a database branc
      ![Neon preview deployment branch](/docs/guides/vercel_neon_app_update.png)
    - The integration sets Vercel preview environment variables to connect the preview deployment to the new branch.
      ![Vercel preview settings](/docs/guides/vercel_preview_settings.png)
+
+## Applying schema changes to database branches
+
+If you're managing your database schema in code using a tool like Prisma Migrate or Drizzle ORM, you can add build commands including a schema migration command to your Vercel deployment configuration to apply schema changes to your database branch. This way, you can deploy application and database changes together in your preview.
+
+To add build commands to your Vercel project previews:
+
+1. On the Vercel Dashboard, open your Vercel project.
+2. Navigate to the **Settings** tab.
+3. On the **General** page, navigate to the **Build & Development Settings** section.
+4. Enable the **Override** option and enter your build commands, including your schema migration command. For example, if you're using Prisma, you might enter the following commands to apply database migrations, generate your Prisma Client, and run your build:
+
+![Vercel build commands](/docs/guides/vercel_build_command.png)
+
+This setup apply any schema changes in your commits to the database branch created for your preview deployment.
 
 ## Manage branches created by the integration
 
@@ -39984,10 +42123,10 @@ title: Vercel Postgres Transition Guide
 subtitle: Everything you need to know about transitioning from Vercel Postgres to Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-14T16:07:23.202Z'
+updatedOn: '2025-02-27T14:57:44.627Z'
 ---
 
-<Admonition type="info">
+<Admonition type="note">
 Please be advised that the content in this guide is subject to change.
 </Admonition>
 
@@ -40001,19 +42140,19 @@ We know moving to a new platform may bring up questions, so we’ve prepared thi
 
 Vercel previously introduced **Vercel Postgres** (powered by Neon) as part of their platform. In order to provide a wider variety of solutions and integrations for its customers, Vercel moved to a different model. Instead of a Vercel-managed solution, Vercel launched the [Vercel Marketplace](https://vercel.com/marketplace), where you can easily integrate first-party storage services, such as Neon Postgres, into your Vercel projects.
 
-By transitioning to the Vercel Native Integration for Neon Postgres, you gain access to Neon's full feature set and usage plans, providing you with a more comprehensive database service. Vercel's new marketplace model makes this possible.
-
 ### When did the transition happen?
 
 The transition started in Q4 2024 and completed in Q1 2025. Vercel Postgres stores were automatically migrated over to the [Vercel Native Integration for Neon Postgres](/docs/guides/vercel-native-integration).
 
-### What changes will you see after the transition?
+### What changes will you see after the transition to Neon?
 
-You are now able to access and manage your existing Databases from the **Storage** tab in the Vercel Dashboard and the Neon Console without requiring new login credentials. The **Storage** tab includes an **Open in Neon** button, which opens the corresponding **Project** in Neon.
+You are now able to access and manage your existing Databases from the **Storage** tab in the Vercel Dashboard and the Neon Console without requiring new login credentials. The **Storage** tab includes an **Open in Neon** button, which directs you to your **Project** in the Neon Console.
 
 <Admonition type="note" title="A Database in Vercel is a Project in Neon">
 Please note that when coming to Neon from Vercel, there will be a small difference in terminology: **A "Database" in Vercel is a "Project" in Neon**.
 </Admonition>
+
+![Open in Neon button](/docs/guides/vercel_open_in_neon.png)
 
 ## Billing questions
 
@@ -40023,17 +42162,21 @@ Billing for the [Vercel Native Integration for Neon Postgres](/docs/guides/verce
 
 ### What plan will you be on after the transition?
 
-- **Vercel Hobby Plan**: Databases will be migrated to the Neon Free Plan, which gives you more compute hours, data transfer, Databases (a.k.a. "Projects" in Neon), and storage than you had on the Vercel Hobby Plan. See [Vercel Hobby Plan vs Neon Free Plan](#vercel-hobby-plan-vs-neon-free-plan) for a comparison.
+- **Vercel Hobby Plan**: Databases that were on Vercel's Hobby Plan were transitioned to the Neon Free Plan, which gives you more compute hours, data transfer, Databases (a.k.a. "Projects" in Neon), and storage than you had while on the Vercel Hobby Plan. See [Vercel Hobby Plan vs Neon Free Plan](#vercel-hobby-plan-vs-neon-free-plan) for a comparison.
 
-- **Vercel Pro Plan prices and limits will not change**: This ensures no pricing surprises when transitioning to Neon. You can stay on your Vercel Pro Plan or you can switch to a Neon plan. For a Vercel-Neon plan comparison, see [Vercel Pro Plan vs Neon Launch Plan](#vercel-pro-plan-vs-neon-launch-plan).
+- **Vercel Pro Plan prices and limits remain the same until you change to a Neon Plan**: This ensures no pricing surprises when transitioning to Neon. You can stay on this "legacy Vercel plan" plan or you can switch to a Neon plan. For a Vercel-Neon plan comparison, see [Vercel Pro Plan vs Neon Launch Plan](#vercel-pro-plan-vs-neon-launch-plan).
 
 ### How do Vercel Postgres plans compare to Neon plans?
 
-Vercel Postgres was available with Vercel's Hobby and Pro plans. Let's take a look at these plans and compare to Neon:
+Before the transition to Neon, Vercel Postgres was available on Vercel's Hobby and Pro plans. Let's take a look at what these plans offered and compare them to Neon's plans.
+
+<Admonition type="important">
+**Vercel Postgres is no longer included in Vercel's Hobby and Pro plans. The only supported upgrade or downgrade path is to a Neon Plan.** Vercel Postgres users previously on Vercel's Hobby Plan were transitioned to the Neon Free Plan, which offers higher limits and more features. Vercel Postgres users previously on Vercel's Pro Plan remain on a plan with the same limits — changing to a Neon plan is optional.
+</Admonition>
 
 #### Vercel Hobby Plan vs Neon Free Plan
 
-The Vercel Hobby plan is free and aimed at developers with personal projects, and small-scale applications. In Neon, the equivalent plan is our [Free Plan](/docs/introduction/plans#free-plan). Here are some of the differences to be aware of:
+When Vercel Postgres was available on the Vercel's Hobby plan, it was free and aimed at developers with personal projects, and small-scale applications. In Neon, the equivalent plan is our [Free Plan](/docs/introduction/plans#free-plan). Here are some of the differences you will see after the transition:
 
 | **Resource**      | **Vercel Hobby (Included)** | **Neon Free Plan (Included)** |
 | :---------------- | :-------------------------- | :---------------------------- |
@@ -40042,22 +42185,22 @@ The Vercel Hobby plan is free and aimed at developers with personal projects, an
 | **Database**      | First Database              | 10                            |
 | **Storage**       | First 256 MB Included       | Up to 512 MB                  |
 
-Additional use (called "Extra usage" in Neon) for a fee is not available on the Vercel Hobby Plan or the Neon Free Plan. No change here!
+Additional use (called "Extra usage" in Neon) for a fee was not available on the Vercel Hobby Plan, nor is it available Neon Free Plan.
 
 #### Vercel Pro Plan vs Neon Launch Plan
 
-The Vercel Pro plan is is tailored for professional developers, freelancers, and small businesses. In Neon, the equivalent plan is our [Launch Plan](/docs/introduction/plans#launch-plan) at $19 per month. The following table provides a comparison of what's included:
+When Vercel Postgres was available on the Vercel's Pro Plan, it was tailored for professional developers, freelancers, and small businesses. In Neon, the equivalent plan is our [Launch Plan](/docs/introduction/plans#launch-plan) at $19 per month. The following table provides a comparison:
 
-| **Resource**        | **Vercel Pro (Included)** | **Neon Launch Plan (Included)**  |
-| :------------------ | :------------------------ | :------------------------------- |
-| **Compute hours**   | 100                       | 300                              |
-| **Data transfer**   | 256 MB                    | Reasonable usage (no hard limit) |
-| **Databases**       | First database            | 100                              |
-| **Branches**        | -                         | 5000                             |
-| **Storage**         | First 256 MB              | Up to 10 GB                      |
-| **Archive storage** | -                         | Up to 50 GB                      |
+| **Resource**                     | **Vercel Pro (Included)** | **Neon Launch Plan (Included)**  |
+| :------------------------------- | :------------------------ | :------------------------------- |
+| **Compute hours**                | 100                       | 300                              |
+| **Data transfer**                | 256 MB                    | Reasonable usage (no hard limit) |
+| **Databases**                    | First database            | 100                              |
+| **Branches**                     | Not available             | 5000                             |
+| **Storage**                      | First 256 MB              | Up to 10 GB                      |
+| **Point-in-time restore (PITR)** | Not available             | Up to 7 days                     |
 
-Both the Vercel Pro and Neon Launch plans offer additional use (called "Extra usage" in Neon) for a fee, as outlined below. In Neon, additional units of compute and storage cost more, but you get more compute and storage with your plan's monthly fee, and Neon does not charge for data transfer, additional databases, or written data.
+The Vercel Pro plan offered additional use for a fee. The Neon Launch plan also offers additional use (called "Extra usage" in Neon). In Neon, additional units of compute and storage cost more, but you get more compute and storage with your plan's monthly fee, and there's no charge for data transfer, additional databases, or written data.
 
 | **Resource**      | **Vercel Pro (Additional)** | **Neon Launch Plan (Extra usage)**            |
 | :---------------- | :-------------------------- | :-------------------------------------------- |
@@ -40068,18 +42211,22 @@ Both the Vercel Pro and Neon Launch plans offer additional use (called "Extra us
 
 Neon also offers [Scale](/docs/introduction/plans#scale-plan) and [Business](/docs/introduction/plans#business-plan) plans, which include more storage, compute hours, projects, and features. Be sure to take a look at these plans if the Launch plan does not meet your requirements.
 
+<Admonition type="note" title="Upgrading to a Neon plan">
+To upgrade to a Neon plan to take advantage of additional features like branching and point-in-time restore (PITR) and higher plan allowances, see [Changing your plan](/docs/guides/vercel-native-integration#changing-your-plan).
+</Admonition>
+
 ### What about Enterprise customers?
 
 Neon is working with the Vercel team to transition Enterprise customers. If you want to speak to us about an Enterprise-level Neon plan, you can [get in touch with our sales team](/contact-sales).
 
 ## Platform questions
 
-### What Neon features will I have access to after the migration?
+### What Neon features will I have access to after moving to a Neon plan?
 
-Once the transition to Neon Postgres is complete, you will be able to access a variety of advanced Neon features that were not available in Vercel Postgres (subject to your plan limits).
+After moving to a Neon plan, you will be able to access a variety of advanced Neon features that were not available in Vercel Postgres (subject to your plan limits).
 
 <Admonition type="note">
-Please be aware that if you are on a **Vercel Postgres Pro Plan**, you are subject to the limits of that [plan](#vercel-pro-plan-vs-neon-launch-plan). There's no requirement for you to migrate to a Neon plan, but doing so provides access to higher limits and additional features. For example, the Vercel Postgres Pro Plan does not support [history retention](/docs/reference/glossary#history), which enables Neon's point-in-time restore feature. For a full overview of Neon plans, features, and limits, refer to our [Pricing](https://neon.tech/pricing) page. If you switch to a Neon plan, you will still be billed through Vercel.
+If you were a Vercel Postgres user on the Vercel Pro Plan, you remain subject to the limits of that [plan](#vercel-pro-plan-vs-neon-launch-plan) until you move to a Neon Plan. There's no requirement for you to move to a Neon plan, but doing so provides access to higher limits and additional features. For example, the the Vercel plan does not support branching or point-in-time restore. For a full overview of Neon plans, features, and limits, refer to our [Pricing](https://neon.tech/pricing) page. If you change to a Neon plan, you will still be billed through Vercel.
 </Admonition>
 
 Neon features:
@@ -40101,7 +42248,7 @@ Neon features:
 - [Logical Replication](/docs/guides/logical-replication-guide) &#8212; replicate data to and from Neon
 - [The Neon GitHub Integration](/docs/guides/neon-github-integration) &#8212; connect your Neon project to your repo and build GitHub Actions workflows
 
-### What Vercel Postgres limitations are lifted by the transition to Neon?
+### What Vercel Postgres limitations are lifted by the transition to a Neon plan?
 
 The transition to Neon also unblocks several limitations:
 
@@ -40109,7 +42256,7 @@ The transition to Neon also unblocks several limitations:
 - **Terraform support**. The [Vercel Terraform Provider](https://vercel.com/guides/integrating-terraform-with-vercel) did not support Vercel Postgres. With Neon Postgres, you have access to a [Neon Terraform provider](/docs/reference/terraform).
 - **Larger computes**. On Vercel, databases on Hobby plans are limited to 0.25 logical CPUs. The Neon Free plan supports computes up to 2 vCPUs and [Autoscaling](/docs/introduction/autoscaling). Neon paid plans support much larger compute sizes.
 - **Postgres roles**. On Vercel, you were limited to a single Postgres database access role. There is no such limit on Neon. You can create additional Postgres roles as needed.
-- **Point-in-time restore**. In Vercel Postgres, Neon's history retention is set to 0, which means point-in-time restore is not possible. Once you are on a Neon plan (free or paid), the default setting is 1 day, and you can configure longer periods on Neon's paid plans. **Please note that if you are on a Vercel Postgres Pro Plan, you'll need to sign up for a Neon plan for the point-in-time restore feature**.
+- **Point-in-time restore**. In Vercel Postgres, Neon's history retention is set to 0, which means point-in-time restore is not possible. Once you are on a Neon plan (free or paid), the default setting is 1 day, and you can configure longer periods on Neon's paid plans. **Please note that if you have not moved to a Neon plan, you will not have access Neon's point-in-time restore feature**.
 
 ### What Postgres versions are supported?
 
@@ -40141,7 +42288,7 @@ The [environment variables](/docs/guides/vercel-native-integration#environment-v
 
 ## More questions?
 
-There are likely many more questions we haven't thought of. To get you those answers as quickly as possible, we've set up discord channel [#vercel-postgres-transition](https://discord.com/channels/1176467419317940276/1306544611157868544), which we will be monitoring leading up to and through the transition period.
+There are likely many more questions we haven't thought of. To get you those answers as quickly as possible, we've set up discord channel [#vercel-postgres-transition](https://discord.com/channels/1176467419317940276/1306544611157868544).
 
 
 # Cloudflare
@@ -41704,7 +43851,7 @@ To delete your Neon project, refer to [Delete a project](/docs/manage/projects#d
 title: Use Neon with Netlify Functions
 subtitle: Connect a Neon Postgres database to your Netlify Functions application
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.331Z'
+updatedOn: '2025-03-06T17:41:32.613Z'
 ---
 
 [Netlify Functions](https://www.netlify.com/products/functions/) provide a serverless execution environment for building and deploying backend functionality without managing server infrastructure. It's integrated with Netlify's ecosystem, making it ideal for augmenting web applications with server-side logic, API integrations, and data processing tasks in a scalable way.
@@ -41733,6 +43880,7 @@ After logging into the Neon Console, proceed to the [Projects](https://console.n
    CREATE TABLE favorite_coffee_blends (
        id SERIAL PRIMARY KEY,
        name TEXT,
+       origin TEXT,
        notes TEXT
    );
    ```
@@ -41742,10 +43890,10 @@ After logging into the Neon Console, proceed to the [Projects](https://console.n
    ```sql
    INSERT INTO favorite_coffee_blends (name, origin, notes)
    VALUES
-       ('Morning Joy', 'Citrus, Honey, Floral'),
-       ('Dark Roast Delight', 'Rich, Chocolate, Nutty'),
-       ('Arabica Aroma', 'Smooth, Caramel, Fruity'),
-       ('Robusta Revolution', 'Strong, Bold, Bitter');
+       ('Morning Joy', 'Ethiopia', 'Citrus, Honey, Floral'),
+       ('Dark Roast Delight', 'Colombia', 'Rich, Chocolate, Nutty'),
+       ('Arabica Aroma', 'Brazil', 'Smooth, Caramel, Fruity'),
+       ('Robusta Revolution', 'Vietnam', 'Strong, Bold, Bitter');
    ```
 
 ### Retrieve your Neon database connection string
@@ -42504,7 +44652,7 @@ For additional details, see [Options and configuration](https://github.com/neond
 
 The `transaction(queriesOrFn, options)` function is exposed as a property on the query function. It allows multiple queries to be executed within a single, non-interactive transaction.
 
-The first argument to `transaction(), queriesOrFn`, is either an array of queries or a non-async function that receives a query function as its argument and returns an array of queries.
+The first argument to `transaction()`, `queriesOrFn`, is either an array of queries or a non-async function that receives a query function as its argument and returns an array of queries.
 
 The array-of-queries case looks like this:
 
@@ -42531,7 +44679,7 @@ const [authors, tags] = await neon(process.env.DATABASE_URL).transaction((txn) =
 ]);
 ```
 
-The optional second argument to `transaction()`, `options`, has the same keys as the options to the ordinary query function -- `arrayMode`, `fullResults` and `fetchOptions` — plus three additional keys that concern the transaction configuration. These transaction-related keys are: `isolationMode`, `readOnly` and `deferrable`.
+The optional second argument to `transaction()`, `options`, has the same keys as the options to the ordinary query function — `arrayMode`, `fullResults` and `fetchOptions` — plus three additional keys that concern the transaction configuration. These transaction-related keys are: `isolationMode`, `readOnly` and `deferrable`.
 
 Note that options **cannot** be supplied for individual queries within a transaction. Query and transaction options must instead be passed as the second argument of the `transaction()` function. For example, this `arrayMode` setting is ineffective (and TypeScript won't compile it): `await sql.transaction([sql('SELECT now()', [], { arrayMode: true })])`. Instead, use `await sql.transaction([sql('SELECT now()')], { arrayMode: true })`.
 
@@ -45989,6 +48137,8 @@ You can try this optimization yourself by downloading our [Get started with Knex
 <NeedHelp/>
 
 
+# Convex
+
 # Replicate from Neon
 
 # Airbyte
@@ -48851,8 +51001,7 @@ title: Replicate data from Aurora PostgreSQL
 subtitle: Learn how to replicate data from Aurora PostgreSQL to Neon
 enableTableOfContents: true
 isDraft: false
-tag: new
-updatedOn: '2025-02-14T17:05:09.997Z'
+updatedOn: '2025-03-05T21:09:38.751Z'
 ---
 
 <MigrationAssistant/>
@@ -50080,8 +52229,7 @@ title: Replicate data from Supabase
 subtitle: Learn how to replicate data from Supabase to Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-14T17:05:10.002Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.752Z'
 ---
 
 This guide describes how to replicate data from Supabase to Neon using native Postgres logical replication. The steps in this guide follow those described in [Replicate to another Postgres database using Logical Replication](https://supabase.com/docs/guides/database/postgres/setup-replication-external), in the _Supabase documentation_.
@@ -55340,7 +57488,7 @@ title: Authenticate Neon Postgres application users with Auth.js
 subtitle: Learn how to add passwordless authentication to your Neon Postgres database
   application using Auth.js and Resend
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.306Z'
+updatedOn: '2025-03-10T17:29:57.965Z'
 ---
 
 <Admonition type="tip" title="Did you know?">
@@ -55443,7 +57591,7 @@ import Resend from 'next-auth/providers/resend';
 import PostgresAdapter from '@auth/pg-adapter';
 import { Pool } from '@neondatabase/serverless';
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// *DO NOT* create a `Pool` here, outside the request handler.
 
 export const { handlers, auth, signIn, signOut } = NextAuth(() => {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -55526,7 +57674,7 @@ CREATE TABLE IF NOT EXISTS sessions (
   PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS verification_tokens (
+CREATE TABLE IF NOT EXISTS verification_token (
   identifier TEXT,
   token TEXT,
   expires TIMESTAMPTZ NOT NULL,
@@ -55790,13 +57938,13 @@ title: Authenticate Neon Postgres application users with Clerk
 subtitle: Learn how to add authentication to a Neon Postgres database application using
   Clerk
 enableTableOfContents: true
-updatedOn: '2025-02-03T20:41:57.306Z'
+updatedOn: '2025-03-07T12:49:26.102Z'
 ---
 
 User authentication is a critical requirement for web applications. Modern applications require advanced features like social login and multi-factor authentication besides the regular login flow. Additionally, managing personally identifiable information (PII) requires a secure solution compliant with data protection regulations.
 
 <Admonition type="comingSoon">
-Looking to manage **authorization** along with authentication? Currently in Early Access for select users, [Neon RLS Authorize](/docs/guides/neon-authorize) brings JSON Web Token (JWT) authorization directly to Postgres, where you can use Row-level Security (RLS) policies to manage access at the database level.
+Looking to manage **authorization** along with authentication? Currently in Early Access for select users, [Neon RLS](/docs/guides/neon-authorize) brings JSON Web Token (JWT) authorization directly to Postgres, where you can use Row-level Security (RLS) policies to manage access at the database level.
 </Admonition>
 
 [Clerk](https://clerk.com/) is a user authentication and identity management platform that provides these features out of the box. It comes with adapters for popular web frameworks, making it easy to integrate with an application backed by a Neon Postgres database.
@@ -56031,7 +58179,7 @@ Create a new file at `app/actions.ts` with the following content:
 ```typescript
 'use server';
 
-import { currentUser } from '@clerk/nextjs';
+import { currentUser } from '@clerk/nextjs/server';
 import { UserMessages } from './db/schema';
 import { db } from './db';
 import { redirect } from 'next/navigation';
@@ -56058,7 +58206,7 @@ export async function deleteUserMessage() {
 }
 ```
 
-The `addUserMessage` function inserts a new message into the `user_messages` table, while `deleteUserMessage` removes the message associated with the current user.
+The `createUserMessage` function inserts a new message into the `user_messages` table, while `deleteUserMessage` removes the message associated with the current user.
 
 Next, we implement a minimal UI to interact with these functions. Replace the contents of the `app/page.tsx` file with the following:
 
@@ -56621,28 +58769,38 @@ title: AI & Embeddings
 subtitle: Power AI agents with serverless Postgres — and build AI applications with Neon
   as your vector database
 enableTableOfContents: true
-updatedOn: '2025-02-12T20:50:28.597Z'
+updatedOn: '2025-03-07T21:44:32.252Z'
 ---
 
 Neon enables AI agents to provision Postgres databases in seconds, execute SQL queries, and easily manage Neon infrastructure. With one-second provision times, scale-to-zero compute, and agent-friendly client interfaces, Neon lets AI agents manage database fleets at scale while minimizing costs. [Learn more about this use case](https://neon.tech/use-cases/ai-agents).
 
 Neon also supports vector data, a key component for AI applications. With the **pgvector** open-source extension, you can use Neon as a vector database for storing and querying embeddings. This allows you to use Postgres as your vector store, eliminating the need for data migration or third-party solutions.
 
-## Neon for AI Agents
+## Neon for AI Agents and tools
 
-Neon supports Postgres for AI agents with the following tools and interfaces:
+Neon supports Postgres for AI agents and tools with the following tools and interfaces:
 
 <DetailIconCards>
 
 <a href="https://github.com/neondatabase/toolkit" description="A terse client that lets you spin up a Postgres database in seconds and run SQL queries" icon="github">@neondatabase/toolkit</a>
 
-<a href="https://github.com/neondatabase/mcp-server-neon" description="A Model Context Protocol (MCP) server for Neon that lets MCP Clients interact with Neon’s API using natural language" icon="github">Neon MCP Server</a>
+<a href="/docs/ai/neon-mcp-server" description="A Model Context Protocol (MCP) server for Neon that lets AI tool like Cursor interact manage Neon " icon="github">Neon MCP Server</a>
 
-<a href="https://github.com/neondatabase/mcp-server-neon/tree/main/mcp-client" description="A Model Context Protocol (MCP) client CLI that can be used to interact with any MCP server" icon="github">Neon MCP Client CLI</a>
+<a href="/docs/ai/connect-mcp-clients-to-neon" description="Learn how to connect MCP clients such as Cursor, Claude Desktop, Cline, and Windsurf to your Neon Postgres database " icon="github">Connect MCP Clients to Neon</a>
 
-<a href="https://docs.agentstack.sh/tools/tool/neon" description="A Neon tool for AgentStack that allows agents to create ephemeral or long-lived Postgres instances for structured data storage" icon="github">Neon tool for AgentStack</a>
+<a href="https://neon.tech/guides/neon-mcp-server" description="Get started with Claude Desktop and Neon MCP server" icon="openai">Claude Desktop with Neon MCP Server</a>
 
-<a href="/guides/composio-crewai-neon" description="A full integration between LLMs and AI agents and Neon's API" icon="code">Neon tool for Composio</a>
+<a href="https://neon.tech/guides/cline-mcp-neon" description="Get started with Cline and Neon Postgres MCP Server" icon="openai">Cline with Neon MCP Server</a>
+
+<a href="https://neon.tech/guides/windsurf-mcp-neon" description="Get started with Windsurf and Neon Postgres MCP Server" icon="openai">Windsurf with Neon MCP Server</a>
+
+<a href="/guides/cursor-mcp-neon" description="Get started with Cursor and Neon Postgres MCP Server" icon="openai">Cursor with Neon MCP Server</a>
+
+<a href="https://neon.tech/guides/agentstack-neon" description="Building AI Agents with AgentStack and Neon" icon="openai">Neon tool for AgentStack</a>
+
+<a href="https://neon.tech/guides/composio-crewai-neon" description="Building AI Agents with CrewAI, Composio, and Neon" icon="openai">Neon tool for Composio</a>
+
+<a href="https://neon.tech/guides/langgraph-neon" description="A step-by-step guide to building AI agents with LangGraph and Neon" icon="openai">LangGraph + Neon</a>
 
 </DetailIconCards>
 
@@ -56752,7 +58910,7 @@ Share your AI app on our **#showcase** channel on [Discord](https://discord.gg/9
 
 <a href="https://github.com/neondatabase/neon-vector-search-openai-notebooks" description="Jupyter Notebook for vector search with Neon, pgvector, and OpenAI" icon="github">Jupyter Notebook for vector search with Neon</a>
 
-<a href="https://github.com/ItzCrazyKns/Neon-Image-Search" description="Community: An image serch app built with Neon and Vertex AI" icon="github">Image search with Neon and Vertex AI</a>
+<a href="https://github.com/ItzCrazyKns/Neon-Image-Search" description="Community: An image search app built with Neon and Vertex AI" icon="github">Image search with Neon and Vertex AI</a>
 
 <a href="https://github.com/mistralai/cookbook/blob/main/third_party/Neon/neon_text_to_sql.ipynb" description="A Text-to-SQL conversion app built with Mistral AI, Neon, and LangChain" icon="github">Text-to-SQL conversion with Mistral + LangChain</a>
 
@@ -59684,7 +61842,7 @@ neon orgs list -o json
 title: Neon CLI commands — projects
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2025-02-10T17:04:38.083Z'
+updatedOn: '2025-02-20T17:57:40.910Z'
 ---
 
 ## Before you begin
@@ -59943,10 +62101,10 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 - Block connections from the public internet:
 
-  This option is used with Neon's Private Networking feature to block access from the public internet. See [Private Networking — Restrict public internet access](/docs/guides/neon-private-networking#restrict-public-internet-access).
+  This option is used with Neon's Private Networking feature to block access from the public internet. See [Private Networking — Restrict public internet access](/docs/guides/neon-private-networking#restrict-public-internet-access). You must specify the ID of you Neon project, as shown below.
 
   ```bash
-  neon projects update muddy-wood-859533 --block-public-connections
+  neon projects update orange-credit-12345678 --block-public-connections=true
   ```
 
 ### delete
@@ -60159,7 +62317,7 @@ neon ip-allow reset 192.0.2.1 --project-id cold-grass-40154007
 title: Neon CLI commands — vpc
 subtitle: Use the Neon CLI to manage Neon directly from the terminal
 enableTableOfContents: true
-updatedOn: '2025-02-05T17:44:21.066Z'
+updatedOn: '2025-02-20T17:57:40.911Z'
 ---
 
 ## Before you begin
@@ -60173,10 +62331,10 @@ You can use the `vpc` CLI command to manage [Private Networking](/docs/guides/ne
 
 The `vpc` command includes subcommands for managing VPC endpoints and project-level VPC endpoint restrictions.
 
-| Subcommand                            | Description                                    |
-| :------------------------------------ | :--------------------------------------------- |
-| [endpoint](#the-vpc-endpoint-command) | Manage VPC endpoints                           |
-| [project](#the-vpc-project-command)   | Manage project-level VPC endpoint restrictions |
+| Subcommand                               | Description                                    |
+| :--------------------------------------- | :--------------------------------------------- |
+| [endpoint](#the-vpc-endpoint-subcommand) | Manage VPC endpoints                           |
+| [project](#the-vpc-project-subcommand)   | Manage project-level VPC endpoint restrictions |
 
 ## The `vpc endpoint` subcommand
 
@@ -60216,7 +62374,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
   Add or update a VPC endpoint for a specific Neon organization and region.
 
   ```bash
-  neon vpc endpoint assign vpc-12345678 --org-id org-bold-bonus-12345678 --region-id aws-us-east-1
+  neon vpc endpoint assign vpce-1234567890abcdef0 --org-id org-bold-bonus-12345678 --region-id aws-us-east-1
   ```
 
   After assigning a VPC endpoint to a Neon organization, client connections will be accepted from the corresponding VPC for all projects in the Neon organization, unless restricted. Aliases for this command are `add` and `update`.
@@ -60226,7 +62384,7 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
   Delete an existing VPC endpoint from a specific Neon organization.
 
   ```bash
-  neon vpc endpoint remove vpc-12345678 --org-id org-bold-bonus-12345678
+  neon vpc endpoint remove vpce-1234567890abcdef0 --org-id org-bold-bonus-12345678
   ```
 
 - **Get the status of a VPC endpoint**
@@ -60234,12 +62392,12 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
   Check the status of a specific VPC endpoint in a Neon organization.
 
   ```bash
-  neon vpc endpoint status vpc-12345678 --org-id org-bold-bonus-12345678
+  neon vpc endpoint status vpce-1234567890abcdef0 --org-id org-bold-bonus-12345678
   ```
 
 ## The `vpc project` subcommand
 
-The `vpc project` command lets you list, configure, or remove VPC endpoint restrictions for specific Neon projects.
+The `vpc project` subcommand lets you list, configure, or remove VPC endpoint restrictions to prevent access to specific projects in your Neon organization.
 
 ### Usage
 
@@ -60270,18 +62428,18 @@ In addition to the Neon CLI [global options](/docs/reference/neon-cli#global-opt
 
 - **Restrict connections to a specific VPC**
 
-  Configure or update a VPC endpoint restriction for a Neon project. The specified Neon project will not accept client connections from the VPC of specified VPC endpoint ID.
+  Configure or update a VPC endpoint restriction for a Neon project. When a VPC endpoint ID is assigned as a restriction, the specified project only accepts connections from the specified VPC.
 
   ```bash
-  neon vpc project restrict vpc-12345678 --project-id orange-credit-12345678
+  neon vpc project restrict vpce-1234567890abcdef0 --project-id orange-credit-12345678
   ```
 
 - **Remove a VPC endpoint restriction**
 
-  Remove a VPC endpoint restriction from a specific Neon project. This allows clients to connect from the VPC of the VPC endpoint ID to the specified Neon project.
+  Remove a VPC endpoint restriction from a specific Neon project.
 
   ```bash
-  neon vpc project remove vpc-12345678 --project-id orange-credit-12345678
+  neon vpc project remove vpce-1234567890abcdef0 --project-id orange-credit-12345678
   ```
 
 <NeedHelp/>
@@ -61961,7 +64119,7 @@ Community SDKs are not maintained or officially supported by Neon. Some features
 ---
 title: TypeScript SDK for the Neon API
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.079Z'
+updatedOn: '2025-02-28T12:08:12.273Z'
 ---
 
 <InfoBlock>
@@ -61976,63 +64134,513 @@ updatedOn: '2024-11-30T11:53:56.079Z'
 </DocsList>
 
 <DocsList title="Source code" theme="repo">
-  <a href="https://www.npmjs.com/package/@neondatabase/api-client">@neondatabase/api-client</a>
+  <a href="https://www.npmjs.com/package/@neondatabase/api-client">@neondatabase/api-client on npm</a>
 </DocsList>
 
 </InfoBlock>
 
 ## About the SDK
 
-Neon supports the [@neondatabase/api-client](https://www.npmjs.com/package/@neondatabase/api-client) library, which is a wrapper for the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api). This SDK simplifies integration of TypeScript applications with the Neon platform, providing methods to programmatically manage API keys, Neon projects, branches, databases, endpoints, roles, and operations.
+Neon supports the [@neondatabase/api-client](https://www.npmjs.com/package/@neondatabase/api-client) library, which is a wrapper for the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api). The SDK provides a convenient way to interact with the Neon API using TypeScript.
 
-## Installation
+You can use the Neon TypeScript SDK to manage your Neon projects, branches, databases, compute endpoints, roles, and more programmatically. The SDK abstracts the underlying API requests, authentication, and error handling, allowing you to focus on building applications that interact with Neon resources.
 
-You can install the library using `npm` or `yarn`.
+The Neon TypeScript SDK allows you to manage:
 
-`npm`:
+- [**API Keys:**](/docs/manage/api-keys) Create, list, and revoke API keys for secure access to the Neon API.
+- [**Projects:**](/docs/manage/projects) Create, list, update, and delete Neon projects.
+- [**Branches:**](/docs/manage/branches) Manage branches, including creation, deletion, restoration, and schema management.
+- [**Databases:**](/docs/manage/databases) Create, list, update, and delete databases within your branches.
+- [**Compute Endpoints:**](/docs/manage/endpoints) Manage compute endpoints, including creation, scaling, suspension, and restart.
+- [**Roles:**](/docs/manage/roles) Create, list, update, and delete Postgres roles within your branches.
+- [**Operations:**](/docs/manage/operations) Monitor and track the status of asynchronous operations performed on your Neon resources.
+- [**Organizations:**](/docs/manage/orgs-api) Manage organization settings, API keys, and members (for Neon organizational accounts).
+- [**Consumption Metrics:**](/docs/guides/partner-consumption-metrics) Retrieve usage metrics for your account and projects to monitor resource consumption.
+
+## Quick Start
+
+This guide walks you through installing the SDK, setting up authentication, and executing your first API call to retrieve a list of your Neon projects.
+
+### Installation
+
+Install the `@neondatabase/api-client` package into your project using your preferred package manager:
+
+<CodeTabs labels={["npm", "yarn", "pnpm"]}>
 
 ```bash
 npm install @neondatabase/api-client
 ```
 
-`yarn`:
-
 ```bash
 yarn add @neondatabase/api-client
 ```
 
-## Get Started
+```bash
+pnpm add @neondatabase/api-client
+```
 
-To get started with the `@neondatabase/api-client` library, follow these steps:
+</CodeTabs>
 
-1. Obtain an API key from the [Account settings](https://console.neon.tech/app/settings/api-keys) page in the Neon Console.
+### Authentication Setup
 
-2. Click **Generate new API key**.
+Authentication with the Neon API is handled through API keys. Follow these steps to obtain and configure your API key:
 
-3. Enter a name for your API key and click **Create**.
+- Log in to the [Neon Console](https://console.neon.tech/)
+- Navigate to [Account settings > API keys](https://console.neon.tech/app/settings/api-keys).
+- Click Generate new API key.
+- Enter a descriptive Name (e.g., "neon-typescript-sdk-demo") for your key and click Create.
 
-4. Save your API key to a secure location that enables you to pass it to your code.
+For this quick start, we'll set the API key as an environment variable:
 
-5. Import the library:
+```bash
+export NEON_API_KEY="YOUR_API_KEY_FROM_NEON_CONSOLE"
+```
 
-   ```typescript
-   import { createApiClient } from '@neondatabase/api-client';
-   ```
+Replace "YOUR_API_KEY_FROM_NEON_CONSOLE" with the API key you copied from the Neon Console.
 
-6. Create an instance of the API client by calling the `createApiClient` function:
+## Examples
 
-   ```typescript
-   const apiClient = createApiClient({
-     apiKey: 'your-api-key',
-   });
-   ```
+Let's create a simple TypeScript file to list your Neon projects using the SDK.
 
-7. Use the `apiClient` instance to make API calls. For example:
+### List Projects
 
-   ```typescript
-   const response = await apiClient.listProjects({});
-   console.log(response);
-   ```
+Create a new file named `list-projects.ts` in your project directory and add the following code:
+
+```typescript
+import { createApiClient } from '@neondatabase/api-client';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function listNeonProjects() {
+  try {
+    const response = await apiClient.listProjects({});
+    console.log(response.data.projects);
+  } catch (error) {
+    console.error('Error listing projects:', error);
+  }
+}
+
+listNeonProjects();
+```
+
+Execute the TypeScript file using [`tsx`](https://tsx.is) (or compile to JavaScript and run with `node`)
+
+```bash
+tsx list-projects.ts
+```
+
+If your API key is correctly configured, you should see a list of your Neon projects printed to your console, similar to this:
+
+```json
+[
+  {
+    "id": "wandering-heart-70814840",
+    "platform_id": "aws",
+    "region_id": "aws-sa-east-1",
+    "name": "test-project",
+    "provisioner": "k8s-neonvm",
+    "default_endpoint_settings": {
+      "autoscaling_limit_min_cu": 0.25,
+      "autoscaling_limit_max_cu": 0.25,
+      "suspend_timeout_seconds": 0
+    },
+    "settings": {
+      "allowed_ips": [Object],
+      "enable_logical_replication": false,
+      "maintenance_window": [Object],
+      "block_public_connections": false,
+      "block_vpc_connections": false
+    },
+    "pg_version": 16,
+    "proxy_host": "sa-east-1.aws.neon.tech",
+    "branch_logical_size_limit": 512,
+    "branch_logical_size_limit_bytes": 536870912,
+    "store_passwords": true,
+    "active_time": 304,
+    "cpu_used_sec": 78,
+    "creation_source": "console",
+    "created_at": "2025-02-28T07:14:35Z",
+    "updated_at": "2025-02-28T07:54:53Z",
+    "synthetic_storage_size": 34149464,
+    "quota_reset_at": "2025-03-01T00:00:00Z",
+    "owner_id": "91cbdacd-06c2-49f5-bacf-78b9463c81ca",
+    "compute_last_active_at": "2025-02-28T07:54:49Z"
+  }, ..
+]
+```
+
+### Create a Project
+
+You can use the SDK to create a new Neon project. Here's an example of how to create a project and retrieve the connection string:
+
+```typescript
+import { createApiClient } from '@neondatabase/api-client';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function createNeonProject(projectName: string) {
+  try {
+    const response = await apiClient.createProject({
+      project: {
+        name: projectName,
+        region_id: 'aws-us-east-1',
+        pg_version: 17,
+      },
+    });
+    console.log('Project created:', response.data.project);
+    console.log('Project ID:', response.data.project.id);
+    console.log('Database connection string:', response.data.connection_uris[0].connection_uri);
+  } catch (error) {
+    console.error('Error creating project:', error);
+    throw error;
+  }
+}
+
+// Example usage: Create a project named "test-project"
+createNeonProject('test-project').catch((error) => {
+  console.error('Error creating project:', error.message);
+});
+```
+
+#### Key points:
+
+- The `region_id` parameter specifies the cloud region where the project will be hosted. You can find the list of supported regions at [Neon Regions](https://neon.tech/docs/introduction/regions).
+- The `pg_version` parameter specifies the major version of Postgres to use in the project. The currently supported versions are `14`, `15`, `16`, and `17`.
+
+### Create a Branch
+
+You can use the SDK to create a new branch within a Neon project. Here's an example of how to create a branch:
+
+```typescript
+import { createApiClient, EndpointType } from '@neondatabase/api-client';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function createNeonBranch(projectId: string, branchName: string, parentBranchId?: string) {
+  try {
+    const response = await apiClient.createProjectBranch(projectId, {
+      branch: {
+        name: branchName,
+        parent_id: parentBranchId, // Optional: Specify a source branch. If omitted, the default branch will be used
+      },
+      endpoints: [
+        {
+          type: EndpointType.ReadWrite, // If you need read-only access, use EndpointType.ReadOnly,
+          // Optional: Specify the number of compute units (CU) for the endpoint. If omitted, the default value is 0.25 for both min and max.
+          // autoscaling_limit_min_cu: 0.25,
+          // autoscaling_limit_max_cu: 1,
+        },
+      ],
+    });
+    console.log('Branch created:', response.data.branch);
+  } catch (error) {
+    console.error('Error creating branch:', error);
+    throw error;
+  }
+}
+
+// Example usage: Create a branch named "dev-1" in the project with ID "your-project-id"
+createNeonBranch('your-project-id', 'dev-1').catch((error) => {
+  console.error('Error creating branch:', error.message);
+});
+```
+
+#### Key points:
+
+- `parent_id` (optional): Specifies the branch to branch from. If omitted, the project's default branch is used.
+- `EndpointType`: Enum to define endpoint type (`ReadWrite` or `ReadOnly`).
+- Compute Unit (CU) customization (optional): Control compute size using `autoscaling_limit_min_cu` and `autoscaling_limit_max_cu`. Refer to [Compute size and autoscaling configuration](/docs/manage/endpoints#compute-size-and-autoscaling-configuration) for available options.
+
+### List Branches
+
+You can use the SDK to list branches within a Neon project. Here's an example of how to list branches:
+
+```typescript
+import { createApiClient } from '@neondatabase/api-client';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function listNeonBranches(projectId: string) {
+  try {
+    const response = await apiClient.listProjectBranches({ projectId });
+    console.log('Branches:', response.data.branches);
+  } catch (error) {
+    console.error('Error listing branches:', error);
+    throw error;
+  }
+}
+
+// Example usage: List branches in the project with ID "your-project-id"
+listNeonBranches('your-project-id').catch((error) => {
+  console.error('Error listing branches:', error.message);
+});
+```
+
+#### Key points:
+
+- The `projectId` parameter specifies the ID of the project for which you want to list branches.
+- The `listProjectBranches` method returns a list of branches within the specified project. Each branch object contains details like `id`, `name`, `created_at`, and more.
+
+### Create a Database
+
+You can use the SDK to create a new database within a Neon branch. Here's an example of how to create a database:
+
+```typescript
+import { createApiClient } from '@neondatabase/api-client';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function createNeonDatabase(
+  projectId: string,
+  branchId: string,
+  databaseName: string,
+  databaseOwner: string
+) {
+  try {
+    const response = await apiClient.createProjectBranchDatabase(projectId, branchId, {
+      database: {
+        name: databaseName,
+        owner_name: databaseOwner,
+      },
+    });
+    console.log('Database created:', response.data.database);
+  } catch (error) {
+    console.error('Error creating database:', error);
+    throw error;
+  }
+}
+
+// Example usage: In the project with ID "your-project-id", create a database named "mydatabase" in the branch with ID "your-branch-id" and owner "neondb_owner"
+createNeonDatabase('your-project-id', 'your-branch-id', 'mydatabase', 'neondb_owner').catch(
+  (error) => {
+    console.error('Error creating database:', error.message);
+  }
+);
+```
+
+- The `owner_name` parameter specifies the owner of the database. Ensure this role exists in the branch beforehand.
+- Branch & Project IDs: You can obtain these IDs from the [Neon Console](/docs/manage/branches#view-branches) or using SDK methods (e.g., [listProjectBranches](#list-branches), [listProjects](#list-projects)).
+
+### Create a Role
+
+You can use the SDK to create a new Postgres role within a Neon branch. Here's an example of how to create a role:
+
+```typescript
+import { createApiClient } from '@neondatabase/api-client';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function createNeonRole(projectId: string, branchId: string, roleName: string) {
+  try {
+    const response = await apiClient.createProjectBranchRole(projectId, branchId, {
+      role: { name: roleName },
+    });
+    console.log('Role created:', response.data.role);
+  } catch (error) {
+    console.error('Error creating role:', error);
+    throw error;
+  }
+}
+
+// Example usage: In the project with ID "your-project-id", create a role named "new_user_role" in the branch with ID "your-branch-id"
+createNeonRole('your-project-id', 'your-branch-id', 'new_user_role').catch((error) => {
+  console.error('Error creating role:', error.message);
+});
+```
+
+#### Key points:
+
+- `role.name`: Specifies the name of the Postgres role to be created.
+- Branch & Project IDs: You can obtain these IDs from the [Neon Console](/docs/manage/branches#view-branches) or using SDK methods (e.g., [listProjectBranches](#list-branches), [listProjects](#list-projects))
+
+## TypeScript Types
+
+The Neon TypeScript SDK provides comprehensive type definitions for all request and response objects, enums, and interfaces. Leveraging these types enhances your development experience by enabling:
+
+- **Type Safety**: TypeScript types ensure that you are using the SDK methods and data structures correctly, catching type-related errors during development rather than at runtime.
+- **Improved Code Completion**: Modern IDEs and code editors utilize TypeScript types to provide intelligent code completion and suggestions, making it easier to discover and use SDK features.
+
+### Utilizing SDK Types
+
+The `@neondatabase/api-client` package exports all the TypeScript types you need to interact with the Neon API in a type-safe manner. You can import these types directly into your TypeScript files.
+
+For example, when listing projects, you can use the `ProjectsResponse` type to explicitly define the structure of the API response:
+
+```typescript
+import { createApiClient, ProjectsResponse } from '@neondatabase/api-client';
+import { AxiosResponse } from 'axios';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function listNeonProjects(): Promise<void> {
+  try {
+    const response: AxiosResponse<ProjectsResponse> = await apiClient.listProjects({});
+    const projects = response.data.projects;
+    console.log('Projects:', projects);
+  } catch (error) {
+    console.error('Error listing projects:', error);
+  }
+}
+
+listNeonProjects();
+```
+
+In this example:
+
+- We import `ProjectsResponse` type from `@neondatabase/api-client`.
+- We explicitly type the `response` variable as `AxiosResponse<ProjectsResponse>`. This tells TypeScript that we expect the `apiClient.listProjects()` method to return a response from Axios, where the `data` property conforms to the structure defined by `ProjectsResponse`.
+
+Similarly, when creating a project, you can use types like `ProjectCreateRequest` for the request body and `ProjectResponse` for the expected response:
+
+By using TypeScript types, you ensure that your code interacts with the Neon API in a predictable and type-safe manner, reducing potential errors and improving code quality. You can explore all available types in the `@neondatabase/api-client` package to fully leverage the benefits of TypeScript in your Neon SDK integrations.
+
+## Key SDK Method Signatures
+
+To give you a better overview of the SDK, here are some of the key methods available, categorized by their resource. For complete details and parameters for each method, please refer to the full [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
+
+### Manage API keys
+
+- `listApiKeys()`: Retrieves a list of API keys for your account.
+- `createApiKey(data: ApiKeyCreateRequest)`: Creates a new API key.
+- `revokeApiKey(keyId: number)`: Revokes an existing API key.
+
+### Manage projects
+
+- `listProjects(query?: ListProjectsParams)`: Retrieves a list of projects in your Neon account.
+- `listSharedProjects(query?: ListSharedProjectsParams)`: Retrieves a list of projects shared with your account.
+- `createProject(data: ProjectCreateRequest)`: Creates a new Neon project.
+- `getProject(projectId: string)`: Retrieves details for a specific project.
+- `updateProject(projectId: string, data: ProjectUpdateRequest)`: Updates settings for a specific project.
+- `deleteProject(projectId: string)`: Deletes a Neon project.
+- `listProjectOperations(projectId: string, query?: ListProjectOperationsParams)`: Retrieves operations for a project.
+- `getProjectOperation(projectId: string, operationId: string)`: Retrieves details for a specific operation.
+- `getConnectionUri(projectId: string, query: GetConnectionUriParams)`: Retrieves a connection URI for a project.
+- `listProjectPermissions(projectId: string)`: Retrieves project access permissions.
+- `grantPermissionToProject(projectId: string, data: GrantPermissionToProjectRequest)`: Grants project access to a user.
+- `revokePermissionFromProject(projectId: string, permissionId: string)`: Revokes project access from a user.
+- `getProjectJwks(projectId: string)`: Retrieves JWKS URLs for a project.
+- `addProjectJwks(projectId: string, data: AddProjectJWKSRequest)`: Adds a JWKS URL to a project.
+- `deleteProjectJwks(projectId: string, jwksId: string)`: Deletes a JWKS URL from a project.
+
+### Manage branches
+
+- `listProjectBranches(projectId: string, query?: ListProjectBranchesParams)`: Retrieves a list of branches within a project.
+- `countProjectBranches(projectId: string, query?: CountProjectBranchesParams)`: Retrieves the number of branches in a project.
+- `createProjectBranch(projectId: string, data?: BranchCreateRequest)`: Creates a new branch within a project.
+- `getProjectBranch(projectId: string, branchId: string)`: Retrieves details for a specific branch.
+- `updateProjectBranch(projectId: string, branchId: string, data: BranchUpdateRequest)`: Updates settings for a specific branch.
+- `deleteProjectBranch(projectId: string, branchId: string)`: Deletes a branch from a project.
+- `restoreProjectBranch(projectId: string, branchId: string, data: BranchRestoreRequest)`: Restores a branch to a point in time.
+- `setDefaultProjectBranch(projectId: string, branchId: string)`: Sets a branch as the default for the project.
+- `getProjectBranchSchema(projectId: string, branchId: string, query?: GetProjectBranchSchemaParams)`: Retrieves the schema for a branch database.
+- `getProjectBranchSchemaComparison(projectId: string, branchId: string, query?: GetProjectBranchSchemaComparisonParams)`: Compares branch schemas.
+- `listProjectBranchEndpoints(projectId: string, branchId: string)`: Retrieves endpoints for a branch.
+- `listProjectBranchDatabases(projectId: string, branchId: string)`: Retrieves databases for a branch.
+- `createProjectBranchDatabase(projectId: string, branchId: string, data: DatabaseCreateRequest)`: Creates a database in a branch.
+- `getProjectBranchDatabase(projectId: string, branchId: string, databaseName: string)`: Retrieves details for a branch database.
+- `updateProjectBranchDatabase(projectId: string, branchId: string, databaseName: string, data: DatabaseUpdateRequest)`: Updates a branch database.
+- `deleteProjectBranchDatabase(projectId: string, branchId: string, databaseName: string)`: Deletes a database from a branch.
+- `listProjectBranchRoles(projectId: string, branchId: string)`: Retrieves roles for a branch.
+- `createProjectBranchRole(projectId: string, branchId: string, data: RoleCreateRequest)`: Creates a role in a branch.
+- `getProjectBranchRole(projectId: string, branchId: string, roleName: string)`: Retrieves details for a branch role.
+- `deleteProjectBranchRole(projectId: string, branchId: string, roleName: string)`: Deletes a role from a branch.
+- `resetProjectBranchRolePassword(projectId: string, branchId: string, roleName: string)`: Resets a branch role password.
+
+### Manage Compute Endpoints
+
+- `listProjectEndpoints(projectId: string)`: Retrieves a list of endpoints within a project.
+- `createProjectEndpoint(projectId: string, data: EndpointCreateRequest)`: Creates a new endpoint within a project.
+- `getProjectEndpoint(projectId: string, endpointId: string)`: Retrieves details for a specific endpoint.
+- `updateProjectEndpoint(projectId: string, endpointId: string, data: EndpointUpdateRequest)`: Updates settings for a specific endpoint.
+- `deleteProjectEndpoint(projectId: string, endpointId: string)`: Deletes an endpoint from a project.
+- `startProjectEndpoint(projectId: string, endpointId: string)`: Starts an endpoint.
+- `suspendProjectEndpoint(projectId: string, endpointId: string)`: Suspends an endpoint.
+- `restartProjectEndpoint(projectId: string, endpointId: string)`: Restarts an endpoint.
+
+### Retrieve Consumption Metrics
+
+- `getConsumptionHistoryPerAccount(query: GetConsumptionHistoryPerAccountParams)`: Retrieves account consumption metrics.
+- `getConsumptionHistoryPerProject(query: GetConsumptionHistoryPerProjectParams)`: Retrieves project consumption metrics.
+
+### Manage Organizations
+
+- `getOrganization(orgId: string)`: Retrieves organization details.
+- `getOrganizationMembers(orgId: string)`: Retrieves members of an organization.
+- `getOrganizationMember(orgId: string, memberId: string)`: Retrieves details for a specific organization member.
+- `getOrganizationInvitations(orgId: string)`: Retrieves invitations for an organization.
+- `listOrgApiKeys(orgId: string)`: Lists API keys for an organization.
+- `createOrgApiKey(orgId: string, data: OrgApiKeyCreateRequest)`: Creates an API key for an organization.
+- `revokeOrgApiKey(orgId: string, keyId: number)`: Revokes an organization API key.
+- `createOrganizationInvitations(orgId: string, data: OrganizationInvitesCreateRequest)`: Creates organization invitations.
+- `updateOrganizationMember(orgId: string, memberId: string, data: OrganizationMemberUpdateRequest)`: Updates an organization member's role.
+- `removeOrganizationMember(orgId: string, memberId: string)`: Removes a member from an organization.
+- `transferProjectsFromOrgToOrg(sourceOrgId: string, data: TransferProjectsToOrganizationRequest)`: Transfers projects between organizations.
+- `listOrganizationVpcEndpoints(orgId: string, regionId: string)`: Lists VPC endpoints for an organization.
+- `getOrganizationVpcEndpointDetails(orgId: string, regionId: string, vpcEndpointId: string)`: Retrieves VPC endpoint details for an organization.
+- `assignOrganizationVpcEndpoint(orgId: string, regionId: string, vpcEndpointId: string, data: VPCEndpointAssignment)`: Assigns/updates a VPC endpoint for an organization.
+- `deleteOrganizationVpcEndpoint(orgId: string, regionId: string, vpcEndpointId: string)`: Deletes a VPC endpoint from an organization.
+
+### Manage Users
+
+- `getCurrentUserInfo()`: Retrieves details for the current user.
+- `getCurrentUserOrganizations()`: Retrieves organizations for the current user.
+- `transferProjectsFromUserToOrg(data: TransferProjectsToOrganizationRequest)`: Transfers projects from a user to an organization.
+
+### Regions
+
+- `getActiveRegions()`: Retrieves a list of active Neon regions.
+
+### Manage Auth Integrations
+
+- `createProjectIdentityIntegration(data: IdentityCreateIntegrationRequest)`: Creates Neon Auth integration.
+- `createProjectIdentityAuthProviderSdkKeys(data: IdentityCreateAuthProviderSDKKeysRequest)`: Creates Auth Provider SDK keys.
+- `transferProjectIdentityAuthProviderProject(data: IdentityTransferAuthProviderProjectRequest)`: Transfers Neon-managed Auth project ownership.
+- `listProjectIdentityIntegrations(projectId: string)`: Lists Auth Provider integrations for a project.
+- `deleteProjectIdentityIntegration(projectId: string, authProvider: IdentitySupportedAuthProvider)`: Deletes an Auth Provider integration.
+
+### General
+
+- `getProjectOperation(projectId: string, operationId: string)`: Retrieves details for a specific operation.
+
+## Error Handling
+
+When working with APIs, handling errors gracefully is crucial for building robust applications. The Neon TypeScript SDK provides mechanisms to capture and inspect errors that may occur during API requests.
+
+### General Error Structure
+
+When an error occurs during an API request, the SDK throws an `AxiosError` object, which extends the standard JavaScript `Error` object. The `AxiosError` object contains additional properties that provide details about the error, including:
+
+**`error.response`**: This property (if present) is an Axios response object containing details from the API error response.
+
+- **`error.response.status`**: The HTTP status code of the error response (e.g., 400, 401, 404, 500).
+- **`error.response.data`**: The response body, which, for Neon API errors, often follows a consistent structure, including an `error` object with `code` and `message` properties.
+
+### Common Error Scenarios and Debugging
+
+- **Invalid API Key (401 Unauthorized):** Ensure your `NEON_API_KEY` environment variable is correctly set with a valid API key from the Neon Console.
+- **Project or Branch Not Found (404 Not Found):** Verify that the `projectId` and `branchId` values you are using are correct and that the resources exist in your Neon account. Double-check IDs in the Neon Console.
+- **Rate Limiting (429 Too Many Requests):** If you are making requests too frequently, the API might rate-limit you. Implement retry mechanisms with exponential backoff or reduce the frequency of your API calls.
+- **Request Body Validation Errors (400 Bad Request):** If you receive 400 errors, carefully review the request body you are sending, ensuring it conforms to the expected schema for the API endpoint. Refer to the [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api) for request body structures.
+
+## References
+
+- [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api): Comprehensive documentation for the Neon API, including detailed descriptions of resources, endpoints, request/response structures, and error codes.
+
+<NeedHelp />
 
 
 # Python SDK
@@ -62332,7 +64940,7 @@ title: Create a Neon Twin
 subtitle: Learn how to Twin your production database with Neon
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-11T18:04:21.934Z'
+updatedOn: '2025-02-20T12:23:17.865Z'
 ---
 
 <CTA title="Explore our dev/test use case" description="Move development and testing to Neon—keep production right where it is.<br/><br/>Read more about our dev/test use case <a href='/docs/use-cases/dev-test'>here</a>." isIntro></CTA>
@@ -62340,6 +64948,8 @@ updatedOn: '2025-02-11T18:04:21.934Z'
 ## What is a Neon Twin?
 
 A Neon Twin is a full or partial clone of your production or staging database, providing developers and teams with isolated, sandboxed environments that closely mirror production.
+
+![Dev/Test Twin Workflow](/use-cases/dev-test-twin-workflow.png)
 
 ## Designed for efficiency
 
@@ -62365,7 +64975,7 @@ title: Full Twin
 subtitle: Create a full Twin of your production database
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-11T18:04:21.931Z'
+updatedOn: '2025-03-03T16:46:05.777Z'
 ---
 
 This workflow will create a full Neon Twin using `pg_dump` and `pg_restore`.
@@ -62395,7 +65005,7 @@ name: Create Neon Twin
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+    - cron: '0 0 * * *' # Runs at midnight UTC
   workflow_dispatch:
 
 env:
@@ -62492,7 +65102,7 @@ Add a `pull_request` event and configure it to listen for merges into the main `
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+    - cron: '0 0 * * *' # Runs at midnight UTC
   pull_request: // [!code ++]
     types: [closed] // [!code ++]
     branches: // [!code ++]
@@ -62520,7 +65130,9 @@ jobs:
 
 ## Limitations
 
-Be aware of [usage limits](https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration#usage-limits): Each GitHub Action job can run for up to 6 hours. If a job exceeds this limit, it will be terminated and fail to complete. If your dump/restore process takes longer, consider using [self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners#about-self-hosted-runners).
+Be aware of [usage limits](https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration#usage-limits): Each GitHub Action job can run for up to 6 hours. If a job exceeds this limit, it will be terminated and fail to complete.
+
+If your dump/restore process takes longer, consider using [self-hosted runners](/guides/gihub-actions-self-hosted-runners).
 
 ## Further reading
 
@@ -62535,7 +65147,7 @@ title: Partial Twin
 subtitle: Create a partial Twin of your production database
 enableTableOfContents: true
 isDraft: false
-updatedOn: '2025-02-11T18:04:21.935Z'
+updatedOn: '2025-03-03T16:46:05.779Z'
 ---
 
 This workflow will create a partial Neon Twin using `pg_dump`, `pg_restore` and `psql`.
@@ -62565,7 +65177,7 @@ name: Create Neon Twin
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+    - cron: '0 0 * * *' # Runs at midnight UTC
   workflow_dispatch:
 
 env:
@@ -62723,7 +65335,7 @@ Add a `pull_request` event and configure it to listen for merges into the main `
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs at midnight ET (us-east-1)
+    - cron: '0 0 * * *' # Runs at midnight UTC
   pull_request: // [!code ++]
     types: [closed] // [!code ++]
     branches: // [!code ++]
@@ -62751,7 +65363,9 @@ jobs:
 
 ## Limitations
 
-Be aware of [usage limits](https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration#usage-limits): Each GitHub Action job can run for up to 6 hours. If a job exceeds this limit, it will be terminated and fail to complete. If your dump/restore process takes longer, consider using [self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners#about-self-hosted-runners).
+Be aware of [usage limits](https://docs.github.com/en/actions/administering-github-actions/usage-limits-billing-and-administration#usage-limits): Each GitHub Action job can run for up to 6 hours. If a job exceeds this limit, it will be terminated and fail to complete.
+
+If your dump/restore process takes longer, consider using [self-hosted runners](/guides/gihub-actions-self-hosted-runners).
 
 ## Further reading
 
@@ -64471,7 +67085,7 @@ Notice that the `serial_id` column hints at the number of rows already present i
 ---
 title: Postgres extensions
 enableTableOfContents: true
-updatedOn: '2025-02-12T10:58:29.258Z'
+updatedOn: '2025-03-07T22:12:43.454Z'
 ---
 
 Explore supported Postgres extensions by category. Also see:
@@ -64542,7 +67156,7 @@ Explore supported Postgres extensions by category. Also see:
 
 <a href="https://www.postgresql.org/docs/16/isn.html" description="Implements data types for international product numbering standards: EAN13, UPC, ISBN (books), ISMN (music), and ISSN (serials)" icon="data">isn</a>
 
-<a href="https://www.postgresql.org/docs/16/ltree.html" description="Provides data types for representing labels of data stored in a hierarchical tree-like structure and facilities for searching through label trees" icon="data">ltree</a>
+<a href="/docs/extensions/ltree" description="Provides data types for representing labels of data stored in a hierarchical tree-like structure and facilities for searching through label trees" icon="data">ltree</a>
 
 <a href="https://github.com/supabase/pg_graphql" description="Adds GraphQL support to Postgres, allowing you to query your database via GraphQL" icon="data">pg_graphql</a>
 
@@ -64772,7 +67386,7 @@ title: Supported Postgres extensions
 enableTableOfContents: true
 redirectFrom:
   - /docs/reference/pg-extensions
-updatedOn: '2025-02-12T10:58:29.261Z'
+updatedOn: '2025-03-10T09:35:47.086Z'
 ---
 
 Neon supports the Postgres extensions shown in the following table. The supported version of the extension sometimes differs by Postgres version. A dash (`-`) indicates that an extension is not yet supported.
@@ -64806,7 +67420,7 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | [ip4r](https://github.com/RhodiumToad/ip4r)                                                      |    2.4 |    2.4 |    2.4 |    2.4 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [isn](https://www.postgresql.org/docs/16/isn.html)                                               |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [lo](https://www.postgresql.org/docs/16/lo.html)                                                 |    1.1 |    1.1 |    1.1 |    1.1 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| [ltree](https://www.postgresql.org/docs/16/ltree.html)                                           |    1.2 |    1.2 |    1.2 |    1.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| [ltree](/docs/extensions/ltree)                                                                  |    1.2 |    1.2 |    1.2 |    1.3 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [moddatetime (spi)](https://www.postgresql.org/docs/current/contrib-spi.html)                    |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [neon](/docs/extensions/neon)                                                                    |    1.5 |    1.5 |    1.5 |    1.5 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [neon_utils](/docs/extensions/neon-utils)                                                        |    1.0 |    1.0 |    1.0 |    1.0 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -64822,7 +67436,7 @@ Neon supports the Postgres extensions shown in the following table. The supporte
 | [pg_prewarm](/docs/extensions/pg_prewarm)                                                        |    1.2 |    1.2 |    1.2 |    1.2 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [pg_repack](/docs/extensions/pg_repack)                                                          |  1.5.2 |  1.5.2 |  1.5.2 |  1.5.2 | Available only on paid Neon plans. To install `pg_repack`, it must first be enabled by Neon Support. [Open a support ticket](https://console.neon.tech/app/projects?modal=support) with your endpoint ID and database name to request it. After it's enabled, you'll need to restart your compute before running `CREATE EXTENSION pg_repack;` To use `pg_repack`, you will need to [install the pg_repack CLI](https://reorg.github.io/pg_repack/#download). |
 | [pg_roaringbitmap](https://github.com/ChenHuajun/pg_roaringbitmap)                               |    0.5 |    0.5 |    0.5 |    0.5 | Install with `CREATE EXTENSION roaringbitmap;`                                                                                                                                                                                                                                                                                                                                                                                                                |
-| [pg_session_jwt](/docs/guides/neon-authorize#how-the-pgsessionjwt-extension-works)               |  0.1.2 |  0.1.2 |  0.1.2 |  0.1.2 | This extension is used by [Neon RLS Authorize](/docs/guides/neon-authorize).                                                                                                                                                                                                                                                                                                                                                                                  |
+| [pg_session_jwt](/docs/guides/neon-authorize#how-the-pgsessionjwt-extension-works)               |  0.1.2 |  0.1.2 |  0.1.2 |  0.1.2 | This extension is used by [Neon RLS](/docs/guides/neon-authorize).                                                                                                                                                                                                                                                                                                                                                                                            |
 | [pg_stat_statements](/docs/extensions/pg_stat_statements)                                        |    1.9 |   1.10 |   1.10 |   1.11 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [pg_tiktoken](/docs/extensions/pg_tiktoken)                                                      |  0.0.1 |  0.0.1 |  0.0.1 |  0.0.1 | The [neon_superuser](/docs/manage/roles#the-neonsuperuser-role) role has `EXECUTE` privilege on the `pg_stat_statements_reset()` function.                                                                                                                                                                                                                                                                                                                    |
 | [pg_trgm](/docs/extensions/pg_trgm)                                                              |    1.6 |    1.6 |    1.6 |    1.6 |                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
@@ -64889,7 +67503,7 @@ ALTER EXTENSION vector UPDATE TO '0.7.0';
 ```
 
 <Admonition type="important">
-When Neon releases a new extension or new extension version, a compute restart is required to make the new extension or extension version available for installation or update. A compute restart may occur on its own due to Neon's default [scale to zero](/docs/introduction/scale-to-zero) behavior. However, if your compute never restarts because you disabled scale to zero or because your compute is constantly active, you may need to force a restart. To force a restart, you can issue [Restart endpoint](https://api-docs.neon.tech/reference/restartprojectendpoint) API call (a temporary [compute resize](/docs/manage/endpoints#edit-a-compute) will also resize your compute). Please be aware that restarting a compute temporarily interrupts any connections currently using the compute.
+When Neon releases a new extension or new extension version, a compute restart is required to make the new extension or extension version available for installation or update. A compute restart may occur on its own due to Neon's default [scale to zero](/docs/introduction/scale-to-zero) behavior. However, if your compute never restarts because you disabled scale to zero or because your compute is constantly active, you may need to force a restart. To force a restart, you can issue [Restart endpoint](https://api-docs.neon.tech/reference/restartprojectendpoint) API call. Please be aware that restarting a compute temporarily interrupts any connections currently using the compute.
 
 Extensions installations and updates are automatically applied to any read replica computes on the same branch as your primary compute the next time the read replica compute restarts.  
 </Admonition>
@@ -64902,7 +67516,9 @@ Extensions installations and updates are automatically applied to any read repli
 
 ## Request extension support
 
-<ExtensionRequest />
+<RequestForm type="extension" />
+
+_We appreciate all extension requests. While we can’t guarantee support, we regularly review requests, prioritizing them based on criteria such as user demand, Neon’s product direction, and popularity within the Postgres ecosystem._
 
 ### Custom-built extensions
 
@@ -64926,9 +67542,8 @@ Custom-built extensions are not yet supported for Neon projects provisioned on A
 ---
 title: The dblink extension
 subtitle: Connect to and query other Postgres databases from Neon using dblink
-tag: new
 enableTableOfContents: true
-updatedOn: '2025-01-24T19:33:03.060Z'
+updatedOn: '2025-03-05T21:09:38.743Z'
 ---
 
 The `dblink` extension provides the ability to connect to other Postgres databases from within your current database. This is invaluable for tasks such as data integration, cross-database querying, and building applications that span multiple database instances. `dblink` allows you to execute queries on these remote databases and retrieve the results directly into your Neon project.
@@ -65552,6 +68167,299 @@ The `hstore` extension offers a powerful and flexible way to handle semi-structu
 <NeedHelp/>
 
 
+# ltree
+
+---
+title: The ltree extension
+subtitle: Store and query hierarchical tree-like structures in Postgres
+enableTableOfContents: true
+updatedOn: '2025-03-07T22:12:43.457Z'
+---
+
+The `ltree` extension provides a data type for representing labels of data stored in a hierarchical tree-like structure. It offers specialized functions and operators for efficiently traversing and searching through these tree structures, making it ideal for modeling hierarchical relationships in your data.
+
+<CTA />
+
+This guide covers the basics of the `ltree` extension - how to enable it, create hierarchical data structures, and query tree data with examples. The `ltree` extension is valuable for scenarios like organizational charts, file systems, category hierarchies, or any data that naturally fits into a parent-child relationship model.
+
+<Admonition type="note">
+    `ltree` is an open-source extension for Postgres that can be installed on any compatible Postgres instance. Detailed information about the extension is available in the [PostgreSQL Documentation](https://www.postgresql.org/docs/current/ltree.html).
+</Admonition>
+
+**Version availability**
+
+Please refer to the [list of all extensions](/docs/extensions/pg-extensions) available in Neon for up-to-date information.
+
+## Enable the `ltree` extension
+
+Enable the extension by running the following SQL statement in your Postgres client:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS ltree;
+```
+
+For information about using the Neon SQL Editor, see [Query with Neon's SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor). For information about using the `psql` client with Neon, see [Connect with psql](/docs/connect/query-with-psql-editor).
+
+## Understanding ltree data
+
+The `ltree` data type represents a path of labels separated by dots, similar to file system paths. Each label consists of alphanumeric characters and underscores, with a maximum length of 255 characters.
+
+Here are some examples of valid `ltree` values:
+
+```
+world
+world.europe.uk
+world.europe.uk.london
+tech.database.postgres.extensions
+```
+
+The dots in these paths represent hierarchical relationships, with each segment being a label in the tree. This structure allows for efficient traversal and querying of hierarchical data.
+
+## Example usage
+
+Let's explore how to use the `ltree` extension with a practical example of a product category hierarchy for an e-commerce platform.
+
+**Creating a table with ltree column**
+
+First, let's create a table to store our product categories:
+
+```sql
+CREATE TABLE product_categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    path ltree NOT NULL
+);
+```
+
+**Inserting hierarchical data**
+
+Now, let's insert some sample data representing a product category hierarchy:
+
+```sql
+INSERT INTO product_categories (name, path) VALUES
+    ('Electronics', 'electronics'),
+    ('Computers', 'electronics.computers'),
+    ('Laptops', 'electronics.computers.laptops'),
+    ('Gaming Laptops', 'electronics.computers.laptops.gaming'),
+    ('Business Laptops', 'electronics.computers.laptops.business'),
+    ('Desktop Computers', 'electronics.computers.desktops'),
+    ('Smartphones', 'electronics.smartphones'),
+    ('Android Phones', 'electronics.smartphones.android'),
+    ('iOS Phones', 'electronics.smartphones.ios'),
+    ('Clothing', 'clothing'),
+    ('Men''s Clothing', 'clothing.mens'),
+    ('Women''s Clothing', 'clothing.womens'),
+    ('Children''s Clothing', 'clothing.childrens');
+```
+
+## Querying ltree data
+
+The `ltree` extension provides several operators and functions for querying hierarchical data. Let's explore some common query patterns:
+
+**Finding all descendants of a node**
+
+To find all subcategories under "Computers", we can use the `<@` operator, which checks if the path on the right is an ancestor of the path on the left:
+
+```sql
+SELECT id, name, path
+FROM product_categories
+WHERE path <@ 'electronics.computers';
+```
+
+This query returns:
+
+```text
+| id | name               | path                                   |
+|----|--------------------|----------------------------------------|
+| 2  | Computers          | electronics.computers                  |
+| 3  | Laptops            | electronics.computers.laptops          |
+| 4  | Gaming Laptops     | electronics.computers.laptops.gaming   |
+| 5  | Business Laptops   | electronics.computers.laptops.business |
+| 6  | Desktop Computers  | electronics.computers.desktops         |
+```
+
+**Finding all ancestors of a node**
+
+To find all parent categories of "Gaming Laptops", we can use the `@>` operator, which checks if the path on the left is an ancestor of the path on the right:
+
+```sql
+SELECT id, name, path
+FROM product_categories
+WHERE path @> 'electronics.computers.laptops.gaming';
+```
+
+This query returns:
+
+```text
+| id | name           | path                                     |
+|----|----------------|------------------------------------------|
+| 1  | Electronics    | electronics                              |
+| 2  | Computers      | electronics.computers                    |
+| 3  | Laptops        | electronics.computers.laptops            |
+| 4  | Gaming Laptops | electronics.computers.laptops.gaming     |
+```
+
+**Finding nodes at a specific level**
+
+To find all categories at the second level of the hierarchy, we can use the `nlevel()` function, which returns the number of labels in an `ltree` path:
+
+```sql
+SELECT id, name, path
+FROM product_categories
+WHERE nlevel(path) = 2;
+```
+
+This query returns:
+
+```text
+| id | name               | path                   |
+|----|--------------------|------------------------|
+| 2  | Computers          | electronics.computers  |
+| 7  | Smartphones        | electronics.smartphones|
+| 11 | Men's Clothing     | clothing.mens          |
+| 12 | Women's Clothing   | clothing.womens        |
+| 13 | Children's Clothing| clothing.childrens     |
+```
+
+**Pattern matching with wildcards**
+
+The `ltree` extension supports pattern matching using the `~` operator with a `lquery` pattern. The `lquery` syntax allows for wildcards and other pattern matching features:
+
+```sql
+-- Find all laptop categories (using * wildcard)
+SELECT id, name, path
+FROM product_categories
+WHERE path ~ 'electronics.computers.laptops.*';
+```
+
+This query returns:
+
+```text
+| id | name             | path                                   |
+|----|------------------|----------------------------------------|
+| 4  | Gaming Laptops   | electronics.computers.laptops.gaming   |
+| 5  | Business Laptops | electronics.computers.laptops.business |
+```
+
+You can also use more complex patterns:
+
+```sql
+-- Find categories that match a specific pattern
+-- * matches zero or more labels
+SELECT id, name, path
+FROM product_categories
+WHERE path ~ '*.*.ios'
+```
+
+This would match paths like `electronics.smartphones.ios`.
+
+## Advanced ltree operations
+
+The `ltree` extension provides several advanced operations for working with hierarchical data:
+
+**Extracting subpaths**
+
+You can extract specific parts of an `ltree` path using the `subpath()` function:
+
+```sql
+-- Extract the first two labels from the path
+SELECT id, name, subpath(path, 0, 2) AS subpath
+FROM product_categories
+WHERE path = 'electronics.computers.laptops.gaming';
+```
+
+This query returns:
+
+```text
+| id | name           | subpath               |
+|----|----------------|-----------------------|
+| 4  | Gaming Laptops | electronics.computers |
+```
+
+**Finding the least common ancestor**
+
+The `lca()` function finds the least common ancestor of a set of paths:
+
+```sql
+-- Find the least common ancestor of gaming laptops and business laptops
+SELECT lca(
+    'electronics.computers.laptops.gaming'::ltree,
+    'electronics.computers.laptops.business'::ltree
+) AS common_ancestor;
+```
+
+This query returns:
+
+```text
+| common_ancestor               |
+|-------------------------------|
+| electronics.computers.laptops |
+```
+
+**Calculating the distance between nodes**
+
+You can calculate the "distance" between two nodes in the tree:
+
+```sql
+-- Calculate the distance between two categories
+SELECT
+    nlevel('electronics.computers.laptops.gaming'::ltree) +
+    nlevel('electronics.smartphones.android'::ltree) -
+    2 * nlevel(lca(
+        'electronics.computers.laptops.gaming'::ltree,
+        'electronics.smartphones.android'::ltree
+    )) AS distance;
+```
+
+This query returns:
+
+```text
+| distance |
+|----------|
+| 5        |
+```
+
+The distance is calculated as the sum of the levels of both paths minus twice the level of their least common ancestor.
+
+## Indexing ltree data
+
+For efficient querying of `ltree` data, especially in large datasets, you should create appropriate indexes:
+
+```sql
+-- Create a GiST index for ancestor/descendant queries
+CREATE INDEX idx_path_gist ON product_categories USING GIST (path);
+
+-- Create a B-tree index for equality queries
+CREATE INDEX idx_path_btree ON product_categories USING BTREE (path);
+```
+
+The GiST index is particularly useful for ancestor/descendant queries using the `@>` and `<@` operators, while the B-tree index is better for equality comparisons.
+
+## Practical applications
+
+The `ltree` extension is useful in many real-world scenarios:
+
+1. **Organization charts**: Representing company hierarchies with departments, teams, and employees
+2. **File systems**: Modeling directory structures
+3. **E-commerce categories**: As demonstrated in our example
+4. **Taxonomies**: Biological classifications, knowledge categorization
+5. **Menu structures**: Website navigation hierarchies
+6. **Geographic hierarchies**: Continent > Country > State > City
+
+## Conclusion
+
+The `ltree` extension provides a powerful way to store and query hierarchical data in Postgres. Its specialized data type and operators make it efficient to work with tree-like structures, offering significant advantages over traditional recursive queries or adjacency list models.
+
+By using `ltree`, you can simplify complex hierarchical data operations, improve query performance, and create more maintainable code for applications that deal with nested structures.
+
+## Resources
+
+- [PostgreSQL ltree documentation](https://www.postgresql.org/docs/current/ltree.html)
+- [Indexing strategies for ltree](https://www.postgresql.org/docs/current/ltree.html#id-1.11.7.31.7)
+
+<NeedHelp/>
+
+
 # neon
 
 ---
@@ -65559,7 +68467,7 @@ title: The neon extension
 subtitle: An extension for Neon-specific statistics including the Local File Cache hit
   ratio
 enableTableOfContents: true
-updatedOn: '2025-01-06T23:37:50.189Z'
+updatedOn: '2025-03-07T10:23:07.151Z'
 ---
 
 The `neon` extension provides functions and views designed to gather Neon-specific metrics.
@@ -65573,7 +68481,7 @@ The `neon_stat_file_cache` view provides insights into how effectively your Neon
 
 ## What is the Local File Cache?
 
-Neon computes have a Local File Cache (LFC), which is a layer of caching that stores frequently accessed data in the local memory of the Neon compute. Like Postgres [shared buffers](/docs/reference/glossary#shared-buffers), the LFC reduces latency and improves query performance by minimizing the need to fetch data from Neon storage. The LFC acts as an add-on or extension of Postgres shared buffers. In Neon computes, the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends the cache memory to approximately 80% of your compute's RAM. To view the LFC size for each Neon compute size, see [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
+Neon computes have a Local File Cache (LFC), which is a layer of caching that stores frequently accessed data in the local memory of the Neon compute. Like Postgres [shared buffers](/docs/reference/glossary#shared-buffers), the LFC reduces latency and improves query performance by minimizing the need to fetch data from Neon storage. The LFC acts as an add-on or extension of Postgres shared buffers. In Neon computes, the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends the cache memory to approximately 75% of your compute's RAM. To view the LFC size for each Neon compute size, see [How to size your compute](/docs/manage/endpoints#how-to-size-your-compute).
 
 When data is requested, Postgres checks shared buffers first, then the LFC. If the requested data is not found in the LFC, it is read from Neon storage. Shared buffers and the LFC both cache your most recently accessed data, but they may not cache exactly the same data due to different cache eviction patterns. The LFC is also much larger than shared buffers, so it stores significantly more data.
 
@@ -65607,16 +68515,10 @@ To install the extension on a database:
 CREATE EXTENSION neon;
 ```
 
-To connect to your database. You can find a connection string for yoru database on the Neon Dashboard.
+To connect to your database. You can find a connection string for your database on the Neon Dashboard.
 
 ```bash shouldWrap
 psql postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require
-```
-
-If you are already connected via `psql`, you can simply switch to the `postgres` database using the `\c` command:
-
-```shell
-\c dbname
 ```
 
 Issue the following query to view LFC usage data for your compute:
@@ -65665,6 +68567,38 @@ EXPLAIN (ANALYZE,BUFFERS,PREFETCH,FILECACHE) SELECT COUNT(*) FROM pgbench_accoun
 ## Views for Neon internal use
 
 The `neon` extension is installed by default to a system-owned `postgres` database in each Neon project. The `postgres` database includes functions and views owned by the Neon system role (`cloud_admin`) that are used to collect statistics. This data helps the Neon team enhance the Neon service.
+
+**Views**:
+
+```sql
+postgres=> \dv
+                    List of relations
+ Schema |            Name            | Type |    Owner
+--------+----------------------------+------+-------------
+ public | local_cache                | view | cloud_admin
+ public | neon_backend_perf_counters | view | cloud_admin
+ public | neon_lfc_stats             | view | cloud_admin
+ public | neon_perf_counters         | view | cloud_admin
+ public | neon_stat_file_cache       | view | cloud_admin
+```
+
+**Functions**:
+
+```sql
+postgres=> \df
+                                                                          List of functions
+ Schema |                 Name                 | Result data type |                                    Argument data types                                    | Type
+--------+--------------------------------------+------------------+-------------------------------------------------------------------------------------------+------
+ public | approximate_working_set_size         | integer          | reset boolean                                                                             | func
+ public | approximate_working_set_size_seconds | integer          | duration integer DEFAULT NULL::integer                                                    | func
+ public | backpressure_lsns                    | record           | OUT received_lsn pg_lsn, OUT disk_consistent_lsn pg_lsn, OUT remote_consistent_lsn pg_lsn | func
+ public | backpressure_throttling_time         | bigint           |                                                                                           | func
+ public | get_backend_perf_counters            | SETOF record     |                                                                                           | func
+ public | get_perf_counters                    | SETOF record     |                                                                                           | func
+ public | local_cache_pages                    | SETOF record     |                                                                                           | func
+ public | neon_get_lfc_stats                   | SETOF record     |                                                                                           | func
+ public | pg_cluster_size                      | bigint           |                                                                                           | func
+```
 
 <NeedHelp/>
 
@@ -66738,9 +69672,8 @@ from reranked;
 ---
 title: The pg_cron extension
 subtitle: Schedule and manage cron jobs directly within your Neon Postgres database
-tag: new
 enableTableOfContents: true
-updatedOn: '2025-02-16T14:15:13.855Z'
+updatedOn: '2025-03-05T21:09:38.746Z'
 ---
 
 The `pg_cron` extension provides a simple, cron-based job scheduler for Postgres. It operates directly within your database, allowing you to schedule standard SQL commands or calls to stored procedures using familiar cron syntax. This eliminates the need for external cron utilities for many database maintenance and automation tasks.
@@ -66780,7 +69713,7 @@ curl --request PATCH \
 '
 ```
 
-After setting `cron.database_name`, you must restart your compute to apply the new setting. You can do this using the [Restart compute](https://api-docs.neon.tech/reference/restartprojectendpoint) API. Specify the same `project_id` and `endpoint_id` used to set the `cron.database_name` parameter above. **Please note that restarting your compute endpoint will drop current connections to your database.**
+After setting `cron.database_name`, you must restart your compute to apply the new setting. You can do this using the [Restart compute endpoint](https://api-docs.neon.tech/reference/restartprojectendpoint) API. Specify the same `project_id` and `endpoint_id` used to set the `cron.database_name` parameter above. **Please note that restarting your compute endpoint will drop current connections to your database.**
 
 ```bash
 curl --request POST \
@@ -66789,8 +69722,8 @@ curl --request POST \
      --header 'authorization: Bearer $NEON_API_KEY'
 ```
 
-<Admonition type="tip">
-For more information and other compute restart options, see [Restart a compute](/docs/manage/endpoints#restart-a-compute).
+<Admonition type="note">
+The [Restart compute endpoint](https://api-docs.neon.tech/reference/restartprojectendpoint) API only works on an active compute. If you're compute is idle, you can start it by running a query to wake it up or running the [Start compute endpoint](https://api-docs.neon.tech/reference/startprojectendpoint) API. For more information and other compute restart options, see [Restart a compute](/docs/manage/endpoints#restart-a-compute).
 </Admonition>
 
 You can then install the `pg_cron` extension by running the following `CREATE EXTENSION` statement in the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or from a client such as [psql](/docs/connect/query-with-psql-editor) that is connected to your Neon database.
@@ -68011,8 +70944,7 @@ SELECT pg_stat_statements_reset();
 title: The pg_repack extension
 subtitle: Remove bloat from your tables and indexes with minimal locking
 enableTableOfContents: true
-tag: new
-updatedOn: '2025-02-03T20:41:57.303Z'
+updatedOn: '2025-03-05T21:09:38.747Z'
 ---
 
 Postgres, like any database system, can accumulate bloat over time due to frequent updates and deletes. Bloat refers to wasted space within your tables and indexes, which can lead to decreased query performance and increased storage usage. `pg_repack` is a powerful Postgres extension that allows you to efficiently remove this bloat by rewriting tables and indexes online, with minimal locking. Unlike `VACUUM FULL` or `CLUSTER`, `pg_repack` avoids exclusive locks, ensuring your applications remain available during the reorganization process.
@@ -69388,9 +72320,8 @@ For further information, refer to the official documentation for each extension.
 ---
 title: The postgres_fdw extension
 subtitle: Access data in remote Postgres databases from Neon using postgres_fdw
-tag: new
 enableTableOfContents: true
-updatedOn: '2025-01-30T21:03:38.102Z'
+updatedOn: '2025-03-05T21:09:38.748Z'
 ---
 
 The `postgres_fdw` (Foreign Data Wrapper) extension provides a powerful and standards-compliant way to access data stored in external Postgres databases from your Neon project. For compliance or regulatory reasons, you might need to keep sensitive data on-premises or within a specific jurisdiction; `postgres_fdw` lets you query this data directly from your Neon database without migrating it, maintaining data residency. This enables you to leverage Neon's features while adhering to data storage policies. This simplifies data integration, enables cross-database querying, and allows you to build applications that seamlessly interact with data across different Postgres deployments.
@@ -73799,8 +76730,7 @@ The output displayed in `psql` might be truncated or wrap long lines for visual 
 title: Postgres json() Function
 subtitle: Convert Text and Binary Data to JSON Values
 enableTableOfContents: true
-updatedOn: '2024-12-06T20:43:48.686Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.748Z'
 ---
 
 The `json()` function in PostgreSQL 17 provides a robust way to convert text or binary data into `JSON` values. This new function offers enhanced control over `JSON` parsing, including options for handling duplicate keys and encoding specifications.
@@ -74847,8 +77777,7 @@ When working with large `JSON` objects, `json_each` may lead to performance over
 title: Postgres JSON_EXISTS() Function
 subtitle: Check for Values in JSON Data Using SQL/JSON Path Expressions
 enableTableOfContents: true
-updatedOn: '2024-12-06T20:47:04.664Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.748Z'
 ---
 
 The `JSON_EXISTS()` function in PostgreSQL 17 provides a powerful way to check for the existence of values within `JSON` data using `SQL/JSON` path expressions. This function is particularly useful for validating `JSON` structure and implementing conditional logic based on the presence of specific `JSON` elements.
@@ -75724,8 +78653,7 @@ This query returns the following result:
 title: Postgres JSON_QUERY() Function
 subtitle: Extract and Transform JSON Values with SQL/JSON Path Expressions
 enableTableOfContents: true
-updatedOn: '2024-12-06T20:43:48.687Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.749Z'
 ---
 
 The `JSON_QUERY()` function in PostgreSQL 17 provides a powerful way to extract and transform `JSON` values using `SQL/JSON` path expressions. This function offers fine-grained control over how `JSON` values are extracted and formatted in the results.
@@ -76069,8 +78997,7 @@ FROM events;
 title: Postgres json_scalar() Function
 subtitle: Convert SQL Scalar Values to JSON Scalar Values
 enableTableOfContents: true
-updatedOn: '2024-12-06T20:43:48.688Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.749Z'
 ---
 
 The `json_scalar()` function in PostgreSQL 17 provides a straightforward way to convert `SQL` scalar values into their `JSON` equivalents. This function is particularly useful when you need to ensure proper type conversion and formatting of individual values for `JSON` output.
@@ -76261,8 +79188,7 @@ The function follows these conversion rules:
 title: Postgres json_serialize() Function
 subtitle: Convert JSON Values to Text or Binary Format
 enableTableOfContents: true
-updatedOn: '2024-12-06T20:43:48.688Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.750Z'
 ---
 
 The `json_serialize()` function in PostgreSQL 17 provides a flexible way to convert `JSON` values into text or binary format. This function is particularly useful when you need to control the output format of `JSON` data or prepare it for transmission or storage in specific formats.
@@ -76929,8 +79855,7 @@ This query returns the following result:
 title: Postgres JSON_VALUE() Function
 subtitle: Extract and Convert JSON Scalar Values
 enableTableOfContents: true
-updatedOn: '2024-12-06T20:43:48.688Z'
-tag: new
+updatedOn: '2025-03-05T21:09:38.750Z'
 ---
 
 The `JSON_VALUE()` function in PostgreSQL 17 provides a specialized way to extract single scalar values from `JSON` data with type conversion capabilities. This function is particularly useful when you need to extract and potentially convert individual values from `JSON` structures while ensuring type safety and proper error handling.
@@ -82098,7 +85023,7 @@ subtitle: Learn about strategies for optimizing Postgres query performance
 enableTableOfContents: true
 redirectFrom:
   - /docs/postgres/query-performance
-updatedOn: '2025-02-03T20:41:57.344Z'
+updatedOn: '2025-02-25T14:30:09.523Z'
 ---
 
 Many factors can impact query performance in Postgres, ranging from insufficient indexing and database maintenance to poorly optimized queries or inadequate system resources. With such a wide range of factors, it can be difficult to know where to start. In this topic, we'll look at several strategies you can use to optimize query performance in Postgres.
@@ -82456,7 +85381,7 @@ After allowing enough time for your workload to run fully and generate the neces
 ```sql
 \x
 Expanded display is on.
-SELECT * FROM neon.neon_stat_file_cache;
+SELECT * FROM neon_stat_file_cache;
 file_cache_misses:                 2133643
 file_cache_hits:                   108999742
 file_cache_used:                   607
@@ -82549,7 +85474,7 @@ subtitle: Find examples of commonly-used Postgres queries for basic to advanced
 enableTableOfContents: true
 redirectFrom:
   - /docs/postgres/query-reference
-updatedOn: '2025-01-31T21:06:22.113Z'
+updatedOn: '2025-02-19T23:50:10.715Z'
 ---
 
 <CTA />
@@ -83454,19 +86379,53 @@ WHERE
   OR state = '<idle>';
 ```
 
-### Drop long-running or idle connections
+### Cancel or terminate queries and sessions
+
+On the Neon platform, superuser privileges are not available, so you can only cancel or terminate your own queries and sessions. You cannot stop other users' queries or sessions directly.
+
+To cancel or terminate a process:
+
+- **Cancel a running query** (without ending the session):  
+  Use `pg_cancel_backend(pid)`.
+
+- **Terminate a session** (including all running queries):  
+  Use `pg_terminate_backend(pid)`.
+
+Examples:
+
+Cancel a query:
+
+```sql
+SELECT pg_cancel_backend(pid)
+FROM pg_stat_activity
+WHERE datname = 'databasename'
+  AND pid <> pg_backend_pid();
+```
+
+Terminate a session:
 
 ```sql
 SELECT pg_terminate_backend(pid)
 FROM pg_stat_activity
 WHERE datname = 'databasename'
   AND pid <> pg_backend_pid()
-  AND state IN ('idle');
+  AND state = 'idle';
 ```
 
 <Admonition type="note">
-To terminate a session, you can run `pg_cancel_backend(pid)` or `pg_terminate_backend(pid)`. The first command terminates the currently executing query, and the second one (used in the query above) terminates both the query and the session.
+Since you cannot terminate other users' queries or sessions on Neon, you may need to contact the user running the query and ask them to stop it.
+
+To identify long-running queries and the users executing them, run:
+
+```sql
+SELECT pid, usename, client_addr, application_name, state, query, now() - query_start AS duration
+FROM pg_stat_activity
+WHERE state <> 'idle'
+ORDER BY duration DESC;
+```
+
 </Admonition>
+
 
 ## Postgres version
 
@@ -83510,7 +86469,7 @@ subtitle: Learn about Neon as a managed Postgres service
 enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/compatibility
-updatedOn: '2025-02-10T20:48:12.533Z'
+updatedOn: '2025-02-28T11:10:41.828Z'
 ---
 
 **Neon is Postgres**. However, as a managed Postgres service, there are some differences you should be aware of.
@@ -83547,6 +86506,7 @@ Because Neon is a managed Postgres service, Postgres parameters are not user-con
 | ------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `client_connection_check_interval`    | 60000         |                                                                                                                                                                                                                                                                                |
 | `dynamic_shared_memory_type`          | mmap          |                                                                                                                                                                                                                                                                                |
+| `effective_io_concurrency`            | 20            |                                                                                                                                                                                                                                                                                |
 | `fsync`                               | off           | Neon syncs data to the Neon Storage Engine to store your data safely and reliably                                                                                                                                                                                              |
 | `hot_standby`                         | off           |                                                                                                                                                                                                                                                                                |
 | `idle_in_transaction_session_timeout` | 300000        |                                                                                                                                                                                                                                                                                |
@@ -83565,7 +86525,7 @@ Because Neon is a managed Postgres service, Postgres parameters are not user-con
 | `max_worker_processes`                | 26            | The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size).                                                                                                                                                                               |
 | `password_encryption`                 | scram-sha-256 |                                                                                                                                                                                                                                                                                |
 | `restart_after_crash`                 | off           |                                                                                                                                                                                                                                                                                |
-| `shared_buffers`                      | 128MB         | Neon uses a [Local File Cache (LFC)](/docs/extensions/neon#what-is-the-local-file-cache) in addition to `shared_buffers` to extend cache memory to 80% of your compute's RAM. The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size). |
+| `shared_buffers`                      | 128MB         | Neon uses a [Local File Cache (LFC)](/docs/extensions/neon#what-is-the-local-file-cache) in addition to `shared_buffers` to extend cache memory to 75% of your compute's RAM. The value differs by compute size. See [below](#parameter-settings-that-differ-by-compute-size). |
 | `superuser_reserved_connections`      | 4             |                                                                                                                                                                                                                                                                                |
 | `synchronous_standby_names`           | 'walproposer' |                                                                                                                                                                                                                                                                                |
 | `wal_level`                           | replica       | Support for `wal_level=logical` is coming soon. See [logical replication](/docs/introduction/logical-replication).                                                                                                                                                             |
@@ -83700,7 +86660,7 @@ Currently, Postgres server logs can only be accessed Neon Support team. Should y
 
 ## Unlogged tables
 
-Unlogged tables are maintained on Neon compute local storage. These tables do not survive compute restarts (including when a Neon compute is placed into an idle state after a period of inactivity). This is unlike a standalone Postgres installation, where unlogged tables are only truncated in the event of abnormal process termination. Additionally, unlogged tables are limited by compute local storage size.
+Unlogged tables are maintained on Neon compute local storage. These tables do not survive compute restarts (including when a Neon compute is placed into an idle state after a period of inactivity). This is unlike a standalone Postgres installation, where unlogged tables are only truncated in the event of abnormal process termination. Additionally, unlogged tables are limited by compute local disk space. Neon computes allocate 20 GiB of local disk space or 15 GiB x the maximum compute size (whichever is highest) for temporary files used by Postgres.
 
 ## Memory
 
@@ -83792,19 +86752,6 @@ ERROR:  permission denied to create event trigger "your_trigger_name"
 HINT:  Must be superuser to create an event trigger.
 ```
 
-## Foreign Data Wrappers
-
-Neon does not yet support Foreign Data Wrappers (FDW) or Postgres extensions such as `postgres_fdw` that provide this functionality. We intend to offer FDW support in a future release.
-
-## PostgreSQL documentation
-
-Neon provides a mirror of the official PostgreSQL documentation on the [Neon documentation site](/docs/introduction) for the convenience of our users. As Neon is built on standard PostgreSQL, most information from the official PostgreSQL documentation applies to our platform. However, there are a few key differences to consider when referencing the official PostgreSQL docs:
-
-- As a managed Postgres service, certain aspects of the official PostgreSQL documentation like installation procedures do not apply to Neon.
-- Some features detailed in the official PostgreSQL documentation may not be relevant for Neon, such as those mentioned on this Postgres compatibility page.
-- Features requiring the PostgreSQL superuser privilege may not be supported. See [Roles and permissions](#roles-and-permissions) above.
-- Neon may not support all of the extensions mentioned in the official PostgreSQL documentation. See [Postgres extensions](#postgres-extensions) above.
-
 <NeedHelp/>
 
 
@@ -83813,7 +86760,7 @@ Neon provides a mirror of the official PostgreSQL documentation on the [Neon doc
 ---
 title: Postgres extensions
 enableTableOfContents: true
-updatedOn: '2025-02-12T10:58:29.258Z'
+updatedOn: '2025-03-07T22:12:43.454Z'
 ---
 
 Explore supported Postgres extensions by category. Also see:
@@ -83884,7 +86831,7 @@ Explore supported Postgres extensions by category. Also see:
 
 <a href="https://www.postgresql.org/docs/16/isn.html" description="Implements data types for international product numbering standards: EAN13, UPC, ISBN (books), ISMN (music), and ISSN (serials)" icon="data">isn</a>
 
-<a href="https://www.postgresql.org/docs/16/ltree.html" description="Provides data types for representing labels of data stored in a hierarchical tree-like structure and facilities for searching through label trees" icon="data">ltree</a>
+<a href="/docs/extensions/ltree" description="Provides data types for representing labels of data stored in a hierarchical tree-like structure and facilities for searching through label trees" icon="data">ltree</a>
 
 <a href="https://github.com/supabase/pg_graphql" description="Adds GraphQL support to Postgres, allowing you to query your database via GraphQL" icon="data">pg_graphql</a>
 
@@ -84389,7 +87336,7 @@ If you have any questions about our security protocols or would like a deeper di
 ---
 title: Security reporting
 enableTableOfContents: true
-updatedOn: '2025-01-04T12:41:02.146Z'
+updatedOn: '2025-03-07T12:51:22.977Z'
 ---
 
 We have established the following security reporting procedure to address security issues quickly.
@@ -84410,7 +87357,7 @@ We strive to resolve all problems quickly and publicize any discoveries after th
 
 ## Bug bounty program with HackerOne
 
-Neon offers a private bug bounty program. If you discover a vulnerability, report it using our submission [form](https://hackerone.com/8777433c-7051-4c92-aed4-430278521656/embedded_submissions/new).
+Neon offers a public bug bounty program. If you discover a vulnerability, report it through our [bug bounty program](https://hackerone.com/neon_bbp).
 
 ## How to disclose vulnerabilities
 
@@ -84433,7 +87380,7 @@ title: Compliance
 enableTableOfContents: false
 redirectFrom:
   - /docs/security/soc2-compliance
-updatedOn: '2024-10-01T22:13:33.461Z'
+updatedOn: '2025-03-10T17:50:45.191Z'
 ---
 
 At Neon, we prioritize data security and privacy, and we have achieved several key compliances that validate our efforts. We have completed audits for SOC 2 Type 1 and Type 2, SOC 3, ISO 27001, and ISO 27701, and we adhere to GDPR and CCPA regulations.
@@ -84464,7 +87411,7 @@ The California Consumer Privacy Act (CCPA) grants California residents new right
 
 ## HIPAA
 
-Neon is not yet HIPAA compliant. However, we are actively working towards achieving HIPAA readiness, with a target completion by the end of Q2 2025. Once compliant, we will be able to support applications that require HIPAA compliance, including those that process Protected Health Information (PHI).
+Neon is HIPAA compliant. This means we can support applications that require HIPAA compliance, including those that process Protected Health Information (PHI). For more information about our HIPAA compliance, please visit our [Trust Center](https://trust.neon.tech/).
 
 ## Questions?
 
@@ -84524,6 +87471,38 @@ Users who become aware of any violations of this AUP are encouraged to report th
 ## Conclusion
 
 You agree to abide by this Acceptable Use Policy by using Neon's resources. Your compliance helps us maintain a secure and productive environment for everyone. Thank you for your cooperation.
+
+
+# AI use in Neon
+
+---
+title: AI use in Neon
+subtitle: How Neon integrates AI into its platform
+enableTableOfContents: true
+updatedOn: '2025-03-05T12:14:08.771Z'
+---
+
+Neon integrates AI to enhance user experience across different parts of the platform. Below is an overview of where and how AI is used in Neon.
+
+## AI in the Neon SQL Editor
+
+The Neon SQL Editor includes AI-powered features to assist with writing, optimizing, and generating names for SQL queries. To enable these capabilities, we share your database schema with the AI agent, but **no actual data is shared**.
+
+Neon currently uses [Amazon Bedrock](https://aws.amazon.com/bedrock/) as the LLM provider for the Neon SQL Editor. All requests are processed within AWS’s secure infrastructure, where other Neon resources are also managed.
+
+For more details, see [AI features in the Neon SQL Editor](https://neon.tech/docs/get-started-with-neon/query-with-neon-sql-editor#ai-features).
+
+## AI chat assistance
+
+Neon provides AI-powered chat assistance across multiple platforms to help users with documentation, troubleshooting, and best practices. These AI chat assistants are developed by third-party companies under contract with Neon.
+
+Neon AI chat assistance is built on publicly available sources, including Neon documentation, public 3rd party vendor documentation, Neon GitHub repositories, the Neon public OpenAPI specification, and other publicly available content. It does not process or incorporate personally identifiable information (PII) or private user data.
+
+For details on where to access Neon AI chat assistants, see [Neon AI chat assistance](https://neon.tech/docs/introduction/support#neon-ai-chat-assistance).
+
+## Questions about AI use in Neon?
+
+If you have questions about Neon's AI integrations, please reach out to [Neon Support](https://console.neon.tech/app/projects?modal=support).
 
 
 # Resources
@@ -84679,30 +87658,30 @@ We’re here to support you through every step of your integration. If you have 
 ---
 title: Neon OAuth integration
 enableTableOfContents: true
-updatedOn: '2024-11-30T11:53:56.063Z'
+updatedOn: '2025-03-06T17:12:06.384Z'
 ---
 
 You can integrate your application or service with Neon using OAuth. The Neon OAuth integration enables your application to interact with Neon user accounts, carrying out permitted actions on their behalf. Our integration does not require direct access to user login credentials and is conducted with their approval, ensuring data privacy and security.
 
 To set up the integration and create a Neon OAuth application, you can apply on our [Partners page](https://neon.tech/partners). You will need to provide the following information:
 
-1. Details about your application, including the application name, what it does, and a link to the website.
-2. Callback URL(s), which are used to redirect users after completing the authorization flow.
+- Your name and email address (this should be an individual email address, not a shared inbox address)
+- Your company name
+- Details about your application, including your application name, what it does, and a link to the website.
+- Callback URL(s), which are used to redirect users after completing the authorization flow.
 
-   Examples:
+  ```text
+  https://app.company.com/api/integrations/neon/callback
+  https://app.stage.company.com/api/integrations/neon/callback
+  http://localhost:3000/api/integrations/neon/callback
+  ```
 
-   `https://yourapplication.com/api/oauth/callback`
+- Required scopes, defining the type of access you need. We provide scopes for managing both projects and organizations. For a list of all available scopes, see [Supported OAuth Scopes](#supported-oauth-scopes).
 
-   `http://localhost:3000/api/oauth/callback`
+- Whether or not you will make API calls from a backend.
+- A logo to be displayed on Neon's OAuth consent dialog when users authorize your application to access their Neon account.
 
-3. Scopes, defining the type of access you want to request. We provide scopes for managing both projects and organizations.
-
-   For a list of all available scopes, see [Supported OAuth Scopes](#supported-oauth-scopes).
-
-4. Whether or not you will make API calls from a backend.
-5. A logo to be displayed on Neon's OAuth consent dialog when users authorize your application to access their Neon account.
-
-After your application is reviewed, we will provide you with a client ID and, if applicable, a client secret. Client secrets are only provided for backend clients, so non-backend applications (e.g. browser-based apps or CLI tools) will not receive a secret. These credentials are sensitive and should be stored securely.
+After your application is reviewed, Neon will provide you with a **client ID** and, if applicable, a **client secret**. Client secrets are only provided for backend clients, so non-backend applications (e.g. browser-based apps or CLI tools) will not receive a secret. These credentials are sensitive and should be stored securely.
 
 ## How the OAuth integration works
 
@@ -84710,9 +87689,11 @@ Here is a high-level overview of how Neon's OAuth implementation works:
 
 ![OAuth flow diagram](/docs/oauth/flow.png)
 
-1. The user initiates the OAuth flow in your application by clicking a button or link.
-2. An authorization URL is generated, and the user is redirected to Neon’s OAuth consent screen to authorize the application and grant the necessary permissions.
-3. The application receives an access token to manage Neon resources on the user’s behalf.
+1. The user sends a request to your API endpoint to initiate the OAuth flow by clicking a button or link in your application.
+2. An authorization URL is generated.
+3. The user is redirected to Neon’s OAuth consent screen to authorize the application.
+4. The user logs in and authorizes the application, granting it the necessary permissions.
+5. A redirect is performed to a callback endpoint, which includes an access token that allows the application to manage Neon resources on the user’s behalf.
 
 ## About the Neon OAuth server
 
@@ -84796,11 +87777,15 @@ The following OAuth scopes allow varying degrees of access to Neon resources:
 
 You must choose from these predefined scopes when requesting access; custom scopes are not supported.
 
-### 1. Initiating the OAuth flow
+Let's now go through the full flow, step by step:
+
+<Steps>
+
+## Initiating the OAuth flow
 
 To initiate the OAuth flow, you need to generate an authorization URL. You can do that by directing your users to `https://oauth2.neon.tech/oauth2/auth` while passing the following query parameters:
 
-- `client_id`: your OAuth application's ID.
+- `client_id`: your OAuth application's ID (provided to you by Neon after your application is received)
 - `redirect_uri`: the full URL that Neon should redirect users to after authorizing your application. The URL should match at least one of the callback URLs you provided when applying to become a partner.
 - `scope`: This is a space-separated list of predefined scopes that define the level of access you want to request. For a full list of supported scopes and their meanings, see the [Supported OAuth Scopes](#supported-oauth-scopes) section.
 
@@ -84814,13 +87799,17 @@ To initiate the OAuth flow, you need to generate an authorization URL. You can d
 - `code_challenge`: This is a random string that is used to verify the integrity of the authorization code.
 - `state`: This is a random string that is returned to your callback URL. You can use this parameter to verify that the request came from your application and not from a third party.
 
+## Authorization URL
+
 Here is an example of what the authorization URL might look like:
 
 ```text
 https://oauth2.neon.tech/oauth2/auth?client_id=neon-experimental&scope=openid%20offline%20offline_access%20urn%3Aneoncloud%3Aprojects%3Acreate%20urn%3Aneoncloud%3Aprojects%3Aread%20urn%3Aneoncloud%3Aprojects%3Aupdate%20urn%3Aneoncloud%3Aprojects%3Adelete&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcallback%2Fneon&grant_type=authorization_code&state=H58y-rSTebc3QmNbRjNTX9dL73-IyoU2T_WNievO9as&code_challenge=99XcbwOFU6iEsvXr77Xxwsk9I0GL4c4c4Q8yPIVrF_0&code_challenge_method=S256
 ```
 
-After being redirected to the authorization URL, the user is presented with Neon's consent screen, which is pre-populated with the scopes you requested. From the consent screen, the user is able to review the scopes and authorize the application to connect their Neon account.
+## OAuth consent screen
+
+After being redirected to the authorization URL, the user is presented with Neon's OAuth consent screen, which is pre-populated with the scopes you requested. From the consent screen, the user is able to review the scopes and authorize the application to connect their Neon account.
 
 ![Neon OAuth consent screen](/docs/oauth/consent.png)
 
@@ -84828,7 +87817,7 @@ After being redirected to the authorization URL, the user is presented with Neon
 The [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) provides a [Get current user details](https://api-docs.neon.tech/reference/getcurrentuserinfo) endpoint for retrieving information about the currently authorized Neon user.
 </Admonition>
 
-### 2. Authorization code is returned to your callback URL
+## Authorization code is returned to your callback URL
 
 After successfully completing the authorization flow, the user is redirected to the callback URL with the following query parameters appended to the URL:
 
@@ -84836,7 +87825,7 @@ After successfully completing the authorization flow, the user is redirected to 
 - `scope`: the scopes that the user authorized your application to access
 - `state`: you can compare the value of this parameter with the original `state` you provided in the previous step to ensure that the request came from your application and not from a third party
 
-### 3. Exchanging the authorization code for an access token
+## Exchanging the authorization code for an access token
 
 You can now exchange the authorization code returned from the previous step for an access token. To do that, you need to send a `POST` request to `https://oauth2.neon.tech/oauth2/token` with the following parameters:
 
@@ -84847,6 +87836,8 @@ You can now exchange the authorization code returned from the previous step for 
 - `code`: the authorization code returned from the previous step
 
 The response object includes an `access_token` value, required for making requests to the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) on your users' behalf. This value must be supplied in the Authorization header of the HTTP request when sending requests to the Neon API.
+
+</Steps>
 
 ## Example OAuth applications
 
@@ -85395,7 +88386,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2025-02-12T12:37:54.272Z'
+updatedOn: '2025-03-06T11:08:51.322Z'
 ---
 
 ## access token
@@ -85434,7 +88425,7 @@ Cost-efficient storage where Neon archives inactive branches after a defined thr
 
 ## Scale to Zero
 
-A Neon feature that suspends a compute after a specified period of inactivity (5 minutes) to minimize compute usage. When suspended, a compute is placed into an idle state. Otherwise, the compute is in an `Active` state. Users on paid plans can disable the _Scale to Zero_ feature for an "always-active" compute. For more information, see [Edit a compute](/docs/manage/endpoints#edit-a-compute).
+A Neon feature that suspends a compute after a specified period of inactivity (5 minutes by default) to minimize compute usage. When suspended, a compute is placed into an idle state. Otherwise, the compute is in an `Active` state. Users on paid plans can disable the _Scale to Zero_ feature for an "always-active" compute. For more information, see [Edit a compute](/docs/manage/endpoints#edit-a-compute).
 
 ## autoscaler-agent
 
@@ -85500,13 +88491,17 @@ A role in Neon with limited access to specific projects shared with them. Shared
 
 ## Compute
 
-A service that provides virtualized computing resources, including CPU, memory, and storage, for running applications. In the context of Neon, a compute runs Postgres.
+A service that provides virtualized computing resources, equipped with an operating system, a specified number of virtual CPUs (vCPUs), and a defined amount of RAM. It provides the processing power and resources for running applications. In the context of Neon, a compute runs Postgres and includes supporting components and extensions.
 
-Neon creates a primary read-write compute for the project's default branch. Neon supports both read-write and [read replica](/docs/introduction/read-replicas) computes. A branch can have a single primary (read-write) compute but supports multiple read replica computes. The compute hostname is required to connect to a Neon Postgres database from a client or application. A [compute endpoint](#compute-endpoint) is the access point through which users connect to a Neon compute.
+A [compute endpoint](#compute-endpoint) is the access point for connecting to a Neon compute.
+
+Neon creates a primary read-write compute for the project's default branch. Neon supports both read-write and [read replica](/docs/introduction/read-replicas) computes. A branch can have a single primary (read-write) compute but supports multiple read replica computes. The compute hostname is required to connect to a Neon Postgres database from a client or application.
 
 ## compute endpoint
 
-The access point through which users connect to a Neon compute. In the context of Neon, the compute endpoint is represented by a connection string, which includes necessary credentials and connection parameters. This connection string enables clients, such as applications or users, to securely connect to a Postgres database running on a Neon compute. See [connection string](#connection-string).
+The network access point for connecting to a [Neon compute](#compute).
+
+In Neon, a compute endpoint is represented by a hostname, such as `ep-aged-math-668285.us-east-2.aws.neon.tech`, which directs traffic to the appropriate Neon compute. Additional attributes further define a compute endpoint, including `project_id`, `region_id`, `branch_id`, and `type`. These attributes specify the associated Neon project, branch, cloud service region, and whether the endpoint is read-write or read-only. For additional endpoint attributes, refer to the [Neon API](https://api-docs.neon.tech/reference/createprojectendpoint).
 
 ## compute size
 
@@ -85600,7 +88595,7 @@ A Neon Control Plane operation that deletes stored data when a Neon project is d
 
 ## Endpoint ID
 
-A string that identifies a Neon compute. Neon Endpoint IDs are generated Heroku-like memorable random names, similar to `ep-calm-flower-a5b75h79`. These names are always prefixed by `ep` for "endpoint". You can find your Endpoint ID by navigating to your project in the Neon Console, selecting **Branches** from the sidebar, and clicking on a branch. The Endpoint ID is shown in the table under the **Computes** heading.
+A string that identifies a Neon compute endpoint. Neon Endpoint IDs are generated Heroku-like memorable random names, similar to `ep-calm-flower-a5b75h79`. These names are always prefixed by `ep` for "endpoint". You can find your Endpoint ID by navigating to your project in the Neon Console, selecting **Branches** from the sidebar, and clicking on a branch. The **Endpoint ID** is shown in the table under the **Computes** heading.
 
 ## Egress
 
@@ -85613,6 +88608,14 @@ A custom volume-based paid plan offered by Neon. See [Neon plans](/docs/introduc
 ## Free Plan
 
 See [Neon Free Plan](#neon-free-plan).
+
+## GB-month
+
+In Neon, **GB-month** is a unit of measure representing the storage of 1 gigabyte (GB) of data for one month. Storage usage is measured periodically and accumulated over the billing period. At the start of each billing period, GB-month usage resets to zero.
+
+GB-month usage reflects both the amount of storage used and how long it was used. For example, storing 10 GB for an entire month results in **10 GB-months**, while storing 10 GB for half a month results in **5 GB-months**.
+
+Deleting data will reduce the rate at which GB-month usage increases from that point forward, but it does not decrease the GB-month usage accrued up to that point.
 
 ## History
 
@@ -85656,7 +88659,7 @@ A feature provided by some hypervisors, such as QEMU, that allows the transfer o
 
 ## Local File Cache
 
-The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 80% of your compute's RAM.
+The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 75% of your compute's RAM.
 
 ### logical data size
 
@@ -86012,7 +89015,7 @@ enableTableOfContents: true
 redirectFrom:
   - /docs/conceptual-guides/glossary
   - /docs/cloud/concepts/
-updatedOn: '2025-02-12T12:37:54.272Z'
+updatedOn: '2025-03-06T11:08:51.322Z'
 ---
 
 ## access token
@@ -86051,7 +89054,7 @@ Cost-efficient storage where Neon archives inactive branches after a defined thr
 
 ## Scale to Zero
 
-A Neon feature that suspends a compute after a specified period of inactivity (5 minutes) to minimize compute usage. When suspended, a compute is placed into an idle state. Otherwise, the compute is in an `Active` state. Users on paid plans can disable the _Scale to Zero_ feature for an "always-active" compute. For more information, see [Edit a compute](/docs/manage/endpoints#edit-a-compute).
+A Neon feature that suspends a compute after a specified period of inactivity (5 minutes by default) to minimize compute usage. When suspended, a compute is placed into an idle state. Otherwise, the compute is in an `Active` state. Users on paid plans can disable the _Scale to Zero_ feature for an "always-active" compute. For more information, see [Edit a compute](/docs/manage/endpoints#edit-a-compute).
 
 ## autoscaler-agent
 
@@ -86117,13 +89120,17 @@ A role in Neon with limited access to specific projects shared with them. Shared
 
 ## Compute
 
-A service that provides virtualized computing resources, including CPU, memory, and storage, for running applications. In the context of Neon, a compute runs Postgres.
+A service that provides virtualized computing resources, equipped with an operating system, a specified number of virtual CPUs (vCPUs), and a defined amount of RAM. It provides the processing power and resources for running applications. In the context of Neon, a compute runs Postgres and includes supporting components and extensions.
 
-Neon creates a primary read-write compute for the project's default branch. Neon supports both read-write and [read replica](/docs/introduction/read-replicas) computes. A branch can have a single primary (read-write) compute but supports multiple read replica computes. The compute hostname is required to connect to a Neon Postgres database from a client or application. A [compute endpoint](#compute-endpoint) is the access point through which users connect to a Neon compute.
+A [compute endpoint](#compute-endpoint) is the access point for connecting to a Neon compute.
+
+Neon creates a primary read-write compute for the project's default branch. Neon supports both read-write and [read replica](/docs/introduction/read-replicas) computes. A branch can have a single primary (read-write) compute but supports multiple read replica computes. The compute hostname is required to connect to a Neon Postgres database from a client or application.
 
 ## compute endpoint
 
-The access point through which users connect to a Neon compute. In the context of Neon, the compute endpoint is represented by a connection string, which includes necessary credentials and connection parameters. This connection string enables clients, such as applications or users, to securely connect to a Postgres database running on a Neon compute. See [connection string](#connection-string).
+The network access point for connecting to a [Neon compute](#compute).
+
+In Neon, a compute endpoint is represented by a hostname, such as `ep-aged-math-668285.us-east-2.aws.neon.tech`, which directs traffic to the appropriate Neon compute. Additional attributes further define a compute endpoint, including `project_id`, `region_id`, `branch_id`, and `type`. These attributes specify the associated Neon project, branch, cloud service region, and whether the endpoint is read-write or read-only. For additional endpoint attributes, refer to the [Neon API](https://api-docs.neon.tech/reference/createprojectendpoint).
 
 ## compute size
 
@@ -86217,7 +89224,7 @@ A Neon Control Plane operation that deletes stored data when a Neon project is d
 
 ## Endpoint ID
 
-A string that identifies a Neon compute. Neon Endpoint IDs are generated Heroku-like memorable random names, similar to `ep-calm-flower-a5b75h79`. These names are always prefixed by `ep` for "endpoint". You can find your Endpoint ID by navigating to your project in the Neon Console, selecting **Branches** from the sidebar, and clicking on a branch. The Endpoint ID is shown in the table under the **Computes** heading.
+A string that identifies a Neon compute endpoint. Neon Endpoint IDs are generated Heroku-like memorable random names, similar to `ep-calm-flower-a5b75h79`. These names are always prefixed by `ep` for "endpoint". You can find your Endpoint ID by navigating to your project in the Neon Console, selecting **Branches** from the sidebar, and clicking on a branch. The **Endpoint ID** is shown in the table under the **Computes** heading.
 
 ## Egress
 
@@ -86230,6 +89237,14 @@ A custom volume-based paid plan offered by Neon. See [Neon plans](/docs/introduc
 ## Free Plan
 
 See [Neon Free Plan](#neon-free-plan).
+
+## GB-month
+
+In Neon, **GB-month** is a unit of measure representing the storage of 1 gigabyte (GB) of data for one month. Storage usage is measured periodically and accumulated over the billing period. At the start of each billing period, GB-month usage resets to zero.
+
+GB-month usage reflects both the amount of storage used and how long it was used. For example, storing 10 GB for an entire month results in **10 GB-months**, while storing 10 GB for half a month results in **5 GB-months**.
+
+Deleting data will reduce the rate at which GB-month usage increases from that point forward, but it does not decrease the GB-month usage accrued up to that point.
 
 ## History
 
@@ -86273,7 +89288,7 @@ A feature provided by some hypervisors, such as QEMU, that allows the transfer o
 
 ## Local File Cache
 
-The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 80% of your compute's RAM.
+The Local File Cache (LFC) is a layer of caching that stores frequently accessed data from the storage layer in the local memory of the compute. This cache helps to reduce latency and improve query performance by minimizing the need to fetch data from the storage layer repeatedly. The LFC acts as an add-on or extension of Postgres [shared buffers](#shared-buffers). In Neon the `shared_buffers` parameter [scales with compute size](/docs/reference/compatibility#parameter-settings-that-differ-by-compute-size). The LFC extends cache memory up to 75% of your compute's RAM.
 
 ### logical data size
 
@@ -86631,7 +89646,7 @@ redirectFrom:
   - /docs/cloud/roadmap
   - /docs/conceptual-guides/roadmap
   - /docs/reference/roadmap
-updatedOn: '2025-02-14T19:32:07.602Z'
+updatedOn: '2025-03-10T17:50:45.189Z'
 ---
 
 Our development teams are focused on helping you ship faster with Postgres. This roadmap describes committed features we're working on right now, what we delivered recently, and a peek at what's on the horizon.
@@ -86641,13 +89656,9 @@ Our development teams are focused on helping you ship faster with Postgres. This
 Here's a snapshot of what we're working on now:
 
 - **Data anonymization**: We're simplifying PII data anonymization to make Neon an ideal staging environment for your team's app development.
-- **HIPAA compliance**: We are working toward HIPAA readiness, targeting completion by the end of Q2 2025. Learn more about Neon's compliance milestones on our [Compliance page](/docs/security/compliance).
-- **More regions**: São Paulo 🇧🇷 is locked in for Q1 2025. Brazilian developers: we'd love to sponsor meetups and connect! Share your thoughts via the [Feedback form](https://console.neon.tech/app/projects?modal=feedback) in the Neon Console or our [Discord feedback channel](https://discord.com/channels/1176467419317940276/1176788564890112042). If you'd like support in other regions, please [submit a request](/docs/introduction/regions#request-a-region).
-- **Improved migration assistance**: The [Neon Migration Assistant](/docs/import/migration-assistant) was introduced in Q4 2024. More improvements are coming in 2025 to make data import easier and faster.
+- **Improved migration assistance**: The [Import Data Assistant](/docs/import/import-data-assistant) was introduced in Q4 2024. More improvements are coming in 2025 to make data import easier and faster.
 - **Support for the [pg_search](https://github.com/paradedb/paradedb/tree/dev/pg_search) extension**: This extension enables full text search over heap tables.
-- **Scheduled updates**: We will be rolling out support for a scheduled updates feature in Neon to facilitate Postgres updates, security patches, and Neon feature enhancements. [Learn more](/docs/changelog/2025-01-24#scheduled-updates-coming-soon).
 - **Backup & restore**: We'll start with scheduled snapshots with instant point-in-time recovery, eventually expanding this feature with more traditional automated backup capabilities.
-- **Vercel preview deployment support**: We're adding support for preview deployments to our [Native Vercel Integration](/docs/guides/vercel-native-integration).
 - **Branch protection enhancements**: We're enhancing safeguards for [protected branches](/docs/guides/protected-branches) to strengthen their security and prevent accidental actions.
 - **Neon on Azure GA**: We're working toward a GA release with deeper Azure integration.
 - **Inbound logical replication GA**: Neon supports Postgres logical replication for inbound and outbound data. Outbound replication (replicating data from Neon) is GA. In 2025, inbound replication (replicating data to Neon) will also reach GA.
@@ -86670,6 +89681,12 @@ And here's a quick list of what we'll be taking on in the near future:
 
 ## What we've shipped recently 🚢
 
+- **HIPAA compliance**: We have achieved HIPAA compliance. Learn more about Neon's compliance milestones on our [Compliance page](/docs/security/compliance).
+- **Scheduled updates**: Business plan users can now check for update notices and choose preferred update windows for Postgres updates, security patches, and Neon feature enhancements.
+- **AWS São Paulo region**: Create projects in São Paulo (sa-east-1) for lower latency access from the South America and data residency within Brazil.
+- **Vercel preview deployment support**: We added support for preview deployments to our **Vercel Native Integration**. See [Vercel Native Integration Previews](/docs/guides/vercel-native-integration-previews).
+- **Manage your database from Cursor or Claude Desktop**: Manage your Neon database directly from [Cursor](https://neon.tech/guides/cursor-mcp-neon) or [Claude Desktop](https://neon.tech/guides/neon-mcp-server) using natural language, made possible by the [Neon Model Context Protocol (MCP) Server](https://github.com/neondatabase/mcp-server-neon).
+- **Database Branching for Vercel Preview Environments**: We added support for **database branching for preview environments** to the **Neon Postgres Native Integration**, available from the [Vercel Marketplace](https://vercel.com/marketplace).
 - **AWS London region**: Create projects in London (eu-west-2) for lower latency access from the UK and data residency within the United Kingdom.
 - **Datadog integration GA**: Monitor your Neon database performance, resource utilization, and system health directly from Datadog's observability platform.
 - **Save your connection details to [1Password](https://1password.com/)**: See [Save your connection details to 1Password](/docs/connect/connect-from-any-app#save-your-connection-details-to-1password).
@@ -86678,8 +89695,8 @@ And here's a quick list of what we'll be taking on in the near future:
 - **Schema-only branches**: Create branches that include only your database schema—ideal for workflows involving sensitive data. This feature is now available in Early Access. [Learn more](/docs/guides/branching-schema-only).
 - Support for the [postgres_fdw](/docs/extensions/postgres_fdw), [dblink](https://neon.tech/docs/extensions/dblink), and [pg_repack](/docs/extensions/pg_repack) Postgres extensions.
 - **"Instagres": No signup, instant Postgres**: An app that lets you generate a Postgres database URL almost instantly — no sign up required. Give it a try at [https://www.instagres.com/](https://www.instagres.com/) or by running `npx instagres` in your terminal. See how fast Neon can spin up a Postgres database (AI agents loves this, btw).
-- **Neon Chat for Visual Studio Code**: This AI-powered assistant lets you chat with the latest Neon documentation without leaving your IDE
-- **A GitHub Copilot extension**: This extension provides chat-based access to the latest Neon documentation with repository context, making it easier to configure Neon for your project. You can find it here: [Neon Database Copilot Extension](https://github.com/marketplace/neon-database)
+- **Neon Chat for Visual Studio Code**: This AI-powered assistant lets you chat with the latest Neon documentation without leaving your IDE. You can find it here: [Neon Postgres VS Code Extension](https://marketplace.visualstudio.com/items?itemName=buildwithlayer.neon-integration-expert-15j6N).
+- **A GitHub Copilot extension**: This extension provides chat-based access to the latest Neon documentation directly from your repository. You can find it here: [Neon Postgres Copilot Extension](https://github.com/marketplace/neon-database)
 - **Schema Diff API**: Neon now supports schema checks in agentic systems and deployment pipelines with the new schema diff API endpoint. Learn more about [Schema Diff](/docs/guides/schema-diff), which is also available via the console and CLI.
 - **Neon Auth (Early Access)**: Sync user profiles from your auth provider to your database automatically. Currently in Early Access. See [Neon Auth](/docs/guides/neon-auth) for details.
 - **Postgres 17**: Now the default version for all newly created projects.
@@ -86700,11 +89717,11 @@ And here's a quick list of what we'll be taking on in the near future:
 - **Organizations GA**: Organization Accounts are now generally available. Create a new organization, transfer over your projects, invite your team and get started collaborating. Refer to our [Organizations docs](/docs/manage/organizations) to learn more.
 - **Private Networking**: Private and secure network access to your compute resources without traversing public networks. Support for AWS PrivateLink is available in [Public Beta](/docs/guides/neon-private-networking).
 - **Schema Diff GitHub Action**: This action leverages our [Schema Diff](/docs/guides/schema-diff) feature to compare database schemas across branches and post the differences as a comment on your pull request, streamlining the review process. It's also supported with our [Neon GitHub integration](/docs/guides/neon-github-integration).
-- **Migration Assistant**: Helps you migrate data to Neon from other Postgres databases. All you need to get started is a connection string for your existing database. See [Neon Migration Assistant](/docs/import/migration-assistant) for instructions.
+- **Import Data Assistant**: Helps you migrate data to Neon from other Postgres databases. All you need to get started is a connection string for your existing database. See [Import Data Assistant](/docs/import/import-data-assistant) for instructions.
 - **Python SDK**: Our new [Python SDK](https://pypi.org/project/neon-api/) wraps the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api), allowing you to manage the Neon platform directly from your Python applications.
 - **Neon in the Vercel Marketplace**: Neon is now a first-party native integration in the Vercel Marketplace. This integration lets Vercel users add Postgres to their projects and manage billing directly through Vercel. For details, see [Install the Neon Postgres Native Integration on Vercel](/docs/guides/vercel-native-integration).
 - **Archive storage on the Free Plan**: Archive storage is now available on the Free Plan for automatically archiving inactive branches. This feature helps minimize storage costs, allowing us to expand the Free Plan even further. Learn more in [Branch Archiving](/docs/guides/branch-archiving).
-- **Neon RLS Authorize**: This feature integrates with third-party **authentication providers** like Auth0, Clerk, and Stack Auth to bring authorization to your code base by leveraging Postgres [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html). [Read the announcement](https://neon.tech/blog/introducing-neon-authorize) and [check out the docs](/docs/guides/neon-rls-authorize).
+- **Neon RLS**: This feature integrates with third-party **authentication providers** like Auth0, Clerk, and Stack Auth to bring authorization to your code base by leveraging Postgres [Row-Level Security (RLS)](https://www.postgresql.org/docs/current/ddl-rowsecurity.html). [Read the announcement](https://neon.tech/blog/introducing-neon-authorize) and [check out the docs](/docs/guides/neon-rls).
 - **Neon on Azure**: You can deploy Neon databases on Azure, starting with the East US 2 region. This marks the first milestone on our Azure roadmap—many more exciting updates are on the way, including deeper integrations with the Azure ecosystem. [Read the announcement](https://neon.tech/blog/first-azure-region-available-in-neon).
 - **End-to-end RAG pipelines in Postgres**: Our new and open source [pgrag](/docs/extensions/pgrag) extension lets you create end-to-end Retrieval-Augmented Generation (RAG) pipelines in Postgres. There's no need for additional programming languages or libraries. With the functions provided by `pgrag`, you can build a complete RAG pipeline directly within your SQL client.
 - **Support for Analytics with pg_mooncake**: This new extension, brought to the community by [mooncake.dev](https://mooncake.dev/), introduces native columnstore tables with DuckDB execution for _fast_ analytics directly in Postgres. [Read the announcement](https://www.mooncake.dev/blog/pgmooncake-neon).
@@ -86725,15 +89742,27 @@ For more of the latest features and fixes, check our [Changelog](/docs/changelog
 
 ## Join the Neon Early Access Program
 
-If you would like to get a little more involved, consider signing up for the **Neon Early Access Program**.
+Help shape the future of Neon. Sign up for the **Early Access Program** and get:
 
-Benefits of joining:
+- **Exclusive early access**: Get a first look at upcoming features before they go live
+- **Private community**: Gain access to a dedicated Discord channel to connect with the Neon team and provide feedback to help shape what comes next
+- **Weekly insights**: Receive updates on Neon's latest developments and future plans
 
-- **Exclusive early access**: Get a first look at upcoming features before they go live.
-- **Private community**: Gain access to a dedicated Discord channel to connect with the Neon team and provide feedback to help shape what comes next.
-- **Weekly insights**: Receive updates on Neon's latest developments and future plans.
+The Early Access Program is available at two levels, which you can enable independently:
 
-[Sign Up Now](https://console.neon.tech/app/settings/early-access) and start influencing the future of Neon!
+### Personal Early Access
+
+Enable Early Access for your personal account to preview new features. Early Access features under this program level will only apply to projects under your personal account.
+
+[Sign up now](https://console.neon.tech/app/settings/early-access) for your personal account to get started!
+
+### Organization Early Access
+
+Enable Early Access for your organization to preview new features. When an organization admin enables Early Access, everyone in your organization gets access to preview features across all projects belonging to that organization.
+
+To enable Early Access for your organization, go to your organization **Settings** page in the Neon Console and **Join early access**.
+
+If you need to opt out of Early Access later, [contact our Support team about Early Access changes](https://console.neon.tech/app/projects?modal=support) to ensure there's no disruption to features you may be using.
 
 ## A note about timing
 
