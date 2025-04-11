@@ -2897,6 +2897,431 @@ You can find the source code for the application described in this guide on GitH
 <NeedHelp/>
 
 
+# Build your first AI Agent for Postgres on Azure
+
+---
+title: 'Build your first AI Agent for Postgres on Azure'
+subtitle: 'Learn how to build an AI Agent for Postgres using Azure AI Agent Service and Neon'
+author: boburmirzo
+enableTableOfContents: true
+createdAt: '2025-04-07T00:00:00.000Z'
+updatedOn: '2025-04-07T00:00:00.000Z'
+---
+
+AI agents are getting a lot of attention lately, but getting started can be confusing. You may have heard about tools like [LangChain/LangGraph](https://python.langchain.com/v0.1/docs/modules/agents/), [Semantic Kernel](https://learn.microsoft.com/en-us/semantic-kernel/overview/), [AutoGen](https://microsoft.github.io/autogen/), or [LlamaIndex](https://docs.llamaindex.ai/en/stable/use_cases/agents/). They are powerful, but sometimes all you need is something simple that works.
+
+[**Azure AI Agent Service**](https://learn.microsoft.com/en-us/azure/ai-services/agents/overview) lets you build AI agents that can use your own tools, such as a function to read data from a Postgres database. It's designed to help developers get started fast, without needing to understand chains, graphs, or complex frameworks.
+
+In this tutorial, you’ll learn how to create an AI agent that can answer questions about data in a **Postgres** database using **Azure AI Agent Service**.
+
+## Sample Use Case
+
+Imagine you run a SaaS product and track tenant-level usage data for billing (like API calls, storage, user sessions, etc.) in a Postgres table. You want an AI assistant to:
+
+- Analyze recent usage for a tenant
+- Spot spikes in usage (possible billing anomalies)
+- Explain what happened in natural language
+
+For example, when a user asks questions about their invoice, the AI can query Neon for relevant usage logs, summarize usage patterns, and offer explanations before routing to a human. Or when you open your billing dashboard, the agent proactively explains any spikes or changes:
+
+> "Your API usage increased by 250% on April 3rd due to increased traffic from users in the EU region."
+
+We’ll build an AI agent that connects to your Postgres database and uses a simple Python function to fetch and analyze the data.
+
+We’ll use [**Neon Serverless Postgres**](https://neon.tech/) as our database. It’s a fully managed, cloud-native Postgres that’s free to start, scales automatically, and works great for [AI agents](https://neon.tech/use-cases/ai-agents) that need to query data on demand without managing infrastructure.
+
+### Prerequisites
+
+- An Azure subscription - [Create one for free](https://azure.microsoft.com/free/cognitive-services).
+- Make sure you have the **Azure AI Developer** [RBAC role](https://learn.microsoft.com/en-us/azure/ai-foundry/concepts/rbac-azure-ai-foundry) assigned
+- Install [Python 3.11.x](https://www.python.org/downloads/).
+
+## Create a Neon Database on Azure
+
+Open the [new Neon Resource page](https://portal.azure.com/#view/Azure_Marketplace_Neon/NeonCreateResource.ReactView) on the Azure portal, and it brings up the form to create a Neon Serverless Postgres Resource. Fill out the form with the required fields and deploy it.
+
+### Obtain Neon Database Credentials
+
+1. After the resource is created on Azure, go to the Neon Serverless Postgres Organization service and click on the Portal URL. This brings you to the Neon Console
+2. Click “New Project”
+3. Choose an Azure region
+4. Give your project a name (e.g., “Postgres AI Agent”)
+5. Click “Create Project”
+6. Once the project is created successfully, copy the Neon connection string and note it down. You can find the connection details in the Connection Details widget on the Neon Dashboard.
+
+```bash
+    postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+```
+
+## Create an AI Foundry Project on Azure
+
+Create a new hub and project in the Azure AI Foundry portal by [following the guide](https://learn.microsoft.com/en-us/azure/ai-services/agents/quickstart?pivots=ai-foundry-portal#create-a-hub-and-project-in-azure-ai-foundry-portal) in the Microsoft docs. You also need to [deploy a model](https://learn.microsoft.com/en-us/azure/ai-services/agents/quickstart?pivots=ai-foundry-portal#deploy-a-model) like GPT-4o.
+
+You only need the **Project connection string** and **Model Deployment Name** from the Azure AI Foundry portal. You can also find your connection string in the **overview** for your project in the [**Azure AI Foundry portal**](https://ai.azure.com/), under **Project details** > **Project connection string**.
+
+![Project connection string in Azure AI Foundry Portal](/docs/guides/azure-ai-agent-service/azure-ai-foundry-find-project-connection-string.png)
+
+Once you have all three values on hand: **Neon connection string**, **Project connection string,** and **Model Deployment Name,** you are ready to set up the Python project to create an Agent.
+
+All the code and sample data are available in this [GitHub repository](https://github.com/neondatabase-labs/neon-azure-ai-agent-service-get-started). You can clone or download the project.
+
+## Project Environment Setup
+
+Create a `.env` file with your credentials:
+
+```bash
+PROJECT_CONNECTION_STRING="<Your AI Foundry connection string>"
+AZURE_OPENAI_DEPLOYMENT_NAME="gpt-4o"
+NEON_DB_CONNECTION_STRING="<Your Neon connection string>"
+```
+
+Create and activate a virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # on macOS/Linux
+.venv\Scripts\activate    # on Windows
+```
+
+Install required Python libraries:
+
+```
+pip install -r requirements.txt
+```
+
+Example `requirements.txt`:
+
+```bash
+pandas
+python-dotenv
+sqlalchemy
+psycopg2-binary
+azure-ai-projects
+azure-identity
+```
+
+## Load Sample Billing Usage Data
+
+We will use a mock dataset for tenant usage, including computed percent change in API calls and storage usage in GB:
+
+```
+tenant_id   date        api_calls  storage_gb
+
+tenant_456	2025-04-01	1000	     25.0
+tenant_456	2025-03-31	950	         24.8
+tenant_456	2025-03-30	2200	     26.0
+```
+
+Run `python load_usage_data.py` [Python script](https://github.com/neondatabase-labs/neon-azure-ai-agent-service-get-started/blob/main/load_usage_data.py) to create and populate the `usage_data` table in your Neon Serverless Postgres instance:
+
+```python
+# load_usage_data.py file
+
+import os
+from dotenv import load_dotenv
+from sqlalchemy import (
+    create_engine,
+    MetaData,
+    Table,
+    Column,
+    String,
+    Date,
+    Integer,
+    Numeric,
+)
+
+# Load environment variables from .env
+load_dotenv()
+
+# Load connection string from environment variable
+NEON_DB_URL = os.getenv("NEON_DB_CONNECTION_STRING")
+engine = create_engine(NEON_DB_URL)
+
+# Define metadata and table schema
+metadata = MetaData()
+
+usage_data = Table(
+    "usage_data",
+    metadata,
+    Column("tenant_id", String, primary_key=True),
+    Column("date", Date, primary_key=True),
+    Column("api_calls", Integer),
+    Column("storage_gb", Numeric),
+)
+
+# Create table
+with engine.begin() as conn:
+    metadata.create_all(conn)
+
+    # Insert mock data
+    conn.execute(
+        usage_data.insert(),
+        [
+            {
+                "tenant_id": "tenant_456",
+                "date": "2025-03-27",
+                "api_calls": 870,
+                "storage_gb": 23.9,
+            },
+            {
+                "tenant_id": "tenant_456",
+                "date": "2025-03-28",
+                "api_calls": 880,
+                "storage_gb": 24.0,
+            },
+            {
+                "tenant_id": "tenant_456",
+                "date": "2025-03-29",
+                "api_calls": 900,
+                "storage_gb": 24.5,
+            },
+            {
+                "tenant_id": "tenant_456",
+                "date": "2025-03-30",
+                "api_calls": 2200,
+                "storage_gb": 26.0,
+            },
+            {
+                "tenant_id": "tenant_456",
+                "date": "2025-03-31",
+                "api_calls": 950,
+                "storage_gb": 24.8,
+            },
+            {
+                "tenant_id": "tenant_456",
+                "date": "2025-04-01",
+                "api_calls": 1000,
+                "storage_gb": 25.0,
+            },
+        ],
+    )
+
+print("✅ usage_data table created and mock data inserted.")
+```
+
+## Create a Postgres Tool for the Agent
+
+Next, we configure an AI agent tool to retrieve data from Postgres. The Python script [`billing_agent_tools.py`](https://github.com/neondatabase-labs/neon-azure-ai-agent-service-get-started/blob/main/billing_agent_tools.py) contains:
+
+- The function `billing_anomaly_summary()` that:
+  - Pulls usage data from Neon.
+  - Computes `% change` in `api_calls`.
+  - Flags anomalies with a threshold of `> 1.5x` change.
+- Exports `user_functions` list for the Azure AI Agent to use. You do not need to run it separately.
+
+```python
+# billing_agent_tools.py file
+
+import os
+import json
+import pandas as pd
+from sqlalchemy import create_engine
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Set up the database engine
+NEON_DB_URL = os.getenv("NEON_DB_CONNECTION_STRING")
+db_engine = create_engine(NEON_DB_URL)
+
+# Define the billing anomaly detection function
+def billing_anomaly_summary(
+    tenant_id: str,
+    start_date: str = "2025-03-27",
+    end_date: str = "2025-04-01",
+    limit: int = 10,
+) -> str:
+    """
+    Fetches recent usage data for a SaaS tenant and detects potential billing anomalies.
+
+    :param tenant_id: The tenant ID to analyze.
+    :type tenant_id: str
+    :param start_date: Start date for the usage window.
+    :type start_date: str
+    :param end_date: End date for the usage window.
+    :type end_date: str
+    :param limit: Maximum number of records to return.
+    :type limit: int
+    :return: A JSON string with usage records and anomaly flags.
+    :rtype: str
+    """
+    query = """
+        SELECT date, api_calls, storage_gb
+        FROM usage_data
+        WHERE tenant_id = %s AND date BETWEEN %s AND %s
+        ORDER BY date DESC
+        LIMIT %s;
+    """
+
+    df = pd.read_sql(query, db_engine, params=(tenant_id, start_date, end_date, limit))
+
+    if df.empty:
+        return json.dumps(
+            {"message": "No usage data found for this tenant in the specified range."}
+        )
+
+    df.sort_values("date", inplace=True)
+    df["pct_change_api"] = df["api_calls"].pct_change()
+    df["anomaly"] = df["pct_change_api"].abs() > 1.5
+
+    return df.to_json(orient="records")
+
+# Register this in a list to be used by FunctionTool
+user_functions = [billing_anomaly_summary]
+```
+
+## Create and Configure the AI Agent
+
+Now we'll set up the AI agent and integrate it with our Neon Postgres tool using the **Azure AI Agent Service SDK.** The [Python script](https://github.com/neondatabase-labs/neon-azure-ai-agent-service-get-started/blob/main/billing_anomaly_agent.py) does the following:
+
+- **Creates the agent**
+  Instantiates an AI agent using the selected model (`gpt-4o`, for example), adds tool access, and sets instructions that tell the agent how to behave (e.g., “You are a helpful SaaS assistant…”).
+- **Creates a conversation thread**
+  A thread is started to hold a conversation between the user and the agent.
+- **Posts a user message**
+  Sends a question like “Why did my billing spike for tenant_456 this week?” to the agent.
+- **Processes the request**
+  The agent reads the message, determines that it should use the custom tool to retrieve usage data, and processes the query.
+- **Displays the response**
+  Prints the response from the agent with a natural language explanation based on the tool’s output.
+
+```python
+# billing_anomaly_agent.py
+
+import os
+from datetime import datetime
+from azure.ai.projects import AIProjectClient
+from azure.identity import DefaultAzureCredential
+from azure.ai.projects.models import FunctionTool, ToolSet
+from dotenv import load_dotenv
+from pprint import pprint
+from billing_agent_tools import user_functions  # Custom tool function module
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Create an Azure AI Project Client
+project_client = AIProjectClient.from_connection_string(
+    credential=DefaultAzureCredential(),
+    conn_str=os.environ["PROJECT_CONNECTION_STRING"],
+)
+
+# Initialize toolset with our user-defined functions
+functions = FunctionTool(user_functions)
+toolset = ToolSet()
+toolset.add(functions)
+
+# Create the agent
+agent = project_client.agents.create_agent(
+    model=os.environ["AZURE_OPENAI_DEPLOYMENT_NAME"],
+    name=f"billing-anomaly-agent-{datetime.now().strftime('%Y%m%d%H%M')}",
+    description="Billing Anomaly Detection Agent",
+    instructions=f"""
+    You are a helpful SaaS financial assistant that retrieves and explains billing anomalies using usage data.
+    The current date is {datetime.now().strftime("%Y-%m-%d")}.
+    """,
+    toolset=toolset,
+)
+print(f"Created agent, ID: {agent.id}")
+
+# Create a communication thread
+thread = project_client.agents.create_thread()
+print(f"Created thread, ID: {thread.id}")
+
+# Post a message to the agent thread
+message = project_client.agents.create_message(
+    thread_id=thread.id,
+    role="user",
+    content="Why did my billing spike for tenant_456 this week?",
+)
+print(f"Created message, ID: {message.id}")
+
+# Run the agent and process the query
+run = project_client.agents.create_and_process_run(
+    thread_id=thread.id, agent_id=agent.id
+)
+print(f"Run finished with status: {run.status}")
+
+if run.status == "failed":
+    print(f"Run failed: {run.last_error}")
+
+# Fetch and display the messages
+messages = project_client.agents.list_messages(thread_id=thread.id)
+print("Messages:")
+pprint(messages["data"][0]["content"][0]["text"]["value"])
+
+# Optional cleanup:
+# project_client.agents.delete_agent(agent.id)
+# print("Deleted agent")
+
+```
+
+## Run the agent
+
+To run the agent, run the following command
+
+```bash
+python billing_anomaly_agent.py
+```
+
+Snippet of output from agent:
+
+```bash
+Messages:
+('Based on the usage data for tenant `tenant_456` between April 1 and April 6, '
+ '2025:\n'
+ '\n'
+ '- **API calls:** 1,000\n'
+ '- **Storage usage:** 25 GB\n'
+ '\n'
+ 'There are no notable anomalies detected. The percent change in API activity '
+ 'compared to previous usage is not reported (likely constant or not '
+ "significant), and usage levels seem normal. Let me know if you'd like a "
+ 'deeper investigation into prior weeks or specific metrics!')
+```
+
+## Using the Azure AI Foundry agent playground
+
+After running your agent using the Azure AI Agent SDK, it is saved within your Azure AI Foundry project. You can now experiment with it using the **Agent Playground**.
+
+![Azure AI Foundry agent playground](/docs/guides/azure-ai-agent-service/azure-ai-foundry-portal-agents-view.png)
+
+**To try it out:**
+
+- Go to the **Agents** section in your [Azure AI Foundry](https://ai.azure.com/) workspace.
+- Find your **billing anomaly agent** in the list and click to open it.
+- Use the playground interface to test different financial or billing-related questions, such as:
+  > “Did tenant_456 exceed their API usage quota this month?”
+  >
+  > “Explain recent storage usage changes for tenant_456.”
+
+This is a great way to validate your agent's behavior without writing more code.
+
+## Summary
+
+You’ve now created a working AI agent that talks to your Postgres database, all using:
+
+- A simple Python function
+- Azure AI Agent Service
+- A Neon Serverless Postgres backend
+
+This approach is beginner-friendly, lightweight, and practical for real-world use.
+
+Want to go further? You can:
+
+- Add more tools to the agent
+- Integrate with [vector search](https://neon.tech/docs/extensions/pgvector) (e.g., detect anomaly reasons from logs using embeddings)
+
+## Resources
+
+- [Neon on Azure](https://neon.tech/docs/manage/azure)
+- [Build AI Agents with Azure AI Agent Service and Neon](https://neon.tech/blog/build-ai-agents-with-azure-ai-agent-service-and-neon)
+- [Multi-Agent AI Solution with Neon, Langchain, AutoGen and Azure OpenAI](https://neon.tech/blog/multi-agent-ai-solution-with-neon-langchain-autogen-and-azure-openai)
+
+<NeedHelp />
+
+
 # Building AI-Powered Chatbots with Azure AI Studio and Neon
 
 ---
@@ -7170,6 +7595,196 @@ Thanks to the Azure Logic Apps PostgreSQL connector, you can easily integrate yo
 <NeedHelp />
 
 
+# Connect Azure services to Neon with Azure Service Connector
+
+---
+title: 'Connect Azure services to Neon with Azure Service Connector'
+subtitle: 'Learn how to connect Azure compute services to Neon using Azure Service Connector'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-04-04T00:00:00.000Z'
+updatedOn: '2025-04-04T00:00:00.000Z'
+---
+
+Azure Service Connector lets you connect Azure compute services to backend services like Neon. It achieves this primarily by managing connection secrets (like database credentials using Azure Key Vault for secure storage) and configuring your application with the necessary connection details, typically via environment variables. Your application code then uses this injected configuration with standard database drivers and libraries to connect to Neon.
+
+While Service Connector offers significant automation for some Azure-native services (like using Managed Identities), its integration with Neon currently relies on **connection string authentication**. This means you'll need to provide your Neon database credentials during setup, but Service Connector helps manage how these credentials are stored and exposed to your application.
+
+This guide demonstrates connecting an Azure compute service (using **Azure App Service** as an example) to your Neon database using the Azure Service Connector via the Azure Portal.
+
+## Prerequisites
+
+- An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/).
+- An Azure compute service to connect to Neon. Azure Service Connector supports the following compute services:
+  - Azure App Service
+  - Azure Functions
+  - Azure Container Apps
+  - Azure Kubernetes Service (AKS)
+  - Azure Spring Apps
+- An existing Neon project created on Azure. If you don't have one, see [Get started with Neon Serverless Postgres on Azure](/guides/neon-azure-integration).
+- Your Neon project's connection details readily available:
+  - **Hostname (endpoint ID)**: e.g., `ep-abc-123.eastus2.azure.neon.tech`
+  - **Database name**: e.g., `neondb`
+  - **Role (username)**: e.g., `neondb_owner`
+  - **Password**
+  - You can find these in the **Connection to your database** widget on Neon Console. See [Connect from any application](/docs/connect/connect-from-any-app).
+
+## Supported authentication for Neon
+
+Currently, Azure Service Connector supports connecting to Neon **only via connection string**.
+
+- You will provide your Neon database hostname, database name, username, and password during the Service Connector setup.
+- Managed Identity and Service Principal authentication methods, which provide passwordless connections and automated credential rotation for some Azure services, are **not** currently supported when connecting to Neon via Service Connector.
+
+## Connecting via the Azure portal
+
+Follow these steps to create a service connection from your Azure compute service (e.g., App Service) to Neon.
+
+1.  **Navigate to your Azure compute service:** In the Azure portal, locate and select the specific App Service, Function App, or other compute resource you want to connect to Neon.
+2.  **Open service connector:** In the service's left-hand menu, scroll down to the **Settings** section and select **Service Connector**.
+
+    ![Service connector menu item](/docs/guides/azure-service-connector/service-connector-menu-item.png)
+
+3.  **Start connection creation:** Click the **+ Create** button on the Service Connector page.
+4.  **Configure basics:**
+
+    - **Service type:** Search for and select `Neon Serverless Postgres`.
+
+      ![Select Neon service type](/docs/guides/azure-service-connector/service-type-selection.png)
+
+    - **Connection name:** Assign a descriptive name for this connection within Azure (e.g., `neon_db_connection`), or accept the auto-generated name. This name is for Azure management purposes.
+    - **Neon Postgres hostname:** **Manually enter** the full hostname (including the endpoint ID) from your Neon project's connection details. _(Service Connector currently cannot automatically discover existing Neon resources)._
+    - **Neon Postgres database name:** **Manually enter** the name of the Neon database you wish to connect to. (e.g., `neondb`).
+    - **Client type:** Select the primary programming language or framework your application uses (e.g., `.NET`, `Python`, `Java`, `Node.js`, `Go`, etc.). This choice influences the naming convention and format of the environment variables Service Connector creates.
+    - Click **Next: Authentication**.
+
+5.  **Configure authentication:**
+
+    - The **Connection string** option will be pre-selected, as it's the only supported method for Neon.
+    - You now need to provide your Neon **Username** and **Password**. Service Connector offers two ways to handle the _password_:
+
+      1.  **Database credentials:**
+
+          You can use database credentials for the first time connection to create a new Key Vault secret. For applications that already have a Key Vault secret, you can use the Key Vault option to reference the existing secret.
+
+                  ![Select Authentication Tile](/docs/guides/azure-service-connector/authentication-type.png)
+
+          - Select the **Database credentials** tile.
+          - Enter your Neon database **Username**.
+          - Enter your Neon database **Password**.
+
+            <Admonition type="important" title="Important">
+            Check the **Store Secret in Key Vault** box. This prompts you to select an existing Azure Key Vault or **Create new**.
+
+                ![Select Store secret in Key Vault](/docs/guides/azure-service-connector/key-vault-selection.png)
+
+            If you create new, Azure provisions a Key Vault instance and securely stores _the password_ as a secret within it.
+
+            ![Store Secret in Key Vault Option](/docs/guides/azure-service-connector/key-vault-creation.png)
+
+            Service Connector will then reference this secret. This is more secure than storing the password directly in App Service configuration.
+            </Admonition>
+
+      2.  **Key Vault reference (for pre-existing Key Vault secret):**
+          - Select the **Key Vault** tile.
+          - Choose the **Subscription** and **Key vault** containing your _pre-existing_ secret.
+          - Select the **Secret** that holds your Neon database _password_.
+          - Enter your Neon database **Username** manually in the provided field.
+
+    - Review the **Configuration information** section. This previews the environment variables Service Connector will set based on your choices (e.g., `NEON_POSTGRESQL_CONNECTIONSTRING` or individual components).
+
+      ![Advanced configuration information](/docs/guides/azure-service-connector/advanced-configuration.png)
+
+      If your application uses a custom naming convention for environment variables that differs from the default ones provided by Service Connector, you can choose to modify the variable names accordingly by clicking the **Edit** icon next to the variable name.
+
+    - Click **Next: Networking**.
+
+6.  **Configure networking:**
+
+    - For Neon connections via Service Connector in the portal, you can **skip** this step. Network access controls (like IP allow lists) are managed directly within your Neon project settings, not through Service Connector's network configuration options (Firewall, Service Endpoint, Private Endpoint) which apply primarily to Azure target services.
+    - Refer to Neon's [IP Allow](/docs/introduction/ip-allow) documentation to configure network access if needed.
+    - Click **Next: Review + Create**.
+
+7.  **Review and create:**
+    - Review the summary of the connection details. Verify the target service (Neon), compute service, authentication method, and especially the environment variables that will be created.
+    - Click **Create**.
+
+Azure will now provision the connection. This process might take a minute or two. Service Connector configures the necessary settings on your Azure compute service (primarily environment variables, potentially linking to Key Vault).
+
+You can confirm the connection was created successfully by returning to the **Service Connector** page for your compute service. The new Neon connection should be listed.
+
+    ![Service Connector Created Successfully](/docs/guides/azure-service-connector/service-connector-created.png)
+
+## Using the connection in your application
+
+After successful creation, Service Connector injects the connection details into your Azure compute service's environment. Your application code accesses these environment variables to connect to Neon using a standard PostgreSQL driver or library appropriate for your chosen language/framework.
+
+How Service Connector exposes the details depends on the **Client type** you selected:
+
+- **For most client types (.NET, Python, Go, Java, PHP, Ruby):** Service Connector creates a single environment variable named `NEON_POSTGRESQL_CONNECTIONSTRING` containing the full, formatted connection string.
+- **For other client types (like Node.js, Django or other):** Service Connector creates individual environment variables like `NEON_POSTGRESQL_HOST`, `NEON_POSTGRESQL_PORT`, `NEON_POSTGRESQL_DATABASE`, `NEON_POSTGRESQL_USER`, and `NEON_POSTGRESQL_PASSWORD`.
+
+You can view the configured environment variables in your App Service under **Settings** -> **Environment variables**.
+
+    ![Neon environment variables in App Service](/docs/guides/azure-service-connector/environment-variables.png)
+
+Here's an example of how to use the connection string in a Python application using the `psycopg2` library:
+
+```python
+import os
+import psycopg2
+
+connection_string = os.environ.get("NEON_POSTGRESQL_CONNECTIONSTRING")
+
+if not connection_string:
+    print("Error: NEON_POSTGRESQL_CONNECTIONSTRING environment variable not set.")
+    # Handle error appropriately - raise exception, exit, etc.
+else:
+    conn = None
+    try:
+        conn = psycopg2.connect(connection_string)
+        print("Successfully connected to Neon!")
+
+        with conn.cursor() as cur:
+            cur.execute("SELECT version()")
+            print(f"PostgreSQL version: {cur.fetchone()[0]}")
+
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(f"Error connecting to Neon: {error}")
+    finally:
+        if conn is not None:
+            conn.close()
+            print("Database connection closed.")
+```
+
+Adapt the code to fetch and use the environment variables according to your application's language, framework, and the specific variables created by Service Connector based on your "Client type" selection. Refer to the table below or the [Azure documentation](https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-neon-postgres#default-environment-variable-names-or-application-properties-and-sample-code) for specific variable names.
+
+**Environment variables and properties by client type**
+
+| Client type             | Primary configuration           | Example variable / property                                                                                                                           | Notes                                                                                                                                                        |
+| :---------------------- | :------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| .NET                    | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Standard Npgsql format. (eg, `Server=ep-still-mud-a12aa123.eastus2.azure.neon.tech;Database=<database-name>;Port=5432;Ssl Mode=Require;User Id=<username>`). |
+| Java (JDBC)             | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | `jdbc:postgresql://...` format.                                                                                                                              |
+| Java (Spring Boot JDBC) | Application Properties          | `spring.datasource.url`, `...username`, `...password`                                                                                                 | Service Connector sets corresponding env vars that Spring Boot picks up.                                                                                     |
+| Python (psycopg2)       | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Key-value format `dbname=... host=... user=... password=... port=... sslmode=require`                                                                        |
+| Go (pg)                 | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Similar key-value format as Python.                                                                                                                          |
+| Node.js (pg)            | Env Vars: Individual Components | `NEON_POSTGRESQL_HOST`, `NEON_POSTGRESQL_USER`, `NEON_POSTGRESQL_PASSWORD`, `NEON_POSTGRESQL_DATABASE`, `NEON_POSTGRESQL_PORT`, `NEON_POSTGRESQL_SSL` | Construct connection object/string from parts.                                                                                                               |
+| PHP                     | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Key-value format.                                                                                                                                            |
+| Ruby                    | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Key-value format.                                                                                                                                            |
+| Django                  | Env vars: individual components | `NEON_POSTGRESQL_NAME`, `NEON_POSTGRESQL_HOST`, `NEON_POSTGRESQL_USER`, `NEON_POSTGRESQL_PASSWORD`                                                    | Construct Django database settings from parts.                                                                                                               |
+
+## Resources
+
+- [Neon on Azure](/docs/manage/azure)
+- [Official Azure Service Connector Documentation](https://learn.microsoft.com/en-us/azure/service-connector/)
+- [Azure Docs: Integrate Neon Serverless Postgres with Service Connector](https://learn.microsoft.com/en-us/azure/service-connector/how-to-integrate-neon-postgres)
+- [Neon Documentation](/docs)
+- [Find your Neon connection details](/docs/connect/connect-from-any-app)
+- [Neon IP Allowlisting](/docs/introduction/ip-allow)
+
+<NeedHelp />
+
+
 # Building Azure Static Web Apps with Neon
 
 ---
@@ -7916,6 +8531,127 @@ This guide should have helped you get started with Azure Static Web Apps and Neo
 - [Neon Authorize Guide](/docs/guides/neon-authorize)
 
 <NeedHelp />
+
+
+# Caching Layer in Postgres
+
+---
+title: Caching Layer in Postgres
+subtitle: A step-by-step guide describing how to use materialized views for caching in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-03-21T13:24:36.612Z'
+updatedOn: '2025-03-21T13:24:36.612Z'
+---
+
+PostgreSQL provides powerful tools to optimize query performance, including caching layers that help reduce expensive computations.
+[Materialized views](https://www.postgresql.org/docs/current/rules-materializedviews.html) can be used for caching: materialized views store the results of a query and can be refreshed on demand.
+This approach is particularly useful for complex aggregations, expensive joins, and frequently accessed datasets that do not require real-time updates.
+
+## Steps
+
+- Create the orders table
+- Insert sample data into the orders table
+- Create a materialized view
+- Refresh the materialized view
+- Index the materialized view for performance
+- Automate materialized view refreshes
+
+### Create the Orders Table
+
+Before inserting sample data, create the `orders` table:
+
+```sql
+CREATE TABLE orders (
+  id SERIAL PRIMARY KEY,
+  customer_id INT NOT NULL,
+  total_price NUMERIC(10,2) NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+```
+
+### Insert Sample Data into the Orders Table
+
+Now, let's insert some sample data into the `orders` table so we can see real results:
+
+```sql
+INSERT INTO orders (customer_id, total_price, created_at) VALUES
+(1, 100.00, NOW() - INTERVAL '1 day'),
+(2, 250.50, NOW() - INTERVAL '2 days'),
+(3, 75.25, NOW() - INTERVAL '3 days'),
+(1, 300.00, NOW() - INTERVAL '3 days'),
+(2, 450.75, NOW() - INTERVAL '4 days');
+```
+
+### Create a Materialized View
+
+Suppose you want to answer queries like "which days did we receive the most orders over the last month?"
+This would require a complex query that may be slow.
+Instead of recalculating revenue per day on every query, you can store daily revenue as a materialized view.
+
+```sql
+CREATE MATERIALIZED VIEW daily_revenue AS
+SELECT DATE(created_at) AS order_date, SUM(total_price) AS total_revenue
+FROM orders
+GROUP BY order_date;
+```
+
+### Query the materialized View
+
+This materialized view stores total revenue per day, allowing for fast lookups of daily sales trends without needing to aggregate the full `orders` table repeatedly.
+For example, you can execute a query to find the daily revenue for 3 days ago:
+
+```sql
+SELECT * FROM daily_revenue WHERE order_date = DATE(NOW() - INTERVAL '3 days');
+```
+
+Or you can sort days by `total_revenue` as follows.
+
+```sql
+SELECT * FROM daily_revenue ORDER BY total_revenue DESC;
+```
+
+The above query returns the following result, which shows the days with the most order revenue.
+
+| #   | order_date | total_revenue |
+| --- | ---------- | ------------- |
+| 1   | 2025-03-17 | 450.75        |
+| 2   | 2025-03-18 | 375.25        |
+| 3   | 2025-03-19 | 250.50        |
+| 4   | 2025-03-20 | 100.00        |
+
+### Refresh the Materialized View
+
+Materialized views need to be refreshed to reflect updated data.
+You can refresh a materialized view manually as follows.
+
+```sql
+REFRESH MATERIALIZED VIEW daily_revenue;
+```
+
+If the query should be available while refreshing, use the `CONCURRENTLY` option:
+
+```sql
+REFRESH MATERIALIZED VIEW CONCURRENTLY daily_revenue;
+```
+
+This allows the materialized view to remain accessible while it's being refreshed, but requires a unique index on the view. Without `CONCURRENTLY`, the materialized view is locked during the refresh, making it temporarily unavailable for queries.
+
+### Index the Materialized View for Performance
+
+Adding indexes to materialized views can significantly improve query performance. For example, to index `order_date` for faster lookups:
+
+```sql
+CREATE INDEX idx_daily_revenue_date ON daily_revenue(order_date);
+```
+
+### Automate Materialized View Refreshes
+
+To keep the materialized view updated automatically, use a **cron job** or **PostgreSQL's built-in job scheduler** (like pg_cron). Here’s an example using `pg_cron` to refresh every hour:
+
+```sql
+SELECT cron.schedule('refresh_daily_revenue', '0 * * * *', $$REFRESH MATERIALIZED VIEW CONCURRENTLY daily_revenue$$);
+```
 
 
 # Build a RAG chatbot with Astro, Postgres, and LlamaIndex
@@ -8877,7 +9613,11 @@ Let's break down the key components in this setup:
 
 ## Setting up Neon MCP Server in Cline
 
-The following steps show how to set up Neon MCP Server in Cline.
+You have two options for connecting Cline to the Neon MCP Server:
+
+1. **Remote MCP Server (Preview):** Connect to Neon's managed MCP server using OAuth for authentication. This method is more convenient as it eliminates the need to manage API keys in Cline. Additionally, you will automatically receive the latest features and improvements as soon as they are released.
+
+2. **Local MCP Server:** Run the Neon MCP server locally on your machine, authenticating with a Neon API key.
 
 ### Prerequisites
 
@@ -8887,39 +9627,103 @@ Before you begin, ensure you have the following:
     - Download and install the Cline VS Code extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev).
     - Set up Cline by following the [Getting Started guide](https://docs.cline.bot/getting-started/getting-started-new-coders#setting-up-openrouter-api-key) which involves obtaining an [OpenRouter API key](https://openrouter.ai) to work with Cline.
 2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
-3.  **Neon API Key:** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
     <Admonition type="warning" title="Neon API Key Security">
     Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
     </Admonition>
 4.  **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
 
-### Installation and Configuration
+### Option 1: Setting up the remote hosted Neon MCP Server
 
-**Configure Neon MCP Server in Cline:**
+This method uses Neon's managed server and OAuth authentication.
+
+### Installation and configuration
 
 1. Open Cline by clicking on the Cline icon in the VS Code sidebar.
 2. To configure MCP Servers in Cline, you need to modify the `cline_mcp_settings.json` file.
    ![Cline Add MCP Tool](/docs/guides/cline-add-mcp.gif)
 3. This will open the `cline_mcp_settings.json` file.
-4. In the `cline_mcp_settings.json` file, you need to specify a list of MCP servers. Use the following JSON structure as a template, replacing `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+4. In the `cline_mcp_settings.json` file, you need to specify a list of MCP servers.
+5. Paste the following JSON configuration into it:
 
    ```json
    {
      "mcpServers": {
-       "neon": {
+       "Neon": {
          "command": "npx",
-         "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
        }
      }
    }
    ```
 
-   - **`neon`**: This is a name you choose for your MCP server connection.
-   - **`command`**: This is the command Cline will execute to start the Neon MCP server. It includes the `npx` command to run the `@neondatabase/mcp-server-neon` package and passes your Neon API key as an argument.
-   - Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+   If you have other MCP servers configured, you can copy just the `Neon` part.
+
+6. **Save** the `cline_mcp_settings.json` file.
+7. You should see a notification in VS Code that says: "MCP servers updated".
+   ![Cline MCP Server Updated](/docs/guides/cline-mcp-config-update.png)
+8. Cline is now connected to Neon's remote MCP server.
+
+<Admonition type="note">
+  The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
+</Admonition>
+
+### Option 2: Setting up the Local Neon MCP Server
+
+This method runs the Neon MCP server locally on your machine, using a Neon API key for authentication.
+
+1. Open Cline by clicking on the Cline icon in the VS Code sidebar.
+2. To configure MCP Servers in Cline, you need to modify the `cline_mcp_settings.json` file.
+   ![Cline Add MCP Tool](/docs/guides/cline-add-mcp.gif)
+3. This will open the `cline_mcp_settings.json` file.
+4. In the `cline_mcp_settings.json` file, you need to specify a list of MCP servers.
+5. Paste the following JSON configuration into it. Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained from the [prerequisites](#prerequisites) section:
+
+<CodeTabs labels={["MacOS/Linux", "Windows", "Windows (WSL)"]}>
+
+```json
+{
+  "mcpServers": {
+    "neon": {
+      "command": "npx",
+      "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+    }
+  }
+}
+```
+
+```json
+{
+  "mcpServers": {
+    "neon": {
+      "command": "cmd",
+      "args": ["/c", "npx", "-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+    }
+  }
+}
+```
+
+```json
+{
+  "mcpServers": {
+    "neon": {
+      "command": "wsl",
+      "args": ["npx", "-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+    }
+  }
+}
+```
+
+</CodeTabs>
 
 5. **Save** the `cline_mcp_settings.json` file.
-6. If the integration is successful, you should see the Neon MCP server listed in the Cline MCP Servers Installed section.
+6. You should see a notification in VS Code that says: "MCP servers updated".
+   ![Cline MCP Server Updated](/docs/guides/cline-mcp-config-update.png)
+7. Cline is now connected to Neon's remote MCP server.
+
+### Verifying the Integration
+
+Now that you have the Neon MCP server set up either remotely or locally, you can verify the connection and test the available tools. If the integration is successful, you should see the Neon MCP server listed in the Cline MCP Servers Installed section.
 
 ![Cline Available MCP Tools](/docs/guides/cline-available-mcp-tools.png)
 
@@ -8952,17 +9756,11 @@ Let's walk through a typical development scenario: Quickly adding a column for p
 
 **Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
 
-Check out the video below to see how Cline and Neon MCP Server can help you add a new column to your database table using natural language commands.
-
-<video autoPlay playsInline muted loop width="800" height="600" controls>
-  <source type="video/mp4" src="/videos/pages/doc/cline-neon-mcp.mp4"/>
-</video>
-
 <Admonition type="tip" title="Security Reminder">
 For your security, review the tool's purpose before permitting the operation to proceed. Remember that LLMs can sometimes produce unexpected results, so careful monitoring is always recommended.
 </Admonition>
 
-Here's the conversation log between the user and Cline:
+Following is a sample interaction with Cline where you can see how it uses the Neon MCP server to add a column to your table:
 
 ```text shouldWrap
 User: in my neon project id: fancy-bush-59303206, list all my tables
@@ -9484,6 +10282,1497 @@ You can find the source code for the application described in this guide on GitH
 <NeedHelp/>
 
 
+# Creating a Content Moderation System with Laravel, OpenAI API, and Neon Postgres
+
+---
+title: Creating a Content Moderation System with Laravel, OpenAI API, and Neon Postgres
+subtitle: Build an automated content moderation system for your application using Laravel Livewire, OpenAI's moderation API, and Neon Postgres
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-03-22T00:00:00.000Z'
+updatedOn: '2025-03-22T00:00:00.000Z'
+---
+
+Content moderation is essential for maintaining healthy online communities and platforms. In this guide, we'll create a content moderation system that uses OpenAI's moderation API to automatically analyze and flag potentially problematic content before it reaches your users.
+
+We will use Laravel, OpenAI's moderation API, and Neon's serverless Postgres database and build a system that can handle content moderation for comments, forum posts, product reviews, or any user-generated content.
+
+## What You'll Build
+
+In this guide, you'll build a content moderation system with the following features:
+
+1. A form for users to submit content to our Neon database
+2. Automatic content analysis using [OpenAI's moderation API](https://platform.openai.com/docs/guides/moderation)
+3. A moderation queue for reviewing flagged content
+4. A dashboard for viewing moderation statistics
+5. Settings management for different content types
+
+## Prerequisites
+
+To follow the steps in this guide, you will need:
+
+- PHP 8.2 or higher
+- [Composer](https://getcomposer.org/) installed
+- A [Neon](https://console.neon.tech/signup) account
+- An [OpenAI](https://platform.openai.com/signup) account with API access
+- Basic familiarity with Laravel and PHP
+
+## Create a Neon Project
+
+Neon provides a serverless Postgres database that automatically scales as your application grows. Let's set up a Neon database for our content moderation system:
+
+1. Navigate to the [Projects](https://console.neon.tech/app/projects) page in the Neon Console.
+2. Click "New Project" and select your preferred settings.
+3. Once your project is created, you'll see the connection details. Save the connection string for later use.
+
+## Set up a Laravel Project
+
+Now, let's create a new Laravel project and set it up to work with our Neon database:
+
+```bash
+composer create-project laravel/laravel moderation-system
+cd moderation-system
+```
+
+This creates a new Laravel 11 project in a directory called `moderation-system` and moves you into that directory.
+
+## Configure Environment Variables
+
+To configure your Laravel application to connect to Neon Postgres and OpenAI, you need to set up your environment variables.
+
+1. Open the `.env` file in your Laravel project directory.
+2. Update your database configuration with the Neon connection details:
+
+```
+DB_CONNECTION=pgsql
+DB_HOST=your-neon-hostname.neon.tech
+DB_PORT=5432
+DB_DATABASE=neondb
+DB_USERNAME=your-username
+DB_PASSWORD=your-password
+DB_SSLMODE=require
+```
+
+3. Add your OpenAI API key:
+
+```
+OPENAI_API_KEY=your-openai-api-key
+```
+
+The `OPENAI_API_KEY` will be used by our moderation service to communicate with [OpenAI's moderation API](https://platform.openai.com/docs/guides/moderation).
+
+## Install Livewire and Other Required Packages
+
+Let's install the necessary packages for our project:
+
+```bash
+composer require livewire/livewire openai-php/laravel
+```
+
+This installs:
+
+- [Livewire](https://livewire.laravel.com/): A Laravel package that makes building dynamic web apps simple, without writing JavaScript
+- [OpenAI Laravel Client](https://github.com/openai-php/laravel): A library for interacting with OpenAI's API within Laravel
+
+Next, let's install Laravel Breeze with Livewire for authentication and UI scaffolding:
+
+```bash
+composer require laravel/breeze --dev
+php artisan breeze:install livewire
+```
+
+After installing Breeze, follow the instructions to complete the setup:
+
+```bash
+npm install
+npm run build
+```
+
+This will install the necessary NPM packages and build your static assets.
+
+Let's also run the migrations to create the default Laravel tables:
+
+```bash
+php artisan migrate
+```
+
+<Admonition type="important">
+Neon supports both direct and pooled database connection strings, which can be copied from the **Connection Details** widget on your Neon Project Dashboard. A pooled connection string connects your application to the database via a PgBouncer connection pool, allowing for a higher number of concurrent connections. However, using a pooled connection string for migrations can be prone to errors. For this reason, we recommend using a direct (non-pooled) connection when performing migrations. For more information about direct and pooled connections, see [Connection pooling](/docs/connect/connection-pooling).
+</Admonition>
+
+## Create Database Schema
+
+Now we'll create the database schema for our content moderation system. We need to track three main types of data:
+
+1. Content items that need moderation
+2. Moderation results from the OpenAI API
+3. Moderation settings for different content types
+
+Let's create the migrations:
+
+```bash
+php artisan make:migration create_content_items_table
+php artisan make:migration create_moderation_results_table
+php artisan make:migration create_moderation_settings_table
+```
+
+This will create three migration files in the `database/migrations` directory. Now, let's define the schema for each table:
+
+### 1. Content Items Table
+
+This table stores the actual content that needs moderation:
+
+```php
+// database/migrations/xxxx_xx_xx_create_content_items_table.php
+public function up(): void
+{
+    Schema::create('content_items', function (Blueprint $table) {
+        // Primary key
+        $table->id();
+
+        // Foreign key to the user who created the content (optional)
+        $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
+
+        // Type of content (e.g., 'comment', 'post', 'review')
+        $table->string('content_type');
+
+        // The actual content text
+        $table->text('content');
+
+        // Current moderation status ('pending', 'approved', 'rejected')
+        $table->string('status')->default('pending');
+
+        // Created/updated timestamps
+        $table->timestamps();
+    });
+}
+```
+
+### 2. Moderation Results Table
+
+This table stores the results returned by the OpenAI moderation API:
+
+```php
+// database/migrations/xxxx_xx_xx_create_moderation_results_table.php
+public function up(): void
+{
+    Schema::create('moderation_results', function (Blueprint $table) {
+        // Primary key
+        $table->id();
+
+        // Foreign key to the content item being moderated
+        $table->foreignId('content_item_id')->constrained()->onDelete('cascade');
+
+        // Whether the content was flagged by the moderation API
+        $table->boolean('flagged');
+
+        // Categories that were flagged (stored as JSON)
+        $table->json('categories')->nullable();
+
+        // Scores for each category (stored as JSON)
+        $table->json('category_scores')->nullable();
+
+        // Highest confidence score among all categories
+        $table->decimal('confidence', 8, 6)->nullable();
+
+        // Created/updated timestamps
+        $table->timestamps();
+    });
+}
+```
+
+### 3. Moderation Settings Table
+
+This table stores moderation settings for different content types:
+
+```php
+// database/migrations/xxxx_xx_xx_create_moderation_settings_table.php
+public function up(): void
+{
+    Schema::create('moderation_settings', function (Blueprint $table) {
+        // Primary key
+        $table->id();
+
+        // Type of content these settings apply to
+        $table->string('content_type');
+
+        // Categories to flag (stored as JSON)
+        $table->json('flagged_categories')->nullable();
+
+        // Threshold for auto-rejection (0-1)
+        $table->decimal('confidence_threshold', 8, 6)->default(0.5);
+
+        // Whether to auto-approve content that passes moderation
+        $table->boolean('auto_approve')->default(false);
+
+        // Created/updated timestamps
+        $table->timestamps();
+    });
+}
+```
+
+Now run the migrations to create the tables in your Neon database:
+
+```bash
+php artisan migrate
+```
+
+After completing your migrations, you can switch to a pooled connection for better performance in your application.
+
+## Create Models
+
+Now let's create the Eloquent models for our database tables. These models will help us interact with the database using Laravel's ORM:
+
+```bash
+php artisan make:model ContentItem
+php artisan make:model ModerationResult
+php artisan make:model ModerationSetting
+```
+
+This will create three model files in the `app/Models` directory. Let's define each model with their relationships and attributes:
+
+### 1. ContentItem Model
+
+```php
+// app/Models/ContentItem.php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class ContentItem extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     * These fields can be set when creating or updating a model.
+     */
+    protected $fillable = [
+        'user_id',
+        'content_type',
+        'content',
+        'status',
+    ];
+
+    /**
+     * Get the moderation result associated with this content item.
+     * This establishes a one-to-one relationship with ModerationResult.
+     */
+    public function moderationResult(): HasOne
+    {
+        return $this->hasOne(ModerationResult::class);
+    }
+
+    /**
+     * Get the user who created this content item.
+     * This establishes a many-to-one relationship with User.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
+```
+
+In the `ContentItem` model, we define the `$fillable` array to specify which fields can be mass-assigned. We also define relationships with the `ModerationResult` and `User` models which will allow us to retrieve related data without writing complex SQL queries.
+
+### 2. ModerationResult Model
+
+```php
+// app/Models/ModerationResult.php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class ModerationResult extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     */
+    protected $fillable = [
+        'content_item_id',
+        'flagged',
+        'categories',
+        'category_scores',
+        'confidence',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     * This tells Laravel how to handle special data types.
+     */
+    protected $casts = [
+        'flagged' => 'boolean',       // Convert to PHP boolean
+        'categories' => 'array',      // Convert JSON to PHP array
+        'category_scores' => 'array', // Convert JSON to PHP array
+        'confidence' => 'float',      // Convert to PHP float
+    ];
+
+    /**
+     * Get the content item associated with this moderation result.
+     */
+    public function contentItem(): BelongsTo
+    {
+        return $this->belongsTo(ContentItem::class);
+    }
+}
+```
+
+Here again, we define the `$fillable` array to specify which fields can be mass-assigned. We also define a relationship with the `ContentItem` model to retrieve the content item associated with this moderation result.
+
+### 3. ModerationSetting Model
+
+```php
+// app/Models/ModerationSetting.php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ModerationSetting extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     */
+    protected $fillable = [
+        'content_type',
+        'flagged_categories',
+        'confidence_threshold',
+        'auto_approve',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     */
+    protected $casts = [
+        'flagged_categories' => 'array',    // Convert JSON to PHP array
+        'confidence_threshold' => 'float',  // Convert to PHP float
+        'auto_approve' => 'boolean',        // Convert to PHP boolean
+    ];
+}
+```
+
+Similar to the other models, we define the structure of our data and the relationships between them. The `ModerationSetting` model will store the moderation settings for different content types.
+
+## Build Moderation Service
+
+Now, let's create a service class that will handle the content moderation logic. This service will use the OpenAI API to analyze content and store the results.
+
+First, create a new directory for services:
+
+```bash
+mkdir -p app/Services
+```
+
+Now, create the moderation service file:
+
+```php
+// app/Services/ModerationService.php
+<?php
+
+namespace App\Services;
+
+use App\Models\ContentItem;
+use App\Models\ModerationResult;
+use App\Models\ModerationSetting;
+use OpenAI;
+use Exception;
+use Illuminate\Support\Facades\Log;
+
+class ModerationService
+{
+    /**
+     * The OpenAI client instance.
+     */
+    private $client;
+
+    /**
+     * Create a new ModerationService instance.
+     */
+    public function __construct()
+    {
+        // Initialize the OpenAI client with the API key from .env
+        $this->client = OpenAI::client(env('OPENAI_API_KEY'));
+    }
+
+    /**
+     * Moderate a content item using OpenAI's moderation API.
+     *
+     * @param ContentItem $contentItem The content item to moderate
+     * @return ModerationResult The result of the moderation
+     * @throws Exception If the moderation API request fails
+     */
+    public function moderateContent(ContentItem $contentItem)
+    {
+        try {
+            // Get the content and settings
+            $content = $contentItem->content;
+
+            // Find or create settings for this content type
+            $settings = ModerationSetting::where('content_type', $contentItem->content_type)->first();
+
+            if (!$settings) {
+                // Create default settings if none exist
+                $settings = ModerationSetting::create([
+                    'content_type' => $contentItem->content_type,
+                    'flagged_categories' => null, // Consider all categories
+                    'confidence_threshold' => 0.5, // Medium threshold
+                    'auto_approve' => false, // Don't auto-approve
+                ]);
+            }
+
+            // Call OpenAI moderation API
+            $response = $this->client->moderations()->create([
+                'input' => $content,
+            ]);
+
+            // Process response
+            $result = $response->results[0];
+            $flagged = $result->flagged;
+
+            // Extract categories and scores
+            $categories = [];
+            $categoryScores = [];
+
+            // Loop through each category in the response
+            foreach ($result->categories as $key => $category) {
+                $categoryScores[$key] = $category->score;
+
+                if ($category->violated) {
+                    $categories[] = $key;
+                }
+            }
+
+            // Determine highest score as overall confidence
+            $confidence = !empty($categoryScores) ? max($categoryScores) : 0;
+
+            // Save moderation result to database
+            $moderationResult = ModerationResult::create([
+                'content_item_id' => $contentItem->id,
+                'flagged' => $flagged,
+                'categories' => $categories,
+                'category_scores' => $categoryScores,
+                'confidence' => $confidence,
+            ]);
+
+            // Auto-approve or auto-reject based on settings
+            if (!$flagged && $settings->auto_approve) {
+                // Content is clean and auto-approve is enabled
+                $contentItem->update(['status' => 'approved']);
+            } elseif ($flagged && $confidence >= $settings->confidence_threshold) {
+                // Content is flagged with confidence above threshold
+                $contentItem->update(['status' => 'rejected']);
+            }
+
+            return $moderationResult;
+        } catch (Exception $e) {
+            // Log the error and rethrow
+            Log::error('Moderation API error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    /**
+     * Approve a content item.
+     *
+     * @param ContentItem $contentItem The content item to approve
+     * @return bool Whether the update was successful
+     */
+    public function approveContent(ContentItem $contentItem)
+    {
+        return $contentItem->update(['status' => 'approved']);
+    }
+
+    /**
+     * Reject a content item.
+     *
+     * @param ContentItem $contentItem The content item to reject
+     * @return bool Whether the update was successful
+     */
+    public function rejectContent(ContentItem $contentItem)
+    {
+        return $contentItem->update(['status' => 'rejected']);
+    }
+}
+```
+
+There are a few key points that the `ModerationService` class does, let's break it down:
+
+1. It initializes an OpenAI client using your API key.
+2. The `moderateContent` method:
+   - Finds or creates settings for the content type
+   - Calls the OpenAI moderation API
+   - Processes the response to extract flagged categories and scores
+   - Saves the moderation result to the database
+   - Auto-approves or auto-rejects content based on settings
+3. It provides methods to manually approve or reject content.
+
+A service provider in Laravel is a class that binds services to the Laravel service container. This allows us to use dependency injection to access the service in our controllers, models, or other classes.
+
+Let's register this service in the Laravel service container by creating a new service provider:
+
+```bash
+php artisan make:provider ModerationServiceProvider
+```
+
+The new service provider will be created in the `app/Providers` directory.
+
+Now, configure the service provider:
+
+```php
+// app/Providers/ModerationServiceProvider.php
+<?php
+
+namespace App\Providers;
+
+use App\Services\ModerationService;
+use Illuminate\Support\ServiceProvider;
+
+class ModerationServiceProvider extends ServiceProvider
+{
+    /**
+     * Register services.
+     */
+    public function register(): void
+    {
+        // Register the ModerationService as a singleton
+        // This ensures we use the same instance throughout the application
+        $this->app->singleton(ModerationService::class, function ($app) {
+            return new ModerationService();
+        });
+    }
+
+    /**
+     * Bootstrap services.
+     */
+    public function boot(): void
+    {
+        //
+    }
+}
+```
+
+Add this new service provider to the providers array in `bootstrap/providers.php`:
+
+```php
+// bootstrap/providers.php
+'providers' => [
+    // ... other providers
+    App\Providers\ModerationServiceProvider::class,
+],
+```
+
+With the service provider in place along the models and migration files, we can now move to the next step of creating the Livewire components.
+
+## Create Livewire Components
+
+Now, let's create Livewire components for our content moderation system. Livewire allows us to create interactive UI components without writing JavaScript. We'll create a component for content submission, a moderation queue, and a dashboard for moderation statistics.
+
+1. `ContentSubmission` component - for users to submit content
+2. `ModerationQueue` component - for moderators to review content
+3. `DashboardStats` component - to display moderation statistics
+
+Let's create these components:
+
+```bash
+php artisan livewire:make ContentSubmission
+php artisan livewire:make ModerationQueue
+php artisan livewire:make DashboardStats
+```
+
+This will create three new Livewire components in the `app/Livewire` directory along with their corresponding views in the `resources/views/livewire` directory.
+
+### 1. `ContentSubmission` Component
+
+First, let's implement the component class:
+
+```php
+// app/Livewire/ContentSubmission.php
+<?php
+
+namespace App\Livewire;
+
+use App\Models\ContentItem;
+use App\Services\ModerationService;
+use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
+
+class ContentSubmission extends Component
+{
+    /**
+     * The content entered by the user.
+     */
+    public $content;
+
+    /**
+     * The type of content being submitted.
+     */
+    public $contentType = 'comment';
+
+    /**
+     * Message to display after submission.
+     */
+    public $message = '';
+
+    /**
+     * Status of the submitted content.
+     */
+    public $status = '';
+
+    /**
+     * Validation rules for the form.
+     */
+    protected $rules = [
+        'content' => 'required|string|min:5',
+        'contentType' => 'required|string',
+    ];
+
+    /**
+     * Handle form submission.
+     */
+    public function submitContent()
+    {
+        // Validate form input
+        $this->validate();
+
+        // Create content item in the database
+        $contentItem = ContentItem::create([
+            'user_id' => Auth::id(), // Current logged-in user
+            'content_type' => $this->contentType,
+            'content' => $this->content,
+            'status' => 'pending', // Initial status is pending
+        ]);
+
+        // Moderate the content immediately
+        try {
+            // Get the moderation service from the container
+            $moderationService = app(ModerationService::class);
+
+            // Send the content to OpenAI for moderation
+            $moderationService->moderateContent($contentItem);
+
+            // Update the message based on moderation status
+            $this->message = 'Content submitted for review';
+            $this->status = $contentItem->status;
+
+            if ($contentItem->status === 'approved') {
+                $this->message = 'Content approved and published';
+            } elseif ($contentItem->status === 'rejected') {
+                $this->message = 'Content rejected due to policy violations';
+            }
+        } catch (\Exception $e) {
+            // Handle moderation API errors
+            $this->message = 'Content submitted for review, but moderation service is currently unavailable.';
+        }
+
+        // Clear form after submission
+        $this->reset('content');
+    }
+
+    /**
+     * Render the component.
+     */
+    public function render()
+    {
+        return view('livewire.content-submission');
+    }
+}
+```
+
+The `ContentSubmission` component class handles form submission, content validation, and moderation using the `ModerationService`. It also updates the message based on the moderation status.
+
+Now, let's create the view for this component:
+
+```php
+<!-- resources/views/livewire/content-submission.blade.php -->
+<div>
+    <div class="p-6 bg-white rounded-lg shadow-md card">
+        <h2 class="mb-4 text-xl font-semibold">Submit Content</h2>
+
+        <form wire:submit="submitContent">
+            <!-- Content Type Dropdown -->
+            <div class="mb-4">
+                <label for="contentType" class="block text-sm font-medium text-gray-700">Content Type</label>
+                <select wire:model="contentType" id="contentType" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <option value="comment">Comment</option>
+                    <option value="forum_post">Forum Post</option>
+                    <option value="review">Product Review</option>
+                    <option value="code_snippet">Code Snippet</option>
+                </select>
+                @error('contentType') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Content Textarea -->
+            <div class="mb-4">
+                <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
+                <textarea wire:model="content" id="content" rows="4" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
+                @error('content') <span class="text-xs text-red-500">{{ $message }}</span> @enderror
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end">
+                <button type="submit" class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+        <!-- Status Message -->
+        @if ($message)
+            <div class="mt-4 {{ $status === 'rejected' ? 'bg-red-100 text-red-700' : ($status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700') }} p-3 rounded">
+                {{ $message }}
+            </div>
+        @endif
+    </div>
+</div>
+```
+
+The view contains a form for users to submit content, including a dropdown for selecting the content type and a textarea for entering the content. The form submission is handled by the `submitContent` method in the component class.
+
+### 2. `ModerationQueue` Component
+
+Now, let's implement the moderation queue component class:
+
+```php
+// app/Livewire/ModerationQueue.php
+<?php
+
+namespace App\Livewire;
+
+use App\Models\ContentItem;
+use App\Services\ModerationService;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+class ModerationQueue extends Component
+{
+    // Use Laravel's pagination with Livewire
+    use WithPagination;
+
+    // Use Tailwind CSS for pagination styling
+    protected $paginationTheme = 'tailwind';
+
+    /**
+     * Current filter for content status.
+     */
+    public $statusFilter = 'pending';
+
+    /**
+     * Initialize the component.
+     */
+    public function mount()
+    {
+        // Check if user has permissions to view this page
+        $this->authorize('viewModeration');
+    }
+
+    /**
+     * Approve a content item.
+     *
+     * @param int $id The ID of the content item
+     */
+    public function approve($id)
+    {
+        $contentItem = ContentItem::findOrFail($id);
+        app(ModerationService::class)->approveContent($contentItem);
+
+        // Notify other components that content was moderated
+        $this->dispatch('content-moderated');
+    }
+
+    /**
+     * Reject a content item.
+     *
+     * @param int $id The ID of the content item
+     */
+    public function reject($id)
+    {
+        $contentItem = ContentItem::findOrFail($id);
+        app(ModerationService::class)->rejectContent($contentItem);
+
+        // Notify other components that content was moderated
+        $this->dispatch('content-moderated');
+    }
+
+    /**
+     * Moderate a content item using OpenAI.
+     *
+     * @param int $id The ID of the content item
+     */
+    public function moderate($id)
+    {
+        $contentItem = ContentItem::findOrFail($id);
+        app(ModerationService::class)->moderateContent($contentItem);
+
+        // Notify other components that content was moderated
+        $this->dispatch('content-moderated');
+    }
+
+    /**
+     * Filter content items by status.
+     *
+     * @param string $status The status to filter by
+     */
+    public function filterByStatus($status)
+    {
+        $this->statusFilter = $status;
+
+        // Reset pagination when filter changes
+        $this->resetPage();
+    }
+
+    /**
+     * Render the component.
+     */
+    public function render()
+    {
+        // Build the query for content items
+        $query = ContentItem::query()->with(['moderationResult', 'user']);
+
+        // Apply status filter if not 'all'
+        if ($this->statusFilter !== 'all') {
+            $query->where('status', $this->statusFilter);
+        }
+
+        // Get paginated results
+        $contentItems = $query->latest()->paginate(10);
+
+        return view('livewire.moderation-queue', [
+            'contentItems' => $contentItems
+        ]);
+    }
+}
+```
+
+Here we define methods for approving, rejecting, and moderating content items. The `filterByStatus` method allows us to filter content items by status. The `render` method builds the query based on the status filter and paginates the results.
+
+And the view for the moderation queue:
+
+```php
+<!-- resources/views/livewire/moderation-queue.blade.php -->
+<div>
+    <!-- Status Filter Buttons -->
+    <div class="flex mb-4 space-x-2">
+        <button wire:click="filterByStatus('pending')" class="px-4 py-2 rounded-md {{ $statusFilter === 'pending' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' }}">
+            Pending
+        </button>
+        <button wire:click="filterByStatus('approved')" class="px-4 py-2 rounded-md {{ $statusFilter === 'approved' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' }}">
+            Approved
+        </button>
+        <button wire:click="filterByStatus('rejected')" class="px-4 py-2 rounded-md {{ $statusFilter === 'rejected' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' }}">
+            Rejected
+        </button>
+        <button wire:click="filterByStatus('all')" class="px-4 py-2 rounded-md {{ $statusFilter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700' }}">
+            All
+        </button>
+    </div>
+
+    <!-- Content Items Table -->
+    <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">ID</th>
+                    <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Type</th>
+                    <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Content</th>
+                    <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Status</th>
+                    <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Flags</th>
+                    <th scope="col" class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @forelse ($contentItems as $item)
+                    <tr>
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap">{{ $item->id }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{{ $item->content_type }}</td>
+                        <td class="max-w-md px-6 py-4 text-sm text-gray-500">
+                            <div class="overflow-y-auto max-h-20">
+                                {{ $item->content }}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            @if ($item->status === 'pending')
+                                <span class="inline-flex px-2 text-xs font-semibold leading-5 text-yellow-800 bg-yellow-100 rounded-full">
+                                    Pending
+                                </span>
+                            @elseif ($item->status === 'approved')
+                                <span class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
+                                    Approved
+                                </span>
+                            @elseif ($item->status === 'rejected')
+                                <span class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">
+                                    Rejected
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                            @if ($item->moderationResult)
+                                @if ($item->moderationResult->flagged)
+                                    <span class="inline-flex px-2 text-xs font-semibold leading-5 text-red-800 bg-red-100 rounded-full">
+                                        Flagged
+                                    </span>
+                                    <div class="mt-1 text-xs">
+                                        @foreach ($item->moderationResult->categories as $category)
+                                            <span class="px-1 mr-1 text-red-700 rounded bg-red-50">{{ $category }}</span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
+                                        Clean
+                                    </span>
+                                @endif
+                            @else
+                                <span class="inline-flex px-2 text-xs font-semibold leading-5 text-gray-800 bg-gray-100 rounded-full">
+                                    Not Checked
+                                </span>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
+                            <div class="flex space-x-2">
+                                @if ($item->status !== 'approved')
+                                    <button wire:click="approve({{ $item->id }})" class="text-green-600 hover:text-green-900">Approve</button>
+                                @endif
+
+                                @if ($item->status !== 'rejected')
+                                    <button wire:click="reject({{ $item->id }})" class="text-red-600 hover:text-red-900">Reject</button>
+                                @endif
+
+                                @if (!$item->moderationResult)
+                                    <button wire:click="moderate({{ $item->id }})" class="text-blue-600 hover:text-blue-900">Check</button>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-sm text-center text-gray-500">No content items found</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Links -->
+    <div class="mt-4">
+        {{ $contentItems->links() }}
+    </div>
+</div>
+```
+
+The view displays a table of content items with columns for ID, type, content, status, flags, and actions. It also includes buttons to approve, reject, or moderate content items.
+
+### 3. `DashboardStats` Component
+
+Finally, let's implement the dashboard stats component:
+
+```php
+// app/Livewire/DashboardStats.php
+<?php
+
+namespace App\Livewire;
+
+use App\Models\ContentItem;
+use Livewire\Component;
+
+class DashboardStats extends Component
+{
+    /**
+     * Number of pending content items.
+     */
+    public $pendingCount;
+
+    /**
+     * Number of approved content items.
+     */
+    public $approvedCount;
+
+    /**
+     * Number of rejected content items.
+     */
+    public $rejectedCount;
+
+    /**
+     * Number of flagged content items.
+     */
+    public $flaggedCount;
+
+    /**
+     * Initialize the component.
+     */
+    public function mount()
+    {
+        // Check if user has permissions to view this page
+        $this->authorize('viewModeration');
+
+        // Load initial statistics
+        $this->loadStats();
+    }
+
+    /**
+     * Load moderation statistics from the database.
+     */
+    public function loadStats()
+    {
+        // Count items by status
+        $this->pendingCount = ContentItem::where('status', 'pending')->count();
+        $this->approvedCount = ContentItem::where('status', 'approved')->count();
+        $this->rejectedCount = ContentItem::where('status', 'rejected')->count();
+
+        // Count items that were flagged by the moderation API
+        $this->flaggedCount = ContentItem::whereHas('moderationResult', function($query) {
+            $query->where('flagged', true);
+        })->count();
+    }
+
+    /**
+     * Render the component.
+     */
+    public function render()
+    {
+        return view('livewire.dashboard-stats');
+    }
+}
+```
+
+The `DashboardStats` component class loads moderation statistics from the database and displays them in the view. The `loadStats` method counts content items by status and flags. The `render` method renders the component view.
+
+And the view for the dashboard stats:
+
+```php
+<!-- resources/views/livewire/dashboard-stats.blade.php -->
+<div>
+    <!-- Stats Cards Grid -->
+    <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 lg:grid-cols-4">
+        <!-- Pending Items -->
+        <div class="p-6 bg-white rounded-lg shadow-md">
+            <div class="flex items-center">
+                <div class="p-3 mr-4 text-yellow-500 bg-yellow-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Pending Review</p>
+                    <p class="text-xl font-semibold text-gray-700">{{ $pendingCount }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Items -->
+        <div class="p-6 bg-white rounded-lg shadow-md">
+            <div class="flex items-center">
+                <div class="p-3 mr-4 text-green-500 bg-green-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Approved</p>
+                    <p class="text-xl font-semibold text-gray-700">{{ $approvedCount }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rejected Items -->
+        <div class="p-6 bg-white rounded-lg shadow-md">
+            <div class="flex items-center">
+                <div class="p-3 mr-4 text-red-500 bg-red-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Rejected</p>
+                    <p class="text-xl font-semibold text-gray-700">{{ $rejectedCount }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flagged Items -->
+        <div class="p-6 bg-white rounded-lg shadow-md">
+            <div class="flex items-center">
+                <div class="p-3 mr-4 text-orange-500 bg-orange-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Flagged</p>
+                    <p class="text-xl font-semibold text-gray-700">{{ $flaggedCount }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to Moderation Queue -->
+    <div class="flex justify-center">
+        <a href="{{ route('admin.moderation-queue') }}" class="inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700">
+            View Moderation Queue
+        </a>
+    </div>
+</div>
+```
+
+The view displays statistics for pending, approved, rejected, and flagged content items in a grid layout. It also includes a link to the moderation queue.
+
+## Set Up Routes
+
+Now let's define the routes for our admin dashboard and content submission page. We'll use Laravel's route middleware to protect the admin routes with the `viewModeration` gate. You can learn more about Laravel's authorization gates in the [Laravel authorization guide here](/guides/laravel-authorization).
+
+```php
+// routes/web.php
+<?php
+
+use App\Livewire\ContentSubmission;
+use App\Livewire\ModerationQueue;
+use App\Livewire\DashboardStats;
+use Illuminate\Support\Facades\Route;
+
+// Routes that require authentication
+Route::middleware(['auth'])->group(function () {
+    // User content submission
+    Route::get('/submit', ContentSubmission::class)->name('content.submit');
+
+    // Admin routes
+    Route::middleware(['can:viewModeration'])->prefix('admin')->group(function () {
+        Route::get('/', DashboardStats::class)->name('admin.dashboard');
+        Route::get('/moderation-queue', ModerationQueue::class)->name('admin.moderation-queue');
+    });
+});
+
+// Existing routes
+```
+
+These routes define:
+
+1. A public homepage
+2. A route for authenticated users to submit content
+3. Admin routes for the dashboard and moderation queue, protected by the `viewModeration` gate
+
+Now, let's define the authorization gates in the `AppServiceProvider`. This gate will determine who can access the moderation dashboard:
+
+```php
+// app/Providers/AppServiceProvider.php
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        // Define who can view moderation pages
+        // For simplicity, we're allowing user ID 1 or any user with is_admin=true
+        Gate::define('viewModeration', function ($user) {
+            return $user->id === 1 || $user->is_admin;
+        });
+    }
+}
+```
+
+This `AppServiceProvider` defines who can access the moderation dashboard. In a real application, you would want to implement more sophisticated access control logic. For more information on Laravel authorization, check out the [official documentation](https://laravel.com/docs/8.x/authorization) and the [Laravel authorization guide](/guides/laravel-authorization).
+
+## Create Admin Dashboard
+
+Let's create a layout for our admin dashboard. First, create an admin layout file:
+
+```php
+<!-- resources/views/layouts/admin.blade.php -->
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ config('app.name', 'Laravel') }} - Admin</title>
+
+    <!-- Scripts and Styles -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Livewire Styles -->
+    @livewireStyles
+</head>
+<body class="font-sans antialiased bg-gray-100">
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="p-4 text-white bg-gray-800">
+            <div class="container flex items-center justify-between mx-auto">
+                <div class="flex items-center space-x-8">
+                    <a href="{{ route('admin.dashboard') }}" class="text-xl font-bold">Content Moderation</a>
+
+                    <div class="hidden space-x-4 md:flex">
+                        <a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">Dashboard</a>
+                        <a href="{{ route('admin.moderation-queue') }}" class="px-3 py-2 rounded hover:bg-gray-700 {{ request()->routeIs('admin.moderation-queue') ? 'bg-gray-700' : '' }}">Moderation Queue</a>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="text-sm text-gray-400">{{ Auth::user()->name }}</div>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-sm text-gray-400 hover:text-white">
+                            Log Out
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Page Content -->
+        <main class="container px-4 py-6 mx-auto">
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-gray-800">@yield('title', 'Admin Dashboard')</h1>
+            </div>
+
+            {{ $slot }}
+        </main>
+    </div>
+
+    <!-- Livewire Scripts -->
+    @livewireScripts
+</body>
+</html>
+```
+
+Now, let's create a content submission page that users can access:
+
+```php
+<!-- resources/views/content/submit.blade.php -->
+<x-app-layout>
+    <div class="py-12">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <h1 class="mb-6 text-2xl font-bold">Submit Content</h1>
+                    <livewire:content-submission />
+                </div>
+            </div>
+        </div>
+    </div>
+</x-app-layout>
+```
+
+Here, we're using the `x-app-layout` component to wrap the content submission form. This layout includes the navigation bar and other common elements. The `content-submission` Livewire component is embedded in this view using the `livewire:content-submission` directive.
+
+After making all the views and components, you should run the following command to compile the assets:
+
+```bash
+npm run dev
+```
+
+This will compile the assets and make them available for your application. You can now test the content submission page by visiting the `/submit` route and submitting some content, and then check the moderation queue at `/admin/moderation-queue` and the stats dashboard at `/admin`.
+
+## Test the System
+
+With everything set up, you can now test the moderation system.
+
+Let's create a basic command to test our moderation system. This will help you check if everything is working correctly:
+
+```bash
+php artisan make:command TestModeration
+```
+
+Implement the command:
+
+```php
+// app/Console/Commands/TestModeration.php
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\ContentItem;
+use App\Services\ModerationService;
+use Illuminate\Console\Command;
+
+class TestModeration extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'test:moderation {content} {--type=comment}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Test the moderation system with a sample content';
+
+    /**
+     * Execute the console command.
+     */
+    public function handle(ModerationService $moderationService)
+    {
+        // Get the content and content type from the command arguments
+        $content = $this->argument('content');
+        $type = $this->option('type');
+
+        $this->info("Testing moderation on content: '$content'");
+
+        // Create a test content item
+        $contentItem = ContentItem::create([
+            'content_type' => $type,
+            'content' => $content,
+            'status' => 'pending',
+        ]);
+
+        try {
+            // Moderate the content using OpenAI
+            $result = $moderationService->moderateContent($contentItem);
+
+            // Display the results
+            $this->info("Moderation completed for content ID: {$contentItem->id}");
+            $this->info("Status: {$contentItem->status}");
+            $this->info("Flagged: " . ($result->flagged ? 'Yes' : 'No'));
+
+            if ($result->categories) {
+                $this->info("Flagged categories: " . implode(', ', $result->categories));
+            }
+
+            if ($result->category_scores) {
+                $this->info("Category scores:");
+                foreach ($result->category_scores as $category => $score) {
+                    $this->info("  - $category: $score");
+                }
+            }
+
+            $this->info("Confidence: {$result->confidence}");
+        } catch (\Exception $e) {
+            $this->error("Moderation failed: {$e->getMessage()}");
+        }
+
+        return Command::SUCCESS;
+    }
+}
+```
+
+With the above command we are doing the following:
+
+- Accepting the content and content type as command arguments
+- Creating a test content item in the database
+- Moderating the content using the `ModerationService`
+- Displaying the moderation results where we loop through the categories and scores
+
+You can test the moderation system with this command:
+
+- Test with harmless content:
+
+  ```bash
+  php artisan test:moderation "This is a friendly comment about your tech blog."
+  ```
+
+  Output:
+
+  ```
+  Testing moderation on content: 'This is a friendly comment about your tech blog.'
+  Moderation completed for content ID: 4
+  Status: pending
+  Flagged: No
+  Category scores:
+      - hate: 2.4322733338522E-7
+      - hate/threatening: 3.4327216069663E-10
+      - harassment: 4.3629752326524E-6
+      - harassment/threatening: 4.6775343776062E-7
+      - self-harm: 6.9364503474389E-8
+      - self-harm/intent: 1.178076942665E-7
+      - self-harm/instructions: 4.2720111892436E-9
+      - sexual: 0.00012831370986532
+      - sexual/minors: 2.4699570531084E-6
+      - violence: 2.0182131265756E-5
+      - violence/graphic: 8.1019070421462E-6
+  Confidence: 0.00012831370986532
+  ```
+
+* Test with potentially problematic content:
+
+  ```bash
+  php artisan test:moderation "I hate this product. It's the worst thing I've ever used."
+  ```
+
+* Test with obviously harmful content:
+
+  ```
+  php artisan test:moderation "I'm going to harm you."
+  ```
+
+  With this you will get a status of `rejected` and the content will be flagged as `violence` and `threatening`.
+
+## How the System Works
+
+Let's walk through how the content moderation system works in practice:
+
+1. Content Submission:
+
+   - A user submits content through the `ContentSubmission` component
+   - The content is saved to the database with status "pending"
+   - The `ModerationService` immediately sends the content to OpenAI's moderation API
+
+2. AI Moderation:
+
+   - OpenAI analyzes the content and returns categories, scores, and a flagged status
+   - The `ModerationService` saves these results to the `ModerationResult` table in our Neon Postgres database
+   - Based on settings, content may be auto-approved or auto-rejected
+
+3. Manual Review:
+
+   - Content that isn't auto-approved or auto-rejected stays in the "pending" state
+   - Moderators use the `ModerationQueue` component to review pending content
+   - They can see which categories were flagged and why
+   - Moderators can manually approve or reject content
+
+4. Dashboard Statistics:
+   - The `DashboardStats` component shows counts of pending, approved, rejected, and flagged content
+   - This helps moderators monitor the system's overall health
+
+## Conclusion
+
+In this guide, we've built a content moderation system using Laravel, Livewire, OpenAI, and Neon Postgres. This system can:
+
+- Accept user-generated content and automatically analyze it for harmful content
+- Store moderation results in Neon with detailed information about flagged categories
+- Provide different moderation settings for different content types
+- Offer an interactive admin dashboard for manual review of flagged content
+
+This moderation system can be integrated into various applications, from forums and social networks to review platforms and comment systems.
+
+As a next step, you can use Laravel queues to process moderation tasks asynchronously, improving performance and scalability. You can check out the [Laravel queues guide](/guides/laravel-queue-workers-job-processing) for more information.
+
+<NeedHelp />
+
+
 # Getting started with Convex and Neon
 
 ---
@@ -9892,6 +12181,142 @@ Congratulations! You have successfully integrated Convex with Neon Postgres and 
 <NeedHelp/>
 
 
+# Building Full Stack apps in minutes with Create.xyz
+
+---
+title: Building Full Stack apps in minutes with Create.xyz
+subtitle: Go from Text prompt to Full-Stack Database backed applications in minutes with Create.xyz
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-03-12T00:00:00.000Z'
+updatedOn: '2025-03-12T00:00:00.000Z'
+---
+
+The landscape of application development is rapidly changing, with AI-powered tools empowering even non technical users to build faster and more intuitively than ever before. Imagine describing your app idea in a simple conversation and watching it materialize in seconds, complete with a fully functional database. This is now possible with [Create](https://create.xyz), a text-to-app builder that works with out-of-the-box support for 50+ integrations such as Stripe, ElevenLabs, Google Maps, Stable Diffusion, OpenAI, and more.
+
+This guide will introduce you to Create and demonstrate how you can use it to make building database-backed applications incredibly easy and fast. We'll walk through creating a simple AI Image Generator, showcasing how you can go from a text prompt to a functional, full-stack application.
+
+## Create & Neon
+
+Create leverages Neon as the database backend for its AI-powered app development platform. This integration delivers a fully managed database solution, which is fundamental to Create's rapid app development experience. By abstracting away database complexities, Create users can concentrate solely on their application's functionality and design.
+
+This experience is immediately apparent during app creation. Neon's instant database provisioning lets users bypass database setup and and focus on developing their application. Neon operates invisibly in the background. To learn more about how Create.xyz uses Neon, see [From Idea to Full Stack App in One Conversation with Create](https://neon.tech/blog/from-idea-to-full-stack-app-in-one-conversation-with-create).
+
+## Prerequisites
+
+Before you start, ensure you have a **Create Account**. You can sign up for a free account at [create.xyz](https://create.xyz/). The free plan is sufficient to follow this guide.
+
+<Admonition type="important" title="Vibe Coding Ahead 😎">
+Follow this guide only if you're ready to experience the future of app development through AI-powered tools. You'll be amazed at how quickly you can build a full-stack application with Create and Neon that really works!
+</Admonition>
+
+## Building an AI Image Generator app
+
+This app will allow users to generate images using Stable Diffusion, view them in a gallery, and track download counts for each image. We'll leverage Create's AI capabilities to build this app in minutes without writing a single line of code.
+
+### Start a new project
+
+1. Navigate to the [Create.xyz](https://create.xyz) website and log in to your account.
+2. Click on "New Project" to begin. You'll be presented with the builder interface.
+
+   ![Start a New Project](/docs/guides/create_xyz_new_project.png)
+
+### Describe your app
+
+In the chat window, describe your app idea. For example, you can say, "Create a Stable Diffusion powered image generator. It should also show the past image generations."
+
+![Describe Your App](/docs/guides/create_xyz_describe_app.png)
+
+Create will immediately begin building your app based on your description. You'll see the AI agent working in real-time within the chat window, assembling all the necessary components and code for your application.
+
+![Creating Your App](/docs/guides/create_xyz_inital_app.png)
+
+You can see that Create has provisioned a database for storing image URLs needed for your gallery feature. You can examine the database schema directly in the chat window by clicking on the SQL statements to view the structure.
+
+![Database Schema](/docs/guides/create_xyz_database_schema.png)
+
+You can verify the app's functionality by generating an image. Simply type your desired image description in the text field and click 'Generate.' You'll see your newly created image appear and automatically be added to the gallery display
+
+![Testing the App](/docs/guides/create_xyz_test_app_working.png)
+
+Now that you've confirmed your app is functioning correctly, let's enhance it by adding a download counter feature that tracks the popularity of each generated image.
+
+<Admonition type="note">
+If the app doesn't work as expected, provide specific details in the chat window to help Create understand the issue. For example, you can say, "The image generation is working, but the gallery is not displaying the images."
+</Admonition>
+
+### Continuous Iteration
+
+You may want to add new features or refine existing ones as you iterate on your app. Create makes it easy to enhance your app by simply describing the new features you want to add. Let's add a download counter feature to track the number of downloads for each generated image.
+
+In the chat window, you can say: "Allow users to download images and track the number of downloads for each image". Create will start adding the necessary components to your app to support this feature.
+
+![Adding a New Feature](/docs/guides/create_xyz_add_new_feature.jpeg)
+
+You'll see that Create has added a 'download count' column to your database. You can view the updated schema to see the change.
+
+![Updated Database Schema](/docs/guides/create_xyz_updated_database_schema.png)
+
+To test the new feature, download an image. Click the 'Download' button on any image in the gallery. You'll see the download count increase for that image.
+
+![Final App with Download Feature](/docs/guides/create_xyz_final_app.png)
+
+You've successfully built an AI Image Generator with download tracking! Now, you can customize it further. Enhance the UI, add features like user authentication, or integrate services such as Stripe to charge $1 per generated image. Just say, 'Add Stripe so users pay $1 per image,' to get started.
+
+![Adding Stripe Integration](/docs/guides/create_xyz_add_stripe.png)
+
+<Admonition type="note">
+You will need to connect your Stripe account to Create to enable the Stripe integration. Follow the onboarding steps to connect your Stripe account and complete the integration.
+</Admonition>
+
+![Final App with Stripe Integration](/docs/guides/create_xyz_final_app_with_stripe.png)
+
+Finally, you can deploy the app by clicking on the "Publish" button.
+
+![Publishing the App](/docs/guides/create_xyz_publish_app.png)
+
+<Admonition type="note" title="Version history for restoring a past version of your app">
+
+Create.xyz offers a robust version history. This feature enables instant restoration to any past version of your, in case you need to rewind.
+
+To restore a past version:
+
+1. **Browse Chat History:** Find the desired version in your chat conversation.
+2. **One-Click Restore:** Click on that version.
+3. **Publish:** Click 'Publish' to deploy the restored version.
+
+![Restore Past Version](/docs/guides/create_xyz_restore_project.png)
+
+Create.xyz instantly switches your app back to that earlier state.
+</Admonition>
+
+## Tips for building apps with Create
+
+To make the most of Create and build apps efficiently, consider the following tips:
+
+- **Prompting Best Practices**:
+
+  - **Context is key**: Start prompts with clear context. For example describe the app's purpose and main features. For example say, "I want to add a new feature to allow users to download images."
+  - **Iterate in small steps**: Break down complex changes. For a whole new page, start by describing the header, then the body, then the footer in separate prompts. This gives you more control.
+  - **Show, Don't just tell**: Use images! Paste screenshots or drag and drop images into the chat to show Create exactly what you want the style or layout to be wherever possible.
+  - **Pinpoint errors**: Be specific when things go wrong. Instead of saying "it's broken", paste error messages or describe exactly what you expected to happen vs. what did happen.
+
+- **Leverage Create's integrations**:
+
+  - **Explore the Integration library**: Create has many integrations ready to use. Type `/` in the chat to see them. Integrations include AI models, UI libraries, and services like Stripe.
+  - **Choose the right AI model**: Experiment with different AI models for different tasks. For example, use Stable Diffusion for image generation, OpenAI/Claude for text generation etc.
+
+## Resources
+
+- [Create.xyz](https://create.xyz)
+- [Create.xyz Docs](https://docs.create.xyz)
+- [From Idea to Full Stack App in One Conversation with Create](/blog/from-idea-to-full-stack-app-in-one-conversation-with-create)
+- [Create.xyz Templates](https://www.create.xyz/templates)
+- [Create.xyz Community](https://www.create.xyz/community)
+
+<NeedHelp />
+
+
 # Get started with Cursor and Neon Postgres MCP Server
 
 ---
@@ -9919,73 +12344,177 @@ Let's break down the key components in this setup:
 
 ## Setting up Neon MCP Server in Cursor
 
-The following steps show how to set up Neon MCP Server in Cursor.
+You have two options for connecting Cursor to the Neon MCP Server:
+
+1. **Remote MCP Server (Preview):** Connect to Neon's managed MCP server using OAuth for authentication. This method is more convenient as it eliminates the need to manage API keys in Cursor. Additionally, you will automatically receive the latest features and improvements as soon as they are released.
+
+2. **Local MCP Server:** Run the Neon MCP server locally on your machine, authenticating with a Neon API key.
 
 ### Prerequisites
 
 Before you begin, ensure you have the following:
 
-1.  **Cursor Editor:** Download and install Cursor from [cursor.com](https://cursor.com).
-2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
-3.  **Neon API Key:** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+1. **Cursor Editor:** Download and install Cursor from [cursor.com](https://cursor.com).
+2. **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
+3. **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
 
-    <Admonition type="warning" title="Neon API Key Security">
-    Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
-    </Admonition>
+   <Admonition type="warning" title="Neon API Key Security">
+   Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
+   </Admonition>
 
-4.  **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
+4. **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
 
-### Installation and Configuration
+### Option 1: Setting up the Remote Hosted Neon MCP Server
 
-**Add Neon MCP Server to Cursor:**
+This method uses Neon's managed server and OAuth authentication.
 
-1. Open Cursor and go to **Cursor Settings** in the Navbar.
-1. In Settings, navigate to **Features**.
-1. Scroll to the **MCP Servers** section.
-   ![Cursor MCP Servers section](/docs/guides/cursor-settings-features.png)
-1. Click **+ Add new MCP server**.
+1. Open Cursor.
+2. Create a `.cursor` directory in your project's root directory. This is where Cursor will look for the MCP server configuration.
+3. Paste the following JSON configuration into a file named `mcp.json` in the
+   `.cursor` directory:
 
-1. In the "Add MCP Server" modal:
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
+         "command": "npx",
+         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+       }
+     }
+   }
+   ```
 
-   - **Name:** Give your server a descriptive name (e.g., `Neon`).
-   - **Type:** Select `command`.
-   - **Command:** Enter the following command, replacing `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained earlier in the [Prerequisites](#prerequisites) section.
+   If you have other MCP servers configured, you can copy just the `Neon` part.
 
-     ```bash
-     npx -y @neondatabase/mcp-server-neon start <YOUR_NEON_API_KEY>
-     ```
+   ![Cursor MCP JSON](/docs/guides/cursor-remote-mcp-server-json.png)
 
-   - Click **Add**.
+   Save the `mcp.json` file after pasting the configuration.
 
-     ![Add Neon MCP Server in Cursor](/docs/guides/cursor-add-mcp-server.png)
+4. **Restart Cursor** or reload the window (`Developer: Reload Window` from the Command Palette). If Cursor prompts you to Enable the MCP server, click **Enable**.
 
-   Cursor will attempt to connect. Your new "Neon" MCP server should appear in the MCP Servers list with all the available tools.
+5. An OAuth window will open in your browser. Follow the prompts to authorize Cursor to access your Neon account.
+
+6. You can verify that the connection is successful by checking the **MCP Servers** section in Cursor settings.
+   ![Cursor with Neon MCP Tools](/docs/guides/cursor-with-neon-mcp-tools.png)
+
+7. Cursor is now connected to Neon's remote MCP server.
+
+<Admonition type="note">
+The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
+</Admonition>
+
+### Option 2: Setting up the Local Neon MCP Server
+
+This method runs the Neon MCP server locally on your machine, using a Neon API key for authentication.
+
+1. Open Cursor.
+2. Create a `.cursor` directory in your project's root directory. This is where Cursor will look for the MCP server configuration.
+3. Paste the following JSON configuration into a file named `mcp.json` in the `.cursor` directory. Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained from the [prerequisites](#prerequisites) section:
+
+   <CodeTabs labels={["MacOS/Linux", "Windows", "Windows (WSL)"]}>
+
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
+         "command": "npx",
+         "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+       }
+     }
+   }
+   ```
+
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
+         "command": "cmd",
+         "args": [
+           "/c",
+           "npx",
+           "-y",
+           "@neondatabase/mcp-server-neon",
+           "start",
+           "<YOUR_NEON_API_KEY>"
+         ]
+       }
+     }
+   }
+   ```
+
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
+         "command": "wsl",
+         "args": ["npx", "-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+       }
+     }
+   }
+   ```
+
+   </CodeTabs>
+
+   If you have other MCP servers configured, you can copy just the `Neon` part.
+
+   ![Cursor Local MCP JSON](/docs/guides/cursor-local-mcp-server-json.png)
+
+4. Save the `mcp.json` file after pasting the configuration.
+
+5. **Restart Cursor** or reload the window (`Developer: Reload Window` from the Command Palette).
+
+6. Cursor is now connected to Neon's MCP server. You can verify that the connection is successful by checking the **MCP Servers** section in Cursor settings.
 
    ![Cursor with Neon MCP Tools](/docs/guides/cursor-with-neon-mcp-tools.png)
 
-   You've now configured Neon MCP Server in Cursor and can manage your Neon Postgres databases using AI.
+You've now configured Neon MCP Server in Cursor and can manage your Neon Postgres databases using AI.
 
-1. Open the Cursor **Composer** view using the keyboard shortcut **Command + I** (on Mac) or **Control + I** (on Windows).
+### Verification
 
-   ![Cursor Composer view](/docs/guides/cursor_composer_view.png)
+Now that you have the Neon MCP server set up either remotely or locally, you can verify the connection and test the available tools.
 
-1. Type `List your available MCP tools` in the Composer text field, select the **agent** option in the corner of the field, and click **Submit**.
+1. Open a Cursor **Chat** using the keyboard shortcut **Command + I** (on Mac) or **Control + I** (on Windows) and select the **Agent** option from the drop-down menu.
+
+   ![Cursor Composer view](/docs/guides/cursor_chat_view.png)
+
+2. Type `List your available MCP tools` in the Composer text field, select the **agent** option in the corner of the field, and click **Submit**.
 
    **_Note: The agent option here is tiny and easy to miss!_**
 
    ![Cursor list available tools](/docs/guides/cursor_list_tools.png)
 
-1. Try out an Neon MCP Server tool by typing `Tell me about my Neon project <project_id>`. **You'll need to provide your Neon project ID.**
+3. Try out an Neon MCP Server tool by typing `Tell me about my Neon project <project_id>`. **You'll need to provide your Neon project ID.**
 
    ![Cursor list project details](/docs/guides/cursor_project_details.png)
 
    Cursor uses the Neon MCP Server `describe_project` tool to retrieve your project's details.
 
+### Global MCP Server in Cursor
+
+You can also set up a global MCP server in Cursor. This allows you to use the same MCP server configuration across all your projects. To do this, follow these steps:
+
+1. Open Cursor.
+2. Go to the **Settings**.
+3. In the **MCP Servers** section, click on **+ Add new Global MCP Server**.
+   ![Cursor add new global MCP server](/docs/guides/cursor-global-mcp-server.png)
+4. Paste the same JSON configuration either for the **Remote Hosted** or **Local MCP Server** as mentioned above.
+5. Save the configuration.
+6. Restart Cursor or reload the window (`Developer: Reload Window` from the Command Palette).
+7. You now have Neon MCP Server set up globally in Cursor. You can use it in any project without needing to configure it again for each project.
+
+### Troubleshooting
+
+If you are on a version of Cursor that does not support JSON configuration for MCP servers, you can use the following command when prompted:
+
+```bash
+npx -y @neondatabase/mcp-server-neon start <YOUR_NEON_API_KEY>
+```
+
 ## Neon MCP Server Tools
 
 Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
 
-- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account. **_Note: This particular action is still under development. It's not yet listing projects as expected._**
+- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account.
 - `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
 - `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
 - `delete_project`: Deletes an existing Neon project.
@@ -10008,15 +12537,9 @@ Let's walk through a typical development scenario: Quickly adding a column for p
 
 **Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
 
-Check out the video below to see how Cursor and Neon MCP Server can help you add a new column to your database table using natural language commands.
-
 <Admonition type="tip">
 Use `⌘I` to open Cursor's Composer and `⌘N` to create a new Composer.
 </Admonition>
-
-<video autoPlay playsInline muted loop width="800" height="600" controls>
-  <source type="video/mp4" src="/videos/pages/doc/cursor-neon-mcp.mp4"/>
-</video>
 
 <Admonition type="tip" title="Security Reminder">
 For your security, review the tool's purpose before permitting the operation to proceed. Remember that LLMs can sometimes produce unexpected results, so careful monitoring is always recommended.
@@ -10117,7 +12640,8 @@ Cursor will use the `create_branch` MCP tool to create the branch and provide yo
 
 ## Conclusion
 
-Cursor with Neon MCP Server lets you use natural language to interact with your database and take advantage of Neon's branching capabilities for fast iteration. This approach is ideal for quickly testing database ideas and making schema changes during development.
+Cursor combined with the Neon MCP Server, whether using the **Remote Hosted (Preview)** option or the **Local Server** setup, lets you use natural language to interact with your database and take advantage of Neon's branching capabilities for fast iteration. This approach is ideal for quickly testing
+database ideas and making schema changes during development.
 
 ## Resources
 
@@ -14047,6 +16571,1517 @@ As a next step, you can extend the API with more features like authentication, a
 - [Pydantic Documentation](https://docs.pydantic.dev/latest/)
 - [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
 - [Neon Documentation](/docs)
+
+<NeedHelp />
+
+
+# Implementing Webhooks with FastAPI and Neon Postgres
+
+---
+title: Implementing Webhooks with FastAPI and Neon Postgres
+subtitle: Learn how to build a webhook system to receive and store event data using FastAPI and Neon Postgres
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-03-23T00:00:00.000Z'
+updatedOn: '2025-03-23T00:00:00.000Z'
+---
+
+Webhooks are a way for services to communicate with each other by sending HTTP requests when specific events occur. They allow your application to receive real-time data from other services without having to constantly poll for updates.
+
+In this guide, you'll learn how to implement a webhook system using FastAPI to receive event notifications and Neon Postgres to store and process the webhook data. We'll build a simple but practical webhook receiver that can handle events from GitHub, making this applicable to real-world development workflows.
+
+## Prerequisites
+
+To follow this guide, you need:
+
+- [Python 3.9+](https://www.python.org/downloads/) installed
+- Basic knowledge of Python and FastAPI
+- A [Neon](https://console.neon.tech/signup) account
+- [ngrok](https://ngrok.com/) or similar tool for exposing your local server (for testing)
+- A [GitHub](https://github.com/) account (for testing the webhook)
+
+## Create a Neon Project
+
+Let's start by creating a new Neon project and setting up a Postgres database:
+
+1. Log in to your [Neon Console](https://console.neon.tech)
+2. Click "New Project"
+3. Enter a name for your project, like "webhook-receiver"
+4. Select your preferred region
+5. Click "Create Project"
+
+Once your project is created, you'll see the connection details. Save these details as we'll need them for our FastAPI application.
+
+## Set Up a FastAPI Project
+
+FastAPI is a modern web framework for building APIs with Python. It's based on standard Python type hints and provides automatic OpenAPI documentation.
+
+Now, let's set up a basic FastAPI project structure:
+
+1. Create a new directory for your project and navigate to it:
+
+```bash
+mkdir webhook-receiver
+cd webhook-receiver
+```
+
+2. Create a virtual environment and activate it:
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows, use: venv\Scripts\activate
+```
+
+3. Install the required packages:
+
+```bash
+pip install fastapi uvicorn sqlalchemy asyncpg python-dotenv pydantic pydantic-settings httpx psycopg2-binary greenlet
+```
+
+4. Create a basic directory structure:
+
+```bash
+mkdir app
+touch app/__init__.py
+touch app/main.py
+touch app/config.py
+touch app/models.py
+touch app/database.py
+touch .env
+```
+
+5. Set up the environment variables by adding the following to the `.env` file:
+
+```
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[database]?sslmode=require
+WEBHOOK_SECRET=your_webhook_secret  # We'll use this later for verification
+```
+
+Replace the placeholders in the `DATABASE_URL` with your Neon connection details.
+
+## Design the Database Schema
+
+Before implementing our webhook receiver, we need to design the database schema. For our GitHub webhook example, we'll create a table to store webhook events with the following fields:
+
+- `id`: A unique identifier for each webhook event
+- `event_type`: The type of event (e.g., "push", "pull_request")
+- `delivery_id`: The unique ID provided by GitHub for the webhook delivery
+- `signature`: The signature sent with the webhook for verification
+- `payload`: The JSON payload of the webhook
+- `processed`: A boolean indicating if the webhook has been processed
+- `created_at`: When the webhook was received
+
+Now, let's set up the database connection and models.
+
+## Create the Database Models
+
+First, let's set up the configuration file (`app/config.py`):
+
+```python
+# app/config.py
+from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class Settings(BaseSettings):
+    database_url: str
+    webhook_secret: str
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
+```
+
+Here, we're using `pydantic-settings` to load environment variables from the `.env` file.
+
+Next, let's set up the database connection (`app/database.py`):
+
+```python
+# app/database.py
+import ssl
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker, declarative_base
+from app.config import settings
+from urllib.parse import urlparse
+
+# Setup SSL context
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
+
+# Parse the database URL to remove query parameters
+# that can cause issues with asyncpg
+parsed_url = urlparse(settings.database_url)
+db_user = parsed_url.username
+db_password = parsed_url.password
+db_host = parsed_url.hostname
+db_port = parsed_url.port or 5432
+db_name = parsed_url.path.lstrip('/')
+
+# Create an async database URL without the query parameters
+ASYNC_DATABASE_URL = f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
+# Create an async SQLAlchemy engine with SSL configuration
+engine = create_async_engine(
+    ASYNC_DATABASE_URL,
+    connect_args={"ssl": ssl_context},
+    pool_size=5,
+    max_overflow=10,
+    pool_timeout=30,
+    pool_recycle=1800,
+    pool_pre_ping=True,
+    echo=False
+)
+
+# Create a session factory for creating database sessions
+async_session = sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)
+
+# Create a base class for declarative models
+Base = declarative_base()
+
+# Dependency to get an async database session
+async def get_db():
+    async with async_session() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+        finally:
+            await session.close()
+```
+
+With the above code, we've set up the database connection and a dependency to get an async database session in our FastAPI application.
+
+Now let's create our database models (`app/models.py`) which will represent the webhook events:
+
+```python
+# app/models.py
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, JSON
+from sqlalchemy.sql import func
+from app.database import Base
+
+class WebhookEvent(Base):
+    __tablename__ = "webhook_events"
+
+    id = Column(Integer, primary_key=True, index=True)
+    event_type = Column(String, index=True)
+    delivery_id = Column(String, unique=True, index=True)
+    signature = Column(String)
+    payload = Column(JSON)
+    processed = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    def __repr__(self):
+        return f"<WebhookEvent(id={self.id}, event_type='{self.event_type}')>"
+```
+
+This model represents a webhook event with the fields we defined earlier. We'll use this model to store webhook events in our Postgres database.
+
+## Implement Webhook Endpoints
+
+With the database models in place, we can now implement the webhook endpoint to receive and store GitHub webhook events.
+
+Now, let's implement the FastAPI application with our webhook endpoint. Update `app/main.py`:
+
+```python
+# app/main.py
+import json
+import hmac
+import hashlib
+from fastapi import FastAPI, Request, Depends, Header, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from app.database import get_db, engine, Base
+from app.models import WebhookEvent
+from app.config import settings
+
+app = FastAPI(title="Webhook Receiver")
+
+# Create database tables if they don't exist
+@app.on_event("startup")
+async def startup():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+@app.get("/")
+async def root():
+    return {"message": "Webhook Receiver is running"}
+
+@app.get("/webhooks/events")
+async def view_webhook_events(limit: int = 10, db: AsyncSession = Depends(get_db)):
+    """View recent webhook events - useful for debugging."""
+    result = await db.execute(select(WebhookEvent).order_by(WebhookEvent.created_at.desc()).limit(limit))
+    events = result.scalars().all()
+    return events
+
+@app.post("/webhooks/github")
+async def github_webhook(
+    request: Request,
+    x_github_event: str = Header(None),
+    x_github_delivery: str = Header(None),
+    x_hub_signature_256: str = Header(None),
+    db: AsyncSession = Depends(get_db)
+):
+    # Read the request body
+    body = await request.body()
+
+    # Verify the webhook signature (we'll implement this next)
+    is_valid = verify_signature(body, x_hub_signature_256)
+    if not is_valid:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid signature"
+        )
+
+    # Parse the JSON payload
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid JSON payload"
+        )
+
+    # Store the webhook event in the database
+    webhook_event = WebhookEvent(
+        event_type=x_github_event,
+        delivery_id=x_github_delivery,
+        signature=x_hub_signature_256,
+        payload=payload,
+        processed=False
+    )
+
+    db.add(webhook_event)
+    await db.commit()
+    await db.refresh(webhook_event)
+
+    # Process the webhook event (we'll implement this later)
+    await process_webhook_event(webhook_event.id, db)
+
+    return {"status": "success", "event_id": webhook_event.id}
+
+# Placeholder functions to be implemented
+def verify_signature(body, signature):
+    # We'll implement this next
+    return True
+
+async def process_webhook_event(event_id, db):
+    # We'll implement this later
+    pass
+```
+
+Here we are setting up a FastAPI application with a `/webhooks/github` endpoint to receive GitHub webhook events. The endpoint reads the request body, verifies the webhook signature, parses the JSON payload, stores the event in the database, and processes the event asynchronously.
+
+## Add Webhook Verification
+
+GitHub sends a signature with each webhook to verify that the webhook is coming from GitHub. Let's implement the signature verification function:
+
+```python
+def verify_signature(body, signature):
+    if not signature:
+        return False
+
+    # The signature from GitHub starts with 'sha256='
+    if not signature.startswith("sha256="):
+        return False
+
+    # Remove the 'sha256=' prefix
+    signature = signature[7:]
+
+    # Calculate the HMAC SHA256 signature using our webhook secret
+    secret = settings.webhook_secret.encode()
+    expected_signature = hmac.new(secret, body, hashlib.sha256).hexdigest()
+
+    # Compare the calculated signature with the one from GitHub
+    return hmac.compare_digest(expected_signature, signature)
+```
+
+Replace the placeholder `verify_signature` function with this implementation. This function verifies the webhook signature by calculating the HMAC SHA256 signature using the webhook secret and comparing it with the signature sent by GitHub.
+
+## Process Webhook Events
+
+Now, let's implement the `process_webhook_event` function to handle different types of GitHub webhook events:
+
+```python
+async def process_webhook_event(event_id, db):
+    # Fetch the webhook event from the database
+    result = await db.execute(select(WebhookEvent).where(WebhookEvent.id == event_id))
+    event = result.scalars().first()
+
+    if not event:
+        return
+
+    try:
+        # Process different event types
+        if event.event_type == "push":
+            await process_push_event(event)
+        elif event.event_type == "pull_request":
+            await process_pull_request_event(event)
+        elif event.event_type == "issues":
+            await process_issue_event(event)
+        # Add more event types as needed
+
+        # Mark the event as processed
+        event.processed = True
+        await db.commit()
+
+    except Exception as e:
+        print(f"Error processing webhook event {event_id}: {e}")
+
+async def process_push_event(event):
+    """Process a GitHub push event."""
+    payload = event.payload
+    repo_name = payload.get("repository", {}).get("full_name")
+    ref = payload.get("ref")
+    commits = payload.get("commits", [])
+
+    print(f"Push to {repo_name} on {ref} with {len(commits)} commits")
+    # Handle the push event based on the commits
+
+async def process_pull_request_event(event):
+    """Process a GitHub pull request event."""
+    payload = event.payload
+    action = payload.get("action")
+    pr_number = payload.get("number")
+    repo_name = payload.get("repository", {}).get("full_name")
+
+    print(f"Pull request #{pr_number} {action} in {repo_name}")
+    # Handle the pull request based on the action (opened, closed, etc.)
+
+async def process_issue_event(event):
+    """Process a GitHub issue event."""
+    payload = event.payload
+    action = payload.get("action")
+    issue_number = payload.get("issue", {}).get("number")
+    repo_name = payload.get("repository", {}).get("full_name")
+
+    print(f"Issue #{issue_number} {action} in {repo_name}")
+    # Handle the issue based on the action (opened, closed, etc.)
+```
+
+In the `process_webhook_event` function, we fetch the webhook event from the database and process it based on the event type. We've provided placeholder functions for processing different types of GitHub webhook events, such as push events, pull request events, and issue events. You can extend these functions to handle other event types as needed.
+
+## Test Your Webhook Receiver
+
+Now that we have implemented our webhook receiver, let's run it and test it with GitHub webhooks.
+
+We will use ngrok to expose our local server to the internet so that GitHub can send webhook events to our FastAPI application. If you haven't installed ngrok yet, you can download it from [ngrok.com](https://ngrok.com/).
+
+Once you have an account and ngrok installed, follow these steps to test your webhook receiver:
+
+1. Start your FastAPI application:
+
+```bash
+uvicorn app.main:app --reload
+```
+
+2. Use ngrok to expose your local server to the internet:
+
+```bash
+ngrok http 8000
+```
+
+ngrok will provide you with a public URL (e.g., `https://abc123.ngrok.io`) that forwards to your local server. For testing, you can use this URL as the webhook endpoint. For production, you would want to deploy your FastAPI application to a server with a public IP address and domain along with an SSL certificate.
+
+3. If you don't have a GitHub repository to test with, create a new repository or use an existing one, and set up a webhook:
+
+   - Go to your GitHub repository
+   - Click on "Settings" > "Webhooks" > "Add webhook"
+   - Set "Payload URL" to your ngrok URL + `/webhooks/github` (e.g., `https://abc123.ngrok.io/webhooks/github`)
+   - Set "Content type" to `application/json`
+   - Set "Secret" to the same value as your `WEBHOOK_SECRET` in the `.env` file
+   - Choose which events you want to receive (e.g., "Just the push event")
+   - Click "Add webhook"
+
+4. Trigger an event in your repository:
+
+   - Make a commit and push to the repository
+   - Create or update an issue
+   - Open a pull request
+
+5. Monitor your FastAPI application logs to see the webhook events being received and processed.
+
+After following these steps, you should see the webhook events being received by your FastAPI application and processed based on the event type and then stored in your Neon Postgres database.
+
+To view the stored webhook events, you can access the `/webhooks/events` endpoint. You should see the recent webhook events stored in the database returned as JSON.
+
+If you were to visit the `/docs` endpoint of your FastAPI application, you would see the automatically generated API documentation with details about your webhook endpoint.
+
+## Security Considerations
+
+When implementing webhooks in a production environment, consider these security practices:
+
+1. We implemented signature validation for GitHub webhooks, but make sure to do this for any webhook provider. Make sure to use a secure secret for signing the webhook payloads and store it securely.
+
+2. Always use HTTPS to encrypt webhook payloads in transit.
+
+3. Protect your webhook endpoint from abuse by implementing rate limiting.
+
+4. Set reasonable timeouts for webhook processing to prevent long-running tasks from blocking your application.
+
+5. Make sure your webhook handling is idempotent, meaning the same webhook can be processed multiple times without causing problems (useful for retries).
+
+6. Store the raw webhook payload initially, then process it asynchronously. This helps with debugging and retrying failed webhooks.
+
+## Conclusion
+
+In this guide, you built a FastAPI application backed by Neon Postgres to securely receive and process webhook events. Along the way, you learned how to define a data model, implement a webhook endpoint, verify signatures, and handle different event types.
+
+Webhooks are an important part of many API integrations, allowing your applications to respond to events in real-time. By combining FastAPI with Neon Postgres, you can build webhook receivers that can handle various types of event notifications from external services.
+
+You can extend this basic webhook system to handle events from other services like Stripe (for payment notifications), Slack (for user interactions), or any other service that supports webhooks.
+
+<NeedHelp />
+
+
+# Implementing Feature Flags with Go, Neon Postgres, and Server-Side Rendering
+
+---
+title: Implementing Feature Flags with Go, Neon Postgres, and Server-Side Rendering
+subtitle: Learn how to create a feature flag system using Go, Neon Postgres, and server-side rendering for controlled feature rollouts
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-03-29T00:00:00.000Z'
+updatedOn: '2025-03-29T00:00:00.000Z'
+---
+
+Feature flags are a technique that allows developers to modify system behavior without changing code. They enable you to control when features are visible to specific users, perform A/B testing, and implement kill switches for problematic features.
+
+In this guide, you'll learn how to implement a feature flag system using Go, Neon Postgres, and server-side rendering. This approach allows for feature visibility decisions to happen on the server, providing better security and performance compared to client-side feature flags.
+
+## Prerequisites
+
+To follow the steps in this guide, you will need the following:
+
+- [Go](https://golang.org/dl/) 1.20 or later installed
+- A [Neon](https://console.neon.tech/signup) account
+- Basic familiarity with SQL and Go programming
+- [Docker](https://www.docker.com/get-started) (optional, for containerization)
+
+## Create a Neon project
+
+First, let's create a Neon project to store our feature flag configurations.
+
+1. Navigate to the [Neon Console](https://console.neon.tech/app/projects) and click "New Project".
+2. Give your project a name, such as "feature-flags".
+3. Choose your preferred region.
+4. Click "Create Project".
+
+After your project is created, you'll receive a connection string that looks like this:
+
+```
+postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+```
+
+Save this connection string, you'll need it to connect your Go application to the Neon database.
+
+## Set up the database schema
+
+Now that we have our Neon project, let's create the database schema for our feature flag system. We'll need tables to store feature flags, their rules, and user segments.
+
+Connect to your database using your preferred SQL client or the Neon SQL Editor in the console, and execute the following SQL:
+
+```sql
+-- Create feature flags table
+CREATE TABLE feature_flags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    enabled BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create user segments table (for targeting specific user groups)
+CREATE TABLE segments (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create rules table (associates flags with segments and specifies conditions)
+CREATE TABLE rules (
+    id SERIAL PRIMARY KEY,
+    flag_id INTEGER REFERENCES feature_flags(id) ON DELETE CASCADE,
+    segment_id INTEGER REFERENCES segments(id) ON DELETE CASCADE,
+    percentage INTEGER NOT NULL DEFAULT 100, -- For percentage rollouts
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT percentage_range CHECK (percentage >= 0 AND percentage <= 100),
+    UNIQUE(flag_id, segment_id)
+);
+
+-- Create user attributes table (for identifying users that belong to segments)
+CREATE TABLE segment_conditions (
+    id SERIAL PRIMARY KEY,
+    segment_id INTEGER REFERENCES segments(id) ON DELETE CASCADE,
+    attribute VARCHAR(100) NOT NULL, -- e.g., "country", "email", "role"
+    operator VARCHAR(20) NOT NULL, -- e.g., "equals", "contains", "startsWith"
+    value TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+This schema gives us a flexible feature flag setup that can:
+
+- Define named feature flags
+- Create user segments based on attributes
+- Set rules for flag visibility, including percentage rollouts
+- Control which segments see which features
+
+Let's insert some sample data to work with:
+
+```sql
+-- Insert some feature flags
+INSERT INTO feature_flags (name, description, enabled) VALUES
+('new_dashboard', 'New user dashboard with improved visualizations', true),
+('dark_mode', 'Dark mode theme across the application', false),
+('beta_api', 'New API endpoints for beta testers', true);
+
+-- Insert some user segments
+INSERT INTO segments (name, description) VALUES
+('beta_testers', 'Users who opted into beta features'),
+('premium_users', 'Users with paid subscription accounts'),
+('internal_staff', 'Employees and contractors');
+
+-- Associate flags with segments
+INSERT INTO rules (flag_id, segment_id, percentage) VALUES
+(1, 2, 100), -- new_dashboard available to 100% of premium_users
+(3, 1, 100), -- beta_api available to 100% of beta_testers
+(2, 3, 50);  -- dark_mode available to 50% of internal_staff
+
+-- Define conditions for segments
+INSERT INTO segment_conditions (segment_id, attribute, operator, value) VALUES
+(1, 'email', 'endsWith', '@example.com'),
+(2, 'subscription', 'equals', 'premium'),
+(3, 'email', 'endsWith', '@ourcompany.com');
+```
+
+With our database schema and sample data in place, we're ready to create our Go application.
+
+## Create the Go application
+
+Let's set up a new Go application for our feature flag system. We'll use standard Go modules and a clean project structure.
+
+Create a new directory for your project and initialize a Go module:
+
+```bash
+mkdir feature-flag-system
+cd feature-flag-system
+go mod init github.com/yourusername/feature-flag-system
+```
+
+Now let's install the required dependencies:
+
+```bash
+go get github.com/jackc/pgx/v5          # PostgreSQL driver
+go get github.com/gorilla/mux           # HTTP router
+go get github.com/joho/godotenv         # Environment variable management
+go get github.com/google/uuid           # For generating unique IDs
+go get github.com/jmoiron/sqlx          # Enhanced database operations
+```
+
+Create a basic project structure:
+
+```bash
+mkdir -p cmd/server
+mkdir -p internal/db
+mkdir -p internal/featureflags
+mkdir -p internal/handlers
+mkdir -p web/templates
+```
+
+This structure follows an essential Go project layout:
+
+- `cmd/server`: Entry point for the server application
+- `internal`: Internal packages that aren't meant to be imported by other projects
+- `web/templates`: HTML templates for server-side rendering
+
+Now, let's create a configuration file to store our database connection details. Create a new file named `.env` in the project root:
+
+```
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+SERVER_PORT=8080
+```
+
+Replace the placeholder values in `DATABASE_URL` with your actual Neon connection string.
+
+## Implement the feature flag service
+
+Now we'll create the core of our feature flag system, the service that checks if features should be enabled for specific users.
+
+First, let's create the database connection layer. Create a file at `internal/db/db.go`:
+
+```go
+package db
+
+import (
+	"log"
+
+	"github.com/jmoiron/sqlx"
+	_ "github.com/jackc/pgx/v5/stdlib"
+)
+
+// DB is our database wrapper
+type DB struct {
+	*sqlx.DB
+}
+
+// NewDB creates a new database connection
+func NewDB(connectionString string) (*DB, error) {
+	db, err := sqlx.Connect("postgres", connectionString)
+	if err != nil {
+		return nil, err
+	}
+
+	// Test the connection
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	log.Println("Connected to the database successfully")
+	return &DB{db}, nil
+}
+```
+
+Now, let's create our feature flag models and service. Create a file at `internal/featureflags/models.go`:
+
+```go
+package featureflags
+
+// FeatureFlag represents a feature flag in the system
+type FeatureFlag struct {
+	ID          int    `db:"id" json:"id"`
+	Name        string `db:"name" json:"name"`
+	Description string `db:"description" json:"description"`
+	Enabled     bool   `db:"enabled" json:"enabled"`
+}
+
+// Segment represents a user segment
+type Segment struct {
+	ID          int    `db:"id" json:"id"`
+	Name        string `db:"name" json:"name"`
+	Description string `db:"description" json:"description"`
+}
+
+// Rule associates feature flags with segments
+type Rule struct {
+	ID         int `db:"id" json:"id"`
+	FlagID     int `db:"flag_id" json:"flag_id"`
+	SegmentID  int `db:"segment_id" json:"segment_id"`
+	Percentage int `db:"percentage" json:"percentage"`
+}
+
+// Condition represents a condition for a segment
+type Condition struct {
+	ID        int    `db:"id" json:"id"`
+	SegmentID int    `db:"segment_id" json:"segment_id"`
+	Attribute string `db:"attribute" json:"attribute"`
+	Operator  string `db:"operator" json:"operator"`
+	Value     string `db:"value" json:"value"`
+}
+
+// User represents a user in the system for feature flag evaluation
+type User struct {
+	ID         string
+	Attributes map[string]string
+}
+```
+
+The models define the structure of our feature flags, segments, rules, and user attributes. The `User` struct will be used to represent users when checking feature flag visibility.
+
+Now create the feature flag service at `internal/featureflags/service.go`:
+
+```go
+package featureflags
+
+import (
+	"fmt"
+	"hash/fnv"
+	"log"
+	"strings"
+
+	"github.com/yourusername/feature-flag-system/internal/db"
+)
+
+// Service provides methods for interacting with feature flags
+type Service struct {
+	db *db.DB
+}
+
+// NewService creates a new feature flag service
+func NewService(db *db.DB) *Service {
+	return &Service{db: db}
+}
+
+// IsEnabled checks if a feature flag is enabled for a specific user
+func (s *Service) IsEnabled(flagName string, user *User) (bool, error) {
+	// First, check if the flag exists and is globally enabled
+	var flag FeatureFlag
+	err := s.db.Get(&flag, "SELECT * FROM feature_flags WHERE name = $1", flagName)
+	if err != nil {
+		return false, fmt.Errorf("flag not found: %w", err)
+	}
+
+	// If the flag is disabled globally, return false immediately
+	if !flag.Enabled {
+		return false, nil
+	}
+
+	// Get all rules for this flag
+	var rules []struct {
+		Rule
+		SegmentName string `db:"segment_name"`
+	}
+	err = s.db.Select(&rules, `
+		SELECT r.*, s.name as segment_name
+		FROM rules r
+		JOIN segments s ON r.segment_id = s.id
+		WHERE r.flag_id = $1
+	`, flag.ID)
+	if err != nil {
+		return false, fmt.Errorf("error getting rules: %w", err)
+	}
+
+	// If no rules exist, the flag is enabled for everyone
+	if len(rules) == 0 {
+		return true, nil
+	}
+
+	// Check each rule to see if the user matches
+	for _, rule := range rules {
+		isInSegment, err := s.isUserInSegment(user, rule.SegmentID)
+		if err != nil {
+			log.Printf("Error checking segment: %v", err)
+			continue
+		}
+
+		if isInSegment {
+			// Check percentage rollout
+			if rule.Percentage < 100 {
+				hash := hashUserID(user.ID, flagName)
+				percentage := hash % 100
+				if percentage >= rule.Percentage {
+					continue // Not included in the percentage rollout
+				}
+			}
+			return true, nil
+		}
+	}
+
+	// If no rules matched, the feature is disabled for this user
+	return false, nil
+}
+
+// isUserInSegment checks if a user is in a specific segment
+func (s *Service) isUserInSegment(user *User, segmentID int) (bool, error) {
+	// Get the conditions for this segment
+	var conditions []Condition
+	err := s.db.Select(&conditions, "SELECT * FROM segment_conditions WHERE segment_id = $1", segmentID)
+	if err != nil {
+		return false, fmt.Errorf("error getting segment conditions: %w", err)
+	}
+
+	// If no conditions, segment is empty
+	if len(conditions) == 0 {
+		return false, nil
+	}
+
+	// Check all conditions
+	for _, condition := range conditions {
+		attributeValue, exists := user.Attributes[condition.Attribute]
+		if !exists {
+			return false, nil // User doesn't have this attribute
+		}
+
+		// Evaluate the condition
+		match := false
+		switch condition.Operator {
+		case "equals":
+			match = attributeValue == condition.Value
+		case "contains":
+			match = strings.Contains(attributeValue, condition.Value)
+		case "startsWith":
+			match = strings.HasPrefix(attributeValue, condition.Value)
+		case "endsWith":
+			match = strings.HasSuffix(attributeValue, condition.Value)
+		default:
+			return false, fmt.Errorf("unknown operator: %s", condition.Operator)
+		}
+
+		if !match {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
+// GetAllFlags returns all feature flags in the system
+func (s *Service) GetAllFlags() ([]FeatureFlag, error) {
+	var flags []FeatureFlag
+	err := s.db.Select(&flags, "SELECT * FROM feature_flags ORDER BY name")
+	if err != nil {
+		return nil, fmt.Errorf("error getting flags: %w", err)
+	}
+	return flags, nil
+}
+
+// UpdateFlag updates a feature flag's enabled status
+func (s *Service) UpdateFlag(id int, enabled bool) error {
+	_, err := s.db.Exec(
+		"UPDATE feature_flags SET enabled = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2",
+		enabled, id,
+	)
+	if err != nil {
+		return fmt.Errorf("error updating flag: %w", err)
+	}
+	return nil
+}
+
+// hashUserID creates a consistent hash of a user ID and flag name
+// This ensures the same user gets the same behavior for a specific flag
+func hashUserID(userID, flagName string) int {
+	h := fnv.New32a()
+	h.Write([]byte(userID + flagName))
+	return int(h.Sum32() % 100)
+}
+```
+
+The `Service` provides a set of methods to interact with the feature flags in the database:
+
+- Check if a feature flag is enabled for a specific user
+- Determine if a user belongs to a segment based on their attributes
+- Get all feature flags in the system
+- Update a feature flag's enabled status
+
+The `IsEnabled` method is the core of our feature flag system. It:
+
+1. Checks if the flag exists and is globally enabled
+2. Gets all rules for the flag
+3. For each rule, checks if the user is in the segment
+4. For percentage rollouts, uses a hash of the user ID and flag name to ensure consistent behavior
+
+## Create the web server
+
+Now let's create the web server that will serve our application with server-side rendering. First, let's create the main server file at `cmd/server/main.go`:
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	"github.com/yourusername/feature-flag-system/internal/db"
+	"github.com/yourusername/feature-flag-system/internal/featureflags"
+	"github.com/yourusername/feature-flag-system/internal/handlers"
+)
+
+func main() {
+	// Load environment variables
+	if err := godotenv.Load(); err != nil {
+		log.Printf("Warning: .env file not found: %v", err)
+	}
+
+	// Get database connection string
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		log.Fatal("DATABASE_URL environment variable is required")
+	}
+
+	// Set up database
+	database, err := db.NewDB(dbURL)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer database.Close()
+
+	// Create feature flag service
+	flagService := featureflags.NewService(database)
+
+	// Create router
+	r := mux.NewRouter()
+
+	// Create handlers
+	h := handlers.NewHandlers(flagService)
+
+	// Register routes
+	r.HandleFunc("/", h.HomePage).Methods("GET")
+	r.HandleFunc("/admin", h.AdminPage).Methods("GET")
+	r.HandleFunc("/api/flags", h.GetAllFlags).Methods("GET")
+	r.HandleFunc("/api/flags/{id}", h.UpdateFlag).Methods("PUT")
+
+	// Serve static files
+	r.PathPrefix("/static/").Handler(
+		http.StripPrefix("/static/", http.FileServer(http.Dir("./web/static"))),
+	)
+
+	// Start server
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Starting server on port %s", port)
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), r))
+}
+```
+
+Here we are setting up the server with the following features:
+
+- Loading environment variables from a `.env` file using `godotenv`
+- Connecting to the Neon database using the `db` package
+- Creating a `featureflags.Service` instance
+- Setting up routes with the `gorilla/mux` router
+- Serving static files from the `web/static` directory
+
+Next, let's create the HTML templates for our application.
+
+## Implement server-side rendering with feature flags
+
+Now let's create the handlers that will render our templates based on the feature flags. Create a file at `internal/handlers/handlers.go`:
+
+```go
+package handlers
+
+import (
+	"encoding/json"
+	"html/template"
+	"log"
+	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
+	"github.com/yourusername/feature-flag-system/internal/featureflags"
+)
+
+// Handlers contains the HTTP handlers for the application
+type Handlers struct {
+	flagService *featureflags.Service
+	templates   map[string]*template.Template
+}
+
+// NewHandlers creates a new Handlers instance
+func NewHandlers(flagService *featureflags.Service) *Handlers {
+	// Parse templates
+	templates := make(map[string]*template.Template)
+	templates["home"] = template.Must(template.ParseFiles(
+		"web/templates/base.html",
+		"web/templates/home.html",
+	))
+	templates["admin"] = template.Must(template.ParseFiles(
+		"web/templates/base.html",
+		"web/templates/admin.html",
+	))
+
+	return &Handlers{
+		flagService: flagService,
+		templates:   templates,
+	}
+}
+
+// HomePage renders the home page with feature flags
+func (h *Handlers) HomePage(w http.ResponseWriter, r *http.Request) {
+	// Create a user from request information
+	user := createUserFromRequest(r)
+
+	// Check feature flags
+	newDashboard, err := h.flagService.IsEnabled("new_dashboard", user)
+	if err != nil {
+		log.Printf("Error checking new_dashboard flag: %v", err)
+		newDashboard = false
+	}
+
+	darkMode, err := h.flagService.IsEnabled("dark_mode", user)
+	if err != nil {
+		log.Printf("Error checking dark_mode flag: %v", err)
+		darkMode = false
+	}
+
+	betaApi, err := h.flagService.IsEnabled("beta_api", user)
+	if err != nil {
+		log.Printf("Error checking beta_api flag: %v", err)
+		betaApi = false
+	}
+
+	// Prepare template data
+	data := map[string]interface{}{
+		"Title":        "Feature Flag Demo",
+		"User":         user,
+		"NewDashboard": newDashboard,
+		"DarkMode":     darkMode,
+		"BetaApi":      betaApi,
+	}
+
+	// Render template
+	h.templates["home"].ExecuteTemplate(w, "base", data)
+}
+
+// AdminPage renders the admin page for managing feature flags
+func (h *Handlers) AdminPage(w http.ResponseWriter, r *http.Request) {
+	flags, err := h.flagService.GetAllFlags()
+	if err != nil {
+		http.Error(w, "Error loading flags", http.StatusInternalServerError)
+		log.Printf("Error loading flags: %v", err)
+		return
+	}
+
+	data := map[string]interface{}{
+		"Title": "Feature Flag Admin",
+		"Flags": flags,
+	}
+
+	h.templates["admin"].ExecuteTemplate(w, "base", data)
+}
+
+// GetAllFlags returns all feature flags as JSON
+func (h *Handlers) GetAllFlags(w http.ResponseWriter, r *http.Request) {
+	flags, err := h.flagService.GetAllFlags()
+	if err != nil {
+		http.Error(w, "Error loading flags", http.StatusInternalServerError)
+		log.Printf("Error loading flags: %v", err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(flags)
+}
+
+// UpdateFlag updates a feature flag's enabled status
+func (h *Handlers) UpdateFlag(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "Invalid flag ID", http.StatusBadRequest)
+		return
+	}
+
+	var updateData struct {
+		Enabled bool `json:"enabled"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&updateData); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	if err := h.flagService.UpdateFlag(id, updateData.Enabled); err != nil {
+		http.Error(w, "Error updating flag", http.StatusInternalServerError)
+		log.Printf("Error updating flag %d: %v", id, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "success"})
+}
+
+// createUserFromRequest extracts user information from the request
+func createUserFromRequest(r *http.Request) *featureflags.User {
+	// In a real application, you'd get this from your authentication system
+	// For demo purposes, we'll use query parameters or default values
+	userID := r.URL.Query().Get("user_id")
+	if userID == "" {
+		userID = "anonymous"
+	}
+
+	// Create a user with attributes
+	user := &featureflags.User{
+		ID: userID,
+		Attributes: map[string]string{
+			"email":        r.URL.Query().Get("email"),
+			"country":      r.URL.Query().Get("country"),
+			"subscription": r.URL.Query().Get("subscription"),
+		},
+	}
+
+	// Set defaults if not provided
+	if user.Attributes["email"] == "" {
+		// For testing segment conditions
+		if userID == "premium" {
+			user.Attributes["email"] = "premium@example.com"
+			user.Attributes["subscription"] = "premium"
+		} else if userID == "beta" {
+			user.Attributes["email"] = "beta@example.com"
+		} else if userID == "internal" {
+			user.Attributes["email"] = "employee@ourcompany.com"
+		} else {
+			user.Attributes["email"] = "user@regular.com"
+			user.Attributes["subscription"] = "free"
+		}
+	}
+
+	if user.Attributes["country"] == "" {
+		user.Attributes["country"] = "US"
+	}
+
+	return user
+}
+```
+
+The handlers:
+
+1. Render pages using Go's template package
+2. Check if features should be enabled for the current user
+3. Pass feature flag information to the templates
+4. Provide API endpoints for the admin interface
+
+Now, let's create the HTML templates for our application. First, create a base template at `web/templates/base.html`:
+
+```html
+<!doctype html>
+<html {{if .DarkMode}}class="dark" {{end}}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{.Title}}</title>
+    <!-- Add Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {},
+        },
+      };
+    </script>
+  </head>
+  <body class="text-gray-800 dark:text-gray-100 dark:bg-gray-900 mx-auto max-w-7xl p-5 font-sans">
+    <div
+      class="border-gray-200 dark:border-gray-700 mb-8 flex items-center justify-between border-b pb-3"
+    >
+      <h1 class="text-2xl font-bold">{{.Title}}</h1>
+      <div class="nav">
+        <a href="/" class="text-blue-600 dark:text-blue-400 ml-4 no-underline hover:underline"
+          >Home</a
+        >
+        <a href="/admin" class="text-blue-600 dark:text-blue-400 ml-4 no-underline hover:underline"
+          >Admin</a
+        >
+      </div>
+    </div>
+
+    {{template "content" .}}
+
+    <script>
+      // Common JavaScript functionality
+    </script>
+  </body>
+</html>
+```
+
+Next, create the home page template at `web/templates/home.html`:
+
+```html
+{{define "content"}}
+<div
+  class="border-gray-200 dark:bg-gray-800 dark:border-gray-700 mb-8 rounded-lg border bg-white p-6 shadow-sm"
+>
+  <h2 class="text-gray-800 dark:text-gray-100 mb-4 text-xl font-semibold">Current User</h2>
+
+  <div class="mb-6 space-y-2">
+    <p class="flex"><span class="w-32 font-medium">User ID:</span> <span>{{.User.ID}}</span></p>
+    <p class="flex">
+      <span class="w-32 font-medium">Email:</span> <span>{{.User.Attributes.email}}</span>
+    </p>
+    <p class="flex">
+      <span class="w-32 font-medium">Subscription:</span>
+      <span>{{.User.Attributes.subscription}}</span>
+    </p>
+    <p class="flex">
+      <span class="w-32 font-medium">Country:</span> <span>{{.User.Attributes.country}}</span>
+    </p>
+  </div>
+
+  <h3 class="text-gray-800 dark:text-gray-100 mb-2 text-lg font-medium">Active Features:</h3>
+  <ul class="mb-4 list-disc space-y-1 pl-5">
+    {{if .NewDashboard}}
+    <li class="text-green-600 dark:text-green-400">New Dashboard</li>
+    {{end}} {{if .DarkMode}}
+    <li class="text-green-600 dark:text-green-400">Dark Mode</li>
+    {{end}} {{if .BetaApi}}
+    <li class="text-green-600 dark:text-green-400">Beta API</li>
+    {{end}}
+  </ul>
+
+  <p class="text-gray-500 dark:text-gray-400 text-xs italic">
+    You can simulate different users by adding query parameters:
+    <code class="bg-gray-100 dark:bg-gray-700 rounded px-1 py-0.5">?user_id=premium</code> or
+    <code class="bg-gray-100 dark:bg-gray-700 rounded px-1 py-0.5">?user_id=beta</code> or
+    <code class="bg-gray-100 dark:bg-gray-700 rounded px-1 py-0.5">?user_id=internal</code>
+  </p>
+</div>
+
+<div class="space-y-6">
+  <h2 class="text-gray-800 dark:text-gray-100 mb-6 text-2xl font-bold">
+    Welcome to the Feature Flag Demo
+  </h2>
+
+  {{if .NewDashboard}}
+  <div
+    class="border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg border bg-white p-6 shadow transition-all duration-300 hover:shadow-md"
+  >
+    <div class="mb-4 flex items-center">
+      <h3 class="text-gray-800 dark:text-gray-100 text-xl font-semibold">Analytics Dashboard</h3>
+      <span class="bg-orange-500 ml-2 inline-block rounded-full px-2 py-0.5 text-xs text-white"
+        >New</span
+      >
+    </div>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+      This is the new analytics dashboard with improved visualizations. You're seeing this because
+      the 'new_dashboard' feature flag is enabled for you.
+    </p>
+    <div
+      class="text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 flex h-48 items-center justify-center rounded-lg font-medium"
+    >
+      [Fancy New Dashboard Chart]
+    </div>
+  </div>
+  {{else}}
+  <div
+    class="border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg border bg-white p-6 shadow transition-all duration-300 hover:shadow-md"
+  >
+    <h3 class="text-gray-800 dark:text-gray-100 mb-4 text-xl font-semibold">Analytics Dashboard</h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+      This is the classic analytics dashboard. You're seeing this because the 'new_dashboard'
+      feature flag is disabled for you.
+    </p>
+    <div
+      class="text-gray-500 bg-gray-100 dark:bg-gray-700 dark:text-gray-400 flex h-36 items-center justify-center rounded-lg font-medium"
+    >
+      [Classic Dashboard]
+    </div>
+  </div>
+  {{end}} {{if .BetaApi}}
+  <div
+    class="border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg border bg-white p-6 shadow transition-all duration-300 hover:shadow-md"
+  >
+    <div class="mb-4 flex items-center">
+      <h3 class="text-gray-800 dark:text-gray-100 text-xl font-semibold">API Explorer</h3>
+      <span class="bg-orange-500 ml-2 inline-block rounded-full px-2 py-0.5 text-xs text-white"
+        >Beta</span
+      >
+    </div>
+    <p class="text-gray-600 dark:text-gray-300 mb-4">
+      Welcome to the API Explorer. You're seeing this because the 'beta_api' feature flag is enabled
+      for you.
+    </p>
+    <pre
+      class="text-gray-800 bg-gray-100 dark:bg-gray-700 dark:text-gray-200 overflow-x-auto rounded-lg p-4 font-mono text-sm"
+    >
+GET /api/v2/data
+Authorization: Bearer {your_token}</pre
+    >
+  </div>
+  {{end}}
+</div>
+{{end}}
+```
+
+Finally, create the admin page template at `web/templates/admin.html`:
+
+```html
+{{define "content"}}
+<div class="dark:bg-gray-800 mb-8 rounded-lg bg-white p-6 shadow-md">
+  <h2 class="text-gray-800 dark:text-gray-100 mb-3 text-2xl font-bold">
+    Feature Flag Administration
+  </h2>
+  <p class="text-gray-600 dark:text-gray-300 mb-8">
+    Toggle feature flags on and off. Changes take effect immediately for all users.
+  </p>
+
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 md:grid-cols-2">
+    {{range .Flags}}
+    <div
+      class="border-gray-200 dark:bg-gray-800 dark:border-gray-700 rounded-lg border bg-white p-5 shadow-sm transition-all duration-300 hover:shadow"
+    >
+      <div class="mb-4 flex items-start justify-between">
+        <h3 class="text-gray-800 dark:text-gray-100 text-lg font-semibold">{{.Name}}</h3>
+        <label class="relative inline-flex cursor-pointer items-center">
+          <input
+            type="checkbox"
+            class="flag-toggle peer sr-only"
+            data-id="{{.ID}}"
+            {{if
+            .Enabled}}checked{{end}}
+          />
+          <div
+            class="bg-gray-200 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 after:border-gray-300 dark:border-gray-600 peer-checked:bg-blue-600 peer h-6 w-11 rounded-full after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4"
+          ></div>
+        </label>
+      </div>
+      <p class="text-gray-600 dark:text-gray-300 mb-3">{{.Description}}</p>
+      <p class="text-gray-500 dark:text-gray-400 font-mono text-xs">ID: {{.ID}}</p>
+    </div>
+    {{end}}
+  </div>
+</div>
+
+<script>
+  // Add JavaScript to handle toggle switches
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggles = document.querySelectorAll('.flag-toggle');
+
+    toggles.forEach((toggle) => {
+      toggle.addEventListener('change', function () {
+        const flagId = this.dataset.id;
+        const enabled = this.checked;
+
+        fetch(`/api/flags/${flagId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            enabled: enabled,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Failed to update flag');
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log('Flag updated:', data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+            // Revert the toggle state on error
+            this.checked = !enabled;
+            alert('Error updating feature flag. Please try again.');
+          });
+      });
+    });
+  });
+</script>
+{{end}}
+```
+
+## Create an admin interface
+
+The admin interface we've built allows administrators to toggle feature flags on and off through the UI. It includes:
+
+1. A list of all feature flags in the system
+2. Toggle switches for enabling/disabling flags
+3. JavaScript to update flags via API calls
+
+The admin interface is already integrated into our application with the `AdminPage` handler and `admin.html` template.
+
+## Test the feature flag system
+
+Now let's test our feature flag system by running the application and trying different user scenarios.
+
+First, create a directory for static files:
+
+```bash
+mkdir -p web/static
+```
+
+Run the application:
+
+```bash
+go run cmd/server/main.go
+```
+
+Visit `http://localhost:8080` in your browser to see the home page with feature flags in action.
+
+Try these different user scenarios by adding query parameters:
+
+1. Regular user: `http://localhost:8080`
+2. Premium user: `http://localhost:8080?user_id=premium`
+3. Beta tester: `http://localhost:8080?user_id=beta`
+4. Internal staff: `http://localhost:8080?user_id=internal`
+
+Each user should see different features based on the rules we set up:
+
+- Premium users should see the new dashboard
+- Beta testers should see the beta API
+- 50% of internal staff should see dark mode (based on the user ID hash)
+
+You can also visit the admin interface at `http://localhost:8080/admin` to toggle features on and off.
+
+## Deploy the application
+
+To deploy the application, we'll package it in a Docker container and prepare it for deployment to your preferred platform.
+
+Create a `Dockerfile` in the project root:
+
+```dockerfile
+FROM golang:1.20-alpine AS builder
+
+WORKDIR /app
+
+# Copy go.mod and go.sum first to leverage Docker cache
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the application
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/server
+
+# Use a smaller image for the final container
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy the binary from the builder stage
+COPY --from=builder /app/server .
+COPY --from=builder /app/web ./web
+
+# Expose the port the server runs on
+EXPOSE 8080
+
+# Set environment variables
+ENV SERVER_PORT=8080
+
+# Run the server
+CMD ["./server"]
+```
+
+Build the Docker image:
+
+```bash
+docker build -t feature-flag-system .
+```
+
+You can run the container locally to test it:
+
+```bash
+docker run -p 8080:8080 --env-file .env feature-flag-system
+```
+
+To deploy to production, push the container to your container registry and deploy it to your preferred cloud platform (AWS, GCP, Azure, etc.).
+
+Remember to set the `DATABASE_URL` environment variable in your deployment environment to point to your Neon database.
+
+## Summary
+
+In this guide, you built a server-rendered feature flag system using Go and Neon Postgres. You implemented a way to define flags and user segments in the database, control feature visibility based on user attributes, and gradually roll out features using percentage-based targeting.
+
+By handling feature flag logic on the server, you ensure that users only see what they're meant to, making the system both secure and performant. This approach gives you full control over feature exposure without relying on client-side logic.
+
+## Additional Resources
+
+- [Neon Documentation](/docs)
+- [Go Documentation](https://golang.org/doc/)
+- [Feature Toggles (Martin Fowler)](https://martinfowler.com/articles/feature-toggles.html)
 
 <NeedHelp />
 
@@ -18206,6 +22241,1271 @@ By following the steps in this guide, you can build robust applications that eff
 - [Neon Documentation](/docs)
 - [Go Database/SQL Documentation](https://golang.org/pkg/database/sql/)
 - [Effective Go](https://golang.org/doc/effective_go)
+
+<NeedHelp />
+
+
+# Creating a Secure Authentication System with Go, JWT, and Neon Postgres
+
+---
+title: Creating a Secure Authentication System with Go, JWT, and Neon Postgres
+subtitle: Learn how to build a secure authentication system using Go, JWT tokens, and Neon Postgres
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-03-29T00:00:00.000Z'
+updatedOn: '2025-03-29T00:00:00.000Z'
+---
+
+Authentication is the foundation of web applications, it ensures that users are who they claim to be. In this guide, you'll learn how to create a secure authentication system using Go, JSON Web Tokens (JWT), and Neon Postgres.
+
+We'll focus on the essential concepts and patterns for implementing a robust authentication system, including user registration, secure password storage, token-based authentication, and protected routes.
+
+## Prerequisites
+
+To follow the steps in this guide, you will need:
+
+- [Go](https://go.dev/dl/) 1.20 or later installed
+- A [Neon](https://console.neon.tech/signup) account
+- Basic familiarity with SQL, Go programming, and authentication concepts
+
+## Understanding JWT in Our Go Authentication System
+
+Before we dive into the implementation details, let's understand how JSON Web Tokens (JWT) work and why they're a popular choice for authentication systems.
+
+JWT provides a compact, self-contained way to securely transmit information as a JSON object. In our Go authentication system, we'll use JWTs to maintain user sessions without server-side storage.
+
+### JWT Structure
+
+A JWT consists of three parts encoded in `Base64URL` format and separated by dots:
+
+```go
+Header.Payload.Signature
+```
+
+For example:
+
+```
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZXhwIjoxNjgwMDAwMDAwfQ.8Gj_9bJjAqQ-5j3iCKMzVnlg-d1Kk-fXnOKC1Vt2fGc
+```
+
+1. The header identifies the algorithm used for signing:
+
+   ```go
+   // In Go, the header is typically handled by the JWT library
+   token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+   ```
+
+2. The payload contains claims about the user like ID, roles, and expiration time
+
+   ```go
+   // Creating claims in Go
+   claims := jwt.MapClaims{
+       "sub": user.ID.String(),
+       "username": user.Username,
+       "exp": time.Now().Add(15 * time.Minute).Unix(),
+   }
+   ```
+
+3. The signature verifies the token hasn't been tampered with
+   ```go
+   // Signing the token with our secret
+   tokenString, err := token.SignedString([]byte(jwtSecret))
+   ```
+
+### How Our JWT Flow Works
+
+To understand how JWT fits into our Go authentication system, let's walk through the flow of a user logging in and accessing protected routes:
+
+1. When a user successfully authenticates, our Go service:
+
+   - Validates credentials against Neon Postgres
+   - Creates JWT with appropriate claims and expiration
+   - Signs the token with a secret key
+
+2. The client:
+
+   - Stores the JWT (typically in `localStorage` or a secure cookie)
+   - Includes the token in the `Authorization` header for subsequent requests
+
+   ```
+   Authorization: Bearer eyJhbGciOiJIUzI1Ni...
+   ```
+
+3. Our middleware:
+
+   - Extracts the JWT from the request header
+   - Validates the signature using our secret key
+   - Checks that the token hasn't expired
+   - Extracts the user identity from claims
+   - Adds the user ID to the request context
+
+4. Since the token contains all necessary user information, our server can authenticate requests without maintaining session state or additional database queries.
+
+The security of this system relies on keeping the signing key secret and using short-lived access tokens. If a token is compromised, it's only valid for a limited time, reducing the risk of unauthorized access.
+
+## Create a Neon project
+
+First, let's create a Neon project to store our authentication data.
+
+1. Navigate to the [Neon Console](https://console.neon.tech/app/projects) and click New Project.
+2. Give your project a name, such as "auth-system".
+3. Choose your preferred region.
+4. Click Create Project.
+
+Once your project is created, you'll receive a connection string that looks like this:
+
+```
+postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+```
+
+Save this connection string, you'll need it to connect your Go application to the Neon database.
+
+## Set up the database schema
+
+Now we'll create a database schema that securely stores user information and authentication tokens. Connect to your Neon database and run the following SQL to create the necessary tables:
+
+```sql
+-- Create users table
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP
+);
+
+-- Create refresh_tokens table
+CREATE TABLE refresh_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    revoked BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+-- Create indexes for fast lookups
+CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+```
+
+This schema includes several key features for security and performance:
+
+- Using **UUIDs** for primary keys instead of sequential integers, making it harder to guess or enumerate IDs
+- Storing only **password hashes**, never plain-text passwords
+- Creating a separate table for **refresh tokens** with an expiration date
+- Using a **token revocation flag** to invalidate tokens when needed
+- Including appropriate **indexes** for performance optimization
+
+## Create the Go application structure
+
+Let's set up a new Go application with the necessary dependencies. Create a new directory and initialize a Go module:
+
+```bash
+mkdir auth-system
+cd auth-system
+go mod init github.com/yourusername/auth-system
+```
+
+Make sure to replace `yourusername` with your GitHub username or organization name. This will be the base path for your Go modules.
+
+Install the essential packages:
+
+```bash
+go get github.com/jackc/pgx/v5          # PostgreSQL driver
+go get github.com/gorilla/mux           # HTTP router
+go get github.com/golang-jwt/jwt/v5     # JWT library
+go get golang.org/x/crypto/bcrypt       # Password hashing
+go get github.com/google/uuid           # UUID generation
+go get github.com/joho/godotenv         # Load environment variables
+```
+
+For this guide, let's focus on the key components we'll need:
+
+1. Database connection
+2. User model and repository
+3. Authentication service
+4. HTTP handlers
+5. Middleware for route protection
+
+Let's start with a connection to our Neon database:
+
+```go
+// db/db.go
+package db
+
+import (
+    "database/sql"
+    "log"
+
+    _ "github.com/jackc/pgx/v5/stdlib"
+)
+
+// Connect establishes a connection to the Postgres database
+func Connect(connectionString string) (*sql.DB, error) {
+    db, err := sql.Open("postgres", connectionString)
+    if err != nil {
+        return nil, err
+    }
+
+    // Test the connection
+    if err := db.Ping(); err != nil {
+        return nil, err
+    }
+
+    log.Println("Connected to the database successfully")
+    return db, nil
+}
+```
+
+This simple function connects to our Neon Postgres database and verifies the connection with a ping.
+
+## Implement password handling
+
+Let's create functions to hash passwords during registration and verify them during login:
+
+```go
+// auth/passwords.go
+package auth
+
+import (
+    "golang.org/x/crypto/bcrypt"
+)
+
+// HashPassword creates a bcrypt hash from a plain-text password
+func HashPassword(password string) (string, error) {
+    // The cost determines how computationally expensive the hash is
+    // Higher is more secure but slower (default is 10)
+    hashedBytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+    if err != nil {
+        return "", err
+    }
+    return string(hashedBytes), nil
+}
+
+// VerifyPassword checks if the provided password matches the stored hash
+func VerifyPassword(hashedPassword, providedPassword string) error {
+    return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(providedPassword))
+}
+```
+
+Bcrypt is used for password hashing because:
+
+1. It's slow by design, making brute-force attacks impractical
+2. It automatically includes a salt to protect against rainbow table attacks
+3. It has an adjustable cost factor to increase security as hardware gets faster
+4. It's a one-way function that can't be reversed to obtain the original password
+
+When a user registers, we'll hash their password before storing it. When they log in, we'll compare their provided password against the stored hash.
+
+Now, let's create a simple user model and repository to interact with our database:
+
+```go
+// models/user.go
+package models
+
+import (
+    "database/sql"
+    "time"
+
+    "github.com/google/uuid"
+)
+
+// User represents a user in our system
+type User struct {
+    ID           uuid.UUID
+    Email        string
+    Username     string
+    PasswordHash string
+    CreatedAt    time.Time
+    LastLogin    *time.Time
+}
+
+// UserRepository handles database operations for users
+type UserRepository struct {
+    db *sql.DB
+}
+
+// NewUserRepository creates a new user repository
+func NewUserRepository(db *sql.DB) *UserRepository {
+    return &UserRepository{db: db}
+}
+
+// CreateUser adds a new user to the database
+func (r *UserRepository) CreateUser(email, username, passwordHash string) (*User, error) {
+    user := &User{
+        ID:           uuid.New(),
+        Email:        email,
+        Username:     username,
+        PasswordHash: passwordHash,
+        CreatedAt:    time.Now(),
+    }
+
+    query := `
+        INSERT INTO users (id, email, username, password_hash, created_at)
+        VALUES ($1, $2, $3, $4, $5)
+    `
+
+    _, err := r.db.Exec(query, user.ID, user.Email, user.Username, user.PasswordHash, user.CreatedAt)
+    if err != nil {
+        return nil, err
+    }
+
+    return user, nil
+}
+
+// GetUserByEmail retrieves a user by their email address
+func (r *UserRepository) GetUserByEmail(email string) (*User, error) {
+    query := `SELECT id, email, username, password_hash, created_at, last_login FROM users WHERE email = $1`
+
+    var user User
+    var lastLogin sql.NullTime
+
+    err := r.db.QueryRow(query, email).Scan(
+        &user.ID,
+        &user.Email,
+        &user.Username,
+        &user.PasswordHash,
+        &user.CreatedAt,
+        &lastLogin,
+    )
+
+    if err != nil {
+        return nil, err
+    }
+
+    if lastLogin.Valid {
+        user.LastLogin = &lastLogin.Time
+    }
+
+    return &user, nil
+}
+
+// GetUserByID retrieves a user by their ID
+func (r *UserRepository) GetUserByID(id uuid.UUID) (*User, error) {
+    query := `SELECT id, email, username, password_hash, created_at, last_login FROM users WHERE id = $1`
+
+    var user User
+    var lastLogin sql.NullTime
+
+    err := r.db.QueryRow(query, id).Scan(
+        &user.ID,
+        &user.Email,
+        &user.Username,
+        &user.PasswordHash,
+        &user.CreatedAt,
+        &lastLogin,
+    )
+
+    if err != nil {
+        return nil, err
+    }
+
+    if lastLogin.Valid {
+        user.LastLogin = &lastLogin.Time
+    }
+
+    return &user, nil
+}
+```
+
+This simple repository provides methods to create new users and retrieve existing users by email, which we'll need for our authentication logic. The `User` struct represents the core user data we'll store in the database.
+
+Additionally, we store the `last_login` timestamp to track user activity along with the creation timestamp.
+
+## Create the JWT authentication system
+
+With the database and user handling in place, let's implement the core of our authentication system using JWT. We'll create a service that handles login verification and token generation:
+
+```go
+// auth/service.go
+package auth
+
+import (
+    "database/sql"
+    "errors"
+    "time"
+
+    "github.com/golang-jwt/jwt/v5"
+    "github.com/yourusername/auth-system/models"
+)
+
+var (
+    ErrInvalidCredentials = errors.New("invalid credentials")
+    ErrInvalidToken       = errors.New("invalid token")
+    ErrExpiredToken       = errors.New("token has expired")
+    ErrEmailInUse         = errors.New("email already in use")
+)
+
+// AuthService provides authentication functionality
+type AuthService struct {
+    userRepo         *models.UserRepository
+    refreshTokenRepo *models.RefreshTokenRepository
+    jwtSecret        []byte
+    accessTokenTTL   time.Duration
+}
+
+// NewAuthService creates a new authentication service
+func NewAuthService(userRepo *models.UserRepository, refreshTokenRepo *models.RefreshTokenRepository, jwtSecret string, accessTokenTTL time.Duration) *AuthService {
+    return &AuthService{
+        userRepo:         userRepo,
+        refreshTokenRepo: refreshTokenRepo,
+        jwtSecret:        []byte(jwtSecret),
+        accessTokenTTL:   accessTokenTTL,
+    }
+}
+
+// Register creates a new user with the provided credentials
+func (s *AuthService) Register(email, username, password string) (*models.User, error) {
+    // Check if user already exists
+    _, err := s.userRepo.GetUserByEmail(email)
+    if err == nil {
+        return nil, ErrEmailInUse
+    }
+
+    // Only proceed if the error was "user not found"
+    if !errors.Is(err, sql.ErrNoRows) {
+        return nil, err
+    }
+
+    // Hash the password
+    hashedPassword, err := HashPassword(password)
+    if err != nil {
+        return nil, err
+    }
+
+    // Create the user
+    user, err := s.userRepo.CreateUser(email, username, hashedPassword)
+    if err != nil {
+        return nil, err
+    }
+
+    return user, nil
+}
+
+// Login authenticates a user and returns an access token
+func (s *AuthService) Login(email, password string) (string, error) {
+    // Get the user from the database
+    user, err := s.userRepo.GetUserByEmail(email)
+    if err != nil {
+        return "", ErrInvalidCredentials
+    }
+
+    // Verify the password
+    if err := VerifyPassword(user.PasswordHash, password); err != nil {
+        return "", ErrInvalidCredentials
+    }
+
+    // Generate an access token
+    token, err := s.generateAccessToken(user)
+    if err != nil {
+        return "", err
+    }
+
+    return token, nil
+}
+
+// generateAccessToken creates a new JWT access token
+func (s *AuthService) generateAccessToken(user *models.User) (string, error) {
+    // Set the expiration time
+    expirationTime := time.Now().Add(s.accessTokenTTL)
+
+    // Create the JWT claims
+    claims := jwt.MapClaims{
+        "sub":      user.ID.String(),      // subject (user ID)
+        "username": user.Username,         // custom claim
+        "email":    user.Email,            // custom claim
+        "exp":      expirationTime.Unix(), // expiration time
+        "iat":      time.Now().Unix(),     // issued at time
+    }
+
+    // Create the token with claims
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+    // Sign the token with our secret key
+    tokenString, err := token.SignedString(s.jwtSecret)
+    if err != nil {
+        return "", err
+    }
+
+    return tokenString, nil
+}
+
+// ValidateToken verifies a JWT token and returns the claims
+func (s *AuthService) ValidateToken(tokenString string) (jwt.MapClaims, error) {
+    // Parse the token
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        // Validate the signing method
+        if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+            return nil, ErrInvalidToken
+        }
+        return s.jwtSecret, nil
+    })
+
+    if err != nil {
+        if errors.Is(err, jwt.ErrTokenExpired) {
+            return nil, ErrExpiredToken
+        }
+        return nil, ErrInvalidToken
+    }
+
+    // Extract and validate claims
+    if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+        return claims, nil
+    }
+
+    return nil, ErrInvalidToken
+}
+```
+
+This authentication service handles three key functions:
+
+1. **Login**: Verifies a user's credentials and issues an access token
+2. **Token Generation**: Creates a JWT with appropriate claims and expiration
+3. **Token Validation**: Verifies that a token is valid and not expired
+
+Now let's create HTTP handlers to expose these authentication features via an API:
+
+```go
+// handlers/auth.go
+package handlers
+
+import (
+    "encoding/json"
+    "errors"
+    "net/http"
+
+    "github.com/yourusername/auth-system/auth"
+)
+
+// AuthHandler contains HTTP handlers for authentication
+type AuthHandler struct {
+    authService *auth.AuthService
+}
+
+// NewAuthHandler creates a new auth handler
+func NewAuthHandler(authService *auth.AuthService) *AuthHandler {
+    return &AuthHandler{
+        authService: authService,
+    }
+}
+
+// RegisterRequest represents the registration payload
+type RegisterRequest struct {
+    Email    string `json:"email"`
+    Username string `json:"username"`
+    Password string `json:"password"`
+}
+
+// RegisterResponse contains the user data after successful registration
+type RegisterResponse struct {
+    ID       string `json:"id"`
+    Email    string `json:"email"`
+    Username string `json:"username"`
+}
+
+// Register handles user registration
+func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
+    // Parse the request body
+    var req RegisterRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        http.Error(w, "Invalid request payload", http.StatusBadRequest)
+        return
+    }
+
+    // Validate input
+    if req.Email == "" || req.Username == "" || req.Password == "" {
+        http.Error(w, "Email, username, and password are required", http.StatusBadRequest)
+        return
+    }
+
+    // Call the auth service to register the user
+    user, err := h.authService.Register(req.Email, req.Username, req.Password)
+    if err != nil {
+        if errors.Is(err, auth.ErrEmailInUse) {
+            http.Error(w, "Email already in use", http.StatusConflict)
+            return
+        }
+
+        http.Error(w, "Error creating user", http.StatusInternalServerError)
+        return
+    }
+
+    // Return the created user (without sensitive data)
+    response := RegisterResponse{
+        ID:       user.ID.String(),
+        Email:    user.Email,
+        Username: user.Username,
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(response)
+}
+
+// LoginRequest represents the login payload
+type LoginRequest struct {
+    Email    string `json:"email"`
+    Password string `json:"password"`
+}
+
+// LoginResponse contains the JWT token after successful login
+type LoginResponse struct {
+    Token string `json:"token"`
+}
+
+// Login handles user login
+func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
+    // Parse the request body
+    var req LoginRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        http.Error(w, "Invalid request payload", http.StatusBadRequest)
+        return
+    }
+
+    // Attempt to login
+    token, err := h.authService.Login(req.Email, req.Password)
+    if err != nil {
+        if errors.Is(err, auth.ErrInvalidCredentials) {
+            http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+        } else {
+            http.Error(w, "Internal server error", http.StatusInternalServerError)
+        }
+        return
+    }
+
+    // Return the token
+    response := LoginResponse{Token: token}
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+```
+
+This handler exposes a simple login endpoint that accepts an email and password, verifies the credentials, and returns a JWT token on success.
+
+## Implement refresh tokens
+
+Short-lived access tokens are more secure, but they require users to log in frequently.
+
+To improve user experience while maintaining security, we can implement a refresh token system. This essentially creates a two-tier authentication system, where a long-lived refresh token is used to obtain short-lived access tokens.
+
+The refresh token can be revoked if needed allowing for better control over user sessions.
+
+First, let's add support for refresh tokens to our database operations:
+
+```go
+// models/refresh_token.go
+package models
+
+import (
+    "database/sql"
+    "time"
+
+    "github.com/google/uuid"
+)
+
+// RefreshToken represents a refresh token in the system
+type RefreshToken struct {
+    ID        uuid.UUID
+    UserID    uuid.UUID
+    Token     string
+    ExpiresAt time.Time
+    CreatedAt time.Time
+    Revoked   bool
+}
+
+// RefreshTokenRepository handles database operations for refresh tokens
+type RefreshTokenRepository struct {
+    db *sql.DB
+}
+
+// NewRefreshTokenRepository creates a new refresh token repository
+func NewRefreshTokenRepository(db *sql.DB) *RefreshTokenRepository {
+    return &RefreshTokenRepository{db: db}
+}
+
+// CreateRefreshToken creates a new refresh token for a user
+func (r *RefreshTokenRepository) CreateRefreshToken(userID uuid.UUID, ttl time.Duration) (*RefreshToken, error) {
+    // Generate a unique token identifier
+    tokenID := uuid.New()
+    expiresAt := time.Now().Add(ttl)
+
+    token := &RefreshToken{
+        ID:        tokenID,
+        UserID:    userID,
+        Token:     tokenID.String(), // Use the UUID as the token
+        ExpiresAt: expiresAt,
+        CreatedAt: time.Now(),
+        Revoked:   false,
+    }
+
+    query := `
+        INSERT INTO refresh_tokens (id, user_id, token, expires_at, created_at, revoked)
+        VALUES ($1, $2, $3, $4, $5, $6)
+    `
+
+    _, err := r.db.Exec(query, token.ID, token.UserID, token.Token, token.ExpiresAt, token.CreatedAt, token.Revoked)
+    if err != nil {
+        return nil, err
+    }
+
+    return token, nil
+}
+
+// GetRefreshToken retrieves a refresh token by its token string
+func (r *RefreshTokenRepository) GetRefreshToken(tokenString string) (*RefreshToken, error) {
+    query := `
+        SELECT id, user_id, token, expires_at, created_at, revoked
+        FROM refresh_tokens
+        WHERE token = $1
+    `
+
+    var token RefreshToken
+    err := r.db.QueryRow(query, tokenString).Scan(
+        &token.ID,
+        &token.UserID,
+        &token.Token,
+        &token.ExpiresAt,
+        &token.CreatedAt,
+        &token.Revoked,
+    )
+
+    if err != nil {
+        return nil, err
+    }
+
+    return &token, nil
+}
+
+// RevokeRefreshToken marks a refresh token as revoked
+func (r *RefreshTokenRepository) RevokeRefreshToken(tokenString string) error {
+    query := `
+        UPDATE refresh_tokens
+        SET revoked = true
+        WHERE token = $1
+    `
+
+    _, err := r.db.Exec(query, tokenString)
+    return err
+}
+```
+
+Now let's extend our `AuthService` to handle refresh tokens:
+
+```go
+// auth/service.go (existing methods)
+
+// LoginWithRefresh authenticates a user and returns both access and refresh tokens
+func (s *AuthService) LoginWithRefresh(email, password string, refreshTokenTTL time.Duration) (accessToken string, refreshToken string, err error) {
+    // Get the user from the database
+    user, err := s.userRepo.GetUserByEmail(email)
+    if err != nil {
+        return "", "", ErrInvalidCredentials
+    }
+
+    // Verify the password
+    if err := VerifyPassword(user.PasswordHash, password); err != nil {
+        return "", "", ErrInvalidCredentials
+    }
+
+    // Generate an access token
+    accessToken, err = s.generateAccessToken(user)
+    if err != nil {
+        return "", "", err
+    }
+
+    // Create a refresh token
+    token, err := s.refreshTokenRepo.CreateRefreshToken(user.ID, refreshTokenTTL)
+    if err != nil {
+        return "", "", err
+    }
+
+    return accessToken, token.Token, nil
+}
+
+// RefreshAccessToken creates a new access token using a refresh token
+func (s *AuthService) RefreshAccessToken(refreshTokenString string) (string, error) {
+    // Retrieve the refresh token
+    token, err := s.refreshTokenRepo.GetRefreshToken(refreshTokenString)
+    if err != nil {
+        return "", ErrInvalidToken
+    }
+
+    // Check if the token is valid
+    if token.Revoked {
+        return "", ErrInvalidToken
+    }
+
+    // Check if the token has expired
+    if time.Now().After(token.ExpiresAt) {
+        return "", ErrExpiredToken
+    }
+
+    // Get the user
+    user, err := s.userRepo.GetUserByID(token.UserID)
+    if err != nil {
+        return "", err
+    }
+
+    // Generate a new access token
+    accessToken, err := s.generateAccessToken(user)
+    if err != nil {
+        return "", err
+    }
+
+    return accessToken, nil
+}
+```
+
+The main benefit of refresh tokens is that they:
+
+1. Allow access tokens to be short-lived (e.g., 15 minutes), which reduces the risk if they're leaked
+2. Enable longer sessions without requiring frequent logins
+3. Can be revoked server-side if needed, such as on logout or if a security breach is detected
+
+Let's add an HTTP handler for refreshing tokens:
+
+```go
+// handlers/auth.go (existing methods)
+
+// RefreshRequest represents the refresh token payload
+type RefreshRequest struct {
+    RefreshToken string `json:"refresh_token"`
+}
+
+// RefreshResponse contains the new access token
+type RefreshResponse struct {
+    Token string `json:"token"`
+}
+
+// RefreshToken handles access token refresh
+func (h *AuthHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+    // Parse the request body
+    var req RefreshRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        http.Error(w, "Invalid request payload", http.StatusBadRequest)
+        return
+    }
+
+    // Attempt to refresh the token
+    token, err := h.authService.RefreshAccessToken(req.RefreshToken)
+    if err != nil {
+        if errors.Is(err, auth.ErrInvalidToken) || errors.Is(err, auth.ErrExpiredToken) {
+            http.Error(w, "Invalid or expired refresh token", http.StatusUnauthorized)
+        } else {
+            http.Error(w, "Internal server error", http.StatusInternalServerError)
+        }
+        return
+    }
+
+    // Return the new access token
+    response := RefreshResponse{Token: token}
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+```
+
+The additional `RefreshToken` method allows clients to obtain a new access token using a valid refresh token. This endpoint is useful for maintaining user sessions without requiring frequent logins.
+
+## Create protected routes
+
+Now let's create middleware to protect routes that require authentication:
+
+```go
+// middleware/auth.go
+package middleware
+
+import (
+    "context"
+    "net/http"
+    "strings"
+
+    "github.com/google/uuid"
+    "github.com/yourusername/auth-system/auth"
+)
+
+// Key type for context values
+type contextKey string
+
+const (
+    // UserIDKey is the key for user ID in the request context
+    UserIDKey contextKey = "userID"
+)
+
+// AuthMiddleware checks JWT tokens and adds user info to the request context
+func AuthMiddleware(authService *auth.AuthService) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            // Extract token from Authorization header
+            authHeader := r.Header.Get("Authorization")
+            if authHeader == "" {
+                http.Error(w, "Authorization header required", http.StatusUnauthorized)
+                return
+            }
+
+            // Check Bearer token format
+            parts := strings.Split(authHeader, " ")
+            if len(parts) != 2 || parts[0] != "Bearer" {
+                http.Error(w, "Invalid authorization format", http.StatusUnauthorized)
+                return
+            }
+
+            tokenString := parts[1]
+
+            // Validate the token
+            claims, err := authService.ValidateToken(tokenString)
+            if err != nil {
+                http.Error(w, "Invalid or expired token", http.StatusUnauthorized)
+                return
+            }
+
+            // Extract user ID from claims
+            userIDStr, ok := claims["sub"].(string)
+            if !ok {
+                http.Error(w, "Invalid token claims", http.StatusUnauthorized)
+                return
+            }
+
+            userID, err := uuid.Parse(userIDStr)
+            if err != nil {
+                http.Error(w, "Invalid user ID in token", http.StatusUnauthorized)
+                return
+            }
+
+            // Add user ID to request context
+            ctx := context.WithValue(r.Context(), UserIDKey, userID)
+
+            // Call the next handler with the enhanced context
+            next.ServeHTTP(w, r.WithContext(ctx))
+        })
+    }
+}
+
+// GetUserID retrieves the user ID from the request context
+func GetUserID(r *http.Request) (uuid.UUID, bool) {
+    userID, ok := r.Context().Value(UserIDKey).(uuid.UUID)
+    return userID, ok
+}
+```
+
+This middleware extracts the JWT token from the `Authorization` header, validates it, and adds the user ID to the request context. This allows subsequent handlers to access the authenticated user's identity.
+
+Now we can create a protected endpoint that requires authentication:
+
+```go
+// handlers/user.go
+package handlers
+
+import (
+    "encoding/json"
+    "net/http"
+
+    "github.com/yourusername/auth-system/middleware"
+    "github.com/yourusername/auth-system/models"
+)
+
+// UserHandler contains HTTP handlers for user-related endpoints
+type UserHandler struct {
+    userRepo *models.UserRepository
+}
+
+// NewUserHandler creates a new user handler
+func NewUserHandler(userRepo *models.UserRepository) *UserHandler {
+    return &UserHandler{
+        userRepo: userRepo,
+    }
+}
+
+// UserResponse represents the user data returned to clients
+type UserResponse struct {
+    ID       string  `json:"id"`
+    Email    string  `json:"email"`
+    Username string  `json:"username"`
+}
+
+// Profile returns the authenticated user's profile
+func (h *UserHandler) Profile(w http.ResponseWriter, r *http.Request) {
+    // Get user ID from request context (set by auth middleware)
+    userID, ok := middleware.GetUserID(r)
+    if !ok {
+        http.Error(w, "Unauthorized", http.StatusUnauthorized)
+        return
+    }
+
+    // Get user from database
+    user, err := h.userRepo.GetUserByID(userID)
+    if err != nil {
+        http.Error(w, "User not found", http.StatusNotFound)
+        return
+    }
+
+    // Return user profile (excluding sensitive data)
+    response := UserResponse{
+        ID:       user.ID.String(),
+        Email:    user.Email,
+        Username: user.Username,
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(response)
+}
+```
+
+The auth middleware handles a few key tasks:
+
+1. Extracting the JWT token from the Authorization header
+2. Validating the token signature and expiration
+3. Adding the authenticated user's ID to the request context
+4. Rejecting requests with invalid or missing tokens
+
+To wire everything up, we need to register our routes with the appropriate middleware:
+
+```go
+// main.go
+
+package main
+
+import (
+	"log"
+	"net/http"
+	"os"
+	"time"
+
+	"github.com/yourusername/auth-system/auth"
+	"github.com/yourusername/auth-system/db"
+	"github.com/yourusername/auth-system/handlers"
+	"github.com/yourusername/auth-system/middleware"
+	"github.com/yourusername/auth-system/models"
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+)
+
+// loadEnv loads environment variables from .env file
+func loadEnv() {
+    // Load .env file if it exists
+    if err := godotenv.Load(); err != nil {
+        log.Println("No .env file found, using environment variables")
+    }
+
+    // Check required variables
+    requiredVars := []string{"DATABASE_URL", "JWT_SECRET"}
+    for _, v := range requiredVars {
+        if os.Getenv(v) == "" {
+            log.Fatalf("Required environment variable %s is not set", v)
+        }
+    }
+}
+
+func main() {
+    // Load environment variables
+    loadEnv()
+
+    // Connect to the database
+    database, err := db.Connect(os.Getenv("DATABASE_URL"))
+    if err != nil {
+        log.Fatalf("Failed to connect to database: %v", err)
+    }
+
+    r := mux.NewRouter()
+
+    // Create repositories
+    userRepo := models.NewUserRepository(database)
+    refreshTokenRepo := models.NewRefreshTokenRepository(database)
+
+    // Create services
+    authService := auth.NewAuthService(userRepo, refreshTokenRepo, os.Getenv("JWT_SECRET"), 15*time.Minute)
+
+    // Create handlers
+    authHandler := handlers.NewAuthHandler(authService)
+    userHandler := handlers.NewUserHandler(userRepo)
+
+    // Public routes
+    r.HandleFunc("/api/auth/register", authHandler.Register).Methods("POST")
+    r.HandleFunc("/api/auth/login", authHandler.Login).Methods("POST")
+    r.HandleFunc("/api/auth/refresh", authHandler.RefreshToken).Methods("POST")
+
+    // Protected routes
+    protected := r.PathPrefix("/api").Subrouter()
+    protected.Use(middleware.AuthMiddleware(authService))
+
+    protected.HandleFunc("/profile", userHandler.Profile).Methods("GET")
+
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
+    log.Printf("Server starting on port %s", port)
+    log.Fatal(http.ListenAndServe(":"+port, r))
+}
+```
+
+## Test and deploy the application
+
+Before testing our authentication system, we need to set up environment variables and start the application.
+
+### Setting environment variables
+
+Create a `.env` file in the root of your project with the following variables:
+
+```
+# Database connection
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+
+# JWT configuration
+JWT_SECRET=your-very-secure-jwt-secret-key
+REFRESH_SECRET=your-very-secure-refresh-secret-key
+ACCESS_TOKEN_EXPIRY=15m
+REFRESH_TOKEN_EXPIRY=7d
+
+# Server configuration
+PORT=8080
+```
+
+Replace the `DATABASE_URL` with your actual Neon connection string. The JWT secrets should be strong, random strings in production (at least 32 characters). For testing purposes, you can use simpler values.
+
+### Starting the application
+
+To start the application, first, make sure you've built your Go binary:
+
+```bash
+go build -o auth-server main.go
+```
+
+Then, run the binary:
+
+```bash
+./auth-server
+```
+
+Alternatively, you can use `go run`:
+
+```bash
+go run main.go
+```
+
+You should see output similar to:
+
+```
+2025/03/30 12:34:56 Connected to the database successfully
+2025/03/30 12:34:56 Server starting on port 8080
+```
+
+The server is now running and ready to accept requests.
+
+### Testing with curl
+
+Now let's test our authentication system using curl commands:
+
+1. First, register a new user:
+
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "username": "testuser",
+    "password": "SecureP@ssw0rd!"
+  }'
+```
+
+Expected response:
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890",
+  "email": "user@example.com",
+  "username": "testuser"
+}
+```
+
+2. Next, log in to get access and refresh tokens:
+
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "password": "SecureP@ssw0rd!"
+  }'
+```
+
+Expected response:
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "c3d4e5f6-7890-a1b2-c3d4-e5f67890a1b2"
+}
+```
+
+3. Save the access token and use it to access a protected endpoint:
+
+```bash
+export ACCESS_TOKEN="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+curl -X GET http://localhost:8080/api/profile \
+  -H "Authorization: Bearer $ACCESS_TOKEN"
+```
+
+Expected response:
+
+```json
+{
+  "id": "a1b2c3d4-e5f6-7890-a1b2-c3d4e5f67890",
+  "email": "user@example.com",
+  "username": "testuser"
+}
+```
+
+4. When your access token expires, refresh it using the refresh token:
+
+```bash
+export REFRESH_TOKEN="c3d4e5f6-7890-a1b2-c3d4-e5f67890a1b2"
+
+curl -X POST http://localhost:8080/api/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refresh_token": "'$REFRESH_TOKEN'"
+  }'
+```
+
+Expected response:
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+5. You can also test an invalid token to see the authentication fail:
+
+```bash
+curl -X GET http://localhost:8080/api/profile \
+  -H "Authorization: Bearer invalid-token"
+```
+
+Expected response:
+
+```
+Invalid or expired token
+```
+
+These tests verify that our authentication system is working correctly.
+
+You can use tools like [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/) for more advanced API testing with a graphical interface.
+
+## Summary
+
+In this guide, you built a secure authentication system using Go, JWT, and Neon Postgres. The system includes secure password hashing, token-based authentication, refresh token support, middleware-protected routes, and basic rate limiting to prevent brute-force attacks. Security headers were also added to protect against common web vulnerabilities.
+
+By using Neon Postgres as the database, you gain the scalability and performance of a serverless Postgres platform, without sacrificing the reliability and flexibility developers expect from PostgreSQL. It's an ideal foundation for authentication systems that need to scale securely and efficiently.
+
+## Additional Resources
+
+- [Neon Documentation](/docs)
+- [Go Documentation](https://go.dev/doc/)
+- [JWT Introduction](https://jwt.io/introduction)
+- [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 
 <NeedHelp />
 
@@ -29869,6 +35169,605 @@ You're now ready to create a powerful development environment with Neon. Choose 
 <NeedHelp/>
 
 
+# Migrating from FaunaDB to Neon Postgres
+
+---
+title: Migrating from FaunaDB to Neon Postgres
+subtitle: 'Learn how to migrate your data and applications from FaunaDB to Neon Postgres'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-03-23T00:00:00.000Z'
+updatedOn: '2025-03-23T00:00:00.000Z'
+---
+
+Neon, like Fauna, offers a **serverless architecture**—but it’s built on **Postgres**. That means you get the scalability of serverless along with the reliability and familiarity of a proven SQL database.
+
+This guide is designed to help FaunaDB users understand how to transition to Neon Postgres.
+
+<Admonition type="note">
+Migrating from FaunaDB to Neon Postgres involves schema translation, data migration, and query conversion. This guide provides a structured approach to help you navigate the migration process effectively.
+
+If you have questions or require help with migrating large production datasets from FaunaDB, please [contact Neon for migration assistance](/migration-assistance).
+</Admonition>
+
+## FaunaDB vs. Neon (Postgres)
+
+Before diving into the migration process, it's important to understand the fundamental differences between FaunaDB and Neon (Postgres). While both are databases, they operate with distinct paradigms:
+
+| Feature            | FaunaDB                                        | Neon (Postgres)                                                     |
+| ------------------ | ---------------------------------------------- | ------------------------------------------------------------------- |
+| **Database type**  | Multi-model (document-relational)              | Relational (SQL)                                                    |
+| **Data model**     | JSON documents in collections, flexible schema | Tables with rows and columns, rigid schema                          |
+| **Query language** | FQL (Fauna Query Language), functional         | SQL (Structured Query Language), declarative                        |
+| **Schema**         | Implicit, schemaless/schema-optional, evolving | Explicit, schema-first, requires migrations                         |
+| **Transactions**   | ACID, stateless, HTTPS requests                | ACID, stateful/Stateless, persistent TCP/HTTP/Websocket connections |
+| **Server model**   | Serverless (managed), cloud-native             | Serverless (managed), cloud-native                                  |
+
+## Migration steps
+
+The migration process from FaunaDB to Neon Postgres involves several key steps, each essential for a successful transition. These steps include exporting your data and schema from FaunaDB, translating your schema to Postgres DDL, importing your data into Neon, and converting your queries from FQL to SQL. Let's break down these steps in detail:
+
+### Step 1: Exporting data from FaunaDB
+
+If you are on a paid FaunaDB plan, you can utilize the database's export functionality to save data in JSON format directly to an Amazon S3 bucket. [Fauna CLI](https://docs.fauna.com/fauna/current/build/cli/v4/) can be used to [export data to S3](https://docs.fauna.com/fauna/current/manage/exports/)
+
+```bash
+fauna export create s3 \
+  --database <database_name> \
+  --collection <collection_name> \
+  --bucket <s3_bucket_name> \
+  --path <s3_bucket_path> \
+  --format simple
+```
+
+For smaller datasets, you can export data directly to your local filesystem using FQL. The following script demonstrates exporting data from FaunaDB collections as JSON files. For example, here's a Node.js script that exports data from specific collections (e.g., `Product`, `Category`) to JSON files (e.g., `Product.json`, `Category.json`):
+
+```javascript
+import { Client, fql, FaunaError } from 'fauna';
+import fs from 'fs';
+
+// Route queries to a specific database
+// using the authentication secret in
+// the `FAUNA_SECRET` environment variable.
+const client = new Client();
+
+// Specify the collections to export.
+// You can retrieve a list of user-defined collections
+// using a `Collection.all()` query.
+const collectionsToExport = ['Product', 'Category'];
+
+// Loop through the collections.
+for (const collectionName of collectionsToExport) {
+  try {
+    // Compose a query using an FQL template string.
+    // The query returns a Set containint all documents
+    // in the collection.
+    const query = fql`
+      let collection = Collection(${collectionName})
+      collection.all()`;
+
+    // Run the query.
+    const pages = client.paginate(query);
+
+    // Iterate through the resulting document Set.
+    const documents = [];
+    for await (const page of pages.flatten()) {
+      documents.push(page);
+    }
+
+    // Convert the 'documents' array to a JSON string.
+    const jsonData = JSON.stringify(documents, null, 2);
+
+    // Write the JSON string to a file named `<collectionName>.json`.
+    fs.writeFileSync(`${collectionName}.json`, jsonData, 'utf-8');
+
+    console.log(`${collectionName} collection data written to ${collectionName}.json`);
+  } catch (error) {
+    if (error instanceof FaunaError) {
+      console.error(`Error exporting ${collectionName}:`, error);
+    } else {
+      console.error(`An unexpected error occurred for ${collectionName}:`, error);
+    }
+  }
+}
+
+client.close();
+```
+
+You can learn more about exporting data from FaunaDB in the [official documentation](https://docs.fauna.com/fauna/current/migrate/?lang=javascript).
+
+For example, here's a sample JSON file for the exported `Product` collection:
+
+```json
+[
+  {
+    "data": [
+      {
+        "id": "426122714129891392",
+        "coll": "Product",
+        "ts": "2025-03-22T10:58:58.290Z",
+        "name": "cups",
+        "description": "Translucent 9 Oz, 100 ct",
+        "price": 698,
+        "stock": 100,
+        "category": {
+          "id": "426122714117308480",
+          "coll": "Category"
+        }
+      },
+      .... other records
+  }
+]
+```
+
+### Step 2: Exporting FaunaDB schema (FSL schema pull)
+
+In addition to your data, you'll need to export your FaunaDB schema, defined in Fauna Schema Language (FSL).
+
+**Using `fauna schema pull` command:**
+
+The `fauna schema pull` command in the Fauna CLI is used to export your database schema to a local directory.
+
+**Fauna CLI command:**
+
+```bash
+fauna schema pull \
+  --database <your_faunadb_database_name> \
+  --dir <local_schema_directory> \
+  --active
+```
+
+For example, here's a sample FSL schema file `collections.fsl` exported from FaunaDB:
+
+```fsl
+collection Product {
+  name: String
+  description: String
+  // Use an Integer to represent cents.
+  // This avoids floating-point precision issues.
+  price: Int
+  category: Ref<Category>
+  stock: Int
+
+  // Use a unique constraint to ensure no two products have the same name.
+  unique [.name]
+  check stockIsValid (product => product.stock >= 0)
+  check priceIsValid (product => product.price > 0)
+
+  index byCategory {
+    terms [.category]
+  }
+
+  index sortedByCategory {
+    values [.category]
+  }
+
+  index byName {
+    terms [.name]
+  }
+
+  index sortedByPriceLowToHigh {
+    values [.price, .name, .description, .stock]
+  }
+}
+```
+
+### Step 3: Schema translation - FSL to Postgres DDL
+
+<Admonition type="info" title="Manual schema translation 🥺">
+Unfortunately, there isn't a fully automated FSL to SQL DDL converter as these are fundamentally different database paradigms. You'll need to manually translate your FaunaDB schema to Postgres DDL. This process involves mapping FaunaDB collections, fields, indexes, and constraints to Postgres tables, columns, indexes, and constraints.
+</Admonition>
+
+Begin by thoroughly examining the exported Fauna Schema Language (FSL) files. This step is crucial for gaining a comprehensive understanding of your FaunaDB schema structure. Pay close attention to the definitions of collections, their associated fields, indexes, and constraints.
+
+For instance, the Product collection, as shown in the above example `collections.fsl` file, includes fields like `name`, `description`, `price`, `category`, and `stock`. The schema also specifies unique and check constraints for data integrity, along with indexes to optimize query performance.
+
+Once you have a clear grasp of your exported FSL schema, the next step involves translating it into Postgres Data Definition Language (DDL). This translation process is necessary to create equivalent tables and indexes within your Postgres database. By accurately converting your FaunaDB schema into DDL, you ensure a smooth transition and maintain the structural integrity of your data during migration.
+
+If you need a refresher on Postgres, you can refer to Neon's [PostgreSQL Tutorial](/postgresql/tutorial).
+
+**Key translation considerations:**
+
+- **Collections to tables:** Each FaunaDB collection in your FSL schema could become a Neon Postgres table.
+- **Field definitions to columns:** FaunaDB field definitions will guide your Neon Postgres column definitions. Pay attention to data types like `String`, `Number`, `Time`, `Ref`, and optionality (`?` for nullable).
+- **Unique constraints:** Translate FaunaDB `unique` constraints in FSL to `UNIQUE` constraints in your Postgres `CREATE TABLE` statements.
+- **Indexes:** Translate FaunaDB `index` definitions in FSL to `CREATE INDEX` statements in Postgres. Consider the `terms` and `values` of FaunaDB indexes to create effective Postgres indexes.
+- **Computed fields/functions:** FaunaDB's more advanced schema features like `compute`, functions will require careful consideration for translation. Computed fields might translate to Postgres views or computed columns. UDFs will likely need to be rewritten as stored procedures or application logic.
+
+#### Example FSL to Postgres DDL translation
+
+Let's consider the `Category` collection from the FSL schema and translate it to a `categories` table in Neon Postgres. Here's the FSL schema for the `Category` collection:
+
+```fsl
+collection Category {
+  name: String
+  description: String
+  compute products: Set<Product> = (category => Product.byCategory(category))
+
+  unique [.name]
+
+  index byName {
+    terms [.name]
+  }
+}
+```
+
+**Neon Postgres DDL (Translated):**
+
+Here's how you can translate the `Category` collection to a `categories` table with the necessary constraints and indexes:
+
+```sql
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  -- Constraints
+  CONSTRAINT unique_category_name UNIQUE (name)
+);
+
+-- Indexes (create indexes after data migration if possible for speeding up data import)
+CREATE INDEX idx_categories_name ON categories(name);
+```
+
+Now let's consider the `Product` collection from the FSL schema and translate it to a `products` table in Neon Postgres. Here's the FSL schema for the `Product` collection:
+
+```fsl
+collection Product {
+  name: String
+  description: String
+  price: Int
+  category: Ref<Category>
+  stock: Int
+
+  unique [.name]
+  check stockIsValid (product => product.stock >= 0)
+  check priceIsValid (product => product.price > 0)
+
+  index byCategory {
+    terms [.category]
+  }
+
+  index sortedByCategory {
+    values [.category]
+  }
+
+  index byName {
+    terms [.name]
+  }
+
+  index sortedByPriceLowToHigh {
+    values [.price, .name, .description, .stock]
+  }
+}
+```
+
+**Neon Postgres DDL (Translated):**
+
+Now that you have a `categories` table created in Neon Postgres, here's how you can translate the `Product` collection to a `products` table with the necessary constraints, references and indexes:
+
+```sql
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  price INT NOT NULL,
+  category_id INT NOT NULL,
+  stock INT NOT NULL,
+  -- Constraints
+  CONSTRAINT unique_product_name UNIQUE (name),
+  CONSTRAINT stock_valid CHECK (stock >= 0),
+  CONSTRAINT price_valid CHECK (price > 0),
+  -- Foreign key
+  CONSTRAINT fk_category
+    FOREIGN KEY (category_id)
+    REFERENCES categories(id)
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE
+);
+
+-- Indexes (create indexes after data migration if possible for speeding up data import)
+CREATE INDEX idx_products_category ON products(category_id);
+CREATE INDEX idx_products_price_asc ON products(price) INCLUDE (name, description, stock);
+```
+
+Here we are adding a foreign key constraint `fk_category` to ensure that the `category_id` in the `products` table references the `id` column in the `categories` table. This constraint enforces referential integrity between the two tables.
+
+<Admonition type="tip" title="Don't want to use Raw SQL?">
+If you prefer a more programmatic approach to schema translation, you can use any Postgres library or ORM (object-relational mapping) tool in your chosen programming language. These tools can help automate the schema creation process and provide a more structured way to define your Postgres schema. Learn more on our [language guides](/docs/get-started-with-neon/languages) and [ORM guides](/docs/get-started-with-neon/orms) section.
+</Admonition>
+
+### Step 4: Data import to Neon Postgres
+
+With your Neon Postgres database ready and your data exported from FaunaDB, the next step is to import this data into your newly created tables.
+
+For this guide, we'll demonstrate importing data from the `product.json` file (exported from FaunaDB) into the `products` table in Neon Postgres.
+
+This example Node.js script reads the `Product.json` file, parses the JSON data, and then generates and executes `INSERT` statements to populate your `products` table in Neon Postgres.
+
+You can get `NEON_CONNECTION_STRING` from your Neon dashboard. Learn more about [Connecting Neon to your stack](/docs/get-started-with-neon/connect-neon)
+
+```javascript
+import pg from 'pg';
+import fs from 'fs';
+
+const { Client } = pg;
+
+async function importProducts() {
+  const neonConnectionString = process.env.NEON_CONNECTION_STRING;
+  const client = new Client({ connectionString: neonConnectionString });
+
+  try {
+    await client.connect();
+    const rawData = fs.readFileSync('Product.json');
+    const productData = JSON.parse(rawData);
+
+    // Start transaction
+    await client.query('BEGIN');
+
+    // Build a bulk insert query for a batch of records
+    const insertValues = [];
+    const placeholders = [];
+
+    productData[0].data.forEach((product, index) => {
+      const { name, description, price, stock, category } = product;
+      const categoryId = Number(category.id);
+
+      const offset = index * 5;
+      placeholders.push(
+        `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5})`
+      );
+      insertValues.push(name, description, price, stock, categoryId);
+    });
+
+    const insertQuery = `
+          INSERT INTO products (name, description, price, stock, category_id)
+          VALUES ${placeholders.join(', ')}
+        `;
+
+    await client.query(insertQuery, insertValues);
+    await client.query('COMMIT');
+    console.log('Products imported successfully!');
+  } catch (error) {
+    console.error('Error during product import:', error);
+    await client.query('ROLLBACK');
+  } finally {
+    await client.end();
+  }
+}
+
+importProducts();
+```
+
+You can adapt this script to import data from other collections by adjusting the file paths, table names, and data transformations as needed.
+
+<Admonition type="tip" title="Importing multiple collections with references">
+
+When importing data that spans multiple collections with relationships (for instance, `Product` collection documents referencing `Category` collection documents), it is **essential to import data in the correct order** to maintain data integrity.
+
+Specifically, you must **import the data for the _referenced_ collection (e.g., `Category`) _before_ importing the data for the _referencing_ collection (e.g., `Product`)**.
+
+Keep the following considerations in mind when importing data with relationships:
+
+- **Establish referenced data first:** Postgres, being a relational database, relies on foreign key constraints to enforce relationships between tables. When you import data into the `Product` table that is intended to reference entries in the `Category` table, those `Category` entries must already exist in Postgres.
+
+- **ID handling depends on your strategy:** While FaunaDB uses its own distributed document ID system, Postgres ID generation is more flexible. **Whether you need to transform IDs depends on your chosen ID strategy in Postgres:**
+
+  - **Scenario 1: Using Postgres-Generated IDs:** If you are using Postgres's default ID generation mechanisms (like `SERIAL`, `UUID`, or `IDENTITY` columns), then **Postgres will automatically generate _new_ IDs** for the rows in your tables. In this scenario, you _will_ need to manage ID transformation for relationships.
+
+  - **Scenario 2: Retaining FaunaDB IDs:** If you are explicitly setting IDs during import to retain FaunaDB IDs in Postgres, you must ensure that the IDs are correctly mapped and managed. You may choose this approach if you:
+    - Want to retain FaunaDB IDs for compatibility and speed up the migration process.
+    - Have a strategy to manage ID collisions and ensure uniqueness at the application level.
+
+- **Managing IDs for Relationships (Regardless of ID retention):** Even if you _do_ successfully retain FaunaDB IDs in Postgres (Scenario 2), you still need to be mindful of how relationships are established. If you are using foreign keys in Postgres (the recommended approach for relational data), you must ensure that the IDs used in your referencing tables (e.g., `product.category_id`) **correctly match the IDs in the referenced table (e.g., `categories.id`)**. This will be be valid if you are mapping the JSON data to Postgres tables without any transformation.
+
+- **Strategies for ID management (If Not Retaining FaunaDB IDs):** If you are using Postgres-generated IDs, you will need a strategy to: - **Option 1: Pre-map IDs:** Before importing `Product` data, you might need to process your JSON data to replace the FaunaDB `Category` document IDs with the **newly generated Postgres IDs** of the corresponding categories. This involves creating a mapping between the FaunaDB IDs and the Postgres-generated IDs for the `Category` table and replacing the `category.id` references in your `Product.json` data dump with the corresponding Postgres IDs. - **Option 2: Lookup-based Insertion:** During the import of `Product` data, instead of directly inserting IDs, you might perform a **lookup** in the already imported `Category` table based on a unique identifier (like category name) from your JSON data to retrieve the correct Postgres `category_id` to use as a foreign key. You can use the [example below](#inserting-a-new-document) as a reference.
+
+</Admonition>
+
+### Step 5: Query conversion - FQL to SQL
+
+<Admonition type="tip" title="Gradual migration with Flags">
+We recommend using a flag-based approach to gradually migrate your application from FaunaDB to Neon Postgres. This approach involves running your application with both FaunaDB and Neon Postgres connections simultaneously, using a feature flag to switch between the two databases. This strategy allows you to test and validate your application's behavior on Neon Postgres without disrupting your production environment. Once you see that your application is functioning correctly with Neon Postgres, you can fully transition away from FaunaDB.
+</Admonition>
+
+This is a critical step in the migration process, as it involves converting your application's FaunaDB queries (written in Fauna Query Language - FQL) to equivalent SQL queries.
+
+Here are some key translation patterns to consider when converting Fauna's `FQL` to Postgres `SQL`:
+
+#### Retrieving all documents from a collection
+
+For example, to retrieve all documents from the `Product` collection using FQL:
+
+```fql
+let collection = Collection("Product")
+collection.all()
+```
+
+Assuming you have ported 'Product' collection to 'products' table in Neon Postgres, the equivalent SQL query would be:
+
+```sql
+SELECT * FROM products;
+```
+
+#### Filtering data - Simple WHERE clause
+
+For example, to filter products by name in FQL:
+
+```fql
+Product.where(.name == 'avocados');
+```
+
+The equivalent SQL query would be:
+
+```sql
+SELECT * FROM products WHERE name = 'avocados';
+```
+
+#### Filtering data - Nested field WHERE clause (Joins equivalent)
+
+For example, to filter products by category name in FQL:
+
+```fql
+Product.where(.category?.name == "party")
+```
+
+The equivalent SQL query would involve a join between the `products` and `categories` tables:
+
+```sql
+SELECT p.*
+FROM products p
+JOIN categories c ON p.category_id = c.id
+WHERE c.name = 'party';
+```
+
+#### Ordering data
+
+For example, to order products by price in ascending order:
+
+```fql
+Product.all().order(.price)
+```
+
+The equivalent SQL query would be:
+
+```sql
+SELECT * FROM products ORDER BY price ASC;
+```
+
+#### Counting documents
+
+For example, to count all documents in the `Product` collection in FQL:
+
+```fql
+Product.all().count();
+```
+
+The equivalent SQL query would be:
+
+```sql
+SELECT COUNT(*) FROM products;
+```
+
+#### Aggregations
+
+For example, to calculate the total stock count of all products in FQL:
+
+```fql
+let stockCounts = Product.all().map(doc => doc.stock )
+stockCounts.aggregate(0, (a, b) => a + b)
+```
+
+The equivalent SQL query would be:
+
+```sql
+SELECT SUM(stock) FROM products;
+```
+
+#### Filtering data - `AND` and `OR` conditions
+
+For example, to filter products that are both priced above $10 AND have less than 50 units in stock in FQL:
+
+```fql
+Product.where(.price > 10 && .stock < 50)
+```
+
+The equivalent SQL query to achieve the same filtering would be:
+
+```sql
+SELECT * FROM products WHERE price > 10 AND stock < 50;
+```
+
+For example, to filter products that are either in the "party" category OR priced below 20 in FQL:
+
+```fql
+Product.where(.category?.name == "party" || .price < 20)
+```
+
+The equivalent SQL query, involving a join to access the category name, would be:
+
+```sql
+SELECT p.*
+FROM products p
+JOIN categories c ON p.category_id = c.id
+WHERE c.name = 'party' OR p.price < 20;
+```
+
+#### Updating a document
+
+For example, to update the description of a product named "avocados" in FQL:
+
+```fql
+let productRef = Product.where(.name == 'avocados').first()
+Product.byId(productRef!.id)!.update({ description: "Fresh, ripe avocados from California" })
+```
+
+The equivalent SQL query to update the same product description would be:
+
+```sql
+UPDATE products
+SET description = 'Fresh, ripe avocados from California'
+WHERE name = 'avocados'
+LIMIT 1;
+```
+
+#### Deleting a document
+
+For example, to delete a product named "pizza" in FQL:
+
+```fql
+let productRef = Product.where(.name == 'pizza').first()
+Product.byId(productRef!.id)!.delete()
+```
+
+The equivalent SQL query to delete the same product would be:
+
+```sql
+DELETE FROM products
+WHERE name = 'pizza'
+LIMIT 1;
+```
+
+#### Inserting a new document
+
+For example, to insert a new product "Organic Strawberries" in FQL, linking it to the "produce" category:
+
+```fql
+Product.create({
+  name: "Organic Strawberries",
+  price: 699,
+  stock: 150,
+  description: "Fresh strawberries",
+  category: Category.where(.name == "produce").first()
+})
+```
+
+The equivalent SQL query to insert the same product and link it to the "produce" category would be:
+
+```sql
+INSERT INTO products (name, price, stock, description, category_id)
+VALUES ('Organic Strawberries', 699, 150, 'Fresh strawberries', (SELECT id FROM categories WHERE name = 'produce'))
+RETURNING *;
+```
+
+**Actionable steps for query conversion:**
+
+1.  **Review application queries:** Identify the key queries in your application that interact with FaunaDB.
+2.  **Translate FQL to SQL (focus on key queries):** Translate these key FQL queries into equivalent SQL queries, focusing on the patterns shown in the examples above.
+3.  **Test SQL queries:** Test your translated SQL queries against your Neon Postgres database to ensure they function correctly, return the expected data, and are performant. You might need to use [`EXPLAIN ANALYZE`](/postgresql/postgresql-tutorial/postgresql-explain) in Postgres to analyze query performance and optimize indexes if needed.
+
+<Admonition type="note" title="Recommendation for complex queries">
+Given the potential volume of unstructured data insertion and retrieval queries in your application, which can be challenging to implement within a short timeframe, we recommend prioritizing the queries that are most critical to your application's core functionality and performance. For handling deeply nested unstructured data, consider using the [JSONB datatype in Postgres](/postgresql/postgresql-tutorial/postgresql-json)
+</Admonition>
+
+## Resources
+
+- [The Future of Fauna](https://fauna.com/blog/the-future-of-fauna)
+- [Migrate off Fauna](https://docs.fauna.com/fauna/current/migrate/?lang=javascript)
+- Modernizing from PostgreSQL to Serverless with Fauna: [Part 1](https://fauna.com/blog/modernizing-from-postgresql-to-serverless-with-fauna-part-1) [Part 2](https://fauna.com/blog/modernizing-from-postgresql-to-serverless-with-fauna-part-2) [Part 3](https://fauna.com/blog/modernizing-from-postgresql-to-serverless-with-fauna-part-3)
+
+<NeedHelp />
+
+
 # Get started with Neon Serverless Postgres on Azure
 
 ---
@@ -30497,35 +36396,84 @@ We'll use Claude Desktop to interact with Neon MCP server. Here's how to set it 
 
 - **Node.js (>= v18):** Install from [nodejs.org](https://nodejs.org/).
 - **Claude Desktop:** Install Anthropic's [Claude Desktop](https://claude.ai/download).
-- **Neon API Key:** Get your [Neon API Key](/docs/manage/api-keys#creating-api-keys).
+- **Neon Account:** Sign up for a free Neon account at [neon.tech](https://neon.tech).
+- **Neon API Key (for Local MCP server)::** Get your [Neon API Key](/docs/manage/api-keys#creating-api-keys).
 
-### Installation steps
+### Setting up Neon MCP Server in Claude
 
-- In your terminal, run:
+You have two options for connecting Claude to the Neon MCP Server:
 
-  ```bash
-  npx @neondatabase/mcp-server-neon init $NEON_API_KEY
-  ```
+1. **Remote MCP Server (Preview):** Connect to Neon's managed MCP server using OAuth for authentication. This method is more convenient as it eliminates the need to manage API keys in Claude. Additionally, you will automatically receive the latest features and improvements as soon as they are released.
 
-  Replace `$NEON_API_KEY` with your actual Neon API key, as shown here:
+2. **Local MCP Server:** Run the Neon MCP server locally on your machine, authenticating with a Neon API key.
 
-  This command configures Neon MCP server to connect to your Neon account using the **Neon API Key**, as shown here:
+### Option 1: Setting up the remote hosted Neon MCP Server
 
-  ```bash
-  npx @neondatabase/mcp-server-neon init napi_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-  Need to install the following packages:
-  @neondatabase/mcp-server-neon@0.1.9
-  Ok to proceed? (y) y
+1. Open Claude desktop and navigate to **Settings**.
+   ![Claude settings](/guides/images/claude_mcp/claude_settings.png)
+2. Under the **Developer** tab, click **Edit Config** (On Windows, it's under File -> Settings -> Developer -> Edit Config) to open the location of configuration file (`claude_desktop_config.json`).
+   ![Claude config](/guides/images/claude_mcp/claude_developer_config.png)
+3. Open the `claude_desktop_config.json` file in a text editor of your choice.
+4. Add the "Neon" server entry within the `mcpServers` object:
 
-  Config written to: /Users/user_name/Library/Application Support/Claude/fake_config.json
-  The Neon MCP server will start automatically the next time you open Claude.
-  ```
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
+         "command": "npx",
+         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+       }
+     }
+   }
+   ```
 
-- Restart Claude Desktop. You can do so by quitting the Claude Desktop and opening it again.
+5. Save the configuration file and **restart** Claude Desktop.
+6. An OAuth window will open in your browser. Follow the prompts to authorize Claude to access your Neon account.
+7. After authorization, you can start using the Neon MCP server with Claude.
 
-- Test: Ask Claude `"List my Neon projects"`. If it works, you'll see your projects listed by Claude, fetched using the **Neon API**. For example, you might see output similar to this:
+<Admonition type="note">
+The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
+</Admonition>
 
-  ![Claude output](/guides/images/claude_mcp/claude_list_project.png)
+### Option 2: Setting up the Local Neon MCP Server
+
+This method runs the Neon MCP server locally on your machine, using a Neon API key for authentication.
+
+1.  Open your terminal.
+2.  Run the following command to install the Neon MCP server. This command uses the `@smithery/cli` package to install the Neon MCP server and configure it for use with Claude.
+
+    ```bash
+    npx -y @smithery/cli@latest install neon --client claude
+    ```
+
+    You will be prompted to enter your Neon API key during the installation process. You can enter the API key which you obtained from the [prerequisites](#prerequisites) section. You should see output similar to this:
+
+    ```bash
+    npx -y @smithery/cli@latest install neon --client claude
+    ✔ Successfully resolved neon
+    Installing remote server. Please ensure you trust the server author, especially when sharing sensitive data.
+    For information on Smithery's data policy, please visit: https://smithery.ai/docs/data-policy
+    ? The API key for accessing the Neon. You can generate one through the Neon
+    console. (required)
+    *********************************************************************
+    neon successfully installed for claude
+    ```
+
+3.  Restart Claude Desktop. You can do so by quitting the Claude Desktop and opening it again.
+
+### Verifying the connection
+
+You can verify that the connection to the Neon MCP server either remote or local is successful by following these steps:
+
+1. In Claude hover over the 🔨 icon to see the available tools.
+   ![Claude available tools](/guides/images/claude_mcp/claude_available_tools.png)
+2. Click on the icon to see the list of available tools in detail. You should see the Neon MCP server's tools listed.
+   ![Claude list available tools](/guides/images/claude_mcp/claude_list_available_tools.png)
+3. Claude is now connected to Neon's remote MCP server.
+
+Ask Claude `"List my Neon projects"`. If it works, you'll see your projects listed by Claude, fetched using the **Neon API**. For example, you might see output similar to this:
+
+![Claude output](/guides/images/claude_mcp/claude_list_project.png)
 
 ## Using Neon MCP server
 
@@ -30948,8 +36896,8 @@ In the **Policy** section, use the following json to define the actions allowed 
       "Sid": "PublicReadGetObject",
       "Effect": "Allow",
       "Principal": "*",
-      "Action": ["s3:PutObject", "s3:GetObject"],
-      "Resource": "arn:aws:s3:::launchfast-bucket-0/*"
+      "Action": ["s3:GetObject"],
+      "Resource": "arn:aws:s3:::my-custom-bucket-0/*"
     }
   ]
 }
@@ -31349,6 +37297,1069 @@ npm run dev
 ```
 
 You should now be able to go through the entire workflow of selecting a file, uploading it to S3, and referencing it later by saving it in the database.
+
+<NeedHelp />
+
+
+# Building a Job Queue System with Node.js, Bull, and Neon Postgres
+
+---
+title: Building a Job Queue System with Node.js, Bull, and Neon Postgres
+subtitle: Learn how to implement a job queue system to handle background tasks efficiently using Node.js, Bull, and Neon Postgres
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-03-16T00:00:00.000Z'
+updatedOn: '2025-03-16T00:00:00.000Z'
+---
+
+Job queues are essential components in modern applications. Queues enable you to handle resource-intensive or time-consuming tasks asynchronously. This approach improves application responsiveness by moving heavy processing out of the request-response cycle.
+
+In this guide, we'll walk through building a job queue system using Node.js, Bull (a Redis-backed queue library), and Neon Postgres to process jobs efficiently at scale.
+
+## Prerequisites
+
+To follow the steps in this guide, you will need the following:
+
+- [Node.js 18](https://nodejs.org/en) or later
+- A [Neon](https://console.neon.tech/signup) account
+- [Redis](https://redis.io/download) installed locally
+- Basic understanding of JavaScript and PostgreSQL
+
+## Understanding Job Queues
+
+Job queues allow applications to offload time-consuming tasks to be processed in the background. Some common use cases include:
+
+- Email delivery
+- Image or video processing
+- Data aggregation and reporting
+- Webhook delivery
+- Regular maintenance tasks
+
+Here's how our architecture will work:
+
+1. The main application adds jobs to the queue
+2. Bull manages the queue in Redis
+3. Worker processes consume jobs from the queue
+4. Job statuses and results are stored in Neon Postgres
+5. The application can check job status and retrieve results
+
+This separation improves system performance, reliability, and scalability. It also allows for better error handling, retry logic, monitoring and even user experience as the application can respond quickly to user requests regardless of the job processing time.
+
+## Create a Neon project
+
+First, let's set up a new Neon Postgres database to store our job metadata.
+
+1. Navigate to the [Neon Console](https://console.neon.tech/app/projects) and create a new project.
+
+2. Choose a name for your project, for example "job-queue-system".
+
+3. After creating the project, you'll see the connection details. Save the connection string, you'll need it to connect to your database.
+
+4. Using the SQL Editor in the Neon Console or your preferred PostgreSQL client, create the tables for our job queue system:
+
+```sql
+CREATE TABLE jobs (
+  id SERIAL PRIMARY KEY,
+  job_id VARCHAR(255) UNIQUE NOT NULL,
+  queue_name VARCHAR(100) NOT NULL,
+  data JSONB,
+  status VARCHAR(50) NOT NULL,
+  result JSONB,
+  error TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  started_at TIMESTAMP,
+  completed_at TIMESTAMP,
+  attempts INT DEFAULT 0,
+  max_attempts INT DEFAULT 3
+);
+
+CREATE INDEX idx_jobs_status ON jobs(status);
+CREATE INDEX idx_jobs_queue_name ON jobs(queue_name);
+```
+
+This jobs table will track:
+
+- Unique job identifiers
+- The queue a job belongs to
+- Job data/parameters
+- Current status (pending, active, completed, failed)
+- Results or errors
+- Timestamps for tracking job lifecycle
+- Retry information
+
+## Set up your Node.js project
+
+Now that our database is ready, let's create a Node.js project:
+
+1. Create a new directory for your project:
+
+```bash
+mkdir job-queue-system
+cd job-queue-system
+```
+
+2. Initialize a new Node.js project:
+
+```bash
+npm init -y
+```
+
+3. Install the required dependencies:
+
+```bash
+npm install bull pg dotenv express
+```
+
+These packages provide:
+
+- `bull`: Queue management with Redis
+- `pg`: PostgreSQL client for Node.js
+- `dotenv`: Environment variable management
+- `express`: Web framework to create a simple API for our example
+
+4. Create a `.env` file to store your configuration:
+
+```
+# Database
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[database]?sslmode=require
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# Application
+PORT=3000
+```
+
+Replace the `DATABASE_URL` with your Neon connection string.
+
+## Integrate Bull for job processing
+
+Bull is a Node.js library that implements a fast queue system based on Redis.
+
+If you don't have Redis installed, you can run it using Docker:
+
+```bash
+docker run -d -p 6379:6379 redis
+```
+
+Let's set up the basic queue structure for our job queue system.
+
+Create a file named `src/queues/index.js`:
+
+```javascript
+// src/queues/index.js
+const Bull = require('bull');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Create queues
+const emailQueue = new Bull('email', process.env.REDIS_URL);
+const imageProcessingQueue = new Bull('image-processing', process.env.REDIS_URL);
+const dataExportQueue = new Bull('data-export', process.env.REDIS_URL);
+
+// Export the queues to be used elsewhere in the application
+module.exports = {
+  emailQueue,
+  imageProcessingQueue,
+  dataExportQueue,
+};
+```
+
+What the queues represent in this context is a way to group similar jobs together. This file creates three different queues for different types of jobs. In a production application, you might have many more queues for various tasks.
+
+Now, let's create a utility to add jobs to these queues. Create a file named `src/utils/queueHelper.js`:
+
+```javascript
+// src/utils/queueHelper.js
+const { Pool } = require('pg');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Initialize PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+// Helper function to add a job to a queue and record it in Postgres
+async function addJob(queue, data, options = {}) {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // Add job to Bull queue
+    const job = await queue.add(data, options);
+
+    // Record job in Postgres
+    const result = await client.query(
+      `INSERT INTO jobs (job_id, queue_name, data, status)
+       VALUES ($1, $2, $3, $4)
+       RETURNING id`,
+      [job.id.toString(), queue.name, JSON.stringify(data), 'pending']
+    );
+
+    await client.query('COMMIT');
+
+    return {
+      jobId: job.id,
+      dbId: result.rows[0].id,
+    };
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// Helper function to update job status in Postgres
+async function updateJobStatus(jobId, queueName, updates) {
+  const client = await pool.connect();
+
+  try {
+    // Build the SET clause based on provided updates
+    const setClauses = [];
+    const values = [jobId, queueName];
+    let paramIndex = 3;
+
+    for (const [key, value] of Object.entries(updates)) {
+      setClauses.push(`${key} = $${paramIndex}`);
+      values.push(value);
+      paramIndex++;
+    }
+
+    if (setClauses.length === 0) {
+      return;
+    }
+
+    const setClause = setClauses.join(', ');
+
+    await client.query(
+      `UPDATE jobs
+       SET ${setClause}
+       WHERE job_id = $1 AND queue_name = $2`,
+      values
+    );
+  } finally {
+    client.release();
+  }
+}
+
+module.exports = {
+  addJob,
+  updateJobStatus,
+};
+```
+
+This helper file provides two main functions:
+
+1. `addJob`: Adds a job to a Bull queue and records it in our Neon Postgres database
+2. `updateJobStatus`: Updates a job's status in the Neon Postgres as it progresses through the queue
+
+## Create the job processor
+
+Now, let's create processors for each type of job. We'll create processors for email sending, image processing, and data exports. A processor is a function that takes a job object from Bull, processes it, and updates the job status in Postgres.
+
+First, let's set up our directory structure:
+
+```bash
+mkdir -p src/processors
+```
+
+Create a file for email processing at `src/processors/emailProcessor.js`:
+
+```javascript
+// src/processors/emailProcessor.js
+const { updateJobStatus } = require('../utils/queueHelper');
+
+async function sendEmail(to, subject, body) {
+  // In a real application, you'd use a library like Nodemailer
+  // This is a simplified example
+  console.log(`Sending email to ${to}`);
+  console.log(`Subject: ${subject}`);
+  console.log(`Body: ${body}`);
+
+  // Simulate network delay
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  // Return success
+  return { delivered: true, timestamp: new Date() };
+}
+
+// The processor function takes a job object from Bull
+async function processEmailJob(job) {
+  try {
+    // Update job status in Postgres
+    await updateJobStatus(job.id, 'email', {
+      status: 'active',
+      started_at: new Date().toISOString(),
+    });
+
+    // Extract job data
+    const { to, subject, body } = job.data;
+
+    // Process the job
+    const result = await sendEmail(to, subject, body);
+
+    // Update job status on success
+    await updateJobStatus(job.id, 'email', {
+      status: 'completed',
+      result: JSON.stringify(result),
+      completed_at: new Date().toISOString(),
+    });
+
+    // Return the result
+    return result;
+  } catch (error) {
+    // Update job status on failure
+    await updateJobStatus(job.id, 'email', {
+      status: 'failed',
+      error: error.message,
+      completed_at: new Date().toISOString(),
+    });
+
+    // Re-throw the error for Bull to handle
+    throw error;
+  }
+}
+
+module.exports = processEmailJob;
+```
+
+Similarly, create a processor for image processing at `src/processors/imageProcessor.js`:
+
+```javascript
+// src/processors/imageProcessor.js
+const { updateJobStatus } = require('../utils/queueHelper');
+
+async function processImage(imageUrl, options) {
+  // In a real application, you'd use libraries like Sharp
+  // This is a simplified example
+  console.log(`Processing image from ${imageUrl}`);
+  console.log('Options:', options);
+
+  // Simulate CPU-intensive task
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
+  // Return processed image details
+  return {
+    processed: true,
+    originalUrl: imageUrl,
+    processedUrl: `processed-${imageUrl}`,
+    dimensions: { width: 800, height: 600 },
+    timestamp: new Date(),
+  };
+}
+
+async function processImageJob(job) {
+  try {
+    // Update job status in Postgres
+    await updateJobStatus(job.id, 'image-processing', {
+      status: 'active',
+      started_at: new Date().toISOString(),
+    });
+
+    // Extract job data
+    const { imageUrl, options } = job.data;
+
+    // Process the job
+    const result = await processImage(imageUrl, options);
+
+    // Update job status on success
+    await updateJobStatus(job.id, 'image-processing', {
+      status: 'completed',
+      result: JSON.stringify(result),
+      completed_at: new Date().toISOString(),
+    });
+
+    // Return the result
+    return result;
+  } catch (error) {
+    // Update job status on failure
+    await updateJobStatus(job.id, 'image-processing', {
+      status: 'failed',
+      error: error.message,
+      completed_at: new Date().toISOString(),
+    });
+
+    // Re-throw the error for Bull to handle
+    throw error;
+  }
+}
+
+module.exports = processImageJob;
+```
+
+Now, let's create a processor for data exports at `src/processors/dataExportProcessor.js`:
+
+```javascript
+// src/processors/dataExportProcessor.js
+const { updateJobStatus } = require('../utils/queueHelper');
+const { Pool } = require('pg');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Initialize PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+async function exportData(query, format) {
+  console.log(`Executing query: ${query}`);
+  console.log(`Export format: ${format}`);
+
+  // Actually execute the query against Neon Postgres
+  const result = await pool.query(query);
+
+  // Simulate file creation
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  // Return export details
+  return {
+    records: result.rowCount,
+    format: format,
+    downloadUrl: `https://example.com/exports/${Date.now()}.${format}`,
+    timestamp: new Date(),
+  };
+}
+
+async function processDataExportJob(job) {
+  try {
+    // Update job status in Postgres
+    await updateJobStatus(job.id, 'data-export', {
+      status: 'active',
+      started_at: new Date().toISOString(),
+    });
+
+    // Extract job data
+    const { query, format } = job.data;
+
+    // Process the job
+    const result = await exportData(query, format);
+
+    // Update job status on success
+    await updateJobStatus(job.id, 'data-export', {
+      status: 'completed',
+      result: JSON.stringify(result),
+      completed_at: new Date().toISOString(),
+    });
+
+    // Return the result
+    return result;
+  } catch (error) {
+    // Update job status on failure
+    await updateJobStatus(job.id, 'data-export', {
+      status: 'failed',
+      error: error.message,
+      completed_at: new Date().toISOString(),
+    });
+
+    // Re-throw the error for Bull to handle
+    throw error;
+  }
+}
+
+module.exports = processDataExportJob;
+```
+
+Each processor function follows a similar pattern:
+
+- Update the job status to `active` when processing starts
+- Extract job data from the Bull job object
+- Process the job
+- Update the job status to `completed` on success or `failed` on error
+- Return the result
+
+The core logic of each processor is kept separate from the job queue management, which allows for easier testing, maintenance, and reuse.
+
+## Implement PostgreSQL job tracking
+
+With the processors in place, let's create a module to retrieve job information from PostgreSQL. Create a file named `src/utils/jobsRepository.js`:
+
+```javascript
+// src/utils/jobsRepository.js
+const { Pool } = require('pg');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+// Initialize PostgreSQL connection pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+async function getJobById(jobId) {
+  const result = await pool.query('SELECT * FROM jobs WHERE job_id = $1', [jobId]);
+
+  return result.rows[0] || null;
+}
+
+async function getJobsByStatus(status, limit = 100, offset = 0) {
+  const result = await pool.query(
+    'SELECT * FROM jobs WHERE status = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3',
+    [status, limit, offset]
+  );
+
+  return result.rows;
+}
+
+async function getJobsByQueue(queueName, limit = 100, offset = 0) {
+  const result = await pool.query(
+    'SELECT * FROM jobs WHERE queue_name = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3',
+    [queueName, limit, offset]
+  );
+
+  return result.rows;
+}
+
+async function getJobStats() {
+  const result = await pool.query(`
+    SELECT 
+      queue_name,
+      status,
+      COUNT(*) as count
+    FROM jobs
+    GROUP BY queue_name, status
+    ORDER BY queue_name, status
+  `);
+
+  return result.rows;
+}
+
+module.exports = {
+  getJobById,
+  getJobsByStatus,
+  getJobsByQueue,
+  getJobStats,
+};
+```
+
+This module provides several functions to query job information from our Postgres database:
+
+1. `getJobById`: Retrieve a specific job by its ID
+2. `getJobsByStatus`: Get jobs filtered by their status
+3. `getJobsByQueue`: Get jobs from a specific queue
+4. `getJobStats`: Get statistics about jobs across all queues
+
+These functions will be used by the API to provide job status and statistics to the user.
+
+## Build retry and error handling
+
+Bull provides built-in retry capabilities. Let's set up our worker with proper retry and error handling. Create a file named `src/worker.js`:
+
+```javascript
+// src/worker.js
+const { emailQueue, imageProcessingQueue, dataExportQueue } = require('./queues');
+
+const processEmailJob = require('./processors/emailProcessor');
+const processImageJob = require('./processors/imageProcessor');
+const processDataExportJob = require('./processors/dataExportProcessor');
+const { updateJobStatus } = require('./utils/queueHelper');
+
+// Set up processors with retry logic
+emailQueue.process(processEmailJob);
+imageProcessingQueue.process(processImageJob);
+dataExportQueue.process(processDataExportJob);
+
+// Global error handlers for each queue
+const setupErrorHandlers = (queue) => {
+  queue.on('failed', async (job, err) => {
+    console.error(`Job ${job.id} in ${queue.name} queue failed:`, err.message);
+
+    // Update job status and increment attempt count
+    await updateJobStatus(job.id, queue.name, {
+      status: job.attemptsMade >= job.opts.attempts ? 'failed' : 'waiting',
+      attempts: job.attemptsMade,
+      error: err.message,
+    });
+  });
+
+  queue.on('completed', async (job, result) => {
+    console.log(`Job ${job.id} in ${queue.name} queue completed`);
+  });
+
+  queue.on('stalled', async (job) => {
+    console.warn(`Job ${job.id} in ${queue.name} queue has stalled`);
+
+    // Update job status
+    await updateJobStatus(job.id, queue.name, {
+      status: 'stalled',
+    });
+  });
+};
+
+// Set up error handlers for all queues
+setupErrorHandlers(emailQueue);
+setupErrorHandlers(imageProcessingQueue);
+setupErrorHandlers(dataExportQueue);
+
+console.log('Worker started processing jobs...');
+```
+
+This worker file:
+
+1. Imports all our queues and job processors
+2. Assigns each processor to its respective queue
+3. Sets up error handlers for failed, completed, and stalled jobs
+4. Updates the job status in Postgres based on these events
+
+## Set up a simple API
+
+Let's create a simple Express API to add jobs to the queue and check their status. Create a file named `src/api.js`:
+
+```javascript
+// src/api.js
+const express = require('express');
+const { emailQueue, imageProcessingQueue, dataExportQueue } = require('./queues');
+const { addJob } = require('./utils/queueHelper');
+const {
+  getJobById,
+  getJobsByStatus,
+  getJobsByQueue,
+  getJobStats,
+} = require('./utils/jobsRepository');
+
+const app = express();
+app.use(express.json());
+const port = process.env.PORT || 3000;
+
+// Add email job
+app.post('/jobs/email', async (req, res) => {
+  try {
+    const { to, subject, body } = req.body;
+
+    // Validate input
+    if (!to || !subject || !body) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Add job to queue with 3 retry attempts
+    const job = await addJob(
+      emailQueue,
+      { to, subject, body },
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 1000,
+        },
+      }
+    );
+
+    res.status(201).json({
+      message: 'Email job added to queue',
+      jobId: job.jobId,
+    });
+  } catch (error) {
+    console.error('Error adding email job:', error);
+    res.status(500).json({ error: 'Failed to add job to queue' });
+  }
+});
+
+// Add image processing job
+app.post('/jobs/image', async (req, res) => {
+  try {
+    const { imageUrl, options } = req.body;
+
+    // Validate input
+    if (!imageUrl) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Add job to queue with 2 retry attempts
+    const job = await addJob(
+      imageProcessingQueue,
+      { imageUrl, options },
+      {
+        attempts: 2,
+        backoff: {
+          type: 'fixed',
+          delay: 5000,
+        },
+      }
+    );
+
+    res.status(201).json({
+      message: 'Image processing job added to queue',
+      jobId: job.jobId,
+    });
+  } catch (error) {
+    console.error('Error adding image processing job:', error);
+    res.status(500).json({ error: 'Failed to add job to queue' });
+  }
+});
+
+// Add data export job
+app.post('/jobs/export', async (req, res) => {
+  try {
+    const { query, format } = req.body;
+
+    // Validate input
+    if (!query || !format) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Add job to queue with 3 retry attempts
+    const job = await addJob(
+      dataExportQueue,
+      { query, format },
+      {
+        attempts: 3,
+        backoff: {
+          type: 'exponential',
+          delay: 2000,
+        },
+      }
+    );
+
+    res.status(201).json({
+      message: 'Data export job added to queue',
+      jobId: job.jobId,
+    });
+  } catch (error) {
+    console.error('Error adding data export job:', error);
+    res.status(500).json({ error: 'Failed to add job to queue' });
+  }
+});
+
+// Get job status
+app.get('/jobs/:id', async (req, res) => {
+  try {
+    const job = await getJobById(req.params.id);
+
+    if (!job) {
+      return res.status(404).json({ error: 'Job not found' });
+    }
+
+    res.json(job);
+  } catch (error) {
+    console.error('Error fetching job:', error);
+    res.status(500).json({ error: 'Failed to fetch job' });
+  }
+});
+
+// Get jobs by status
+app.get('/jobs/status/:status', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const jobs = await getJobsByStatus(req.params.status, limit, offset);
+
+    res.json(jobs);
+  } catch (error) {
+    console.error('Error fetching jobs by status:', error);
+    res.status(500).json({ error: 'Failed to fetch jobs' });
+  }
+});
+
+// Get jobs by queue
+app.get('/jobs/queue/:queue', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 100;
+    const offset = parseInt(req.query.offset) || 0;
+    const jobs = await getJobsByQueue(req.params.queue, limit, offset);
+
+    res.json(jobs);
+  } catch (error) {
+    console.error('Error fetching jobs by queue:', error);
+    res.status(500).json({ error: 'Failed to fetch jobs' });
+  }
+});
+
+// Get job stats
+app.get('/stats', async (req, res) => {
+  try {
+    const stats = await getJobStats();
+    res.json(stats);
+  } catch (error) {
+    console.error('Error fetching job stats:', error);
+    res.status(500).json({ error: 'Failed to fetch job stats' });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`API server listening on port ${port}`);
+});
+```
+
+This API provides endpoints to:
+
+1. Add jobs to the different queues
+2. Check the status of a specific job
+3. List jobs by status or queue
+4. Get job statistics
+
+We will later add a Bull Board dashboard to monitor the job queues in real-time and use these endpoints to test our job queue system.
+
+## Create the main entry point
+
+With all the above in place, let's create the main entry point for our application. Create a file named `src/index.js`:
+
+```javascript
+// src/index.js
+const dotenv = require('dotenv');
+dotenv.config();
+
+// In a production environment, you would typically run the API and worker in separate processes
+// For simplicity, we're starting both in the same file
+const startMode = process.env.START_MODE || 'all';
+
+if (startMode === 'all' || startMode === 'api') {
+  require('./api');
+  console.log('API server started');
+}
+
+if (startMode === 'all' || startMode === 'worker') {
+  require('./worker');
+  console.log('Worker process started');
+}
+```
+
+Update your `package.json` to include start scripts:
+
+```json
+{
+  "scripts": {
+    "start": "node src/index.js",
+    "start:api": "START_MODE=api node src/index.js",
+    "start:worker": "START_MODE=worker node src/index.js"
+  }
+}
+```
+
+## Run the application
+
+Now you can run the application:
+
+```bash
+npm start
+```
+
+If you were to navigate to `http://localhost:3000`, you would see the API server running.
+
+This will start both the API server and the worker process. In a production environment, you might want to run them separately:
+
+```bash
+# Start the API server
+npm run start:api
+
+# Start the worker in a different terminal
+npm run start:worker
+```
+
+## Monitor your job queue
+
+To monitor your job queue in real-time, you can use Bull UI tools like [Bull Board](https://github.com/felixmosh/bull-board).
+
+Install Bull Board:
+
+```bash
+npm install @bull-board/express @bull-board/api
+```
+
+Then add the following to your `src/api.js` file:
+
+```javascript
+// Add at the top of the file
+const { createBullBoard } = require('@bull-board/api');
+const { BullAdapter } = require('@bull-board/api/bullAdapter');
+const { ExpressAdapter } = require('@bull-board/express');
+
+// Add before app.use(express.json())
+const serverAdapter = new ExpressAdapter();
+serverAdapter.setBasePath('/admin/queues');
+
+createBullBoard({
+  queues: [
+    new BullAdapter(emailQueue),
+    new BullAdapter(imageProcessingQueue),
+    new BullAdapter(dataExportQueue),
+  ],
+  serverAdapter,
+});
+
+app.use('/admin/queues', serverAdapter.getRouter());
+```
+
+Now you can access the Bull Board dashboard at `http://localhost:3000/admin/queues`.
+
+## Testing Your Job Queue System
+
+Now that you've set up your job queue system, let's test it to ensure everything works correctly. We'll create several test jobs, monitor their progress, and examine the results.
+
+First, make sure your system is running with both the API server and worker process:
+
+```bash
+npm start
+```
+
+Using a tool like cURL or Postman, you can send requests to your API to create new jobs:
+
+### 1. Create an Email Job
+
+```bash
+curl -X POST http://localhost:3000/jobs/email \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "test@example.com",
+    "subject": "Test Email",
+    "body": "This is a test email from our job queue system."
+  }'
+```
+
+You should receive a response like:
+
+```json
+{
+  "message": "Email job added to queue",
+  "jobId": "1"
+}
+```
+
+### 2. Create an Image Processing Job
+
+```bash
+curl -X POST http://localhost:3000/jobs/image \
+  -H "Content-Type: application/json" \
+  -d '{
+    "imageUrl": "https://example.com/sample-image.jpg",
+    "options": {
+      "resize": { "width": 800, "height": 600 },
+      "format": "webp"
+    }
+  }'
+```
+
+### 3. Create a Data Export Job
+
+```bash
+curl -X POST http://localhost:3000/jobs/export \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "SELECT * FROM jobs LIMIT 10",
+    "format": "csv"
+  }'
+```
+
+### Monitor Job Progress
+
+After creating the jobs, you can monitor their progress in several ways:
+
+#### Check Job Status via API
+
+Use the job ID returned when you created the job to check its status:
+
+```bash
+curl http://localhost:3000/jobs/1 | jq
+```
+
+You should see the job details, including its current status (pending, active, completed, or failed):
+
+```json
+{
+  "id": 1,
+  "job_id": "1",
+  "queue_name": "email",
+  "data": {
+    "to": "test@example.com",
+    "subject": "Test Email",
+    "body": "This is a test email from our job queue system."
+  },
+  "status": "completed",
+  "result": { "delivered": true, "timestamp": "2025-03-16T11:32:47.123Z" },
+  "error": null,
+  "created_at": "2025-03-16T11:32:45.678Z",
+  "started_at": "2025-03-16T11:32:46.789Z",
+  "completed_at": "2025-03-16T11:32:47.890Z",
+  "attempts": 1,
+  "max_attempts": 3
+}
+```
+
+#### View Jobs by Status
+
+To see all jobs with a specific status:
+
+```bash
+curl http://localhost:3000/jobs/status/completed
+```
+
+This will return a list of all completed jobs. You can also check for "pending", "active", or "failed" jobs.
+
+#### Check Queue Statistics
+
+To see statistics about all your queues:
+
+```bash
+curl http://localhost:3000/stats | jq
+```
+
+This will show you a breakdown of job counts by queue and status:
+
+```json
+[
+  { "queue_name": "email", "status": "completed", "count": "1" },
+  { "queue_name": "image-processing", "status": "active", "count": "1" },
+  { "queue_name": "data-export", "status": "pending", "count": "1" }
+]
+```
+
+### Bull Board Dashboard
+
+If you've set up Bull Board as described earlier, you can visit `http://localhost:3000/admin/queues` in your browser to see a visual dashboard of all your queues and jobs.
+
+![Bull Board Dashboard](/guides/images/job-queue-system/bull-board.png)
+
+This dashboard provides a real-time view of your queues, including active, waiting, and completed jobs.
+
+## Verifying Database Records
+
+To check that the job information is being correctly stored in your Neon Postgres database, you can use the Neon SQL Editor or any PostgreSQL client to run queries:
+
+```sql
+SELECT * FROM jobs;
+```
+
+You can also check processing times for completed jobs:
+
+```sql
+SELECT
+  job_id,
+  queue_name,
+  status,
+  EXTRACT(EPOCH FROM (completed_at - started_at)) AS processing_time_seconds
+FROM jobs
+WHERE status = 'completed';
+```
+
+This query will show you the processing time for each completed job in seconds.
+
+## Conclusion
+
+In this guide, you've built a job queue system using Node.js, Bull, and Neon Postgres. This system can handle different types of background tasks, retry failed jobs, and track job status and results in a PostgreSQL database.
+
+The combination of Bull's queue management backed by Redis and Neon's serverless Postgres for persistent job tracking provides a scalable and reliable solution for background processing. It is a great foundation for building more complex job processing systems in your applications.
+
+You can extend this system by adding more specialized queues, extending the monitoring, implementing user notifications, or integrating with other services in your architecture.
+
+## Additional resources
+
+- [Bull Documentation](https://github.com/OptimalBits/bull/blob/master/REFERENCE.md)
+- [Neon Postgres Documentation](/docs)
+- [Node.js PostgreSQL Client (pg)](https://node-postgres.com/)
+- [Redis Documentation](https://redis.io/documentation)
 
 <NeedHelp />
 
@@ -32329,6 +39340,106 @@ You will be using these connecting string components further in the guide. Proce
 pgAdmin4 is an essential tool for managing your hosted Postgres database. With its user-friendly interface, you can easily perform various database operations, from creating databases and tables to running complex queries. By following this guide, you should be well-equipped to utilize pgAdmin4 effectively.
 
 <NeedHelp />
+
+
+# Using LISTEN and NOTIFY for Pub/Sub in PostgreSQL
+
+---
+title: Using LISTEN and NOTIFY for Pub/Sub in PostgreSQL
+subtitle: A step-by-step guide describing how to use LISTEN and NOTIFY for pub/sub in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-03-28T13:24:36.612Z'
+updatedOn: '2025-03-28T13:24:36.612Z'
+---
+
+PostgreSQL has a built-in mechanism for publish/subscribe (Pub/Sub) communication using the `LISTEN` and `NOTIFY` commands.
+This allows different sessions to send messages to each other using Postgres, without needing a separate service like Kafka or RabbitMQ.
+
+## Steps
+
+- Overview
+- Set Up a Listener in Node.js
+- Send a Message using `NOTIFY`
+- Limitations of `LISTEN`/`NOTIFY`
+
+### Overview
+
+At a high level, the following is how `LISTEN` and `NOTIFY` are used.
+
+1. A client subscribes to a notification channel using `LISTEN`.
+2. Another client sends a message to that channel using `NOTIFY`.
+3. The subscribed client receives the notification asynchronously.
+
+### Set Up a Listener in Node.js
+
+Because of connection pooling, setting up a pub/sub listener in the Neon console is tricky.
+But you can create a Node.js script that listens to notifications on the channel `my_channel` as follows.
+Note that you do **not** need to explicitly create the `my_channel` channel, subscribing to the channel also creates the channel.
+
+```javascript
+const { Client } = require('pg');
+
+const client = new Client({
+  connectionString: YOUR CONNECTION STRING HERE
+});
+
+async function setupListener() {
+  await client.connect();
+  await client.query('LISTEN my_channel');
+  console.log('Listening for notifications on my_channel...');
+
+  client.on('notification', (msg) => {
+    console.log('Received notification:', msg.payload);
+  });
+}
+
+setupListener().catch(console.error);
+```
+
+Make sure to disable connection pooling in your Neon connection string (make sure your connection string does not include `-pooler`).
+`LISTEN` and `NOTIFY` are session-specific features and are not compatible with Neon connection pooling.
+
+Run the above script and you should see the following output.
+Keep the above script running, you will trigger a notification in the next section.
+
+```
+Listening for notifications on my_channel...
+```
+
+### Send a Message using NOTIFY
+
+You can send a message to the above Node.js script from the Neon console using the following SQL command.
+
+```sql
+NOTIFY my_channel, 'Hello from another session!';
+```
+
+After running the above, your Node.js script should print out the following output.
+
+```
+Received notification: Hello from another session!
+```
+
+You can also use the `pg_notify()` function as follows, which is equivalent to the `NOTIFY` command above.
+
+```sql
+SELECT pg_notify('my_channel', 'Hello from pg_notify!');
+```
+
+Note that you don't need to explicitly create a channel.
+
+### Limitations of LISTEN/NOTIFY
+
+Postgres `LISTEN` and `NOTIFY` run entirely in memory and do not persist any data.
+If there are no listeners when a `NOTIFY` runs, the message disappears and Postgres does not provide a mechanism to replay messages.
+While the memory overhead of `LISTEN` is minimal, `LISTEN` can cause performance degradations at scale if notifications start using up too much memory.
+
+There is also no way to ensure that a message was delivered to a listener.
+If you need message persistence or guarantees that a message was processed, you should look at dedicated message queues like RabbitMQ or Kafka.
+
+If you are using `LISTEN` and `NOTIFY`, you should disable Neon's [Scale to Zero feature](https://neon.tech/docs/introduction/scale-to-zero).
+If Neon scales your compute to 0, [it will terminate all listeners](https://neon.tech/docs/reference/compatibility#session-context), which may lead to lost messages when your database reactivates.
 
 
 # Building a Real-Time AI Voice Assistant with ElevenLabs
@@ -36830,6 +43941,161 @@ This Action is part of our [Dev/Test use case](/use-cases/dev-test), widely used
 If you'd like to learn more about using Neon for testing, check out our [docs](/docs/use-cases/dev-test) or contact our [sales team](/contact-sales).
 
 
+# Building AI-powered applications with Replit Agent
+
+---
+title: Building AI-powered applications with Replit Agent
+subtitle: A guide to building AI applications with Replit Agent
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-03-15T00:00:00.000Z'
+updatedOn: '2025-03-15T00:00:00.000Z'
+---
+
+[Replit Agent](https://docs.replit.com/replitai/agent) is a newly integrated, AI-powered tool within [Replit](https://replit.com) that simplifies the process of building applications. It allows you to describe the application you want to create using natural language and translates your ideas into a working project. This approach is designed to make application development more accessible and efficient, particularly for those new to coding or looking to quickly test out app concepts.
+
+Replit Agent integrates with Replit's online IDE, hosting features, and package management, offering an end-to-end solution within a familiar environment. This AI integration means you can bypass complex configurations and focus on describing your app's features and functionality. As you start using Replit Agent, you'll notice how tasks like database setup, code generation, and even deployment are handled automatically, freeing you to concentrate on bringing your application ideas to life. This guide introduces you to the basics of Replit Agent by walking through a practical example of creating an AI-powered MCQ Quiz generator from PDF documents.
+
+## Prerequisites
+
+Before you start, ensure you have the following prerequisites in place:
+
+- **Replit Core or Teams subscription:** Access to Replit Agent requires a paid subscription to either Replit Core or Replit Teams for full access including deployments. Sign up at [replit.com/pricing](https://replit.com/pricing).
+- **OpenAI API Key:** In this guide, we'll be using OpenAI's `gpt-4o-mini` model for MCQ generation. Sign up for an OpenAI API key at [platform.openai.com](https://platform.openai.com/account/api-keys).
+
+<Admonition type="important" title="Vibe Coding Ahead 😎">
+Follow this guide only if you're ready to experience the future of app development through AI-powered tools. You'll be amazed at how quickly you can build full-stack applications with Replit Agent.
+</Admonition>
+
+## Building an AI MCQ Quiz Generator app from PDF documents
+
+This app allows users to create MCQ quizzes from uploaded PDF documents. Users can upload PDFs, and the app will generate the questions based on the content using OpenAI's `gpt-4o-mini` model. The generated MCQs will be stored in a database, and users can share a unique link to access the quiz. We'll leverage Replit Agent to build this app in minutes, without writing a single line of code.
+
+You can also follow along with the video below to see the step-by-step process:
+
+<video autoPlay playsInline muted loop width="800" height="600" controls>
+  <source type="video/mp4" src="/videos/pages/doc/replit-agent.mp4"/>
+</video>
+
+### Create App with Replit Agent
+
+1.  Navigate to [replit.com](https://replit.com) and log into your Replit account, ensuring you are under a Core or Teams subscription.
+2.  Click on [Create App](https://replit.com/new) to begin. You'll be presented with the chat interface for Replit Agent.
+
+    ![Replit Agent Create App](/docs/guides/replit-agent-create-new-app.png)
+
+### Describe your app
+
+In the chat interface, describe your app idea to Replit Agent in as much detail as possible. For example, you can say:
+
+```text shouldWrap
+Create an AI application that generates multiple-choice questions (MCQs) from uploaded PDFs for students to prepare for exams, using OpenAI's `gpt-4o-mini` model. It should have the following features:
+
+- Ability to upload PDF documents.
+- Generation of multiple-choice questions (MCQs) using OpenAI's `gpt-4o-mini` model.
+- MCQs directly based on the content of the uploaded PDF.
+- Functionality to create and share a link to the generated MCQs
+```
+
+Click "Start Building" to initiate the app creation process.
+
+### Review and approve the agent generated plan
+
+Replit Agent will present a development plan, outlining the proposed architecture and features for your application. Carefully review this plan, which details the intended technologies, functionalities, and implementation steps.
+
+Click "Approve Plan & Start" to authorize Replit Agent to proceed with the application build process based on the outlined plan.
+
+### Watch Replit Agent in action
+
+You can now observe Replit Agent as it autonomously generates the application code, creating files within the project explorer and generating code in the editor window in real-time. Agent manages both frontend and backend code generation. You can sit back and watch as the application structure takes shape 😎
+
+<Admonition type="note" title="Iterating with Replit Agent">
+Developing applications with AI Agents is inherently an iterative process. As you work with evolving libraries and configurations, occasional unexpected behavior is to be anticipated.  When issues occur, **refer to the video above to see a practical example of iterative debugging.**  Proactively engage Replit Agent by describing the specific problem – detail what you observed, your intended functionality, and any error messages. Replit Agent will then provide guidance and code modifications to address the issue.
+</Admonition>
+
+### Run the generated application
+
+Upon completion of the initial code generation phase, Replit Agent will automatically launch your application within the Replit webview. This allows you to interact with the initial MCQ (Multiple Choice Question) Generator.
+
+### Debugging and iterative refinement with Replit Agent
+
+Software development often involves debugging, and Replit Agent is designed to assist in this process. As demonstrated in the video, encountering errors is a normal part of development, and Agent can help diagnose and resolve them.
+
+Should you encounter an error, **carefully examine the error message** displayed in the Replit webview or the console. **Copy the full error message and paste it directly into the Replit Agent chat window.**
+
+Replit Agent is trained to interpret error messages and suggest corrective actions. It will analyze the provided error information, identify the root cause, and propose code modifications to rectify the issue. In our case, Agent accurately identified and resolved a `pdf.js` library error, providing specific code changes.
+
+    ![Replit Agent PDF.js error](/docs/guides/replit-agent-pdfjs-error.png)
+
+Review the Agent's proposed solution and watch as it implements the necessary code modifications. This iterative process of debugging and refinement is a key aspect of developing applications with Replit Agent.
+
+### Add OpenAI API key
+
+To enable the AI-powered MCQ generation, you must integrate your OpenAI API key into the generated application. Replit Agent will prompt you to add this key to integrate with OpenAI's `gpt-4o-mini` model.
+
+    ![Replit Agent OpenAI API key prompt](/docs/guides/replit-agent-openai-key.png)
+
+### Validate MCQ generation functionality
+
+With the OpenAI API key integrated, test the core application feature: generating MCQs from uploaded PDF documents. Upload a sample PDF file to the application and observe the MCQ generation process.
+
+    ![Replit Agent Test app](/docs/guides/replit-agent-test-app.png)
+
+### Review, verify, and share generated MCQs
+
+Examine the generated MCQs, assessing their relevance, accuracy, and overall quality based on the source PDF document. Test the generated shareable link by opening it in a new browser session. This link should direct users to the generated MCQs, enabling them to review and attempt the quiz.
+
+    ![Replit Agent Share Quiz](/docs/guides/replit-agent-share-quiz.png)
+
+### Database integration
+
+A quick review of the generated code will reveal that Replit Agent has defaulted to an in-memory database for simplicity. To confirm this, you can directly ask the Agent about data storage. While in-memory databases are suitable for initial development, they are not ideal for production applications where data persistence is crucial. For a production-grade application, integrating a persistent database like Postgres is essential. You can now instruct Replit Agent to switch your application's data layer to a fully managed Postgres, powered by Neon. Replit Agent will make the necessary changes to the application code to integrate the Postgres database.
+
+    ![Replit Agent Database Integration](/docs/guides/replit-agent-create-database.png)
+
+### Deploying your application to production
+
+After iteratively refining and testing your AI MCQ Generator application, you're ready to deploy it to a production environment. Replit simplifies the deployment process, enabling you to host your application online with just a few clicks.
+
+1.  Click the "Deploy" button situated in the top-right corner of the Replit IDE.
+2.  Review and adjust [deployment settings](https://youtu.be/sXP5d0k1atk) as needed. For simple applications, default settings are typically sufficient.
+3.  Confirm deployment initiation by clicking "Deploy" again.
+
+    ![Replit Agent Deploy App](/docs/guides/replit-agent-deploy-app.png)
+
+Replit manages the deployment process, making your application publicly accessible via a unique `.replit.app` URL. This URL can be found in the "Deployments" tab within your Replit project. You can also add a [custom domain](https://docs.replit.com/cloud-services/deployments/custom-domains) to your application for a more professional appearance.
+
+    ![Replit Agent Final App](/docs/guides/replit-agent-final-app.png)
+
+Your AI MCQ Generator application should now be live and accessible to users. Share the deployment link with others to showcase what you _vibe coded_ in under 20 minutes with Replit Agent.
+
+## Best practices for building applications with Replit Agent
+
+To optimize your Replit Agent development experience and build applications effectively, consider these best practices:
+
+- **Prompt engineering:**
+
+  - **Improve Prompt**: Use the "Improve Prompt" feature in Replit Agent to refine the prompt and provide additional context. This helps Replit Agent better understand your requirements and generate more accurate code.
+    ![Replit Agent Improve Prompt](/docs/guides/replit-agent-improve-prompt.png)
+  - **Contextual prompts:** Initiate prompts with clear and comprehensive context. For example, "Modify the MCQ display to show one question at a time."
+  - **Incremental iteration:** Decompose complex feature additions into smaller, incremental prompts for greater control and reduced complexity. For instance, when developing a multi-step form, address each form section sequentially.
+  - **Specific feedback:** When encountering issues, provide precise and detailed feedback to Replit Agent. Include error messages, descriptions of expected vs. actual behavior, and relevant context for efficient debugging and issue resolution.
+
+- **Leveraging Replit Platform Features:**
+  - **Secure secrets management:** Always employ Replit Secrets for storing API keys, database credentials, and other sensitive information.
+  - **Deployment**: Use Replit's built-in deployment features to host your applications online. This simplifies the deployment process and makes your applications accessible to a wider audience. You never have to worry about server management, scaling, or maintenance.
+
+## Resources
+
+- [Replit](https://replit.com)
+- [Replit Agent Docs](https://docs.replit.com/replitai/agent)
+- [Introducing Replit Assistant](https://youtu.be/fxiVDlylORQ)
+- [Replit Deployments: Choosing the Right Deployment Type](https://youtu.be/sXP5d0k1atk)
+- [Bringing Postgres to Replit with Neon](/blog/neon-replit-integration)
+
+<NeedHelp />
+
+
 # Run your own analytics with Umami, Fly.io and Neon
 
 ---
@@ -39228,7 +46494,11 @@ Let's break down the key components in this setup:
 
 ## Setting up Neon MCP Server in Windsurf
 
-The following steps show how to set up Neon MCP Server in Windsurf.
+You have two options for connecting Windsurf to the Neon MCP Server:
+
+1. **Remote MCP Server (Preview):** Connect to Neon's managed MCP server using OAuth for authentication. This method is more convenient as it eliminates the need to manage API keys in Windsurf. Additionally, you will automatically receive the latest features and improvements as soon as they are released.
+
+2. **Local MCP Server:** Run the Neon MCP server locally on your machine, authenticating with a Neon API key.
 
 ### Prerequisites
 
@@ -39236,7 +46506,7 @@ Before you begin, ensure you have the following:
 
 1.  **Codeium Windsurf Editor:** Download and install Windsurf from [codeium.com/windsurf](https://codeium.com/windsurf).
 2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
-3.  **Neon API Key:** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
 
     <Admonition type="warning" title="Neon API Key Security">
     Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
@@ -39244,22 +46514,67 @@ Before you begin, ensure you have the following:
 
 4.  **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
 
-### Installation and Configuration
+### Option 1: Setting up the Remote Hosted Neon MCP Server
 
-**Configure Neon MCP Server in Windsurf:**
+This method uses Neon's managed server and OAuth authentication.
+
+You can either watch the video below or follow the steps to set up the Neon MCP server in Windsurf.
+
+<video controls playsInline loop width="800" height="600">
+  <source type="video/mp4" src="https://neondatabase.wpengine.com/wp-content/uploads/2025/04/neon-hosted-mcp-server.mp4"/>
+</video>
 
 1. Open Windsurf.
-2. Open Cascade by using `⌘L`.
-3. To configure MCP Servers in Windsurf, you need to modify the `~/.codeium/windsurf/mcp_config.json` file.
-4. To quickly access this file, find the toolbar above the Cascade input and click the hammer icon (🔨), then click the **"Configure"** button.
-   ![Windsurf Cascade Add MCP Tool](/docs/guides/windsurf-cascade-add-mcp-tool.gif)
-5. This will open the `~/.codeium/windsurf/mcp_config.json` file in the IDE.
-6. In the `mcp_config.json` file, you need to specify a list of MCP servers. Use the following JSON structure as a template, replacing `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+2. Open Cascade by using `⌘L` on MacOS or `Ctrl+L` on Windows/Linux.
+3. Click on the hammer icon (🔨), then click the **"Configure"** button.
+   ![Windsurf Configure MCP](/docs/guides/windsurf-configure-mcp.png)
+4. This will open the `~/.codeium/windsurf/mcp_config.json` file in the IDE.
+5. Paste the following JSON configuration into the `mcp_config.json` file:
 
    ```json
    {
      "mcpServers": {
-       "neon": {
+       "Neon": {
+         "command": "npx",
+         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+       }
+     }
+   }
+   ```
+
+   If you have other MCP servers configured, you can copy just the Neon part.
+
+6. **Save** the `mcp_config.json` file.
+7. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade.
+8. An OAuth window will open in your browser. Follow the prompts to authorize Windsurf to access your Neon account.
+9. You can verify that the connection is successful by checking the available MCP servers in Cascade. The toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
+
+   ![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
+
+10. Windsurf is now connected to the Neon MCP server.
+
+<Admonition type="note">
+The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
+</Admonition>
+
+### Option 2: Setting up the Local Neon MCP Server
+
+This method runs the Neon MCP server locally on your machine, using a Neon API
+key for authentication.
+
+1. Open Windsurf.
+2. Open Cascade by using `⌘L` on MacOS or `Ctrl+L` on Windows/Linux.
+3. Click on the hammer icon (🔨), then click the **"Configure"** button.
+   ![Windsurf Configure MCP](/docs/guides/windsurf-configure-mcp.png)
+4. This will open the `~/.codeium/windsurf/mcp_config.json` file in the IDE.
+5. Paste the following JSON configuration. Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained from the [prerequisites](#prerequisites) section:
+
+   <CodeTabs labels={["MacOS/Linux", "Windows", "Windows (WSL)"]}>
+
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
          "command": "npx",
          "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
        }
@@ -39267,17 +46582,45 @@ Before you begin, ensure you have the following:
    }
    ```
 
-   - **`neon`**: This is a name you choose for your MCP server connection.
-   - **`command`**: This is the command Windsurf will execute to start the Neon MCP server. It includes the `npx` command to run the `@neondatabase/mcp-server-neon` package and passes your Neon API key as an argument.
-   - Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key that you obtained from the [Prerequisites](#prerequisites) section.
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
+         "command": "cmd",
+         "args": [
+           "/c",
+           "npx",
+           "-y",
+           "@neondatabase/mcp-server-neon",
+           "start",
+           "<YOUR_NEON_API_KEY>"
+         ]
+       }
+     }
+   }
+   ```
 
-7. **Save** the `mcp_config.json` file.
-8. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade.
-9. If the integration is successful, the toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
+   ```json
+   {
+     "mcpServers": {
+       "Neon": {
+         "command": "wsl",
+         "args": ["npx", "-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"]
+       }
+     }
+   }
+   ```
 
-![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
+   </CodeTabs>
 
-You've now configured Neon MCP Server in Windsurf and can manage your Neon Postgres databases using AI.
+   If you have other MCP servers configured, you can copy just the `Neon` part.
+
+6. **Save** the `mcp_config.json` file.
+7. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade to refresh the configuration.
+8. You can verify that the connection is successful by checking the available MCP servers in Cascade. The toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
+   ![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
+
+   You've now configured Neon MCP Server in Windsurf and can manage your Neon Postgres databases using AI.
 
 ## Neon MCP Server Tools
 
@@ -39306,17 +46649,11 @@ Let's walk through a typical development scenario: Quickly adding a column for p
 
 **Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
 
-Check out the video below to see how Windsurf and Neon MCP Server can help you add a new column to your database table using natural language commands.
-
-<video autoPlay playsInline muted loop width="800" height="600" controls>
-  <source type="video/mp4" src="/videos/pages/doc/windsurf-neon-mcp.mp4"/>
-</video>
-
 <Admonition type="tip" title="Security Reminder">
 Be aware that Cascade currently executes commands directly from your prompts without confirmation unlike other IDE's and apps like [Cursor](/guides/cursor-mcp-neon) and [Claude](/guides/neon-mcp-server).  Review your requests thoroughly to avoid unintended or unwanted actions.
 </Admonition>
 
-Here's the conversation log between the user and Cascade:
+Following is a sample interaction with Cascade where you can see how it uses the Neon MCP server to add a new column to your database table:
 
 ```text shouldWrap
 User: in my neon project id: fancy-bush-59303206, list all the tables

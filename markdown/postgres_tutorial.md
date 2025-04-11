@@ -29,11 +29,11 @@ The PostgreSQL tutorial demonstrates many unique features of PostgreSQL that pos
 
 ![](/postgresqltutorial/getting-started-with-postgresql.svg?alignleft)
 
-### [Getting Started with PostgreSQL](./postgresql-getting-started/)
+[Getting Started with PostgreSQL](./postgresql-getting-started/)
 
-This section helps you get started with PostgreSQL by showing you how to install PostgreSQL on Windows, Linux, and macOS. You also learn how to connect to PostgreSQL using the psql tool as well as how to load a sample database into the PostgreSQL for practicing.
+This section helps you get started with PostgreSQL by showing you how to install PostgreSQL on Windows, Linux, and macOS. You also learn how to connect to PostgreSQL using the `psql` tool as well as how to load a sample database into the PostgreSQL for practicing.
 
-## Basic PostgreSQL Tutorial
+## Basic Tutorial
 
 First, you’ll learn how to query data from a single table using basic data techniques, which include selecting data, sorting result sets, and filtering rows.
 
@@ -1170,7 +1170,7 @@ Third, quit the psql:
 First, download the sample database using the `curl` tool:
 
 ```shell
-curl -O https://neon.tech/postgresql//postgresqltutorial/dvdrental.zip
+curl -O https://neon.tech/postgresqltutorial/dvdrental.zip
 ```
 
 Second, unzip the dvdrental.zip file to get the dvdrental.tar file:
@@ -1255,7 +1255,7 @@ nextLink:
 
 **Summary**: in this tutorial, you are going to learn how to use the basic **PostgreSQL SELECT** statement to query data from a table.
 
-Note that if you don’t know how to execute a query against the PostgreSQL database using the **psql** command\-line tool or **pgAdmin** GUI tool, you can check [the connection to the PostgreSQL database tutorial](../postgresql-getting-started/connect-to-postgresql-database).
+Note that if you don't know how to execute a query against the PostgreSQL database using the **psql** command\-line tool or **pgAdmin** GUI tool, you can check [the connection to the PostgreSQL database tutorial](../postgresql-getting-started/connect-to-postgresql-database).
 
 One of the most common tasks, when you work with the database, is to retrieve data from tables using the `SELECT` statement.
 
@@ -1274,11 +1274,11 @@ The `SELECT` statement has the following clauses:
 - Join with other tables using [joins](postgresql-joins) such as [`INNER JOIN`](postgresql-inner-join), [`LEFT JOIN`](postgresql-left-join), [`FULL OUTER JOIN`](postgresql-full-outer-join), [`CROSS JOIN`](postgresql-cross-join) clauses.
 - Perform set operations using [`UNION`](postgresql-union), [`INTERSECT`](postgresql-intersect), and [`EXCEPT`](https://neon.tech/postgresql/postgresql-tutorial/postgresql-tutorial/postgresql-except/).
 
-In this tutorial, you are going to focus on the `SELECT`and `FROM` clauses.
+In this tutorial, you are going to focus on the `SELECT`and `FROM` clauses.
 
 ## PostgreSQL SELECT statement syntax
 
-Let’s start with the basic form of the `SELECT` statement that retrieves data from a single table.
+Let's start with the basic form of the `SELECT` statement that retrieves data from a single table.
 
 The following illustrates the syntax of the `SELECT` statement:
 
@@ -1299,13 +1299,13 @@ The `FROM` clause is optional. If you are not querying data from any table, you 
 PostgreSQL evaluates the `FROM` clause before the `SELECT` clause in the `SELECT` statement:
 
 ![](/postgresqltutorial/PostgreSQL-Select.png)
-Note that the SQL keywords are case\-insensitive. It means that `SELECT` is equivalent to `select` or `Select`. By convention, we will use all the SQL keywords in uppercase to make the queries easier to read.
+Note that the SQL keywords are case\-insensitive. It means that `SELECT` is equivalent to `select` or `Select`. By convention, we will use all the SQL keywords in uppercase to make the queries easier to read.
 
 ## PostgreSQL SELECT examples
 
-Let’s explore some examples of using the `SELECT` statement.
+Let's explore some examples of using the `SELECT` statement.
 
-We will use the following `customer` table in the `dvdrental` [sampledatabase](../postgresql-getting-started/postgresql-sample-database 'PostgreSQL Sample Database') for the demonstration.
+We will use the following `customer` table in the `dvdrental` [sampledatabase](../postgresql-getting-started/postgresql-sample-database 'PostgreSQL Sample Database') for the demonstration.
 
 ![customer table](/postgresqltutorial/customer.png)First, [connect to the PostgreSQL server](../postgresql-getting-started/connect-to-postgresql-database) using the `postgres` user:
 
@@ -1313,7 +1313,7 @@ We will use the following `customer` table in the `dvdrental` [sampledatabase]
 psql -U postgres
 ```
 
-You’ll be prompted to enter a password for the `postgres` user. After entering the password correctly, you will be connected to the PostgreSQL server:
+You'll be prompted to enter a password for the `postgres` user. After entering the password correctly, you will be connected to the PostgreSQL server:
 
 ```
 postgres=#
@@ -1368,9 +1368,9 @@ Partial output:
 ```text
  first_name  |  last_name   |                  email
 -------------+--------------+------------------------------------------
- Jared       | Ely          | [[email protected]](../cdn-cgi/l/email-protection.html)
- Mary        | Smith        | [[email protected]](../cdn-cgi/l/email-protection.html)
- Patricia    | Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)
+ Jared       | Ely          | jared.ely@example.com
+ Mary        | Smith        | mary.smith@example.com
+ Patricia    | Johnson      | patricia.johnson@example.com
 ...
 ```
 
@@ -1389,9 +1389,9 @@ Partial output:
 ```text
  customer_id | store_id | first_name  |  last_name   |                  email                   | address_id | activebool | create_date |       last_update       | active
 -------------+----------+-------------+--------------+------------------------------------------+------------+------------+-------------+-------------------------+--------
-         524 |        1 | Jared       | Ely          | [[email protected]](../cdn-cgi/l/email-protection.html)             |        530 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
-           1 |        1 | Mary        | Smith        | [[email protected]](../cdn-cgi/l/email-protection.html)            |          5 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
-           2 |        1 | Patricia    | Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)      |          6 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
+         524 |        1 | Jared       | Ely          | jared.ely@example.com             |        530 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
+           1 |        1 | Mary        | Smith        | mary.smith@example.com            |          5 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
+           2 |        1 | Patricia    | Johnson      | patricia.johnson@example.com      |          6 | t          | 2006-02-14  | 2013-05-26 14:49:45.738 |      1
 ...
 ```
 
@@ -1424,16 +1424,16 @@ Output:
 
 ```
        ?column?        |                  email
------------------------+------------------------------------------
- Jared Ely             | [[email protected]](../cdn-cgi/l/email-protection.html)
- Mary Smith            | [[email protected]](../cdn-cgi/l/email-protection.html)
- Patricia Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)
+------------------------+------------------------------------------
+ Jared Ely             | jared.ely@example.com
+ Mary Smith            | mary.smith@example.com
+ Patricia Johnson      | patricia.johnson@example.com
 ...
 ```
 
 In this example, we used the [concatenation operator](../postgresql-string-functions/postgresql-concat-function) `||` to concatenate the first name, space, and last name of every customer.
 
-Notice the first column of the output doesn’t have a name but `?column?`. To assign a name to a column temporarily in the query, you can use a [column alias](postgresql-column-alias):
+Notice the first column of the output doesn't have a name but `?column?`. To assign a name to a column temporarily in the query, you can use a [column alias](postgresql-column-alias):
 
 ```
 expression AS column_lias
@@ -1459,10 +1459,10 @@ Output:
 
 ```
        full_name       |                  email
------------------------+------------------------------------------
- Jared Ely             | [[email protected]](../cdn-cgi/l/email-protection.html)
- Mary Smith            | [[email protected]](../cdn-cgi/l/email-protection.html)
- Patricia Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)
+------------------------+------------------------------------------
+ Jared Ely             | jared.ely@example.com
+ Mary Smith            | mary.smith@example.com
+ Patricia Johnson      | patricia.johnson@example.com
 ...
 ```
 
@@ -1476,7 +1476,7 @@ Typically, you use the `SELECT` clause with a function to retrieve the function 
 SELECT NOW();
 ```
 
-In this example, we use the [`NOW()`](../postgresql-date-functions/postgresql-now) function in the `SELECT` statement. It’ll return the current date and time of the PostgreSQL server.
+In this example, we use the [`NOW()`](../postgresql-date-functions/postgresql-now) function in the `SELECT` statement. It'll return the current date and time of the PostgreSQL server.
 
 ## Summary
 
@@ -3515,6 +3515,7 @@ The following example uses the `BETWEEN` operator to find payments whose payment
 
 ```
 SELECT
+  customer_id,
   payment_id,
   amount,
   payment_date
@@ -4168,9 +4169,9 @@ Output:
 
 The inner join examines each row in the first table (`basket_a`). It compares the value in the `fruit_a` column with the value in the `fruit_b` column of each row in the second table (`basket_b`). If these values are equal, the inner join creates a new row that contains columns from both tables and adds this new row to the result set.
 
-The following Venn diagram illustrates the inner join:
+The following diagram illustrates the inner join:
 
-![PostgreSQL Join - Inner Join](/postgresqltutorial/PostgreSQL-Join-Inner-Join.png)
+![PostgreSQL Join - Inner Join](/postgresqltutorial/join.svg)
 
 ## PostgreSQL left join
 
@@ -4206,9 +4207,9 @@ If these values are equal, the left join creates a new row that contains columns
 
 In case the values do not equal, the left join also creates a new row that contains columns from both tables and adds it to the result set. However, it fills the columns of the right table (`basket_b`) with null. (see the row \#3 and \#4 in the result set).
 
-The following Venn diagram illustrates the left join:
+The following diagram illustrates the left join:
 
-![PostgreSQL Join - Left Join](/postgresqltutorial/PostgreSQL-Join-Left-Join.png)
+![PostgreSQL Join - Left Join](/postgresqltutorial/join-left.svg)
 To select rows from the left table that do not have matching rows in the right table, you use the left join with a [`WHERE`](postgresql-where) clause. For example:
 
 ```sql
@@ -4237,9 +4238,9 @@ The output is:
 
 Note that the `LEFT JOIN` is the same as the `LEFT OUTER JOIN` so you can use them interchangeably.
 
-The following Venn diagram illustrates the left join that returns rows from the left table that do not have matching rows from the right table:
+**Left Anti-Join:** The following diagram illustrates the left join that returns rows from the left table that do not have matching rows from the right table:
 
-![PostgreSQL Join - Left Join with Where](/postgresqltutorial/PostgreSQL-Join-Left-Join-with-Where.png)
+![PostgreSQL Left Anti-Join](/postgresqltutorial/join-left-anti.svg)
 
 ## PostgreSQL right join
 
@@ -4276,7 +4277,7 @@ Here is the output:
 
 The following Venn diagram illustrates the right join:
 
-![PostgreSQL Join - Right Join](/postgresqltutorial/PostgreSQL-Join-Right-Join.png)
+![PostgreSQL Join - Right Join](/postgresqltutorial/join-right.svg)
 Similarly, you can get rows from the right table that do not have matching rows from the left table by adding a `WHERE` clause as follows:
 
 ```sql
@@ -4304,9 +4305,9 @@ Output:
 
 The `RIGHT JOIN` and `RIGHT OUTER JOIN` are the same therefore you can use them interchangeably.
 
-The following Venn diagram illustrates the right join that returns rows from the right table that do not have matching rows in the left table:
+The following diagram illustrates the right join that returns rows from the right table that do not have matching rows in the left table:
 
-![PostgreSQL Join - Right Join with Where](/postgresqltutorial/PostgreSQL-Join-Right-Join-with-Where.png)
+![PostgreSQL Join - Right Join with Where](/postgresqltutorial/join-right.svg)
 
 ## PostgreSQL full outer join
 
@@ -4339,9 +4340,9 @@ Output:
 
 ```
 
-The following Venn diagram illustrates the full outer join:
+The following diagram illustrates the full outer join:
 
-![PostgreSQL Join - Full Outer Join](/postgresqltutorial/PostgreSQL-Join-Full-Outer-Join.png)
+![PostgreSQL Join - Full Outer Join](/postgresqltutorial/join-full.svg)
 To return rows in a table that do not have matching rows in the other, you use the full join with a `WHERE` clause like this:
 
 ```sql
@@ -4371,7 +4372,7 @@ Here is the result:
 
 The following Venn diagram illustrates the full outer join that returns rows from a table that do not have the corresponding rows in the other table:
 
-![PostgreSQL Join - Full Outer Join with Where](/postgresqltutorial/PostgreSQL-Join-Full-Outer-Join-with-Where.png)
+![PostgreSQL Join - Full Outer Join with Where](/postgresqltutorial/join-full-anti.svg)
 The following picture shows all the PostgreSQL joins that we discussed so far with the detailed syntax:
 
 ![PostgreSQL Joins](/postgresqltutorial/PostgreSQL-Joins.png)
@@ -8296,7 +8297,7 @@ Inserting multiple rows at once has advantages over inserting one row at a time:
 
 ## Inserting multiple rows into a table examples
 
-Let’s take some examples of inserting multiple rows into a table.
+Let's take some examples of inserting multiple rows into a table.
 
 ### Setting up a sample table
 
@@ -8318,9 +8319,9 @@ The following statement uses the `INSERT` statement to insert three rows into th
 ```sql
 INSERT INTO contacts (first_name, last_name, email)
 VALUES
-    ('John', 'Doe', '[[email protected]](../cdn-cgi/l/email-protection.html)'),
-    ('Jane', 'Smith', '[[email protected]](../cdn-cgi/l/email-protection.html)'),
-    ('Bob', 'Johnson', '[[email protected]](../cdn-cgi/l/email-protection.html)');
+    ('John', 'Doe', 'john.doe@example.com'),
+    ('Jane', 'Smith', 'jane.smith@example.com'),
+    ('Bob', 'Johnson', 'bob.johnson@example.com');
 ```
 
 PostgreSQL returns the following message:
@@ -8340,9 +8341,9 @@ Output:
 ```text
  id | first_name | last_name |          email
 ----+------------+-----------+-------------------------
-  1 | John       | Doe       | [[email protected]](../cdn-cgi/l/email-protection.html)
-  2 | Jane       | Smith     | [[email protected]](../cdn-cgi/l/email-protection.html)
-  3 | Bob        | Johnson   | [[email protected]](../cdn-cgi/l/email-protection.html)
+  1 | John       | Doe       | john.doe@example.com
+  2 | Jane       | Smith     | jane.smith@example.com
+  3 | Bob        | Johnson   | bob.johnson@example.com
 (3 rows)
 
 ```
@@ -8354,8 +8355,8 @@ The following statement uses the `INSERT` statement to insert two rows into the 
 ```
 INSERT INTO contacts (first_name, last_name, email)
 VALUES
-    ('Alice', 'Johnson', '[[email protected]](../cdn-cgi/l/email-protection.html)'),
-    ('Charlie', 'Brown', '[[email protected]](../cdn-cgi/l/email-protection.html)')
+    ('Alice', 'Johnson', 'alice.johnson@example.com'),
+    ('Charlie', 'Brown', 'charlie.brown@example.com')
 RETURNING *;
 ```
 
@@ -8364,8 +8365,8 @@ Output:
 ```text
  id | first_name | last_name |           email
 ----+------------+-----------+---------------------------
-  4 | Alice      | Johnson   | [[email protected]](../cdn-cgi/l/email-protection.html)
-  5 | Charlie    | Brown     | [[email protected]](../cdn-cgi/l/email-protection.html)
+  4 | Alice      | Johnson   | alice.johnson@example.com
+  5 | Charlie    | Brown     | charlie.brown@example.com
 (2 rows)
 
 
@@ -8377,9 +8378,9 @@ If you just want to return the inserted id list, you can specify the `id` column
 ```
 INSERT INTO contacts (first_name, last_name, email)
 VALUES
-    ('Eva', 'Williams', '[[email protected]](../cdn-cgi/l/email-protection.html)'),
-    ('Michael', 'Miller', '[[email protected]](../cdn-cgi/l/email-protection.html)'),
-    ('Sophie', 'Davis', '[[email protected]](../cdn-cgi/l/email-protection.html)')
+    ('Eva', 'Williams', 'eva.williams@example.com'),
+    ('Michael', 'Miller', 'michael.miller@example.com'),
+    ('Sophie', 'Davis', 'sophie.davis@example.com')
 RETURNING id;
 ```
 
@@ -9424,7 +9425,7 @@ INSERT INTO product_updates VALUES
 
 ## Using MERGE with RETURNING
 
-Now let's see how PostgreSQL 17's enhanced `MERGE` command can handle all three operations (`INSERT`, `UPDATE`, `DELETE`) while providing detailed feedback through the RETURNING clause:
+Now let's see how PostgreSQL 17's enhanced `MERGE` command can handle all three operations (`INSERT`, `UPDATE`, `DELETE`) while providing detailed feedback through the `RETURNING` clause:
 
 ```sql
 MERGE INTO products p
@@ -9549,6 +9550,48 @@ RETURNING
 ## Conclusion
 
 PostgreSQL 17's enhanced `MERGE` command with `RETURNING` clause support provides a powerful tool for data synchronization and maintenance. The ability to perform multiple operations in a single statement while getting immediate feedback makes it an invaluable feature for modern applications.
+
+## Frequently Asked Questions (FAQ)
+
+<DefinitionList>
+What is the purpose of the `MERGE` statement in PostgreSQL?
+: The `MERGE` statement allows you to conditionally `INSERT`, `UPDATE`, or `DELETE` rows in a target table based on the presence of matching records in a source table. This consolidates multiple operations into a single, efficient command.
+
+When was the `MERGE` statement introduced in PostgreSQL?
+: The `MERGE` statement was officially introduced in PostgreSQL version 15, released in October 2022.
+
+How does the `MERGE` statement determine which operation to perform?
+: The `MERGE` statement uses a specified `ON` condition to match rows between the source and target tables. Based on whether a match is found (`MATCHED`) or not (`NOT MATCHED`), and any additional conditions, it executes the corresponding `INSERT`, `UPDATE`, `DELETE`, or `DO NOTHING` actions.
+
+Can I use the `MERGE` statement with views in PostgreSQL?
+: Yes, starting from PostgreSQL 17, the `MERGE` command can be used with updatable views. For `MERGE` to work with views, the views must be consistent:
+: Trigger-updatable views need `INSTEAD OF` triggers for all actions.
+: Auto-updatable views cannot have any triggers.
+: Mixing types of views or using rule-updatable views is not allowed.
+
+What privileges are required to execute a `MERGE` statement?
+: To execute a `MERGE` statement, you need:
+: `SELECT` privilege on the source table or query.
+: Appropriate privileges on the target table:
+: `INSERT` privilege for insert actions.
+: `UPDATE` privilege for update actions.
+: `DELETE` privilege for delete actions.
+
+Is the `MERGE` statement atomic in PostgreSQL?
+: Yes, the `MERGE` statement in PostgreSQL is atomic. This means all specified actions (`INSERT`, `UPDATE`, `DELETE`) are performed as a single unit. If an error occurs during execution, the entire operation is rolled back, ensuring data integrity.
+
+Can I use the `RETURNING` clause with the `MERGE` statement?
+: Yes, starting from PostgreSQL 17, the `MERGE` statement supports the `RETURNING` clause. This allows you to retrieve information about the rows affected by the `MERGE` operation, including the specific action performed (`INSERT`, `UPDATE`, or `DELETE`) on each row.
+
+How does the `MERGE` statement handle concurrent data modifications?
+: The `MERGE` statement ensures data consistency during concurrent operations by acquiring the necessary locks on the target table. This prevents other transactions from modifying the same rows simultaneously, thereby avoiding conflicts.
+
+Are there any performance considerations when using the `MERGE` statement?
+: While the `MERGE` statement simplifies complex operations into a single command, it's essential to ensure that the `ON` condition is well-optimized, typically by indexing the columns involved. Proper indexing can significantly enhance performance.
+
+Can I perform different actions based on additional conditions within the `MERGE` statement?
+: Yes, the `MERGE` statement allows for multiple `WHEN` clauses with additional conditions. This enables you to specify different actions (`INSERT`, `UPDATE`, `DELETE`, or `DO NOTHING`) based on various criteria, providing fine-grained control over the operation.
+</DefinitionList>
 
 
 # Transactions
@@ -9927,8 +9970,8 @@ Output:
 ```text
  id | first_name | last_name |    dob     |              email
 ----+------------+-----------+------------+---------------------------------
-  1 | John       | Doe       | 1995-01-05 | [[email protected]](../cdn-cgi/l/email-protection.html)
-  2 | Jane       | Doe       | 1995-02-05 | [[email protected]](../cdn-cgi/l/email-protection.html)
+  1 | John       | Doe       | 1995-01-05 | john.doe@example.com
+  2 | Jane       | Doe       | 1995-02-05 | jane.doe@example.com
 (2 rows)
 ```
 
@@ -9954,7 +9997,7 @@ In this example, the COPY statement exports all data from all columns of the `pe
 
 ![postgresql export csv](/postgresqltutorial/postgresql-export-csv.jpg)Sometimes, you may want to export data from some columns of a table to a CSV file. To achieve this, you can specify the column names together with the table name after `COPY` keyword.
 
-For example, the following statement exports data from the `first_name`, `last_name`, and `email`  columns of the `persons` table to `person_partial_db.csv`
+For example, the following statement exports data from the `first_name`, `last_name`, and `email` columns of the `persons` table to `person_partial_db.csv`
 
 ```
 COPY persons(first_name,last_name,email)
@@ -9962,7 +10005,7 @@ TO 'C:\temp\persons_partial_db.csv' DELIMITER ',' CSV HEADER;
 ```
 
 ![postgresql export csv partially](/postgresqltutorial/postgresql-export-csv-partially.jpg)
-If you don’t want to export the header, which contains the column names of the table, you can remove the `HEADER` flag in the `COPY` statement.
+If you don't want to export the header, which contains the column names of the table, you can remove the `HEADER` flag in the `COPY` statement.
 
 For example, the following statement exports only data from the `email` column of the `persons` table to a CSV file:
 
@@ -9978,7 +10021,7 @@ It means that the CSV file must reside on the database server machine, not your 
 
 ## Export data from a table to a CSV file using the \\copy command
 
-If you have access to a remote PostgreSQL database server, but you don’t have sufficient privileges to write to a file on it, you can use the PostgreSQL built\-in command `\copy`.
+If you have access to a remote PostgreSQL database server, but you don't have sufficient privileges to write to a file on it, you can use the PostgreSQL built\-in command `\copy`.
 
 The `\copy` command runs the `COPY` statement behind the scenes. However, instead of the server writing the CSV file, psql writes the CSV file and transfers data from the server to your local file system.
 
@@ -12248,7 +12291,7 @@ Typically, you define a generated column when [creating a table](postgresql-crea
 ```plaintextsql
 CREATE TABLE table_name(
    ...,
-   colum_name type GENERATED ALWAYS AS (expression ) STORED | VIRTUAL,
+   column_name type GENERATED ALWAYS AS (expression ) STORED | VIRTUAL,
    ...
 );
 ```
@@ -12277,7 +12320,7 @@ A generated column cannot have a default value or an identity definition. Additi
 
 ## PostgreSQL Generated Column examples
 
-Let’s explore some examples of using generated columns.
+Let's explore some examples of using generated columns.
 
 ### 1\) Concatenating columns
 
@@ -12299,8 +12342,8 @@ Second, insert rows into the `contacts` table. The values of the `full_name` col
 ```sql
 INSERT INTO contacts(first_name, last_name, email)
 VALUES
-   ('John', 'Doe', '[[email protected]](../cdn-cgi/l/email-protection.html)'),
-   ('Jane', 'Doe', '[[email protected]](../cdn-cgi/l/email-protection.html)')
+   ('John', 'Doe', 'john.doe@example.com'),
+   ('Jane', 'Doe', 'jane.doe@example.com')
 RETURNING *;
 ```
 
@@ -12309,8 +12352,8 @@ Output:
 ```text
  id | first_name | last_name | full_name |              email
 ----+------------+-----------+-----------+---------------------------------
-  1 | John       | Doe       | John Doe  | [[email protected]](../cdn-cgi/l/email-protection.html)
-  2 | Jane       | Doe       | Jane Doe  | [[email protected]](../cdn-cgi/l/email-protection.html)
+  1 | John       | Doe       | John Doe  | john.doe@example.com
+  2 | Jane       | Doe       | Jane Doe  | jane.doe@example.com
 (2 rows)
 ```
 
@@ -14458,7 +14501,7 @@ In this syntax:
 
 The delete and update actions determine the behaviors when the primary key in the parent table is deleted and updated.
 
-Since the primary key is rarely updated, the `ON UPDATE action` is infrequently used in practice. We’ll focus on the `ON DELETE` action.
+Since the primary key is rarely updated, the `ON UPDATE action` is infrequently used in practice. We'll focus on the `ON DELETE` action.
 
 PostgreSQL supports the following actions:
 
@@ -14521,9 +14564,9 @@ VALUES('BlueBird Inc'),
       ('Dolphin LLC');
 
 INSERT INTO contacts(customer_id, contact_name, phone, email)
-VALUES(1,'John Doe','(408)-111-1234','[[email protected]](../cdn-cgi/l/email-protection.html)'),
-      (1,'Jane Doe','(408)-111-1235','[[email protected]](../cdn-cgi/l/email-protection.html)'),
-      (2,'David Wright','(408)-222-1234','[[email protected]](../cdn-cgi/l/email-protection.html)');
+VALUES(1,'John Doe','(408)-111-1234','john.doe@example.com'),
+      (1,'Jane Doe','(408)-111-1235','jane.doe@example.com'),
+      (2,'David Wright','(408)-222-1234','david.wright@example.com');
 ```
 
 The following statement deletes the customer id 1 from the `customers` table:
@@ -14541,7 +14584,7 @@ DETAIL:  Key (customer_id)=(1) is still referenced from table "contacts".
 SQL state: 23503
 ```
 
-The `RESTRICT` action is similar to the `NO ACTION`. The difference only arises when you define the foreign key constraint as `DEFERRABLE` with an `INITIALLY DEFERRED` or `INITIALLY IMMEDIATE` mode. We’ll discuss more on this in the upcoming tutorial.
+The `RESTRICT` action is similar to the `NO ACTION`. The difference only arises when you define the foreign key constraint as `DEFERRABLE` with an `INITIALLY DEFERRED` or `INITIALLY IMMEDIATE` mode. We'll discuss more on this in the upcoming tutorial.
 
 ### SET NULL
 
@@ -14581,9 +14624,9 @@ VALUES('BlueBird Inc'),
       ('Dolphin LLC');
 
 INSERT INTO contacts(customer_id, contact_name, phone, email)
-VALUES(1,'John Doe','(408)-111-1234','[[email protected]](../cdn-cgi/l/email-protection.html)'),
-      (1,'Jane Doe','(408)-111-1235','[[email protected]](../cdn-cgi/l/email-protection.html)'),
-      (2,'David Wright','(408)-222-1234','[[email protected]](../cdn-cgi/l/email-protection.html)');
+VALUES(1,'John Doe','(408)-111-1234','john.doe@example.com'),
+      (1,'Jane Doe','(408)-111-1235','jane.doe@example.com'),
+      (2,'David Wright','(408)-222-1234','david.wright@example.com');
 ```
 
 Third, delete the customer with id 1 from the `customers` table:
@@ -14606,9 +14649,9 @@ Output:
 ```
  contact_id | customer_id | contact_name |     phone      |          email
 ------------+-------------+--------------+----------------+--------------------------
-          3 |           2 | David Wright | (408)-222-1234 | [[email protected]](../cdn-cgi/l/email-protection.html)
-          1 |        null | John Doe     | (408)-111-1234 | [[email protected]](../cdn-cgi/l/email-protection.html)
-          2 |        null | Jane Doe     | (408)-111-1235 | [[email protected]](../cdn-cgi/l/email-protection.html)
+          3 |           2 | David Wright | (408)-222-1234 | david.wright@example.com
+          1 |        null | John Doe     | (408)-111-1234 | john.doe@example.com
+          2 |        null | Jane Doe     | (408)-111-1235 | jane.doe@example.com
 (3 rows)
 ```
 
@@ -14648,9 +14691,9 @@ VALUES('BlueBird Inc'),
       ('Dolphin LLC');
 
 INSERT INTO contacts(customer_id, contact_name, phone, email)
-VALUES(1,'John Doe','(408)-111-1234','[[email protected]](../cdn-cgi/l/email-protection.html)'),
-      (1,'Jane Doe','(408)-111-1235','[[email protected]](../cdn-cgi/l/email-protection.html)'),
-      (2,'David Wright','(408)-222-1234','[[email protected]](../cdn-cgi/l/email-protection.html)');
+VALUES(1,'John Doe','(408)-111-1234','john.doe@example.com'),
+      (1,'Jane Doe','(408)-111-1235','jane.doe@example.com'),
+      (2,'David Wright','(408)-222-1234','david.wright@example.com');
 ```
 
 The following statement deletes the customer id 1:
@@ -14671,7 +14714,7 @@ Output:
 ```
  contact_id | customer_id | contact_name |     phone      |          email
 ------------+-------------+--------------+----------------+--------------------------
-          3 |           2 | David Wright | (408)-222-1234 | [[email protected]](../cdn-cgi/l/email-protection.html)
+          3 |           2 | David Wright | (408)-222-1234 | david.wright@example.com
 (1 row)
 ```
 
@@ -14699,7 +14742,7 @@ ALTER TABLE child_table
 DROP CONSTRAINT constraint_fkey;
 ```
 
-Second, add a new foreign key constraint with  `ON DELETE CASCADE` action:
+Second, add a new foreign key constraint with `ON DELETE CASCADE` action:
 
 ```sql
 ALTER TABLE child_table
@@ -14931,13 +14974,13 @@ Sometimes, you want to ensure that values stored in a column or a group of colum
 
 PostgreSQL provides you with the `UNIQUE` constraint that maintains the uniqueness of the data correctly.
 
-When a `UNIQUE` constraint is in place, every time you [insert a new row](postgresql-insert), it checks if the value is already in the table. It rejects the change and issues an error if the value already exists. The same process is carried out for [updating existing data](postgresql-update).
+When a `UNIQUE` constraint is in place, every time you [insert a new row](postgresql-insert), it checks if the value is already in the table. It rejects the change and issues an error if the value already exists. The same process is carried out for [updating existing data](postgresql-update).
 
 When you add a `UNIQUE` constraint to a column or a group of columns, PostgreSQL will automatically create a [unique index](../postgresql-indexes/postgresql-unique-index) on the column or the group of columns.
 
 ## PostgreSQL UNIQUE constraint example
 
-The following statement [creates a new table](postgresql-create-table) named `person` with a `UNIQUE` constraint for the `email` column.
+The following statement [creates a new table](postgresql-create-table) named `person` with a `UNIQUE` constraint for the `email` column.
 
 ```sql
 CREATE TABLE person (
@@ -14948,7 +14991,7 @@ CREATE TABLE person (
 );
 ```
 
-Note that the `UNIQUE` constraint above can be rewritten as a table constraint as shown in the following query:
+Note that the `UNIQUE` constraint above can be rewritten as a table constraint as shown in the following query:
 
 ```sql
 CREATE TABLE person (
@@ -14964,21 +15007,21 @@ First, insert a new row into the `person` table using [`INSERT`](postgresql-inse
 
 ```sql
 INSERT INTO person(first_name,last_name,email)
-VALUES('john','doe','[[email protected]](../cdn-cgi/l/email-protection.html)');
+VALUES('john','doe','john.doe@example.com');
 ```
 
 Second, insert another row with a duplicate email.
 
 ```sql
 INSERT INTO person(first_name,last_name,email)
-VALUES('jack','doe','[[email protected]](../cdn-cgi/l/email-protection.html)');
+VALUES('jack','doe','john.doe@example.com');
 ```
 
 PostgreSQL issued an error message.
 
 ```sql
 [Err] ERROR:  duplicate key value violates unique constraint "person_email_key"
-DETAIL:  Key (email)=([[email protected]](../cdn-cgi/l/email-protection.html)) already exists.
+DETAIL:  Key (email)=(john.doe@example.com) already exists.
 ```
 
 ## Creating a UNIQUE constraint on multiple columns
@@ -14994,11 +15037,11 @@ CREATE TABLE table (
 );
 ```
 
-The combination of values in the columns c2 and c3 will be unique across the whole table. The value of the column c2 or c3 needs not to be unique.
+The combination of values in the columns c2 and c3 will be unique across the whole table. The value of the column c2 or c3 needs not to be unique.
 
 ## Adding unique constraints using a unique index
 
-Sometimes, you may want to add a unique constraint to an existing column or group of columns. Let’s take a look at the following example.
+Sometimes, you may want to add a unique constraint to an existing column or group of columns. Let's take a look at the following example.
 
 First, suppose you have a table named `equipment`:
 
@@ -15025,7 +15068,7 @@ ADD CONSTRAINT unique_equip_id
 UNIQUE USING INDEX equipment_equip_id;
 ```
 
-Notice that the [`ALTER TABLE`](postgresql-alter-table) statement acquires an exclusive lock on the table. If you have any pending transactions, it will wait for all transactions to complete before changing the table. Therefore, you should check the pg_stat_activity table to see the current pending transactions that are ongoing using the following query:
+Notice that the [`ALTER TABLE`](postgresql-alter-table) statement acquires an exclusive lock on the table. If you have any pending transactions, it will wait for all transactions to complete before changing the table. Therefore, you should check the pg_stat_activity table to see the current pending transactions that are ongoing using the following query:
 
 ```sql
 SELECT
@@ -15037,7 +15080,7 @@ FROM
   pg_stat_activity;
 ```
 
-You should look at the result to find the `state` column with the value  `idle in transaction`. Those are the transactions that are pending to complete.
+You should look at the result to find the `state` column with the value `idle in transaction`. Those are the transactions that are pending to complete.
 
 ## Summary
 
@@ -15066,13 +15109,13 @@ nextLink:
 
 ## Introduction to NULL
 
-In the database world, NULL represents unknown or missing information. NULL is not the same as an empty string or the number zero.
+In the database world, NULL represents unknown or missing information. NULL is not the same as an empty string or the number zero.
 
 Suppose you need to insert the email address of a contact into a table. You can request his or her email address.
 
-However, if you don’t know whether the contact has an email address or not, you can insert NULL into the email address column. In this case, NULL indicates that the email address is unknown at the recording time.
+However, if you don't know whether the contact has an email address or not, you can insert NULL into the email address column. In this case, NULL indicates that the email address is unknown at the recording time.
 
-NULL is very special. It does not equal anything, even itself. The expression `NULL = NULL` returns NULL because it makes sense that two unknown values should not be equal.
+NULL is very special. It does not equal anything, even itself. The expression `NULL = NULL` returns NULL because it makes sense that two unknown values should not be equal.
 
 To check if a value is NULL or not, you use the [`IS NULL`](postgresql-is-null) boolean operator. For example, the following expression returns true if the value in the email address is NULL.
 
@@ -15109,11 +15152,11 @@ CREATE TABLE invoices(
 );
 ```
 
-This example uses the `NOT NULL` keywords that follow the [data type](postgresql-data-types) of the product_id and qty columns to declare `NOT NULL` constraints.
+This example uses the `NOT NULL` keywords that follow the [data type](postgresql-data-types) of the product_id and qty columns to declare `NOT NULL` constraints.
 
-Note that a column can have multiple constraints such as `NOT NULL`, [check](postgresql-check-constraint), [unique](postgresql-unique-constraint), [foreign key](postgresql-foreign-key) appearing next to each other. The order of the constraints is not important. PostgreSQL may check constraints in any order.
+Note that a column can have multiple constraints such as `NOT NULL`, [check](postgresql-check-constraint), [unique](postgresql-unique-constraint), [foreign key](postgresql-foreign-key) appearing next to each other. The order of the constraints is not important. PostgreSQL may check constraints in any order.
 
-If you use `NULL` instead of `NOT NULL`, the column will accept both `NULL` and non\-NULL values. If you don’t explicitly specify `NULL` or `NOT NULL`, it will accept `NULL` by default.
+If you use `NULL` instead of `NOT NULL`, the column will accept both `NULL` and non\-NULL values. If you don't explicitly specify `NULL` or `NOT NULL`, it will accept `NULL` by default.
 
 ## Adding NOT NULL Constraints to existing columns
 
@@ -15133,7 +15176,7 @@ ALTER COLUMN column_name_2 SET NOT NULL,
 ...;
 ```
 
-Let’s take a look at the following example.
+Let's take a look at the following example.
 
 First, [create a new table](postgresql-create-table) called production orders ( `production_orders`):
 
@@ -15243,8 +15286,8 @@ The following statement works.
 INSERT INTO users (username, email)
 VALUES
 	('user1', NULL),
-	(NULL, '[[email protected]](../cdn-cgi/l/email-protection.html)'),
-	('user2', '[[email protected]](../cdn-cgi/l/email-protection.html)'),
+	(NULL, 'user2@example.com'),
+	('user2', 'user2@example.com'),
 	('user3', '');
 ```
 
@@ -17954,7 +17997,7 @@ To store UUID values in the PostgreSQL database, you use the UUID data type.
 
 ## Generating UUID values
 
-PostgreSQL provides you with a function to generate a UUID:
+PostgreSQL provides you with a function to generate a UUID:
 
 ```sql
 gen_random_uuid()
@@ -17994,16 +18037,16 @@ CREATE TABLE contacts (
 
 In this statement, the data type of the `contact_id` column is `UUID`.
 
-The `contact_id` column has a default value provided by the `gen_random_uuid()` function, therefore, whenever you insert a new row without specifying the value for the contact_id `column`, PostgreSQL will call the `gen_random_uuid()` function to generate the value for it.
+The `contact_id` column has a default value provided by the `gen_random_uuid()` function, therefore, whenever you insert a new row without specifying the value for the contact_id `column`, PostgreSQL will call the `gen_random_uuid()` function to generate the value for it.
 
 Second, [insert](postgresql-insert) some data into the `contacts` table:
 
 ```sql
 INSERT INTO contacts ( first_name, last_name, email, phone)
 VALUES
-  ('John', 'Smith', '[[email protected]](../cdn-cgi/l/email-protection.html)',  '408-237-2345'),
-  ('Jane', 'Smith', '[[email protected]](../cdn-cgi/l/email-protection.html)', '408-237-2344'),
-  ('Alex', 'Smith', '[[email protected]](../cdn-cgi/l/email-protection.html)', '408-237-2343')
+  ('John', 'Smith', 'john.smith@example.com',  '408-237-2345'),
+  ('Jane', 'Smith', 'jane.smith@example.com', '408-237-2344'),
+  ('Alex', 'Smith', 'alex.smith@example.com', '408-237-2343')
 RETURNING *;
 ```
 
@@ -18012,9 +18055,9 @@ Output:
 ```text
               contact_id              | first_name | last_name |         email          |    phone
 --------------------------------------+------------+-----------+------------------------+--------------
- ca61da8c-938a-48a6-8eb6-55aa08cd1b08 | John       | Smith     | [[email protected]](../cdn-cgi/l/email-protection.html) | 408-237-2345
- fe2af584-8576-4d0e-b10d-6ec970732f8e | Jane       | Smith     | [[email protected]](../cdn-cgi/l/email-protection.html) | 408-237-2344
- 141aefe8-f553-43b9-bfbf-91361e83b15e | Alex       | Smith     | [[email protected]](../cdn-cgi/l/email-protection.html) | 408-237-2343
+ ca61da8c-938a-48a6-8eb6-55aa08cd1b08 | John       | Smith     | john.smith@example.com | 408-237-2345
+ fe2af584-8576-4d0e-b10d-6ec970732f8e | Jane       | Smith     | jane.smith@example.com | 408-237-2344
+ 141aefe8-f553-43b9-bfbf-91361e83b15e | Alex       | Smith     | alex.smith@example.com | 408-237-2343
 (3 rows)
 
 ```
@@ -18917,10 +18960,10 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to create PostgreSQL user\-defined data type using `CREATE DOMAIN` and `CREATE TYPE` statements.
 
-Besides built\-in [data types](postgresql-data-types), PostgreSQL allows you to create user\-defined data types through the following statements:
+Besides built\-in [data types](postgresql-data-types), PostgreSQL allows you to create user\-defined data types through the following statements:
 
-- `CREATE DOMAIN` creates a user\-defined data type with constraints such as [`NOT NULL`](postgresql-not-null-constraint), [`CHECK`](postgresql-check-constraint), etc.
-- `CREATE TYPE` creates a composite type used in [stored procedures](https://neon.tech/postgresql/postgresql-stored-procedures/) as the data types of returned values.
+- `CREATE DOMAIN` creates a user\-defined data type with constraints such as [`NOT NULL`](postgresql-not-null-constraint), [`CHECK`](postgresql-check-constraint), etc.
+- `CREATE TYPE` creates a composite type used in [stored procedures](https://neon.tech/postgresql/postgresql-stored-procedures/) as the data types of returned values.
 
 ## PostgreSQL CREATE DOMAIN statement
 
@@ -18967,7 +19010,7 @@ The following statement inserts a new row into the `mailing_list` table:
 
 ```sql
 INSERT INTO mailing_list (first_name, last_name, email)
-VALUES('Jame V','Doe','[[email protected]](../cdn-cgi/l/email-protection.html)');
+VALUES('Jame V','Doe','james.doe@example.com');
 ```
 
 PostgreSQL issued the following error because the first name contains a space:
@@ -18981,12 +19024,12 @@ The following statement works because it does not violate any constraints of the
 
 ```sql
 INSERT INTO mailing_list (first_name, last_name, email)
-VALUES('Jane','Doe','[[email protected]](../cdn-cgi/l/email-protection.html)');
+VALUES('Jane','Doe','jane.doe@example.com');
 ```
 
 To change or remove a domain, you use the `ALTER DOMAIN` or `DROP DOMAIN` respectively.
 
-To view all domains in the current database, you use the `\dD` command as follows:
+To view all domains in the current database, you use the `\dD` command as follows:
 
 ```sql
 test=#\dD
@@ -19962,570 +20005,6 @@ In this example, you cannot put the parentheses around the column name of the co
 ## Summary
 
 - Composite types allow you to define custom data types that include multiple fields.
-
-
-# Set Operators
-
-# UNION
-
----
-title: 'PostgreSQL UNION'
-page_title: 'PostgreSQL UNION Operator'
-page_description: 'This tutorial shows you how to use the PostgreSQL UNION operator to combine the result sets of multiple queries into a single result set.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-union/'
-ogImage: '/postgresqltutorial/PostgresQL-UNION.png'
-updatedOn: '2024-02-06T01:38:07+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL HAVING'
-  slug: 'postgresql-tutorial/postgresql-having'
-nextLink:
-  title: 'PostgreSQL INTERSECT Operator'
-  slug: 'postgresql-tutorial/postgresql-intersect'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `UNION` operator to combine result sets of multiple queries into a single result set.
-
-## Introduction to PostgreSQL UNION operator
-
-The `UNION` operator allows you to combine the result sets of two or more [`SELECT`](postgresql-select) statements into a single result set.
-
-Here’s the basic syntax of the `UNION` operator:
-
-```sql
-SELECT select_list
-FROM A
-UNION
-SELECT select_list
-FROM B;
-```
-
-In this syntax, the queries must conform to the following rules:
-
-- The number and the order of the columns in the select list of both queries must be the same.
-- The data types of the columns in select lists of the queries must be compatible.
-
-The `UNION` operator removes all duplicate rows from the combined data set. To retain the duplicate rows, you use the `UNION ALL` instead.
-
-Here’s the syntax of the `UNION ALL` operator:
-
-```sql
-SELECT select_list
-FROM A
-UNION ALL
-SELECT select_list
-FROM B;
-```
-
-The following Venn diagram illustrates how the `UNION` works:
-
-![](/postgresqltutorial/PostgresQL-UNION.png)
-
-### PostgreSQL UNION with ORDER BY clause
-
-The `UNION` and `UNION ALL` operators may order the rows in the final result set in an unspecified order. For example, it may place rows from the second result set before/after the row from the first result set.
-
-To sort rows in the final result set, you specify the [`ORDER BY`](postgresql-order-by) clause after the second query:
-
-```
-SELECT select_list
-FROM A
-UNION
-SELECT select_list
-FROM B
-ORDER BY sort_expression;
-```
-
-Note that if you use the `ORDER BY` clause in the first query, PostgreSQL will issue an error.
-
-## Setting up sample tables
-
-The following statements create two tables `top_rated_films` and `most_popular_films`, and insert data into these tables:
-
-```
-CREATE TABLE top_rated_films(
-  title VARCHAR NOT NULL,
-  release_year SMALLINT
-);
-
-CREATE TABLE most_popular_films(
-  title VARCHAR NOT NULL,
-  release_year SMALLINT
-);
-
-INSERT INTO top_rated_films(title, release_year)
-VALUES
-   ('The Shawshank Redemption', 1994),
-   ('The Godfather', 1972),
-   ('The Dark Knight', 2008),
-   ('12 Angry Men', 1957);
-
-INSERT INTO most_popular_films(title, release_year)
-VALUES
-  ('An American Pickle', 2020),
-  ('The Godfather', 1972),
-  ('The Dark Knight', 2008),
-  ('Greyhound', 2020);
-```
-
-The following statement retrieves data from the `top_rated_films` table:
-
-```sql
-SELECT * FROM top_rated_films;
-```
-
-Output:
-
-```text
-          title           | release_year
---------------------------+--------------
- The Shawshank Redemption |         1994
- The Godfather            |         1972
- The Dark Knight          |         2008
- 12 Angry Men             |         1957
-(4 rows)
-```
-
-The following statement retrieves data from the `most_popular_films` table:
-
-```
-SELECT * FROM most_popular_films;
-```
-
-Output:
-
-```text
-       title        | release_year
---------------------+--------------
- An American Pickle |         2020
- The Godfather      |         1972
- The Dark Knight    |         2008
- Greyhound          |         2020
-(4 rows)
-```
-
-## PostgreSQL UNION examples
-
-Let’s take some examples of using the PostgreSQL `UNION` operator.
-
-### 1\) Basic PostgreSQL UNION example
-
-The following statement uses the `UNION` operator to combine data from the queries that retrieve data from the `top_rated_films` and `most_popular_films`:
-
-```
-SELECT * FROM top_rated_films
-UNION
-SELECT * FROM most_popular_films;
-```
-
-Output:
-
-```text
-          title           | release_year
---------------------------+--------------
- An American Pickle       |         2020
- The Dark Knight          |         2008
- Greyhound                |         2020
- The Shawshank Redemption |         1994
- The Godfather            |         1972
- 12 Angry Men             |         1957
-(6 rows)
-```
-
-The result set includes six rows because the `UNION` operator removes two duplicate rows.
-
-### 2\) PostgreSQL UNION ALL example
-
-The following statement uses the `UNION ALL` operator to combine result sets from queries that retrieve data from `top_rated_films` and `most_popular_films` tables:
-
-```
-SELECT * FROM top_rated_films
-UNION ALL
-SELECT * FROM most_popular_films;
-```
-
-Output:
-
-```text
-          title           | release_year
---------------------------+--------------
- The Shawshank Redemption |         1994
- The Godfather            |         1972
- The Dark Knight          |         2008
- 12 Angry Men             |         1957
- An American Pickle       |         2020
- The Godfather            |         1972
- The Dark Knight          |         2008
- Greyhound                |         2020
-(8 rows)
-```
-
-The output indicates that the `UNION ALL` operator retains the duplicate rows.
-
-### 3\) PostgreSQL UNION ALL with ORDER BY clause example
-
-To sort the result returned by the `UNION` operator, you place the `ORDER BY` clause after the second query:
-
-```
-SELECT * FROM top_rated_films
-UNION ALL
-SELECT * FROM most_popular_films
-ORDER BY title;
-```
-
-Output:
-
-```
-          title           | release_year
---------------------------+--------------
- 12 Angry Men             |         1957
- An American Pickle       |         2020
- Greyhound                |         2020
- The Dark Knight          |         2008
- The Dark Knight          |         2008
- The Godfather            |         1972
- The Godfather            |         1972
- The Shawshank Redemption |         1994
-(8 rows)
-```
-
-## Summary
-
-- Use the `UNION` to combine result sets of two queries and return distinct rows.
-- Use the `UNION ALL` to combine the result sets of two queries but retain the duplicate rows.
-
-
-# INTERSECT
-
----
-title: 'PostgreSQL INTERSECT Operator'
-page_title: 'PostgreSQL INTERSECT Operator'
-page_description: 'Show you how to use the PostgreSQL INTERSECT operator to combine two result sets and return the rows that appear in both result sets.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-intersect/'
-ogImage: '/postgresqltutorial/PostgreSQL-INTERSECT-Operator-300x206.png'
-updatedOn: '2024-07-01T01:03:14+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL UNION'
-  slug: 'postgresql-tutorial/postgresql-union'
-nextLink:
-  title: 'PostgreSQL EXCEPT'
-  slug: 'postgresql-tutorial/postgresql-except'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `INTERSECT` operator to combine result sets of two or more queries.
-
-## Introduction to PostgreSQL INTERSECT operator
-
-Like the [UNION](postgresql-union) and [EXCEPT](postgresql-except) operators, the PostgreSQL `INTERSECT` operator combines result sets of two [SELECT](postgresql-except) statements into a single result set. The `INTERSECT` operator returns a result set containing rows available in both results sets.
-
-Here is the basic syntax of the `INTERSECT` operator:
-
-```plaintextsql
-SELECT select_list
-FROM A
-INTERSECT
-SELECT select_list
-FROM B;
-```
-
-To use the `INTERSECT` operator, the columns that appear in the `SELECT` statements must follow these rules:
-
-- The number of columns and their order in queries must be the same.
-- The [data types](postgresql-data-types) of the columns in the queries must be compatible.
-
-The following diagram illustrates how the `INTERSECT` operator combines the result sets A and B. The final result set is represented by the yellow area where circle A intersects circle B.
-
-![PostgreSQL INTERSECT Operator](/postgresqltutorial/PostgreSQL-INTERSECT-Operator-300x206.png)
-
-### PostgreSQL INTERSECT with ORDER BY clause
-
-If you want to sort the result set returned by the `INTERSECT` operator, you place the `ORDER BY` after the final query:
-
-```sql
-SELECT select_list
-FROM A
-INTERSECT
-SELECT select_list
-FROM B
-ORDER BY sort_expression;
-```
-
-## Setting up sample tables
-
-We’ll create two tables `top_rated_films` and `most_popular_films` for demonstration:
-
-```sql
-CREATE TABLE top_rated_films(
-  title VARCHAR NOT NULL,
-  release_year SMALLINT
-);
-
-CREATE TABLE most_popular_films(
-  title VARCHAR NOT NULL,
-  release_year SMALLINT
-);
-
-INSERT INTO top_rated_films(title, release_year)
-VALUES
-   ('The Shawshank Redemption', 1994),
-   ('The Godfather', 1972),
-   ('The Dark Knight', 2008),
-   ('12 Angry Men', 1957);
-
-INSERT INTO most_popular_films(title, release_year)
-VALUES
-  ('An American Pickle', 2020),
-  ('The Godfather', 1972),
-  ('The Dark Knight', 2008),
-  ('Greyhound', 2020);
-
-SELECT * FROM top_rated_films;
-SELECT * FROM most_popular_films;
-```
-
-The contents of the `top_rated_films` table:
-
-```text
-          title           | release_year
---------------------------+--------------
- The Shawshank Redemption |         1994
- The Godfather            |         1972
- The Dark Knight          |         2008
- 12 Angry Men             |         1957
-(4 rows)
-```
-
-The contents of the `most_popular_films` table:
-
-```plaintext
-       title        | release_year
---------------------+--------------
- An American Pickle |         2020
- The Godfather      |         1972
- The Dark Knight    |         2008
- Greyhound          |         2020
-(4 rows)
-```
-
-## PostgreSQL INTERSECT operator examples
-
-Let’s explore some examples of using the `INTERSECT` operator.
-
-### 1\) Basic INTERSECT operator example
-
-The following example uses the `INTERSECT` operator to retrieve the popular films that are also top\-rated:
-
-```plaintext
-SELECT *
-FROM most_popular_films
-INTERSECT
-SELECT *
-FROM top_rated_films;
-```
-
-Output:
-
-```text
-      title      | release_year
------------------+--------------
- The Godfather   |         1972
- The Dark Knight |         2008
-(2 rows)
-```
-
-The result set returns one film that appears on both tables.
-
-### 2\) Using the INTERSECT operator with ORDER BY clause example
-
-The following statement uses the `INTERSECT` operator to find the most popular films which are also the top\-rated films and sort the films by release year:
-
-```plaintext
-SELECT *
-FROM most_popular_films
-INTERSECT
-SELECT *
-FROM top_rated_films
-ORDER BY release_year;
-```
-
-Output:
-
-```
-      title      | release_year
------------------+--------------
- The Godfather   |         1972
- The Dark Knight |         2008
-(2 rows)
-```
-
-## Summary
-
-- Use the PostgreSQL `INTERSECT` operator to combine two result sets and return a single result set containing rows appearing in both.
-- Place the `ORDER BY` clause after the second query to sort the rows in the result set returned by the `INTERSECT` operator.
-
-
-# EXCEPT
-
----
-title: 'PostgreSQL EXCEPT'
-page_title: 'PostgreSQL EXCEPT'
-page_description: 'Show you how to the PostgreSQL EXCEPT operator to combine the result sets of two queries.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-except/'
-ogImage: '/postgresqltutorial/PostgreSQL-EXCEPT-300x202.png'
-updatedOn: '2024-07-01T00:51:42+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL INTERSECT Operator'
-  slug: 'postgresql-tutorial/postgresql-intersect'
-nextLink:
-  title: 'PostgreSQL GROUPING SETS'
-  slug: 'postgresql-tutorial/postgresql-grouping-sets'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `EXCEPT` operator to return a result set containing the rows in the first query that does not appear in the output of the second query.
-
-## Introduction to the PostgreSQL EXCEPT operator
-
-Like the [UNION](postgresql-union) and [INTERSECT](postgresql-intersect) operators, the `EXCEPT` operator returns rows by comparing the result sets of two or more queries.
-
-The `EXCEPT` operator returns distinct rows from the first (left) query that are not in the second (right) query.
-
-The following illustrates the syntax of the `EXCEPT` operator.
-
-```sql
-SELECT select_list
-FROM A
-EXCEPT
-SELECT select_list
-FROM B;
-```
-
-The queries that involve the `EXCEPT` need to follow these rules:
-
-- The number of columns and their orders must be the same in the two queries.
-- The data types of the respective columns must be compatible.
-
-The following Venn diagram illustrates the `EXCEPT` operator:
-
-![PostgreSQL EXCEPT](/postgresqltutorial/PostgreSQL-EXCEPT-300x202.png)If you want to sort the rows in the combined result sets, you need to place the [`ORDER BY`](postgresql-order-by) clause after the second query:
-
-```sql
-SELECT select_list
-FROM A
-EXCEPT
-SELECT select_list
-FROM B
-ORDER BY sort_expression;
-```
-
-## Setting up sample tables
-
-We’ll create the `top_rated_films` and `most_popular_films` tables for demonstration:
-
-```sql
-CREATE TABLE top_rated_films(
-  title VARCHAR NOT NULL,
-  release_year SMALLINT
-);
-
-CREATE TABLE most_popular_films(
-  title VARCHAR NOT NULL,
-  release_year SMALLINT
-);
-
-INSERT INTO top_rated_films(title, release_year)
-VALUES
-   ('The Shawshank Redemption', 1994),
-   ('The Godfather', 1972),
-   ('The Dark Knight', 2008),
-   ('12 Angry Men', 1957);
-
-INSERT INTO most_popular_films(title, release_year)
-VALUES
-  ('An American Pickle', 2020),
-  ('The Godfather', 1972),
-  ('The Dark Knight', 2008),
-  ('Greyhound', 2020);
-
-SELECT * FROM top_rated_films;
-SELECT * FROM most_popular_films;
-```
-
-The contents of the `top_rated_films` table:
-
-```text
-          title           | release_year
---------------------------+--------------
- The Shawshank Redemption |         1994
- The Godfather            |         1972
- The Dark Knight          |         2008
- 12 Angry Men             |         1957
-(4 rows)
-```
-
-The contents of the `most_popular_films` table:
-
-```text
-       title        | release_year
---------------------+--------------
- An American Pickle |         2020
- The Godfather      |         1972
- The Dark Knight    |         2008
- Greyhound          |         2020
-(4 rows)
-```
-
-## PostgreSQL EXCEPT operator examples
-
-Let’s take some examples of using the `EXCEPT` operator
-
-### 1\) Basic EXCEPT operator example
-
-The following statement uses the `EXCEPT` operator to find the top\-rated films that are not popular:
-
-```sql
-SELECT * FROM top_rated_films
-EXCEPT
-SELECT * FROM most_popular_films;
-```
-
-Output:
-
-```text
-          title           | release_year
---------------------------+--------------
- The Shawshank Redemption |         1994
- 12 Angry Men             |         1957
-(2 rows)
-```
-
-### 2\) Using the EXCEPT operator with the ORDER BY clause
-
-The following statement uses the `ORDER BY` clause in the query to sort the result set returned by the `EXCEPT` operator by titles:
-
-```sql
-SELECT * FROM top_rated_films
-EXCEPT
-SELECT * FROM most_popular_films
-ORDER BY title;
-```
-
-Output:
-
-```text
-          title           | release_year
---------------------------+--------------
- 12 Angry Men             |         1957
- The Shawshank Redemption |         1994
-(2 rows)
-```
-
-Notice that we placed the [ORDER BY](postgresql-order-by) clause after the second query to sort the films by titles.
-
-## Summary
-
-- Use the PostgreSQL `EXCEPT` operator to combine rows from two result sets and return a result set containing rows from the first result set that do not appear in the second result set.
 
 
 # Conditional Expressions & Operators
@@ -21790,10 +21269,6 @@ Specify the maximum concurrent connections to the new database. The default is \
 **ALLOW_CONNECTIONS**
 
 The `allow_connections` parameter is a boolean value. If it is `false`, you cannot connect to the database.
-
-**TABLESPACE**
-
-Specify the [tablespace](postgresql-create-tablespace) that the new database will use. It defaults to the tablespace of the template database.
 
 **IS_TEMPLATE**
 
@@ -23963,7 +23438,7 @@ create table candidates (
 
 Fourth, use the role `joe` to log in to the PostgreSQL server in a separate session.
 
-Fifth, attempt to select data from the `candidates` table from the `joe`‘s session:
+Fifth, attempt to select data from the `candidates` table from the `joe`'s session:
 
 ```sql
 SELECT * FROM candidates;
@@ -23977,7 +23452,7 @@ ERROR:  permission denied for table candidates
 
 The output indicates that the role joe does not have the privilege of retrieving data from the `candidates` table.
 
-To grant the `SELECT` privilege on the `candidates` table to the role `joe`, you execute the following `GRANT` statement in the `postgres`‘ session:
+To grant the `SELECT` privilege on the `candidates` table to the role `joe`, you execute the following `GRANT` statement in the `postgres`' session:
 
 ```sql
 GRANT SELECT
@@ -23985,7 +23460,7 @@ ON candidates
 TO joe;
 ```
 
-Sixth, execute the `SELECT` statement from the `joe`‘s session:
+Sixth, execute the `SELECT` statement from the `joe`'s session:
 
 ```sql
 SELECT * FROM candidates;
@@ -23997,7 +23472,7 @@ Seventh, execute the following [`INSERT`](../postgresql-tutorial/postgresql-inse
 
 ```sql
 INSERT INTO candidates(first_name, last_name, email, phone)
-VALUES('Joe','Com','[[email protected]](../cdn-cgi/l/email-protection.html)','408-111-2222');
+VALUES('Joe','Com','joe.com@example.com','408-111-2222');
 ```
 
 PostgreSQL issued the following error because `joe` does not have the `INSERT` privilege on the `candidates` table:
@@ -24014,18 +23489,18 @@ ON candidates
 TO joe;
 ```
 
-Ninth, execute the `INSERT` statement again from the `joe`‘s session:
+Ninth, execute the `INSERT` statement again from the `joe`'s session:
 
 ```sql
 INSERT INTO candidates(first_name, last_name, email, phone)
-VALUES('Joe','Com','[[email protected]](../cdn-cgi/l/email-protection.html)','408-111-2222');
+VALUES('Joe','Com','joe.com@example.com','408-111-2222');
 ```
 
 Now, `joe` can insert data into the `candidates` table. Additionally, it can update or delete data from the table.
 
 ## More PostgreSQL GRANT statement examples
 
-Let’s take some more examples of using the `GRANT` statement.
+Let's take some more examples of using the `GRANT` statement.
 
 ### 1\) Grant all privileges on a table to a role
 
@@ -27012,7 +26487,7 @@ nextLink:
 
 In PostgreSQL, a view is a named query stored in the database server. To create a new view, you can use the `CREATE VIEW` statement.
 
-Here’s the basic syntax of the `CREATE VIEW` statement:
+Here's the basic syntax of the `CREATE VIEW` statement:
 
 ```phpsql
 CREATE VIEW view_name
@@ -27027,9 +26502,9 @@ In this syntax:
 
 ## PostgreSQL CREATE VIEW statement examples
 
-Let’s take some examples of using the `CREATE VIEW` statement.
+Let's take some examples of using the `CREATE VIEW` statement.
 
-We’ll use the `customer` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
+We'll use the `customer` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
 
 ![customer table](/postgresqltutorial/customer.png)
 
@@ -27064,9 +26539,9 @@ Output:
 ```text
  first_name  |  last_name   |                  email
 -------------+--------------+------------------------------------------
- Jared       | Ely          | [[email protected]](../cdn-cgi/l/email-protection.html)
- Mary        | Smith        | [[email protected]](../cdn-cgi/l/email-protection.html)
- Patricia    | Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)
+ Jared       | Ely          | jared.ely@example.com
+ Mary        | Smith        | mary.smith@example.com
+ Patricia    | Johnson      | patricia.johnson@example.com
 ...
 ```
 
@@ -27102,9 +26577,9 @@ Output:
 ```
  first_name  |  last_name   |                  email                   |    phone     |            city            | postal_code |                country
 -------------+--------------+------------------------------------------+--------------+----------------------------+-------------+---------------------------------------
- Jared       | Ely          | [[email protected]](../cdn-cgi/l/email-protection.html)             | 35533115997  | Purwakarta                 | 25972       | Indonesia
- Mary        | Smith        | [[email protected]](../cdn-cgi/l/email-protection.html)            | 28303384290  | Sasebo                     | 35200       | Japan
- Patricia    | Johnson      | [[email protected]](../cdn-cgi/l/email-protection.html)      | 838635286649 | San Bernardino             | 17886       | United States
+ Jared       | Ely          | jared.ely@example.com             | 35533115997  | Purwakarta                 | 25972       | Indonesia
+ Mary        | Smith        | mary.smith@example.com            | 28303384290  | Sasebo                     | 35200       | Japan
+ Patricia    | Johnson      | patricia.johnson@example.com      | 838635286649 | San Bernardino             | 17886       | United States
 ...
 ```
 
@@ -27123,7 +26598,7 @@ WHERE
   country = 'United States';
 ```
 
-Here’s the query that retrieves data from the customer_usa view:
+Here's the query that retrieves data from the customer_usa view:
 
 ```sql
 SELECT * FROM customer_usa;
@@ -27134,9 +26609,9 @@ Output:
 ```
  first_name | last_name  |                email                 |    phone     |          city           | postal_code |    country
 ------------+------------+--------------------------------------+--------------+-------------------------+-------------+---------------
- Zachary    | Hite       | [[email protected]](../cdn-cgi/l/email-protection.html)      | 191958435142 | Akron                   | 88749       | United States
- Richard    | Mccrary    | [[email protected]](../cdn-cgi/l/email-protection.html)   | 262088367001 | Arlington               | 42141       | United States
- Diana      | Alexander  | [[email protected]](../cdn-cgi/l/email-protection.html)   | 6171054059   | Augusta-Richmond County | 30695       | United States
+ Zachary    | Hite       | zachary.hite@example.com      | 191958435142 | Akron                   | 88749       | United States
+ Richard    | Mccrary    | richard.mccrary@example.com   | 262088367001 | Arlington               | 42141       | United States
+ Diana      | Alexander  | diana.alexander@example.com   | 6171054059   | Augusta-Richmond County | 30695       | United States
 ...
 ```
 
@@ -28978,11 +28453,11 @@ When you define a [primary key](../postgresql-tutorial/postgresql-primary-key) o
 
 ## PostgreSQL UNIQUE index examples
 
-Let’s explore some examples of using the PostgreSQL unique indexes.
+Let's explore some examples of using the PostgreSQL unique indexes.
 
 ### 1\) Unique indexes for a primary key column and a column with a unique constraint
 
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `employees` :
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `employees` :
 
 ```sql
 CREATE TABLE employees (
@@ -29040,14 +28515,14 @@ Third, [insert a new row](../postgresql-tutorial/postgresql-insert) into the `em
 
 ```sql
 INSERT INTO employees(first_name, last_name, email, mobile_phone)
-VALUES ('John','Doe','[[email protected]](../cdn-cgi/l/email-protection.html)', '(408)-555-1234');
+VALUES ('John','Doe','john.doe@example.com', '(408)-555-1234');
 ```
 
 Fourth, attempt to insert another row with the same phone number:
 
 ```sql
 INSERT INTO employees(first_name, last_name, email, mobile_phone)
-VALUES ('Jane','Doe','[[email protected]](../cdn-cgi/l/email-protection.html)', '(408)-555-1234');
+VALUES ('Jane','Doe','jane.doe@example.com', '(408)-555-1234');
 ```
 
 PostgreSQL issues the following error due to the duplicate mobile phone number:
@@ -30581,7 +30056,7 @@ When creating a `GIN` index on a JSONB column, you can use a specific `GIN` oper
 
 The operator class determines how PostgreSQL builds the index and how it optimizes the queries on the indexed column.
 
-For example, The following `CREATE INDEX` statement creates a `GIN` index on the `jsonb_coumn` with `jsonb_path_ops` operator class:
+For example, The following `CREATE INDEX` statement creates a `GIN` index on the `jsonb_column` with `jsonb_path_ops` operator class:
 
 ```sql
 CREATE INDEX index_name
@@ -30593,23 +30068,22 @@ This index is optimized for the queries that use the @\> (contains), ? (exists),
 
 The following table displays the `GIN` operator classes:
 
-| Name                     | Indexable Operators      |
-| ------------------------ | ------------------------ |
-| `array_ops`              | `&& (anyarray,anyarray)` |
-| `@> (anyarray,anyarray)` |
-| `<@ (anyarray,anyarray)` |
-| `= (anyarray,anyarray)`  |
-| `jsonb_ops`              | `@> (jsonb,jsonb)`       |
-| `@? (jsonb,jsonpath)`    |
-| `@@ (jsonb,jsonpath)`    |
-| `? (jsonb,text)`         |
-| `?                       | (jsonb,text[])`          |
-| `?& (jsonb,text[])`      |
-| `jsonb_path_ops`         | `@> (jsonb,jsonb)`       |
-| `@? (jsonb,jsonpath)`    |
-| `@@ (jsonb,jsonpath)`    |
-| `tsvector_ops`           | `@@ (tsvector,tsquery)`  |
-| `@@@ (tsvector,tsquery)` |
+| Name             | Indexable Operators      |
+| ---------------- | ------------------------ |
+| `array_ops`      | `&& (anyarray,anyarray)` |
+|                  | `@> (anyarray,anyarray)` |
+|                  | `<@ (anyarray,anyarray)` |
+|                  | `= (anyarray,anyarray)`  |
+| `jsonb_ops`      | `@> (jsonb,jsonb)`       |
+|                  | `@? (jsonb,jsonpath)`    |
+|                  | `@@ (jsonb,jsonpath)`    |
+|                  | `? (jsonb,text)`         |
+|                  | `?\| (jsonb,text[])`     |
+|                  | `?& (jsonb,text[])`      |
+| `jsonb_path_ops` | `@> (jsonb,jsonb)`       |
+|                  | `@? (jsonb,jsonpath)`    |
+|                  | `@@ (jsonb,jsonpath)`    |
+| `tsvector_ops`   | `@@ (tsvector,tsquery)`  |
 
 Note that if you don’t explicitly specify a `GIN` operator class, the statement will use the `jsonb_ops` operator by default, which is suitable for most cases.
 
@@ -31559,7 +31033,7 @@ The memberships table has three columns id, member_id, and membership_type:
 
 - The `id` is a serial and primary key column.
 - The `member_id` references the id column of the `members` table. It is a foreign key column.
-- The `membership_type` column has a default value of “free”.
+- The `membership_type` column has a default value of "free".
 
 Third, define a trigger function that inserts a default free membership for every member:
 
@@ -31587,7 +31061,7 @@ Fifth, [insert a new row](../postgresql-tutorial/postgresql-insert) into the `me
 
 ```sql
 INSERT INTO members(name, email)
-VALUES('John Doe', '[[email protected]](../cdn-cgi/l/email-protection.html)')
+VALUES('John Doe', 'john.doe@example.com')
 RETURNING *;
 ```
 
@@ -31596,7 +31070,7 @@ Output:
 ```text
  id |   name   |       email
 ----+----------+--------------------
-  1 | John Doe | [[email protected]](../cdn-cgi/l/email-protection.html)
+  1 | John Doe | john.doe@example.com
 (1 row)
 ```
 
@@ -40308,11 +39782,11 @@ JSONB type allows you to store and query [JSON](../postgresql-tutorial/postgresq
 
 The following table illustrates the JSONB operators:
 
-<table><thead><tr><th>Operator</th><th>Syntax</th><th>Meaning</th></tr></thead><tbody><tr><td><code>-&gt;</code></td><td><code>jsonb-&gt;'key'</code></td><td>Extract the value of the ‘key’ from a JSON object as a JSONB value</td></tr><tr><td><code>-&gt;&gt;</code></td><td><code>jsonb-&gt;&gt;'key'</code></td><td>Extract the value of the ‘key’ from a JSON object as a text string</td></tr><tr><td><code>@&gt;</code></td><td><code>jsonb @&gt; jsonb → boolean</code></td><td>Return true if the first JSONB value contains the second JSONB value or false otherwise.</td></tr><tr><td><code>&lt;@</code></td><td><code>jsonb &lt;@ jsonb → boolean</code></td><td>Return true if the first JSONB value is contained in the second one or false otherwise.</td></tr><tr><td><code>?</code></td><td><code>jsonb ? text → boolean</code></td><td>Return true if a text string exists as a top-level key of a JSON object or as an element of a JSON array or false otherwise.</td></tr><tr><td><code>?|</code></td><td><code>jsonb ?| text[] → boolean</code></td><td>Return true if any text string in an array exists as top-level keys of a JSON object or as elements of a JSON array.</td></tr><tr><td><code>?&amp;</code></td><td><code>jsonb ?&amp; text[] → boolean</code></td><td>Return true if all text strings in an array exist as top-level keys of a JSON object or as elements of a JSON array.</td></tr><tr><td><code>||</code></td><td><code>jsonb || jsonb → jsonb</code></td><td>Concatenate two JSONB values into one.</td></tr><tr><td><code>-</code></td><td><code>jsonb - text → jsonb</code></td><td>Delete a key (and its value) from a JSON object, or matching string value(s) from a JSON array.</td></tr><tr><td><code>-</code></td><td><code>jsonb - text[] → jsonb</code></td><td>Delete all matching keys or array elements from the left operand.</td></tr><tr><td><code>-</code></td><td><code>jsonb - integer → jsonb</code></td><td>Delete the array element with specified index (negative integers count from the end of the array).</td></tr><tr><td><code>#-</code></td><td><code>jsonb #- text[] → jsonb</code></td><td>Delete the field or array element at the specified path.</td></tr><tr><td><code>@?</code></td><td><code>jsonb @? jsonpath → boolean</code></td><td>Return true if a JSON path returns any item for the specified JSONB value.</td></tr><tr><td><code>@@</code></td><td><code>jsonb @@ jsonpath → boolean</code></td><td>Evaluate a JSON path against a JSONB value and return a boolean result based on whether the JSON path matches any items within the JSONB value</td></tr></tbody></table>
+<table><thead><tr><th>Operator</th><th>Syntax</th><th>Meaning</th></tr></thead><tbody><tr><td><code>-&gt;</code></td><td><code>jsonb-&gt;'key'</code></td><td>Extract the value of the 'key' from a JSON object as a JSONB value</td></tr><tr><td><code>-&gt;&gt;</code></td><td><code>jsonb-&gt;&gt;'key'</code></td><td>Extract the value of the 'key' from a JSON object as a text string</td></tr><tr><td><code>@&gt;</code></td><td><code>jsonb @&gt; jsonb → boolean</code></td><td>Return true if the first JSONB value contains the second JSONB value or false otherwise.</td></tr><tr><td><code>&lt;@</code></td><td><code>jsonb &lt;@ jsonb → boolean</code></td><td>Return true if the first JSONB value is contained in the second one or false otherwise.</td></tr><tr><td><code>?</code></td><td><code>jsonb ? text → boolean</code></td><td>Return true if a text string exists as a top-level key of a JSON object or as an element of a JSON array or false otherwise.</td></tr><tr><td><code>?|</code></td><td><code>jsonb ?| text[] → boolean</code></td><td>Return true if any text string in an array exists as top-level keys of a JSON object or as elements of a JSON array.</td></tr><tr><td><code>?&amp;</code></td><td><code>jsonb ?&amp; text[] → boolean</code></td><td>Return true if all text strings in an array exist as top-level keys of a JSON object or as elements of a JSON array.</td></tr><tr><td><code>||</code></td><td><code>jsonb || jsonb → jsonb</code></td><td>Concatenate two JSONB values into one.</td></tr><tr><td><code>-</code></td><td><code>jsonb - text → jsonb</code></td><td>Delete a key (and its value) from a JSON object, or matching string value(s) from a JSON array.</td></tr><tr><td><code>-</code></td><td><code>jsonb - text[] → jsonb</code></td><td>Delete all matching keys or array elements from the left operand.</td></tr><tr><td><code>-</code></td><td><code>jsonb - integer → jsonb</code></td><td>Delete the array element with specified index (negative integers count from the end of the array).</td></tr><tr><td><code>#-</code></td><td><code>jsonb #- text[] → jsonb</code></td><td>Delete the field or array element at the specified path.</td></tr><tr><td><code>@?</code></td><td><code>jsonb @? jsonpath → boolean</code></td><td>Return true if a JSON path returns any item for the specified JSONB value.</td></tr><tr><td><code>@@</code></td><td><code>jsonb @@ jsonpath → boolean</code></td><td>Evaluate a JSON path against a JSONB value and return a boolean result based on whether the JSON path matches any items within the JSONB value</td></tr></tbody></table>
 
 ## PostgreSQL JSONB operators examples
 
-Let’s set up a sample table and take some examples of using PostgreSQL JSONB operators.
+Let's set up a sample table and take some examples of using PostgreSQL JSONB operators.
 
 ### Setting up a table
 
@@ -40794,7 +40268,7 @@ The following example uses the operator (`-`) to remove the `age` and `email` ke
 
 ```sql
 SELECT
-  '{"name": "John Doe", "age": 22, "email": "[[email protected]](../cdn-cgi/l/email-protection.html)"}' :: jsonb - ARRAY[ 'age',
+  '{"name": "John Doe", "age": 22, "email": "john.doe@example.com"}' :: jsonb - ARRAY[ 'age',
   'email' ] result;
 ```
 
@@ -40835,7 +40309,8 @@ For example, the following uses the @? operator to retrieve the products whose p
 
 ```sql
 SELECT
-  data ->> 'name' product_name
+  data ->> 'name' product_name,
+  data ->> 'price' price
 FROM
   products
 WHERE
@@ -40845,53 +40320,40 @@ WHERE
 Output:
 
 ```text
- product_name
----------------
- iPhone 15 Pro
+  product_name  | price
+----------------+--------
+ iPhone 15 Pro  | 999.99
 (1 row)
 ```
 
-In this example, we use the operator `@?` to check if the JSON path `'$.price ? (@ > 999)'` returns any element in the JSONB value of the data column.
+### 14\) Operator (@\@)
 
-### 14\) Operator (@@)
-
-The operator (`@@`) evaluates a [JSON path](postgresql-json-path) against a JSONB value and returns a boolean result based on whether the JSON path matches any items within the JSONB value. If the result is not a boolean, then the `@@` operator returns `NULL`.
+The operator `@@` evaluates a JSON path against a JSONB value and returns a boolean result based on whether the JSON path matches any items within the JSONB value:
 
 ```sql
 jsonb @@ jsonpath → boolean
 ```
 
-For example, the following example returns null because the JSON path `'$.scores'` returns an array, not a boolean result:
+For example, the following statement uses the operator `@@` to retrieve the products whose prices are greater than `999`:
 
 ```sql
-SELECT ('{"scores": [1,2,3,4,5]}'::jsonb @@ '$.scores') result;
+SELECT
+  data ->> 'name' product_name,
+  data ->> 'price' price
+FROM
+  products
+WHERE
+  data @@ '$.price > 999';
 ```
 
 Output:
 
 ```text
- result
---------
- null
+product_name   | price
+---------------+--------
+iPhone 15 Pro  | 999.99
 (1 row)
 ```
-
-However, the following statement returns true because the JSON path `'$.scores[*] > 2'` matches the elements that are greater than 2\.
-
-```sql
-SELECT ('{"scores": [1,2,3,4,5]}'::jsonb @@ '$.scores[*] > 2') result;
-```
-
-Output:
-
-```text
- result
---------
- t
-(1 row)
-```
-
-Notice that the `'$.scores[*] > 2'` matches 3, 4, and 5 but it only considers the result of the first matched item, which is 3\.
 
 
 # Extracting JSON Data
@@ -41234,7 +40696,7 @@ nextLink:
 
 The `jsonb_extract_path()` function allows you to extract a JSON sub\-object from a JSONB value at a specified path.
 
-Here’s the basic syntax of the `jsonb_extract_path()` function:
+Here's the basic syntax of the `jsonb_extract_path()` function:
 
 ```sql
 jsonb_extract_path(target jsonb, VARIADIC path_elems text[])
@@ -41248,7 +40710,7 @@ In this syntax:
 Note that the path is not a JSON path. The syntax for the `path_elems` parameter is as follows:
 
 - `'key'`: Access a specific key in the JSON object.
-- ‘`array_index`‘: Access an element in a JSON array using its index.
+- '`array_index`': Access an element in a JSON array using its index.
 
 To navigate through the nested objects or array, you can chain these path components together.
 
@@ -41260,7 +40722,7 @@ Suppose you have the following JSON object:
     "name": "John Doe",
     "age": 22,
     "contacts": [
-      {"type": "email", "value": "[[email protected]](../cdn-cgi/l/email-protection.html)"},
+      {"type": "email", "value": "john.doe@example.com"},
       {"type": "phone", "value": "408-123-456"}
     ]
   }
@@ -41271,11 +40733,11 @@ Here are some examples of the path expressions:
 
 - `'employee'` returns the entire `employee` object.
 - `['employee', 'name']` returns the name within the employee object, which is `"John Doe"`.
-- `['employee', 'contacts', '0', 'value']` returns the value in the first element of the contacts array, which is `[[email protected]](../cdn-cgi/l/email-protection.html)`
+- `['employee', 'contacts', '0', 'value']` returns the value in the first element of the contacts array, which is `john.doe@example.com`
 
 ## PostgreSQL jsonb_extract_path() function examples
 
-Let’s take some examples of using the `jsonb_extract_path()` function.
+Let's take some examples of using the `jsonb_extract_path()` function.
 
 ### Setting up a sample table
 
@@ -41293,8 +40755,8 @@ Second, [insert two rows](../postgresql-tutorial/postgresql-insert) into the `do
 ```sql
 INSERT INTO documents(data)
 VALUES
-  ('{"employee":{"name":"John Doe","age":22,"contacts":[{"type":"email","value":"[[email protected]](../cdn-cgi/l/email-protection.html)"},{"type":"phone","value":"408-123-456"}]}}'),
-  ('{"employee":{"name":"Jane Doe","age":21,"contacts":[{"type":"email","value":"[[email protected]](../cdn-cgi/l/email-protection.html)"},{"type":"phone","value":"408-123-789"}]}}');
+  ('{"employee":{"name":"John Doe","age":22,"contacts":[{"type":"email","value":"john.doe@example.com"},{"type":"phone","value":"408-123-456"}]}}'),
+  ('{"employee":{"name":"Jane Doe","age":21,"contacts":[{"type":"email","value":"jane.doe@example.com"},{"type":"phone","value":"408-123-789"}]}}');
 ```
 
 ### Basic jsonb_extract_path() function examples
@@ -41313,8 +40775,8 @@ Output:
 ```text
                                                                  employee
 -------------------------------------------------------------------------------------------------------------------------------------------
- {"age": 22, "name": "John Doe", "contacts": [{"type": "email", "value": "[[email protected]](../cdn-cgi/l/email-protection.html)"}, {"type": "phone", "value": "408-123-456"}]}
- {"age": 21, "name": "Jane Doe", "contacts": [{"type": "email", "value": "[[email protected]](../cdn-cgi/l/email-protection.html)"}, {"type": "phone", "value": "408-123-789"}]}
+ {"age": 22, "name": "John Doe", "contacts": [{"type": "email", "value": "john.doe@example.com"}, {"type": "phone", "value": "408-123-456"}]}
+ {"age": 21, "name": "Jane Doe", "contacts": [{"type": "email", "value": "jane.doe@example.com"}, {"type": "phone", "value": "408-123-789"}]}
 (2 rows)
 ```
 
@@ -41354,8 +40816,8 @@ Output:
 ```text
         email
 ---------------------
- "[[email protected]](../cdn-cgi/l/email-protection.html)"
- "[[email protected]](../cdn-cgi/l/email-protection.html)"
+ "john.doe@example.com"
+ "jane.doe@example.com"
 (2 rows)
 ```
 
@@ -41402,10 +40864,10 @@ In this syntax:
 - `target` is a JSONB data from which you want to extract data as text.
 - `path_elems` is a list of paths that you want to locate the elements in the JSONB data for extraction.
 
-Here’s the syntax for the `path_elems` parameter:
+Here's the syntax for the `path_elems` parameter:
 
 - `'key'`: Access a specific key in a JSON object.
-- ‘`array_index`‘: Access an element in a JSON array using its index.
+- '`array_index`': Access an element in a JSON array using its index.
 
 Additionally, you can chain these path components together to navigate through the nested objects or arrays.
 
@@ -41417,7 +40879,7 @@ For example, suppose you have the following JSON object:
     "name": "John Doe",
     "age": 22,
     "contacts": [
-      {"type": "email", "value": "[[email protected]](../cdn-cgi/l/email-protection.html)"},
+      {"type": "email", "value": "john.doe@example.com"},
       {"type": "phone", "value": "408-123-456"}
     ]
   }
@@ -41428,11 +40890,11 @@ Here are some examples of the path expressions:
 
 - `'employee'` returns the entire `employee` object.
 - `['employee', 'name']` returns the name within the employee object, which is `"John Doe"`.
-- `['employee', 'contacts', '0', 'value']` returns the value in the first element of the `contacts` array, which is `[[email protected]](../cdn-cgi/l/email-protection.html)`
+- `['employee', 'contacts', '0', 'value']` returns the value in the first element of the `contacts` array, which is `john.doe@example.com`
 
 ## PostgreSQL jsonb_extract_path_text() function examples
 
-Let’s explore some examples of using the `jsonb_extract_path_text()` function.
+Let's explore some examples of using the `jsonb_extract_path_text()` function.
 
 ### Setting up a sample table
 
@@ -41450,8 +40912,8 @@ Second, [insert two rows](../postgresql-tutorial/postgresql-insert) into the `do
 ```sql
 INSERT INTO documents(data)
 VALUES
-  ('{"employee":{"name":"John Doe","age":22,"contacts":[{"type":"email","value":"[[email protected]](../cdn-cgi/l/email-protection.html)"},{"type":"phone","value":"408-123-456"}]}}'),
-  ('{"employee":{"name":"Jane Doe","age":21,"contacts":[{"type":"email","value":"[[email protected]](../cdn-cgi/l/email-protection.html)"},{"type":"phone","value":"408-123-789"}]}}');
+  ('{"employee":{"name":"John Doe","age":22,"contacts":[{"type":"email","value":"john.doe@example.com"},{"type":"phone","value":"408-123-456"}]}}'),
+  ('{"employee":{"name":"Jane Doe","age":21,"contacts":[{"type":"email","value":"jane.doe@example.com"},{"type":"phone","value":"408-123-789"}]}}');
 ```
 
 ### Basic jsonb_extract_path_text() function examples
@@ -41470,8 +40932,8 @@ Output:
 ```text
                                                                  employee
 -------------------------------------------------------------------------------------------------------------------------------------------
- {"age": 22, "name": "John Doe", "contacts": [{"type": "email", "value": "[[email protected]](../cdn-cgi/l/email-protection.html)"}, {"type": "phone", "value": "408-123-456"}]}
- {"age": 21, "name": "Jane Doe", "contacts": [{"type": "email", "value": "[[email protected]](../cdn-cgi/l/email-protection.html)"}, {"type": "phone", "value": "408-123-789"}]}
+ {"age": 22, "name": "John Doe", "contacts": [{"type": "email", "value": "john.doe@example.com"}, {"type": "phone", "value": "408-123-456"}]}
+ {"age": 21, "name": "Jane Doe", "contacts": [{"type": "email", "value": "jane.doe@example.com"}, {"type": "phone", "value": "408-123-789"}]}
 (2 rows)
 ```
 
@@ -41511,8 +40973,8 @@ Output:
 ```text
        email
 -------------------
- [[email protected]](../cdn-cgi/l/email-protection.html)
- [[email protected]](../cdn-cgi/l/email-protection.html)
+ john.doe@example.com
+ jane.doe@example.com
 (2 rows)
 
 ```
@@ -47108,7 +46570,7 @@ It returns `NULL`.
 
 Since version 9\.1, PostgreSQL has introduced a built\-in string function called `CONCAT()` to concatenate two or more strings into one.
 
-Here’s the basic syntax of the `CONCAT()` function:
+Here's the basic syntax of the `CONCAT()` function:
 
 ```sql
 CONCAT(string1, string2, ...)
@@ -47118,17 +46580,17 @@ The `CONCAT` function accepts a list of input strings, which can be any string t
 
 The `CONCAT()` function returns a new string that results from concatenating the input strings.
 
-Unlike the concatenation operator `||`, the `CONCAT` function ignores  `NULL` arguments.
+Unlike the concatenation operator `||`, the `CONCAT` function ignores `NULL` arguments.
 
 To concatenate two or more strings into one using a specified separator, you can use the [CONCAT_WS()](postgresql-concat_ws) function.
 
 ## PostgreSQL CONCAT() function examples
 
-Let’s take some examples of using the PostgreSQL `CONCAT()` function.
+Let's take some examples of using the PostgreSQL `CONCAT()` function.
 
 ### 1\) Basic PostgreSQL CONCAT() function example
 
-The following example uses the `CONCAT()` function to concatenate three literal strings into one:
+The following example uses the `CONCAT()` function to concatenate three literal strings into one:
 
 ```sql
 SELECT
@@ -47146,7 +46608,7 @@ Output:
 
 ### 2\) Using the CONCAT() function with table data example
 
-We’ll use the `customer` table from the [sample database](https://neon.tech/postgresql/download/dvd-rental-sample-database/):
+We'll use the `customer` table from the [sample database](https://neon.tech/postgresql/download/dvd-rental-sample-database/):
 
 ![customer table](/postgresqltutorial/customer.png)The following statement uses the `CONCAT()` function to concatenate values in the `first_name`, a space, and values in the `last_name` columns of the `customer` table into a single string:
 
@@ -47186,11 +46648,11 @@ CREATE TABLE contacts (
 
 INSERT INTO contacts (name, email, phone)
 VALUES
-    ('John Doe', '[[email protected]](../cdn-cgi/l/email-protection.html)', '123-456-7890'),
-    ('Jane Smith', '[[email protected]](../cdn-cgi/l/email-protection.html)', NULL),
-    ('Bob Johnson', '[[email protected]](../cdn-cgi/l/email-protection.html)', '555-1234'),
-    ('Alice Brown', '[[email protected]](../cdn-cgi/l/email-protection.html)', NULL),
-    ('Charlie Davis', '[[email protected]](../cdn-cgi/l/email-protection.html)', '987-654-3210')
+    ('John Doe', 'john.doe@example.com', '123-456-7890'),
+    ('Jane Smith', 'jane.smith@example.com', NULL),
+    ('Bob Johnson', 'bob.johnson@example.com', '555-1234'),
+    ('Alice Brown', 'alice.brown@example.com', NULL),
+    ('Charlie Davis', 'charlie.davis@example.com', '987-654-3210')
 RETURNING *;
 ```
 
@@ -47199,11 +46661,11 @@ Output:
 ```text
  id |     name      |        email        |    phone
 ----+---------------+---------------------+--------------
-  1 | John Doe      | [[email protected]](../cdn-cgi/l/email-protection.html)      | 123-456-7890
-  2 | Jane Smith    | [[email protected]](../cdn-cgi/l/email-protection.html)    | null
-  3 | Bob Johnson   | [[email protected]](../cdn-cgi/l/email-protection.html)     | 555-1234
-  4 | Alice Brown   | [[email protected]](../cdn-cgi/l/email-protection.html)   | null
-  5 | Charlie Davis | [[email protected]](../cdn-cgi/l/email-protection.html) | 987-654-3210
+  1 | John Doe      | john.doe@example.com      | 123-456-7890
+  2 | Jane Smith    | jane.smith@example.com    | null
+  3 | Bob Johnson   | bob.johnson@example.com     | 555-1234
+  4 | Alice Brown   | alice.brown@example.com   | null
+  5 | Charlie Davis | charlie.davis@example.com | 987-654-3210
 (5 rows)
 
 
@@ -47224,11 +46686,11 @@ Output:
 ```
                      contact
 --------------------------------------------------
- John Doe (john@gmail.com) 123-456-7890
- Jane Smith ([[email protected]](../cdn-cgi/l/email-protection.html))
- Bob Johnson ([[email protected]](../cdn-cgi/l/email-protection.html)) 555-1234
- Alice Brown ([[email protected]](../cdn-cgi/l/email-protection.html))
- Charlie Davis ([[email protected]](../cdn-cgi/l/email-protection.html)) 987-654-3210
+ John Doe (john.doe@example.com) 123-456-7890
+ Jane Smith (jane.smith@example.com)
+ Bob Johnson (bob.johnson@example.com) 555-1234
+ Alice Brown (alice.brown@example.com)
+ Charlie Davis (charlie.davis@example.com) 987-654-3210
 (5 rows)
 ```
 
@@ -53592,7 +53054,7 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to import data from a CSV file into a table in PostgreSQL using C\#.
 
-This tutorial begins where the [Inserting data into a table in PostgreSQL tutoria](postgresql-csharp-insert)l left off.
+This tutorial begins where the [Inserting data into a table in PostgreSQL tutoria](postgresql-csharp-insert)l left off.
 
 ## How to import a CSV file into the PostgreSQL database using C\#
 
@@ -53684,7 +53146,7 @@ To learn more details on reading data from a CSV file using the `CsvHelper` pack
 
 Note that you can [download the students.csv file](/postgresqltutorial/students.csv) from here.
 
-Let’s discuss how the program works.
+Let's discuss how the program works.
 
 ### Declaring Student record
 
@@ -53820,7 +53282,7 @@ First, open a terminal and connect to the `elearning` database using the `ed` us
 psql -U ed -d elearning
 ```
 
-It’ll prompt you to enter a password for the `ed` user. Input the valid password and press Enter to connect to the PostgreSQL.
+It'll prompt you to enter a password for the `ed` user. Input the valid password and press Enter to connect to the PostgreSQL.
 
 Second, query data from the `students` table:
 
@@ -53833,17 +53295,17 @@ Output:
 ```
  id | first_name | last_name |            email             | registration_date
 ----+------------+-----------+------------------------------+-------------------
-  1 | John       | Doe       | [[email protected]](../cdn-cgi/l/email-protection.html)           | 2024-05-20
-  2 | Emma       | Smith     | [[email protected]](../cdn-cgi/l/email-protection.html)         | 2024-05-20
-  3 | Liam       | Johnson   | [[email protected]](../cdn-cgi/l/email-protection.html)       | 2024-05-20
-  4 | Olivia     | Williams  | [[email protected]](../cdn-cgi/l/email-protection.html)    | 2024-05-20
-  5 | Noah       | Brown     | [[email protected]](../cdn-cgi/l/email-protection.html)         | 2024-05-15
-  6 | Ava        | Jones     | [[email protected]](../cdn-cgi/l/email-protection.html)          | 2024-05-15
-  7 | William    | Garcia    | [[email protected]](../cdn-cgi/l/email-protection.html)     | 2024-05-15
-  8 | Sophia     | Miller    | [[email protected]](../cdn-cgi/l/email-protection.html)      | 2024-05-10
-  9 | James      | Davis     | [[email protected]](../cdn-cgi/l/email-protection.html)        | 2024-05-10
- 10 | Isabella   | Rodriguez | [[email protected]](../cdn-cgi/l/email-protection.html) | 2024-05-10
- 11 | Benjamin   | Martinez  | [[email protected]](../cdn-cgi/l/email-protection.html)  | 2024-05-10
+  1 | John       | Doe       | john.doe@example.com           | 2024-05-20
+  2 | Emma       | Smith     | emma.smith@example.com         | 2024-05-20
+  3 | Liam       | Johnson   | liam.johnson@example.com       | 2024-05-20
+  4 | Olivia     | Williams  | olivia.williams@example.com    | 2024-05-20
+  5 | Noah       | Brown     | noah.brown@example.com         | 2024-05-15
+  6 | Ava        | Jones     | ava.jones@example.com          | 2024-05-15
+  7 | William    | Garcia    | william.garcia@example.com     | 2024-05-15
+  8 | Sophia     | Miller    | sophia.miller@example.com      | 2024-05-10
+  9 | James      | Davis     | james.davis@example.com        | 2024-05-10
+ 10 | Isabella   | Rodriguez | isabella.rodriguez@example.com | 2024-05-10
+ 11 | Benjamin   | Martinez  | benjamin.martinez@example.com  | 2024-05-10
 (11 rows)
 ```
 
@@ -53875,7 +53337,7 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to insert data into a table in the PostgreSQL database from a C\# program.
 
-This tutorial begins where the [Creating Tables in PostgreSQL database from a C\# program tutorial](postgresql-csharp-create-table) left off.
+This tutorial begins where the [Creating Tables in PostgreSQL database from a C\# program tutorial](postgresql-csharp-create-table) left off.
 
 ## How to insert data into PostgreSQL database using C\#
 
@@ -53916,7 +53378,7 @@ The following C\# program inserts a row into the `students` table in the `elearn
 ```cs
 using Npgsql;
 
-var student = new Student("John", "Doe", "[[email protected]](../cdn-cgi/l/email-protection.html)", new DateOnly(2024, 5, 20));
+var student = new Student("John", "Doe", "john.doe@example.com", new DateOnly(2024, 5, 20));
 
 
 // Construct INSERT statement
@@ -53966,7 +53428,7 @@ public record Student(string FirstName, string LastName, string Email, DateOnly 
 Second, define a new instance of the `Student` record for insertion into the `students` table:
 
 ```cs
-var student = new Student("John", "Doe", "[[email protected]](../cdn-cgi/l/email-protection.html)", new DateOnly(2024,5,20));
+var student = new Student("John", "Doe", "john.doe@example.com", new DateOnly(2024,5,20));
 ```
 
 Third, construct an [`INSERT`](../postgresql-tutorial/postgresql-insert) statement that inserts a new row into the `students` table:
@@ -54021,7 +53483,7 @@ First, open a terminal and connect to the `elearning` database using the `ed` us
 psql -U ed -d elearning
 ```
 
-It’ll prompt you to enter a password for the `ed` user. Input the valid password and press Enter to connect to the PostgreSQL.
+It'll prompt you to enter a password for the `ed` user. Input the valid password and press Enter to connect to the PostgreSQL.
 
 Second, query data from the `students` table:
 
@@ -54034,7 +53496,7 @@ Output:
 ```cs
  id | first_name | last_name |       email        | registration_date
 ----+------------+-----------+--------------------+-------------------
-  1 | John       | Doe       | [[email protected]](../cdn-cgi/l/email-protection.html) | 2024-05-20
+  1 | John       | Doe       | john.doe@example.com | 2024-05-20
 (1 row)
 ```
 
@@ -54065,7 +53527,7 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to retrieve data from a PostgreSQL table from the C\# program.
 
-This tutorial begins where [Deleting data from PostgreSQL using C\#](postgresql-csharp-delete) is left off.
+This tutorial begins where [Deleting data from PostgreSQL using C\#](postgresql-csharp-delete) is left off.
 
 ## How to query data from PostgreSQL using C\#
 
@@ -54077,7 +53539,7 @@ Second, create a command object `NpgsqlCommand` with a `SELECT` statement from t
 
 Third, execute the `SELECT` statement by calling one of the following methods of the `NpgsqlCommand` object:
 
-- `ExecuteReaderAsync()` – executes a query that returns a result set. The method returns a `NpgsqlDataReader` that can be used to read rows from the query’s result set.
+- `ExecuteReaderAsync()` – executes a query that returns a result set. The method returns a `NpgsqlDataReader` that can be used to read rows from the query's result set.
 - `ExecuteScalarAsync()` – executes a query that returns a scalar value such as a query that uses an [aggregate function](../postgresql-aggregate-functions) to return a [count](../postgresql-aggregate-functions/postgresql-count-function), [sum](../postgresql-aggregate-functions/postgresql-sum-function), [maximum](../postgresql-aggregate-functions/postgresql-max-function), [minimum](../postgresql-aggregate-functions/postgresql-min-function), and [average value](../postgresql-aggregate-functions/postgresql-avg-function).
 
 Finally, iterate over the result set and use the Get\* methods of the NpgsqlDataReader object to retrieve the values of columns in each row.
@@ -54132,17 +53594,17 @@ catch (NpgsqlException ex)
 
 Output:
 
-```cs
-2       Emma    Smith   [[email protected]](../cdn-cgi/l/email-protection.html)    5/20/2024
-3       Liam    Johnson [[email protected]](../cdn-cgi/l/email-protection.html)  5/20/2024
-4       Olivia  Williams        [[email protected]](../cdn-cgi/l/email-protection.html)       5/20/2024
-5       Noah    Brown   [[email protected]](../cdn-cgi/l/email-protection.html)    5/15/2024
-6       Ava     Jones   [[email protected]](../cdn-cgi/l/email-protection.html)     5/15/2024
-7       William Garcia  [[email protected]](../cdn-cgi/l/email-protection.html)        5/15/2024
-8       Sophia  Miller  [[email protected]](../cdn-cgi/l/email-protection.html) 5/10/2024
-9       James   Davis   [[email protected]](../cdn-cgi/l/email-protection.html)   5/10/2024
-10      Isabella        Rodriguez       [[email protected]](../cdn-cgi/l/email-protection.html)    5/10/2024
-11      Benjamin        Martinez        [[email protected]](../cdn-cgi/l/email-protection.html)     5/10/2024
+```text
+2   Emma     Smith      emma.smith@example.com          5/20/2024
+3   Liam     Johnson    liam.johnson@example.com        5/20/2024
+4   Olivia   Williams   olivia.williams@example.com     5/20/2024
+5   Noah     Brown      noah.brown@example.com          5/15/2024
+6   Ava      Jones      ava.jones@example.com           5/15/2024
+7   William  Garcia     william.garcia@example.com      5/15/2024
+8   Sophia   Miller     sophia.miller@example.com       5/10/2024
+9   James    Davis      james.davis@example.com         5/10/2024
+10  Isabella Rodriguez  isabella.rodriguez@example.com  5/10/2024
+11  Benjamin Martinez   benjamin.martinez@example.com   5/10/2024
 ```
 
 ## Querying data with parameters
@@ -54466,7 +53928,7 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to update data in the PostgreSQL database using C\#.
 
-This tutorial begins where [importing data from a CSV file into PostgreSQL tutorial](postgresql-csharp-import-csv-file) is left off.
+This tutorial begins where [importing data from a CSV file into PostgreSQL tutorial](postgresql-csharp-import-csv-file) is left off.
 
 ## How to update data in PostgreSQL using C\#
 
@@ -54529,7 +53991,7 @@ try
     await using var cmd = dataSource.CreateCommand(sql);
 
     // Bind parameters
-    cmd.Parameters.AddWithValue("@email", "[[email protected]](../cdn-cgi/l/email-protection.html)");
+    cmd.Parameters.AddWithValue("@email", "john.doe@example.com");
     cmd.Parameters.AddWithValue("@id", 1);
 
     // Execute the UPDATE statement
@@ -54571,7 +54033,7 @@ Fourth, create a new `NpgsqlCommand` object and bind the values to its parameter
 ```cs
 await using var cmd = dataSource.CreateCommand(sql);
 
-cmd.Parameters.AddWithValue("@email", "[[email protected]](../cdn-cgi/l/email-protection.html)");
+cmd.Parameters.AddWithValue("@email", "john.doe@example.com");
 cmd.Parameters.AddWithValue("@id", 1);
 ```
 
@@ -54600,7 +54062,7 @@ First, open a terminal and connect to the `elearning` database using the `ed` us
 psql -U ed -d elearning
 ```
 
-It’ll prompt you to enter a password for the `ed` user. Input the valid password and press Enter to connect to the PostgreSQL.
+It'll prompt you to enter a password for the `ed` user. Input the valid password and press Enter to connect to the PostgreSQL.
 
 Second, query data from the `students` table:
 
@@ -54614,11 +54076,11 @@ Output:
 ```cs
  id | first_name | last_name |       email       | registration_date
 ----+------------+-----------+-------------------+-------------------
-  1 | John       | Doe       | [[email protected]](../cdn-cgi/l/email-protection.html) | 2024-05-20
+  1 | John       | Doe       | john.doe@example.com | 2024-05-20
 (1 row)
 ```
 
-The output indicates that the program has successfully updated the email of row id 1 to `[[email protected]](../cdn-cgi/l/email-protection.html)`.
+The output indicates that the program has successfully updated the email of row id 1 to `john.doe@example.com`.
 
 ## Summary
 
