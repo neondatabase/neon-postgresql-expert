@@ -631,7 +631,7 @@ postgres=#
 
 In this command, `postgres` is the default database of a PostgreSQL server.
 
-Connecting to the PostgreSQL server will grant you a session. A session is log\-lived, allowing you to perform many requests such as executing commands, before eventually disconnecting.
+Connecting to the PostgreSQL server will grant you a session. A session is long-lived, allowing you to perform many requests such as executing commands, before eventually disconnecting.
 
 Third, execute the following command to retrieve the PostgreSQL version:
 
@@ -982,7 +982,7 @@ Third, select the components that you want to install, uncheck the Stack Builder
 Fourth, specify a directory where PostgreSQL stores the data and click the Next button:
 
 ![](/postgresqltutorial/Install-PostgreSQL-macOS-step-4.png)
-Fifth, enter the password for the **postgres** user account. You should note down this password for logging in to the PostgreSQL database server later. After that, click the Next button.
+Fifth, enter the password for the **postgres** user account. You should note this password for logging in to the PostgreSQL database server later. After that, click the Next button.
 
 ![](/postgresqltutorial/Install-PostgreSQL-macOS-step-5.png)
 Sixth, specify the port number on which the PostgreSQL server will listen. By default, PostgreSQL uses port number 5432\.
@@ -10380,7 +10380,7 @@ In this syntax:
 
 The `ANY` operator returns `true` if the comparison returns `true` for at least one of the values in the set, and `false` otherwise.
 
-If the subquery returns an empty set, the result of `ANY` comparison is always `true`.
+If the subquery returns an empty set, the result of `ANY` comparison is always `false`.
 
 Besides the subquery, you can use any construct that returns a set of values such as an [`ARRAY`](postgresql-array).
 
@@ -11312,7 +11312,7 @@ Here’s the basic syntax of the PostgreSQL `SELECT INTO` statement:
 
 ```sql
 SELECT
-  select_list I
+  select_list
 INTO [ TEMPORARY | TEMP ] [ TABLE ] new_table_name
 FROM
   table_name
@@ -16304,8 +16304,7 @@ nextLink:
 
 The `REAL` data type allows you to store single\-precision floating\-point numbers in the database.
 
-A value of the real type takes 4 bytes of storage space. Its valid range is from `-3.40282347 × 1038` and `3.40282347 × 1038`.
-
+A value of the real type takes 4 bytes of storage space. Its valid range is from `-3.40282347 × 1E38` to `3.40282347 × 1E38`.
 Typically, you use the `REAL` data type to store floating\-point numbers with relatively large ranges and precision is not critical, or when you are concerned about the storage space.
 
 However, you can use the [double precision](postgresql-double-precision-type) data type if you need higher precision.
@@ -51733,12 +51732,12 @@ FROM
       ROW_NUMBER () OVER (
         ORDER BY
           product_name
-      )
+      ) as rn
     FROM
       products
   ) x
 WHERE
-  ROW_NUMBER BETWEEN 6 AND 10;
+  rn BETWEEN 6 AND 10;
 ```
 
 ![PostgreSQL ROW_NUMBER with pagination](/postgresqltutorial/PostgreSQL-ROW_NUMBER-with-pagination.png)

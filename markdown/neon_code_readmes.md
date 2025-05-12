@@ -360,7 +360,7 @@ By default, this runs both debug and release modes, and all supported postgres v
 testing locally, it is convenient to run just one set of permutations, like this:
 
 ```sh
-DEFAULT_PG_VERSION=16 BUILD_TYPE=release ./scripts/pytest
+DEFAULT_PG_VERSION=17 BUILD_TYPE=release ./scripts/pytest
 ```
 
 ## Flamegraphs
@@ -608,7 +608,6 @@ The first command creates `neon_superuser` and necessary roles. The second comma
 
 # Content from file ../neon/docker-compose/README.md:
 
-
 # Example docker compose configuration
 
 The configuration in this directory is used for testing Neon docker images: it is
@@ -618,6 +617,119 @@ you can experiment with a miniature Neon system, use `cargo neon` rather than co
 This configuration does not start the storage controller, because the controller
 needs a way to reconfigure running computes, and no such thing exists in this setup.
 
+## Generating the JWKS for a compute
+
+```shell
+openssl genpkey -algorithm Ed25519 -out private-key.pem
+openssl pkey -in private-key.pem -pubout -out public-key.pem
+openssl pkey -pubin -inform pem -in public-key.pem -pubout -outform der -out public-key.der
+key="$(xxd -plain -cols 32 -s -32 public-key.der)"
+key_id="$(printf '%s' "$key" | sha256sum | awk '{ print $1 }' | basenc --base64url --wrap=0)"
+x="$(printf '%s' "$key" | basenc --base64url --wrap=0)"
+```
+
+
+# Content from file ../neon/docker-compose/ext-src/README.md:
+
+# PostgreSQL Extensions for Testing
+
+This directory contains PostgreSQL extensions used primarily for:
+1. Testing extension upgrades between different Compute versions
+2. Running regression tests with regular users (mostly for cloud instances)
+
+## Directory Structure
+
+Each extension directory follows a standard structure:
+
+- `extension-name-src/` - Directory containing test files for the extension
+  - `test-upgrade.sh` - Script for testing upgrade scenarios
+  - `regular-test.sh` - Script for testing with regular users
+  - Additional test files depending on the extension
+
+## Available Extensions
+
+This directory includes the following extensions:
+
+- `hll-src` - HyperLogLog, a fixed-size data structure for approximating cardinality
+- `hypopg-src` - Extension to create hypothetical indexes
+- `ip4r-src` - IPv4/v6 and subnet data types
+- `pg_cron-src` - Run periodic jobs in PostgreSQL
+- `pg_graphql-src` - GraphQL support for PostgreSQL
+- `pg_hint_plan-src` - Execution plan hints
+- `pg_ivm-src` - Incremental view maintenance
+- `pg_jsonschema-src` - JSON Schema validation
+- `pg_repack-src` - Reorganize tables with minimal locks
+- `pg_roaringbitmap-src` - Roaring bitmap implementation
+- `pg_semver-src` - Semantic version data type
+- `pg_session_jwt-src` - JWT authentication for PostgreSQL
+- `pg_tiktoken-src` - OpenAI Tiktoken tokenizer
+- `pg_uuidv7-src` - UUIDv7 implementation for PostgreSQL
+- `pgjwt-src` - JWT tokens for PostgreSQL
+- `pgrag-src` - Retrieval Augmented Generation for PostgreSQL
+- `pgtap-src` - Unit testing framework for PostgreSQL
+- `pgvector-src` - Vector similarity search
+- `pgx_ulid-src` - ULID data type
+- `plv8-src` - JavaScript language for PostgreSQL stored procedures
+- `postgresql-unit-src` - SI units for PostgreSQL
+- `prefix-src` - Prefix matching for strings
+- `rag_bge_small_en_v15-src` - BGE embedding model for RAG
+- `rag_jina_reranker_v1_tiny_en-src` - Jina reranker model for RAG
+- `rum-src` - RUM access method for text search
+
+## Usage
+
+### Extension Upgrade Testing
+
+The extensions in this directory are used by the `test-upgrade.sh` script to test upgrading extensions between different versions of Neon Compute nodes. The script:
+
+1. Creates a database with extensions installed on an old Compute version
+2. Creates timelines for each extension
+3. Switches to a new Compute version and tests the upgrade process
+4. Verifies extension functionality after upgrade
+
+### Regular User Testing
+
+For testing with regular users (particularly for cloud instances), each extension directory typically contains a `regular-test.sh` script that:
+
+1. Drops the database if it exists
+2. Creates a fresh test database
+3. Installs the extension
+4. Runs regression tests
+
+A note about pg_regress: Since pg_regress attempts to set `lc_messages` for the database by default, which is forbidden for regular users, we create databases manually and use the `--use-existing` option to bypass this limitation.
+
+### CI Workflows
+
+Two main workflows use these extensions:
+
+1. **Cloud Extensions Test** - Tests extensions on Neon cloud projects
+2. **Force Test Upgrading of Extension** - Tests upgrading extensions between different Compute versions
+
+These workflows are integrated into the build-and-test pipeline through shell scripts:
+
+- `docker_compose_test.sh` - Tests extensions in a Docker Compose environment
+       
+- `test_extensions_upgrade.sh` - Tests extension upgrades between different Compute versions
+
+## Adding New Extensions
+
+To add a new extension for testing:
+
+1. Create a directory named `extension-name-src` in this directory
+2. Add at minimum:
+   - `regular-test.sh` for testing with regular users
+   - If `regular-test.sh` doesn't exist, the system will look for `neon-test.sh`
+   - If neither exists, it will try to run `make installcheck`
+   - `test-upgrade.sh` is only needed if you want to test upgrade scenarios
+3. Update the list of extensions in the `test_extensions_upgrade.sh` script if needed for upgrade testing
+
+### Patching Extension Sources
+
+If you need to patch the extension sources:
+
+1. Place the patch file in the extension's directory
+2. Apply the patch in the appropriate script (`test-upgrade.sh`, `neon-test.sh`, `regular-test.sh`, or `Makefile`)
+3. The patch will be applied during the testing process
 
 
 # Content from file ../neon/docs/SUMMARY.md:
@@ -899,7 +1011,7 @@ For design details see [the RFC](./rfcs/021-metering.md) and [the discussion on 
 batch format is
 ```json
 
-{ "events" : [metric1, metric2, ...]]}
+{ "events" : [metric1, metric2, ...] }
 
 ```
 See metric format examples below.
@@ -924,22 +1036,19 @@ Currently, the following metrics are collected:
 Amount of WAL produced , by a timeline, i.e. last_record_lsn
 This is an absolute, per-timeline metric.
 
-- `resident_size`
-
-Size of all the layer files in the tenant's directory on disk on the pageserver.
-This is an absolute, per-tenant metric.
-
 - `remote_storage_size`
 
 Size of the remote storage (S3) directory.
 This is an absolute, per-tenant metric.
 
 - `timeline_logical_size`
-Logical size of the data in the timeline
+
+Logical size of the data in the timeline.
 This is an absolute, per-timeline metric.
 
 - `synthetic_storage_size`
-Size of all tenant's branches including WAL
+
+Size of all tenant's branches including WAL.
 This is the same metric that `tenant/{tenant_id}/size` endpoint returns.
 This is an absolute, per-tenant metric.
 
@@ -992,13 +1101,14 @@ This is an incremental, per-endpoint metric.
 ```
 
 The metric is incremental, so the value is the difference between the current and the previous value.
-If there is no previous value, the value, the value is the current value and the `start_time` equals `stop_time`.
+If there is no previous value, the value is the current value and the `start_time` equals `stop_time`.
 
 ### TODO
 
 - [ ] Handle errors better: currently if one tenant fails to gather metrics, the whole iteration fails and metrics are not sent for any tenant.
 - [ ] Add retries
 - [ ] Tune the interval
+
 
 # Content from file ../neon/docs/core_changes.md:
 
@@ -11037,6 +11147,8 @@ Author: Christian Schwarz
 
 A brief RFC / GitHub Epic describing a vectored version of the `Timeline::get` method that is at the heart of Pageserver.
 
+**EDIT**: the implementation of this feature is described in [Vlad's (internal) tech talk](https://drive.google.com/file/d/1vfY24S869UP8lEUUDHRWKF1AJn8fpWoJ/view?usp=drive_link).
+
 # Motivation
 
 During basebackup, we issue many `Timeline::get` calls for SLRU pages that are *adjacent* in key space.
@@ -15763,6 +15875,627 @@ See [Graceful restarts RFC](033-storage-controller-drain-and-fill.md)
 
 This is currently under development, see  [Safekeeper dynamic membership change RFC](035-safekeeper-dynamic-membership-change.md).
 
+# Content from file ../neon/docs/rfcs/2025-04-30-direct-io-for-pageserver.md:
+
+# Direct IO For Pageserver
+
+Date: Apr 30, 2025
+
+## Summary
+
+This document is a retroactive RFC. It
+- provides some background on what direct IO is,
+- motivates why Pageserver should be using it for its IO, and
+- describes how we changed Pageserver to use it.
+
+The [initial proposal](https://github.com/neondatabase/neon/pull/8240) that kicked off the work can be found in this closed GitHub PR.
+
+People primarily involved in this project were:
+- Yuchen Liang <yuchen@neon.tech>
+- Vlad Lazar <vlad@neon.tech>
+- Christian Schwarz <christian@neon.tech>
+
+## Timeline
+
+For posterity, here is the rough timeline of the development work that got us to where we are today.
+
+- Jan 2024: [integrate `tokio-epoll-uring`](https://github.com/neondatabase/neon/pull/5824) along with owned buffers API
+- March 2024: `tokio-epoll-uring` enabled in all regions in buffered IO mode
+- Feb 2024 to June 2024: PS PageCache Bypass For Data Blocks
+  - Feb 2024: [Vectored Get Implementation](https://github.com/neondatabase/neon/pull/6576) bypasses delta & image layer blocks for page requests
+  - Apr to June 2024: [Epic: bypass PageCache for use data blocks](https://github.com/neondatabase/neon/issues/7386) addresses remaining users
+- Aug to Nov 2024: direct IO: first code; preliminaries; read path coding; BufferedWriter; benchmarks show perf regressions too high, no-go.
+- Nov 2024 to Jan 2025: address perf regressions by developing page_service pipelining (aka batching) and concurrent IO ([Epic](https://github.com/neondatabase/neon/issues/9376))
+- Feb to March 2024: rollout batching, then concurrent+direct IO => read path and InMemoryLayer is now direct IO
+- Apr 2025: develop & roll out direct IO for the write path
+
+## Background: Terminology & Glossary
+
+**kernel page cache**: the Linux kernel's page cache is a write-back cache for filesystem contents.
+The cached unit is memory-page-sized & aligned chunks of the files that are being cached (typically 4k).
+The cache lives in kernel memory and is not directly accessible through userspace.
+
+**Buffered IO**: an application's read/write system calls go through the kernel page cache.
+For example, a 10 byte sized read or write to offset 5000 in a file will load the file contents
+at offset `[4096,8192)` into a free page in the kernel page cache. If necessary, it will evict
+a page to make room (cf eviction). Then, the kernel performs a memory-to-memory copy of 10 bytes
+from/to the offset `4` (`5000 = 4096 + 4`) within the cached page. If it's a write, the kernel keeps
+track of the fact that the page is now "dirty" in some ancillary structure.
+
+**Writeback**: a buffered read/write syscall returns after the memory-to-memory copy. The modifications
+made by e.g. write system calls are not even *issued* to disk, let alone durable. Instead, the kernel
+asynchronously writes back dirtied pages based on a variety of conditions. For us, the most relevant
+ones are a) explicit request by userspace (`fsync`) and b) memory pressure.
+
+**Memory pressure**: the kernel page cache is a best effort service and a user of spare memory capacity.
+If there is no free memory, the kernel page allocator will take pages used by page cache to satisfy allocations.
+Before reusing a page like that, the page has to be written back (writeback, see above).
+The far-reaching consequence of this is that **any allocation of anonymous memory can do IO** if the only
+way to get that memory is by eviction & re-using a dirty page cache page.
+Notably, this includes a simple `malloc` in userspace, because eventually that boils down to `mmap(..., MAP_ANON, ...)`.
+I refer to this effect as the "malloc latency backscatter" caused by buffered IO.
+
+**Direct IO** allows application's read/write system calls to bypass the kernel page cache. The filesystem
+is still involved because it is ultimately in charge of mapping the concept of files & offsets within them
+to sectors on block devices. Typically, the filesystem poses size and alignment requirements for memory buffers
+and file offsets (statx `Dio_mem_align` / `Dio_offset_align`), see [this gist](https://gist.github.com/problame/1c35cac41b7cd617779f8aae50f97155).
+The IO operations will fail at runtime with EINVAL if the alignment requirements are not met.
+
+**"buffered" vs "direct"**: the central distinction between buffered and direct IO is about who allocates and
+fills the IO buffers, and who controls when exactly the IOs are issued. In buffered IO, it's the syscall handlers,
+kernel page cache, and memory management subsystems (cf "writeback"). In direct IO, all of it is done by
+the application.
+It takes more effort by the application to program with direct instead of buffered IO.
+The return is precise control over and a clear distinction between consumption/modification of memory vs disk.
+
+**Pageserver PageCache**: Pageserver has an additional `PageCache` (referred to as PS PageCache from here on, as opposed to "kernel page cache").
+Its caching unit is 8KiB blocks of the layer files written by Pageserver.
+A miss in PageCache is filled by reading from the filesystem, through the `VirtualFile` abstraction layer.
+The default size is tiny (64MiB), very much like Postgres's `shared_buffers`.
+We ran production at 128MiB for a long time but gradually moved it up to 2GiB over the past ~year.
+
+**VirtualFile** is Pageserver's abstraction for file IO, very similar to the facility in Postgres that bears the same name.
+Its historical purpose appears to be working around open file descriptor limitations, which is practically irrelevant on Linux.
+However, the facility in Pageserver is useful as an intermediary layer for metrics and abstracts over the different kinds of
+IO engines that Pageserver supports (`std-fs` vs `tokio-epoll-uring`).
+
+## Background: History Of Caching In Pageserver
+
+For multiple years, Pageserver's `PageCache` was on the path of all read _and write_ IO.
+It performed write-back to the kernel using buffered IO.
+
+We converted it into a read-only cache of immutable data in [PR 4994](https://github.com/neondatabase/neon/pull/4994).
+
+The introduction of `tokio-epoll-uring` required converting the code base to used owned IO buffers.
+The `PageCache` pages are usable as owned IO buffers.
+
+We then started bypassing PageCache for user data blocks.
+Data blocks are the 8k blocks of data in layer files that hold the multiple `Value`s, as opposed to the disk btree index blocks that tell us which values exist in a file at what offsets.
+The disk btree embedded in delta & image layers remains `PageCache`'d.
+Epics for that work were:
+- Vectored `Timeline::get` (cf RFC 30) skipped delta and image layer data block `PageCache`ing outright.
+- Epic https://github.com/neondatabase/neon/issues/7386 took care of the remaining users for data blocks:
+  - Materialized page cache (cached materialized pages; shown to be ~0% hit rate in practice)
+  - InMemoryLayer
+  - Compaction
+
+The outcome of the above:
+1. All data blocks are always read through the `VirtualFile` APIs, hitting the kernel buffered read path (=> kernel page cache).
+2. Indirect blocks (=disk btree blocks) would be cached in the PS `PageCache`.
+
+In production we size the PS `PageCache` to be 2GiB.
+Thus drives hit rate up to ~99.95% and the eviction rate / replacement rates down to less than 200/second on a 1-minute average, on the busiest machines.
+High baseline replacement rates are treated as a signal of resource exhaustion (page cache insufficient to host working set of the PS).
+The response to this is to migrate tenants away, or increase PS `PageCache` size.
+It is currently manual but could be automated, e.g., in Storage Controller.
+
+In the future, we may eliminate the `PageCache` even for indirect blocks.
+For example with an LRU cache that has as unit the entire disk btree content
+instead of individual blocks.
+
+## High-Level Design
+
+So, before work on this project started, all data block reads and the entire write path of Pageserver were using kernel-buffered IO, i.e., the kernel page cache.
+We now want to get the kernel page cache out of the picture by using direct IO for all interaction with the filesystem.
+This achieves the following system properties:
+
+**Predictable VirtualFile latencies**
+* With buffered IO, reads are sometimes fast, sometimes slow, depending on kernel page cache hit/miss.
+* With buffered IO, appends when writing out new layer files during ingest or compaction are sometimes fast, sometimes slow because of write-back backpressure.
+* With buffered IO, the "malloc backscatter" phenomenon pointed out in the Glossary section is not something we actively observe.
+  But we do have occasional spikes in Dirty memory amount and Memory PSI graphs, so it may already be affecting to some degree.
+* By switching to direct IO, above operations will have the (predictable) device latency -- always.
+  Reads and appends always go to disk.
+  And malloc will not have to write back dirty data.
+
+**Explicitness & Tangibility of resource usage**
+* In a multi-tenant system, it is generally desirable and valuable to be *explicit* about the main resources we use for each tenant.
+* By using direct IO, we become explicit about the resources *disk IOPs*  and *memory capacity* in a way that was previously being conflated through the kernel page cache, outside our immediate control.
+* We will be able to build per-tenant observability of resource usage ("what tenant is causing the actual IOs that are sent to the disk?").
+* We will be able to build accounting & QoS by implementing an IO scheduler that is tenant aware. The kernel is not tenant-aware and can't do that.
+
+**CPU Efficiency**
+* The involvement of the kernel page cache means one additional memory-to-memory copy on read and write path.
+* Direct IO will eliminate that memory-to-memory copy, if we can make the userspace buffers used for the IO calls satisfy direct IO alignment requirements.
+
+The **trade-off** is that we no longer get the theoretical benefits of the kernel page cache. These are:
+- read latency improvements for repeat reads of the same data ("locality of reference")
+  - asterisk: only if that state is still cache-resident by time of next access
+- write throughput by having kernel page cache batch small VFS writes into bigger disk writes
+  - asterisk: only if memory pressure is low enough that the kernel can afford to delay writeback
+
+We are **happy to make this trade-off**:
+- Because of the advantages listed above.
+- Because we empirically have enough DRAM on Pageservers to serve metadata (=index blocks) from PS PageCache.
+  (At just 2GiB PS PageCache size, we average a 99.95% hit rate).
+  So, the latency of going to disk is only for data block reads, not the index traversal.
+- Because **the kernel page cache is ineffective** at high tenant density anyway (#tenants/pageserver instance).
+  And because dense packing of tenants will always be desirable to drive COGS down, we should design the system for it.
+  (See the appendix for a more detailed explanation why this is).
+- So, we accept that some reads that used to be fast by circumstance will have higher but **predictable** latency than before.
+
+### Desired End State
+
+The desired end state of the project is as follows, and with some asterisks, we have achieved it.
+
+All IOs of the Pageserver data path use direct IO, thereby bypassing the kernel page cache.
+
+In particular, the "data path" includes
+- the wal ingest path
+- compaction
+- anything on the `Timeline::get` / `Timeline::get_vectored` path.
+
+The production Pageserver config is tuned such that virtually all non-data blocks are cached in the PS PageCache.
+Hit rate target is 99.95%.
+
+There are no regressions to ingest latency.
+
+The total "wait-for-disk time" contribution to random getpage request latency is `O(1 read IOP latency)`.
+We accomplish that by having a near 100% PS PageCache hit rate so that layer index traversal effectively never needs not wait for IO.
+Thereby, it can issue all the data blocks as it traverses the index, and only wait at the end of it (concurrent IO).
+
+The amortized "wait-for-disk time" contribution of this direct IO proposal to a series of sequential getpage requests is `1/32 * read IOP latency` for each getpage request.
+We accomplish this by server-side batching of up to 32 reads into a single `Timeline::get_vectored` call.
+(This is an ideal world where our batches are full - that's not the case in prod today because of lack of queue depth).
+
+## Design & Implementation
+
+### Prerequisites
+
+A lot of prerequisite work had to happen to enable use of direct IO.
+
+To meet the "wait-for-disk time" requirements from the DoD, we implement for the read path:
+- page_service level server-side batching (config field `page_service_pipelining`)
+- concurrent IO (config field `get_vectored_concurrent_io`)
+The work for both of these these was tracked [in the epic](https://github.com/neondatabase/neon/issues/9376).
+Server-side batching will likely be obsoleted by the [#proj-compute-communicator](https://github.com/neondatabase/neon/pull/10799).
+The Concurrent IO work is described in retroactive RFC `2025-04-30-pageserver-concurrent-io-on-read-path.md`.
+The implementation is relatively brittle and needs further investment, see the `Future Work` section in that RFC.
+
+For the write path, and especially WAL ingest, we need to hide write latency.
+We accomplish this by implementing a (`BufferedWriter`) type that does double-buffering: flushes of the filled
+buffer happen in a sidecar tokio task while new writes fill a new buffer.
+We refactor InMemoryLayer as well as BlobWriter (=> delta and image layer writers) to use this new `BufferedWriter`.
+The most comprehensive write-up of this work is in [the PR description](https://github.com/neondatabase/neon/pull/11558).
+
+### Ensuring Adherence to Alignment Requirements
+
+Direct IO puts requirements on
+- memory buffer alignment
+- io size (=memory buffer size)
+- file offset alignment
+
+The requirements are specific to a combination of filesystem/block-device/architecture(hardware page size!).
+
+In Neon production environments we currently use ext4 with Linux 6.1.X on AWS and Azure storage-optimized instances (locally attached NVMe).
+Instead of dynamic discovery using `statx`, we statically hard-code 512 bytes as the buffer/offset alignment and size-multiple.
+We made this decision because:
+- a) it is compatible with all the environments we need to run in
+- b) our primary workload can be small-random-read-heavy (we do merge adjacent reads if possible, but the worst case is that all `Value`s that needs to be read are far apart)
+- c) 512-byte tail latency on the production instance types is much better than 4k (p99.9: 3x lower, p99.99 5x lower).
+- d) hard-coding at compile-time allows us to use the Rust type system to enforce the use of only aligned IO buffers, eliminating a source of runtime errors typically associated with direct IO.
+
+This was [discussed here](https://neondb.slack.com/archives/C07BZ38E6SD/p1725036790965549?thread_ts=1725026845.455259&cid=C07BZ38E6SD).
+
+The new `IoBufAligned` / `IoBufAlignedMut` marker traits indicate that a given buffer meets memory alignment requirements.
+All `VirtualFile` APIs and several software layers built on top of them only accept buffers that implement those traits.
+Implementors of the marker traits are:
+- `IoBuffer` / `IoBufferMut`: used for most reads and writes
+- `PageWriteGuardBuf`: for filling PS PageCache pages (index blocks!)
+
+The alignment requirement is infectious; it permeates bottom-up throughout the code base.
+We stop the infection at roughly the same layers in the code base where we stopped permeating the
+use of owned-buffers-style API for tokio-epoll-uring. The way the stopping works is by introducing
+a memory-to-memory copy from/to some unaligned memory location on the stack/current/heap.
+The places where we currently stop permeating are sort of arbitrary. For example, it would probably
+make sense to replace more usage of `Bytes` that we know holds 8k pages with 8k-sized `IoBuffer`s.
+
+The `IoBufAligned` / `IoBufAlignedMut` types do not protect us from the following types of runtime errors:
+- non-adherence to file offset alignment requirements
+- non-adherence to io size requirements
+
+The following higher-level constructs ensure we meet the requirements:
+- read path: the `ChunkedVectoredReadBuilder` and `mod vectored_dio_read` ensure reads happen at aligned offsets and in appropriate size multiples.
+- write path: `BufferedWriter` only writes in multiples of the capacity, at offsets that are `start_offset+N*capacity`; see its doc comment.
+
+Note that these types are used always, regardless of whether direct IO is enabled or not.
+There are some cases where this adds unnecessary overhead to buffered IO (e.g. all memcpy's inflated to multiples of 512).
+But we could not identify meaningful impact in practice when we shipped these changes while we were still using buffered IO.
+
+### Configuration / Feature Flagging
+
+In the previous section we described how all users of VirtualFile were changed to always adhere to direct IO alignment and size-multiple requirements.
+To actually enable direct IO, all we need to do is set the `O_DIRECT` flag in `open` syscalls / io_uring operations.
+
+We set `O_DIRECT` based on:
+- the VirtualFile API used to create/open the VirtualFile instance
+- the `virtual_file_io_mode` configuration flag
+- the OpenOptions `read` and/or `write` flags.
+
+The VirtualFile APIs suffixed with `_v2` are the only ones that _may_ open with `O_DIRECT` depending on the other two factors in above list.
+Other APIs never use `O_DIRECT`.
+(The name is bad and should really be `_maybe_direct_io`.)
+
+The reason for having new APIs is because all code used VirtualFile but implementation and rollout happened in consecutive phases (read path, InMemoryLayer, write path).
+At the VirtualFile level, context on whether an instance of VirtualFile is on read path, InMemoryLayer, or write path is not available.
+
+The `_v2` APIs then check make the decision to set `O_DIRECT` based on the `virtual_file_io_mode` flag and the OpenOptions `read`/`write` flags.
+The result is the following runtime behavior:
+
+|what|OpenOptions|`v_f_io_mode`<br/>=`buffered`|`v_f_io_mode`<br/>=`direct`|`v_f_io_mode`<br/>=`direct-rw`|
+|-|-|-|-|-|
+|`DeltaLayerInner`|read|()|O_DIRECT|O_DIRECT|
+|`ImageLayerInner`|read|()|O_DIRECT|O_DIRECT|
+|`InMemoryLayer`|read + write|()|()*|O_DIRECT|
+|`DeltaLayerWriter`| write | () | () |  O_DIRECT |
+|`ImageLayerWriter`| write | () | () |  O_DIRECT |
+|`download_layer_file`|write |()|()|O_DIRECT|
+
+The `InMemoryLayer` is marked with `*` because there was a period when it *did* use O_DIRECT under `=direct`.
+That period was when we implemented and shipped the first version of `BufferedWriter`.
+We used it in `InMemoryLayer` and `download_layer_file` but it was only sensitive to `v_f_io_mode` in `InMemoryLayer`.
+The introduction of `=direct-rw`, and the switch of the remaining write path to `BufferedWriter`, happened later,
+in https://github.com/neondatabase/neon/pull/11558.
+
+Note that this way of feature flagging inside VirtualFile makes it less and less a general purpose POSIX file access abstraction.
+For example, with `=direct-rw` enabled, it is no longer possible to open a `VirtualFile` without `O_DIRECT`. It'll always be set.
+
+## Correctness Validation
+
+The correctness risks with this project were:
+- Memory safety issues in the `IoBuffer` / `IoBufferMut` implementation.
+  These types expose an API that is largely identical to that of the `bytes` crate and/or Vec.
+- Runtime errors (=> downtime / unavailability) because of non-adherence to alignment/size-multiple requirements, resulting in EINVAL on the read path.
+
+We sadly do not have infrastructure to run pageserver under `cargo miri`.
+So for memory safety issues, we relied on careful peer review.
+
+We do assert the production-like alignment requirements in testing builds.
+However, these asserts were added retroactively.
+The actual validation before rollout happened in staging and pre-prod.
+We eventually enabled  `=direct`/`=direct-rw` for Rust unit tests and the regression test suite.
+I cannot recall a single instance of staging/pre-prod/production errors caused by non-adherence to alignment/size-multiple requirements.
+Evidently developer testing was good enough.
+
+## Performance Validation
+
+The read path went through a lot of iterations of benchmarking in staging and pre-prod.
+The benchmarks in those environments demonstrated performance regressions early in the implementation.
+It was actually this performance testing that made us implement batching and concurrent IO to avoid unacceptable regressions.
+
+The write path was much quicker to validate because `bench_ingest` covered all of the (less numerous) access patterns.
+
+## Future Work
+
+There is minor and major follow-up work that can be considered in the future.
+Check the (soon-to-be-closed) Epic https://github.com/neondatabase/neon/issues/8130's "Follow-Ups" section for a current list.
+
+Read Path:
+- PS PageCache hit rate is crucial to unlock concurrent IO and reasonable latency for random reads generally.
+  Instead of reactively sizing PS PageCache, we should estimate the required PS PageCache size
+  and potentially also use that to drive placement decisions of shards from StorageController
+  https://github.com/neondatabase/neon/issues/9288
+- ... unless we get rid of PS PageCache entirely and cache the index block in a more specialized cache.
+  But even then, an estimation of the working set would be helpful to figure out caching strategy.
+
+Write Path:
+- BlobWriter and its users could switch back to a borrowed API  https://github.com/neondatabase/neon/issues/10129
+- ... unless we want to implement bypass mode for large writes https://github.com/neondatabase/neon/issues/10101
+- The `TempVirtualFile` introduced as part of this project could internalize more of the common usage pattern: https://github.com/neondatabase/neon/issues/11692
+- Reduce conditional compilation around `virtual_file_io_mode`: https://github.com/neondatabase/neon/issues/11676
+
+Both:
+- A performance simulation mode that pads VirtualFile op latencies to typical NVMe latencies, even if the underlying storage is faster.
+  This would avoid misleadingly good performance on developer systems and in benchmarks on systems that are less busy than production hosts.
+  However, padding latencies at microsecond scale is non-trivial.
+
+Misc:
+- We should finish trimming VirtualFile's scope to be truly limited to core data path read & write.
+  Abstractions for reading & writing pageserver config, location config, heatmaps, etc, should use
+  APIs in a different package (`VirtualFile::crashsafe_overwrite` and `VirtualFile::read_to_string`
+  are good entrypoints for cleanup.) https://github.com/neondatabase/neon/issues/11809
+
+# Appendix
+
+## Why Kernel Page Cache Is Ineffective At Tenant High Density
+
+In the Motivation section, we stated:
+
+> - **The kernel page cache ineffective** at high tenant density anyways (#tenants/pageserver instance).
+
+The reason is that the  Pageserver workload sent from Computes is whatever is a Compute cache(s) miss.
+That's either sequential scans or random reads.
+A random read workload simply causes cache thrashing because a packed Pageserver NVMe drive (`im4gn.2xlarge`) has ~100x more capacity than DRAM available.
+It is complete waste to have the kernel page cache cache data blocks in this case.
+Sequential read workloads *can* benefit iff those pages have been updated recently (=no image layer yet) and together in time/LSN space.
+In such cases, the WAL records of those updates likely sit on the same delta layer block.
+When Compute does a sequential scan, it sends a series of single-page requests for these individual pages.
+When Pageserver processes the second request in such a series, it goes to the same delta layer block and have a kernel page cache hit.
+This dependence on kernel page cache for sequential scan performance is significant, but the solution is at a higher level than generic data block caching.
+We can either add a small per-connection LRU cache for such delta layer blocks.
+Or we can merge those sequential requests into a larger vectored get request, which is designed to never read a block twice.
+This amortizes the read latency for our delta layer block across the vectored get batch size (which currently is up to 32).
+
+There are Pageserver-internal workloads that do sequential access (compaction, image layer generation), but these
+1. are not latency-critical and can do batched access outside of the `page_service` protocol constraints (image layer generation)
+2. don't actually need to reconstruct images and therefore can use totally different access methods (=> compaction can use k-way merge iterators with their own internal buffering / prefetching).
+
+
+# Content from file ../neon/docs/rfcs/2025-04-30-pageserver-concurrent-io-on-read-path.md:
+
+# Concurrent IO for Pageserver Read Path
+
+Date: May 6, 2025
+
+## Summary
+
+This document is a retroactive RFC on the Pageserver Concurrent IO work that happened in late 2024 / early 2025.
+
+The gist of it is that Pageserver's `Timeline::get_vectored` now _issues_ the data block read operations against layer files
+_as it traverses the layer map_ and only _wait_ once, for all of them, after traversal is complete.
+
+Assuming a good PS PageCache hits on the index blocks during traversal, this drives down the "wait-for-disk" time
+contribution down from `random_read_io_latency * O(number_of_values)` to `random_read_io_latency * O(1 + traversal)`.
+
+The motivation for why this work had to happen when it happened was the switch of Pageserver to
+- not cache user data blocks in PS PageCache and
+- switch to use direct IO.
+More context on this are given in complimentary RFC `./rfcs/2025-04-30-direct-io-for-pageserver.md`.
+
+### Refs
+
+- Epic: https://github.com/neondatabase/neon/issues/9378
+- Prototyping happened during the Lisbon 2024 Offsite hackathon: https://github.com/neondatabase/neon/pull/9002
+- Main implementation PR with good description: https://github.com/neondatabase/neon/issues/9378
+
+Design and implementation by:
+- Vlad Lazar <vlad@neon.tech>
+- Christian Schwarz <christian@neon.tech>
+
+## Background & Motivation
+
+The Pageserver read path (`Timeline::get_vectored`) consists of two high-level steps:
+- Retrieve the delta and image `Value`s required to reconstruct the requested Page@LSN (`Timeline::get_values_reconstruct_data`).
+- Pass these values to walredo to reconstruct the page images.
+
+The read path used to be single-key but has been made multi-key some time ago.
+([Internal tech talk by Vlad](https://drive.google.com/file/d/1vfY24S869UP8lEUUDHRWKF1AJn8fpWoJ/view?usp=drive_link))
+However, for simplicity, most of this doc will explain things in terms of a single key being requested.
+
+The `Value` retrieval step above can be broken down into the following functions:
+- **Traversal** of the layer map to figure out which `Value`s from which layer files are required for the page reconstruction.
+- **Read IO Planning**: planning of the read IOs that need to be issued to the layer files / filesystem / disk.
+  The main job here is to coalesce the small value reads into larger filesystem-level read operations.
+  This layer also takes care of direct IO alignment and size-multiple requirements (cf the RFC for details.)
+  Check `struct VectoredReadPlanner` and `mod vectored_dio_read` for how it's done.
+- **Perform the read IO** using `tokio-epoll-uring`.
+
+Before this project, above functions were sequentially interleaved, meaning:
+1. we would advance traversal, ...
+2. discover, that we need to read a value, ...
+3. read it from disk using `tokio-epoll-uring`, ...
+4. goto 1 unless we're done.
+
+This meant that if N `Value`s need to be read to reconstruct a page,
+the time we spend waiting for disk will be we `random_read_io_latency * O(number_of_values)`.
+
+## Design
+
+The **traversal** and **read IO Planning** jobs still happen sequentially, layer by layer, as before.
+But instead of performing the read IOs inline, we submit the IOs to a concurrent tokio task for execution.
+After the last read from the last layer is submitted, we wait for the IOs to complete.
+
+Assuming the filesystem / disk is able to actually process the submitted IOs without queuing,
+we arrive at _time spent waiting for disk_ ~ `random_read_io_latency * O(1 + traversal)`.
+
+Note this whole RFC is concerned with the steady state where all layer files required for reconstruction are resident on local NVMe.
+Traversal will stall on on-demand layer download if a layer is not yet resident.
+It cannot proceed without the layer being resident beccause its next step depends on the contents of the layer index.
+
+### Avoiding Waiting For IO During Traversal
+
+The `traversal` component in above time-spent-waiting-for-disk estimation is dominant and needs to be minimized.
+
+Before this project, traversal needed to perform IOs for the following:
+1. The time we are waiting on PS PageCache to page in the visited layers' disk btree index blocks.
+2. When visiting a delta layer, reading the data block that contains a `Value` for a requested key,
+   to determine whether the `Value::will_init` the page and therefore traversal can stop for this key.
+
+The solution for (1) is to raise the PS PageCache size such that the hit rate is practically 100%.
+(Check out the `Background: History Of Caching In Pageserver` section in the RFC on Direct IO for more details.)
+
+The solution for (2) is source `will_init` from the disk btree index keys, which fortunately
+already encode this bit of information since the introduction of the current storage/layer format.
+
+### Concurrent IOs, Submission & Completion
+
+To separate IO submission from waiting for its completion,
+we introduce the notion of an `IoConcurrency` struct through which IOs are issued.
+
+An IO is an opaque future that
+- captures the `tx` side of a `oneshot` channel
+- performs the read IO by calling `VirtualFile::read_exact_at().await`
+- sending the result into the `tx`
+
+Issuing an IO means `Box`ing the future above and handing that `Box` over to the `IoConcurrency` struct.
+
+The traversal code that submits the IO stores the the corresponding `oneshot::Receiver`
+in the `VectoredValueReconstructState`, in the the place where we previously stored
+the sequentially read `img` and `records` fields.
+
+When we're done with traversal, we wait for all submitted IOs:
+for each key, there is a future that awaits all the `oneshot::Receiver`s
+for that key, and then calls into walredo to reconstruct the page image.
+Walredo is now invoked concurrently for each value instead of sequentially.
+Walredo itself remains unchanged.
+
+The spawned IO futures are driven to completion by a sidecar tokio task that
+is separate from the task that performs all the layer visiting and spawning of IOs.
+That tasks receives the IO futures via an unbounded mpsc channel and
+drives them to completion inside a `FuturedUnordered`.
+
+### Error handling, Panics, Cancellation-Safety
+
+There are two error classes during reconstruct data retrieval:
+* traversal errors: index lookup, move to next layer, and the like
+* value read IO errors
+
+A traversal error fails the entire `get_vectored` request, as before this PR.
+A value read error only fails reconstruction of that value.
+
+Panics and dropping of the `get_vectored` future before it completes
+leaves the sidecar task running and does not cancel submitted IOs
+(see next section for details on sidecar task lifecycle).
+All of this is safe, but, today's preference in the team is to close out
+all resource usage explicitly if possible, rather than cancelling + forgetting
+about it on drop. So, there is warning if we drop a
+`VectoredValueReconstructState`/`ValuesReconstructState` that still has uncompleted IOs.
+
+### Sidecar Task Lifecycle
+
+The sidecar tokio task is spawned as part of the `IoConcurrency::spawn_from_conf` struct.
+The `IoConcurrency` object acts as a handle through which IO futures are submitted.
+
+The spawned tokio task holds the `Timeline::gate` open.
+It is _not_ sensitive to `Timeline::cancel`, but instead to the `IoConcurrency` object being dropped.
+
+Once the `IoConcurrency` struct is dropped, no new IO futures can come in
+but already submitted IO futures will be driven to completion regardless.
+We _could_ safely stop polling these futures because `tokio-epoll-uring` op futures are cancel-safe.
+But the underlying kernel and hardware resources are not magically freed up by that.
+So, again, in the interest of closing out all outstanding resource usage, we make timeline shutdown wait for sidecar tasks and their IOs to complete.
+Under normal conditions, this should be in the low hundreds of microseconds.
+
+It is advisable to make the `IoConcurrency` as long-lived as possible to minimize the amount of
+tokio task churn (=> lower pressure on tokio). Generally this means creating it "high up" in the call stack.
+The pain with this is that the `IoConcurrency` reference needs to be propagated "down" to
+the (short-lived) functions/scope where we issue the IOs.
+We would like to use `RequestContext` for this propagation in the future (issue [here](https://github.com/neondatabase/neon/issues/10460)).
+For now, we just add another argument to the relevant code paths.
+
+### Feature Gating
+
+The `IoConcurrency` is an `enum` with two variants: `Sequential` and `SidecarTask`.
+
+The behavior from before this project is available through `IoConcurrency::Sequential`,
+which awaits the IO futures in place, without "spawning" or "submitting" them anywhere.
+
+The `get_vectored_concurrent_io` pageserver config variable determines the runtime value,
+**except** for the places that use `IoConcurrency::sequential` to get an `IoConcurrency` object.
+
+### Alternatives Explored & Caveats Encountered
+
+A few words on the rationale behind having a sidecar *task* and what
+alternatives were considered but abandoned.
+
+#### Why We Need A Sidecar *Task* / Why Just `FuturesUnordered` Doesn't Work
+
+We explored to not have a sidecar task, and instead have a `FuturesUnordered` per
+`Timeline::get_vectored`. We would queue all IO futures in it and poll it for the
+first time after traversal is complete (i.e., at `collect_pending_ios`).
+
+The obvious disadvantage, but not showstopper, is that we wouldn't be submitting
+IOs until traversal is complete.
+
+The showstopper however, is that deadlocks happen if we don't drive the
+IO futures to completion independently of the traversal task.
+The reason is that both the IO futures and the traversal task may hold _some_,
+_and_ try to acquire _more_, shared limited resources.
+For example, both the travseral task and IO future may try to acquire
+* a `VirtualFile` file descriptor cache slot async mutex (observed during impl)
+* a `tokio-epoll-uring` submission slot (observed during impl)
+* a `PageCache` slot (currently this is not the case but we may move more code into the IO futures in the future)
+
+#### Why We Don't Do `tokio::task`-per-IO-future
+
+Another option is to spawn a short-lived `tokio::task` for each IO future.
+We implemented and benchmarked it during development, but found little
+throughput improvement and moderate mean & tail latency degradation.
+Concerns about pressure on the tokio scheduler led us to abandon this variant.
+
+## Future Work
+
+In addition to what is listed here, also check the "Punted" list in the epic:
+https://github.com/neondatabase/neon/issues/9378
+
+### Enable `Timeline::get`
+
+The only major code path that still uses `IoConcurrency::sequential` is `Timeline::get`.
+The impact is that roughly the following parts of pageserver do not benefit yet:
+- parts of basebackup
+- reads performed by the ingest path
+- most internal operations that read metadata keys (e.g. `collect_keyspace`!)
+
+The solution is to propagate `IoConcurrency` via `RequestContext`:https://github.com/neondatabase/neon/issues/10460
+
+The tricky part is to figure out at which level of the code the `IoConcurrency` is spawned (and added to the RequestContext).
+
+Also, propagation via `RequestContext` makes makes it harder to tell during development whether a given
+piece of code uses concurrent vs sequential mode: one has to recurisvely walk up the call tree to find the
+place that puts the `IoConcurrency` into the `RequestContext`.
+We'd have to use `::Sequential` as the conservative default value in a fresh `RequestContext`, and add some
+observability to weed out places that fail to enrich with a properly spanwed `IoConcurrency::spawn_from_conf`.
+
+### Concurrent On-Demand Downloads enabled by Detached Indices
+
+As stated earlier, traversal stalls on on-demand download because its next step depends on the contents of the layer index.
+Once we have separated indices from data blocks (=> https://github.com/neondatabase/neon/issues/11695)
+we will only need to stall if the index is not resident. The download of the data blocks can happen concurrently or in the background. For example:
+- Move the `Layer::get_or_maybe_download().await` inside the IO futures.
+  This goes in the opposite direction of the next "future work" item below, but it's easy to do.
+- Serve the IO future directly from object storage and dispatch the layer download
+  to some other actor, e.g., an actor that is responsible for both downloads & eviction.
+
+### New `tokio-epoll-uring` API That Separates Submission & Wait-For-Completion
+
+Instead of `$op().await` style API, it would be useful to have a different `tokio-epoll-uring` API
+that separates enqueuing (without necessarily `io_uring_enter`ing the kernel each time), submission,
+and then wait for completion.
+
+The `$op().await` API is too opaque, so we _have_ to stuff it into a `FuturesUnordered`.
+
+A split API as sketched above would allow traversal to ensure an IO operation is enqueued to the kernel/disk (and get back-pressure iff the io_uring squeue is full).
+While avoiding spending of CPU cycles on processing of completions while we're still traversing.
+
+The idea gets muddied by the fact that we may self-deadlock if we submit too much without completing.
+So, the submission part of the split API needs to process completions if squeue is full.
+
+In any way, this split API is precondition for the bigger issue with the design presented here,
+which we dicsuss in the next section.
+
+### Opaque Futures Are Brittle
+
+The use of opaque futures to represent submitted IOs is a clever hack to minimize changes & allow for near-perfect feature-gating.
+However, we take on **brittleness** because callers must guarantee that the submitted futures are independent.
+By our experience, it is non-trivial to identify or rule out the interdependencies.
+See the lengthy doc comment on the `IoConcurrency::spawn_io` method for more details.
+
+The better interface and proper subsystem boundary is a _descriptive_ struct of what needs to be done ("read this range from this VirtualFile into this buffer")
+and get back a means to wait for completion.
+The subsystem can thereby reason by its own how operations may be related;
+unlike today, where the submitted opaque future can do just about anything.
+
+
 # Content from file ../neon/docs/rfcs/README.md:
 
 # Neon RFCs
@@ -17759,7 +18492,7 @@ To play with it locally one may start proxy over a local postgres installation
 (see end of this page on how to generate certs with openssl):
 
 ```
-./target/debug/proxy -c server.crt -k server.key --auth-backend=postgres --auth-endpoint=postgres://stas@127.0.0.1:5432/stas --wss 0.0.0.0:4444
+LOGFMT=text ./target/debug/proxy -c server.crt -k server.key --auth-backend=postgres --auth-endpoint=postgres://stas@127.0.0.1:5432/stas --wss 0.0.0.0:4444
 ```
 
 If both postgres and proxy are running you may send a SQL query:
@@ -17857,7 +18590,7 @@ openssl req -new -x509 -days 365 -nodes -text -out server.crt -keyout server.key
 
 Then we need to build proxy with 'testing' feature and run, e.g.:
 ```sh
-RUST_LOG=proxy cargo run -p proxy --bin proxy --features testing -- --auth-backend postgres --auth-endpoint 'postgresql://postgres:proxy-postgres@127.0.0.1:5432/postgres' -c server.crt -k server.key
+RUST_LOG=proxy LOGFMT=text cargo run -p proxy --bin proxy --features testing -- --auth-backend postgres --auth-endpoint 'postgresql://postgres:proxy-postgres@127.0.0.1:5432/postgres' -c server.crt -k server.key
 ```
 
 Now from client you can start a new session:
@@ -18131,6 +18864,698 @@ Note that some tenants/timelines could be marked as deleted in console, but cons
 
 When all IDs are collected, manually go to every pageserver and detach/delete the tenant/timeline.
 In future, the cleanup tool may access pageservers directly, but now it's only console and S3 it has access to.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-0d332d307c55a95d/out/build/INSTALL.md:
+
+Building and installing a packaged release of jemalloc can be as simple as
+typing the following while in the root directory of the source tree:
+
+    ./configure
+    make
+    make install
+
+If building from unpackaged developer sources, the simplest command sequence
+that might work is:
+
+    ./autogen.sh
+    make
+    make install
+
+You can uninstall the installed build artifacts like this:
+
+    make uninstall
+
+Notes:
+ - "autoconf" needs to be installed
+ - Documentation is built by the default target only when xsltproc is
+available.  Build will warn but not stop if the dependency is missing.
+
+
+## Advanced configuration
+
+The 'configure' script supports numerous options that allow control of which
+functionality is enabled, where jemalloc is installed, etc.  Optionally, pass
+any of the following arguments (not a definitive list) to 'configure':
+
+* `--help`
+
+    Print a definitive list of options.
+
+* `--prefix=<install-root-dir>`
+
+    Set the base directory in which to install.  For example:
+
+        ./configure --prefix=/usr/local
+
+    will cause files to be installed into /usr/local/include, /usr/local/lib,
+    and /usr/local/man.
+
+* `--with-version=(<major>.<minor>.<bugfix>-<nrev>-g<gid>|VERSION)`
+
+    The VERSION file is mandatory for successful configuration, and the
+    following steps are taken to assure its presence:
+    1) If --with-version=<major>.<minor>.<bugfix>-<nrev>-g<gid> is specified,
+       generate VERSION using the specified value.
+    2) If --with-version is not specified in either form and the source
+       directory is inside a git repository, try to generate VERSION via 'git
+       describe' invocations that pattern-match release tags.
+    3) If VERSION is missing, generate it with a bogus version:
+       0.0.0-0-g0000000000000000000000000000000000000000
+
+    Note that --with-version=VERSION bypasses (1) and (2), which simplifies
+    VERSION configuration when embedding a jemalloc release into another
+    project's git repository.
+
+* `--with-rpath=<colon-separated-rpath>`
+
+    Embed one or more library paths, so that libjemalloc can find the libraries
+    it is linked to.  This works only on ELF-based systems.
+
+* `--with-mangling=<map>`
+
+    Mangle public symbols specified in <map> which is a comma-separated list of
+    name:mangled pairs.
+
+    For example, to use ld's --wrap option as an alternative method for
+    overriding libc's malloc implementation, specify something like:
+
+      --with-mangling=malloc:__wrap_malloc,free:__wrap_free[...]
+
+    Note that mangling happens prior to application of the prefix specified by
+    --with-jemalloc-prefix, and mangled symbols are then ignored when applying
+    the prefix.
+
+* `--with-jemalloc-prefix=<prefix>`
+
+    Prefix all public APIs with <prefix>.  For example, if <prefix> is
+    "prefix_", API changes like the following occur:
+
+      malloc()         --> prefix_malloc()
+      malloc_conf      --> prefix_malloc_conf
+      /etc/malloc.conf --> /etc/prefix_malloc.conf
+      MALLOC_CONF      --> PREFIX_MALLOC_CONF
+
+    This makes it possible to use jemalloc at the same time as the system
+    allocator, or even to use multiple copies of jemalloc simultaneously.
+
+    By default, the prefix is "", except on OS X, where it is "je_".  On OS X,
+    jemalloc overlays the default malloc zone, but makes no attempt to actually
+    replace the "malloc", "calloc", etc. symbols.
+
+* `--without-export`
+
+    Don't export public APIs.  This can be useful when building jemalloc as a
+    static library, or to avoid exporting public APIs when using the zone
+    allocator on OSX.
+
+* `--with-private-namespace=<prefix>`
+
+    Prefix all library-private APIs with <prefix>je_.  For shared libraries,
+    symbol visibility mechanisms prevent these symbols from being exported, but
+    for static libraries, naming collisions are a real possibility.  By
+    default, <prefix> is empty, which results in a symbol prefix of je_ .
+
+* `--with-install-suffix=<suffix>`
+
+    Append <suffix> to the base name of all installed files, such that multiple
+    versions of jemalloc can coexist in the same installation directory.  For
+    example, libjemalloc.so.0 becomes libjemalloc<suffix>.so.0.
+
+* `--with-malloc-conf=<malloc_conf>`
+
+    Embed `<malloc_conf>` as a run-time options string that is processed prior to
+    the malloc_conf global variable, the /etc/malloc.conf symlink, and the
+    MALLOC_CONF environment variable.  For example, to change the default decay
+    time to 30 seconds:
+
+      --with-malloc-conf=decay_ms:30000
+
+* `--enable-debug`
+
+    Enable assertions and validation code.  This incurs a substantial
+    performance hit, but is very useful during application development.
+
+* `--disable-stats`
+
+    Disable statistics gathering functionality.  See the "opt.stats_print"
+    option documentation for usage details.
+
+* `--enable-prof`
+
+    Enable heap profiling and leak detection functionality.  See the "opt.prof"
+    option documentation for usage details.  When enabled, there are several
+    approaches to backtracing, and the configure script chooses the first one
+    in the following list that appears to function correctly:
+
+    + libunwind      (requires --enable-prof-libunwind)
+    + libgcc         (unless --disable-prof-libgcc)
+    + gcc intrinsics (unless --disable-prof-gcc)
+
+* `--enable-prof-libunwind`
+
+    Use the libunwind library (http://www.nongnu.org/libunwind/) for stack
+    backtracing.
+
+* `--disable-prof-libgcc`
+
+    Disable the use of libgcc's backtracing functionality.
+
+* `--disable-prof-gcc`
+
+    Disable the use of gcc intrinsics for backtracing.
+
+* `--with-static-libunwind=<libunwind.a>`
+
+    Statically link against the specified libunwind.a rather than dynamically
+    linking with -lunwind.
+
+* `--disable-fill`
+
+    Disable support for junk/zero filling of memory.  See the "opt.junk" and
+    "opt.zero" option documentation for usage details.
+
+* `--disable-zone-allocator`
+
+    Disable zone allocator for Darwin.  This means jemalloc won't be hooked as
+    the default allocator on OSX/iOS.
+
+* `--enable-utrace`
+
+    Enable utrace(2)-based allocation tracing.  This feature is not broadly
+    portable (FreeBSD has it, but Linux and OS X do not).
+
+* `--enable-xmalloc`
+
+    Enable support for optional immediate termination due to out-of-memory
+    errors, as is commonly implemented by "xmalloc" wrapper function for malloc.
+    See the "opt.xmalloc" option documentation for usage details.
+
+* `--enable-lazy-lock`
+
+    Enable code that wraps pthread_create() to detect when an application
+    switches from single-threaded to multi-threaded mode, so that it can avoid
+    mutex locking/unlocking operations while in single-threaded mode.  In
+    practice, this feature usually has little impact on performance unless
+    thread-specific caching is disabled.
+
+* `--disable-cache-oblivious`
+
+    Disable cache-oblivious large allocation alignment by default, for large
+    allocation requests with no alignment constraints.  If this feature is
+    disabled, all large allocations are page-aligned as an implementation
+    artifact, which can severely harm CPU cache utilization.  However, the
+    cache-oblivious layout comes at the cost of one extra page per large
+    allocation, which in the most extreme case increases physical memory usage
+    for the 16 KiB size class to 20 KiB.
+
+* `--disable-syscall`
+
+    Disable use of syscall(2) rather than {open,read,write,close}(2).  This is
+    intended as a workaround for systems that place security limitations on
+    syscall(2).
+
+* `--disable-cxx`
+
+    Disable C++ integration.  This will cause new and delete operator
+    implementations to be omitted.
+
+* `--with-xslroot=<path>`
+
+    Specify where to find DocBook XSL stylesheets when building the
+    documentation.
+
+* `--with-lg-page=<lg-page>`
+
+    Specify the base 2 log of the allocator page size, which must in turn be at
+    least as large as the system page size.  By default the configure script
+    determines the host's page size and sets the allocator page size equal to
+    the system page size, so this option need not be specified unless the
+    system page size may change between configuration and execution, e.g. when
+    cross compiling.
+
+* `--with-lg-hugepage=<lg-hugepage>`
+
+    Specify the base 2 log of the system huge page size.  This option is useful
+    when cross compiling, or when overriding the default for systems that do
+    not explicitly support huge pages.
+
+* `--with-lg-quantum=<lg-quantum>`
+
+    Specify the base 2 log of the minimum allocation alignment.  jemalloc needs
+    to know the minimum alignment that meets the following C standard
+    requirement (quoted from the April 12, 2011 draft of the C11 standard):
+
+    >  The pointer returned if the allocation succeeds is suitably aligned so
+      that it may be assigned to a pointer to any type of object with a
+      fundamental alignment requirement and then used to access such an object
+      or an array of such objects in the space allocated [...]
+
+    This setting is architecture-specific, and although jemalloc includes known
+    safe values for the most commonly used modern architectures, there is a
+    wrinkle related to GNU libc (glibc) that may impact your choice of
+    <lg-quantum>.  On most modern architectures, this mandates 16-byte
+    alignment (<lg-quantum>=4), but the glibc developers chose not to meet this
+    requirement for performance reasons.  An old discussion can be found at
+    <https://sourceware.org/bugzilla/show_bug.cgi?id=206> .  Unlike glibc,
+    jemalloc does follow the C standard by default (caveat: jemalloc
+    technically cheats for size classes smaller than the quantum), but the fact
+    that Linux systems already work around this allocator noncompliance means
+    that it is generally safe in practice to let jemalloc's minimum alignment
+    follow glibc's lead.  If you specify `--with-lg-quantum=3` during
+    configuration, jemalloc will provide additional size classes that are not
+    16-byte-aligned (24, 40, and 56).
+
+* `--with-lg-vaddr=<lg-vaddr>`
+
+    Specify the number of significant virtual address bits.  By default, the
+    configure script attempts to detect virtual address size on those platforms
+    where it knows how, and picks a default otherwise.  This option may be
+    useful when cross-compiling.
+
+* `--disable-initial-exec-tls`
+
+    Disable the initial-exec TLS model for jemalloc's internal thread-local
+    storage (on those platforms that support explicit settings).  This can allow
+    jemalloc to be dynamically loaded after program startup (e.g. using dlopen).
+    Note that in this case, there will be two malloc implementations operating
+    in the same process, which will almost certainly result in confusing runtime
+    crashes if pointers leak from one implementation to the other.
+
+* `--disable-libdl`
+
+    Disable the usage of libdl, namely dlsym(3) which is required by the lazy
+    lock option.  This can allow building static binaries.
+
+The following environment variables (not a definitive list) impact configure's
+behavior:
+
+* `CFLAGS="?"`
+* `CXXFLAGS="?"`
+
+    Pass these flags to the C/C++ compiler.  Any flags set by the configure
+    script are prepended, which means explicitly set flags generally take
+    precedence.  Take care when specifying flags such as -Werror, because
+    configure tests may be affected in undesirable ways.
+
+* `EXTRA_CFLAGS="?"`
+* `EXTRA_CXXFLAGS="?"`
+
+    Append these flags to CFLAGS/CXXFLAGS, without passing them to the
+    compiler(s) during configuration.  This makes it possible to add flags such
+    as -Werror, while allowing the configure script to determine what other
+    flags are appropriate for the specified configuration.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.  Note that CFLAGS is not passed to
+    'cpp' when 'configure' is looking for include files, so you must use
+    CPPFLAGS instead if you need to help 'configure' find header files.
+
+* `LD_LIBRARY_PATH="?"`
+
+    'ld' uses this colon-separated list to find libraries.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    'configure' uses this to find programs.
+
+In some cases it may be necessary to work around configuration results that do
+not match reality.  For example, Linux 4.5 added support for the MADV_FREE flag
+to madvise(2), which can cause problems if building on a host with MADV_FREE
+support and deploying to a target without.  To work around this, use a cache
+file to override the relevant configuration variable defined in configure.ac,
+e.g.:
+
+    echo "je_cv_madv_free=no" > config.cache && ./configure -C
+
+
+## Advanced compilation
+
+To build only parts of jemalloc, use the following targets:
+
+    build_lib_shared
+    build_lib_static
+    build_lib
+    build_doc_html
+    build_doc_man
+    build_doc
+
+To install only parts of jemalloc, use the following targets:
+
+    install_bin
+    install_include
+    install_lib_shared
+    install_lib_static
+    install_lib_pc
+    install_lib
+    install_doc_html
+    install_doc_man
+    install_doc
+
+To clean up build results to varying degrees, use the following make targets:
+
+    clean
+    distclean
+    relclean
+
+
+## Advanced installation
+
+Optionally, define make variables when invoking make, including (not
+exclusively):
+
+* `INCLUDEDIR="?"`
+
+    Use this as the installation prefix for header files.
+
+* `LIBDIR="?"`
+
+    Use this as the installation prefix for libraries.
+
+* `MANDIR="?"`
+
+    Use this as the installation prefix for man pages.
+
+* `DESTDIR="?"`
+
+    Prepend DESTDIR to INCLUDEDIR, LIBDIR, DATADIR, and MANDIR.  This is useful
+    when installing to a different path than was specified via --prefix.
+
+* `CC="?"`
+
+    Use this to invoke the C compiler.
+
+* `CFLAGS="?"`
+
+    Pass these flags to the compiler.
+
+* `CPPFLAGS="?"`
+
+    Pass these flags to the C preprocessor.
+
+* `LDFLAGS="?"`
+
+    Pass these flags when linking.
+
+* `PATH="?"`
+
+    Use this to search for programs used during configuration and building.
+
+
+## Development
+
+If you intend to make non-trivial changes to jemalloc, use the 'autogen.sh'
+script rather than 'configure'.  This re-generates 'configure', enables
+configuration dependency rules, and enables re-generation of automatically
+generated source files.
+
+The build system supports using an object directory separate from the source
+tree.  For example, you can create an 'obj' directory, and from within that
+directory, issue configuration and build commands:
+
+    autoconf
+    mkdir obj
+    cd obj
+    ../configure --enable-autogen
+    make
+
+
+## Documentation
+
+The manual page is generated in both html and roff formats.  Any web browser
+can be used to view the html manual.  The roff manual page can be formatted
+prior to installation via the following command:
+
+    nroff -man -t doc/jemalloc.3
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-0d332d307c55a95d/out/build/TUNING.md:
+
+This document summarizes the common approaches for performance fine tuning with
+jemalloc (as of 5.3.0).  The default configuration of jemalloc tends to work
+reasonably well in practice, and most applications should not have to tune any
+options. However, in order to cover a wide range of applications and avoid
+pathological cases, the default setting is sometimes kept conservative and
+suboptimal, even for many common workloads.  When jemalloc is properly tuned for
+a specific application / workload, it is common to improve system level metrics
+by a few percent, or make favorable trade-offs.
+
+
+## Notable runtime options for performance tuning
+
+Runtime options can be set via
+[malloc_conf](http://jemalloc.net/jemalloc.3.html#tuning).
+
+* [background_thread](http://jemalloc.net/jemalloc.3.html#background_thread)
+
+    Enabling jemalloc background threads generally improves the tail latency for
+    application threads, since unused memory purging is shifted to the dedicated
+    background threads.  In addition, unintended purging delay caused by
+    application inactivity is avoided with background threads.
+
+    Suggested: `background_thread:true` when jemalloc managed threads can be
+    allowed.
+
+* [metadata_thp](http://jemalloc.net/jemalloc.3.html#opt.metadata_thp)
+
+    Allowing jemalloc to utilize transparent huge pages for its internal
+    metadata usually reduces TLB misses significantly, especially for programs
+    with large memory footprint and frequent allocation / deallocation
+    activities.  Metadata memory usage may increase due to the use of huge
+    pages.
+
+    Suggested for allocation intensive programs: `metadata_thp:auto` or
+    `metadata_thp:always`, which is expected to improve CPU utilization at a
+    small memory cost.
+
+* [dirty_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.dirty_decay_ms) and
+  [muzzy_decay_ms](http://jemalloc.net/jemalloc.3.html#opt.muzzy_decay_ms)
+
+    Decay time determines how fast jemalloc returns unused pages back to the
+    operating system, and therefore provides a fairly straightforward trade-off
+    between CPU and memory usage.  Shorter decay time purges unused pages faster
+    to reduces memory usage (usually at the cost of more CPU cycles spent on
+    purging), and vice versa.
+
+    Suggested: tune the values based on the desired trade-offs.
+
+* [narenas](http://jemalloc.net/jemalloc.3.html#opt.narenas)
+
+    By default jemalloc uses multiple arenas to reduce internal lock contention.
+    However high arena count may also increase overall memory fragmentation,
+    since arenas manage memory independently.  When high degree of parallelism
+    is not expected at the allocator level, lower number of arenas often
+    improves memory usage.
+
+    Suggested: if low parallelism is expected, try lower arena count while
+    monitoring CPU and memory usage.
+
+* [percpu_arena](http://jemalloc.net/jemalloc.3.html#opt.percpu_arena)
+
+    Enable dynamic thread to arena association based on running CPU.  This has
+    the potential to improve locality, e.g. when thread to CPU affinity is
+    present.
+    
+    Suggested: try `percpu_arena:percpu` or `percpu_arena:phycpu` if
+    thread migration between processors is expected to be infrequent.
+
+Examples:
+
+* High resource consumption application, prioritizing CPU utilization:
+
+    `background_thread:true,metadata_thp:auto` combined with relaxed decay time
+    (increased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:30000,muzzy_decay_ms:30000`).
+
+* High resource consumption application, prioritizing memory usage:
+
+    `background_thread:true,tcache_max:4096` combined with shorter decay time
+    (decreased `dirty_decay_ms` and / or `muzzy_decay_ms`,
+    e.g. `dirty_decay_ms:5000,muzzy_decay_ms:5000`), and lower arena count
+    (e.g. number of CPUs).
+
+* Low resource consumption application:
+
+    `narenas:1,tcache_max:1024` combined with shorter decay time (decreased
+    `dirty_decay_ms` and / or `muzzy_decay_ms`,e.g.
+    `dirty_decay_ms:1000,muzzy_decay_ms:0`).
+
+* Extremely conservative -- minimize memory usage at all costs, only suitable when
+allocation activity is very rare:
+
+    `narenas:1,tcache:false,dirty_decay_ms:0,muzzy_decay_ms:0`
+
+Note that it is recommended to combine the options with `abort_conf:true` which
+aborts immediately on illegal options.
+
+## Beyond runtime options
+
+In addition to the runtime options, there are a number of programmatic ways to
+improve application performance with jemalloc.
+
+* [Explicit arenas](http://jemalloc.net/jemalloc.3.html#arenas.create)
+
+    Manually created arenas can help performance in various ways, e.g. by
+    managing locality and contention for specific usages.  For example,
+    applications can explicitly allocate frequently accessed objects from a
+    dedicated arena with
+    [mallocx()](http://jemalloc.net/jemalloc.3.html#MALLOCX_ARENA) to improve
+    locality.  In addition, explicit arenas often benefit from individually
+    tuned options, e.g. relaxed [decay
+    time](http://jemalloc.net/jemalloc.3.html#arena.i.dirty_decay_ms) if
+    frequent reuse is expected.
+
+* [Extent hooks](http://jemalloc.net/jemalloc.3.html#arena.i.extent_hooks)
+
+    Extent hooks allow customization for managing underlying memory.  One use
+    case for performance purpose is to utilize huge pages -- for example,
+    [HHVM](https://github.com/facebook/hhvm/blob/master/hphp/util/alloc.cpp)
+    uses explicit arenas with customized extent hooks to manage 1GB huge pages
+    for frequently accessed data, which reduces TLB misses significantly.
+
+* [Explicit thread-to-arena
+  binding](http://jemalloc.net/jemalloc.3.html#thread.arena)
+
+    It is common for some threads in an application to have different memory
+    access / allocation patterns.  Threads with heavy workloads often benefit
+    from explicit binding, e.g. binding very active threads to dedicated arenas
+    may reduce contention at the allocator level.
+
+
+# Content from file ../neon/target/debug/build/tikv-jemalloc-sys-0d332d307c55a95d/out/build/doc_internal/PROFILING_INTERNALS.md:
+
+# jemalloc profiling
+This describes the mathematical basis behind jemalloc's profiling implementation, as well as the implementation tricks that make it effective. Historically, the jemalloc profiling design simply copied tcmalloc's. The implementation has since diverged, due to both the desire to record additional information, and to correct some biasing bugs.
+
+Note: this document is markdown with embedded LaTeX; different markdown renderers may not produce the expected output.  Viewing with `pandoc -s PROFILING_INTERNALS.md -o PROFILING_INTERNALS.pdf` is recommended.
+
+## Some tricks in our implementation toolbag
+
+### Sampling
+Recording our metadata is quite expensive; we need to walk up the stack to get a stack trace. On top of that, we need to allocate storage to record that stack trace, and stick it somewhere where a profile-dumping call can find it. That call might happen on another thread, so we'll probably need to take a lock to do so. These costs are quite large compared to the average cost of an allocation. To manage this, we'll only sample some fraction of allocations. This will miss some of them, so our data will be incomplete, but we'll try to make up for it. We can tune our sampling rate to balance accuracy and performance.
+
+### Fast Bernoulli sampling
+Compared to our fast paths, even a `coinflip(p)` function can be quite expensive. Having to do a random-number generation and some floating point operations would be a sizeable relative cost. However (as pointed out in [[Vitter, 1987](https://dl.acm.org/doi/10.1145/23002.23003)]), if we can orchestrate our algorithm so that many of our `coinflip` calls share their parameter value, we can do better. We can sample from the geometric distribution, and initialize a counter with the result. When the counter hits 0, the `coinflip` function returns true (and reinitializes its internal counter).
+This can let us do a random-number generation once per (logical) coinflip that comes up heads, rather than once per (logical) coinflip. Since we expect to sample relatively rarely, this can be a large win.
+
+### Fast-path / slow-path thinking
+Most programs have a skewed distribution of allocations. Smaller allocations are much more frequent than large ones, but shorter lived and less common as a fraction of program memory. "Small" and "large" are necessarily sort of fuzzy terms, but if we define "small" as "allocations jemalloc puts into slabs" and "large" as the others, then it's not uncommon for small allocations to be hundreds of times more frequent than large ones, but take up around half the amount of heap space as large ones. Moreover, small allocations tend to be much cheaper than large ones (often by a factor of 20-30): they're more likely to hit in thread caches, less likely to have to do an mmap, and cheaper to fill (by the user) once the allocation has been returned.
+
+## An unbiased estimator of space consumption from (almost) arbitrary sampling strategies
+Suppose we have a sampling strategy that meets the following criteria:
+
+  - One allocation being sampled is independent of other allocations being sampled.
+  - Each allocation has a non-zero probability of being sampled.
+
+We can then estimate the bytes in live allocations through some particular stack trace as:
+
+$$ \sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]} $$
+
+where the sum ranges over some index variable of live allocations from that stack, $S_i$ is the size of the $i$'th allocation, and $I_i$ is an indicator random variable for whether or not the $i'th$ allocation is sampled. $S_i$ and $\mathrm{E}[I_i]$ are constants (the program allocations are fixed; the random variables are the sampling decisions), so taking the expectation we get
+
+$$ \sum_i S_i \mathrm{E}[I_i] \frac{1}{\mathrm{E}[I_i]}.$$
+
+This is of course $\sum_i S_i$, as we want (and, a similar calculation could be done for allocation counts as well).
+This is a fairly general strategy; note that while we require that sampling decisions be independent of one another's outcomes, they don't have to be independent of previous allocations, total bytes allocated, etc. You can imagine strategies that:
+
+  - Sample allocations at program startup at a higher rate than subsequent allocations
+  - Sample even-indexed allocations more frequently than odd-indexed ones (so long as no allocation has zero sampling probability)
+  - Let threads declare themselves as high-sampling-priority, and sample their allocations at an increased rate.
+
+These can all be fit into this framework to give an unbiased estimator.
+
+## Evaluating sampling strategies
+Not all strategies for picking allocations to sample are equally good, of course. Among unbiased estimators, the lower the variance, the lower the mean squared error. Using the estimator above, the variance is:
+
+$$
+\begin{aligned}
+& \mathrm{Var}[\sum_i S_i I_i \frac{1}{\mathrm{E}[I_i]}]  \\
+=& \sum_i \mathrm{Var}[S_i I_i \frac{1}{\mathrm{E}[I_i]}] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{Var}[I_i] \\
+=& \sum_i \frac{S_i^2}{\mathrm{E}[I_i]^2} \mathrm{E}[I_i](1 - \mathrm{E}[I_i]) \\
+=& \sum_i S_i^2 \frac{1 - \mathrm{E}[I_i]}{\mathrm{E}[I_i]}.
+\end{aligned}
+$$
+
+We can use this formula to compare various strategy choices. All else being equal, lower-variance strategies are better.
+
+## Possible sampling strategies
+Because of the desire to avoid the fast-path costs, we'd like to use our Bernoulli trick if possible. There are two obvious counters to use: a coinflip per allocation, and a coinflip per byte allocated.
+
+### Bernoulli sampling per-allocation
+An obvious strategy is to pick some large $N$, and give each allocation a $1/N$ chance of being sampled. This would let us use our Bernoulli-via-Geometric trick. Using the formula from above, we can compute the variance as:
+
+$$ \sum_i S_i^2 \frac{1 - \frac{1}{N}}{\frac{1}{N}}  = (N-1) \sum_i S_i^2.$$
+
+That is, an allocation of size $Z$ contributes a term of $(N-1)Z^2$ to the variance.
+
+### Bernoulli sampling per-byte
+Another option we have is to pick some rate $R$, and give each byte a $1/R$ chance of being picked for sampling (at which point we would sample its contained allocation). The chance of an allocation of size $Z$ being sampled, then, is
+
+$$1-(1-\frac{1}{R})^{Z}$$
+
+and an allocation of size $Z$ contributes a term of
+
+$$Z^2 \frac{(1-\frac{1}{R})^{Z}}{1-(1-\frac{1}{R})^{Z}}.$$
+
+In practical settings, $R$ is large, and so this is well-approximated by
+
+$$Z^2 \frac{e^{-Z/R}}{1 - e^{-Z/R}} .$$
+
+Just to get a sense of the dynamics here, let's look at the behavior for various values of $Z$. When $Z$ is small relative to $R$, we can use $e^z \approx 1 + x$, and conclude that the variance contributed by a small-$Z$ allocation is around
+
+$$Z^2 \frac{1-Z/R}{Z/R} \approx RZ.$$
+
+When $Z$ is comparable to $R$, the variance term is near $Z^2$ (we have $\frac{e^{-Z/R}}{1 - e^{-Z/R}} = 1$ when $Z/R = \ln 2 \approx 0.693$). When $Z$ is large relative to $R$, the variance term goes to zero.
+
+## Picking a sampling strategy
+The fast-path/slow-path dynamics of allocation patterns point us towards the per-byte sampling approach:
+
+  - The quadratic increase in variance per allocation in the first approach is quite costly when heaps have a non-negligible portion of their bytes in those allocations, which is practically often the case.
+  - The Bernoulli-per-byte approach shifts more of its samples towards large allocations, which are already a slow-path.
+  - We drive several tickers (e.g. tcache gc) by bytes allocated, and report bytes-allocated as a user-visible statistic, so we have to do all the necessary bookkeeping anyways.
+
+Indeed, this is the approach we use in jemalloc. Our heap dumps record the size of the allocation and the sampling rate $R$, and jeprof unbiases by dividing by $1 - e^{-Z/R}$.  The framework above would suggest dividing by $1-(1-1/R)^Z$; instead, we use the fact that $R$ is large in practical situations, and so $e^{-Z/R}$ is a good approximation (and faster to compute).  (Equivalently, we may also see this as the factor that falls out from viewing sampling as a Poisson process directly).
+
+## Consequences for heap dump consumers
+Using this approach means that there are a few things users need to be aware of.
+
+### Stack counts are not proportional to allocation frequencies
+If one stack appears twice as often as another, this by itself does not imply that it allocates twice as often. Consider the case in which there are only two types of allocating call stacks in a program. Stack A allocates 8 bytes, and occurs a million times in a program. Stack B allocates 8 MB, and occurs just once in a program. If our sampling rate $R$ is about 1MB, we expect stack A to show up about 8 times, and stack B to show up once. Stack A isn't 8 times more frequent than stack B, though; it's a million times more frequent.
+
+### Aggregation must be done after unbiasing samples
+Some tools manually parse heap dump output, and aggregate across stacks (or across program runs) to provide wider-scale data analyses. When doing this aggregation, though, it's important to unbias-and-then-sum, rather than sum-and-then-unbias. Reusing our example from the previous section: suppose we collect heap dumps of the program from a million machines. We then have 8 million occurs of stack A (each of 8 bytes), and a million occurrences of stack B (each of 8 MB). If we sum first, we'll attribute 64 MB to stack A, and 8 TB to stack B. Unbiasing changes these numbers by an infinitesimal amount, so that sum-then-unbias dramatically underreports the amount of memory allocated by stack A.
+
+## An avenue for future exploration
+While the framework we laid out above is pretty general, as an engineering decision we're only interested in fairly simple approaches (i.e. ones for which the chance of an allocation being sampled depends only on its size). Our job is then: for each size class $Z$, pick a probability $p_Z$ that an allocation of that size will be sampled. We made some handwave-y references to statistical distributions to justify our choices, but there's no reason we need to pick them that way. Any set of non-zero probabilities is a valid choice.
+The real limiting factor in our ability to reduce estimator variance is that fact that sampling is expensive; we want to make sure we only do it on a small fraction of allocations. Our goal, then, is to pick the $p_Z$ to minimize variance given some maximum sampling rate $P$. If we define $a_Z$ to be the fraction of allocations of size $Z$, and $l_Z$ to be the fraction of allocations of size $Z$ still alive at the time of a heap dump, then we can phrase this as an optimization problem over the choices of $p_Z$:
+
+Minimize
+
+$$ \sum_Z Z^2 l_Z \frac{1-p_Z}{p_Z} $$
+
+subject to
+
+$$ \sum_Z a_Z p_Z \leq P $$
+
+Ignoring a term that doesn't depend on $p_Z$, the objective is minimized whenever
+
+$$ \sum_Z Z^2 l_Z \frac{1}{p_Z} $$
+
+is. For a particular program, $l_Z$ and $a_Z$ are just numbers that can be obtained (exactly) from existing stats introspection facilities, and we have a fairly tractable convex optimization problem (it can be framed as a second-order cone program). It would be interesting to evaluate, for various common allocation patterns, how well our current strategy adapts. Do our actual choices for $p_Z$ closely correspond to the optimal ones? How close is the variance of our choices to the variance of the optimal strategy?
+You can imagine an implementation that actually goes all the way, and makes $p_Z$ selections a tuning parameter. I don't think this is a good use of development time for the foreseeable future; but I do wonder about the answers to some of these questions.
+
+## Implementation realities
+
+The nice story above is at least partially a lie. Initially, jeprof (copying its logic from pprof)  had the sum-then-unbias error described above.  The current version of jemalloc does the unbiasing step on a per-allocation basis internally, so that we're always tracking what the unbiased numbers "should" be.  The problem is, actually surfacing those unbiased numbers would require a breaking change to jeprof (and the various already-deployed tools that have copied its logic). Instead, we use a little bit more trickery. Since we know at dump time the numbers we want jeprof to report, we simply choose the values we'll output so that the jeprof numbers will match the true numbers.  The math is described in `src/prof_data.c` (where the only cleverness is a change of variables that lets the exponentials fall out).
+
+This has the effect of making the output of jeprof (and related tools) correct, while making its inputs incorrect.  This can be annoying to human readers of raw profiling dump output.
 
 
 # Content from file ../neon/target/debug/build/tikv-jemalloc-sys-1650c6c05afd82a6/out/build/INSTALL.md:
@@ -26513,7 +27938,7 @@ Inside that dir, a `bin/postgres` binary should be present.
 `COMPATIBILITY_POSTGRES_DISTRIB_DIR`: The directory where the prevoius version of postgres distribution can be found.
 `DEFAULT_PG_VERSION`: The version of Postgres to use,
 This is used to construct full path to the postgres binaries.
-Format is 2-digit major version nubmer, i.e. `DEFAULT_PG_VERSION=16`
+Format is 2-digit major version nubmer, i.e. `DEFAULT_PG_VERSION=17`
 `TEST_OUTPUT`: Set the directory where test state and test output files
 should go.
 `RUST_LOG`: logging configuration to pass into Neon CLI
@@ -26771,21 +28196,37 @@ Also consider:
 * Create a Neon project on staging.
 * Grant the superuser privileges to the DB user.
 * (Optional) create a branch for testing
-* Configure the endpoint by updating the control-plane database with the following settings:
+* Add the following settings to the `pg_settings` section of the default endpoint configuration for the project using the admin interface:
   * `Timeone`: `America/Los_Angeles`
   * `DateStyle`: `Postgres,MDY`
   * `compute_query_id`: `off`
+* Add the following section to the project configuration:
+```json
+"preload_libraries": {
+    "use_defaults": false,
+    "enabled_libraries": []
+  }
+```
 * Checkout the actual `Neon` sources
 * Patch the sql and expected files for the specific PostgreSQL version, e.g. for v17:
 ```bash
 $ cd vendor/postgres-v17
 $ patch -p1 <../../compute/patches/cloud_regress_pg17.patch
 ```
+* Set the environment variables (please modify according your configuration):
+```bash
+$ export DEFAULT_PG_VERSION=17
+$ export BUILD_TYPE=release
+```
+* Build the Neon binaries see [README.md](../../README.md)
 * Set the environment variable `BENCHMARK_CONNSTR` to the connection URI of your project.
-* Set the environment variable `PG_VERSION` to the version of your project.
+* Update poetry, run
+```bash
+$ scripts/pysync
+```
 * Run 
 ```bash
-$ pytest -m remote_cluster -k cloud_regress
+$ scripts/pytest -m remote_cluster -k cloud_regress
 ```
 
 # Content from file ../neon/test_runner/logical_repl/README.md:
@@ -26829,7 +28270,7 @@ easier to see if you have compile errors without scrolling up.
 You may also need to run `./scripts/pysync`.
 
 Then run the tests
-`DEFAULT_PG_VERSION=16 NEON_BIN=./target/release poetry run pytest test_runner/performance`
+`DEFAULT_PG_VERSION=17 NEON_BIN=./target/release poetry run pytest test_runner/performance`
 
 Some handy pytest flags for local development:
 - `-x` tells pytest to stop on first error
@@ -26837,7 +28278,8 @@ Some handy pytest flags for local development:
 - `-k` selects a test to run
 - `--timeout=0` disables our default timeout of 300s (see `setup.cfg`)
 - `--preserve-database-files` to skip cleanup
-- `--out-dir` to produce a JSON with the recorded test metrics
+- `--out-dir` to produce a JSON with the recorded test metrics.
+  There is a post-processing tool at `test_runner/performance/out_dir_to_csv.py`.
 
 # What performance tests do we have and how we run them
 
@@ -26879,7 +28321,7 @@ It supports mounting snapshots using overlayfs, which improves iteration time.
 Here's a full command line.
 
 ```
-RUST_BACKTRACE=1 NEON_ENV_BUILDER_USE_OVERLAYFS_FOR_SNAPSHOTS=1 DEFAULT_PG_VERSION=16 BUILD_TYPE=release \
+RUST_BACKTRACE=1 NEON_ENV_BUILDER_USE_OVERLAYFS_FOR_SNAPSHOTS=1 DEFAULT_PG_VERSION=17 BUILD_TYPE=release \
     ./scripts/pytest test_runner/performance/pageserver/pagebench/test_pageserver_max_throughput_getpage_at_latest_lsn.py
 ````
 
@@ -26955,6 +28397,102 @@ export BENCHMARK_CONNSTR=postgres://user:pass@ep-abc-xyz-123.us-east-2.aws.neon.
 ./scripts/pytest -m remote_cluster -k serverless
 ```
 
+
+# Content from file ../neon/test_runner/random_ops/README.md:
+
+# Random Operations Test for Neon Stability
+
+## Problem Statement
+
+Neon needs robust testing of Neon's stability to ensure reliability for users. The random operations test addresses this by continuously exercising the API with unpredictable sequences of operations, helping to identify edge cases and potential issues that might not be caught by deterministic tests.
+
+### Key Components
+
+#### 1. Class Structure
+
+The test implements three main classes to model the Neon architecture:
+
+- **NeonProject**: Represents a Neon project and manages the lifecycle of branches and endpoints
+- **NeonBranch**: Represents a branch within a project, with methods for creating child branches, endpoints, and performing point-in-time restores
+- **NeonEndpoint**: Represents an endpoint (connection point) for a branch, with methods for managing benchmarks
+
+#### 2. Operations Tested
+
+The test randomly performs the following operations with weighted probabilities:
+
+- **Creating branches** 
+- **Deleting branches**
+- **Adding read-only endpoints**
+- **Deleting read-only endpoints**
+- **Restoring branches to random points in time**
+
+#### 3. Load Generation
+
+Each branch and endpoint is loaded with `pgbench` to simulate real database workloads during testing. This ensures that the operations are performed against branches with actual data and ongoing transactions.
+
+#### 4. Error Handling
+
+The test includes robust error handling for various scenarios:
+- Branch limit exceeded
+- Connection timeouts
+- Control plane timeouts (HTTP 524 errors)
+- Benchmark failures
+
+#### 5. CI Integration
+
+The test is integrated into the CI pipeline via a GitHub workflow that runs daily, ensuring continuous validation of API stability.
+
+## How It Works
+
+1. The test creates a Neon project using the Public API
+2. It initializes the main branch with pgbench data
+3. It performs random operations according to the weighted probabilities
+4. During each operation, it checks that all running benchmarks are still operational
+5. The test cleans up by deleting the project at the end
+
+## Configuration
+
+The test can be configured with:
+- `RANDOM_SEED`: Set a specific random seed for reproducible test runs
+- `NEON_API_KEY`: API key for authentication
+- `NEON_API_BASE_URL`: Base URL for the API (defaults to staging environment)
+- `NUM_OPERATIONS`: The number of operations to be performed
+
+## Running the Test
+
+The test is designed to run in the CI environment but can also be executed locally:
+
+```bash
+NEON_API_KEY=your_api_key ./scripts/pytest test_runner/random_ops/test_random_ops.py -m remote_cluster
+```
+
+To run with a specific random seed for reproducibility:
+
+```bash
+RANDOM_SEED=12345 NEON_API_KEY=your_api_key ./scripts/pytest test_runner/random_ops/test_random_ops.py -m remote_cluster
+```
+
+To run with the custom number of operations:
+
+```bash
+NUM_OPERATIONS=500 NEON_API_KEY=your_api_key ./scripts/pytest test_runner/random_ops/test_random_ops.py -m remote_cluster
+```
+
+## Benefits
+
+This test provides several key benefits:
+1. **Comprehensive API testing**: Exercises multiple API endpoints in combination
+2. **Edge case discovery**: Random sequences may uncover issues not found in deterministic tests
+3. **Stability validation**: Continuous execution helps ensure long-term API reliability
+4. **Regression prevention**: Detects if new changes break existing API functionality
+
+## Future Improvements
+
+Potential enhancements to the test could include:
+1. Adding more API operations, e.g. `reset_to_parent`, `snapshot`, etc 
+2. Implementing more sophisticated load patterns
+3. Adding metrics collection to measure API performance
+4. Extending test duration for longer-term stability validation
 
 # Content from file ../neon/test_runner/sql_regress/README.md:
 

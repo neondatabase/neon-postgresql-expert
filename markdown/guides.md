@@ -9662,7 +9662,8 @@ This method uses Neon's managed server and OAuth authentication.
 6. **Save** the `cline_mcp_settings.json` file.
 7. You should see a notification in VS Code that says: "MCP servers updated".
    ![Cline MCP Server Updated](/docs/guides/cline-mcp-config-update.png)
-8. Cline is now connected to Neon's remote MCP server.
+8. An OAuth window will open in your browser. Follow the prompts to authorize Cline to access your Neon account. Once authorized, Cline will be connected to Neon's remote MCP server.
+   ![Neon OAuth window](/docs/guides/neon-oauth-window.png)
 
 <Admonition type="note">
   The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
@@ -9748,7 +9749,7 @@ Neon MCP server exposes the following actions, which primarily map to **Neon API
 - `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
 - `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
 
-These actions enable any MCP client like Cline to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
+These actions enable any MCP client like Cline to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon's branching for safe preview and commit.
 
 ## Development Workflow: Adding a Column with Cline and Neon MCP
 
@@ -9791,9 +9792,9 @@ Cline: I'll use the prepare_database_migration tool to add a created_at column t
 > Cline wants to use a tool on the neon MCP server: run_sql
 > The created_at column has been successfully added to the table in the temporary branch with the correct data type and default value. Let me verify the data by selecting a few rows to ensure everything looks correct.
 > Cline wants to use a tool on the neon MCP server: run_sql
-> The migration looks good - the created_at column has been added successfully and is populated with timestamps. Now I can complete the migration to apply these changes to the main branch.
+> The migration looks good - the created_at column has been added successfully and is populated with timestamps. Now I can complete the migration to apply these changes to the production branch.
 > Cline wants to use a tool on the neon MCP server: complete_database_migration
-> The migration has been successfully completed and the temporary branch has been deleted. Let me verify the changes in the main branch and show the updated table structure.
+> The migration has been successfully completed and the temporary branch has been deleted. Let me verify the changes in the production branch and show the updated table structure.
 > Cline wants to use a tool on the neon MCP server: run_sql
 > The migration has been successfully completed. The created_at column has been added to the table and is populated with timestamps.
 ```
@@ -9803,7 +9804,7 @@ Cline: I'll use the prepare_database_migration tool to add a created_at column t
 - **Natural language interaction:** You can use simple, conversational English to interact with your database through Cline.
 - **Step-by-step guidance:** Cline confirms each step and provides details like branch names and migration IDs.
 - **MCP Tools in Action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
-- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the main branch.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the production branch.
 
 You can verify the changes in your Neon Console or by querying the database directly.
 
@@ -12393,6 +12394,7 @@ This method uses Neon's managed server and OAuth authentication.
 4. **Restart Cursor** or reload the window (`Developer: Reload Window` from the Command Palette). If Cursor prompts you to Enable the MCP server, click **Enable**.
 
 5. An OAuth window will open in your browser. Follow the prompts to authorize Cursor to access your Neon account.
+   ![Neon OAuth window](/docs/guides/neon-oauth-window.png)
 
 6. You can verify that the connection is successful by checking the **MCP Servers** section in Cursor settings.
    ![Cursor with Neon MCP Tools](/docs/guides/cursor-with-neon-mcp-tools.png)
@@ -12569,18 +12571,18 @@ Cursor: I'll help you add a created_at column to the playing_with_neon table. I'
 > Called MCP Tool (prepare_database_migration)
 > Let me verify the change in the temporary branch to make sure it was applied correctly.
 > Called MCP Tool (run_sql)
-> I've added the created_at column to the playing_with_neon table in a temporary branch. Would you like to commit this migration to the main branch?
+> I've added the created_at column to the playing_with_neon table in a temporary branch. Would you like to commit this migration to the production branch?
 > Migration Details:
 > Migration ID: a65babcd-d1cc-401f-89b5-762570570102
 > Temporary Branch Name: br-silent-cherry-a1eqrl6i
 > Temporary Branch ID: br-silent-cherry-a1eqrl6i
 > Migration Result: Success
-> Please let me know if you'd like to proceed with applying this change to the main branch.
+> Please let me know if you'd like to proceed with applying this change to the production branch.
 
 User: yeah do it
-Cursor: I'll complete the migration and apply the changes to the main branch.
+Cursor: I'll complete the migration and apply the changes to the production branch.
 > Called MCP Tool (complete_database_migration)
-> The migration has been successfully completed! The created_at column has been added to your table in the main branch, and the temporary branch has been cleaned up.
+> The migration has been successfully completed! The created_at column has been added to your table in the production branch, and the temporary branch has been cleaned up.
 ```
 
 **Key takeaways:**
@@ -12588,7 +12590,7 @@ Cursor: I'll complete the migration and apply the changes to the main branch.
 - **Natural language interaction:** You can use simple, conversational English to interact with your database.
 - **Step-by-step guidance:** Cursor (Claude) confirms each step and provides details like branch names and migration IDs.
 - **MCP Tools in Action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
-- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the main branch.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the production branch.
 
 You can verify the changes in your Neon Console or by querying the database directly.
 
@@ -18894,7 +18896,7 @@ This workflow does the following:
 Using Neon's branching feature in your CI pipeline offers several advantages:
 
 - You can test your migrations and schema changes in a separate branch without affecting your production or staging databases.
-- Catch migration issues before they reach your main branch or production environment.
+- Catch migration issues before they reach your production branch or production environment.
 - Ensures that your database schema changes are always tested alongside your application code changes.
 - Allows you to run your full test suite against the updated schema without risk to existing data.
 
@@ -21033,7 +21035,7 @@ There has been a feature request to add support for transactions in the golang-m
 
 Always test migrations in a non-production environment first. Ideally, have a staging environment that mirrors production as closely as possible.
 
-You can achieve this by setting up a separate Neon branch to test migrations before applying them to your main branch. You can learn more about Neon branches in the [Neon documentation](https://neon.tech/docs/introduction/branching).
+You can achieve this by setting up a separate Neon branch to test migrations before applying them to your production branch. You can learn more about Neon branches in the [Neon documentation](https://neon.tech/docs/introduction/branching).
 
 ### 5. Version Control Your Migrations
 
@@ -23628,6 +23630,412 @@ The above query returns the following, which shows the shortest path from node 1
 | 2   | 2        | 2    | 2    | 3    | 4        |
 | 3   | 3        | 3    | 3    | 2.5  | 7        |
 | 4   | 4        | 4    | 4    | 0    | 9.5      |
+
+
+# Dynamic Routing with Hasura and Neon
+
+---
+title: Dynamic Routing with Hasura and Neon
+subtitle: Leverage Neon's branching with Hasura's dynamic routing for powerful development, testing, and preview environments.
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-04-20T00:00:00.000Z'
+updatedOn: '2025-04-20T00:00:00.000Z'
+---
+
+Managing different database environments for development, testing, staging, and production can be complex. Traditional methods often involve provisioning separate database instances, managing complex data synchronization scripts, or dealing with slow snapshot restores. Neon's serverless Postgres brings efficient, Git-like branching to your database, while Hasura provides an instant GraphQL API layer.
+
+This guide demonstrates how to combine the power of [Neon's database branching](/docs/introduction/branching) with [Hasura's Dynamic Database Routing](https://hasura.io/docs/2.0/databases/database-config/dynamic-db-connection/) feature. This combination allows you to create isolated database environments instantly using Neon branches and dynamically route GraphQL requests from Hasura to the appropriate branch based on request context (like HTTP headers or session variables), streamlining your development, testing, and preview workflows. By leveraging Neon's branching and Hasura's dynamic routing, you can effectively consolidate your infrastructure, serving multiple development, testing, or preview environments from only one Neon project and one Hasura instance.
+
+## Prerequisites
+
+Before you start, ensure you have the following:
+
+- **A Neon Account:** Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup).
+- **A Neon Project:** You need to have a Neon project. If you do not have one, create it via [pg.new](https://pg.new)
+- **A Hasura Instance:** A running Hasura instance (v2.x or later). This can be Hasura Cloud Professional or Enterprise tiers, or a self-hosted Enterprise instance. Dynamic routing is not available in the free tier.
+
+## Understanding the core concepts
+
+### Neon Branching
+
+Neon allows you to create branches of your Postgres database almost instantly. Key features include:
+
+- **Copy-on-write:** Branches are lightweight clones. They initially share the parent's data without duplication. Storage costs only increase for the _changes_ (deltas) made within a branch.
+- **Isolation:** Each branch operates independently. Changes made in one branch do not affect the parent or other branches. This is perfect for development, testing, or running experiments without impacting production data.
+- **Speed:** Creating a branch takes only a few seconds.
+- **Management:** Branches can be created and managed via the Neon Console, Neon API, or Neon CLI.
+- **Connection string:** Each branch gets its own unique connection string, allowing applications to connect directly to it.
+
+Think of Neon branching like Git branching, but for your database.
+
+### Hasura Dynamic Database Routing
+
+Available in Hasura Cloud Professional/Enterprise and Self-Hosted Enterprise, this feature allows Hasura to route GraphQL requests to different database connections based on request parameters. It uses two main components:
+
+- **Connection set:** A named collection of database connections (including the primary database and potentially read replicas or other databases/branches) that Hasura can choose from.
+- **Connection template:** A template written in [Kriti templating language](https://hasura.io/docs/2.0/api-reference/kriti-templating/) that defines the logic for selecting a connection from the Connection Set for a given GraphQL request.
+
+The Kriti template has access to request context variables like:
+
+- `$.request.headers`: HTTP headers from the client request (e.g., `x-hasura-branch-name`).
+- `$.request.session`: Hasura session variables (e.g., `x-hasura-role`, `x-hasura-user-id`).
+- `$.request.query`: Information about the GraphQL query (e.g., `operation_type`, `operation_name`).
+
+The template must resolve to one of the predefined connection identifiers:
+
+- `$.primary`: The main database connection defined for the source.
+- `$.read_replicas`: A randomly chosen read replica (if configured).
+- `$.connection_set.<member_name>`: A specific connection defined within the connection set.
+- `$.default`: The default Hasura behavior (route to read replicas for queries/subscriptions, primary for mutations, or just primary if no replicas).
+
+## Conceptual overview
+
+Here's a high-level overview of how to set up dynamic routing with Neon and Hasura:
+
+1.  **Create Neon branches:** For each environment you need (e.g., `dev`, `staging`, `feature-x`), create a corresponding branch in your Neon project. Obtain the connection string for each branch.
+2.  **Configure Hasura data source:** Add your _primary_ Neon database as a data source in Hasura.
+3.  **Define connection set:** In the Hasura data source configuration, add the connection strings of your Neon branches to the Connection set, giving each a unique, descriptive name (e.g., `dev_branch`, `staging_branch`, `feature_x_branch`).
+4.  **Implement connection template:** Write a Kriti template that inspects the incoming GraphQL request (e.g., checks for a specific header like `x-hasura-branch-name`) and resolves to the appropriate member name in the Connection set (e.g., `$.connection_set.dev_branch`).
+5.  **Route Requests:** Send GraphQL requests to Hasura with the necessary context (e.g., the `x-hasura-branch-name` header) to route them to the desired Neon branch.
+
+We shall discuss the implementation in detail in the next section.
+
+## Step-by-step implementation
+
+### Create Neon branches
+
+You can create branches using the [Neon Console](/docs/introduction/branching/#create-a-branch), [API](/docs/guides/branching-neon-api), or [CLI](/docs/guides/branching-neon-cli). For detailed instructions, follow [Neon's Create a branch guide](/docs/manage/branches#create-a-branch) to set up branches for your development and feature environments.
+
+Copy the connection strings for each branch you create; you will need them later.
+
+### Configure Hasura data source
+
+If you haven't already, add your Neon database as a data source in Hasura. Follow the step by-step guide on [Connect from Hasura Cloud to Neon](/docs/guides/hasura) to set up the primary connection.
+
+### Define the connection set in Hasura
+
+Now, add your Neon branches to the connection set for the data source you just configured:
+
+1.  Go to the `Hasura Console -> Data -> Manage`.
+2.  Click "Edit" next to your data source.
+
+        ![Edit Data Source](/docs/guides/hasura/edit-data-source.png)
+
+3.  Navigate to the `Dynamic Routing` tab.
+4.  Under "Available Connections for Templating", click `+ Add Connection`.
+    ![Add Connections for Templating](/docs/guides/hasura/add-connection-for-templating.png)
+5.  In the modal:
+
+    - **Connection name:** Enter a unique, lowercase name (e.g., `dev_branch`). This name will be used in the Kriti template.
+    - **Connect Database via:** Select `Database URL`.
+    - **Database URL:** Paste the connection string for your `dev` Neon branch which you copied earlier in the [Create Neon Branches](#create-neon-branches) section.
+      ![Add Connection Modal](/docs/guides/hasura/add-connection-modal.png)
+    - Click `Add Connection`.
+
+      <Admonition type="tip">
+      To enhance security and manageability, consider using environment variables in Hasura instead of hardcoding the connection string. To do this, navigate to **Hasura Project settings** > **Env vars** > **New env var** and create a new variable (e.g., `NEON_DATABASE_URL_DEV_BRANCH`) with your connection string as its value.
+          
+          ![Create Environment Variable](/docs/guides/hasura/create-env-var.png)
+
+      Then, in the connection modal, select **Connect database via Environment variable** and enter the variable name you created. This approach keeps your connection string secure and simplifies future updates.
+      </Admonition>
+
+6.  Repeat step 5 for other branches, e.g., `staging_branch`, `feature_x_branch`, etc., using their respective connection strings.
+
+You should now see `dev_branch`, `feature_x_branch` and `staging_branch` listed under "Available Connections for Templating".
+
+    ![Available Connections for Templating](/docs/guides/hasura/available-connections-for-templating.png)
+
+### Create the connection template
+
+This template defines the routing logic. We'll create a template that routes requests based on an `x-hasura-branch-name` HTTP header.
+
+1.  In the `Dynamic Routing` tab for your data source, find the "Connection Template" section.
+2.  Select `Custom Template`.
+    ![Custom Template Kriti](/docs/guides/hasura/custom-template-kriti.png)
+3.  Enter the following Kriti template in the editor:
+
+    ```json
+    {{ if ($.request.headers?["x-hasura-branch-name"] == "dev")}}
+        {{$.connection_set.dev_branch}}
+    {{ elif ($.request.headers?["x-hasura-branch-name"] == "feature-x")}}
+        {{$.connection_set.feature_x_branch}}
+    {{ elif ($.request.headers?["x-hasura-branch-name"] == "staging")}}
+        {{$.connection_set.staging_branch}}
+    {{ else }}
+        {{$.default}}
+    {{ end }}
+    ```
+
+4.  Click `Update Connection Template` to save it.
+
+#### Explanation of the template
+
+- `$.request.headers?["x-hasura-branch-name"]`: Accesses the header value. The `?` handles cases where the header might be missing.
+- `== "dev"` / `== "feature-x"` / `== "staging"`: Checks if the header matches the expected branch name.
+- `{{$.connection_set.dev_branch}}`: If the header matches 'dev', the template resolves to use the connection named `dev_branch` from the set.
+- `{{$.connection_set.feature_x_branch}}`: If the header matches 'feature-x', route to that connection.
+- `{{$.connection_set.staging_branch}}`: If the header matches 'staging', route to that connection.
+- The `else` block provides fallback behavior: mutations go to the default (primary) branch, while other operations follow the default routing. You can adjust this fallback as needed.
+
+<Admonition type="note">
+You can utilize any attribute from the request context within your Kriti template. For instance, you can use session variables to route requests based on user roles or IDs.
+
+Here's an example of how you might check the request session:
+
+    ```json
+    {{ if ($.request.session.x-hasura-role == "manager")}}
+        {{$.connection_set.manager_connection}}
+    {{ elif ($.request.session.x-hasura-role == "employee")}}
+        {{$.connection_set.employee_connection}}
+    {{ else }}
+        {{$.default}}
+    {{ end }}
+    ```
+
+This approach enables more complex routing logic by directing requests according to the user's role.
+
+For more advanced routing logic, or for information on dynamically creating and updating connection templates, refer to [Hasura's Dynamic Routing for Databases](https://hasura.io/docs/2.0/databases/database-config/dynamic-db-connection/).
+
+</Admonition>
+
+### Testing the connection template with Hasura Validate
+
+Hasura provides a convenient way to test your connection template directly within the Console. This simulates a GraphQL request based on the context you provide (headers, session variables, etc.).
+
+1.  You can find the **Validate** button in the **Dynamic Routing** tab of your data source configuration.
+    ![Validate Dynamic Routing](/docs/guides/hasura/validate-dynamic-routing.png)
+
+2.  **Simulate Request Context:**
+    This modal allows you to define the context (`$.request`) that your Kriti template will evaluate against.
+
+    - **Test Routing to `dev_branch`:**
+
+      - In the **Headers** section, click `+ Add`.
+      - Enter `x-hasura-branch-name` as the header key and `dev` as the value.
+      - Leave **Operation Type** as `Query`.
+      - Click the `► Validate` button at the _bottom right_ of the modal.
+      - **Expected Result:** The output below should show `Routing to: $.connection_set. Value: dev_branch`.
+        ![Validate Dynamic Routing to dev_branch](/docs/guides/hasura/validate-dynamic-routing-dev-branch.png)
+
+    - **Test Fallback Routing (Query):**
+      - Remove the `x-hasura-branch-name` header
+      - Click `► Validate`.
+      - **Expected Result:** Based on our template's fallback logic, this should show `Routing to: $.default`.
+
+This validation provides a quick and safe way to confirm your routing logic works as expected under different conditions before applying it to live traffic.
+
+### Update your application code
+
+Now that the connection template is validated, you're ready to leverage Hasura's dynamic routing with your Neon branches. Send the `x-hasura-branch-name` header along with your GraphQL requests, setting its value to match the target branch identifier (e.g., `dev`, `feature-x`, `staging`). This mechanism provides precise control and can be easily incorporated into your application code or automated within CI/CD processes to manage environments effectively.
+
+## Read replicas and routing
+
+Neon allows you to create [Read Replicas](/docs/introduction/read-replicas) for your database branches, which are separate compute endpoints designed for handling read-only traffic. Hasura's Dynamic Routing feature allows you to leverage these replicas strategically using connection templates.
+
+### Creating read replicas in Neon
+
+First, create the necessary read replicas for your Neon branches by following the [Create and manage Read Replicas guide](/docs/guides/read-replica-guide).
+
+Note that replicas can be added to any branch, including the primary. Once a replica is created, copy its connection string, which you'll need for the next step.
+
+### Configuring read replicas in Hasura
+
+To configure read replicas for your primary Neon data source within Hasura, follow these steps:
+
+1.  Go to the `Hasura Console -> Data -> Manage`.
+2.  Locate your primary data source and click the "Edit" button next to it.
+3.  Navigate to the `Connection Details` tab.
+4.  Scroll down to the "Read Replicas" section and click `+ Add New Read Replica`.
+    ![Add Read Replica](/docs/guides/hasura/add-read-replica.png)
+5.  In the modal, paste the connection string **you copied earlier for your Neon read replica** into the `Database URL` field, then click `Add Read Replica` (within the modal).
+6.  (Optional) Repeat step 5 if you have multiple read replicas to add for this primary source.
+7.  **Finally, ensure you click** the main `Update Connection` button at the bottom of the page to save these changes to the data source configuration.
+    ![Hasura Update Connection](/docs/guides/hasura/update-connection-read-replica.png)
+
+### Kriti variables for replica routing
+
+Within your Kriti connection template, you have access to specific variables that control how Hasura interacts with read replicas (which are typically configured in the main Data Source 'Connection Settings' for the primary connection):
+
+- **`{{$.primary}}`**: Explicitly routes the request to the primary read-write connection defined for the data source, bypassing any read replicas.
+- **`{{$.read_replicas}}`**: Routes the request to a _randomly chosen_ read replica from the list configured in the main 'Connection Settings'. This is only valid for `query` and `subscription` operations. Using it for `mutation` operations will result in an error.
+- **`{{$.default}}`**: Routes the request according to Hasura's default behavior:
+  - If read replicas _are_ configured: Routes `query`/`subscription` operations to a random read replica and `mutation` operations to the `primary` connection.
+  - If read replicas _are not_ configured: Routes all operations to the `primary` connection.
+- **`{{$.connection_set.<member_name>}}`**: Routes the request to a specific named connection (like a Neon branch connection string) defined in your Dynamic Routing connection set, bypassing default replica logic.
+
+### Implementing routing logic in Kriti
+
+You can use conditional logic within your Kriti template to decide when to utilize read replicas. The primary use case is often within the fallback logic (when a specific branch isn't targeted via a header). The `default` connection in Hasura will automatically route to a read replica if one is configured.
+
+Here's an example of how you might implement this in your Kriti template:
+
+    ```json
+    {{ if ($.request.headers?["x-hasura-branch-name"] == "dev")}}
+        {{$.connection_set.dev_branch}}
+    {{ elif ($.request.headers?["x-hasura-branch-name"] == "feature-x")}}
+        {{$.connection_set.feature_x_branch}}
+    {{ elif ($.request.headers?["x-hasura-branch-name"] == "staging")}}
+        {{$.connection_set.staging_branch}}
+    {{ elif ($.request.query.operation_type == "mutation")}}
+        {{$.primary}}
+    {{ elif ($.request.headers?["no-stale-read"] == "true")}}
+        {{$.primary}}
+    {{ else }}
+        {{$.default}}
+    {{ end }}
+    ```
+
+#### Explanation of the fallback logic:
+
+1.  **Mutations:** Always directed to `{{$.primary}}` for write capability.
+2.  **Fresh reads:** If the `no-stale-read: true` header is present (for queries/subscriptions), route to `{{$.primary}}` to bypass potential replication lag on replicas.
+3.  **Standard reads:** For all other queries/subscriptions in the fallback scenario, route to `{{$.default}}`. This directs Hasura to use one of the read replicas configured in the main connection settings. If no replicas are configured there, Hasura falls back gracefully to the primary connection.
+4.  **Branch-specific reads:** If a specific branch is targeted via the `x-hasura-branch-name` header, route to that branch connection.
+
+## Considerations and limitations
+
+- **Schema consistency:** Hasura derives the GraphQL schema _only_ from the `primary` connection. All branches in your connection set _should_ have a compatible schema. Hasura does not verify schema consistency across the connection set members. Mismatched schemas can lead to runtime errors when a request is routed to a branch with an incompatible schema.
+- **Migrations:** Hasura CLI migrations can only be applied directly to the `primary` connection defined in the source configuration.
+- **Event triggers:** Hasura Event Triggers are typically configured on the primary database and will only fire for mutations executed on the `primary` connection. Mutations routed to other branches in the connection set will _not_ trigger these events.
+
+## Conclusion
+
+Combining Neon's instant database branching with Hasura's dynamic routing offers a powerful and flexible way to manage multiple database environments for development, testing, and previews. By creating lightweight, isolated Neon branches and using Hasura's connection templates to intelligently route requests based on context, you can significantly streamline your workflows, improve developer productivity, and ensure safer testing without the overhead of managing multiple full databases and GraphQL instances.
+
+## Resources
+
+- [Neon Branching](/docs/introduction/branching)
+- [Neon Read Replica](/docs/introduction/read-replicas)
+- [Hasura Dynamic Database Connection Routing](https://hasura.io/docs/2.0/databases/database-config/dynamic-db-connection/)
+- [Hasura Kriti Templating Specification](https://hasura.io/docs/2.0/api-reference/kriti-templating/)
+- [Hasura Read Replicas](https://hasura.io/docs/2.0/databases/database-config/read-replicas/)
+
+
+# Using Postgres as a Key-Value Store with hstore and JSONB
+
+---
+title: Using Postgres as a Key-Value Store with hstore and JSONB
+subtitle: A step-by-step guide describing how to use hstore and JSONB for storing key-value pairs in Postgres
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-04-15T13:24:36.612Z'
+updatedOn: '2025-04-15T13:24:36.612Z'
+---
+
+PostgreSQL is well known for its relational features, but it also offers powerful tools for working with key-value pairs. If you want to store flexible, schema-less data in a Postgres column, you can use either the [`hstore` extension](https://www.postgresql.org/docs/current/hstore.html) or the built-in [JSONB type](https://www.postgresql.org/docs/current/datatype-json.html).
+
+## Steps
+
+- [Install and enable `hstore`](#install-and-enable-hstore)
+- [Create a table with an `hstore` column](#create-a-table-with-an-hstore-column)
+- [Insert and query key-value data with `hstore`](#insert-and-query-key-value-data-with-hstore)
+- [Using `JSONB`](#using-jsonb)
+- [Create a table with a `JSONB` column](#create-a-table-with-a-jsonb-column)
+- [Insert and query key-value data with `JSONB`](#insert-and-query-key-value-data-with-jsonb)
+- [Index key-value data for performance](#index-key-value-data-for-performance)
+- [`hstore` vs `JSONB`](#hstore-vs-jsonb)
+
+### Install and enable `hstore`
+
+To create columns with the `hstore` type, you need to install the extension. In Neon, `hstore` is already installed, you just need to enable it with the following command.
+
+```sql
+CREATE EXTENSION IF NOT EXISTS hstore;
+```
+
+### Create a table with an `hstore` column
+
+You can store key-value pairs in a column using the `hstore` type. Here’s an example of a products table with an `attributes` column of type `hstore`.
+
+```sql
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  attributes HSTORE
+);
+```
+
+### Insert and query key-value data with `hstore`
+
+Each row in the `attributes` column can store a map of keys and values as strings as follows. Keep in mind that `hstore` can only store string keys and string values: you can't store numbers or objects as `hstore` values.
+
+```sql
+INSERT INTO products (name, attributes)
+VALUES ('Backpack', 'color => blue, size => large'),
+       ('Jacket', 'color => red, waterproof => yes');
+```
+
+You can then query based on the `attributes` row's keys and values using operators like `->` and `?` as follows.
+
+```sql
+-- Get products with a 'color' key
+SELECT * FROM products WHERE attributes ? 'color';
+
+-- Get products where color is 'blue'
+SELECT * FROM products WHERE attributes -> 'color' = 'blue';
+```
+
+### Using `JSONB`
+
+PostgreSQL’s `JSONB` type stores structured JSON data in a binary format. It supports indexing and nesting, making it great for more complex data structures.
+
+### Create a table with a `JSONB` column
+
+The following command creates a similar products table where `attributes` has type `JSONB` instead of `hstore`.
+
+```sql
+CREATE TABLE products_json (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  attributes JSONB
+);
+```
+
+### Insert and query key-value data with `JSONB`
+
+You can then insert products with `attributes` using JSON syntax as follows.
+
+```sql
+INSERT INTO products_json (name, attributes)
+VALUES ('Backpack', '{"color": "blue", "size": "large"}'),
+       ('Jacket', '{"color": "red", "waterproof": true}');
+```
+
+You can then query the `attributes` row by keys and values using operators like `?`, `@>`, and `->>`.
+
+```sql
+-- Get products with a 'waterproof' key
+SELECT * FROM products_json WHERE attributes ? 'waterproof';
+
+-- Get products where color is 'blue'
+SELECT * FROM products_json
+WHERE attributes @> '{"color": "blue"}';
+
+-- Get products where color is 'blue' using `->>`
+SELECT * FROM products_json
+WHERE attributes->>'color' = 'blue';
+```
+
+### Index key-value data for performance
+
+[GIN indexes](https://www.postgresql.org/docs/current/gin-intro.html) allow you to index `hstore` and `JSONB` properties, which can make your queries faster as your data grows. The following command shows how you can create a GIN index on the `attributes` property for both tables - GIN indexes work on both `hstore` and `JSONB` rows.
+
+```sql
+-- hstore
+CREATE INDEX idx_hstore_attrs ON products USING GIN (attributes);
+
+-- JSONB
+CREATE INDEX idx_jsonb_attrs ON products_json USING GIN (attributes);
+```
+
+### `hstore` vs `JSONB`
+
+Both `hstore` and `JSONB` offer an alternative to external key-value stores and enable you to keep your key-value data in the same place as the rest of your data. Whether you choose `hstore` or `JSONB` depends on your needs:
+
+- If you need nested data, arrays, or any data type beyond strings, use `JSONB`.
+- If you need extra performance and are certain you don't need more complex data types, `hstore` can be faster for very simple key-value lookups and use less disk space.
 
 
 # Getting started with LangGraph + Neon
@@ -31609,7 +32017,7 @@ Some key benefits of Neon branching include:
 - **Isolation:** Branches are completely isolated from the original database and other branches, ensuring that the operations performed on one do not affect others.
 - **Efficiency:** Branching is quick and does not burden the parent database, as it uses a copy-on-write mechanism. This means the original database's performance remains unaffected, even when multiple branches are in use.
 - **Flexibility:** You can modify or delete branches without impacting the original data. Changes to a branch are independent and only record the differences from the point of branch creation.
-- **Simplicity:** Every Neon project starts with a main branch, and new branches can be created from this root or from any other branch. This structure simplifies managing different versions of your database.
+- **Simplicity:** Every Neon project starts with a production branch, and new branches can be created from this root or from any other branch. This structure simplifies managing different versions of your database.
 
 Neon's branching is particularly useful in continuous integration and delivery pipelines, enhancing developer productivity by reducing the setup time needed for test environments.
 
@@ -32294,7 +32702,7 @@ class WorkExperience extends Model
 }
 ```
 
-Let's quickly note down the most important parts in these model definitions:
+Let's quickly note the most important parts in these model definitions:
 
 - We've used the `$fillable` property to specify which attributes can be mass-assigned. This is a security feature to prevent unintended mass assignment vulnerabilities.
 - We've defined relationships between models. An `Applicant` has many `Education` and `WorkExperience` records, while `Education` and `WorkExperience` belong to an `Applicant`.
@@ -35768,6 +36176,294 @@ Given the potential volume of unstructured data insertion and retrieval queries 
 <NeedHelp />
 
 
+# Migrating from Tembo.io to Neon Postgres
+
+---
+title: Migrating from Tembo.io to Neon Postgres
+subtitle: 'Learn how to migrate your data and applications from Tembo.io to Neon Postgres'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-05-08T00:00:00.000Z'
+updatedOn: '2025-05-08T00:00:00.000Z'
+---
+
+[Tembo.io](https://legacy.tembo.io/cloud) recently announced that it's sunsetting its managed Postgres service. If you've decided to migrate your serviced from Tembio.io to Neon, follow the steps in this guide. If you're facing a production migration requiring minimal downtime, [reach out to us](/migration-assistance).
+
+<Admonition type="warning" title="Tembo Shutdown Timeline">
+Please be aware of Tembo's [official shutdown timeline](https://tembo-io.notion.site/Tembo-Cloud-Migration-Guide-1de7c9367d6a80349570e7469ba7f17b)
+
+| Date          | Action                           |
+| ------------- | -------------------------------- |
+| May 5, 2025   | Instance creation disabled       |
+| May 30, 2025  | Free instance migration deadline |
+| June 27, 2025 | Paid instance migration deadline |
+
+Plan your migration accordingly to avoid any disruption to your services.
+</Admonition>
+
+## Tembo—Neon feature comparison
+
+While both Tembo and Neon provide managed Postgres, Neon's architecture offers some advantages. Here’s a quick comparison of key features:
+
+| Feature                   | Tembo                                | Neon Postgres                                                                    |
+| ------------------------- | ------------------------------------ | -------------------------------------------------------------------------------- |
+| **Compute**               | Manual scaling                       | Autoscaling, scale-to-zero                                                       |
+| **Branching**             | NA                                   | Instant data branching for dev, test, and CI/CD workflows ("branch per feature") |
+| **Storage**               | Manual scaling of storage            | Auto-scaling storage                                                             |
+| **Point-in-Time Restore** | Standard backup/restore capabilities | Instant PITR to any point within your history retention window                   |
+
+## Migration options overview
+
+There are several ways to migrate your Tembo Postgres database to Neon. The best option depends on your database size, acceptable downtime, and technical comfort.
+
+1.  Neon Import Data Assistant (easiest, for smaller databases \<10GB)
+2.  `pg_dump` and `pg_restore`
+3.  Logical replication (Near-zero downtime, for live production databases)
+
+## Pre-migration preparation (common steps)
+
+Before you begin any migration method, complete these essential preparation steps:
+
+1.  **Assess your Tembo database:**
+
+    - **Database size:** Determine the total size of your database. This will help you choose the right migration method.
+    - **Postgres extensions:** Identify all custom Postgres extensions used in your Tembo instance. Run the following query on your Tembo database:
+      ```sql
+      SELECT e.extname AS "Name", e.extversion AS "Version", n.nspname AS "Schema", c.description AS "Description"
+      FROM pg_catalog.pg_extension e
+      LEFT JOIN pg_catalog.pg_namespace n ON n.oid = e.extnamespace
+      LEFT JOIN pg_catalog.pg_description c ON c.objoid = e.oid AND c.classoid = 'pg_catalog.pg_extension'::pg_catalog.regclass
+      ORDER BY "Name";
+      ```
+      This provides a list of your installed extensions, their versions, and descriptions. Compare this list to Neon's supported extensions. Neon supports many common extensions, and the full list is available here: [Neon supported extensions list](/docs/extensions/pg-extensions). For any unsupported extensions, consider finding alternatives or modifying your application.
+
+2.  **Set up your Neon project:** If you don't have one, [create a Neon account and project](/docs/get-started-with-neon/signing-up#sign-up).
+
+## Option 1: Using Neon's Import Data Assistant
+
+Neon's Import Data Assistant automates moving your existing database to Neon. It creates a new branch in your Neon project for your imported data.
+
+Before you start with the assistant, You'll need:
+
+- **Tembo connection string:** You'll need a direct connection string to your Tembo database in the format:
+  `postgresql://username:password@host:port/database?sslmode=require`
+- **Admin privileges:** Ensure the user in the connection string has `SUPERUSER` or sufficient privileges (`CREATE`, `SELECT`, `INSERT`, `REPLICATION`) on the source Tembo database.
+- **Database size:** Your Tembo database must be **smaller than 10GB**.
+- **Region:** The feature is currently supported only for Neon projects in AWS regions.
+
+### Steps to import using the assistant:
+
+1.  **Launch the assistant:**
+    - **From the Projects page:** Click "Import database" to create a new project and import data.
+      ![Import Data Assistant from Projects page](/docs/import/import_data_assistant_project.png)
+    - **From within an existing project:** Use the Getting Started widget on a project dashboard.
+      ![Import Data Assistant from Quick Start widget](/docs/import/import_data_assistant_quickstart_widget.png)
+2.  **Check compatibility:** Enter your Tembo database connection string. Neon will verify:
+    - Database size (within 10GB limit).
+    - Postgres version compatibility (Neon supports Postgres 14-17).
+    - Extension compatibility.
+    - Region availability.
+3.  **Import your data:** Once checks pass, Neon will:
+
+    - Create a new branch for your imported data.
+    - Copy your data automatically using `pg_dump` and `pg_restore`.
+    - Verify the import.
+
+    <Admonition type="note">
+    During import, your source Tembo database remains untouched; Neon only reads from it.
+    </Admonition>
+
+4.  **Access your imported data:**
+    - Navigate to the **Branches** page of your Neon project. Your newly imported database branch will be listed there, typically named with a timestamp (e.g., `import-2025-xx-xx`).
+      ![Branches page showing imported branch](/docs/import/import_data_assistant_branch.png)
+    - Click on the three dots next to the branch name and select **Set as default** to make it your default branch.
+    - **Optional cleanup:**
+      - Delete the old branches (`production` and `development`) if they are no longer needed.
+      - Rename the new branch to `production` for clarity and consistency.
+
+## Option 2: `pg_dump` and `pg_restore`
+
+This is the traditional method for Postgres migrations and offers full control. It involves taking a full dump of your Tembo database and restoring it to Neon.
+
+### Prerequisites:
+
+- `psql`, `pg_dump`, and `pg_restore` client utilities installed locally. Use versions compatible with your Tembo Postgres version and Neon (Postgres 14-17). It's generally recommended to use the latest client versions.
+- Connection string or parameters for your source Tembo database.
+- Connection string for your target Neon database: You can find the connection string by clicking the **Connect** button on your Project Dashboard. It will look something like this:
+  ```bash
+  postgresql://[user]:[password]@[neon_hostname]/[dbname]
+  ```
+
+### Export data from Tembo using `pg_dump`
+
+Use the following command to create a dump of your Tembo database. Use a direct, unpooled connection.
+
+```bash
+pg_dump -Fc -v -d "postgresql://user:pass@tembo_host:port/source_db" -f your_tembo_dump.dump
+```
+
+> Replace the connection string with your actual Tembo database connection string.
+
+The command options used are:
+
+- `-Fc`: Custom format (compressed, suitable for `pg_restore`).
+- `-v`: Verbose mode.
+- `-d`: Source database connection string or name.
+- `-f`: Output file name.
+
+### Restore data to Neon using `pg_restore`
+
+- The role performing the `pg_restore` operation in Neon becomes the owner of restored objects by default.
+- Roles created in the Neon Console are members of `neon_superuser`. This role can create objects but is not a full PostgreSQL `SUPERUSER` and cannot run `ALTER OWNER` for objects it doesn't own.
+- If your Tembo database uses multiple roles for object ownership, your dump file will contain `ALTER OWNER` commands. These may cause non-fatal errors during restore to Neon.
+- To avoid ownership errors, you can use the `--no-owner` option with `pg_restore`. All objects will then be owned by the Neon role executing the restore.
+
+Run the following command to restore the dump to your Neon database:
+
+```bash
+pg_restore -v --no-owner -d "postgresql://neon_user:neon_pass@neon_host:port/target_db" your_tembo_dump.dump
+```
+
+> Replace the connection string with your actual Neon database connection string.
+
+The command options used are:
+
+- `-v`: Verbose mode.
+- `--no-owner`: Ignores original ownership, objects owned by `neon_user`.
+- `-d`: Target Neon database connection string.
+
+For more detailed usage, refer to [Migrate data from Postgres with pg_dump and pg_restore](/docs/import/migrate-from-postgres).
+
+## Option 3: Logical replication
+
+Logical replication allows for near-zero downtime migration by continuously streaming data changes from your Tembo database (publisher) to your Neon database (subscriber).
+
+### Prepare Tembo (source publisher)
+
+- **Enable logical replication:** Refer to Tembo's documentation for enabling [logical replication](https://legacy.tembo.io/docs/getting-started/postgres_guides/postgres-wal-configuration/)
+
+- **Create publication:** Define a publication on Tembo for the tables you want to replicate.
+
+  ```sql
+  CREATE PUBLICATION neon_migration_pub FOR TABLE table1, table2;
+  ```
+
+- Allow Connections from Neon to Tembo (IP Allow List):
+
+  If you are having IP allow list restrictions on your Tembo database, you need to allow connections from Neon to Tembo. This is necessary for the logical replication process to work correctly.
+
+  1.  **Obtain Neon NAT Gateway IP Addresses:**
+      Refer to Neon's [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) to find the list of IP addresses for your Neon project's region. You will need to add these specific IP addresses to your Tembo project's allow list.
+
+  2.  **Configure IP Allow List in Tembo.io:**
+      - Log in to your Tembo.io dashboard.
+      - Navigate to **Settings > Network Settings**.
+      - Locate the **IP Allow List** section.
+      - For each Neon NAT Gateway IP address obtained in the previous step, click **Add New**.
+      - Enter each Neon IP address in the provided field.
+        ![Tembo IP Allow List](/docs/guides/tembo-ip-allowlist.webp)
+      - After adding all necessary Neon IP addresses, click **Save Changes** to apply the new network restrictions.
+
+### Prepare Neon (target subscriber)
+
+**Create schema:** Copy the schema from Tembo to Neon. You can use `pg_dump` to export the schema and `psql` to import it into Neon.
+
+- Dumping schema from Tembo:
+  ```bash
+  pg_dump --schema-only \
+      --no-privileges \
+      "postgresql://user:pass@tembo_host:port/source_db" \
+      > schema.sql
+  ```
+- Restoring schema to Neon:
+
+  ```bash
+  psql \
+      "postgresql://neon_user:neon_pass@neon_host:port/target_db" \
+      < schema.sql
+  ```
+
+  > Replace the connection strings with your actual Tembo and Neon database connection strings.
+
+### Create subscription on Neon
+
+Connect to your Neon database and create a subscription.
+
+    ```sql
+    CREATE SUBSCRIPTION tembo_to_neon_sub
+    CONNECTION 'postgresql://app:PASSWORD@hostname.data-1.use1.tembo.io/app'
+    PUBLICATION neon_migration_pub;
+    ```
+
+    > Replace connection string with your Tembo database connection string.
+
+- Initial data synchronization will begin. This can take time for large databases.
+- Data changes on Tembo will be replicated to Neon.
+
+### Monitor replication
+
+To confirm your Neon database is synchronized with Tembo, monitor the Write-Ahead Log (WAL).
+
+**On Tembo (Publisher):**
+You can check the current WAL log sequence number (LSN) using:
+
+```sql
+SELECT pg_current_wal_lsn();
+```
+
+**On Neon (Subscriber):**
+The subscriber is up-to-date when its `received_lsn` (last log sequence number received) and `latest_end_lsn` (last log sequence number applied) are identical. Check this using:
+
+```sql
+SELECT subname, received_lsn, latest_end_lsn
+FROM pg_catalog.pg_stat_subscription
+WHERE subname = 'tembo_to_neon_sub';
+```
+
+If `received_lsn` and `latest_end_lsn` are the same for your subscription, Neon has processed all the data it has received from Tembo. For complete synchronization, this `latest_end_lsn` on Neon should also align with the current LSN on the Tembo publisher.
+
+### Perform the cutover (switch applications)
+
+Once Neon is fully synchronized and replication lag is minimal:
+
+- Briefly stop application writes to the Tembo database (maintenance mode).
+- Wait for any final changes to replicate to Neon.
+- Update your application's connection string to point to the Neon database.
+- Resume application traffic, now directed at Neon.
+- Thoroughly test your application.
+
+## Post-migration (common steps)
+
+1.  **Verify data:**
+
+    - Run checksums or row counts on key tables in both Tembo and Neon to ensure data integrity.
+    - Perform functional testing of your application against Neon.
+
+2.  **Update application connection strings:** Ensure all parts of your application and any related services are now using the Neon database connection string.
+
+3.  **Cleanup for logical replication:**
+    If you used logical replication, you can drop the subscription from Neon once you're satisfied with the migration.
+    ```sql
+    DROP SUBSCRIPTION tembo_to_neon_sub;
+    ```
+
+## Resources
+
+- [Tembo Cloud Migration Guide](https://tembo-io.notion.site/Tembo-Cloud-Migration-Guide-1de7c9367d6a80349570e7469ba7f17b)
+- Neon Docs:
+  - [Import Data Assistant](/docs/import/import-data-assistant)
+  - [Migrate data from Postgres with `pg_dump` and `pg_restore`](/docs/import/migrate-from-postgres)
+  - [Replicate data from Postgres to Neon (Logical replication)](/docs/guides/logical-replication-postgres-to-neon)
+  - [Connect to Neon](/docs/connect/connect-from-any-app)
+  - [Supported Postgres extensions in Neon](/docs/extensions/pg-extensions)
+- PostgreSQL Documentation:
+  - [`pg_dump`](https://www.postgresql.org/docs/current/app-pgdump.html)
+  - [`pg_restore`](https://www.postgresql.org/docs/current/app-pgrestore.html)
+  - [Logical Replication](https://www.postgresql.org/docs/current/logical-replication.html)
+
+<NeedHelp />
+
+
 # Get started with Neon Serverless Postgres on Azure
 
 ---
@@ -36314,6 +37010,310 @@ You can find the complete source code for this example on GitHub.
 <NeedHelp/>
 
 
+# How to set up Neon Local with Docker Compose and JavaScript Postgres clients
+
+---
+author: paul-scanlon
+enableTableOfContents: true
+createdAt: '2025-04-30T00:00:00.000Z'
+updatedOn: '2025-04-30T00:00:00.000Z'
+title: How to set up Neon Local with Docker Compose and JavaScript Postgres clients
+subtitle: A practical guide to Neon Local with JavaScript and Docker Compose for local and production setups
+---
+
+ICYMI we recently launched [Neon Local](https://neon.tech/blog/make-yourself-at-home-with-neon-local).
+
+## What is Neon Local?
+
+Neon Local is a proxy service that creates a local interface to your Neon cloud database. By default, it automatically creates a new database branch when your container starts and deletes it when the container stops. Your app connects to a local Postgres endpoint while Neon Local handles routing and authentication to the correct project and branch. _This means you don’t have to update connection strings across branches._
+
+Our [docs](/docs/local/neon-local) cover how to use Neon Local with both our [serverless driver](/docs/serverless/serverless-driver) and [pg](https://github.com/brianc/node-postgres), but one area that might cause some confusion is how to switch between Neon Local in **development** and your Neon cloud database in **production**.
+
+In this guide, I’ll show you how to set up your project to work in both development and production environments.
+
+## 1. Example application
+
+To demonstrate, I’ve built a simple React + Vite + Express app. It has one route (`/`) that runs `SELECT version()` and returns the result.
+
+You can find the project here:
+
+- [neon-local-example-application](https://github.com/neondatabase-labs/neon-local-example-react-express-application)
+
+## 2. Setup
+
+### Environment variables
+
+You’ll need to configure the following environment variables. They are also listed in the example application's repository [README](https://github.com/neondatabase-labs/neon-local-example-react-express-application).
+
+| Variable          | Description                    | Example / Value               |
+| ----------------- | ------------------------------ | ----------------------------- |
+| `DATABASE_URL`    | Connection string for database | _(Set appropriately)_         |
+| `NODE_ENV`        | Node environment mode          | `production` or `development` |
+| `NEON_API_KEY`    | Neon API authentication key    | `napi_6ngd23amjggx7...`       |
+| `NEON_PROJECT_ID` | Neon project identifier        | `rosty-king-89...`            |
+| `PORT`            | Server port                    | `8080`                        |
+
+If you need help finding up any of these variables, refer to the following resources:
+
+- [Connection examples](/docs/manage/projects#project-settings)
+- [Creating API keys](/docs/manage/api-keys#creating-api-keys)
+- [Project settings](/docs/manage/projects#project-settings)
+
+### Docker for Mac
+
+This guide uses Docker for Mac. If you don’t have it installed yet, follow this guide:
+
+- [Install Docker Desktop on Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
+
+![Docker for Mac](/guides/images/neon-local-docker-compose-javascript/neon-local-docker-for-mac.jpg)
+
+## 3. Running the app
+
+If you've cloned the repo, and followed the install instructions, run the app with one of the following commands:
+
+- **development**:  
+  `docker compose --profile dev --env-file .env.dev up --watch`
+- **production**:  
+  `docker compose --profile prod --env-file .env.prod up --build`
+
+Once the app is running, go to [http://localhost:8080/](http://localhost:8080/) in your browser.
+
+## 4. Ephemeral branches
+
+If you started the app in **development** mode, go to the Neon console, and you’ll see a new branch has been created using the `main`, or `production` branch as a base.
+
+<video autoPlay playsInline muted loop controls width="800" height="600">
+  <source type="video/mp4" src="/videos/guides/neon-local-docker-compose-javascript/docker-compose-up-watch.mp4"/>
+</video>
+
+If you started the app in **production** mode, the app will connect to the database defined by the `DATABASE_URL`, and no new branch will be created.
+
+In the next section, we’ll look at the Docker configuration and how the app determines whether to connect to Neon Local or the cloud instance defined by `DATABASE_URL`.
+
+## 5. Configuration
+
+### Docker Compose
+
+Here’s the `docker-compose.yml` setup, which defines two services. The first, `app`, starts the Express server, responsible for data fetching and server-side rendering of the React app. The second, `db`, configures the Neon Local Docker image.
+
+Additionally, the `app` service defines two profiles, `dev` and `prod`. The `db` service also defines a `dev` profile, ensuring that the `db` service is only used when the app is run in **development** mode.
+
+#### How Docker Profiles Work
+
+Docker profiles allow you to group services within your `docker-compose.yml` file, enabling you to choose which services to start depending on the environment or use case.
+
+- The `app` service has both `dev` and `prod` profiles. This means the `app` can be run in either development or production mode.
+- The `db` service is only included in the `dev` profile, meaning it will only run when the app is started in development mode.
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - '${PORT}:${PORT}'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - NEON_API_KEY=${NEON_API_KEY}
+      - NEON_PROJECT_ID=${NEON_PROJECT_ID}
+    profiles:
+      - dev
+      - prod
+
+  db:
+    image: neondatabase/neon_local:latest
+    ports:
+      - '5432:5432'
+    environment:
+      NEON_API_KEY: ${NEON_API_KEY}
+      NEON_PROJECT_ID: ${NEON_PROJECT_ID}
+      DRIVER: serverless
+    profiles:
+      - dev
+```
+
+You can view the `src` of this file in the repository: [docker-compose.yml](https://github.com/neondatabase-labs/neon-local-example-react-express-application/blob/main/docker-compose.yml)
+
+## 6. Connecting to the database
+
+### Serverless Driver
+
+The database connection is established using our [serverless driver](/docs/serverless/serverless-driver). It uses a ternary operation to determine whether to connect to Neon Local or the `DATABASE_URL`, depending on the mode the application is running in.
+
+```javascript
+import 'dotenv/config';
+
+import { neon, neonConfig } from '@neondatabase/serverless';
+
+if (process.env.NODE_ENV !== 'prod') {
+  neonConfig.fetchEndpoint = 'http://db:5432/sql';
+}
+
+const connectionString =
+  process.env.NODE_ENV === 'prod' ? process.env.DATABASE_URL : 'postgres://neon:npg@db:5432/neondb';
+
+export const sql = neon(connectionString);
+```
+
+You can view the `src` of this file in the repository: [src/db.js](https://github.com/neondatabase-labs/neon-local-example-react-express-application/blob/main/src/db.js):
+
+### node-postgres
+
+Alternatively, if you prefer to use `pg`, here's how the connection is configured. Note that you'll need to add `?sslmode=no-verify` to the end of the Neon Local connection string.
+
+```javascript
+import 'dotenv/config';
+
+import pg from 'pg';
+const { Pool } = pg;
+
+const connectionString =
+  process.env.NODE_ENV === 'prod'
+    ? process.env.DATABASE_URL
+    : 'postgres://neon:npg@db:5432/neondb?sslmode=no-verify';
+
+export const pool = new Pool({ connectionString });
+```
+
+Additionally, you'll also need to change the `DRIVER` to `postgres` in your `docker-compose.yml` file:
+
+```diff
+environment:
+  NEON_API_KEY: ${NEON_API_KEY}
+  NEON_PROJECT_ID: ${NEON_PROJECT_ID}
+  DRIVER: serverless // [!code --]
+  DRIVER: postgres // [!code ++]
+
+```
+
+## Wrapping up
+
+And that’s it. By default, Neon Local handles creating and deleting a branch whenever you start or stop the container. If you want more control, such as setting a parent branch or disabling branch deletion, check out the [configuration options in the docs](/docs/local/neon-local).
+
+Neon Local simplifies the management of temporary database environments, making it easier to work with isolated instances for testing or short-term use. While it’s **not** a fully "local" database, it streamlines the workflow, especially for CI/CD pipelines where short-lived environments are needed to run tests but don’t need to stick around.
+
+Neon Local is still in its early stages, with several improvements on the way. But for now, it could be exactly what you need to streamline your workflows. Give it a try today and [share your feedback with us](https://github.com/neondatabase-labs/neon_local).
+
+
+# How to Use Neon MCP Server with GitHub Copilot in VS Code
+
+---
+title: 'How to Use Neon MCP Server with GitHub Copilot in VS Code'
+subtitle: 'Learn how to make GitHub Copilot your full-stack teammate'
+author: boburmirzo
+enableTableOfContents: true
+createdAt: '2025-05-10T00:00:00.000Z'
+updatedOn: '2025-05-10T00:00:00.000Z'
+---
+
+GitHub Copilot has changed how developers write code, but when combined with an [MCP](https://modelcontextprotocol.io/) (Model Copilot Protocol) server, it also connects your services. With MCP, Copilot can create database tables, understand your database schema and generate relevant code for your API, data models, or business logic.
+
+In this guide, you'll learn how to use the [**Neon Serverless Postgres MCP server**](https://github.com/neondatabase-labs/mcp-server-neon) with **GitHub Copilot in VS Code** to build a sample REST API quickly. We'll walk through how to create an **Azure Function** that fetches data from a **Neon database**, all without writing a single line of code manually.
+
+![GitHub Copilot with Neon MCP Server in VS Code demo](/docs/guides/github-copilot-neon-mcp-server/github-copilot-with-neon-mcp-server-demo.gif)
+
+## From Code Generation to Database Management with GitHub Copilot
+
+AI agents are no longer just helping write code—they’re creating and managing databases. When a chatbot logs a customer conversation, or a new region spins up in the Azure cloud, or a new user signs up, an AI agent can automatically create a database in seconds. No need to open a dashboard or call an API. This is the next evolution of software development: **infrastructure as intent**. With tools like database MCP servers, agents can now generate real backend services as easily as they generate code.
+
+GitHub Copilot becomes your full-stack teammate. It can answer database-related questions, fetch your database connection string, update environment variables in your Azure Function, generate SQL queries to populate tables with mock data, and even help you create new databases or tables on the fly. All directly from your editor, with natural language prompts. Neon has a dedicated [MCP server](https://github.com/neondatabase-labs/mcp-server-neon) that makes it possible for Copilot to directly understand the structure of your Postgres database.
+
+Let's get started with using the Neon MCP server and GitHub Copilot.
+
+## What You’ll Need
+
+- Node.js (>= v18.0.0) and npm: Download from [nodejs.org](https://nodejs.org/).
+- An Azure subscription ([create one](https://azure.microsoft.com/free/cognitive-services) for free)
+- Install either the stable or Insiders release of VS Code:
+  - [Stable release](https://code.visualstudio.com/download)
+  - [Insiders release](https://code.visualstudio.com/insiders)
+- Install the [GitHub Copilot](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot), [GitHub Copilot for Azure](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azure-github-copilot), and [GitHub Copilot Chat](https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat) extensions for VS Code
+- [Azure Functions Core Tools](https://learn.microsoft.com/en-us/azure/azure-functions/functions-run-local?tabs=macos%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-csharp)  (for local testing)
+
+## Connect GitHub Copilot to the Neon MCP Server
+
+### **Create Neon Database**
+
+Visit the [Neon on Azure Marketplace](https://portal.azure.com/#view/Azure_Marketplace_Neon/NeonCreateResource.ReactView) page and follow the [Create a Neon resource](https://neon.tech/docs/azure/azure-deploy#create-a-neon-resource) guide to deploy Neon on Azure for your subscription. Neon offers a [Free plan](https://neon.tech/pricing) that provides more than enough resources to build a proof of concept or kick off a new startup project.
+
+### Install the Neon MCP Server for VS Code
+
+Neon MCP Server offers two options for connecting your VS Code MCP client to Neon. We will use the [Remote Hosted MCP Server option](https://github.com/neondatabase-labs/mcp-server-neon?tab=readme-ov-file#option-1-remote-hosted-mcp-server-preview). This is the simplest setup—no need to install anything locally or configure a Neon API key in your client.
+
+Add the following Neon MCP server configuration to your [user settings](https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server-to-your-user-settings) in VS Code:
+
+```json
+{
+  "mcp": {
+    "servers": {
+      "Neon": {
+        "command": "npx",
+        "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+      }
+    }
+  }
+}
+```
+
+Click on `Start` on the MCP server. A browser window will open with an OAuth prompt. Just follow the steps to give your VS Code MCP client access to your Neon account.
+
+![Start Neon MCP Server in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-start-neon-mcp-server.png)
+
+## Generate an Azure Function REST API using GitHub Copilot
+
+**Step 1:** Create an empty folder (ex: *mcp-server-vs-code*) and open it in VS Code.
+
+**Step 2:** Open GitHub Copilot Chat in VS Code and [switch to Agent mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode). You should see the available tools.
+
+![List Neon MCP Server tools in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-neon-mcp-server-tools.png)
+
+**Step 3:** Ask Copilot something like "_Create an Azure function with an HTTP trigger_”:
+
+![Create an Azure function in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-create-azure-functions.png)
+
+Copilot will generate a REST API using Azure Functions in JavaScript with a basic setup to run the functions locally.
+
+**Step 4:** Next, you can ask to list existing Neon projects:
+
+![list existing Neon projects in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-list-neon-mcp-server-tools.png)
+
+**Step 5:** Try out different prompts to fetch the connection string for the chosen database and set it to the Azure Functions settings. Then ask to create a sample Customer table and so on. Or you can even prompt to create a new [database branch](https://neon.tech/docs/introduction/branching) on Neon.
+
+![Fetch data from Neon in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-fetch-neon-connection-string.png)
+
+**Step 6:** Finally, you can prompt Copilot to update the Azure functions code to fetch data from the table:
+
+![Update Azure Functions in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-update-azure-functions.png)
+
+## Combine the Azure MCP Server
+
+Neon MCP gives GitHub Copilot full access to your database schema, so it can help you write SQL queries, connect to the database, and build API endpoints. But when you add **[Azure MCP](https://github.com/Azure/azure-mcp?tab=readme-ov-file)** into the mix, Copilot can also understand your Azure services—like Blob Storage, Queues, and Azure AI.
+
+You can run both **Neon MCP** and **Azure MCP** at the same time to create a full cloud-native developer experience. For example:
+
+- Use **Neon MCP** for serverless Postgres with branching and instant scale.
+- Use **Azure MCP** to connect to other Azure services from the same Copilot chat.
+
+Even better: **Azure MCP is evolving**. In newer versions, you can spin up **Azure Functions and other services directly from Copilot chat**, without ever leaving your editor.
+
+Copilot pulls context from both MCP servers, which means smarter code suggestions and faster development. You can mix and match based on your stack and let Copilot help you build real, working apps in minutes.
+
+## Final Thoughts
+
+With GitHub Copilot, Neon MCP server, and Azure Functions, you're no longer writing backend code line by line. It is so fast to build APIs. You're _orchestrating_ services with intent. This is not the future—it’s something you can use today.
+
+## Resources
+
+- [Neon on Azure](https://neon.tech/docs/manage/azure)
+- [Neon MCP Server](https://neon.tech/docs/ai/neon-mcp-server)
+
+<NeedHelp />
+
+
 # Get started with Claude Desktop and Neon MCP Server
 
 ---
@@ -36371,20 +37371,39 @@ The Neon MCP server's ability to execute arbitrary commands from natural languag
 
 Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
 
-- `list_projects`: Action to list all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account.
-- `describe_project`: Action to get detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
-- `create_project`: Action to create a new Neon project — a container in Neon for branches, databases, roles, and computes.
-- `delete_project`: Action to delete an existing Neon project.
-- `create_branch`: Action to create a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
-- `delete_branch`: Action to delete an existing branch in a Neon project.
-- `describe_branch`: Action to get details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
-- `get_connection_string`: Action to retrieve a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
-- `run_sql`: Action to execute a single SQL query against a Neon database. Allows you to run read or write SQL queries.
-- `run_sql_transaction`: Action to execute a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
-- `get_database_tables`: Action to list all tables in a specified Neon database. Provides a list of tables.
-- `describe_table_schema`: Action to retrieve the schema definition of a specific table. Details the structure of a table, including columns and data types.
-- `prepare_database_migration`: Action to initiate a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
-- `complete_database_migration`: Action to apply and finalize a prepared database migration to the main branch. Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+**Project Management:**
+
+- `list_projects`: Retrieves a list of your Neon projects, providing a summary of each project associated with your Neon account. Supports limiting the number of projects returned (default: 10).
+- `describe_project`: Fetches detailed information about a specific Neon project, including its ID, name, and associated branches and databases.
+- `create_project`: Creates a new Neon project in your Neon account. A project acts as a container for branches, databases, roles, and computes.
+- `delete_project`: Deletes an existing Neon project and all its associated resources.
+
+**Branch Management:**
+
+- `create_branch`: Creates a new branch within a specified Neon project. Leverages Neon's branching feature for development, testing, or migrations.
+- `delete_branch`: Deletes an existing branch from a Neon project.
+- `describe_branch`: Retrieves details about a specific branch, such as its name, ID, and parent branch.
+- `list_branch_computes`: Lists compute endpoints for a project or specific branch, including compute ID, type, size, and autoscaling information.
+
+**SQL Query Execution:**
+
+- `get_connection_string`: Returns your database connection string.
+- `run_sql`: Executes a single SQL query against a specified Neon database. Supports both read and write operations.
+- `run_sql_transaction`: Executes a series of SQL queries within a single transaction against a Neon database.
+- `get_database_tables`: Lists all tables within a specified Neon database.
+- `describe_table_schema`: Retrieves the schema definition of a specific table, detailing columns, data types, and constraints.
+- `list_slow_queries`: Identifies performance bottlenecks by finding the slowest queries in a database. Requires the pg_stat_statements extension.
+
+**Database Migrations (Schema Changes):**
+
+- `prepare_database_migration`: Initiates a database migration process. Critically, it creates a temporary branch to apply and test the migration safely before affecting the main branch.
+- `complete_database_migration`: Finalizes and applies a prepared database migration to the main branch. This action merges changes from the temporary migration branch and cleans up temporary resources.
+
+**Query Performance Tuning:**
+
+- `explain_sql_statement`: Analyzes a SQL query and returns detailed execution plan information to help understand query performance.
+- `prepare_query_tuning`: Identifies potential performance issues in a SQL query and suggests optimizations. Creates a temporary branch for testing improvements.
+- `complete_query_tuning`: Finalizes and applies query optimizations after testing. Merges changes from the temporary tuning branch to the main branch.
 
 These actions enable any MCP Host to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
 
@@ -36429,6 +37448,7 @@ You have two options for connecting Claude to the Neon MCP Server:
 
 5. Save the configuration file and **restart** Claude Desktop.
 6. An OAuth window will open in your browser. Follow the prompts to authorize Claude to access your Neon account.
+   ![Neon OAuth window](/docs/guides/neon-oauth-window.png)
 7. After authorization, you can start using the Neon MCP server with Claude.
 
 <Admonition type="note">
@@ -39244,6 +40264,1165 @@ You can find the source code for the application described in this guide on GitH
 <DetailIconCards>
 <a href='https://github.com/neondatabase/examples/tree/main/with-nodejs-pg-notify' description='pg_notify with Node.js and Neon' icon='github'>Set up notifications using pg_notify with Node.js and Neon</a>
 </DetailIconCards>
+
+<NeedHelp />
+
+
+# Comparing Text Search Strategies pg_search vs. tsvector vs. External Engines
+
+---
+title: Comparing Text Search Strategies pg_search vs. tsvector vs. External Engines
+subtitle: Choosing the Right Search Approach for Your Application with PostgreSQL and Neon
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-04-06T00:00:00.000Z'
+updatedOn: '2025-04-06T00:00:00.000Z'
+---
+
+When implementing search in your application, you need to choose the right text search approach. This guide compares PostgreSQL's built-in [`tsvector`](/guides/full-text-search), the [`pg_search`](docs/extensions/pg_search) extension, and external search engines to help you select the best option for your needs.
+
+## Built-in PostgreSQL `tsvector` for Text Search
+
+PostgreSQL includes native full-text search capabilities using the `tsvector` data type and `tsquery` search expressions. The `tsvector` data type is a specialized data structure that PostgreSQL uses to represent documents in a form optimized for search.
+
+This built-in functionality works for basic search needs without requiring any additional extensions. It's perfect for smaller applications or when you don't require advanced search features.
+
+### Example of Using `tsvector`
+
+To use `tsvector`, you need to create a table with a column to store the search vector. You can then convert text into the `tsvector` format and create an index for efficient searching. This allows your queries to run faster, even as your dataset grows.
+
+```sql
+CREATE TABLE articles (
+    id SERIAL PRIMARY KEY,
+    title TEXT,
+    content TEXT,
+    search_vector tsvector
+);
+
+-- Update the search vector
+UPDATE articles
+SET search_vector = to_tsvector('english', title || ' ' || content);
+
+-- Create an index on the search vector
+CREATE INDEX idx_search_vector ON articles USING GIN (search_vector);
+
+-- Query using tsquery
+SELECT id, title
+FROM articles
+WHERE search_vector @@ to_tsquery('english', 'database & performance');
+```
+
+This example shows how to:
+
+- Create a table with a column to store search vectors
+- Convert text to the `tsvector` format using the `to_tsvector` function
+- Create a GIN index to speed up searches
+- Search for articles containing both "database" and "performance"
+
+While `tsvector` meets basic search needs, it has limitations with relevance ranking, handling typos, and complex search patterns. It’s suitable for small to medium-sized datasets where advanced features aren’t necessary.
+
+### Pros of `tsvector`
+
+- **Simplicity**: No need for any extensions, just native PostgreSQL functionality.
+- **Integrated with Postgres**: Works seamlessly within the same database, avoiding the need for additional services.
+- **Low overhead**: Since `tsvector` is part of Postgres, it doesn’t require a separate system to maintain.
+
+### Cons of `tsvector`
+
+- **Limited relevance ranking**: It doesn't automatically rank search results based on relevance.
+- **No typo tolerance**: Exact matches are required, so if a user misspells a search term, it won’t return relevant results.
+- **Complex queries**: Handling more complex queries like fuzzy matching or phrase proximity is not possible out-of-the-box.
+
+## Extending `tsvector` with `pg_search`
+
+The `pg_search` extension builds on PostgreSQL's search capabilities by adding better relevance ranking with the BM25 algorithm, fuzzy matching for handling typos, and more flexible search options.
+
+This extension is particularly useful for applications that require more sophisticated search features without needing a separate search engine.
+
+With `pg_search`, you get features such as:
+
+- **Relevance Ranking**: The BM25 algorithm provides an automatic ranking of search results based on how relevant they are to the query.
+- **Fuzzy Matching**: It allows for typo tolerance, meaning searches will return relevant results even when a user makes small errors.
+- **Phrase Search**: You can search for exact phrases or words that are close together, which can be especially useful in content-heavy applications.
+- **Flexible Queries**: `pg_search` supports more complex search expressions like partial word matches, stemming, and stop-word filtering.
+
+### Enabling `pg_search` on Neon
+
+<Admonition type="note" title="pg_search on Neon">
+
+`pg_search` is currently only available on Neon projects created in an [AWS region](/docs/introduction/regions#aws-regions).
+
+</Admonition>
+
+Adding `pg_search` to your Neon database is simple - just run this single SQL command:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_search;
+```
+
+That's all it takes to enable the extension. You can then use the `pg_search` features in your queries. The setup is straightforward, and you don’t need any additional infrastructure to get started.
+
+### Example of Using `pg_search`
+
+After enabling the extension, you can create search indexes and run more sophisticated queries:
+
+```sql
+-- Create a BM25 index on multiple columns
+CREATE INDEX article_search_idx ON articles
+USING bm25 (id, title, content)
+WITH (key_field='id');
+
+-- Simple keyword search
+SELECT title
+FROM articles
+WHERE title @@@ 'database';
+
+-- Handling typos with fuzzy matching
+SELECT title
+FROM articles
+WHERE id @@@ paradedb.match('title', 'database', distance => 1);
+
+-- Sorting by relevance score
+SELECT title, paradedb.score(id) AS relevance
+FROM articles
+WHERE content @@@ 'performance'
+ORDER BY paradedb.score(id) DESC;
+```
+
+This code shows how to:
+
+- Create a BM25 index that covers multiple columns
+- Perform a basic keyword search using the `@@@` operator
+- Find results even when the search term has typos
+- Sort results by relevance so the most relevant results appear first
+
+### Why Use `pg_search` on Neon?
+
+Using `pg_search` on Neon gives you:
+
+- **Better search capabilities**: With ranking, typo tolerance, and complex query options, `pg_search` provides much more functionality than `tsvector`.
+- **A fully managed PostgreSQL experience**: You don’t need to set up or maintain a separate search service. Neon handles everything for you, from scaling to backups.
+- **Data consistency**: Since the search index is part of your PostgreSQL database, there’s no need to worry about synchronizing data between separate systems.
+- **Simple architecture**: With `pg_search` running on Neon, you avoid the complexity of managing an external search engine while still getting advanced search features.
+
+`pg_search` is a great choice for applications that need more advanced search features but want to avoid the complexity of managing a separate search engine.
+
+## External Search Engines (e.g., Elasticsearch)
+
+External search engines like Elasticsearch provide specialized search features for complex use cases and very large datasets. These engines are designed to scale out across many servers and handle high-performance, low-latency search queries.
+
+While these engines offer powerful capabilities, they come with trade-offs:
+
+- **You need to set up and maintain additional infrastructure**: External search engines require managing separate servers or cloud services, which can increase operational overhead.
+- **You must keep your database and search index synchronized**: Ensuring that your external search engine stays in sync with your PostgreSQL database can introduce complexity, especially as your data changes.
+- **Increased complexity**: Managing another system means additional configuration, monitoring, and troubleshooting.
+- **Higher operational costs**: Running an external search engine comes with extra costs, both in terms of infrastructure and developer time.
+
+External search engines like Elasticsearch provide powerful features such as:
+
+- Distributed search: Handles large-scale search queries across many machines.
+- Complex querying: Offers advanced querying capabilities such as aggregations, nested fields, and more.
+- Real-time indexing: Updates search results in real time as new data is indexed.
+
+### Use Cases for External Search Engines
+
+You might choose an external search engine when:
+
+- **You have extremely large datasets** (billions of records) that require distributed search across multiple servers.
+- **Your search needs include specialized features** not available in PostgreSQL, such as advanced analytics, geographic search, or machine learning integration.
+- **You have the resources** to manage additional infrastructure and complexity.
+
+## Comparison Summary
+
+| Feature               | `tsvector`             | `pg_search` on Neon | External Engines                                   |
+| --------------------- | ---------------------- | ------------------- | -------------------------------------------------- |
+| **Setup**             | Built into Postgres    | Easy setup on Neon  | Separate system to install, configure and maintain |
+| **Relevance Ranking** | Basic                  | BM25 ranking        | Advanced ranking options                           |
+| **Typo Tolerance**    | No                     | Yes                 | Yes                                                |
+| **Query Flexibility** | Limited                | Good                | Extensive                                          |
+| **Scaling**           | Limited by Postgres    | Managed by Neon     | Requires manual scaling                            |
+| **Cost**              | Included with Postgres | Included with Neon  | Additional infrastructure costs                    |
+| **Maintenance**       | Minimal                | Handled by Neon     | Requires ongoing maintenance                       |
+
+## Which Option Should You Choose?
+
+With all these options available, how do you choose the right one for your application? Here are some guidelines:
+
+### Use built-in `tsvector` when:
+
+- You have simple search requirements
+- Your dataset is small to medium-sized
+- You want to use only built-in PostgreSQL features
+
+### Use `pg_search` on Neon when:
+
+- You need better search relevance and typo tolerance
+- You want to avoid setting up separate systems
+- You prefer a managed database experience
+- Your search needs are important but don't require specialized features
+
+### Consider external search engines when:
+
+- You have extremely large datasets (billions of records)
+- Your search needs include specialized features not available in PostgreSQL
+- You have the resources to manage additional infrastructure
+
+For most web applications, content sites, and e-commerce platforms, `pg_search` on Neon provides a great balance between search features and simplicity. It extends PostgreSQL's capabilities without requiring you to manage separate systems or synchronize data.
+
+## Conclusion
+
+When choosing a search strategy, start with the simplest option that meets your needs. For many applications, `pg_search` on Neon offers a great middle ground - better search features than native PostgreSQL without the complexity of a separate search system.
+
+Selecting the right search approach allows you to provide good search functionality to your users while keeping your application architecture as simple as possible.
+
+<NeedHelp />
+
+
+# Building an End-to-End Full-Text Search Experience With pg_search on Neon
+
+---
+title: Building an End-to-End Full-Text Search Experience With pg_search on Neon
+subtitle: A guide to building a full-text search experience with pg_search on Neon
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-04-06T00:00:00.000Z'
+updatedOn: '2025-04-06T00:00:00.000Z'
+---
+
+Full-text search is an essential component for applications that need to search through large text collections. While many developers use dedicated search engines like Elasticsearch, Neon's `pg_search` extension lets you build search capabilities directly in your Postgres database, eliminating the need for additional services.
+
+This guide shows you how to build a search solution with `pg_search` on Neon, from database setup to creating a responsive search interface for a developer snippet manager. You'll learn how to create and query search indexes, highlight relevant search results, and build a simple interface for searching code snippets.
+
+## Prerequisites
+
+To follow this guide, you'll need:
+
+- A [Neon](https://console.neon.tech/signup) account
+- Basic SQL knowledge
+- Familiarity with a backend language (we use Node.js in our examples but you can adapt it to your preferred language)
+- Basic understanding of HTML, CSS, and JavaScript for the frontend
+
+## What is `pg_search`?
+
+The [`pg_search`](/docs/extensions/pg_search) extension adds full-text search capabilities to Postgres using the BM25 scoring algorithm—the same approach used by modern search engines. It offers:
+
+- Fast and relevant search results
+- Easy integration with your existing database
+- Support for fuzzy matching to handle typos
+- Advanced filtering capabilities and no need for additional services
+
+This means you can implement search without adding complexity to your infrastructure.
+
+## Enabling `pg_search` on Neon
+
+<Admonition type="note" title="pg_search on Neon">
+
+`pg_search` is currently only available on Neon projects created in an [AWS region](/docs/introduction/regions#aws-regions).
+
+</Admonition>
+
+First, let's enable the `pg_search` extension on your Neon database. Connect to your database using the Neon SQL Editor or a client like `psql` and run the following command:
+
+```sql
+CREATE EXTENSION IF NOT EXISTS pg_search;
+```
+
+This adds the `pg_search` functionality to your database.
+
+Once enabled, you'll have access to new operators and functions for full-text search that will make building a snippet search tool much easier.
+
+## Understanding how `pg_search` works
+
+Before diving into implementation, it's helpful to understand the two key components that make `pg_search` efficient:
+
+1. **BM25 scoring** calculates how relevant each result is based on:
+
+   - Word frequency within a document (how often a search term appears)
+   - Word rarity across all documents (uncommon terms get higher scores)
+   - Document length (adjusts scores so longer documents don't automatically rank higher)
+
+2. **Inverted indexes** map words to the documents containing them, making searches fast by directly finding relevant documents instead of scanning everything. Think of it like the index at the back of a book that tells you exactly which pages contain specific topics.
+
+These components are particularly valuable for code snippet search, where developers often need to quickly locate specific algorithms, functions, or techniques across a large collection of code snippets.
+
+## Setting up a database for our snippet manager
+
+For the purposes of this guide, we'll create a simple code snippet manager. This will allow developers to store, search, and categorize code snippets across different programming languages.
+
+The following SQL creates our database structure:
+
+```sql
+CREATE TABLE languages (
+  language_id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE users (
+  user_id SERIAL PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE snippets (
+  snippet_id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  code TEXT NOT NULL,
+  language_id INTEGER REFERENCES languages(language_id),
+  user_id INTEGER REFERENCES users(user_id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tags (
+  tag_id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE snippet_tags (
+  snippet_id INTEGER REFERENCES snippets(snippet_id),
+  tag_id INTEGER REFERENCES tags(tag_id),
+  PRIMARY KEY (snippet_id, tag_id)
+);
+```
+
+This schema creates five tables:
+
+- `languages` for categorizing snippets by programming language
+- `users` to track who created each snippet
+- `snippets` for storing the actual code snippets and their metadata
+- `tags` for categorizing snippets (algorithms, utilities, etc.)
+- `snippet_tags` for the many-to-many relationship between snippets and tags
+
+Now let's add some sample data to work with, which will help us demonstrate the search capabilities of our snippet manager.
+
+The following SQL inserts a few sample records into our tables:
+
+```sql
+-- Add programming languages
+INSERT INTO languages (name) VALUES
+('JavaScript'),
+('Python'),
+('Go'),
+('SQL'),
+('TypeScript');
+
+-- Add users
+INSERT INTO users (username, email) VALUES
+('devguru', 'dev@example.com'),
+('codedojo', 'dojo@example.com'),
+('scriptpro', 'pro@example.com');
+
+-- Add tags
+INSERT INTO tags (name) VALUES
+('algorithm'),
+('utility'),
+('frontend'),
+('database'),
+('middleware');
+
+-- Add code snippets
+INSERT INTO snippets (title, description, code, language_id, user_id) VALUES
+('Quick Sort Implementation', 'Efficient implementation of the quicksort algorithm',
+'function quickSort(arr) {
+  if (arr.length <= 1) {
+    return arr;
+  }
+
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const left = arr.filter(x => x < pivot);
+  const middle = arr.filter(x => x === pivot);
+  const right = arr.filter(x => x > pivot);
+
+  return [...quickSort(left), ...middle, ...quickSort(right)];
+}',
+1, 1),
+
+('Database Connection Pool', 'Reusable database connection pool using the pg library',
+'const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+module.exports = {
+  query: (text, params) => pool.query(text, params),
+  getClient: async () => {
+    const client = await pool.connect();
+    return client;
+  }
+};',
+1, 2),
+
+('Simple API Middleware', 'Express middleware for API authentication',
+'function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+}',
+1, 3),
+
+('Binary Search Algorithm', 'Efficient binary search implementation in Python',
+'def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return -1  # Target not found',
+2, 1),
+
+('SQL Transaction Helper', 'Helper function for managing SQL transactions',
+'async function withTransaction(callback) {
+  const client = await pool.connect();
+
+  try {
+    await client.query("BEGIN");
+    const result = await callback(client);
+    await client.query("COMMIT");
+    return result;
+  } catch (error) {
+    await client.query("ROLLBACK");
+    throw error;
+  } finally {
+    client.release();
+  }
+}',
+1, 2);
+
+-- Add snippet tags
+INSERT INTO snippet_tags (snippet_id, tag_id) VALUES
+(1, 1),  -- Quick Sort: algorithm
+(2, 4),  -- Database Connection Pool: database
+(3, 5),  -- Simple API Middleware: middleware
+(4, 1),  -- Binary Search: algorithm
+(5, 4);  -- SQL Transaction Helper: database
+```
+
+This gives us a foundation of coding snippets across different languages and categories to demonstrate search capabilities.
+
+## Creating search indexes
+
+Now that we have our data, we need to create BM25 indexes to enable efficient searching.
+
+For a code snippet manager, these indexes are essential since they will allow developers to quickly find relevant code:
+
+```sql
+CREATE INDEX snippet_search_idx ON snippets
+USING bm25 (snippet_id, title, description, code)
+WITH (key_field='snippet_id');
+
+CREATE INDEX language_search_idx ON languages
+USING bm25 (language_id, name)
+WITH (key_field='language_id');
+
+CREATE INDEX tag_search_idx ON tags
+USING bm25 (tag_id, name)
+WITH (key_field='tag_id');
+```
+
+Let's break down what this does:
+
+- The first index enables searching across snippet titles, descriptions, and actual code
+- The language index allows searching for programming languages
+- The tag index enables searching for specific categories like "algorithm" or "utility"
+- Each index specifies `key_field` to identify which column uniquely identifies each row
+
+These indexes make searching efficient by pre-processing and organizing the text data for quick lookups, which is key when developers need to search through potentially thousands of code snippets.
+
+## Basic search queries with `pg_search`
+
+Now with our indexes in place, let's perform some searches using the `@@@` operator, which is the main search operator provided by `pg_search`.
+
+### Simple keyword search
+
+Find snippets that mention "connection" in any of the indexed fields:
+
+```sql
+SELECT snippet_id, title, description
+FROM snippets
+WHERE title @@@ 'connection' OR description @@@ 'connection' OR code @@@ 'connection'
+ORDER BY paradedb.score(snippet_id) DESC;
+```
+
+This query searches for the term "connection" across multiple fields. The `paradedb.score()` function returns the relevance score of each match, allowing us to show the most relevant snippets first. This is particularly useful for developers who often need to find code examples based on certain keywords or concepts.
+
+### Exact phrase search
+
+When you need to find an exact sequence of words, such as a specific function signature, use double quotes around the phrase:
+
+```sql
+SELECT snippet_id, title, description
+FROM snippets
+WHERE code @@@ '"function authMiddleware"'
+ORDER BY paradedb.score(snippet_id) DESC;
+```
+
+This searches for the exact phrase "`function authMiddleware`" in the code. Without the quotes, it would find snippets containing both words in any order or position, which could lead to less precise results when looking for specific function definitions. You can give it a try with other phrases to see how it works.
+
+### Fuzzy matching for typos
+
+Naturally everyone makes mistakes while typing, and developers are no exception. Typos are common, especially when searching for function names or variable names. The `@@@` operator supports fuzzy matching to help find relevant results even with minor errors:
+
+```sql
+SELECT snippet_id, title
+FROM snippets
+WHERE title @@@ paradedb.match('title', 'binary serch', distance => 1);
+```
+
+This would find "`Binary Search Algorithm`" even though "`search`" was misspelled as "`serch`".
+
+The `distance => 1` parameter allows for one character difference, making your search more forgiving and practical for real-world use. You can tweak the distance parameter to allow for more or fewer errors based on your needs.
+
+### Combining search with filters
+
+You can combine text search with standard SQL filtering to narrow down results by language or tag:
+
+```sql
+SELECT s.snippet_id, s.title, l.name AS language
+FROM snippets s
+JOIN languages l ON s.language_id = l.language_id
+WHERE s.code @@@ 'function' AND l.name = 'JavaScript'
+ORDER BY paradedb.score(s.snippet_id) DESC;
+```
+
+This query finds JavaScript snippets that contain the word "function" in their code. It demonstrates how you can combine full-text search with traditional SQL conditions, which is especially useful when developers want to narrow their search to a specific programming language.
+
+### Highlighting search results
+
+To help developers quickly identify relevant code sections, you can highlight the matching terms:
+
+```sql
+SELECT
+  snippet_id,
+  title,
+  paradedb.snippet(code) AS code_highlight
+FROM snippets
+WHERE code @@@ 'pool';
+```
+
+This wraps matched terms in `<b></b>` tags by default:
+
+```
+ snippet_id |          title           |                       code_highlight
+------------+--------------------------+---------------------------------------------------------------
+         2  | Database Connection Pool | const { <b>Pool</b> } = require("pg");\n\nconst <b>pool</b> = new <b>Pool</b>({...
+         5  | SQL Transaction Helper   | ... const client = await <b>pool</b>.connect(); ...
+```
+
+You can customize the highlighting with different tags to match your UI:
+
+```sql
+SELECT
+  snippet_id,
+  title,
+  paradedb.snippet(code, start_tag => '<code class="highlight">', end_tag => '</code>') AS code_highlight
+FROM snippets
+WHERE code @@@ 'pool';
+```
+
+This feature is particularly valuable in a code snippet manager as it allows developers to quickly see where their search terms appear in potentially lengthy code blocks.
+
+## Building the Search API and Frontend
+
+Now that we've set up the `pg_search` indexes and the backend database, let's integrate the search functionality into a simple API and frontend. This section walks you through setting up a Node.js API to handle search queries and a React-based frontend to display the results.
+
+Start by creating a new directory for your project:
+
+```bash
+mkdir snippet-search
+cd snippet-search
+```
+
+Then you are ready to create the backend API and frontend application.
+
+### 1. Setting Up the API
+
+We'll create a simple Node.js API to handle incoming search requests. The API will query the Neon Postgres database using the `pg_search` extension and return the results to the frontend.
+
+#### Install Required Dependencies
+
+First, we need a few packages to set up the backend. These include Express for the server, pg for interacting with the Postgres database, and `dotenv` for managing environment variables like your Neon database connection string.
+
+```bash
+mkdir snippet-search-api
+cd snippet-search-api
+npm init -y
+npm install express pg dotenv cors
+```
+
+#### Create the Database Connection
+
+We'll start by setting up the database connection in a separate file (`db.js`). This makes it easier to manage the connection and reuse it in other parts of the application.
+
+```javascript
+// db.js - Database connection
+const { Pool } = require('pg');
+require('dotenv').config();
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true,
+});
+
+module.exports = pool;
+```
+
+In this file, we are creating a connection pool to manage connections to the Neon database. Make sure your `DATABASE_URL` is stored in a `.env` file like so:
+
+```
+DATABASE_URL=postgres://[username]:[password]@[endpoint]/[dbname]
+```
+
+For more information on how to work with Neon and Node.js, check out the [Neon documentation](/docs/guides/node).
+
+#### Search Logic
+
+Next, we'll write the search logic in a `searchService.js` file. This function will handle querying the database, applying the search filters, and returning the relevant results.
+
+```javascript
+// searchService.js - Search functionality
+const db = require('./db');
+
+async function searchSnippets({ query, language, tag, page = 1, limit = 10 }) {
+  const offset = (page - 1) * limit;
+
+  let searchQuery = `
+    SELECT 
+      s.snippet_id, 
+      s.title, 
+      s.description,
+      l.name AS language,
+      u.username AS created_by,
+      paradedb.snippet(s.code) AS code_highlight,
+      paradedb.score(s.snippet_id) AS relevance
+    FROM snippets s
+    JOIN languages l ON s.language_id = l.language_id
+    JOIN users u ON s.user_id = u.user_id
+  `;
+
+  let whereConditions = [];
+  let queryParams = [];
+  let paramIndex = 1;
+
+  if (query) {
+    whereConditions.push(
+      `(s.title @@@ $${paramIndex} OR s.description @@@ $${paramIndex} OR s.code @@@ $${paramIndex})`
+    );
+    queryParams.push(query);
+    paramIndex++;
+  }
+
+  if (language) {
+    whereConditions.push(`l.name = $${paramIndex}`);
+    queryParams.push(language);
+    paramIndex++;
+  }
+
+  if (tag) {
+    searchQuery += ` JOIN snippet_tags st ON s.snippet_id = st.snippet_id JOIN tags t ON st.tag_id = t.tag_id`;
+    whereConditions.push(`t.name = $${paramIndex}`);
+    queryParams.push(tag);
+    paramIndex++;
+  }
+
+  if (whereConditions.length > 0) {
+    searchQuery += ` WHERE ${whereConditions.join(' AND ')}`;
+  }
+
+  searchQuery += ` ORDER BY relevance DESC LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
+  queryParams.push(limit, offset);
+
+  const results = await db.query(searchQuery, queryParams);
+
+  let countQuery = `
+    SELECT COUNT(*) 
+    FROM snippets s
+    JOIN languages l ON s.language_id = l.language_id
+  `;
+
+  if (tag) {
+    countQuery += ` JOIN snippet_tags st ON s.snippet_id = st.snippet_id JOIN tags t ON st.tag_id = t.tag_id`;
+  }
+
+  if (whereConditions.length > 0) {
+    countQuery += ` WHERE ${whereConditions.join(' AND ')}`;
+  }
+
+  const countResult = await db.query(countQuery, queryParams.slice(0, -2));
+  const total = parseInt(countResult.rows[0].count);
+
+  const snippetIds = results.rows.map((row) => row.snippet_id);
+
+  if (snippetIds.length > 0) {
+    const tagsQuery = `
+      SELECT st.snippet_id, array_agg(t.name) as tags
+      FROM snippet_tags st
+      JOIN tags t ON st.tag_id = t.tag_id
+      WHERE st.snippet_id = ANY($1)
+      GROUP BY st.snippet_id
+    `;
+
+    const tagsResult = await db.query(tagsQuery, [snippetIds]);
+
+    const snippetTags = {};
+    tagsResult.rows.forEach((row) => {
+      snippetTags[row.snippet_id] = row.tags;
+    });
+
+    results.rows.forEach((row) => {
+      row.tags = snippetTags[row.snippet_id] || [];
+    });
+  }
+
+  return {
+    results: results.rows,
+    pagination: {
+      total,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+}
+
+module.exports = {
+  searchSnippets,
+};
+```
+
+This function receives search parameters and constructs a SQL query with the appropriate filters. It also handles pagination by calculating `limit` and `offset` values, so only a subset of results is returned at a time.
+
+#### Set Up the Express Server
+
+Now, let's set up the Express server in a `server.js` file. This file will expose a simple `/api/search` endpoint that accepts GET requests with query parameters, handles them using the `searchSnippets` function, and returns the search results.
+
+```javascript
+// server.js - Express server
+const express = require('express');
+const cors = require('cors');
+const { searchSnippets } = require('./searchService');
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/api/search', async (req, res) => {
+  try {
+    const { query, language, tag, page, limit } = req.query;
+
+    if (!query && !language && !tag) {
+      return res.status(400).json({ error: 'At least one search parameter is required' });
+    }
+
+    const result = await searchSnippets({
+      query,
+      language,
+      tag,
+      page: parseInt(page || 1),
+      limit: parseInt(limit || 10),
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error('Search error:', error);
+    res.status(500).json({ error: 'An error occurred while searching' });
+  }
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
+```
+
+This server listens for search requests on the `/api/search` endpoint. It supports query parameters like `query`, `language`, and `tag`, and it passes these to the `searchSnippets` service to fetch and return the results.
+
+### 2. Frontend: React Search Interface
+
+Now that we have the API set up, let's create a simple frontend in React to allow users to perform searches.
+
+#### Set Up the React App
+
+Create a new React app and install the necessary dependencies:
+
+```bash
+npx create-react-app snippet-search-ui
+cd snippet-search-ui
+npm install axios highlight.js
+```
+
+#### Create the API Service
+
+In the `src/services/api.js` file, we'll set up an Axios service to make requests to the backend API.
+
+```javascript
+// src/services/api.js
+import axios from 'axios';
+
+const API_URL = 'http://localhost:3000/api';
+
+// Function to search snippets
+export const searchSnippets = async (params) => {
+  const response = await axios.get(`${API_URL}/search`, { params });
+  return response.data;
+};
+
+export const getLanguages = async () => {
+  // Mock API call to fetch languages
+  return [
+    { id: 1, name: 'JavaScript' },
+    { id: 2, name: 'Python' },
+    { id: 3, name: 'Go' },
+    { id: 4, name: 'SQL' },
+    { id: 5, name: 'TypeScript' },
+  ];
+};
+
+export const getTags = async () => {
+  // Mock API call to fetch tags
+  return [
+    { id: 1, name: 'algorithm' },
+    { id: 2, name: 'utility' },
+    { id: 3, name: 'frontend' },
+    { id: 4, name: 'database' },
+    { id: 5, name: 'middleware' },
+  ];
+};
+```
+
+#### Build the Search Form Component
+
+We need a form component where users can enter a search query, select a language, or filter by tags. The form will trigger the search when submitted.
+
+```jsx
+// src/components/SearchForm.js
+import React, { useState, useEffect } from 'react';
+import { getLanguages, getTags } from '../services/api';
+
+const SearchForm = ({ onSearch }) => {
+  const [query, setQuery] = useState('');
+  const [language, setLanguage] = useState('');
+  const [tag, setTag] = useState('');
+  const [languages, setLanguages] = useState([]);
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    const loadFilters = async () => {
+      const languagesData = await getLanguages();
+      const tagsData = await getTags();
+      setLanguages(languagesData);
+      setTags(tagsData);
+    };
+
+    loadFilters();
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch({ query, language, tag });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search..."
+      />
+      <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+        <option value="">All Languages</option>
+        {languages.map((lang) => (
+          <option key={lang.id} value={lang.name}>
+            {lang.name}
+          </option>
+        ))}
+      </select>
+      <select value={tag} onChange={(e) => setTag(e.target.value)}>
+        <option value="">All Tags</option>
+        {tags.map((tag) => (
+          <option key={tag.id} value={tag.name}>
+            {tag.name}
+          </option>
+        ))}
+      </select>
+      <button type="submit">Search</button>
+    </form>
+  );
+};
+
+export default SearchForm;
+```
+
+#### Code Snippet Component
+
+Let's now create a component that displays a single code snippet:
+
+```jsx
+// src/components/CodeSnippet.js
+import React from 'react';
+
+const CodeSnippet = ({ snippet }) => {
+  return (
+    <div>
+      <h3>{snippet.title}</h3>
+      <pre>{snippet.code}</pre>
+      <p>{snippet.description}</p>
+    </div>
+  );
+};
+
+export default CodeSnippet;
+```
+
+#### Display Search Results
+
+Finally, let's put everything together in the main `App` component. We'll handle search requests, display the results, and paginate.
+
+```jsx
+// src/App.js
+import React, { useState } from 'react';
+import SearchForm from './components/SearchForm';
+import CodeSnippet from './components/CodeSnippet';
+import { searchSnippets } from './services/api';
+
+function App() {
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = async (params) => {
+    setLoading(true);
+    try {
+      const response = await searchSnippets(params);
+      setResults(response.results);
+    } catch (error) {
+      console.error('Error during search', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <SearchForm onSearch={handleSearch} />
+      {loading && <p>Loading...</p>}
+      <div>
+        {results.map((snippet) => (
+          <CodeSnippet key={snippet.snippet_id} snippet={snippet} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default App;
+```
+
+This app handles searches, displays results, and allows users to filter based on query terms, languages, and tags.
+
+You can also add styling to make the search form and results look better. For example, you can use CSS or a library like Tailwind CSS to style the components. For simplicity, we won't cover styling in this guide, but feel free to customize the UI to your liking.
+
+### 3. Dockerizing the Application and Using Docker Compose
+
+To deploy and run the search API and frontend in isolated containers, we can use Docker. In this section, we'll show you how to dockerize both the backend API and the frontend, and use Docker Compose to orchestrate the entire application.
+
+#### Dockerizing the Backend API
+
+To begin, let's create a Dockerfile for the backend API. This file will define the steps to build a container image for the Node.js API.
+
+1. Create a `Dockerfile` in the root of the `snippet-search-api` directory:
+
+   ```dockerfile
+   FROM node:20-alpine
+
+   WORKDIR /usr/src/app
+
+   COPY package*.json ./
+
+   RUN npm install
+
+   COPY . .
+
+   EXPOSE 3000
+
+   CMD ["node", "server.js"]
+   ```
+
+   This Dockerfile uses the official Node.js image, sets up the working directory, installs dependencies, and exposes port 3000 (the port the API will listen on).
+
+2. Create a `.dockerignore` file to avoid copying unnecessary files to the Docker image:
+
+   ```plaintext
+   node_modules
+   npm-debug.log
+   .env
+   ```
+
+#### Dockerizing the Frontend
+
+Next, we'll dockerize the frontend React application. We'll create a separate `Dockerfile` for the frontend.
+
+1. **Create a `Dockerfile` in the `snippet-search-ui` directory:**
+
+   ```dockerfile
+   FROM node:20-alpine
+
+   WORKDIR /app
+
+   COPY package*.json ./
+
+   RUN npm install
+
+   COPY . .
+
+   RUN npm run build
+
+   FROM nginx:alpine
+
+   COPY --from=0 /app/build /usr/share/nginx/html
+
+   EXPOSE 80
+
+   CMD ["nginx", "-g", "daemon off;"]
+   ```
+
+   This Dockerfile does the following:
+
+   - It first builds the React app using the Node.js image.
+   - Then, it uses an Nginx image to serve the build files, ensuring that the app is ready for production.
+
+#### Docker Compose Setup
+
+Now, we'll use Docker Compose to run both the backend API and the frontend together in one command. We'll create a `compose.yml` file in the root directory of the project.
+
+1. Create a `compose.yml` file in the root directory of the project, e.g. `snippet-search` which contains both `snippet-search-api` and `snippet-search-ui` directories:
+
+   ```yaml
+   services:
+   # Backend API service
+   api:
+     build:
+     context: ./snippet-search-api
+     container_name: snippet-api
+     environment:
+       - DATABASE_URL=postgres://[username]:[password]@[endpoint]/[dbname]
+     ports:
+       - '3000:3000'
+     networks:
+       - snippet-network
+
+   # Frontend service
+   frontend:
+     build:
+     context: ./snippet-search-ui
+     container_name: snippet-frontend
+     ports:
+       - '80:80'
+     networks:
+       - snippet-network
+
+   networks:
+   snippet-network:
+     driver: bridge
+   ```
+
+   This file defines three services:
+
+   - **`api`**: The backend service, built from the `snippet-search-api` directory. It expects the `DATABASE_URL` environment variable to connect to the Neon database. You should replace `[username]`, `[password]`, and `[endpoint]` with your actual Neon database credentials or use a `.env` file to manage these variables securely.
+   - **`frontend`**: The React frontend service, built from the `snippet-search-ui` directory. It will serve the static build files via Nginx.
+
+#### Building and Running the Application
+
+With the Dockerfiles and `compose.yml` file in place, we can now build and start all the services with Docker Compose.
+
+1. Build the images and start the containers:
+
+   ```bash
+   docker compose up --build
+   ```
+
+   This command will:
+
+   - Build the Docker images for the backend API and the frontend.
+   - Create and start the containers for the backend API, frontend, and Postgres database.
+
+2. Access the application:
+
+   - The backend API will be available at `http://localhost:3000`.
+   - The frontend React app will be served at `http://localhost`.
+
+3. Shut down the application:
+
+   If you want to stop the containers, run:
+
+   ```bash
+   docker compose down
+   ```
+
+## Performance optimization tips
+
+When working with larger collections containing thousands of code snippets, you can optimize `pg_search` performance with these adjustments:
+
+### Configure PostgreSQL settings
+
+Adjust these settings for better performance on large datasets:
+
+```sql
+-- Allocate more memory for index building
+SET maintenance_work_mem = '1GB';  -- Adjust based on your compute size
+
+-- Enable parallel workers
+SET max_parallel_workers_per_gather = 4;
+SET max_parallel_workers = 8;
+```
+
+These settings help Postgres use more system resources effectively. In Neon, `maintenance_work_mem` is set based on your compute size, don't exceed 50-60% of your compute's available RAM. For larger code repositories, these optimizations can significantly speed up both index creation and search queries.
+
+### Pre-warm your indexes
+
+When you restart your database or after creating indexes, you can pre-load them into memory for faster queries:
+
+```sql
+-- Install the extension
+CREATE EXTENSION IF NOT EXISTS pg_prewarm;
+
+-- Pre-warm indexes
+SELECT pg_prewarm('snippet_search_idx');
+```
+
+Pre-warming loads index data into memory, eliminating disk read latency for initial searches. This is particularly valuable for snippet search, as it ensures the first developer searching after a system restart gets fast results.
+
+## Conclusion
+
+With `pg_search` on Neon, you can build a powerful code snippet search system directly within your Postgres database. This approach eliminates the need for separate search services while providing excellent search performance and features tailored to developers' needs.
+
+The BM25 algorithm and inverted indexes ensure your searches are both fast and relevant, while the integration with standard SQL gives you powerful filtering and sorting capabilities.
+
+For repositories with millions of snippets, only index columns you actually search on (this keeps index size manageable). Also consider partial indexes if you only search active or public snippets and monitor index size and rebuild periodically for optimal performance.
 
 <NeedHelp />
 
@@ -46547,6 +48726,7 @@ You can either watch the video below or follow the steps to set up the Neon MCP 
 6. **Save** the `mcp_config.json` file.
 7. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade.
 8. An OAuth window will open in your browser. Follow the prompts to authorize Windsurf to access your Neon account.
+   ![Neon OAuth window](/docs/guides/neon-oauth-window.png)
 9. You can verify that the connection is successful by checking the available MCP servers in Cascade. The toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
 
    ![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
@@ -46641,7 +48821,7 @@ Neon MCP server exposes the following actions, which primarily map to **Neon API
 - `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
 - `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
 
-These actions enable any MCP client like Windsurf to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
+These actions enable any MCP client like Windsurf to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon's branching for safe preview and commit.
 
 ## Development Workflow: Adding a Column with Windsurf and Neon MCP
 
@@ -46676,8 +48856,8 @@ User: can you add created_at column?
 Cascade: I'll help you add a created_at column to the playing_with_neon table. I'll create a migration to add this column with a timestamp data type.
 > MCP Tool: neon / prepare_database_migration
 > Let me verify the changes in the temporary branch to make sure the column was added correctly.
-> I've verified that the created_at column has been added successfully in the temporary branch. Would you like me to commit this migration to the main branch?
-> The migration has been completed successfully! The created_at column has been added to the playing_with_neon table. Let's verify the change in the main branch:
+> I've verified that the created_at column has been added successfully in the temporary branch. Would you like me to commit this migration to the production branch?
+> The migration has been completed successfully! The created_at column has been added to the playing_with_neon table. Let's verify the change in the production branch:
 > Perfect! The created_at column has been successfully added and populated with timestamps. For existing rows, it was set to the time when the column was added. Any new rows added to the table will automatically get their creation timestamp.
 ```
 
@@ -46685,7 +48865,7 @@ Cascade: I'll help you add a created_at column to the playing_with_neon table. I
 
 - **Natural language interaction:** You can use simple, conversational English to interact with your database through Windsurf's Cascade.
 - **MCP Tools in Action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
-- **Branching for safety:** The agent automatically creates a temporary branch for schema changes and tests them before committing to the main branch.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes and tests them before committing to the production branch.
 
 You can verify the changes in your Neon Console or by querying the database directly.
 
@@ -46733,7 +48913,7 @@ Cascade: I'll create a new branch named "feature-x" in your Neon project.
 > Branch Name: `feature-x`
 > Branch ID: `br-aged-sun-a5woam3c`
 > Project ID: `restless-butterfly-08800888`
-> The branch has been created successfully and is ready for use. You can now make changes to this branch without affecting the main branch. Would you like to do anything with this new branch?
+> The branch has been created successfully and is ready for use. You can now make changes to this branch without affecting the production branch. Would you like to do anything with this new branch?
 ```
 
 ![Windsurf creating a new Neon branch](/docs/guides/windsurf-mcp-create-new-branch.png)
@@ -46751,6 +48931,510 @@ Windsurf with Neon MCP Server lets you use natural language to interact with you
 - [Neon Docs](/docs)
 - [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
 - [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
+
+<NeedHelp/>
+
+
+# Get started with Zed and Neon Postgres MCP Server
+
+---
+title: 'Get started with Zed and Neon Postgres MCP Server'
+subtitle: 'Make schema changes with natural language using Zed and Neon MCP Server'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-04-10T00:00:00.000Z'
+updatedOn: '2025-04-10T00:00:00.000Z'
+---
+
+Imagine you could interact with your database using plain English, whether you're asking for specific data or changing its schema. That's what the [Neon MCP Server](https://github.com/neondatabase/mcp-server-neon) allows you to do. It lets you manage your Neon Postgres databases using everyday language, simplifying tasks like running queries and performing database migrations.
+
+In this guide, we'll explore how to set up the Neon MCP Server within [Zed](https://zed.dev), a next-generation AI-powered code editor, to handle various database operations. These include creating projects, managing database branches, running SQL queries, and performing safe database migrations.
+
+<Admonition type="note">
+MCP support in Zed is currently in **preview**. Ensure you're using the Preview version of Zed to add MCP servers. You can download the **Preview** version from [zed.dev/releases/preview](https://zed.dev/releases/preview).
+</Admonition>
+
+## Setting up Neon MCP Server in Zed
+
+You have two options for connecting Zed to the Neon MCP Server:
+
+1.  **Remote MCP Server (Preview):** Connect to Neon's managed MCP server using OAuth for authentication. This method is more convenient as it eliminates the need to manage API keys in Zed. Additionally, you will automatically receive the latest features and improvements as soon as they are released.
+
+2.  **Local MCP Server:** Run the Neon MCP server locally on your machine, authenticating with a Neon API key.
+
+### Prerequisites
+
+Before you begin, ensure you have the following:
+
+1.  **Zed editor:** Download and install preview version of Zed from [zed.dev/releases/preview](https://zed.dev/releases/preview).
+2.  **A Neon account and project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
+3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+
+    <Admonition type="warning" title="Neon API Key Security">
+    Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
+    </Admonition>
+
+4.  **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
+
+<Admonition type="note">
+In Zed, MCP servers are known as **context servers**. These context servers enable context-aware capabilities, facilitating Zed's interaction with external systems such as Neon.
+</Admonition>
+
+### Option 1: Setting up the Remote Hosted Neon MCP Server
+
+This method uses Neon's managed server and OAuth authentication.
+
+1.  Open Zed.
+2.  Click the Assistant (✨) icon in the bottom right corner of Zed.
+    ![Zed Assistant icon](/docs/guides/zed/assistant-icon.png)
+3.  Click **Settings** in the top right panel of the Assistant.
+    ![Zed Assistant settings](/docs/guides/zed/assistant-settings.png)
+4.  In the **Context Servers** section, click **+ Add Context Server**.
+    ![Zed add context server](/docs/guides/zed/add-context-server.png)
+5.  Configure Neon Server:
+    - Enter **Neon** in the **Name** field.
+    - In the **Command** field, enter:
+      ```bash
+      npx -y mcp-remote https://mcp.neon.tech/sse
+      ```
+      ![Zed add Neon Remote MCP server](/docs/guides/zed/add-neon-remote-mcp-server.png)
+    - Click **Add Server**.
+6.  An OAuth window will open. Follow the prompts to authorize Zed to access your Neon account
+    ![Neon OAuth window](/docs/guides/neon-oauth-window.png)
+
+7.  Check the Context Servers section in Zed **Settings** to ensure the connection is successful. Neon should be listed as a context server.
+    ![Zed with Neon MCP Tools](/docs/guides/zed/with-neon-mcp-tools.png)
+
+8.  Zed is now connected to Neon's remote MCP server.
+
+<Admonition type="note">
+The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
+</Admonition>
+
+### Option 2: Setting up the Local Neon MCP Server
+
+This method runs the Neon MCP server locally on your machine, using a Neon API key for authentication.
+
+1.  Open Zed.
+2.  Click the Assistant (✨) icon in the bottom right corner of Zed.
+    ![Zed Assistant icon](/docs/guides/zed/assistant-icon.png)
+3.  Click **Settings** in the top right panel of the Assistant.
+    ![Zed Assistant settings](/docs/guides/zed/assistant-settings.png)
+4.  In the **Context Servers** section, click **+ Add Context Server**.
+    ![Zed add context server](/docs/guides/zed/add-context-server.png)
+5.  Configure Neon Server:
+
+    - Enter **Neon** in the **Name** field.
+    - In the **Command** field, enter:
+      ```bash
+      npx -y @neondatabase/mcp-server-neon start <YOUR_NEON_API_KEY>
+      ```
+      ![Zed add Neon Local MCP server](/docs/guides/zed/add-neon-local-mcp-server.png)
+    - Click **Add Server**.
+
+6.  Check the Context Servers section in Zed Settings to ensure the connection is successful. Neon should be listed as a context server.
+    ![Zed with Neon MCP Tools](/docs/guides/zed/with-neon-mcp-tools.png)
+
+7.  Zed is now connected to Neon's local MCP server.
+
+### Verification
+
+With the Neon MCP server set up either remotely or locally, you can now verify the connection and test the available tools.
+
+1.  Open Zed Assistant.
+
+2.  Type `List my Neon projects` in the Assistant text field.
+    ![Zed list neon projects](/docs/guides/zed/list_neon_projects.png)
+
+3.  When prompted, click **Allow** to authorize the tool to access your Neon project.
+    ![Zed allow tool access](/docs/guides/zed/allow_tool_access.png)
+
+4.  Zed will use the `list_projects` MCP tool to retrieve and display your Neon projects, including project ID, name, and other details.
+    ![Zed list projects](/docs/guides/zed/list_projects.png)
+
+5.  Try other commands such as listing all tables, creating a new branch, creating a new project, or running SQL queries.
+
+### Troubleshooting
+
+If you experience issues adding an MCP server from the Assistant panel, you can also do so through the **Settings**. Follow these steps:
+
+1.  Open the `~/.config/zed/settings.json` file. You can access this file by clicking on **Settings** in the Zed menu bar.
+2.  Add the following `context_servers` section to the file.
+
+<CodeTabs labels={["Remote MCP server", "Local MCP server"]}>
+
+```json
+"context_servers": {
+   "neon": {
+      "command": {
+         "path": "npx",
+         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"],
+         "env": null
+      },
+      "settings": {}
+   }
+}
+```
+
+```json
+"context_servers": {
+   "neon": {
+      "command": {
+         "path": "npx",
+         "args": ["-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"],
+         "env": null
+      },
+      "settings": {}
+   }
+}
+```
+
+</CodeTabs>
+
+#### Troubleshooting on Windows
+
+If you are using Windows, and you encounter issues with the command line, you may need to adjust the command to use `cmd` or `wsl` to run the MCP server. For example, here's how you can set it up:
+
+<CodeTabs labels={["Windows", "Windows (WSL)"]}>
+
+```json
+"context_servers": {
+   "neon": {
+      "command": {
+         "path": "cmd",
+         "args": ["/c", "npx", "-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"],
+         "env": null
+      },
+      "settings": {}
+   }
+}
+```
+
+```json
+"context_servers": {
+   "neon": {
+      "command": {
+         "path": "wsl",
+         "args": ["npx", "-y", "@neondatabase/mcp-server-neon", "start", "<YOUR_NEON_API_KEY>"],
+         "env": null
+      },
+      "settings": {}
+   }
+}
+```
+
+</CodeTabs>
+
+## Neon MCP Server Tools
+
+Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
+
+- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account.
+- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
+- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
+- `delete_project`: Deletes an existing Neon project.
+- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
+- `delete_branch`: Deletes an existing branch in a Neon project.
+- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
+- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
+- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
+- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
+- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
+- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
+- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
+- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+
+These actions enable any MCP client like Zed to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon's branching for safe preview and commit.
+
+## Development Workflow: Adding a Column with Zed and Neon MCP
+
+Let's walk through a typical development scenario: Quickly adding a column for prototyping using natural language within Zed. The following chat log demonstrates a real interaction with Zed and the Neon MCP server.
+
+**Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
+
+<Admonition type="tip" title="Security Reminder">
+For your security, review the tool's purpose before permitting the operation to proceed. Remember that LLMs can sometimes produce unexpected results, so careful monitoring is always recommended.
+</Admonition>
+
+Here's the conversation log between the user and Zed:
+
+![Zed listing projects](/docs/guides/zed/mcp-neon-adding-column-1.png)
+
+```text shouldWrap
+User: List my neon projects
+Zed: I'll use the list_projects tool to show your Neon projects.
+> Run MCP tool `list_projects`
+> You have one Neon project:
+> Name: mcp
+> Project ID: red-math-82356803
+> Region: aws-ap-southeast-1
+> ...other details...
+
+User: what tables are present in it?
+Zed: I'll use the `get_database_tables` tool to list the tables in your project. I'll use the project ID we just found.
+> Run MCP tool `get_database_tables`
+> There is one table in your project's database:
+> Schema: public
+> Table Name: `playing_with_neon`
+> Type: Base Table
+> Let me fetch the details of this table's schema so you can see its structure:
+> Run MCP tool `describe_table_schema`
+> The "playing_with_neon" table has three columns:
+> 1. id: An auto-incrementing integer (primary key)
+> 2. value: A real (floating-point) number that can be null
+> 3. name: A text field that cannot be null
+
+Would you like to see the data in this table or perform any operations on it?
+```
+
+![Zed showing table schema](/docs/guides/zed/mcp-neon-adding-column-2.png)
+
+```text
+User: Can you show me first 5 rows in it?
+Zed: I'll query the first 5 rows from the playing_with_neon table:
+> Run MCP tool `run_sql`
+> xxx (table rows are returned by Zed)
+
+User: can you add a created_at column to the table?
+Zed: I'll use the prepare_database_migration tool to add a created_at column to the playing_with_neon table:
+> Run MCP tool `prepare_database_migration`
+> I've added the `created_at` column in a temporary branch. Let me verify the change by checking the table structure:
+> Run MCP tool `run_sql`
+> I've verified that the created_at column has been successfully added in the temporary branch.
+> Migration Details:
+> - Migration ID: a78e2a3b-8498-48a0-9c7a-2dec30da84bc
+> - Temporary Branch Name: br-royal-mode-a1nfvzag
+> - Temporary Branch ID: br-royal-mode-a1nfvzag
+> - Migration Result: Success
+> Would you like to commit this migration to the production branch?
+
+User: yes do it
+Zed: I'll complete the migration using the provided migration ID:
+> Run MCP tool `complete_database_migration`
+> The migration has been successfully completed. The `created_at` column has been added to the `playing_with_neon` table in the production branch, and the temporary branch has been deleted.
+```
+
+![Zed completing migration](/docs/guides/zed/mcp-neon-adding-column-3.png)
+
+**Key takeaways:**
+
+- **Natural language interaction:** You can use simple, conversational English to interact with your database.
+- **Step-by-step guidance:** Zed (Claude) confirms each step and provides details like branch names and migration IDs.
+- **MCP Tools in action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the production branch.
+
+You can verify the changes in your Neon Console or by querying the database directly.
+
+![Neon Console with added column](/docs/guides/neon-cursor-mcp-added-column.png)
+
+<Admonition type="note">
+While the Neon MCP server allows you to utilize all of Neon's functionalities, you can also use a [generic Postgres MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres) to connect to Neon.
+</Admonition>
+
+## Bonus: Creating a project and branch
+
+Beyond schema changes, you can also manage your Neon projects and branches directly within Zed using natural language commands. This can be useful for quickly setting up a new development or test environment.
+
+### Creating a new project
+
+Let's say you want to create a new Neon project named "my-new-project". You can simply tell Zed:
+
+```text shouldWrap
+User: Create a Neon project named "my-new-project"
+Zed: I'll create a new Neon project with the specified name.
+> Run MCP tool `create_project`
+> I've successfully created a new Neon project named "my-new-project". Here are the key details:
+> - Project ID: red-frog-93550744
+> - Default Branch: main (ID: br-shiny-water-a5us05x3)
+> - Default Database: neondb
+> The project is ready to use. You can now create tables, add data, or perform other database operations. Would you like to perform any specific operations with your new project?
+```
+
+![Zed creating a new Neon project](/docs/guides/zed/mcp-create-new-project.png)
+
+Zed will then use the `create_project` MCP tool to initiate the project creation. It will provide you with a project ID, default branch, and database details. You can then proceed to create tables or perform other operations within this project.
+
+### Creating a New Branch
+
+Once you have a project, you can easily create new branches for development or experimentation. For example, to create a branch named "feature-x" in your "my-new-project" project:
+
+```text shouldWrap
+User: Create a branch named "feature-x"
+Zed: I'll create a new branch named "feature-x" in your project.
+> Run MCP tool `create_branch`
+> I've successfully created a new branch named "feature-x" in your project. Here are the details:
+> - Branch Name: feature-x
+> - Branch ID: br-gentle-dream-a5u9fmm4
+> - Parent Branch: br-shiny-water-a5us05x3
+> The branch is ready for use. Would you like to perform any specific operations in this branch?
+```
+
+![Zed creating a new Neon branch](/docs/guides/zed/mcp-create-new-branch.png)
+
+Zed will use the `create_branch` MCP tool to create the branch and provide you with the branch name and ID. Notice how we don't need to specify the project ID, as Zed remembers the active project context.
+
+## Conclusion
+
+Zed combined with the Neon MCP Server, whether using the **Remote Hosted (Preview)** option or the **Local Server** setup, lets you use natural language to interact with your database and take advantage of Neon's branching capabilities for fast iteration. This approach is ideal for quickly testing
+database ideas and making schema changes during development.
+
+## Resources
+
+- [MCP Protocol](https://modelcontextprotocol.org)
+- [Context Servers in Zed](https://zed.dev/docs/assistant/context-servers)
+- [Neon Docs](https://neon.tech/docs)
+- [Neon API Keys](https://neon.tech/docs/manage/api-keys#creating-api-keys)
+- [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
+
+<NeedHelp/>
+
+
+# Getting started with Zero and Neon
+
+---
+title: Getting started with Zero and Neon
+subtitle: A step-by-step guide to integrating Zero with Neon Postgres
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-05-01T00:00:00.000Z'
+updatedOn: '2025-05-01T00:00:00.000Z'
+---
+
+This guide demonstrates how to integrate [Zero](https://zero.rocicorp.dev/) by [Rocicorp](https://rocicorp.dev/) with Neon Postgres. Zero allows you to build reactive, real-time applications by writing queries directly in your client code against your backend database schema. It synchronizes query results efficiently to a client-side cache, enabling instant UI updates and a local-first feel.
+
+Zero achieves this using its custom streaming query engine, [ZQL](https://zero.rocicorp.dev/docs/reading-data), and a stateful middleware service called `zero-cache`. `zero-cache` maintains a SQLite replica of your upstream Postgres database and serves ZQL queries to clients over WebSockets.
+
+This guide provides a step-by-step walkthrough of setting up Zero with Neon Postgres. You will learn how to:
+
+- Prepare your Neon Postgres database for Zero integration.
+- Clone and run the Zero `hello-zero` quickstart application as a practical example.
+- Test the integration to ensure data syncs correctly between the application, `zero-cache`, and Neon.
+
+## Prerequisites
+
+Before you begin, ensure you have the following prerequisites installed and configured:
+
+- **Neon Account:** Sign up for a free [Neon account](https://console.neon.tech/signup) if you don't have one already. Neon provides a Postgres database for your Zero application.
+- **Node.js v20+:** Node.js (version 20 or higher) is required to run the `hello-zero` example application and Zero tooling. Download and install it from [nodejs.org](https://nodejs.org).
+
+## Setting up Neon Database
+
+Zero requires a Postgres database (version 15+) with logical replication enabled. You'll configure your Neon project accordingly.
+
+1.  **Create a Neon Project:** If you haven't already, create a new Neon project using [pg.new](https://pg.new).
+2.  **Enable Logical Replication:** Zero uses Postgres logical replication (`wal_level = logical`) to receive changes from your database.
+
+    - Navigate to your Neon Project using the [Neon Console](https://console.neon.tech/).
+    - Open the **Settings** menu.
+    - Click on **Logical Replication**.
+    - Click the **Enable** button to enable logical replication.
+      ![Neon dashboard settings with option to enable logical replication](/docs/guides/neon-console-settings-logical-replication.png)
+
+3.  **Retrieve Connection String:**
+    - Navigate to the **Dashboard** of your Neon project.
+    - Click on the **Connect** button which opens a modal.
+    - Select your database and branch, and copy the connection string with connection pooling disabled.
+      <Admonition type="important">
+      Make sure to turn off connection pooling in the connection string modal. This is essential for `zero-cache` to maintain a persistent connection to the Neon database.
+      </Admonition>
+      ![Neon direct connection string modal](/docs/guides/neon-console-direct-connection-string.png)
+
+## Setting up the `hello-zero` example application
+
+With your Neon database prepared, let's set up the `hello-zero` example application from [Zero's Quickstart](https://zero.rocicorp.dev/docs/quickstart) to connect to it.
+
+1.  **Clone the `hello-zero` repository and install dependencies:**
+    In a terminal window, navigate to the directory where you want to clone the `hello-zero` repository. Run the following commands:
+
+    ```bash
+    git clone https://github.com/rocicorp/hello-zero.git
+    cd hello-zero
+    npm install
+    ```
+
+    This clones the `hello-zero` repository and installs the necessary Node.js dependencies.
+
+    <Admonition type="note" title="Using non-npm package managers?">
+    If you are using `pnpm` or `bun` instead of `npm`, you might need to explicitly allow the postinstall script for `@rocicorp/zero-sqlite3`, which installs native binaries. Follow the instructions on [Zero's Docs](https://zero.rocicorp.dev/docs/quickstart#not-npm) to configure your package manager correctly.
+    </Admonition>
+
+2.  **Apply database schema/seed data:**
+    To run the example application, you need to set up the database schema and seed initial data by running the SQL migrations. The project includes the necessary SQL commands in the `docker/seed.sql` file.
+
+    You can execute this file using `psql` (ensure it's installed locally) or the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor).
+
+    Using `psql`, run the following command. Replace `YOUR_NEON_CONNECTION_STRING` with your database connection string copied from the Neon Console:
+
+    ```bash
+    psql "YOUR_NEON_CONNECTION_STRING" -f docker/seed.sql
+    ```
+
+    > Alternatively, you can run the SQL commands directly in the Neon SQL Editor. Copy the contents of `docker/seed.sql` and paste them into the SQL Editor in the Neon Console. Click **Run** to execute the commands.
+
+3.  **Configure environment variables:**
+    Open the `.env` file and modify the `ZERO_UPSTREAM_DB` variable to point to your Neon database. It should look something like this:
+
+    ```env
+    # other environment variables...
+    ZERO_UPSTREAM_DB="YOUR_NEON_CONNECTION_STRING"
+    ```
+
+    > Replace `YOUR_NEON_CONNECTION_STRING` with the actual connection string from your Neon project dashboard which you copied earlier.
+
+4.  **Run the `zero-cache` service:**
+    Now, start the `zero-cache` service using the provided npm script. In your terminal, still within the `hello-zero` directory, run:
+
+    ```bash
+    npm run dev:zero-cache
+    ```
+
+    This command starts the `zero-cache` process. It connects to your Neon database, applies necessary [permissions](https://zero.rocicorp.dev/docs/permissions) required for the `hello-zero` application, and starts the replication process. The terminal will display logs indicating the connection status and replication progress. Keep this terminal window open as it runs the `zero-cache` service.
+
+    <Admonition type="tip" title="Topology">
+    To optimize performance, deploy your `zero-cache` service in close proximity to your Neon database to minimize latency in production. During local development, you might notice logs indicating a higher ping time if your `zero-cache` service and Neon database are not in the same region. This is expected and can be disregarded in a development environment. However, for production, it is crucial to deploy the `zero-cache` service in the same region as your Neon database to achieve minimal latency. For more information on deployment, refer to [Deploying Zero](https://zero.rocicorp.dev/docs/deployment#topology).
+    </Admonition>
+
+5.  **Run the `hello-zero` UI:**
+    Open a _new_ terminal window, navigate back to the `hello-zero` directory, and run the following command to start the frontend application:
+    ```bash
+    npm run dev:ui
+    ```
+    This command starts the Vite development server, making the application available at `http://localhost:5173`. Open this URL in your browser.
+
+## Using the demo application
+
+You should now have the `hello-zero` application running in your browser. It connects to the `zero-cache` process running in your first terminal window, which synchronizes data with your Neon Postgres database.
+
+1.  **Access the application:** Open `http://localhost:5173` in your browser.
+2.  **Test functionality:** Try the features described in the [Zero Quickstart Overview](https://zero.rocicorp.dev/docs/quickstart#quick-overview):
+    - Click **Add Messages**. New messages should appear instantly.
+    - Open the app in a second browser tab or window. Changes made in one window should appear nearly instantaneously in the other.
+    - Click **Login**. You'll be logged in as a random user.
+    - Try **Remove Messages**. This should work now that you are logged in.
+      ![Demo of the hello-zero app](/docs/guides/hello-zero-demo.gif)
+    - Try editing a message (pencil icon). You should only be able to edit messages created by the user you are logged in as.
+    - Use the **From** or **Contains** filters.
+3.  **Verify data in Neon (Optional):** In the Neon Console, navigate to **Tables** and select the `message` table. You should see the messages you added in the application. This confirms that data is being synchronized correctly between the application, `zero-cache`, and Neon.
+    ![Neon messages table](/docs/guides/zero-message-table.png)
+
+Congratulations! You have successfully set up Rocicorp Zero with Neon Postgres using the `hello-zero` example application. Check out [Canvas](https://github.com/neondatabase-labs/canvas), a collaborative drawing app built with Zero and Neon, for a more complex example of Zero in action.
+
+<Admonition type="note" title="Schema Changes">
+Zero uses Postgres event triggers for efficient schema migration handling. However, Neon currently does not support event triggers for tracking DDL (schema) changes due to limitations around superuser privileges.
+
+Without event triggers, Zero ensures correctness by performing a **full reset of the `zero-cache` and all connected client states** whenever _any_ schema change is detected.
+
+While this reset mechanism works, it can be inefficient for larger databases (e.g., > 1GB) or applications undergoing frequent schema evolution. For smaller databases or projects with stable schemas, the impact might be acceptable. Please consider this limitation when managing schema changes for your Zero application on Neon, especially for larger projects.
+</Admonition>
+
+## Resources
+
+- [Zero Documentation](https://zero.rocicorp.dev/docs)
+- [Zero Quickstart](https://zero.rocicorp.dev/docs/quickstart)
+- [Zero Deployment Guide](https://zero.rocicorp.dev/docs/deployment)
+- [`hello-zero` Repository](https://github.com/rocicorp/hello-zero)
+- [Neon Documentation](/docs)
+- [Canvas - A collaborative drawing app built with Zero and Neon](https://github.com/neondatabase-labs/canvas)
 
 <NeedHelp/>
 
