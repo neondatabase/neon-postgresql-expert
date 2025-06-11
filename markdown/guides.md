@@ -6,7 +6,7 @@ updatedOn: '2024-05-13T13:24:36.612Z'
 
 # Guides
 
-Welcome to Neon guides! This folder contains the source code of the [Neon guides](https://neon.tech/guides/).
+Welcome to Neon guides! This folder contains the source code of the [Neon guides](/guides/).
 
 ## Basic information
 
@@ -675,9 +675,9 @@ Open `src/config/tasks.yaml` and configure the tasks as follows:
 ```yaml shouldWrap
 scrape_site:
   description: >-
-    Fetch the content of https://neon.tech/guides in markdown format. Ensure accurate and complete retrieval of website content.
+    Fetch the content of https://neon.com/guides in markdown format. Ensure accurate and complete retrieval of website content.
   expected_output: >-
-    The complete content of the website https://neon.tech/guides, formatted in markdown.
+    The complete content of the website https://neon.com/guides, formatted in markdown.
   agent: >-
     web_scraper
 extract:
@@ -897,6 +897,1116 @@ You can find the source code for the application described in this guide on GitH
 - [Neon API keys](/docs/manage/api-keys#creating-api-keys)
 
 <NeedHelp/>
+
+
+# Building Intelligent Search with AI Embeddings, Neon, and pgvector
+
+---
+title: Building Intelligent Search with AI Embeddings, Neon, and pgvector
+subtitle: Learn how to create a semantic search system using AI embeddings, Neon, and pgvector.
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-05-17T00:00:00.000Z'
+updatedOn: '2025-05-17T00:00:00.000Z'
+---
+
+Traditional text search relies on exact keyword matches, which often misses the semantic meaning behind queries.
+
+When someone searches for "car maintenance," they might also be interested in results about "vehicle servicing" or "auto repair", but keyword-based search won't make these connections.
+
+AI embeddings solve this problem by converting text into high-dimensional vectors that capture semantic meaning. Words and phrases with similar meanings cluster together in this vector space, enabling search systems that understand context and intent rather than just matching exact words.
+
+The pgvector extension brings vector similarity search directly into PostgreSQL, letting you store embeddings alongside your regular data and perform complex semantic searches with simple SQL queries. Combined with Neon's serverless PostgreSQL, you can build intelligent search systems that scale automatically with your application's needs.
+
+In this guide, you'll learn how to build a semantic search system that can power document search and content recommendations using OpenAI embeddings stored in Neon with pgvector.
+
+## What you'll build
+
+By the end of this guide, you'll have:
+
+- An understanding of AI embeddings and how they improve search
+- A Neon database configured with the pgvector extension
+- An embedding generation service powered by OpenAI's API
+- A document search system that understands semantic similarity
+
+## Prerequisites
+
+To follow along with this guide, you'll need:
+
+- A [Neon account](https://console.neon.tech/signup) with a project
+- An [OpenAI API key](https://platform.openai.com/api-keys)
+- Node.js 20.x or later installed
+- Basic familiarity with SQL and REST APIs
+- Understanding of JavaScript promises and async/await
+
+## Understanding AI embeddings and vector search
+
+Before diving into the implementation, let's understand how AI embeddings work and why they're great for search.
+
+### What are embeddings?
+
+Embeddings are numerical representations of text that capture semantic meaning in high-dimensional space. When you send text to OpenAI's embedding API, it returns an array of floating-point numbers (typically 1,536 dimensions for the `text-embedding-3-small` model) that represents the "meaning" of that text.
+
+Here's a simplified example of how embeddings work:
+
+```javascript
+// These texts have similar meanings
+const text1 = "The cat jumped over the fence";
+const text2 = "A feline leaped across a barrier";
+
+// Their embeddings would be mathematically similar
+const embedding1 = [-0.02, 0.15, -0.08, ...]; // 1,536 numbers
+const embedding2 = [-0.01, 0.16, -0.09, ...]; // Similar values
+```
+
+The key insight is that semantically similar texts produce similar embedding vectors. This enables search systems that can find relevant content even when it doesn't share exact keywords with the query.
+
+### Why pgvector?
+
+pgvector extends PostgreSQL with vector data types and similarity search operations. Instead of moving your data to specialized vector databases, you can store embeddings alongside your existing relational data and perform vector similarity searches with SQL:
+
+```sql
+-- Find documents most similar to a query embedding
+SELECT title, content,
+       embedding <-> $1 as distance
+FROM documents
+ORDER BY embedding <-> $1
+LIMIT 5;
+```
+
+The `<->` operator calculates the distance between vectors, with smaller distances indicating higher similarity.
+
+Now let's build a system that puts these concepts to work.
+
+## Setting up pgvector on Neon
+
+We'll start by enabling pgvector on your Neon database and creating the necessary tables for our search system.
+
+First, create a new Neon project optimized for vector operations:
+
+1. Navigate to the [Neon Console](https://console.neon.tech)
+2. Click "New Project"
+3. Name your project "semantic-search-system"
+4. Choose a region close to your users
+5. Select at least 1 CU for compute size (vector operations can be CPU-intensive)
+
+Once your project is created, we need to enable the pgvector extension. Connect to your database and run this SQL:
+
+```sql
+-- Enable the pgvector extension
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Verify the extension is working
+SELECT extversion FROM pg_extension WHERE extname = 'vector';
+```
+
+This command adds vector data types and similarity functions to your PostgreSQL database. You should see confirmation that the vector extension is now available.
+
+Next, we'll create the database schema for our semantic search system. This includes tables for documents and their embeddings, along with indexes for fast vector similarity search.
+
+```sql
+-- Table for storing documents with their embeddings
+CREATE TABLE documents (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    category VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    embedding vector(1536) -- OpenAI's text-embedding-3-small produces 1536-dimensional vectors
+);
+
+-- Create indexes for fast vector similarity search
+CREATE INDEX documents_embedding_idx ON documents USING ivfflat (embedding vector_cosine_ops);
+```
+
+The `vector(1536)` data type stores 1,536-dimensional vectors, matching OpenAI's embedding size. The `ivfflat` indexes enable fast approximate nearest neighbor searches using cosine similarity, this is crucial for performance when searching through thousands of embeddings.
+
+## Building an embedding generation service
+
+Now we'll create a Node.js service that handles the complexities of generating embeddings with [OpenAI's API](https://platform.openai.com/docs/guides/embeddings). This service will be the bridge between your text content and the vector representations stored in the database.
+
+Let's set up the project structure and install the necessary dependencies:
+
+```bash
+mkdir semantic-search-service
+cd semantic-search-service
+npm init -y
+npm install openai pg dotenv express cors
+```
+
+Create a `.env` file to securely store your API credentials:
+
+```bash
+OPENAI_API_KEY=your_openai_api_key_here
+DATABASE_URL=postgresql://user:password@ep-abc123.region.aws.neon.tech/neondb
+```
+
+Now let's create an embedding service that handles OpenAI API interactions. This service will preprocess text, generate embeddings, and handle errors gracefully:
+
+```javascript
+// embedding.js
+const OpenAI = require('openai');
+require('dotenv').config();
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+class EmbeddingService {
+  constructor() {
+    this.model = 'text-embedding-3-small'; // Cost-effective and performant
+    this.maxTokens = 8191; // Maximum tokens for this model
+  }
+
+  async generateEmbedding(text) {
+    try {
+      // Clean and prepare text for embedding generation
+      const cleanText = this.preprocessText(text);
+
+      const response = await openai.embeddings.create({
+        model: this.model,
+        input: cleanText,
+      });
+
+      return response.data[0].embedding;
+    } catch (error) {
+      console.error('Error generating embedding:', error);
+      throw new Error(`Failed to generate embedding: ${error.message}`);
+    }
+  }
+
+  preprocessText(text) {
+    // Remove extra whitespace and normalize the text
+    let cleaned = text.trim().replace(/\s+/g, ' ');
+
+    // Truncate if too long (rough estimate: 1 token ≈ 4 characters)
+    const maxChars = this.maxTokens * 3; // Conservative estimate
+    if (cleaned.length > maxChars) {
+      cleaned = cleaned.substring(0, maxChars) + '...';
+    }
+
+    return cleaned;
+  }
+
+  // Create optimized text for embedding generation
+  createDocumentText(title, content, category = '') {
+    return `Title: ${title}\nCategory: ${category}\nContent: ${content}`;
+  }
+}
+
+module.exports = EmbeddingService;
+```
+
+This service handles a few important tasks: it preprocesses text to ensure it fits within OpenAI's token limits, combines document fields into optimized text for better embeddings, and provides error handling for API calls. The `createDocumentText` method is particularly important because it structures the input text in a way that produces better semantic embeddings.
+
+As of the time of writing, OpenAI's `text-embedding-3-small` model is the newest and most cost-effective for generating embeddings.
+
+## Creating a document management system
+
+Now we'll build a service that manages documents in our database and automatically generates embeddings for each document. This service will handle both individual documents and batch operations.
+
+Let's create the document service that ties together our database and embedding generation:
+
+```javascript
+// document-service.js
+const { Pool } = require('pg');
+const EmbeddingService = require('./embedding');
+require('dotenv').config();
+
+class DocumentService {
+  constructor() {
+    this.pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+      max: 20,
+    });
+    this.embeddingService = new EmbeddingService();
+  }
+
+  async addDocument(title, content, category = null) {
+    const client = await this.pool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      // Combine document fields into optimized text for embedding
+      const fullText = this.embeddingService.createDocumentText(title, content, category || '');
+
+      // Generate embedding using OpenAI API
+      console.log(`Generating embedding for document: ${title}`);
+      const embedding = await this.embeddingService.generateEmbedding(fullText);
+      const formattedEmbedding = `[${embedding.join(',')}]`;
+
+      // Store document with its embedding in the database
+      const result = await client.query(
+        `
+        INSERT INTO documents (title, content, category, embedding)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id, title, created_at
+      `,
+        [title, content, category, formattedEmbedding]
+      );
+
+      await client.query('COMMIT'); // Complete transaction
+
+      console.log(`Document added successfully: ${result.rows[0].id}`);
+      return result.rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK'); // Undo changes on error
+      console.error('Error adding document:', error);
+      throw error;
+    } finally {
+      client.release(); // Return connection to pool
+    }
+  }
+
+  async searchDocuments(query, limit = 10, category = null) {
+    try {
+      // First, convert the search query into an embedding
+      const fullText = this.embeddingService.createDocumentText(query, '', category || '');
+      const queryEmbedding = await this.embeddingService.generateEmbedding(fullText);
+
+      // Format embedding as a pgvector-compatible string
+      const formattedEmbedding = `[${queryEmbedding.join(',')}]`;
+
+      // Start building the SQL query
+      let sql = `
+            SELECT 
+                id,
+                title,
+                content,
+                category,
+                created_at,
+                1 - (embedding <=> $1) as similarity_score
+            FROM documents
+            WHERE 1 - (embedding <=> $1) > 0.3
+            `;
+
+      const params = [formattedEmbedding];
+
+      // Add category filter if needed
+      if (category) {
+        sql += ` WHERE category = $2`;
+        params.push(category);
+      }
+
+      // Append ORDER BY and LIMIT clauses
+      sql += ` ORDER BY embedding <=> $1 LIMIT $${params.length + 1}`;
+      params.push(limit);
+
+      const result = await this.pool.query(sql, params);
+
+      // Format results
+      return result.rows.map((row) => ({
+        ...row,
+        similarity_score: parseFloat(row.similarity_score.toFixed(4)),
+        preview: row.content.length > 200 ? row.content.substring(0, 200) + '...' : row.content,
+      }));
+    } catch (error) {
+      console.error('Error searching documents:', error);
+      throw error;
+    }
+  }
+
+  async getDocumentById(id) {
+    try {
+      const result = await this.pool.query(
+        `
+        SELECT id, title, content, category, created_at
+        FROM documents 
+        WHERE id = $1
+      `,
+        [id]
+      );
+
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error('Error getting document:', error);
+      throw error;
+    }
+  }
+}
+
+module.exports = DocumentService;
+```
+
+This service provides the core functionality for our semantic search system. The `addDocument` method generates embeddings and stores them alongside the document data, while `searchDocuments` performs the actual semantic search by converting queries to embeddings and finding the most similar documents using pgvector's distance operators.
+
+The key insight here is the `<=>` operator in the SQL query, this calculates cosine distance between vectors, with smaller values indicating higher similarity. We convert this to a similarity score between 0 and 1 for easier interpretation.
+
+The `getDocumentById` method retrieves a specific document by its ID, allowing applications to fetch full content when needed.
+
+## Building the search API
+
+With our document service in place, let's create an Express API that exposes our document search capabilities to applications.
+
+This API will provide endpoints for adding documents and performing semantic searches.
+
+```javascript
+// server.js
+const express = require('express');
+const cors = require('cors');
+const DocumentService = require('./document-service');
+require('dotenv').config();
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const documentService = new DocumentService();
+
+// Add a single document with automatic embedding generation
+app.post('/documents', async (req, res) => {
+  try {
+    const { title, content, category } = req.body;
+
+    // Validate required fields
+    if (!title || !content) {
+      return res.status(400).json({
+        error: 'Title and content are required',
+      });
+    }
+
+    // Add document and generate embedding
+    const result = await documentService.addDocument(title, content, category);
+    res.status(201).json(result);
+  } catch (error) {
+    console.error('Error adding document:', error);
+    res.status(500).json({
+      error: 'Failed to add document',
+      message: error.message,
+    });
+  }
+});
+
+// Perform semantic search across all documents
+app.post('/search', async (req, res) => {
+  try {
+    const { query, limit = 10, category } = req.body;
+
+    if (!query) {
+      return res.status(400).json({
+        error: 'Search query is required',
+      });
+    }
+
+    const startTime = Date.now();
+
+    // Execute semantic search using vector similarity
+    const results = await documentService.searchDocuments(query, limit, category);
+
+    const searchTime = Date.now() - startTime;
+
+    res.json({
+      query,
+      results,
+      count: results.length,
+      search_time_ms: searchTime,
+    });
+  } catch (error) {
+    console.error('Error searching documents:', error);
+    res.status(500).json({
+      error: 'Search failed',
+      message: error.message,
+    });
+  }
+});
+
+// Get a specific document by ID
+app.get('/documents/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const document = await documentService.getDocumentById(parseInt(id));
+
+    if (!document) {
+      return res.status(404).json({ error: 'Document not found' });
+    }
+
+    res.json(document);
+  } catch (error) {
+    console.error('Error getting document:', error);
+    res.status(500).json({
+      error: 'Failed to get document',
+      message: error.message,
+    });
+  }
+});
+
+// Health check endpoint
+app.get('/health', async (req, res) => {
+  try {
+    // Test database connection
+    await documentService.pool.query('SELECT 1');
+    res.json({ status: 'healthy', database: 'connected' });
+  } catch (error) {
+    res.status(500).json({ status: 'unhealthy', database: 'disconnected' });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Semantic search service running on port ${PORT}`);
+});
+```
+
+This API provides clean, RESTful endpoints for our semantic search functionality. The `/search` endpoint is the heart of the system, it takes natural language queries and returns semantically relevant documents, even when there are no exact keyword matches.
+
+Notice how we measure and return the search time. This helps you monitor performance as your document collection grows.
+
+## Testing the semantic search system
+
+With our API in place, now let's test our semantic search system to see how it finds relevant documents based on meaning rather than exact keywords. We'll add sample documents and run various search queries.
+
+Create a test script to populate your database with sample content and test the search functionality:
+
+```javascript
+// test-search.js
+const axios = require('axios');
+
+const baseURL = 'http://localhost:3000';
+
+async function testSemanticSearch() {
+  try {
+    console.log('Adding sample documents to test semantic search...\n');
+
+    // Add diverse sample documents across different topics
+    const sampleDocuments = [
+      {
+        title: 'Getting Started with Machine Learning',
+        content:
+          'Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed. This guide covers the basics of supervised learning, unsupervised learning, and neural networks.',
+        category: 'technology',
+      },
+      {
+        title: 'Healthy Cooking Tips',
+        content:
+          "Eating nutritious meals doesn't have to be complicated. Focus on fresh ingredients, reduce processed foods, and try cooking methods like steaming and grilling. Meal prep can save time and help maintain a balanced diet.",
+        category: 'health',
+      },
+      {
+        title: 'Remote Work Best Practices',
+        content:
+          'Working from home requires discipline and good habits. Set up a dedicated workspace, maintain regular hours, and use collaboration tools effectively. Communication with team members is crucial for remote success.',
+        category: 'productivity',
+      },
+      {
+        title: 'Understanding Neural Networks',
+        content:
+          'Neural networks are computing systems inspired by biological neural networks. They consist of layers of interconnected nodes that process information. Deep learning uses multi-layered neural networks to solve complex problems.',
+        category: 'technology',
+      },
+    ];
+
+    // Add each document to the system
+    for (const doc of sampleDocuments) {
+      await axios.post(`${baseURL}/documents`, doc);
+      console.log(`✓ Added: ${doc.title}`);
+    }
+
+    console.log('\nDocuments added successfully! Now testing semantic search...\n');
+
+    // Test semantic searches that don't use exact keywords
+    const testQueries = [
+      'artificial intelligence and computers', // Should find ML and neural network docs
+      'how to stay healthy while eating', // Should find cooking tips
+      'working from home effectively', // Should find remote work practices
+      'deep learning algorithms', // Should find both AI-related documents
+    ];
+
+    // Run each test query and display results
+    for (const query of testQueries) {
+      console.log(`🔍 Searching for: "${query}"`);
+
+      const response = await axios.post(`${baseURL}/search`, {
+        query,
+        limit: 3,
+      });
+
+      const { results, search_time_ms } = response.data;
+
+      console.log(`   Found ${results.length} results in ${search_time_ms}ms`);
+
+      // Display the most relevant results
+      results.forEach((doc, index) => {
+        console.log(`   ${index + 1}. ${doc.title} (similarity: ${doc.similarity_score})`);
+        console.log(`      Category: ${doc.category}`);
+        console.log(`      Preview: ${doc.preview}\n`);
+      });
+
+      console.log('---\n');
+    }
+  } catch (error) {
+    console.error('Test failed:', error.response?.data || error.message);
+  }
+}
+
+// Start the server and run tests
+console.log('Make sure your server is running with: node server.js\n');
+testSemanticSearch();
+```
+
+Install `axios` for the test script and run it:
+
+```bash
+npm install axios
+
+# Start your server in one terminal
+node server.js
+
+# Run the test in another terminal
+node test-search.js
+```
+
+You should see output showing how the semantic search finds relevant documents even when the search terms don't appear exactly in the document text.
+
+For example, searching for "artificial intelligence and computers" should return documents about machine learning and neural networks, demonstrating the power of semantic understanding.
+
+The similarity scores help you understand how closely each result matches the query - scores closer to 1.0 indicate higher semantic similarity.
+
+## Performance optimization
+
+As your document collection grows, you'll want to optimize performance.
+
+First, let's properly configure the pgvector indexes. The default index settings work for small datasets, but you'll need to tune them for larger collections:
+
+```sql
+-- Drop existing indexes to recreate with optimal settings
+DROP INDEX IF EXISTS documents_embedding_idx;
+
+-- Create optimized indexes based on your data size
+-- Rule of thumb: lists = rows / 1000, with minimum of 10
+CREATE INDEX documents_embedding_idx ON documents
+USING ivfflat (embedding vector_cosine_ops)
+WITH (lists = 100);  -- Adjust based on your document count
+
+-- Update table statistics for optimal query planning
+ANALYZE documents;
+```
+
+These indexes dramatically improve query speed by creating approximate nearest neighbor searches instead of comparing every vector.
+
+The `lists` parameter should be adjusted based on your data size, more documents need more lists for optimal performance.
+
+## Conclusion
+
+You now should have a solid foundation for a semantic search system that uses AI embeddings alongside `pgvector` in Neon.
+
+You've built a simple semantic search system that demonstrates the power of AI embeddings with Neon and `pgvector`.
+
+The foundation you've built can be extended with features like real-time search suggestions or multilingual support. The principles of semantic search and vector similarity will enable you to create intelligent applications that understand user intent and context.
+
+## Additional Resources
+
+- [pgvector Documentation](https://github.com/pgvector/pgvector)
+- [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings)
+- [Neon Serverless PostgreSQL](/docs)
+- [Vector Similarity Search Best Practices](https://github.com/pgvector/pgvector#best-practices)
+
+<NeedHelp />
+
+
+# Automate Database Branching with Alchemy and Neon Postgres
+
+---
+title: Automate Database Branching with Alchemy and Neon Postgres
+subtitle: Learn how to use Alchemy Infrastructure-as-Code to programmatically create and manage Neon database branches
+author: bobbyiliev
+enableTableOfContents: true
+createdAt: '2025-05-10T00:00:00.000Z'
+updatedOn: '2025-05-10T00:00:00.000Z'
+---
+
+Database branching is one of Neon's most powerful features, letting you create isolated database copies in seconds.
+
+[Alchemy](https://github.com/sam-goodwin/alchemy) is a TypeScript-native Infrastructure-as-Code tool that lets you automate cloud resources with simple async functions. Unlike traditional IaC tools like Terraform that require learning new languages and complex state management, Alchemy lets you manage infrastructure using the TypeScript you already know.
+
+In this guide, you'll learn how to use Alchemy to automatically create, manage, and clean up Neon database branches as part of your development workflow. Think of it as "Git for your database infrastructure", you'll define what branches you want in code, and Alchemy will make sure they exist.
+
+## Prerequisites
+
+To follow along with this guide, you'll need:
+
+- [Node.js 20](https://nodejs.org/) or later installed
+- A [Neon account](https://console.neon.tech/signup) with a project
+- A [Neon API key](/docs/manage/api-keys) (you'll need this to manage branches programmatically)
+- Basic familiarity with TypeScript and REST APIs
+
+## What you'll build
+
+By the end of this guide, you'll have:
+
+- Learn what Alchemy is and how it differs from traditional Infrastructure-as-Code tools
+- Create custom Alchemy resources for managing Neon branches
+- Automated branch creation for feature development
+- Branch cleanup when features are merged
+
+## Understanding Alchemy basics
+
+Before we dive into the implementation, let's understand what makes Alchemy different from traditional Infrastructure-as-Code tools and why it's particularly well-suited for managing Neon database branches.
+
+### What is Alchemy?
+
+Traditional IaC tools like Terraform require you to learn new languages and manage complex state files. Alchemy takes a different approach: you write regular TypeScript functions that describe your infrastructure.
+
+Here's how a typical resource looks in Alchemy:
+
+```typescript
+const MyResource = Resource('my::Resource', async function (id, props) {
+  if (this.phase === 'delete') {
+    // Clean up the resource
+    await deleteFromAPI(this.state.resourceId);
+    return this.destroy();
+  }
+
+  // Create or update the resource
+  const result = await createOrUpdateAPI(props);
+  return { ...props, resourceId: result.id };
+});
+```
+
+This function handles the entire lifecycle of a resource. When you run your code, Alchemy calls this function for each resource you've defined, automatically handling creation, updates, and deletion.
+
+### Declarative with imperative code
+
+Even though you write regular functions, the end result is declarative. You define what you want, and Alchemy figures out how to get there:
+
+```typescript
+// Define what infrastructure you want
+const app = await alchemy('my-app');
+
+const database = await Database('prod-db', {
+  name: 'production',
+  size: 'large',
+});
+
+const testDb = await Database('test-db', {
+  name: 'testing',
+  size: 'small',
+});
+
+await app.finalize();
+```
+
+If you run this code twice, Alchemy won't create duplicate resources. If you remove the `testDb` and run again, Alchemy will automatically delete it. This automatic cleanup is what makes Alchemy particularly powerful for managing database branches.
+
+### Why this works well for database branching
+
+Database branches often need dynamic configuration based on feature names, environments, or developer preferences. With Alchemy, you can use regular programming constructs:
+
+```typescript
+// Create branches for active pull requests
+const pullRequests = await github.getPullRequests();
+
+for (const pr of pullRequests) {
+  await NeonBranch(`pr-${pr.number}`, {
+    name: `pr-${pr.number}-${pr.title.toLowerCase().replace(/\s+/g, '-')}`,
+    parentBranch: pr.targetBranch === 'main' ? 'production' : 'staging',
+  });
+}
+```
+
+When pull requests are merged or closed, the corresponding branches get cleaned up automatically on the next run.
+
+Now let's set up a project and see this in action with Neon database branches.
+
+## Setting up your project
+
+Let's start by creating a new project and installing the necessary dependencies. We'll build this step by step so you can see exactly how everything fits together.
+
+First, create a new directory for our project. This will be a standalone project that you can later integrate into your existing applications:
+
+```bash
+mkdir neon-alchemy-demo
+cd neon-alchemy-demo
+npm init -y
+```
+
+The `npm init -y` command creates a basic `package.json` file with default settings. You'll see it creates a simple Node.js project structure.
+
+Next, let's install all the dependencies we'll need. Alchemy is designed to work seamlessly with TypeScript, so we'll use TypeScript throughout this guide:
+
+```bash
+npm install alchemy dotenv
+npm install --save-dev typescript @types/node tsx
+```
+
+After running this, you'll have Alchemy installed along with TypeScript support and the tools we need to run our code. Alchemy itself has zero dependencies, which means it won't bloat your project or conflict with other tools you're using.
+
+Now let's configure our project for TypeScript and ESM modules. First, update your `package.json` to define the module type and add a start script:
+
+```json
+{
+  "type": "module",
+  "scripts": {
+    "start": "tsx main.ts"
+  }
+}
+```
+
+This tells Node.js to treat your project as an ESM module, which is required for Alchemy to work properly. The `tsx` package allows you to run TypeScript files directly without needing to compile them first.
+
+Create a `tsconfig.json` file that tells TypeScript how to compile our code:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+This configuration sets up modern TypeScript with ESM modules, which Alchemy requires. The settings ensure compatibility with Alchemy's async-native design.
+
+Finally, we need to store our Neon credentials securely. Create a `.env` file in your project root:
+
+```bash
+NEON_API_KEY=your_neon_api_key_here
+NEON_PROJECT_ID=your_project_id_here
+```
+
+Replace `your_neon_api_key_here` with your actual Neon API key, and `your_project_id_here` with your project ID. You can find your project ID in the Neon Console URL (it looks like `ep-cool-darkness-123456`).
+
+## Creating a Neon Branch resource
+
+Here's where Alchemy gets really handy. Alchemy resources are just async functions that create, update, or delete cloud resources. We're going to create a custom resource that knows how to manage Neon branches through the Neon API.
+
+Think of this resource as a "blueprint" that Alchemy can use to create as many Neon branches as you need. Once we write this code, we can reuse it throughout our application.
+
+Create a file called `neon-branch.ts`:
+
+```typescript
+import { Resource } from 'alchemy';
+
+interface NeonBranchProps {
+  name: string;
+  projectId: string;
+  parentBranchId?: string;
+  apiKey: string;
+}
+
+interface NeonBranchState extends NeonBranchProps {
+  branchId: string;
+  connectionString: string;
+  createdAt: string;
+}
+
+export const NeonBranch = Resource<NeonBranchState, NeonBranchProps>(
+  'neon::Branch',
+  async function (id: string, props: NeonBranchProps) {
+    const { name, projectId, parentBranchId, apiKey } = props;
+
+    if (this.phase === 'delete') {
+      const branchId = this.state?.branchId ?? (this.output as any)?.branchId;
+
+      if (branchId) {
+        try {
+          const deleteResponse = await fetch(
+            `https://console.neon.tech/api/v2/projects/${projectId}/branches/${branchId}`,
+            {
+              method: 'DELETE',
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          if (!deleteResponse.ok) {
+            console.warn(`Failed to delete branch: ${deleteResponse.statusText}`);
+          }
+        } catch (err) {
+          console.warn(`Error during branch deletion: ${(err as Error).message}`);
+        }
+      } else {
+        console.warn('No branchId found in state or output; skipping deletion.');
+      }
+
+      return this.destroy();
+    }
+
+    // Check if branch already exists
+    if (this.state?.branchId) {
+      // Branch exists, return current state
+      return this.state;
+    }
+
+    // Create a new branch
+    const createBranchResponse = await fetch(
+      `https://console.neon.tech/api/v2/projects/${projectId}/branches`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          parent_id: parentBranchId,
+        }),
+      }
+    );
+
+    if (!createBranchResponse.ok) {
+      const errorText = await createBranchResponse.text();
+      throw new Error(
+        `Failed to create branch: ${createBranchResponse.status} ${createBranchResponse.statusText} - ${errorText}`
+      );
+    }
+
+    const branchResult = await createBranchResponse.json();
+    const branch = branchResult.branch;
+
+    // Get the project's main endpoint to build connection string
+    const endpointsResponse = await fetch(
+      `https://console.neon.tech/api/v2/projects/${projectId}/endpoints`,
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    if (!endpointsResponse.ok) {
+      throw new Error(`Failed to get endpoints: ${endpointsResponse.statusText}`);
+    }
+
+    const endpointsResult = await endpointsResponse.json();
+
+    // Use the primary endpoint (usually the first one or the one marked as primary)
+    const primaryEndpoint =
+      endpointsResult.endpoints.find((ep: any) => ep.branch_id === parentBranchId) ||
+      endpointsResult.endpoints[0];
+
+    if (!primaryEndpoint) {
+      throw new Error('No endpoints found for project');
+    }
+
+    // Get project details to find the database name
+    const projectResponse = await fetch(`https://console.neon.tech/api/v2/projects/${projectId}`, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+      },
+    });
+
+    if (!projectResponse.ok) {
+      throw new Error(`Failed to get project details: ${projectResponse.statusText}`);
+    }
+
+    const projectResult = await projectResponse.json();
+    const databaseName = 'neondb';
+
+    const connectionString = `postgres://${primaryEndpoint.host}/${databaseName}?sslmode=require&options=project%3D${projectId}`;
+
+    return {
+      ...props,
+      branchId: branch.id,
+      connectionString,
+      createdAt: branch.created_at,
+    };
+  }
+);
+```
+
+Let's break down what this code does:
+
+- The interfaces define the shape of our data. `NeonBranchProps` is what you pass in (the branch name, project ID, etc.), and `NeonBranchState` is what gets stored (including the generated branch ID and connection string).
+- The Resource function is where Alchemy manages the lifecycle. When Alchemy runs, it calls this function for each branch resource you've defined. The function checks what phase it's in:
+  - Delete phase: If you've removed a branch from your code, Alchemy calls the Neon API to delete it
+  - Create/Update phase: If the branch doesn't exist, it creates it. If it already exists, it returns the current state
+- The API calls use the standard Neon REST API to create branches and get connection information. This is the same API you could call manually with curl, but now it's automated.
+
+The great thing about this approach is that you define the resource once, and then Alchemy handles all the complexity of tracking state, making API calls, and cleaning up resources.
+
+The same resource can be reused across your application, so you can create as many branches as you need without duplicating code.
+
+You can use a similar approach to create resources for other Neon features, like managing users or roles, but for this guide, we'll focus on branches.
+
+## Using the Neon Branch resource
+
+Now let's put our resource to work. We'll create a simple script that demonstrates how to use it. This script will create a couple of branches and show you how Alchemy manages them.
+
+Create a file called `main.ts`:
+
+```typescript
+import alchemy from 'alchemy';
+import { NeonBranch } from './neon-branch.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const app = await alchemy('neon-demo');
+
+// Create a feature branch
+const featureBranch = await NeonBranch('feature-auth-system', {
+  name: 'feature/auth-system',
+  projectId: process.env.NEON_PROJECT_ID!,
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+console.log('Feature branch created!');
+console.log('Branch ID:', featureBranch.branchId);
+console.log('Connection string:', featureBranch.connectionString);
+
+// Create a testing branch from the feature branch
+const testingBranch = await NeonBranch('testing-auth-system', {
+  name: 'test/auth-system',
+  projectId: process.env.NEON_PROJECT_ID!,
+  parentBranchId: featureBranch.branchId,
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+console.log('Testing branch created!');
+console.log('Testing branch ID:', testingBranch.branchId);
+
+await app.finalize();
+```
+
+Here's what this script does step by step:
+
+- First, we initialize an Alchemy app with the name 'neon-demo'. This creates a local state file where Alchemy tracks what resources exist.
+- Next, we create a feature branch using our `NeonBranch` resource. The first parameter (`'feature-auth-system'`) is a unique ID that Alchemy uses to track this specific branch. The second parameter contains the branch configuration.
+- Then, we create a testing branch that branches off from our feature branch. Notice how we pass `featureBranch.branchId` as the `parentBranchId` - this creates a branch hierarchy just like you'd have with git branches.
+- Finally, we call `app.finalize()` to tell Alchemy we're done. This is when Alchemy checks if there are any resources that need to be cleaned up.
+
+Let's run this script and see it in action. Make sure you have your Neon API key and project ID set in your environment variables, then run:
+
+```bash
+npx tsx main.ts
+```
+
+When you run this command, you should see output similar to:
+
+```
+Feature branch created!
+Branch ID: br_cool_darkness_12345
+Connection string: postgres://ep-cool-darkness-12345.us-east-2.aws.neon.tech/feature/auth-system?sslmode=require
+Testing branch created!
+Testing branch ID: br_wispy_cloud_67890
+```
+
+If you check your Neon Console now, you'll see two new branches have appeared in your project. The connection strings shown in the output are ready to use in your applications - you can connect to these branches just like any other Postgres database.
+
+## Automating branch cleanup
+
+Here's where Alchemy really can help compared to manual branch management. With Alchemy, cleanup is automatic. When you remove a resource from your code, Alchemy automatically deletes it on the next run. Let's see this in action with a more practical example.
+
+Create a file called `feature-workflow.ts`:
+
+```typescript
+import alchemy from 'alchemy';
+import { NeonBranch } from './neon-branch.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const app = await alchemy('feature-workflow');
+
+// Simulate different features being worked on
+const activeFeatures = [
+  'user-authentication',
+  'payment-integration',
+  // 'email-notifications', // Simulate a completed feature by commenting this out
+];
+
+// Create branches for active features
+for (const feature of activeFeatures) {
+  const branch = await NeonBranch(`feature-${feature}`, {
+    name: `feature/${feature}`,
+    projectId: process.env.NEON_PROJECT_ID!,
+    apiKey: process.env.NEON_API_KEY!,
+  });
+
+  console.log(`Branch created for ${feature}: ${branch.branchId}`);
+}
+
+await app.finalize();
+```
+
+This script simulates a development workflow where you have multiple features being worked on simultaneously. Notice the commented-out line for 'email-notifications' - this represents a feature that was completed and merged in our fictitious project.
+
+Here's what happens when you run this script:
+
+- First run: Alchemy creates branches for `user-authentication` and `payment-integration`. If the `email-notifications` branch existed from a previous run, it gets deleted because it's no longer in the active features list.
+
+- Subsequent runs: If you add new features to the array, Alchemy creates branches for them. If you remove features (like commenting out lines), Alchemy automatically deletes the corresponding branches.
+
+Run the script to see this in action:
+
+```bash
+npx tsx feature-workflow.ts
+```
+
+You'll see output showing which branches were created. If you run it again, the existing branches won't be recreated (Alchemy is smart about this), but any branches that are no longer defined in your code will be deleted.
+
+This automatic cleanup means you never have to remember to delete old branches manually. Your database infrastructure stays clean, and you only pay for what you're actually using.
+
+## Troubleshooting
+
+While using Alchemy, you might encounter some common issues. Here are some tips to help you troubleshoot:
+
+### Authentication errors
+
+If you see errors about authentication or permissions, first test your API key manually to make sure it works:
+
+```bash
+curl -H "Authorization: Bearer YOUR_API_KEY" \
+  https://console.neon.tech/api/v2/projects
+```
+
+Replace `YOUR_API_KEY` with your actual API key. If this doesn't return a list of your projects, the problem is with your API key. Make sure you created it correctly and that it has the right permissions.
+
+### Rate limiting
+
+Most APIs have rate limits to prevent abuse. For example, if you're creating many branches quickly, you might hit these limits. You can add small delays between branch creations to avoid this:
+
+```typescript
+// Add a small delay between branch creations
+for (const feature of features) {
+  await NeonBranch(`feature-${feature}`, {
+    /* ... */
+  });
+
+  // Wait 1 second before creating the next branch
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+}
+```
+
+This is usually only necessary if you're creating a large number of resources in a short time. For normal development workflows, you shouldn't run into this issue.
+
+### Branch name conflicts
+
+Neon branch names must be unique within a project. If you get errors about duplicate names, you can use prefixes or timestamps to make them unique:
+
+```typescript
+const uniqueName = `feature-${Date.now()}-${featureName}`;
+```
+
+Or use a more readable format:
+
+```typescript
+const uniqueName = `feature-${featureName}-${new Date().toISOString().split('T')[0]}`;
+```
+
+### State file issues
+
+Alchemy stores its state in a local file (usually `.alchemy/state.json`). If this file gets corrupted or deleted, Alchemy might lose track of your resources. You can usually fix this by:
+
+1. Deleting the `.alchemy` directory
+2. Running your script again (Alchemy will detect existing resources)
+
+Or by manually cleaning up resources in the Neon Console and starting fresh.
+
+## Summary
+
+You've learned how to use Alchemy to automate Neon database branching.
+
+The combination of Alchemy's simple TypeScript approach and Neon's branching makes database infrastructure management almost invisible. You focus on building features, and the database branches you need just exist.
+
+<NeedHelp />
 
 
 # Querying Neon Postgres with Natural Language via Amazon Q Business
@@ -2928,7 +4038,7 @@ For example, when a user asks questions about their invoice, the AI can query Ne
 
 We’ll build an AI agent that connects to your Postgres database and uses a simple Python function to fetch and analyze the data.
 
-We’ll use [**Neon Serverless Postgres**](https://neon.tech/) as our database. It’s a fully managed, cloud-native Postgres that’s free to start, scales automatically, and works great for [AI agents](https://neon.tech/use-cases/ai-agents) that need to query data on demand without managing infrastructure.
+We’ll use [**Neon Serverless Postgres**](/) as our database. It’s a fully managed, cloud-native Postgres that’s free to start, scales automatically, and works great for [AI agents](/use-cases/ai-agents) that need to query data on demand without managing infrastructure.
 
 ### Prerequisites
 
@@ -3311,13 +4421,13 @@ This approach is beginner-friendly, lightweight, and practical for real-world us
 Want to go further? You can:
 
 - Add more tools to the agent
-- Integrate with [vector search](https://neon.tech/docs/extensions/pgvector) (e.g., detect anomaly reasons from logs using embeddings)
+- Integrate with [vector search](/docs/extensions/pgvector) (e.g., detect anomaly reasons from logs using embeddings)
 
 ## Resources
 
-- [Neon on Azure](https://neon.tech/docs/manage/azure)
-- [Build AI Agents with Azure AI Agent Service and Neon](https://neon.tech/blog/build-ai-agents-with-azure-ai-agent-service-and-neon)
-- [Multi-Agent AI Solution with Neon, Langchain, AutoGen and Azure OpenAI](https://neon.tech/blog/multi-agent-ai-solution-with-neon-langchain-autogen-and-azure-openai)
+- [Neon on Azure](/docs/manage/azure)
+- [Build AI Agents with Azure AI Agent Service and Neon](/blog/build-ai-agents-with-azure-ai-agent-service-and-neon)
+- [Multi-Agent AI Solution with Neon, Langchain, AutoGen and Azure OpenAI](/blogolution-with-neon-langchain-autogen-and-azure-openai)
 
 <NeedHelp />
 
@@ -5903,7 +7013,7 @@ Run the following command to apply the migration to your Neon database:
 dotnet ef database update
 ```
 
-To learn more about migrations in Entity Framework Core, refer to the [Neon documentation](https://neon.tech/docs/guides/entity-migrations) guide which provides a detailed explanation of the migration process.
+To learn more about migrations in Entity Framework Core, refer to the [Neon documentation](/docs/guides/entity-migrations) guide which provides a detailed explanation of the migration process.
 
 At this point, your database schema is set up. Next, we'll automate this process using Azure Pipelines.
 
@@ -5994,14 +7104,14 @@ When working in a team, conflicts may arise due to multiple migration files bein
 
 In addition, consider the following:
 
-- When applying migrations, use a direct Neon connection instead of a [pooled one](https://neon.tech/docs/connect/connection-pooling).
-- Before applying changes to production, test them in a staging environment or using a [Neon branch](https://neon.tech/docs/introduction/branching).
+- When applying migrations, use a direct Neon connection instead of a [pooled one](/docs/connect/connection-pooling).
+- Before applying changes to production, test them in a staging environment or using a [Neon branch](/docs/introduction/branching).
 
 ## Conclusion
 
 By integrating Entity Framework Core with Azure Pipelines, you can simplify database migrations and ensure schema changes are consistently applied to your Neon Postgres database. Automating migrations reduces the risk of human error and helps maintain database integrity across environments.
 
-As a next step, make sure to explore [Neon branches](https://neon.tech/docs/introduction/branching), so you can test your migrations in a staging environment before deploying to production.
+As a next step, make sure to explore [Neon branches](/docs/introduction/branching), so you can test your migrations in a staging environment before deploying to production.
 
 ## Additional Resources
 
@@ -6174,7 +7284,7 @@ Simple enough, right? Now let's prep our database to store this data.
 
 ### Creating a Postgres Database with Neon
 
-Postgres is my go-to database for most projects. And using a managed service like [Neon](https://neon.tech/) makes it even easier to get up and running Serverless Progres databases on Azure.
+Postgres is my go-to database for most projects. And using a managed service like [Neon](https://neon.com/) makes it even easier to get up and running Serverless Progres databases on Azure.
 So, I'm going to head over to my [Neon projects](https://console.neon.tech/app/projects) and create a new project with a Postgres database, then use the following schema to create a table to store my recipes:
 
 ```sql
@@ -6599,7 +7709,7 @@ Before we begin, make sure you have:
 
 ## Creating Your Neon Project
 
-Neon is now available in Azure! You can create serverless Postgres databases that run on Azure infrastructure. To learn more about Neon's Azure launch, check out the [announcement post](https://neon.tech/blog/neon-is-coming-to-azure).
+Neon is now available in Azure! You can create serverless Postgres databases that run on Azure infrastructure. To learn more about Neon's Azure launch, check out the [announcement post](/blog/neon-is-coming-to-azure).
 
 To create your Neon project on Azure:
 
@@ -7322,7 +8432,7 @@ With your referral system deployed to Azure, you should consider some standard p
    CREATE INDEX idx_referrals_status ON referrals(status);
    ```
 
-   You can learn more about indexing in the [Neon documentation](https://neon.tech/postgresql/postgresql-indexes).
+   You can learn more about indexing in the [Neon documentation](/postgresql/postgresql-indexes).
 
 2. Implement connection pooling in your database utility:
 
@@ -7336,7 +8446,7 @@ With your referral system deployed to Azure, you should consider some standard p
    });
    ```
 
-   Alternatively, you can use the [Neon connection pool](https://neon.tech/docs/connect/connection-pooling) feature to manage connections efficiently.
+   Alternatively, you can use the [Neon connection pool](/docs/connect/connection-pooling) feature to manage connections efficiently.
 
 3. On the Azure Functions side, consider enabling [Azure Functions Premium Plan](https://azure.microsoft.com/en-us/pricing/details/functions/), which offers more control over scaling and performance.
 
@@ -9627,7 +10737,7 @@ Before you begin, ensure you have the following:
     - Download and install the Cline VS Code extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=saoudrizwan.claude-dev).
     - Set up Cline by following the [Getting Started guide](https://docs.cline.bot/getting-started/getting-started-new-coders#setting-up-openrouter-api-key) which involves obtaining an [OpenRouter API key](https://openrouter.ai) to work with Cline.
 2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
-3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](/docs/manage/api-keys).
     <Admonition type="warning" title="Neon API Key Security">
     Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
     </Admonition>
@@ -9730,24 +10840,7 @@ Now that you have the Neon MCP server set up either remotely or locally, you can
 
 You've now configured Neon MCP Server in Cline and can manage your Neon Postgres databases using AI.
 
-## Neon MCP Server Tools
-
-Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
-
-- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account. _Note: This particular action is still under development. It's not yet returning results as expected._
-- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
-- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
-- `delete_project`: Deletes an existing Neon project.
-- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
-- `delete_branch`: Deletes an existing branch in a Neon project.
-- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
-- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
-- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
-- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
-- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
-- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
-- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
-- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+<MCPTools />
 
 These actions enable any MCP client like Cline to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon's branching for safe preview and commit.
 
@@ -12201,7 +13294,7 @@ This guide will introduce you to Create and demonstrate how you can use it to ma
 
 Create leverages Neon as the database backend for its AI-powered app development platform. This integration delivers a fully managed database solution, which is fundamental to Create's rapid app development experience. By abstracting away database complexities, Create users can concentrate solely on their application's functionality and design.
 
-This experience is immediately apparent during app creation. Neon's instant database provisioning lets users bypass database setup and and focus on developing their application. Neon operates invisibly in the background. To learn more about how Create.xyz uses Neon, see [From Idea to Full Stack App in One Conversation with Create](https://neon.tech/blog/from-idea-to-full-stack-app-in-one-conversation-with-create).
+This experience is immediately apparent during app creation. Neon's instant database provisioning lets users bypass database setup and and focus on developing their application. Neon operates invisibly in the background. To learn more about how Create.xyz uses Neon, see [From Idea to Full Stack App in One Conversation with Create](/blog/from-idea-to-full-stack-app-in-one-conversation-with-create).
 
 ## Prerequisites
 
@@ -12357,7 +13450,7 @@ Before you begin, ensure you have the following:
 
 1. **Cursor Editor:** Download and install Cursor from [cursor.com](https://cursor.com).
 2. **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
-3. **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+3. **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](/docs/manage/api-keys).
 
    <Admonition type="warning" title="Neon API Key Security">
    Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
@@ -12512,24 +13605,7 @@ If you are on a version of Cursor that does not support JSON configuration for M
 npx -y @neondatabase/mcp-server-neon start <YOUR_NEON_API_KEY>
 ```
 
-## Neon MCP Server Tools
-
-Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
-
-- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account.
-- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
-- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
-- `delete_project`: Deletes an existing Neon project.
-- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
-- `delete_branch`: Deletes an existing branch in a Neon project.
-- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
-- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
-- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
-- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
-- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
-- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
-- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
-- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+<MCPTools />
 
 These actions enable any MCP client like Cursor to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
 
@@ -12649,8 +13725,8 @@ database ideas and making schema changes during development.
 
 - [MCP Protocol](https://modelcontextprotocol.org)
 - [Adding an MCP Server to Cursor](https://docs.cursor.com/context/model-context-protocol)
-- [Neon Docs](https://neon.tech/docs)
-- [Neon API Keys](https://neon.tech/docs/manage/api-keys#creating-api-keys)
+- [Neon Docs](/docs)
+- [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
 - [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
 
 <NeedHelp/>
@@ -13665,7 +14741,7 @@ WHERE (data -> 'author' ->> 'age') ~ '^\d+$'
 
 ## Update and modify JSONB data
 
-You can also update individual properties within your JSONB document without overwriting the entire document using the [`jsonb_set()` function](https://neon.tech/postgresql/postgresql-json-functions/postgresql-jsonb_set).
+You can also update individual properties within your JSONB document without overwriting the entire document using the [`jsonb_set()` function](/postgresql/postgresql-json-functions/postgresql-jsonb_set).
 For example, the following code updates the `author.age` property to 35 for all documents whose `author.name` property is "John Smith".
 
 ```sql
@@ -14836,6 +15912,303 @@ You can find the source code for the application described in this guide on GitH
 </DetailIconCards>
 
 <NeedHelp />
+
+
+# Getting started with ElectricSQL and Neon
+
+---
+title: Getting started with ElectricSQL and Neon
+subtitle: A step-by-step guide to integrating ElectricSQL with Neon Postgres
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-05-28T00:00:00.000Z'
+updatedOn: '2025-05-28T00:00:00.000Z'
+---
+
+This guide demonstrates how to integrate [ElectricSQL](https://electric-sql.com/) with Neon Postgres. ElectricSQL is a Postgres sync engine designed to handle partial replication, fan-out, and data delivery, making apps faster and more collaborative. It can scale to millions of users while maintaining low, stable, and predictable compute and memory usage.
+
+ElectricSQL acts as a read-path sync engine, efficiently replicating partial subsets of your Postgres data to client applications. These data subsets are defined using [Shapes](https://electric-sql.com/docs/guides/shapes), which are similar to live queries. Writes are handled by your application's existing API and backend logic, ensuring ElectricSQL integrates smoothly with your current stack.
+
+This guide provides a step-by-step walkthrough of setting up ElectricSQL with Neon Postgres. You will learn how to:
+
+- Prepare your Neon Postgres database for ElectricSQL integration.
+- Configure and run Electric using Docker.
+- Set up a simple React application that subscribes to data changes on Neon Postgres via ElectricSQL.
+- Test the real-time data synchronization.
+
+## Prerequisites
+
+Before you begin, ensure you have the following prerequisites installed and configured:
+
+- **Neon Account:** Sign up for a free [Neon account](https://console.neon.tech/signup) if you don't have one already.
+- **Node.js:** Node.js is required to run the React example application. Download and install it from [nodejs.org](https://nodejs.org).
+- **Docker:** Docker is required to run Electric. Install Docker from [docker.com](https://www.docker.com/products/docker-desktop/).
+
+## Setting up Neon Database
+
+ElectricSQL requires a Postgres database with logical replication enabled. You'll configure your Neon project accordingly.
+
+1.  **Create a Neon Project:** If you haven't already, create a new Neon project. You can use the Neon Console or [pg.new](https://pg.new).
+2.  **Enable Logical Replication:** ElectricSQL uses Postgres logical replication (`wal_level = logical`) to receive changes from your database.
+
+    - Navigate to your Neon Project in the [Neon Console](https://console.neon.tech/).
+    - Open the **Settings** menu.
+    - Click on **Logical Replication**.
+    - Click the **Enable** button to enable logical replication.
+
+      ![Neon dashboard settings with option to enable logical replication](/docs/guides/neon-console-settings-logical-replication.png)
+
+3.  **Retrieve connection string:**
+
+    - Navigate to the **Dashboard** of your Neon project.
+    - Click on the **Connect** button which opens a modal.
+    - Select your database and branch, and copy the connection string with connection pooling disabled.
+
+      <Admonition type="important">
+      Make sure to turn off connection pooling in the connection string modal. This is essential for Electric to maintain a persistent connection to the Neon database.
+      </Admonition>
+
+      ![Neon direct connection string modal](/docs/guides/neon-console-direct-connection-string.png)
+
+## Setting up Electric
+
+With your Neon database ready, you can now set up Electric to connect to it. We'll use Docker to run Electric. Run the following commands in your terminal to create a new directory for your ElectricSQL project and navigate into it:
+
+```bash
+mkdir neon-electric-quickstart
+cd neon-electric-quickstart
+```
+
+Create a `docker-compose.yml` file in your project root with the following content:
+
+```yaml
+services:
+  electric:
+    container_name: electric
+    image: electricsql/electric:1.0.17
+    ports:
+      - '3000:3000'
+    environment:
+      - DATABASE_URL=${NEON_DATABASE_URL}
+      - ELECTRIC_INSECURE=true
+    restart: always
+```
+
+<Admonition type="note">
+The `ELECTRIC_INSECURE=true` setting is for local development only. Electric doesn't perform any authentication or authorization checks. You will need to proxy requests through an authorization layer in production to secure Electric. Please refer to [Using ElectricSQL in Production](#using-electricsql-in-production) for a typical production setup.
+</Admonition>
+
+Create a `.env` file in the same directory to store your Neon database connection string:
+
+```env
+NEON_DATABASE_URL="YOUR_NEON_UNPOOLED_CONNECTION_STRING"
+```
+
+Replace `YOUR_NEON_UNPOOLED_CONNECTION_STRING` with the actual unpooled connection string you copied from your Neon project dashboard.
+
+Start Electric using Docker Compose. Run the following command in your terminal:
+
+```bash
+docker compose up -d
+```
+
+This command starts Electric in detached mode. You can view its logs using:
+
+```bash
+docker compose logs -f electric
+
+# ... (other logs)
+# Connected to Postgres xxxx and timeline
+```
+
+You should see logs indicating that Electric has connected to your Neon Postgres database.
+
+## Sample application
+
+Now that Electric is running and connected to your Neon database, you can test it with a simple React application that uses ElectricSQL to sync data from Neon. We will be following the [ElectricSQL Quickstart](https://electric-sql.com/docs/quickstart) to set up a basic React app that subscribes to changes in a Postgres table.
+
+### Create sample data in Neon
+
+Connect to your Neon database using `psql` or the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) and run the following SQL commands to create a sample table and insert some data. This is the schema our React application will use.
+
+```sql
+CREATE TABLE scores (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255),
+  value FLOAT
+);
+
+INSERT INTO scores (name, value) VALUES
+  ('Alice', 3.14),
+  ('Bob', 2.71);
+```
+
+### Set up the React application
+
+1.  Create a new React application using Vite. Open your terminal and run the following commands:
+
+    ```bash
+    npm create vite@latest react-app -- --template react-ts
+    cd react-app
+    npm install
+    ```
+
+2.  Install ElectricSQL React client:
+
+    ```bash
+    npm install @electric-sql/react
+    ```
+
+3.  Replace the content of `src/App.tsx` with the following code.
+
+    ```tsx
+    import { useShape } from '@electric-sql/react';
+
+    function Component() {
+      const { data } = useShape({
+        url: `http://localhost:3000/v1/shape`,
+        params: {
+          table: `scores`,
+        },
+      });
+
+      return <pre>{JSON.stringify(data, null, 2)}</pre>;
+    }
+
+    export default Component;
+    ```
+
+    ElectricSQL uses Shapes to define subsets of your Postgres data for real-time synchronization. Here, `useShape` subscribes to a shape representing the `scores` table, ensuring your React app always has the latest score data.
+
+4.  Start the React development server by running the following command in your terminal:
+
+    ```bash
+    npm run dev
+    ```
+
+    This will start the development server at [`localhost:5173`](http://localhost:5173)
+
+## Using the demo application
+
+Your React application should now be running in your browser. It's actively connected to the Electric, which maintains a real-time link to your Neon Postgres database via Logical Replication.
+
+1.  **Access the application:** Open [`localhost:5173`](http://localhost:5173) in your browser. You should see the data from the `scores` table (`Alice` and `Bob`) displayed on the page.
+
+    ```json
+    [
+      {
+        "id": 1,
+        "name": "Alice",
+        "value": 3.14
+      },
+      {
+        "id": 2,
+        "name": "Bob",
+        "value": 2.71
+      }
+    ]
+    ```
+
+2.  **Test real-time updates:**
+
+    - Open the Neon SQL Editor or use `psql` to connect to your Neon database.
+    - Insert a new row into the `scores` table:
+
+      ```sql
+      INSERT INTO scores (name, value) VALUES ('Charlie', 1.618);
+      ```
+
+    - Observe your React application. The new data for 'Charlie' should appear automatically without needing a page refresh. This demonstrates ElectricSQL's real-time sync capabilities.
+    - Try updating or deleting rows in Neon and see the changes reflect in the app.
+
+      ```sql
+      UPDATE scores SET value = 6.28 WHERE name = 'Alice';
+      ```
+
+    - The value for Alice should update in the React app to `6.28`.
+
+      ![React app displaying real-time data from Neon Postgres](/docs/guides/electric-sql-react-app.gif)
+
+3.  **Understanding writes:**
+    ElectricSQL handles the read-path synchronization (data from Postgres to client). To write data back to your Neon database (e.g., from user input in the React app), you would typically:
+
+    - Implement an API endpoint in your backend application.
+    - This API endpoint would receive write requests from your React app.
+    - The API endpoint then performs these operations directly on your Neon Postgres database.
+    - Once the data is written to Neon, Electric will detect these changes via Logical replication and automatically sync them to all connected clients.
+
+    For detailed patterns on handling writes, refer to the [ElectricSQL Writes documentation](https://electric-sql.com/docs/guides/writes).
+
+## Using ElectricSQL in Production
+
+While ElectricSQL simplifies real-time data synchronization, Electric itself does not handle authentication or authorization. In production, you must implement a secure architecture to ensure that only authorized users can access and sync data.
+
+The core principle for a secure and scalable ElectricSQL deployment is to place an **Authorization Proxy** in front of Electric. This proxy becomes the gatekeeper for data access, ensuring that clients only sync the data they are permitted to see. Additionally, you may whitelist Electric to only accept requests from your proxy, preventing direct access from end users.
+
+### Production Architecture overview
+
+A typical production architecture with ElectricSQL and Neon Postgres involves the following components:
+
+1.  **Client application:** Your web or mobile application using an ElectricSQL client (e.g., `@electric-sql/react`).
+2.  **Caching proxy (recommended for performance):** While optional, deploying Electric behind a caching proxy like Nginx, Caddy, Varnish, or a CDN (e.g., Cloudflare, Fastly) is recommended. This setup can significantly improve performance and reduce load by caching responses from Electric.
+3.  **Authorization proxy:** A service (which could be part of your existing backend or a dedicated middleware) that intercepts requests destined for Electric. Its primary roles are authentication and authorization.
+4.  **Electric:** Electric handles the real-time data synchronization between your client application requests and the Neon Postgres database.
+5.  **Neon Postgres Database:** Your source of truth.
+
+### Securing read access
+
+The read path (data syncing from Neon to your client via ElectricSQL) needs to be robustly secured.
+
+**Typical flow for read requests (`GET /v1/shape`):**
+
+`User Client -> Caching Proxy (optional) -> Authorization Proxy -> ElectricSQL -> Neon Postgres`
+
+1.  **Client request:** The ElectricSQL client in the user's application initiates a shape subscription request. This request should include authentication credentials (e.g., a JWT in an `Authorization` header) and the desired shape definition (e.g., `table=items`).
+
+    ```typescript
+    // Example: Client-side useShape hook with an auth header
+    import { useShape } from '@electric-sql/react';
+
+    const electricUrl = 'https://your-auth-proxy.com/electric/v1/shape'; // Points to your CDN/authorization proxy
+
+    const MyComponent = () => {
+      const { data } = useShape({
+        url: electricUrl,
+        params: {
+          table: 'projects',
+          // Base shape definition, will be augmented by the proxy
+        },
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`, // Function to retrieve user's auth token
+        },
+      });
+      // ... render component
+    };
+    ```
+
+2.  **Authorization proxy:**
+
+    - **Authentication:** The proxy validates the `Authorization` header (or other credentials) sent by the client. If authentication fails, it returns a `401 Unauthorized` or `403 Forbidden` error.
+    - **Authorization & Dynamic Shape modification:** Upon successful authentication, the proxy determines the user's identity and permissions. It then _modifies_ the incoming shape request before forwarding it to Electric. This can be done by adding or augmenting `WHERE` clauses to the shape's `params`.
+      For example, a user should only see projects belonging to their organization, the proxy would:
+      - Extract `user_id` or `org_id` from the validated token.
+      - If the original client request was for `table=projects`, the proxy might transform the request to Electric to include a `where` clause like:
+        `GET /v1/shape?table=projects&where="organization_id"='user_actual_org_id'`
+        This ensures that Electric only processes and syncs data relevant to that specific user.
+    - **(Optional) Adding `ELECTRIC_SECRET`:** You can configure Electric by setting the `ELECTRIC_SECRET` environment variable when initializing the service. Your Authorization Proxy should then include this secret with requests it sends to Electric. This allows Electric to verify that requests originate from your trusted proxy, enhancing security by ensuring only authenticated requests are processed.
+
+    For more details on securing ElectricSQL in production, refer to the [ElectricSQL Security Guide](https://electric-sql.com/docs/guides/security).
+
+Congratulations! You have successfully set up ElectricSQL with Neon Postgres and built a basic real-time React application.
+
+## Resources
+
+- [ElectricSQL Documentation](https://electric-sql.com/docs/intro)
+- [ElectricSQL Quickstart](https://electric-sql.com/docs/quickstart)
+- [ElectricSQL Shapes](https://electric-sql.com/docs/guides/shapes)
+- [Neon Documentation](/docs)
+
+<NeedHelp/>
 
 
 # Building an Async Product Management API with FastAPI, Pydantic, and PostgreSQL
@@ -19311,7 +20684,7 @@ Besides the above steps, as your Flask application grows, you can consider a few
    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@pooler.address:5432/database'
    ```
 
-   Refer to the [Neon documentation on connection pooling](https://neon.tech/docs/connect/connection-pooling) for detailed instructions.
+   Refer to the [Neon documentation on connection pooling](/docs/connect/connection-pooling) for detailed instructions.
 
 2. For performance optimization, consider caching frequently accessed data. Caching reduces the load on your database and speeds up response times for users.
 
@@ -21035,7 +22408,7 @@ There has been a feature request to add support for transactions in the golang-m
 
 Always test migrations in a non-production environment first. Ideally, have a staging environment that mirrors production as closely as possible.
 
-You can achieve this by setting up a separate Neon branch to test migrations before applying them to your production branch. You can learn more about Neon branches in the [Neon documentation](https://neon.tech/docs/introduction/branching).
+You can achieve this by setting up a separate Neon branch to test migrations before applying them to your production branch. You can learn more about Neon branches in the [Neon documentation](/docs/introduction/branching).
 
 ### 5. Version Control Your Migrations
 
@@ -21103,7 +22476,7 @@ Running your database migrations directly on your production database can be ris
 
 For a more robust approach, you can use Neon's branching capabilities to test migrations before applying them to your production database.
 
-Neon has a set of [GitHub Actions](https://neon.tech/docs/guides/branching-github-actions) that allow you to create, delete, and compare branches programmatically. Here's an extended GitHub Actions workflow that uses Neon's branching actions to spin up a temporary branch for testing migrations:
+Neon has a set of [GitHub Actions](/docs/guides/branching-github-actions) that allow you to create, delete, and compare branches programmatically. Here's an extended GitHub Actions workflow that uses Neon's branching actions to spin up a temporary branch for testing migrations:
 
 ```yaml
 name: Test and Deploy Migrations
@@ -21418,7 +22791,7 @@ Neon provides a **built-in connection pooler**, powered by PgBouncer, to efficie
 
 Instead of each request opening a new database connection, the pooler transparently distributes queries across existing backend connections, improving performance and scalability. To use it, simply enable connection pooling in the Neon console and update your connection string to include `-pooler` in the hostname.
 
-This approach helps applications handle high concurrency while minimizing latency and resource consumption. However, since Neon's pooler operates in **transaction pooling mode**, session-based features like `LISTEN/NOTIFY`, `SET search_path`, and server-side prepared statements are not supported. For operations that require session persistence, it's best to use a direct (non-pooled) connection. You can find more details in the [Neon connection pooling documentation](https://neon.tech/docs/connect/connection-pooling).
+This approach helps applications handle high concurrency while minimizing latency and resource consumption. However, since Neon's pooler operates in **transaction pooling mode**, session-based features like `LISTEN/NOTIFY`, `SET search_path`, and server-side prepared statements are not supported. For operations that require session persistence, it's best to use a direct (non-pooled) connection. You can find more details in the [Neon connection pooling documentation](/docs/connect/connection-pooling).
 
 #### Configuring Connection Pooling in GORM
 
@@ -22076,7 +23449,7 @@ type User struct {
 
 For more complex indexing requirements, use migrations as shown in the previous section.
 
-For more information on indexing and optimizing database performance, refer to the [Neon indexing documentation](https://neon.tech/postgresql/postgresql-indexes).
+For more information on indexing and optimizing database performance, refer to the [Neon indexing documentation](/postgresql/postgresql-indexes).
 
 ## Complete Application Example
 
@@ -23913,6 +25286,800 @@ Combining Neon's instant database branching with Hasura's dynamic routing offers
 - [Hasura Read Replicas](https://hasura.io/docs/2.0/databases/database-config/read-replicas/)
 
 
+# Getting started with the HONC stack
+
+---
+title: Getting started with the HONC stack
+subtitle: Building a serverless Task API with Hono, Drizzle, Neon, and Cloudflare
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-05-14T00:00:00.000Z'
+updatedOn: '2025-05-14T00:00:00.000Z'
+---
+
+The [HONC stack](https://honc.dev/) - an acronym for **H**ono, **O**RM (Drizzle), **N**eon, and **C**loudflare - is a modern toolkit for building lightweight, type-safe, and edge-enabled data APIs. It's designed for developers seeking to build fast, serverless applications with a strong emphasis on scalability and a great developer experience.
+
+This guide will walk you through building a simple Task management API using the HONC stack. You'll learn how to:
+
+- Initialize a HONC project using `create-honc-app`.
+- Define your database schema with Drizzle ORM.
+- Use Neon as your serverless Postgres database.
+- Create API endpoints using the Hono framework.
+- Run your application locally and deploy it to Cloudflare Workers.
+- Utilize the built-in Fiberplane API playground for easy testing.
+
+By the end, you'll have a functional serverless API and a solid understanding of how the HONC components work together.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **Node.js:** Version `22.15` or later installed on your machine. You can download it from [nodejs.org](https://nodejs.org/).
+- **Neon account:** A free Neon account. If you don't have one, sign up at [Neon](https://console.neon.tech/signup).
+- **Cloudflare account:** A free Cloudflare account, which you'll need for deployment. Sign up at [Cloudflare](https://dash.cloudflare.com/sign-up).
+
+<Steps>
+
+## Initialize your HONC project
+
+The easiest way to start a HONC project is by using the [`create-honc-app`](https://github.com/fiberplane/create-honc-app) CLI tool.
+
+1.  Open your terminal and run the following command:
+
+    ```bash
+    npm create honc-app@latest
+    ```
+
+      <Admonition type="note" title="Node.js version">
+      Use Node.js version `22.15` or later. Older versions may cause project initialization issues. Check your version with:
+      ```bash
+      node -v
+      ```
+      </Admonition>
+
+2.  The CLI will guide you through the setup process. Here's an example interaction:
+
+    ```text shouldWrap
+    npm create honc-app@latest
+
+    > npx
+    > create-honc-app
+
+     __  __     ______     __   __     ______
+    /\ \_\ \   /\  __ \   /\ "-.\ \   /\  ___\
+    \ \  __ \  \ \ \/\ \  \ \ \-.  \  \ \ \____
+     \ \_\ \_\  \ \_____\  \ \_\\"\_\  \ \_____\
+      \/_/\/_/   \/_____/   \/_/ \/_/   \/_____/
+
+
+    ┌  🪿 create-honc-app
+    │
+    ◇  Where should we create your project? (./relative-path)
+    │  ./honc-task-api
+    │
+    ◇  Which template do you want to use?
+    │  Neon template
+    │
+    ◇  Do you need an OpenAPI spec?
+    │  Yes
+    │
+    ◇  The selected template uses Neon, do you want the create-honc-app to set up the connection string for you?
+    │  Yes
+    │
+    ◇  Do you want to install dependencies?
+    │  Yes
+    │
+    ◇  Do you want to initialize a git repository and stage all the files?
+    │  Yes
+    |
+    ◆  Template set up successfully
+    │
+    ◇  Setting up Neon:
+    │
+    │  In order to connect to your database project and retrieve the connection key, you'll need to authenticate with Neon.
+    │
+    │  The connection URI will be written to your .dev.vars file as DATABASE_URL. The token itself will *NOT* be stored anywhere after this session is complete.
+    │
+    ◇  Awaiting authentication in web browser. Auth URL:
+    │
+    │  https://oauth2.neon.tech/oauth2/auth?response_type=code&client_id=create-honc-app&state=[...]&scope=[...]&redirect_uri=[...]&code_challenge=[...]&code_challenge_method=S256
+    │
+    ◆  Neon authentication successful
+    │
+    ◇  Select a Neon project to use:
+    │  Create a new project
+    │
+    ◇  What is the name of the project?
+    │  honc-task-api
+    │
+    ◆  Project created successfully: honc-task-api on branch: main
+    │
+    ◇  Select a project branch to use:
+    │  main
+    │
+    ◇  Select a database you want to connect to:
+    │  neondb
+    │
+    ◇  Select which role to use to connect to the database:
+    │  neondb_owner
+    │
+    ◇  Writing connection string to .dev.vars file
+    │
+    ◆  Neon connection string written to .dev.vars file
+    │
+    ◆  Dependencies installed successfully
+    │
+    ◆  Git repository initialized and files staged successfully
+    │
+    └  🪿 HONC app created successfully in ./honc-task-api!
+    ```
+
+    Here's a breakdown of the options:
+
+    - **Where to create your project:** Specify the directory for your new project. Here, we used `./honc-task-api`.
+    - **Template:** Choose the Neon template for this guide.
+    - **OpenAPI spec:** Opt-in to generate an OpenAPI spec for your API.
+    - **Neon connection string:** Allow the CLI to set up the connection string for you.
+    - **Install dependencies:** Yes, to install the required packages.
+    - **Git repository:** Yes, to initialize a git repository and stage all files.
+    - **Neon authentication:** Follow the link to authenticate with Neon. This will allow the CLI to set up your database connection.
+      ![Neon authentication prompt](/docs/guides/honc-neon-auth.png)
+    - **Create a new project:** Choose to create a new Neon project or use an existing one. Here, we created a new one.
+    - **Project name:** Provide a name for your Neon project (e.g., `honc-task-api`) if creating a new one.
+    - **Project branch:** Select the main branch for your Neon project.
+    - **Database:** Choose the default database (e.g., `neondb`).
+    - **Role:** Select the `neondb_owner` role for database access.
+    - **Connection string:** The CLI will write the connection string to a `.dev.vars` file in your project directory.
+    - **Setup**: The CLI will set up the project, install dependencies, and initialize a git repository.
+
+3.  Navigate into your new project directory.
+
+    ```bash
+    cd honc-task-api
+    ```
+
+4.  Open the project in your favorite code editor.
+
+## Confirm Neon connection
+
+If you chose to let `create-honc-app` set up the connection string, your Neon `DATABASE_URL` should already be in the `.dev.vars` file in your project root. This file is used by [Wrangler](https://developers.cloudflare.com/workers/wrangler/) (Cloudflare's CLI) for local development and is gitignored by default.
+
+Verify its content:
+
+```ini
+// .dev.vars
+DATABASE_URL="postgresql://neondb_owner:..."
+```
+
+If you didn't use the CLI for setup, copy `.dev.vars.example` to `.dev.vars`. Then, manually add your Neon project's `DATABASE_URL` to the `.dev.vars` file. You can find your connection string in the Neon console. Learn more: [Connect from any application](/docs/connect/connect-from-any-app)
+
+## Define database schema with Drizzle
+
+The `create-honc-app` template comes with an example schema (for `users`) in `src/db/schema.ts`. You need to modify this to define a `tasks` table.
+
+1.  Open `src/db/schema.ts`. Remove the existing `users` schema definition. Add the following schema definition for `tasks`:
+
+    ```typescript
+    import { pgTable, serial, text, boolean, timestamp } from 'drizzle-orm/pg-core';
+
+    export type NewUser = typeof users.$inferInsert; // [!code --]
+    export const users = pgTable('users', {
+      // [!code --]
+      id: uuid('id').defaultRandom().primaryKey(), // [!code --]
+      name: text('name').notNull(), // [!code --]
+      email: text('email').notNull(), // [!code --]
+      settings: jsonb('settings'), // [!code --]
+      createdAt: timestamp('created_at').defaultNow().notNull(), // [!code --]
+      updatedAt: timestamp('updated_at').defaultNow().notNull(), // [!code --]
+    }); // [!code --]
+
+    export const tasks = pgTable('tasks', {
+      // [!code ++]
+      id: serial('id').primaryKey(), // [!code ++]
+      title: text('title').notNull(), // [!code ++]
+      description: text('description'), // [!code ++]
+      completed: boolean('completed').default(false).notNull(), // [!code ++]
+      createdAt: timestamp('created_at').defaultNow().notNull(), // [!code ++]
+      updatedAt: timestamp('updated_at').defaultNow().notNull(), // [!code ++]
+    }); // [!code ++]
+
+    export type Task = typeof tasks.$inferSelect; // [!code ++]
+    export type NewTask = typeof tasks.$inferInsert; // [!code ++]
+    ```
+
+    The tasks table schema defines the structure for storing tasks. It includes:
+
+    - A unique, auto-incrementing integer `id`.
+    - `title` and `description` fields.
+    - A `completed` status.
+    - `createdAt` and `updatedAt` timestamps to track creation and modification times.
+
+    For type safety when interacting with tasks (e.g., selecting or inserting), `Task` and `NewTask` types are exported. These types are inferred from the schema and can be used throughout the application.
+
+## Generate and apply database migrations
+
+With the schema updated, generate and apply database migrations.
+
+1.  **Generate migrations:**
+
+    ```bash
+    npm run db:generate
+    ```
+
+    This creates SQL migration files in the `drizzle` folder.
+
+2.  **Apply migrations:**
+    ```bash
+    npm run db:migrate
+    ```
+    This applies the migrations to your Neon database. Your `tasks` table should now exist. You can verify this in the **Tables** section of your Neon project console.
+    ![Neon console - Tasks table](/docs/guides/honc-neon-tasks-table.png)
+
+## Adapt API endpoints for tasks
+
+The `src/index.ts` file generated by `create-honc-app` will contain Hono routes and Zod schemas for a sample `users` API. You need to adapt this foundation to create a RESTful API for managing our `tasks`. This involves defining how clients can interact with our tasks data through standard HTTP methods (`GET`, `POST`, `PUT`, `DELETE`).
+
+1.  Open `src/index.ts`. You'll see code with `UserSchema`, an `apiRouter` instance for `/api/users`, Zod validators, and `describeRoute` for OpenAPI documentation.
+
+2.  **Modify Zod schemas:**
+    First, define the expected structure of task data for API requests and responses using Zod. This ensures type safety and provides a clear contract. Find the existing `UserSchema` and related definitions and replace them with schemas for `Task` (how a task looks when retrieved) and `NewTask` (how a new task looks when being created).
+
+    ```typescript
+    // ... import statements and middleware for database connection
+
+    const UserSchema = z // [!code --]
+      .object({
+        // [!code --]
+        id: z.number().openapi({
+          // [!code --]
+          example: 1, // [!code --]
+        }), // [!code --]
+        name: z.string().openapi({
+          // [!code --]
+          example: 'Nikita', // [!code --]
+        }), // [!code --]
+        email: z.string().email().openapi({
+          // [!code --]
+          example: 'nikita@neon.tech', // [!code --]
+        }), // [!code --]
+      }) // [!code --]
+      .openapi({ ref: 'User' }); // [!code --]
+
+    const TaskSchema = z // [!code ++]
+      .object({
+        // [!code ++]
+        id: z.string().openapi({
+          // [!code ++]
+          description: 'The unique identifier for the task.', // [!code ++]
+          example: '1', // [!code ++]
+        }), // [!code ++]
+        title: z.string().openapi({
+          // [!code ++]
+          description: 'The title of the task.', // [!code ++]
+          example: 'Learn HONC', // [!code ++]
+        }), // [!code ++]
+        description: z.string().nullable().optional().openapi({
+          // [!code ++]
+          description: 'A detailed description of the task.', // [!code ++]
+          example: 'Build a complete task API with the HONC Stack', // [!code ++]
+        }), // [!code ++]
+        completed: z.boolean().openapi({
+          // [!code ++]
+          description: 'Indicates if the task is completed.', // [!code ++]
+          example: false, // [!code ++]
+        }), // [!code ++]
+        createdAt: z.string().datetime().openapi({
+          // [!code ++]
+          description: 'The date and time when the task was created.', // [!code ++]
+          example: new Date().toISOString(), // [!code ++]
+        }), // [!code ++]
+        updatedAt: z.string().datetime().openapi({
+          // [!code ++]
+          description: 'The date and time when the task was last updated.', // [!code ++]
+          example: new Date().toISOString(), // [!code ++]
+        }), // [!code ++]
+      }) // [!code ++]
+      .openapi({ ref: 'Task' }); // [!code ++]
+
+    const NewTaskSchema = z // [!code ++]
+      .object({
+        // [!code ++]
+        title: z.string().min(1, 'Title cannot be empty').openapi({
+          // [!code ++]
+          example: 'Deploy to Cloudflare', // [!code ++]
+        }), // [!code ++]
+        description: z.string().nullable().optional().openapi({
+          // [!code ++]
+          example: 'Finalize deployment steps for the task API.', // [!code ++]
+        }), // [!code ++]
+      }) // [!code ++]
+      .openapi({ ref: 'NewTask' }); // [!code ++]
+    ```
+
+    Here's a breakdown of the Zod schemas:
+
+    - `TaskSchema` defines the full structure of a task for API responses.
+    - `NewTaskSchema` defines the structure for creating a new task.
+    - The `.openapi({ ref: "..." })` annotations are used to generate OpenAPI documentation.
+
+3.  **Adapt API router:**
+    The `apiRouter` groups related routes. We'll modify the one for `/api/users` to handle `/api/tasks`.
+
+    - Locate where `app.route` is defined for `/api/users` and change it to `/api/tasks`:
+
+      ```typescript
+        app
+        .get(
+          "/",
+          describeRoute({...})
+        )
+        .route("/api/users", apiRouter); // [!code --]
+        .route("/api/tasks", apiRouter); // [!code ++]
+      ```
+
+    - Inside `apiRouter`, modify the CRUD operations. For each route:
+      - `describeRoute` adds OpenAPI documentation.
+      - `zValidator` validates request parameters or JSON bodies.
+      - The `async` handler interacts with the database via Drizzle.
+
+    Here's the adapted `apiRouter` code for tasks with CRUD operations:
+
+    ```typescript shouldWrap
+    // In src/index.ts, adapt the apiRouter for tasks
+
+    const apiRouter = new Hono<{ Bindings: Bindings; Variables: Variables }>();
+
+    apiRouter // [!code --]
+      .get( // [!code --]
+        "/", // [!code --]
+        describeRoute({...}) // [!code --]
+      ) // [!code --]
+      .post( // [!code --]
+        "/", // [!code --]
+        describeRoute({...}), // [!code --]
+        zValidator( // [!code --]
+          "json", // [!code --]
+          // ... Zod schema for POST (users) ... // [!code --]
+        ) // [!code --]
+      ) // [!code --]
+      .get( // [!code --]
+        "/:id", // [!code --]
+        describeRoute({...}), // [!code --]
+        zValidator( // [!code --]
+          "param", // [!code --]
+          // ... Zod schema for GET by ID (users) ... // [!code --]
+        ) // [!code --]
+      ); // [!code --]
+
+    apiRouter // [!code ++]
+      .get( // [!code ++]
+        "/", // [!code ++]
+        describeRoute({ // [!code ++]
+          summary: "List all tasks", // [!code ++]
+          description: "Retrieves a list of all tasks, ordered by creation date.", // [!code ++]
+          responses: { // [!code ++]
+            200: { // [!code ++]
+              content: { // [!code ++]
+                "application/json": { schema: resolver(z.array(TaskSchema)) }, // [!code ++]
+              }, // [!code ++]
+              description: "Tasks fetched successfully", // [!code ++]
+            }, // [!code ++]
+          }, // [!code ++]
+        }), // [!code ++]
+        async (c) => { // [!code ++]
+          const db = c.get("db"); // [!code ++]
+          const tasks = await db // [!code ++]
+            .select() // [!code ++]
+            .from(schema.tasks) // [!code ++]
+            .orderBy(desc(schema.tasks.createdAt)); // [!code ++]
+          return c.json(tasks, 200); // [!code ++]
+        }, // [!code ++]
+      ) // [!code ++]
+      .post( // [!code ++]
+        "/", // [!code ++]
+        describeRoute({ // [!code ++]
+          summary: "Create a new task", // [!code ++]
+          description: "Adds a new task to the list.", // [!code ++]
+          responses: { // [!code ++]
+            201: { // [!code ++]
+              content: { // [!code ++]
+                "application/json": { // [!code ++]
+                  schema: resolver(TaskSchema), // [!code ++]
+                }, // [!code ++]
+              }, // [!code ++]
+              description: "Task created successfully", // [!code ++]
+            }, // [!code ++]
+            400: { // [!code ++]
+              description: "Invalid input for task creation", // [!code ++]
+            }, // [!code ++]
+          }, // [!code ++]
+        }), // [!code ++]
+        zValidator("json", NewTaskSchema), // [!code ++]
+        async (c) => { // [!code ++]
+          const db = c.get("db"); // [!code ++]
+          const { title, description } = c.req.valid("json"); // [!code ++]
+          const newTaskPayload: schema.NewTask = { // [!code ++]
+            title, // [!code ++]
+            description: description || null, // [!code ++]
+            completed: false, // [!code ++]
+          }; // [!code ++]
+          const [insertedTask] = await db // [!code ++]
+            .insert(schema.tasks) // [!code ++]
+            .values(newTaskPayload) // [!code ++]
+            .returning(); // [!code ++]
+          return c.json(insertedTask, 201); // [!code ++]
+        }, // [!code ++]
+      ) // [!code ++]
+      .get( // [!code ++]
+        "/:id", // [!code ++]
+        describeRoute({ // [!code ++]
+          summary: "Get a single task by ID", // [!code ++]
+          responses: { // [!code ++]
+            200: { // [!code ++]
+              content: { "application/json": { schema: resolver(TaskSchema) } }, // [!code ++]
+              description: "Task fetched successfully", // [!code ++]
+            }, // [!code ++]
+            404: { description: "Task not found" }, // [!code ++]
+            400: { description: "Invalid ID format" }, // [!code ++]
+          }, // [!code ++]
+        }), // [!code ++]
+        zValidator( // [!code ++]
+          "param", // [!code ++]
+          z.object({ // [!code ++]
+            id: z.string().openapi({ // [!code ++]
+              param: { name: "id", in: "path" }, // [!code ++]
+              example: "1", // [!code ++]
+              description: "The ID of the task to retrieve", // [!code ++]
+            }), // [!code ++]
+          }), // [!code ++]
+        ), // [!code ++]
+        async (c) => { // [!code ++]
+          const db = c.get("db"); // [!code ++]
+          const { id } = c.req.valid("param"); // [!code ++]
+          const [task] = await db // [!code ++]
+            .select() // [!code ++]
+            .from(schema.tasks) // [!code ++]
+            .where(eq(schema.tasks.id, Number(id))); // [!code ++]
+          if (!task) { // [!code ++]
+            return c.json({ error: "Task not found" }, 404); // [!code ++]
+          } // [!code ++]
+          return c.json(task, 200); // [!code ++]
+        }, // [!code ++]
+      ) // [!code ++]
+      .put( // [!code ++]
+        "/:id", // [!code ++]
+        describeRoute({ // [!code ++]
+          summary: "Update a task's completion status", // [!code ++]
+          description: "Toggles or sets the completion status of a specific task.", // [!code ++]
+          responses: { // [!code ++]
+            200: { // [!code ++]
+              content: { "application/json": { schema: resolver(TaskSchema) } }, // [!code ++]
+              description: "Task updated successfully", // [!code ++]
+            }, // [!code ++]
+            404: { description: "Task not found" }, // [!code ++]
+            400: { description: "Invalid input or ID format" }, // [!code ++]
+          }, // [!code ++]
+        }), // [!code ++]
+        zValidator( // [!code ++]
+          "param", // [!code ++]
+          z.object({ // [!code ++]
+            id: z.string().openapi({ // [!code ++]
+              param: { name: "id", in: "path" }, // [!code ++]
+              example: "1", // [!code ++]
+              description: "The ID of the task to update.", // [!code ++]
+            }), // [!code ++]
+          }), // [!code ++]
+        ), // [!code ++]
+        zValidator( // [!code ++]
+          "json", // [!code ++]
+          z // [!code ++]
+            .object({ // [!code ++]
+              completed: z.boolean().openapi({ // [!code ++]
+                example: true, // [!code ++]
+                description: "The new completion status of the task.", // [!code ++]
+              }), // [!code ++]
+            }) // [!code ++]
+        ), // [!code ++]
+        async (c) => { // [!code ++]
+          const db = c.get("db"); // [!code ++]
+          const { id } = c.req.valid("param"); // [!code ++]
+          const { completed } = c.req.valid("json"); // [!code ++]
+          const [updatedTask] = await db // [!code ++]
+            .update(schema.tasks) // [!code ++]
+            .set({ updatedAt: sql`NOW()`, completed }) // [!code ++]
+            .where(eq(schema.tasks.id, Number(id))) // [!code ++]
+            .returning(); // [!code ++]
+          if (!updatedTask) { // [!code ++]
+            return c.json({ error: "Task not found" }, 404); // [!code ++]
+          } // [!code ++]
+          return c.json(updatedTask, 200); // [!code ++]
+        }, // [!code ++]
+      ) // [!code ++]
+      .delete( // [!code ++]
+        "/:id", // [!code ++]
+        describeRoute({ // [!code ++]
+          summary: "Delete a task", // [!code ++]
+          description: "Removes a specific task from the list.", // [!code ++]
+          responses: { // [!code ++]
+            200: { // [!code ++]
+              content: { // [!code ++]
+                "application/json": { // [!code ++]
+                  schema: resolver( // [!code ++]
+                    z.object({ message: z.string(), id: z.string() }), // [!code ++]
+                  ), // [!code ++]
+                }, // [!code ++]
+              }, // [!code ++]
+              description: "Task deleted successfully", // [!code ++]
+            }, // [!code ++]
+            404: { description: "Task not found" }, // [!code ++]
+            400: { description: "Invalid ID format" }, // [!code ++]
+          }, // [!code ++]
+        }), // [!code ++]
+        zValidator( // [!code ++]
+          "param", // [!code ++]
+          z.object({ // [!code ++]
+            id: z.string().openapi({ // [!code ++]
+              param: { name: "id", in: "path" }, // [!code ++]
+              example: "1", // [!code ++]
+              description: "The ID of the task to delete.", // [!code ++]
+            }), // [!code ++]
+          }), // [!code ++]
+        ), // [!code ++]
+        async (c) => { // [!code ++]
+          const db = c.get("db"); // [!code ++]
+          const { id } = c.req.valid("param"); // [!code ++]
+          const [deletedTask] = await db // [!code ++]
+            .delete(schema.tasks) // [!code ++]
+            .where(eq(schema.tasks.id, Number(id))) // [!code ++]
+            .returning({ id: schema.tasks.id }); // [!code ++]
+          if (!deletedTask) { // [!code ++]
+            return c.json({ error: "Task not found" }, 404); // [!code ++]
+          } // [!code ++]
+          return c.json( // [!code ++]
+            { message: "Task deleted successfully", id: deletedTask.id }, // [!code ++]
+            200, // [!code ++]
+          ); // [!code ++]
+        }, // [!code ++]
+      ); // [!code ++]
+    ```
+
+    **Breakdown of the API endpoints:**
+
+    - **`GET /` (List tasks):** Fetches all tasks from the `schema.tasks` table using `db.select()`. It orders them by `createdAt` in descending order so newer tasks appear first. The response is a JSON array of `TaskSchema` objects.
+    - **`POST /` (Create task):**
+      - Validates the incoming JSON request body against `NewTaskSchema` (requires `title`, `description` is optional).
+      - If valid, it constructs a `newTaskPayload` (setting `completed` to `false` by default).
+      - Inserts the new task into `schema.tasks` using `db.insert().values().returning()` to get the newly created task (including its auto-generated ID and timestamps).
+      - Returns the created task (matching `TaskSchema`) with a `201 Created` status.
+    - **`GET /:id` (Get task by ID):**
+      - Fetches a single task from `schema.tasks` where the `id` matches.
+      - Returns the task if found, or a `404 Not Found` error.
+    - **`PUT /:id` (Update task):**
+      - Validates the `id` path parameter.
+      - Validates the incoming JSON request body against `z.object({ completed: z.boolean() })`.
+      - Updates the task's `completed` status and `updatedAt` timestamp in `schema.tasks`.
+    - **`DELETE /:id` (Delete task):**
+      - Validates the `id` path parameter.
+      - Deletes the task with the matching `id` from `schema.tasks`.
+      - Returns a success message with the ID of the deleted task, or a `404 Not Found`.
+
+## Run and test locally
+
+Run your HONC application locally using Wrangler:
+
+1.  In your terminal, at the root of your project:
+
+    ```bash
+    npm run dev
+    ```
+
+    This starts a local server, typically at `http://localhost:8787`.
+
+2.  **Test your API endpoints:**
+    You can use tools like cURL, Postman, or the Fiberplane API Playground (see next section).
+
+    - **Create a task:**
+
+      ```bash
+      curl -X POST -H "Content-Type: application/json" -d '{"title":"Learn HONC","description":"Build a task API"}' http://localhost:8787/api/tasks
+      ```
+
+      A successful response should return the created task with a unique ID.
+
+      ```json
+      {
+        "id": 1,
+        "title": "Learn HONC",
+        "description": "Build a task API",
+        "completed": false,
+        "createdAt": "2025-05-14T09:17:25.392Z",
+        "updatedAt": "2025-05-14T09:17:25.392Z"
+      }
+      ```
+
+      You can also verify if the task was added to your database by checking your project in the Neon console. The task should appear in the `tasks` table.
+      ![Neon console - Tasks table with new task](/docs/guides/honc-neon-tasks-table-new-task.png)
+
+    - **List all tasks:**
+
+      ```bash
+      curl http://localhost:8787/api/tasks
+      ```
+
+      A successful response should return an array of tasks.
+
+      ```json
+      [
+        {
+          "id": 1,
+          "title": "Learn HONC",
+          "description": "Build a task API",
+          "completed": false,
+          "createdAt": "2025-05-14T09:17:25.392Z",
+          "updatedAt": "2025-05-14T09:17:25.392Z"
+        }
+      ]
+      ```
+
+    - **Get a specific task (replace `TASK_ID` with an actual ID from the list):**
+
+      ```bash
+      curl http://localhost:8787/api/tasks/TASK_ID
+      ```
+
+      For example, if the ID is `1`:
+
+      ```bash
+      curl http://localhost:8787/api/tasks/1
+      ```
+
+      A successful response should return the task with ID `1`.
+
+      ```json
+      {
+        "id": 1,
+        "title": "Learn HONC",
+        "description": "Build a task API",
+        "completed": false,
+        "createdAt": "2025-05-14T09:17:25.392Z",
+        "updatedAt": "2025-05-14T09:17:25.392Z"
+      }
+      ```
+
+    - **Update a task (replace `TASK_ID`):**
+
+      ```bash
+      curl -X PUT -H "Content-Type: application/json" -d '{"completed":true}' http://localhost:8787/api/tasks/TASK_ID
+      ```
+
+      For example, if the ID is `1`:
+
+      ```bash
+      curl -X PUT -H "Content-Type: application/json" -d '{"completed":true}' http://localhost:8787/api/tasks/1
+      ```
+
+      A successful response should return the updated task.
+
+      ```json
+      {
+        "id": 1,
+        "title": "Learn HONC Stack",
+        "description": "Build a task API",
+        "completed": true,
+        "createdAt": "2025-05-14T09:17:25.392Z",
+        "updatedAt": "2025-05-14T09:17:25.392Z"
+      }
+      ```
+
+    - **Delete a task (replace `TASK_ID`):**
+
+      ```bash
+      curl -X DELETE http://localhost:8787/api/tasks/TASK_ID
+      ```
+
+      For example, if the ID is `1`:
+
+      ```bash
+      curl -X DELETE http://localhost:8787/api/tasks/1
+      ```
+
+      A successful response should return a message confirming deletion.
+
+      ```json
+      { "message": "Task deleted successfully", "id": 1 }
+      ```
+
+<Admonition type="info" title="Interactive Testing with Fiberplane API Playground">
+
+The `create-honc-app` boilerplate includes integration with the [**Fiberplane API Playground**](https://fiberplane.com/blog/hono-native-playground/), an in-browser tool designed for interacting with your HONC API during development.
+
+To access it, simply ensure your local development server is running via `npm run dev`. Once the server is active, open your web browser and navigate to [`localhost:8787/fp`](http://localhost:8787/fp).
+
+Within the playground, you'll find a visual exploration of your API. It reads your `/openapi.json` spec (generated by `hono-openapi` if enabled) to display all your defined API endpoints, such as `/api/tasks` or `/api/tasks/{id}`, within a user-friendly interface. This allows for easy request crafting; you can select an endpoint and fill in necessary parameters, path variables, and request bodies directly within the UI.
+
+This is incredibly useful for quick testing and debugging cycles during development, reducing the frequent need for external tools like Postman or cURL.
+
+![Fiberplane API Playground showing API endpoints for the HONC Task API](/docs/guides/honc-fiberplane-api-playground.png)
+
+</Admonition>
+
+## Deploy to Cloudflare Workers
+
+Deploy your application globally via Cloudflare's edge network.
+
+1.  **Set `DATABASE_URL` secret in Cloudflare:**
+    Your deployed Worker needs the Neon database connection string.
+
+    ```bash
+    npx wrangler secret put DATABASE_URL
+    ```
+
+    Paste your Neon connection string when prompted.
+
+    ```bash
+    npx wrangler secret put DATABASE_URL
+    ⛅️ wrangler 4.14.4
+    -------------------
+    ✔ Enter a secret value: … ************************************************************************************************************************
+    🌀 Creating the secret for the Worker "honc-task-api"
+    ✔ There doesn't seem to be a Worker called "honc-task-api". Do you want to create a new Worker with that name and add secrets to it? … yes
+    🌀 Creating new Worker "honc-task-api"...
+    ✨ Success! Uploaded secret DATABASE_URL
+    ```
+
+    > Steps may vary based on your Cloudflare account and login status. Ensure you are logged in if prompted.
+
+2.  **Deploy:**
+
+    ```bash
+    npm run deploy
+    ```
+
+    Wrangler will deploy your application to Cloudflare Workers. The output will show the deployment status and the URL of your deployed Worker.
+
+        ```bash
+        npm run deploy
+        > deploy
+        > wrangler deploy --minify src/index.ts
+        ⛅️ wrangler 4.14.4
+        -------------------
+        Total Upload: 505.17 KiB / gzip: 147.10 KiB
+        Worker Startup Time: 32 ms
+        No bindings found.
+        Uploaded honc-task-api (13.49 sec)
+        Deployed honc-task-api triggers (3.50 sec)
+          https://honc-task-api.[xxx].workers.dev
+        Current Version ID: b0c90b17-f10a-4807-xxxx
+        ```
+
+</Steps>
+
+## Summary
+
+Congratulations! You've successfully adapted the `create-honc-app` boilerplate to build a serverless Task API using the HONC stack. You've defined a schema with Drizzle, created Hono endpoints with Zod validation, tested locally using tools like cURL and the integrated Fiberplane API Playground, and learned how to deploy to Cloudflare Workers.
+
+The HONC stack offers a streamlined, type-safe, and performant approach to building modern edge APIs.
+
+You can find the source code for the application described in this guide on GitHub.
+
+<DetailIconCards>
+    <a href="https://github.com/neondatabase-labs/honc-example" description="HONC Stack" icon="github">
+      HONC Task API
+    </a>
+</DetailIconCards>
+
+## Resources
+
+- **HONC:** [honc.dev](https://honc.dev), [create-honc-app GitHub](https://github.com/fiberplane/create-honc-app)
+- **Fiberplane API Playground:** [Hono-native API Playground, powered by OpenAPI](https://fiberplane.com/blog/hono-native-playground/), [Features](https://fiberplane.com/docs/features/playground/)
+- **Hono:** [hono.dev](https://hono.dev)
+- **Drizzle ORM:** [orm.drizzle.team](https://orm.drizzle.team)
+- **Neon:** [neon.tech/docs](/docs)
+- **Cloudflare Workers:** [developers.cloudflare.com/workers](https://developers.cloudflare.com/workers/)
+
+<NeedHelp/>
+
+
 # Using Postgres as a Key-Value Store with hstore and JSONB
 
 ---
@@ -25143,11 +27310,11 @@ Here are some tips to optimize performance when using Spatie Laravel Permission 
    $users = User::with('roles', 'permissions')->get();
    ```
 
-3. **Indexing**: Ensure that the `model_id` and `model_type` columns in the `model_has_roles` and `model_has_permissions` tables are properly indexed. For more information on indexing, refer to the [Neon Postgres documentation](https://neon.tech/docs/postgres/indexes).
+3. **Indexing**: Ensure that the `model_id` and `model_type` columns in the `model_has_roles` and `model_has_permissions` tables are properly indexed. For more information on indexing, refer to the [Neon Postgres documentation](/docs/postgres/indexes).
 
 4. **Minimize Permission Checks**: Instead of checking individual permissions, consider using roles or permission groups to reduce the number of checks you do on each request.
 
-5. **Use Database-Level Permissions**: For very large-scale applications, consider implementing some permissions at the database level using [Neon Postgres's role-based access control features](https://neon.tech/blog/the-non-obviousness-of-postgres-roles).
+5. **Use Database-Level Permissions**: For very large-scale applications, consider implementing some permissions at the database level using [Neon Postgres's role-based access control features](/blog/the-non-obviousness-of-postgres-roles).
 
 ## Conclusion
 
@@ -25887,7 +28054,7 @@ The end-user will still receive the same JSON response, but the validation logic
 
 To ensure our API works as expected, Laravel provides a powerful testing suite out of the box.
 
-To learn more about testing in Laravel along with Neon branding, check out the [Testing Laravel Applications with Neon's Database Branching](https://neon.tech/guides/laravel-test-on-branch).
+To learn more about testing in Laravel along with Neon branding, check out the [Testing Laravel Applications with Neon's Database Branching](/guides/laravel-test-on-branch).
 
 ## Adding API Documentation
 
@@ -28515,7 +30682,7 @@ Run the test with:
 php artisan test
 ```
 
-To learn more about testing in Laravel along with Neon branding, check out the [Testing Laravel Applications with Neon's Database Branching](https://neon.tech/guides/laravel-test-on-branch).
+To learn more about testing in Laravel along with Neon branding, check out the [Testing Laravel Applications with Neon's Database Branching](/guides/laravel-test-on-branch).
 
 ## Conclusion
 
@@ -28933,7 +31100,7 @@ composer require pestphp/pest-plugin-livewire --dev
 
 For this example, we will use an in-memory SQLite database for testing. This ensures that tests run quickly and do not affect your production database.
 
-However, to learn more about testing in Laravel along with Neon branding, check out the [Testing Laravel Applications with Neon's Database Branching](https://neon.tech/guides/laravel-test-on-branch). This guide will help you set up a separate database branch for testing, allowing you to test your application with real data rather than an in-memory database.
+However, to learn more about testing in Laravel along with Neon branding, check out the [Testing Laravel Applications with Neon's Database Branching](/guides/laravel-test-on-branch). This guide will help you set up a separate database branch for testing, allowing you to test your application with real data rather than an in-memory database.
 
 To get started, ensure your `.env.testing` file is configured to use an in-memory SQLite database for testing:
 
@@ -29959,7 +32126,7 @@ There are other packages and tools available to help you build multi-tenant appl
 
 - [Laravel Documentation](https://laravel.com/docs)
 - [stancl/tenancy Documentation](https://tenancyforlaravel.com/)
-- [Neon Documentation](https://neon.tech/docs/)
+- [Neon Documentation](/docs/)
 
 
 # An Overview of Laravel and Postgres on Neon
@@ -31301,7 +33468,7 @@ This loads posts, their authors, comments on each post, and the user who made ea
 
 Indexes are crucial for query performance. They allow the database to find data without scanning the entire table.
 
-You can learn more about indexing in the [Neon documentation](https://neon.tech/docs/postgres/indexes/).
+You can learn more about indexing in the [Neon documentation](/docs/postgres/indexes/).
 
 In Laravel migrations, you can add indexes like this:
 
@@ -31854,7 +34021,7 @@ Instead, consider your specific use case:
 
 Always measure the performance impact in your specific scenario before deciding on indexing strategy.
 
-For more information about indexes in general, refer to Neon's documentation on [indexes](https://neon.tech/docs/postgres/indexes).
+For more information about indexes in general, refer to Neon's documentation on [indexes](/docs/postgres/indexes).
 
 ## Testing Soft Deletes
 
@@ -31974,7 +34141,7 @@ This test verifies that force deleting a post removes it entirely from the datab
 
 Laravel's soft delete feature provides a way to manage data deletion without losing valuable information. By using soft deletes, you can improve your application's data integrity and provide features like data recovery or undo functionality to your users.
 
-Consider the performance implications of soft deletes, especially when working with large datasets. Utilize Neon Postgres's capabilities, such as [indexing](https://neon.tech/docs/postgres/indexes) and [table partitioning](https://neon.tech/docs/postgres/ddl-partitioning), to maintain high performance as your application scales.
+Consider the performance implications of soft deletes, especially when working with large datasets. Utilize Neon Postgres's capabilities, such as [indexing](/docs/postgres/indexes) and [table partitioning](/docs/postgres/ddl-partitioning), to maintain high performance as your application scales.
 
 When implementing soft deletes, always think about the lifecycle of your data. Plan on implementing policies for permanent deletion of old soft-deleted records to manage database growth optimally and comply with data retention regulations.
 
@@ -35084,7 +37251,7 @@ updatedOn: '2024-11-05T00:00:00.000Z'
 Setting up your development environment should be simple and fast. With Neon's modern approach to PostgreSQL, you get exactly that. Here's how to create the perfect setup for your applications.
 
 <Admonition type="note">
-The setups described in this guide use the **Neon serverless driver** for connecting to a Postgres database hosted locally or on Neon over HTTP or WebSockets. To learn more, see [The Neon Serverless driver](https://neon.tech/docs/serverless/serverless-driver).
+The setups described in this guide use the **Neon serverless driver** for connecting to a Postgres database hosted locally or on Neon over HTTP or WebSockets. To learn more, see [The Neon Serverless driver](/docs/serverless/serverless-driver).
 </Admonition>
 
 ## Two ways to develop
@@ -35098,7 +37265,7 @@ Let's explore both options to help you pick the right one.
 
 ## Database branching
 
-Imagine creating a complete copy of your database as easily as creating a Git branch. That's [database branching](https://neon.tech/docs/introduction/branching) with Neon – perfect for testing new features or updates without touching production data.
+Imagine creating a complete copy of your database as easily as creating a Git branch. That's [database branching](/docs/introduction/branching) with Neon – perfect for testing new features or updates without touching production data.
 
 ### Why use it?
 
@@ -35142,10 +37309,10 @@ Imagine creating a complete copy of your database as easily as creating a Git br
 
 5. **Install dependencies**
 
-   Dependencies include [Neon's serverless driver](https://neon.tech/docs/serverless/serverless-driver) and a WebSockets library.
+   Dependencies include [Neon's serverless driver](/docs/serverless/serverless-driver) and a WebSockets library.
 
    <Admonition type="note">
-   The Neon serverless driver supports connections over HTTP and WebSockets, depending on your requirements. This setup assumes that you could be using either. For the differences, refer to the [Neon's serverless driver docs](https://neon.tech/docs/serverless/serverless-driver).
+   The Neon serverless driver supports connections over HTTP and WebSockets, depending on your requirements. This setup assumes that you could be using either. For the differences, refer to the [Neon's serverless driver docs](/docs/serverless/serverless-driver).
    </Admonition>
 
    <CodeTabs labels={["npm", "yarn", "pnpm"]}>
@@ -35197,7 +37364,7 @@ Imagine creating a complete copy of your database as easily as creating a Git br
 
 Sometimes you need to work offline or want full control over your database. Here's how to set up a local PostgreSQL instance that works perfectly with the Neon. This method uses:
 
-- The [Neon Serverless driver](https://neon.tech/docs/serverless/serverless-driver) to connect to your local database (same as the database branching setup described above)
+- The [Neon Serverless driver](/docs/serverless/serverless-driver) to connect to your local database (same as the database branching setup described above)
 - A Docker compose file that installs a local instance of PostgreSQL 17 and the Neon Proxy. The Neon Proxy lets you to connect to your local PostgreSQL database using the Neon serverless driver.
 
 <Admonition type="note" title="kudos">
@@ -36464,6 +38631,307 @@ Once Neon is fully synchronized and replication lag is minimal:
 <NeedHelp />
 
 
+# Build an AI-powered knowledge base chatbot using n8n and Neon Postgres
+
+---
+title: Build an AI-powered knowledge base chatbot using n8n and Neon Postgres
+subtitle: A step-by-step guide to creating an AI-powered knowledge base chatbot using n8n, Google Drive, and Neon Postgres
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-05-27T00:00:00.000Z'
+updatedOn: '2025-05-27T00:00:00.000Z'
+---
+
+This guide demonstrates how to build a powerful **AI-powered internal knowledge base chatbot** using **n8n** and **Neon**. n8n is a low-code platform that allows you to connect various applications and services, enabling you to automate complex processes through a visual workflow editor. In this guide, we'll use n8n to orchestrate the integration between **Google Drive**, **Neon Postgres**, and **Google Gemini** to create a chatbot that can answer questions based on your documents stored in Google Drive. Neon will be used as a vector store to index and retrieve document chunks, while Google Drive will serve as the source of your documents.
+
+It will be built using a **Retrieval-Augmented Generation (RAG)** approach, which combines the power of large language models (LLMs) with your own documents. This allows the chatbot to access and utilize your documents as a knowledge base, enabling it to answer questions accurately and contextually.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **n8n Instance:** A running n8n instance. This can be a [self-hosted](https://docs.n8n.io/hosting/) version or an [n8n cloud account](https://app.n8n.cloud).
+- **Google Account:** A Google account with access to Google Drive.
+- **Neon Account and Project:** A Neon account and a project are needed to create a Postgres database. You can sign up for a free account at [pg.new](https://pg.new).
+- **Google Cloud Platform (GCP) Account:** A [GCP account](https://cloud.google.com/free) is needed to enable the Google Drive API and to manage OAuth credentials. Free tier accounts are sufficient for this guide.
+- **Google Gemini API key:** You'll need an API key for Google Gemini to generate embeddings and power the chat model. You can obtain this from [Google AI Studio](https://aistudio.google.com/apikey).
+  ![Google Gemini API Key](/docs/guides/gemini-api-key.png)
+
+## Architecture overview
+
+The solution consists of two main n8n workflows:
+
+1.  **Indexing workflow:** This workflow is triggered when a new file is added to a specified Google Drive folder. It downloads the file, splits it into manageable chunks, generates vector embeddings for each chunk using Google Gemini, and then stores these chunks and their embeddings in a Neon Postgres database (acting as a PGVector store).
+2.  **Chat workflow:** This workflow provides a chat interface. When a user sends a message (a question), the AI Agent retrieves relevant document chunks from the Neon Postgres vector store based on the query's semantic similarity. These retrieved chunks are then passed as context to a Google Gemini chat model, which generates a response.
+
+## Workflow 1: Indexing Google Drive documents into Neon Postgres
+
+This workflow automates the process of ingesting and preparing your Google Drive documents for the chatbot.
+
+![Workflow 1 Overview](/docs/guides/n8n/n8n-workflow-1-overview.png)
+
+### Step 1: Setting up the Google Drive trigger
+
+1.  **Create a new workflow:** In your n8n dashboard, create a new workflow.
+2.  **Add Google Drive trigger:** Click the `+` button to add the first step. Search for and select "Google Drive".
+3.  **Configure trigger:** In the Google Drive node parameters, select "On changes involving a specific folder" under "Triggers".
+4.  **Connect Google Drive account (OAuth2):**
+
+    - Under "Credential to connect with", click "Select Credential" and then "Create new credential".
+    - This will open a dialog for "Google Drive account (Google Drive OAuth2 API)". Note the "OAuth Redirect URL" provided by n8n (you will need this in the next steps).
+
+    ![Configuring Google Drive Trigger node](/docs/guides/n8n/n8n-add-google-drive-folder-node.gif)
+
+5.  **Create Google Drive OAuth credentials:**
+
+    - Open the [Google Cloud console](https://console.cloud.google.com/) and navigate to "APIs & Services" -> "OAuth consent screen".
+    - If not configured, click "Get started".
+    - **App Information:** Provide an "App name" (e.g., `personal-n8n`), select "User support email", and enter your email address.
+    - **Audience:** Select "External". Click "Next".
+    - **Contact Information:** Confirm your email. Click "Next".
+    - **Finish:** Review and click "Create".
+    - Now, navigate to "APIs & Services" -> "Clients". Click "Create OAuth client" and select "OAuth client ID".
+    - Select "Web application" as the "Application type".
+    - Under "Authorized redirect URIs", paste the "OAuth Redirect URL" which you copied from n8n (e.g., `https://your-n8n-instance.com/rest/oauth2-credential/callback`). Click "Create".
+    - You will be redirected to a page showing your OAuth 2.0 Client IDs. Select the one you just created. Copy the "Client ID" and "Client secret" values from this page, you will need them in n8n.
+    - Navigate to "Audience" Page. Click "+ Add users" and add the Google account email you intend to use for authorizing n8n.
+
+    ![Configuring Google Drive OAuth credentials in GCP](/docs/guides/n8n/n8n-configure-gdrive-oauth.gif)
+
+6.  **Enable Google Drive API in GCP:**
+
+    - In the GCP console, search for "Google Drive API".
+    - Select "Google Drive API" and click "Enable" if it's not already enabled.
+
+    ![Enabling Google Drive API in GCP](/docs/guides/n8n/n8n-enable-gdrive-api.gif)
+
+7.  **Finalize n8n Credential:**
+
+    - Back in n8n, paste the "Client ID" and "Client secret" you copied from GCP into the respective fields in the "Google Drive account (OAuth2)" credential dialog.
+    - After entering the Client ID and Secret, click "Sign in with Google".
+    - Authenticate with the Google account you added as a test user. Grant the necessary permissions.
+    - You should see "Account connected". Click "Save" and close the dialog.
+
+    ![Finalizing Google Drive OAuth credential in n8n](/docs/guides/n8n/n8n-finalize-gdrive-oauth.gif)
+
+8.  **Configure folder and watch settings:**
+    - Back in the Google Drive Trigger node, set the "Folder" to the specific folder you want to monitor for new files. You can enter the folder name or select from the list.
+    - Select "File Created" under "Watch For". This will trigger the workflow when a new file is added to the specified folder.
+9.  **Test the Trigger:**
+
+    - Upload a sample PDF document to your specified Google Drive folder.
+    - In n8n, click "Fetch Test Event" on the Google Drive Trigger node. It should detect the new file and show its details in the output on the right side of the editor. This confirms that the trigger is working correctly.
+
+    ![Testing the Google Drive Trigger in n8n](/docs/guides/n8n/n8n-test-gdrive-trigger.gif)
+
+### Step 2: Downloading the File content
+
+1.  **Add Google Drive Node (Action):** Click the `+` after the trigger node. Search for and select "Google Drive".
+2.  Select "Download File" as the operation.
+3.  Under **Credential to connect with** select your previously created Google Drive account.
+4.  Under **Resource:** select "File".
+5.  Under **Operation:** select "Download".
+6.  Select **File > By ID**. Drag the "File ID" from the Google Drive Trigger node to this field. This ensures the node downloads the file that triggered the workflow. Check the image below for reference.
+7.  Select **Options > Add option > File Name.** Similarly, drag the "File Name" from the Google Drive Trigger node to this field. This will help in identifying the file later.
+    ![Configuring Google Drive Download node](/docs/guides/n8n/n8n-google-drive-download-node.gif)
+
+### Step 3: Setting up the Neon Postgres PGVector store Node
+
+This node will store the document chunks and their embeddings in Neon Postgres using the [`pgvector` extension](/docs/extensions/pgvector).
+
+1.  **Add Postgres PGVector Store Node:** Click the `+` after the Google Drive download node. Search for "Postgres PGVector Store" and add it.
+2.  Under **Actions** select "Add documents to vector store".
+3.  A dialog will appear prompting you to either select an existing credential or create a new one. Click "Create new credential".
+
+    <Admonition type="tip">
+    You can get your Neon database connection details from the Neon console. Learn more: [Connect from any application](/docs/connect/connect-from-any-app)
+    </Admonition>
+
+4.  Fill in your Neon database details:
+    - **Host:** Your Neon host
+    - **Database:** Your Neon database name
+    - **User:** Your Neon database user
+    - **Password:** Your Neon database password
+    - **SSL:** Set to "Require".
+5.  Click "Save".
+6.  Configure the Postgres PGVector Store node parameters:
+    - **Operation Mode:** Select "Insert Documents".
+    - **Table Name:** Enter a name for your table (e.g., `n8n_vectors`). The table will be created automatically by n8n.
+    - **Embedding Batch Size:** (e.g., 200, default)
+
+![Configuring Postgres PGVector Store node](/docs/guides/n8n/n8n-pgvector-store-node.gif)
+
+### Step 4: Chunking and processing the documents
+
+The PGVector Store node has inputs for "Document" and "Embeddings". We will add nodes to handle the document loading and text splitting before generating embeddings.
+
+1. Click on the "Document" input anchor of the Postgres PGVector Store node.
+2. Search for and select "Default Data Loader" with the following parameters:
+   - **Type of Data:** Select "Binary".
+   - **Mode:** Select "Load All Input Data".
+   - **Data Format:** Select "Automatically Detect by Mime Type".
+   - **Options > Metadata > Add property:**
+     - **Name:** `file_name`
+     - **Value (Expression):** Drag the "File Name" from the Google Drive Download node to this field. This will help in identifying the file later.
+3. **Add Recursive character text splitter Node:**
+   - Click on the "Text Splitter" input anchor of the Default Data Loader node.
+   - Search for and select "Recursive Character Text Splitter".
+   - Set the **Chunk Size** to `1000` (default, or adjust as needed).
+   - Set the **Chunk Overlap** to `100` (or adjust as needed, depending on how much context you want to retain between chunks).
+
+![Configuring Data Loader and Text Splitter nodes](/docs/guides/n8n/n8n-data-loader-text-splitter-nodes.gif)
+
+### Step 5: Generating Embeddings
+
+1. Click on the "Embeddings" input anchor of the Postgres PGVector Store node.
+2. Search for and select "Embeddings Google Gemini".
+3. **Configure Gemini credentials:**
+   - **Credential to connect with:** Click "Create new credential". A dialog will open prompting you to enter your Google Gemini API key.
+   - Paste your Google Gemini API Key obtained from Google AI Studio in the [Prerequisites](#prerequisites) section.
+   - Click "Save". It should show "Connection tested successfully".
+4. Choose an embedding model. In this guide, `models/text-embedding-004` is used. You can select a different embedding model based on your requirements.
+
+<Admonition type="important" title="Model Dimensionality">
+Each embedding model produces vectors of a specific dimensionality. Ensure the model selected here is consistent with the model you'll use for retrieval in the chat workflow in the next section. For example, if you use `models/text-embedding-004` here, you should also use the same model in the chat workflow for retrieval.
+</Admonition>
+
+![Configuring Embeddings Google Gemini node](/docs/guides/n8n/n8n-embeddings-gemini-node.gif)
+
+### Step 6: Testing the Indexing workflow
+
+Click on the play icon (▶️) on the "Postgres PGVector Store" node to execute the workflow. This assumes you have already ran the Google Drive trigger and download file nodes successfully. You can also click the "Test workflow" button at the bottom of the n8n editor to run the entire workflow.
+
+![Testing the indexing workflow in n8n](/docs/guides/n8n/n8n-test-indexing-workflow.gif)
+
+The workflow should execute successfully, which will split the document into chunks, generate embeddings for each chunk, and store them in Neon Postgres database.
+
+### Step 7: Verifying the embeddings in Neon (optional)
+
+1. Log in to your Neon console.
+2. Navigate to your database and then to the "Tables" section.
+3. You should see the `n8n_vectors` (or your chosen name) table created, populated with document chunks and their embedding vectors.
+
+![Verifying data in Neon Console](/docs/guides/n8n/n8n-verify-data-in-neon-console.png)
+
+<Admonition type="important" title="Save your workflow">
+Make sure to save your workflow by clicking the "Save" button in the top right corner of the n8n editor. This ensures that all your configurations are stored and can be reused later.
+</Admonition>
+
+## Workflow 2: Chat Trigger with AI Agent and Retrieval
+
+This workflow will provide the user interface to interact with your AI knowledge base.
+
+![Workflow 2 Overview](/docs/guides/n8n/n8n-workflow-2-overview.png)
+
+### Step 1: Setting up the Chat Trigger and AI Agent
+
+1. You can create a new n8n workflow or continue in the same Workflow 1. In this guide, we use the same workflow.
+2. **Add Chat Trigger:** Click the `+` button. Search for "Chat Trigger" and add it.
+3. **Add AI Agent Node:** Click the `+` after the Chat Trigger. Search for "AI Agent" and add it.
+
+![Configuring Chat Trigger and AI Agent nodes](/docs/guides/n8n/n8n-chat-trigger-ai-agent-nodes.gif)
+
+### Step 2: Configuring the Chat model
+
+1. Click on the "Chat Model" input anchor of the AI Agent node.
+2. Search for and select "Google Gemini Chat Model".
+3. Select your existing "Gemini" API account for the credential.
+4. Choose a chat model that suits your needs. In this guide, we use `models/gemini-2.5-flash-preview-05-20`, which is a good balance of performance and cost for most use cases.
+
+![Configuring Google Gemini Chat Model node](/docs/guides/n8n/n8n-gemini-chat-model-node.gif)
+
+### Step 3: Configuring the Tool (Vector Store Retriever)
+
+The AI Agent will use this tool to retrieve information from your Neon vector store.
+
+1. Click on the "Tool" input anchor of the AI Agent node.
+2. Search for and select "Postgres PGVector Store".
+3. Select your previously created "Neon" credential for the Postgres PGVector Store.
+4. Select "Retrieve Documents (As Tool for AI Agent)" as the operation mode.
+5. **Name the Tool:** Give it a descriptive name, e.g., `internal_knowledge_base`.
+6. **Description:** Provide a description for the AI Agent, e.g., `Docs for Internal Knowledge Base`.
+7. **Table Name:** Enter the same table name used in Workflow 1 (e.g., `n8n_vectors` or whatever you named it).
+8. **Limit:** Set the maximum number of document chunks to retrieve (e.g., `4`) for the AI Agent to use as context.
+9. **Include Metadata:** Toggle this ON to include metadata in the retrieved documents. This can be useful for providing filename or other context in the chat responses.
+
+![Configuring Postgres PGVector Store as Tool for Retrieval](/docs/guides/n8n/n8n-pgvector-store-tool-node-for-retrieval.gif)
+
+### Step 4: Connecting Embeddings for Retrieval
+
+The retrieval process also needs to generate embeddings for the user's query to find similar document chunks from the vector store. This is done using the same embedding model used during indexing.
+
+1. Click on the "Embedding" input anchor of the "Postgres PGVector Store" (Tool) node.
+2. Search for and select "Embeddings Google Gemini".
+3. Select your "Gemini" API account for the credential which you created in Workflow 1.
+4. Select the same embedding model used in Workflow 1 (e.g., `models/text-embedding-004`).
+
+After all these configurations, your Workflow should look like this:
+
+![Workflow 2 after configuration of all nodes](/docs/guides/n8n/n8n-workflow-2-after-configuration.png)
+
+### Step 5: Testing the Chatbot
+
+1.  You can click "Open chat" next to the "Test workflow" button at the bottom of the n8n editor. This will open a chat interface where you can interact with your AI knowledge base chatbot.
+2.  **Ask a Question:** Type a question related to the content of the documents you indexed into Google Drive. For example, here we indexed a PDF document about "Neon RLS" and we ask it "What is Neon RLS, explain to me as if I am a 5".
+
+    ![Asking a question in the chat interface](/docs/guides/n8n/n8n-ask-chatbot-question.png)
+
+3.  **Verify Response and Logs:**
+    - The chatbot should provide an answer based on the retrieved documents. The answer will be generated by the Google Gemini chat model, using the context provided by the retrieved document chunks.
+    - You can inspect the "Latest Logs from AI Agent node" in n8n to see the input, the tool being called (Postgres PGVector Store), and the output from the Gemini Chat Model for debugging or verification purposes.
+
+![Testing the chat workflow in n8n](/docs/guides/n8n/n8n-test-chat-workflow.gif)
+
+### Step 6: Activating the Chat workflow
+
+1. Once you are satisfied with the testing, save your workflow and then toggle the "Active" switch in the n8n navbar to activate the workflow. This will allow it to run automatically when triggered by the Chat Trigger node or Google Drive Trigger node.
+
+   ![Saving and activating the chat workflow in n8n](/docs/guides/n8n/n8n-activate-chat-workflow.png)
+
+2. To get the "Chat URL", click on the "Chat Trigger" node and copy the URL provided in the "Chat URL" field. This URL can be shared with users to access the chatbot interface without needing to log in to n8n.
+
+   ![Getting the Chat URL in n8n](/docs/guides/n8n/n8n-get-chat-url.png)
+
+3. This will allow users to ask questions and receive answers based on the indexed documents in your Google Drive. At any point you can add more documents to the Google Drive folder you specified in the Google Drive Trigger node, and the indexing workflow will automatically process them, updating the knowledge base (vector store on Neon) and making them available for the retrieval in the chat workflow.
+
+4. For example here we add a new PDF document about "Neon Auth" to the Google Drive folder. The indexing workflow will automatically pick it up, process it, and update the knowledge base.
+
+   ![Adding a new document to Google Drive](/docs/guides/n8n/n8n-add-new-document-to-gdrive.png)
+
+   We then ask the chatbot about "Neon Auth" and it provides an answer based on the newly indexed document.
+
+   ![Asking the chatbot about the newly indexed document](/docs/guides/n8n/n8n-ask-chatbot-about-new-document.png)
+
+5. You can also embed the chatbot on a webpage using the "Embedded Chat" option in the Chat Trigger node if desired.
+
+## How it works: A Brief recap
+
+1.  **Indexing:** New files in a designated Google Drive folder trigger an n8n workflow. The files are downloaded, broken into smaller text chunks, and each chunk is converted into a numerical representation (embedding) by Google Gemini. These embeddings, along with the text chunks and metadata (like the filename), are stored in your Neon Postgres database, which uses the pgvector extension to handle these vector embeddings.
+2.  **Retrieval & Generation (RAG):** When you ask a question in the chat interface, your query is also converted into an embedding. The n8n AI Agent uses this query embedding to search the Neon Postgres vector store for the text chunks whose embeddings are most similar to your query's embedding. These relevant chunks are retrieved and provided as context to the Google Gemini chat model. The chat model then generates a human-like answer based on your question and the provided context from your documents.
+
+This entire process ensures that the chatbot's answers are grounded in the information contained within your Google Drive documents.
+
+## Debugging tips
+
+You can debug individual n8n nodes by clicking on the node and checking the **Output** tab on the right side of the editor. This displays the data flowing through each node, helping you pinpoint workflow issues.
+
+For instance, the image below shows the output of a **AI Agent** node after a question is asked:
+
+    ![Debugging Chat Trigger Node Output](/docs/guides/n8n/n8n-chat-trigger-node-output.png)
+
+Here, you can see the input message, the AI Agent's response, and the tool (**Postgres PGVector Store**) used to retrieve relevant document chunks. The document chunks retrieved from the Neon Postgres vector store are also visible. This insight helps you understand how the chatbot generates its responses based on the indexed documents.
+
+## Resources
+
+- [n8n Documentation](https://docs.n8n.io/)
+- [Neon Documentation](/docs)
+- [`pgvector` extension documentation](/docs/extensions/pgvector)
+- [Build a RAG chatbot with Astro, Postgres, and LlamaIndex](/guides/chatbot-astro-postgres-llamaindex)
+- [RAG Chatbot (OpenAI + LangChain)](/templates/rag-chatbot-langchain)
+
+<NeedHelp/>
+
+
 # Get started with Neon Serverless Postgres on Azure
 
 ---
@@ -36491,7 +38959,7 @@ The Azure Native integration delivers significant advantages that enhance both d
 - **Unified Billing**: Track and manage Neon expenses alongside other Azure services in one consolidated bill
 - **Cost Optimization**: Optimize your cloud spend by applying Neon usage toward your [Microsoft Azure Consumption Commitment](https://learn.microsoft.com/en-us/marketplace/azure-consumption-commitment-benefit).
 
-The Neon integration is available through the [Azure Marketplace](https://neon.tech/docs/introduction/billing-azure-marketplace).
+The Neon integration is available through the [Azure Marketplace](/docs/introduction/billing-azure-marketplace).
 
 ## Creating your Neon organization
 
@@ -36511,7 +38979,7 @@ While starting with the Free Plan is an excellent way to explore Neon's capabili
 
 ### Free plan: Perfect for getting started
 
-The Free Plan provides an excellent entry point for developers and small projects. With 10 projects, 0.5 GB-month storage, and 190 compute hours, you can build and test applications while experiencing Neon's core features like [database branching](/docs/introduction/branching), [read replicas](/docs/introduction/read-replicas) and [Postgres extensions](https://neon.tech/docs/extensions/pg-extensions)
+The Free Plan provides an excellent entry point for developers and small projects. With 10 projects, 0.5 GB-month storage, and 190 compute hours, you can build and test applications while experiencing Neon's core features like [database branching](/docs/introduction/branching), [read replicas](/docs/introduction/read-replicas) and [Postgres extensions](/docs/extensions/pg-extensions)
 
 ### Scale plan: Growing with your application
 
@@ -36541,7 +39009,7 @@ For organizations requiring enterprise-grade features, the Business Plan provide
 - Private Link support for secure connectivity
 
 <Admonition type="note" title="Note">
-For custom enterprise requirements beyond the Business Plan, [you can reach out to Neon's sales team](https://neon.tech/contact-sales).
+For custom enterprise requirements beyond the Business Plan, [you can reach out to Neon's sales team](/contact-sales).
 </Admonition>
 
 ## Configuring your resource
@@ -36600,12 +39068,12 @@ Here are some key features you'll find:
 
 To connect your application to the Neon database, copy the connection URL from the project dashboard and use it in your application stack. This URL contains the necessary credentials and connection details to establish a connection to your Neon database.
 
-For more about connecting your application to Neon, see [Connect to Neon](https://neon.tech/docs/connect/connect-intro). Neon also provides the following resources to help get you up and running:
+For more about connecting your application to Neon, see [Connect to Neon](/docs/connect/connect-intro). Neon also provides the following resources to help get you up and running:
 
-- [Neon framework guides](https://neon.tech/docs/get-started-with-neon/frameworks)
-- [Neon language guides](https://neon.tech/docs/get-started-with-neon/languages)
+- [Neon framework guides](/docs/get-started-with-neon/frameworks)
+- [Neon language guides](/docs/get-started-with-neon/languages)
 - [Connection examples repo](https://github.com/neondatabase/examples)
-- [Application templates repo](https://neon.tech/templates)
+- [Application templates repo](/templates)
 
 ## Platform-Specific Management: Azure Portal vs. Neon Console
 
@@ -37004,7 +39472,7 @@ You can find the complete source code for this example on GitHub.
 ## Resources
 
 - [Neon GitHub Integration Documentation](/docs/guides/neon-github-integration)
-- [Database Branching Workflows](https://neon.tech/flow)
+- [Database Branching Workflows](/flow)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 
 <NeedHelp/>
@@ -37021,7 +39489,7 @@ title: How to set up Neon Local with Docker Compose and JavaScript Postgres clie
 subtitle: A practical guide to Neon Local with JavaScript and Docker Compose for local and production setups
 ---
 
-ICYMI we recently launched [Neon Local](https://neon.tech/blog/make-yourself-at-home-with-neon-local).
+ICYMI we recently launched [Neon Local](/blog/make-yourself-at-home-with-neon-local).
 
 ## What is Neon Local?
 
@@ -37238,7 +39706,7 @@ Let's get started with using the Neon MCP server and GitHub Copilot.
 
 ### **Create Neon Database**
 
-Visit the [Neon on Azure Marketplace](https://portal.azure.com/#view/Azure_Marketplace_Neon/NeonCreateResource.ReactView) page and follow the [Create a Neon resource](https://neon.tech/docs/azure/azure-deploy#create-a-neon-resource) guide to deploy Neon on Azure for your subscription. Neon offers a [Free plan](https://neon.tech/pricing) that provides more than enough resources to build a proof of concept or kick off a new startup project.
+Visit the [Neon on Azure Marketplace](https://portal.azure.com/#view/Azure_Marketplace_Neon/NeonCreateResource.ReactView) page and follow the [Create a Neon resource](/docs/azure/azure-deploy#create-a-neon-resource) guide to deploy Neon on Azure for your subscription. Neon offers a [Free plan](/pricing) that provides more than enough resources to build a proof of concept or kick off a new startup project.
 
 ### Install the Neon MCP Server for VS Code
 
@@ -37281,7 +39749,7 @@ Copilot will generate a REST API using Azure Functions in JavaScript with a basi
 
 ![list existing Neon projects in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-list-neon-mcp-server-tools.png)
 
-**Step 5:** Try out different prompts to fetch the connection string for the chosen database and set it to the Azure Functions settings. Then ask to create a sample Customer table and so on. Or you can even prompt to create a new [database branch](https://neon.tech/docs/introduction/branching) on Neon.
+**Step 5:** Try out different prompts to fetch the connection string for the chosen database and set it to the Azure Functions settings. Then ask to create a sample Customer table and so on. Or you can even prompt to create a new [database branch](/docs/introduction/branching) on Neon.
 
 ![Fetch data from Neon in GitHub Copilot](/docs/guides/github-copilot-neon-mcp-server/github-copilot-fetch-neon-connection-string.png)
 
@@ -37308,8 +39776,8 @@ With GitHub Copilot, Neon MCP server, and Azure Functions, you're no longer writ
 
 ## Resources
 
-- [Neon on Azure](https://neon.tech/docs/manage/azure)
-- [Neon MCP Server](https://neon.tech/docs/ai/neon-mcp-server)
+- [Neon on Azure](/docs/manage/azure)
+- [Neon MCP Server](/docs/ai/neon-mcp-server)
 
 <NeedHelp />
 
@@ -37367,43 +39835,7 @@ Neon MCP server, combined with Neon, offers:
 The Neon MCP server's ability to execute arbitrary commands from natural language requests requires careful attention to security.  Always review and approve actions before they are committed.  Grant access only to authorized users and applications.
 </Admonition>
 
-**Key Actions available via Neon MCP server (powered by Neon API):**
-
-Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
-
-**Project Management:**
-
-- `list_projects`: Retrieves a list of your Neon projects, providing a summary of each project associated with your Neon account. Supports limiting the number of projects returned (default: 10).
-- `describe_project`: Fetches detailed information about a specific Neon project, including its ID, name, and associated branches and databases.
-- `create_project`: Creates a new Neon project in your Neon account. A project acts as a container for branches, databases, roles, and computes.
-- `delete_project`: Deletes an existing Neon project and all its associated resources.
-
-**Branch Management:**
-
-- `create_branch`: Creates a new branch within a specified Neon project. Leverages Neon's branching feature for development, testing, or migrations.
-- `delete_branch`: Deletes an existing branch from a Neon project.
-- `describe_branch`: Retrieves details about a specific branch, such as its name, ID, and parent branch.
-- `list_branch_computes`: Lists compute endpoints for a project or specific branch, including compute ID, type, size, and autoscaling information.
-
-**SQL Query Execution:**
-
-- `get_connection_string`: Returns your database connection string.
-- `run_sql`: Executes a single SQL query against a specified Neon database. Supports both read and write operations.
-- `run_sql_transaction`: Executes a series of SQL queries within a single transaction against a Neon database.
-- `get_database_tables`: Lists all tables within a specified Neon database.
-- `describe_table_schema`: Retrieves the schema definition of a specific table, detailing columns, data types, and constraints.
-- `list_slow_queries`: Identifies performance bottlenecks by finding the slowest queries in a database. Requires the pg_stat_statements extension.
-
-**Database Migrations (Schema Changes):**
-
-- `prepare_database_migration`: Initiates a database migration process. Critically, it creates a temporary branch to apply and test the migration safely before affecting the main branch.
-- `complete_database_migration`: Finalizes and applies a prepared database migration to the main branch. This action merges changes from the temporary migration branch and cleans up temporary resources.
-
-**Query Performance Tuning:**
-
-- `explain_sql_statement`: Analyzes a SQL query and returns detailed execution plan information to help understand query performance.
-- `prepare_query_tuning`: Identifies potential performance issues in a SQL query and suggests optimizations. Creates a temporary branch for testing improvements.
-- `complete_query_tuning`: Finalizes and applies query optimizations after testing. Merges changes from the temporary tuning branch to the main branch.
+<MCPTools />
 
 These actions enable any MCP Host to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon’s branching for safe preview and commit.
 
@@ -37708,7 +40140,7 @@ For more advanced uses, remember that the toolkit gives you access to the comple
 
 - [@neondatabase/toolkit on npm](https://www.npmjs.com/package/@neondatabase/toolkit)
 - [@neon/toolkit on JSR](https://jsr.io/@neon/toolkit)
-- [Neon Documentation](https://neon.tech/docs/introduction)
+- [Neon Documentation](/docs/introduction)
 - [Neon API Reference](https://api-docs.neon.tech/reference/getting-started-with-neon-api)
 - [Neon API keys](/docs/manage/api-keys#creating-api-keys)
 
@@ -41617,8 +44049,8 @@ While the memory overhead of `LISTEN` is minimal, `LISTEN` can cause performance
 There is also no way to ensure that a message was delivered to a listener.
 If you need message persistence or guarantees that a message was processed, you should look at dedicated message queues like RabbitMQ or Kafka.
 
-If you are using `LISTEN` and `NOTIFY`, you should disable Neon's [Scale to Zero feature](https://neon.tech/docs/introduction/scale-to-zero).
-If Neon scales your compute to 0, [it will terminate all listeners](https://neon.tech/docs/reference/compatibility#session-context), which may lead to lost messages when your database reactivates.
+If you are using `LISTEN` and `NOTIFY`, you should disable Neon's [Scale to Zero feature](/docs/introduction/scale-to-zero).
+If Neon scales your compute to 0, [it will terminate all listeners](/docs/reference/compatibility#session-context), which may lead to lost messages when your database reactivates.
 
 
 # Building a Real-Time AI Voice Assistant with ElevenLabs
@@ -42279,7 +44711,7 @@ The application's features will include:
 
 **Sign up and create the database**
 
-Sign up on [Neon](https://neon.tech/) and follow the steps to create a Postgres database. The database will be named **neondb**.
+Sign up on [Neon](https://neon.com/) and follow the steps to create a Postgres database. The database will be named **neondb**.
 
 After creating the database, make sure to copy the connection details (such as **host**, **user**, **password**, **database**) somewhere safe, as they will be used to configure **Azure Functions** to connect to **Neon**.
 
@@ -42914,6 +45346,188 @@ Adding an index on the `status` and `created_at` columns can help ensure consist
 ```sql
 CREATE INDEX idx_tasks_status_created_at
 ON tasks (status, created_at);
+```
+
+
+# Rate Limiting in Postgres
+
+---
+title: Rate Limiting in Postgres
+subtitle: A step-by-step guide describing how to implement rate limiting in Postgres using advisory locks and counters
+author: vkarpov15
+enableTableOfContents: true
+createdAt: '2025-05-09T13:24:36.612Z'
+updatedOn: '2025-05-09T13:24:36.612Z'
+---
+
+Rate limiting means limiting the number of requests that can happen in a given time window, like 5 requests per minute or 100 requests per hour.
+While rate limiting is often implemented in the application layer, you can actually build effective rate limiting systems directly in Postgres.
+You can rate limit a certain Postgres query using a combination of advisory locks and counters.
+
+## Steps
+
+- Use advisory locks to synchronize access
+- Create a counter table for rate tracking
+- Upsert into the `rate_limits` table
+- Implement a basic rate limiter with SQL
+- Wrap rate limiting in an SQL function
+
+### Use advisory locks to synchronize access
+
+Advisory locks in Postgres are application-level, user-defined locks that help coordinate access to shared resources without blocking unrelated operations.
+The advantage of using advisory locks over transactions for rate limiting is that they allow you to synchronize access to a shared key (like a user's counter) without locking rows.
+
+You can grab an exclusive lock on a given key like this:
+
+```sql
+SELECT pg_advisory_xact_lock(hashtext('user_123_rate_limit'));
+```
+
+This ensures that only one transaction at a time can modify the counter for `user_123`.
+
+### Create a counter table for rate tracking
+
+Start by creating a table to store rate limit counters.
+You'll use this table to track how many requests each key (for example, user id or IP address) has made within a time window.
+
+```sql
+CREATE TABLE rate_limits (
+  key TEXT PRIMARY KEY,
+  count INTEGER NOT NULL DEFAULT 0,
+  window_start TIMESTAMPTZ NOT NULL
+);
+```
+
+Each row represents a rate limit bucket.
+`window_start` marks the beginning of the current time window.
+
+### Upsert into the rate_limits table
+
+The key idea behind the `rate_limits` table is to ensure each request either starts a new rate limiting window or increments the count within the current one, if there is a current window.
+The logic looks like the following.
+
+1. Try to insert a new counter. If the key doesn't exist yet, insert it with `count = 1` and `window_start = now`.
+2. If the key already exists, decide whether the current request is in the same window.
+3. If the current time is outside the existing time window (`window_start + window_length <= now`), then reset the count to 1 and start a new window.
+4. Otherwise, increment the count and keep the existing window.
+
+Below is the SQL implementation of this logic.
+
+```sql
+-- Upsert the counter
+INSERT INTO rate_limits (key, count, window_start)
+VALUES (rate_limit_key, 1, now)
+ON CONFLICT (key) DO UPDATE
+SET count = CASE
+              WHEN rate_limits.window_start + window_length <= now
+                THEN 1
+                ELSE rate_limits.count + 1
+            END,
+    window_start = CASE
+                     WHEN rate_limits.window_start + window_length <= now
+                       THEN now
+                       ELSE rate_limits.window_start
+                   END;
+```
+
+However, this logic is vulnerable to race conditions.
+Two transactions might read the same `window_start` and `count` values at the same time and both think they're within the same rate limit window.
+They both calculate `count + 1`, and both write the same new value, which overwrites one of the increments.
+That's where advisory locks come in.
+
+### Implement a basic rate limiter with SQL
+
+Below is an implementation of a rate limiter that allows up to 5 requests per minute using advisory locks to avoid any race conditions.
+Running the below code 6 times within 1 minute will result in an error: `ERROR: Rate limit exceeded for user_123`
+
+```sql
+DO $$
+DECLARE
+  rate_limit_key TEXT := 'user_123';
+  now TIMESTAMPTZ := clock_timestamp();
+  max_requests INTEGER := 5;
+  window_length INTERVAL := INTERVAL '1 minute';
+  current_count INTEGER;
+BEGIN
+  -- Lock access to the user's counter
+  PERFORM pg_advisory_xact_lock(hashtext(rate_limit_key));
+
+  -- Upsert the counter
+  INSERT INTO rate_limits (key, count, window_start)
+  VALUES (rate_limit_key, 1, now)
+  ON CONFLICT (key) DO UPDATE
+  SET count = CASE
+                WHEN rate_limits.window_start + window_length <= now
+                  THEN 1
+                  ELSE rate_limits.count + 1
+              END,
+      window_start = CASE
+                       WHEN rate_limits.window_start + window_length <= now
+                         THEN now
+                         ELSE rate_limits.window_start
+                     END;
+
+  -- Read current count
+  SELECT count INTO current_count FROM rate_limits WHERE key = rate_limit_key;
+
+  IF current_count > max_requests THEN
+    RAISE EXCEPTION 'Rate limit exceeded for %', rate_limit_key;
+  END IF;
+END $$;
+```
+
+### Wrap rate limiting in an SQL function
+
+The above SQL query hard-codes the rate limit key, `max_requests`, and other parameters, making it difficult to reuse.
+To make this logic reusable, you can put the logic in an SQL function as follows.
+
+```sql
+CREATE OR REPLACE FUNCTION check_rate_limit(rate_key TEXT, max_requests INTEGER, window_seconds INTEGER)
+RETURNS VOID AS $$
+DECLARE
+  now TIMESTAMPTZ := clock_timestamp();
+  window_length INTERVAL := make_interval(secs => window_seconds);
+  current_count INTEGER;
+BEGIN
+  PERFORM pg_advisory_xact_lock(hashtext(rate_key));
+
+  INSERT INTO rate_limits (key, count, window_start)
+  VALUES (rate_key, 1, now)
+  ON CONFLICT (key) DO UPDATE
+  SET count = CASE
+                WHEN rate_limits.window_start + window_length <= now
+                  THEN 1
+                  ELSE rate_limits.count + 1
+              END,
+      window_start = CASE
+                       WHEN rate_limits.window_start + window_length <= now
+                         THEN now
+                         ELSE rate_limits.window_start
+                     END;
+
+  SELECT count INTO current_count FROM rate_limits WHERE key = rate_key;
+
+  IF current_count > max_requests THEN
+    RAISE EXCEPTION 'Rate limit exceeded for %', rate_key;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+Then you can call the function as follows.
+The following query checks whether `user_123` has made more than 5 requests in the last minute.
+
+```sql
+SELECT check_rate_limit('user_123', 5, 60);
+```
+
+You can reuse this function in conjunction with other queries.
+For example, if you want to make sure `user_123` can only read the `activity_feed` table 5 times per minute, you can use the following.
+
+```sql
+SELECT check_rate_limit('user_123', 5, 60);
+
+SELECT * FROM activity_feed ORDER BY created_at DESC LIMIT 50;
 ```
 
 
@@ -43570,7 +46184,7 @@ createdAt: '2024-10-20T00:00:00.000Z'
 updatedOn: '2024-10-20T00:00:00.000Z'
 ---
 
-[Neon read replicas](https://neon.tech/docs/introduction/read-replicas) are independent read-only compute instances that can significantly enhance database performance and scalability. By distributing read operations across these replicas, you can reduce latency and improve overall system responsiveness, especially for read-heavy applications. A standout feature of Neon is that adding a read replica doesn't require extra storage. This makes it a cost-effective way to scale your database, suitable for businesses of all sizes.
+[Neon read replicas](/docs/introduction/read-replicas) are independent read-only compute instances that can significantly enhance database performance and scalability. By distributing read operations across these replicas, you can reduce latency and improve overall system responsiveness, especially for read-heavy applications. A standout feature of Neon is that adding a read replica doesn't require extra storage. This makes it a cost-effective way to scale your database, suitable for businesses of all sizes.
 
 This guide explains how to integrate Neon read replicas into your Django application. You'll learn how to configure your Django database router to direct read operations to these replicas, optimizing your database performance and overall application speed.
 
@@ -43578,7 +46192,7 @@ This guide explains how to integrate Neon read replicas into your Django applica
 
 Before you begin, make sure you have:
 
-- A Neon account and project. If you don't have one, sign up for a Neon account and create a project by following the [Getting started guide](https://neon.tech/docs/get-started-with-neon/signing-up).
+- A Neon account and project. If you don't have one, sign up for a Neon account and create a project by following the [Getting started guide](/docs/get-started-with-neon/signing-up).
 - Basic knowledge of [Django](https://docs.djangoproject.com/en) and Python.
 - [Python](https://www.python.org/downloads/) installed on your local machine.
 
@@ -43920,7 +46534,7 @@ createdAt: '2024-10-14T00:00:00.000Z'
 updatedOn: '2024-10-14T00:00:00.000Z'
 ---
 
-[Neon read replicas](https://neon.tech/docs/introduction/read-replicas) are independent read-only compute instances that can significantly enhance database performance and scalability. By distributing read operations across these replicas, you can reduce latency and improve overall system responsiveness, especially for read-heavy applications.
+[Neon read replicas](/docs/introduction/read-replicas) are independent read-only compute instances that can significantly enhance database performance and scalability. By distributing read operations across these replicas, you can reduce latency and improve overall system responsiveness, especially for read-heavy applications.
 
 A key advantage of Neon's architecture is that adding a read replica doesn't require additional storage, making it a highly efficient scaling solution. This cost-effective approach is ideal for businesses of all sizes that need to improve database performance without increasing storage costs.
 
@@ -43928,7 +46542,7 @@ This guide demonstrates how to leverage Neon read replicas to efficiently scale 
 
 ## Prerequisites
 
-- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](https://neon.tech/docs/get-started-with-neon/signing-up).
+- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started-with-neon/signing-up).
 - Basic knowledge of [Next.js](https://nextjs.org/docs) and TypeScript
 - [Node.js](https://nodejs.org/en/download/package-manager) and npm installed on your local machine
 
@@ -44367,7 +46981,7 @@ createdAt: '2024-10-13T00:00:00.000Z'
 updatedOn: '2024-10-13T00:00:00.000Z'
 ---
 
-[Neon read replicas](https://neon.tech/docs/introduction/read-replicas) are independent read-only compute instances that perform read operations on the same data as your primary read-write compute. A key advantage of Neon's architecture is that adding a read replica to a Neon project doesn't require additional storage, making it an efficient scaling solution.
+[Neon read replicas](/docs/introduction/read-replicas) are independent read-only compute instances that perform read operations on the same data as your primary read-write compute. A key advantage of Neon's architecture is that adding a read replica to a Neon project doesn't require additional storage, making it an efficient scaling solution.
 
 This guide demonstrates how to leverage Neon read replicas to efficiently scale .NET applications using Entity Framework Core. You'll learn how to configure your DbContext to work with read replicas, enabling you to optimize your database operations and improve overall application performance.
 
@@ -44814,7 +47428,7 @@ updatedOn: '2024-10-20T00:00:00.000Z'
 
 ## Introduction
 
-[Neon read replicas](https://neon.tech/docs/introduction/read-replicas) are independent read-only compute instances that can significantly enhance database performance and scalability. By distributing read operations across these replicas, you can reduce latency and improve overall system responsiveness, especially for read-heavy applications.
+[Neon read replicas](/docs/introduction/read-replicas) are independent read-only compute instances that can significantly enhance database performance and scalability. By distributing read operations across these replicas, you can reduce latency and improve overall system responsiveness, especially for read-heavy applications.
 
 A key advantage of Neon's architecture is that adding a read replica doesn't require additional storage, making it a highly efficient scaling solution. This cost-effective approach is ideal for businesses of all sizes that need to improve database performance without increasing storage costs.
 
@@ -44822,7 +47436,7 @@ This guide demonstrates how to leverage Neon read replicas to efficiently scale 
 
 ## Prerequisites
 
-- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](https://neon.tech/docs/get-started-with-neon/signing-up).
+- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started-with-neon/signing-up).
 - Basic knowledge of [Laravel](https://laravel.com/docs) and PHP
 - [Composer](https://getcomposer.org/) installed on your local machine
 - [PHP](https://www.php.net/manual/en/install.php) installed on your local machine
@@ -45843,7 +48457,7 @@ There are several ways to do this, but here's a straightforward approach using `
 
 ## Running partial data dumps inside GitHub Actions
 
-You can run `pg_dump`, `pg_restore`, and `psql` from the command line, but sometimes, an automated, reproducible approach is more convenient. To better control when data dumps occur, I use a [scheduled GitHub Action](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule) to export data from my production database and restore it to a testing database. This method works across different Postgres database providers, but if you're looking for a cost-effective testing environment, consider trying Neon. Check out our [getting started guide](https://neon.tech/docs/get-started-with-neon/signing-up#sign-up) to see how easy it is to set up.
+You can run `pg_dump`, `pg_restore`, and `psql` from the command line, but sometimes, an automated, reproducible approach is more convenient. To better control when data dumps occur, I use a [scheduled GitHub Action](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule) to export data from my production database and restore it to a testing database. This method works across different Postgres database providers, but if you're looking for a cost-effective testing environment, consider trying Neon. Check out our [getting started guide](/docs/get-started-with-neon/signing-up#sign-up) to see how easy it is to set up.
 
 ## What is a scheduled GitHub Action?
 
@@ -45911,7 +48525,7 @@ To do this, navigate to **Settings** > **Settings and variables** > **Actions** 
 
 ![Screenshot of GitHub repository secrets](/guides/images/reliable-testing-dataset-with-pg-dump-and-pg-restore/screenshot-of-github-respository-secrets.jpg)
 
-The last variable defines the Postgres version to install in the Action environment. Since `pg_dump`, `pg_restore`, and `psql` depend on Postgres, you'll need to install it within the Action—I’ll cover this in more detail later. It’s also worth noting the version of Postgres you install here should be the same version used by both your source and target database. In my example, all use [Postgres 17](https://neon.tech/blog/postgres-17).
+The last variable defines the Postgres version to install in the Action environment. Since `pg_dump`, `pg_restore`, and `psql` depend on Postgres, you'll need to install it within the Action—I’ll cover this in more detail later. It’s also worth noting the version of Postgres you install here should be the same version used by both your source and target database. In my example, all use [Postgres 17](/blog/postgres-17).
 
 ### jobs/steps
 
@@ -46117,7 +48731,7 @@ Once the Action completes successfully, your target database will have a fresh t
 
 This Action is part of our [Dev/Test use case](/use-cases/dev-test), widely used by Neon customers who face limitations with traditional databases for testing. By leveraging a dedicated Neon database, while leaving production environments where they are, developers gain access to Neon's full suite of features, including the [built-in SQL editor](/docs/get-started-with-neon/query-with-neon-sql-editor), [table explorer](/docs/guides/tables), and [branching](/docs/introduction/branching).
 
-If you'd like to learn more about using Neon for testing, check out our [docs](/docs/use-cases/dev-test) or contact our [sales team](/contact-sales).
+If you'd like to learn more about using Neon for testing, check out our [dev/test use case](/use-cases/dev-test) or contact our [sales team](/contact-sales).
 
 
 # Building AI-powered applications with Replit Agent
@@ -48490,7 +51104,7 @@ Switching to the Neon serverless driver provides several advantages. It offers g
 To begin, you’ll need:
 
 - An existing application using the Vercel Postgres SDK
-- A [Neon account](https://neon.tech/docs/get-started-with-neon/signing-up) (your Vercel Postgres database will automatically migrate to Neon)
+- A [Neon account](/docs/get-started-with-neon/signing-up) (your Vercel Postgres database will automatically migrate to Neon)
 
 ## Migration Steps
 
@@ -48685,7 +51299,7 @@ Before you begin, ensure you have the following:
 
 1.  **Codeium Windsurf Editor:** Download and install Windsurf from [codeium.com/windsurf](https://codeium.com/windsurf).
 2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
-3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](/docs/manage/api-keys).
 
     <Admonition type="warning" title="Neon API Key Security">
     Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
@@ -48735,6 +51349,16 @@ You can either watch the video below or follow the steps to set up the Neon MCP 
 
 <Admonition type="note">
 The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
+</Admonition>
+
+<Admonition type="tip" title="Troubleshooting OAuth Errors">
+If you encounter an error message like `{"code":"invalid_request","error":"invalid redirect uri"}` when starting Windsurf with the remote MCP server, this is typically due to cached OAuth credentials. To fix this issue:
+
+1. Remove the MCP authentication cache by running: `rm -rf ~/.mcp-auth`
+2. Restart Windsurf
+3. The OAuth flow will start fresh, allowing you to properly authenticate
+
+This error commonly occurs when there are changes to the OAuth configuration or when cached credentials become invalid.
 </Admonition>
 
 ### Option 2: Setting up the Local Neon MCP Server
@@ -48802,24 +51426,7 @@ key for authentication.
 
    You've now configured Neon MCP Server in Windsurf and can manage your Neon Postgres databases using AI.
 
-## Neon MCP Server Tools
-
-Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
-
-- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account. _Note: This particular action is still under development. It's not yet returning results as expected._
-- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
-- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
-- `delete_project`: Deletes an existing Neon project.
-- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
-- `delete_branch`: Deletes an existing branch in a Neon project.
-- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
-- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
-- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
-- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
-- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
-- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
-- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
-- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+<MCPTools />
 
 These actions enable any MCP client like Windsurf to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon's branching for safe preview and commit.
 
@@ -48935,6 +51542,260 @@ Windsurf with Neon MCP Server lets you use natural language to interact with you
 <NeedHelp/>
 
 
+# Using Neon Postgres with Zapier
+
+---
+title: Using Neon Postgres with Zapier
+subtitle: Automate workflows by connecting Neon Postgres to hundreds of apps with Zapier, triggering actions from database events or pushing data into Neon from other services.
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-05-29T00:00:00.000Z'
+updatedOn: '2025-05-29T00:00:00.000Z'
+---
+
+Zapier is a powerful no-code automation platform that allows you to connect Neon Postgres to thousands of other web services. By linking your Neon database with apps like Slack, Google Sheets, Gmail, Stripe, or Typeform, you can automate actions based on database events (e.g., a new row is added) or push data into Neon from these external systems.
+
+This guide will walk you through setting up two common automation scenarios:
+
+1.  Triggering an action when a new row is added to a table.
+2.  Adding data to a table based on an event in an external service.
+
+These examples will illustrate the core concepts, which you can then adapt to a wide variety of other use cases.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **Zapier Account:** A Zapier account is required to create and manage Zaps. Please note that the PostgreSQL integration is a Pro feature on Zapier and requires a [paid plan](https://zapier.com/pricing).
+
+* **Neon Account and Project:** A Neon account and a project with a running Postgres database. You can create a free Neon account and project at [pg.new](https://pg.new).
+* **Database tables (for examples):** For the examples in this guide, we'll be using the following tables to demonstrate the functionality. Create these tables in your Neon database if you intend to follow along:
+
+  - A table named `users` to demonstrate triggering actions from new rows.
+  - A table named `form_submissions` to demonstrate adding data from an external source.
+
+    You can create these tables using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or any Postgres client such as [`psql`](/docs/connect/query-with-psql-editor)
+
+    **Example SQL for `users` table:**
+
+        ```sql
+        CREATE TABLE users (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(255),
+            email VARCHAR(255) UNIQUE,
+            signed_up_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+        ```
+
+    **Example SQL for `form_submissions` table:**
+
+        ```sql
+        CREATE TABLE form_submissions (
+            id SERIAL PRIMARY KEY,
+            submitter_email VARCHAR(255),
+            feedback_text TEXT,
+            submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        );
+        ```
+
+<Admonition type="important">
+For Zapier's "New Row" trigger to reliably detect new entries in Neon, your table should have an auto-incrementing `PRIMARY KEY` (like `SERIAL` or `BIGSERIAL`) or a column that strictly orders new rows (like a `created_at` timestamp). Zapier uses this "Ordering Column" to check for new entries.
+</Admonition>
+
+## Connecting Neon Postgres to Zapier
+
+Before creating Zaps, you need to connect your Neon database to Zapier. Zapier uses a generic "PostgreSQL" app integration. Due to how [Neon uses Server Name Indication (SNI) for routing connections](/docs/connect/connection-errors#the-endpoint-id-is-not-specified) and how some clients handle SNI, a specific format is required for the password field in Zapier to ensure a successful connection.
+
+1.  **Log in to Zapier.**
+2.  Navigate to "**App Connections**" from the left sidebar.
+    ![App Connections in Zapier](/docs/guides/zapier-app-connections.png)
+3.  Click "**Add connection**" and search for "**PostgreSQL**".
+    ![Add connection page in Zapier](/docs/guides/zapier-add-connection.png)
+4.  A pop-up window will appear asking for connection details. You can find most of these in your Neon Console on the **Dashboard** page, by clicking on the **Connect** button for your database. Fill in the following fields:
+
+    - **Host:** Your Neon host (e.g., `ep-tight-boat-a6aplura-pooler.us-west-2.aws.neon.tech`)
+    - **Port:** `5432`
+    - **Database:** Your Neon database name (e.g., `neondb`)
+    - **Username:** Your Neon database user (e.g., `neon_user`)
+    - **Password:** **This is where the special format is needed.** See the important note below.
+
+    <Admonition type="important" title="Password Format for Neon Postgres in Zapier">
+    To connect Zapier to Neon successfully, you must include your Neon **Endpoint ID** within the password field. This is because Neon uses SNI to route connections, and some clients like Zapier's PostgreSQL connector do not pass SNI information in a way that Neon can use directly without this workaround.
+
+    1.  Find your **Endpoint ID**. It's the first part of your Neon hostname (e.g., if your host is `ep-tight-boat-a6aplura-pooler.us-west-2.aws.neon.tech`, your endpoint ID is `ep-tight-boat-a6aplura`).
+    2.  In Zapier's **Password** field, enter the following string, replacing `[endpoint_id]` with your actual endpoint ID and `[your_actual_password]` with your database user's password:
+
+        `endpoint=[endpoint_id]$[your_actual_password]`
+
+    **Example:** If your endpoint ID is `ep-tight-boat-a6aplura` and your password is `MySecurePassword`, you would enter:
+
+    `endpoint=ep-tight-boat-a6aplura$MySecurePassword`
+
+    This format allows Zapier to connect to your Neon database while adhering to the SNI requirements.
+    </Admonition>
+
+    <Admonition type="important" title="Security Best Practice">
+    It is strongly recommend to create a dedicated database user/role in Neon specifically for Zapier. Grant this user only the minimum necessary permissions on the specific tables Zapier will interact with.
+    </Admonition>
+
+5.  After filling in all fields, including the specially formatted password, click "**Yes, Continue to PostgreSQL**". Zapier will test the connection.
+6.  If the connection is successful, you should see **PostgreSQL** listed under your connected apps in Zapier. You can now use this connection in your Zaps.
+    ![PostgreSQL connection in Zapier](/docs/guides/zapier-postgresql-connection.png)
+
+## Use case 1: Notify on new Database entries
+
+Let's create a Zap that sends a Slack message whenever a new user is added to `users` table in Neon.
+
+### Step 1: Setting up the Trigger (new row in Neon)
+
+1. Navigate to your Zapier dashboard and click "**Create > Zap**" to create a new Zap.
+   ![Create Zap in Zapier](/docs/guides/zapier-create-zap.png)
+
+2. **Trigger Setup:**
+   - Search for and select "**PostgreSQL**" as the trigger app.
+   - For "Event", choose "**New Row**".
+   - For "Account", select the Neon PostgreSQL connection you configured earlier. Click "Continue".
+     ![PostgreSQL trigger in Zapier](/docs/guides/zapier-postgresql-trigger.png)
+   - You will be prompted to set up the trigger. Fill in your trigger details.
+   - **Table:** Select or type the name of your table (e.g., `users`).
+   - **Order By:** Select the column Zapier should use to find new rows. An auto-incrementing primary key like `id` or a timestamp like `signed_up_at` is ideal. `id` column is used in this example.
+3. Click "**Continue**".
+   ![PostgreSQL trigger setup in Zapier](/docs/guides/zapier-postgresql-trigger-setup.png)
+
+4. Add sample data to your `users` table in Neon if you haven't already. Use the following SQL command in the Neon SQL Editor or any Postgres client to insert a sample user:
+
+   ```sql
+   INSERT INTO users (name, email) VALUES ('John Doe', 'john@doe.com');
+   ```
+
+5. **Test trigger:** Click "**Test trigger**". Zapier will attempt to find a recent row in your `users` table.
+   You should see data from the row appear. Click "**Continue with selected record**".
+   ![PostgreSQL trigger test in Zapier](/docs/guides/zapier-postgresql-trigger-test.png)
+
+### Step 2: Setting up the Action (Send Slack message)
+
+1.  **Action Setup:**
+
+    - Search for and select "**Slack**" as the action app.
+    - For "Event", choose "**Send Channel Message**".
+    - **Connect Slack Account:** If you haven't already, connect your Slack account and grant Zapier permissions.
+    - You will be prompted to set up the action. Fill in your action details.
+    - **Channel:** Choose the Slack channel where you want to send notifications.
+    - **Message Text:** Compose your message. You can insert data from the Neon trigger step.
+    - You can use the "/" button to insert fields from the trigger data. For example, you might write:
+
+      ```
+      New user signed up: *{{name}}* ({{email}})
+      ```
+
+      This will dynamically insert the user's name and email from the Neon trigger data. Refer to the image below for an example.
+
+      ![Slack action setup in Zapier](/docs/guides/zapier-slack-action-setup.png)
+
+    - Configure other options like "Bot Name", "Bot Icon", etc., as desired.
+
+2.  Click "**Continue**".
+3.  **Test action:** Click "**Test step**". Zapier will send a sample message to your selected Slack channel using the data from the trigger test.
+    ![Zapier message test in Slack](/docs/guides/zapier-slack-test-message.png)
+4.  If the test is successful, click "**Publish Zap**".
+
+Now, whenever a new row is added to your `users` table in Neon Postgres, a message will automatically be posted to your specified Slack channel.
+
+<Admonition type="note" title="Trigger frequency">
+Zapier uses a polling system for its "New Row" trigger, checking Postgres for new data every 2-15 minutes (depending on your Zapier plan), not in real-time. This means a new row added to Neon may take a few minutes to trigger your Zap and send the Slack message.
+</Admonition>
+
+## Use case 2: Log Form submissions into Neon
+
+Let's create a Zap that adds a new row to our `form_submissions` table in Neon whenever a Google Form is submitted.
+
+### Step 1: Setting up the Trigger (New Google Form response)
+
+1.  In Zapier, click "**Create Zap**".
+2.  Search for and select "**Google Forms**" as the trigger app.
+3.  For "Trigger Event", choose "**New Form Response**". Click "Continue".
+4.  **Connect Google Forms Account:** If you haven't already, connect your Google account and grant Zapier permissions.
+5.  Select the Google Form you want to use.
+6.  Click "**Continue**".
+7.  Make a test submission in your Google Form to ensure there is data for Zapier to work with. You can do this by filling out the form and submitting it.
+8.  **Test trigger:** Click "**Test trigger**". Zapier will attempt to find a recent form submission. Click "**Continue with selected record**".
+
+### Step 2: Setting up the Action (Create row in Neon)
+
+1.  **Action Setup:**
+    - Search for and select "**PostgreSQL**" as the action app.
+    - For "Event", choose "**New Row**". Click "Continue".
+    - For "Account", select the Neon PostgreSQL connection you configured earlier. Click "Continue".
+    - You will be prompted to set up the action. Fill in your action details.
+    - **Table:** Select or type the name of your table (e.g., `form_submissions`).
+    - **Map columns:** You will see a list of columns from your `form_submissions` table. For each column, you need to map the corresponding data from the Google Forms trigger.
+      - For `submitter_email`, select the Google Forms field that collects the email (e.g., `{{Email}}`).
+      - For `feedback_text`, select the Google Forms field for feedback (e.g., `{{Feedback}}`).
+      - The `id` and `submitted_at` columns in our example `form_submissions` table have default values (SERIAL and CURRENT_TIMESTAMP respectively), so you can often leave them unmapped in Zapier, and Postgres will handle them. If your table structure requires them, map them accordingly.
+        ![Google Forms to Neon mapping in Zapier](/docs/guides/zapier-google-forms-to-neon-mapping.png)
+2.  Click "**Continue**".
+3.  **Test action:** Click "**Test step**". Zapier will attempt to create a new row in your `form_submissions` table in Neon using the data from the Google Forms test.
+4.  **Verify in Neon:** Check your `form_submissions` table in Neon to confirm the new row was added.
+5.  If the test is successful and the data appears in Neon, click "**Publish Zap**".
+
+Now, every time your Google Form is submitted, the data will be automatically logged into your Neon Postgres database.
+
+## Expanding to other use cases
+
+The two examples above demonstrate the fundamental patterns for integrating Neon with other services via Zapier:
+
+1.  **Neon as a Trigger:** An event in your Neon database (like a new row or an updated row) initiates actions in other apps.
+2.  **Neon as an Action:** An event in an external app (like a new email, a new Stripe payment, an Airtable update) results in data being created or updated in your Neon database.
+
+You can adapt these patterns to automate a vast array of tasks. Here are some additional use cases you might consider:
+
+- **Notify on new Database entries:** For example: Neon -> Email, Neon -> Discord.
+- **Log Form submissions into Neon:** For example: Typeform -> Neon, JotForm -> Neon.
+- **Update Google Sheets from Neon:**
+  - Trigger: New/Updated Row in Neon.
+  - Action: Create/Update Row in Google Sheets.
+- **Sync Stripe payments or subscriptions:**
+  - Trigger: New Stripe charge/subscription.
+  - Action: Create row in Neon.
+- **Send custom emails from data in Neon:**
+  - Trigger: New/Updated Row in Neon (e.g., a user signs up).
+  - Action: Create a personalized email using OpenAI and send it via Mailchip/Resend etc.
+
+The process for building these Zaps will be very similar:
+
+1.  Choose your **Trigger** app and event.
+2.  Choose your **Action** app and event.
+3.  Connect your app accounts.
+4.  Configure the trigger and action, mapping data fields between the services.
+5.  Test and publish your Zap.
+
+## Troubleshooting
+
+If you encounter issues connecting Neon to Zapier or if your Zaps involving Neon are not working as expected, consider the following:
+
+- **Verify password format:** Ensure you are using the correct password format when connecting Neon to Zapier, which includes the `endpoint=[endpoint_id]$` prefix before your actual password. Refer to the details in the [Connecting Neon Postgres to Zapier](#connecting-neon-postgres-to-zapier) section for the exact structure. An incorrect password format is a common reason for connection failures.
+
+- **Specific Errors:**
+
+  If you encounter an error message stating: "**Your Zap could not be turned on - AppVersions using SQL Zero require static-ip pool types**" when trying to activate or run a Zap involving the PostgreSQL connection.
+
+  - **Observation:** This issue appears to be related to the Zapier platform's handling of PostgreSQL connections and can sometimes occur without any changes made to your Zap configuration. It has been [reported by users in the Zapier community](https://community.zapier.com/troubleshooting-99/your-zap-could-not-be-turned-on-appversions-using-sql-zero-require-static-ip-pool-types-47107).
+  - **Recommended Action:** If you encounter this specific error, and you've confirmed your connection details (including the password format) are correct, the most effective course of action is to **contact Zapier Support directly** as described in the above community post. You can contact them through the [Zapier Support page](https://zapier.com/app/get-help).
+
+## Conclusion
+
+Zapier provides a user-friendly way to connect your Neon Postgres database to the wider ecosystem of cloud applications, enabling powerful automations without writing code. By understanding the trigger and action model, you can streamline workflows, synchronize data, and save significant time.
+
+## Resources
+
+- [Zapier](https://zapier.com)
+- [PostgreSQL App on Zapier](https://zapier.com/apps/postgresql/integrations)
+- [Zapier example templates for PostgreSQL](https://zapier.com/apps/postgresql/integrations#zap-template-list)
+- [Neon Documentation](/docs)
+
+<NeedHelp/>
+
+
 # Get started with Zed and Neon Postgres MCP Server
 
 ---
@@ -48968,7 +51829,7 @@ Before you begin, ensure you have the following:
 
 1.  **Zed editor:** Download and install preview version of Zed from [zed.dev/releases/preview](https://zed.dev/releases/preview).
 2.  **A Neon account and project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
-3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](https://neon.tech/docs/manage/api-keys).
+3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](/docs/manage/api-keys).
 
     <Admonition type="warning" title="Neon API Key Security">
     Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
@@ -49125,24 +51986,7 @@ If you are using Windows, and you encounter issues with the command line, you ma
 
 </CodeTabs>
 
-## Neon MCP Server Tools
-
-Neon MCP server exposes the following actions, which primarily map to **Neon API endpoints**:
-
-- `list_projects`: Lists all your Neon projects. This uses the Neon API to retrieve a summary of all projects associated with your Neon account.
-- `describe_project`: Retrieves detailed information about a specific Neon project. Provides comprehensive details about a chosen project, such as its ID, name, and associated branches.
-- `create_project`: Creates a new Neon project — a container in Neon for branches, databases, roles, and computes.
-- `delete_project`: Deletes an existing Neon project.
-- `create_branch`: Creates a new branch within a Neon project. Leverages Neon's branching feature, allowing you to create new branches for development or migrations.
-- `delete_branch`: Deletes an existing branch in a Neon project.
-- `describe_branch`: Retrieves details about a specific branch. Retrieves information about a particular branch, such as its name and ID.
-- `get_connection_string`: Retrieves a connection string for a specific database in a Neon project. Returns a formatted connection string that can be used to connect to the database.
-- `run_sql`: Runs a single SQL query against a Neon database. Allows you to run read or write SQL queries.
-- `run_sql_transaction`: Runs a series of SQL queries within a transaction against a Neon database. Enables running multiple SQL statements as a single atomic transaction, ensuring data consistency.
-- `get_database_tables`: Lists all tables in a specified Neon database. Provides a list of tables.
-- `describe_table_schema`: Retrieves the schema definition of a specific table. Details the structure of a table, including columns and data types.
-- `prepare_database_migration`: Initiates a database migration process, utilizing a temporary branch for safety. Begins the process of altering your database schema, safely using Neon's branching feature.
-- `complete_database_migration`: Completes a migration process, applying changes to your main database and cleaning up temporary resources.
+<MCPTools />
 
 These actions enable any MCP client like Zed to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon's branching for safe preview and commit.
 
@@ -49282,8 +52126,8 @@ database ideas and making schema changes during development.
 
 - [MCP Protocol](https://modelcontextprotocol.org)
 - [Context Servers in Zed](https://zed.dev/docs/assistant/context-servers)
-- [Neon Docs](https://neon.tech/docs)
-- [Neon API Keys](https://neon.tech/docs/manage/api-keys#creating-api-keys)
+- [Neon Docs](/docs)
+- [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
 - [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
 
 <NeedHelp/>

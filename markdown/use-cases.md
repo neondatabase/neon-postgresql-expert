@@ -67,7 +67,7 @@ The scale is massive, and Neon is built to handle it.
 
 Neon offers dedicated interfaces that make it easy for AI agents to deploy and manage databases:
 
-**[Model Context Protocol (MCP) server](https://github.com/neondatabase-labs/mcp-server-neon):** Enables any MCP Client to interact with Neon's API using natural language. AI agents can use Neon's MCP server to automate tasks such as creating databases, running SQL queries, and managing database migrations. [Explore our MCP guides](https://neon.tech/blog?query=MCP).
+**[Model Context Protocol (MCP) server](https://github.com/neondatabase-labs/mcp-server-neon):** Enables any MCP Client to interact with Neon's API using natural language. AI agents can use Neon's MCP server to automate tasks such as creating databases, running SQL queries, and managing database migrations. [Explore our MCP guides](/blog?query=MCP).
 
 **[@neondatabase/toolkit](https://github.com/neondatabase/toolkit):** A lightweight client designed for AI agents that need to spin up Postgres databases in seconds and run SQL queries. It includes both the Neon TypeScript SDK and the Neon Serverless Driver.
 
@@ -119,7 +119,7 @@ Tracking thousands of databases requires visibility:
 - Monitor total compute uptime, CPU seconds used, and data written/transferred
 - Notify users before they hit hard limits
 
-<CTA title="Next Steps" description="Meet with our team to explore possibilities for your own project." buttonText="Book time with us" buttonUrl="https://neon.tech/contact-sales" />
+<CTA title="Next Steps" description="Meet with our team to explore possibilities for your own project." buttonText="Book time with us" buttonUrl="/contact-sales" />
 
 
 # Data Isolation at Scale
@@ -141,7 +141,7 @@ Neon makes it easy to isolate each tenant in their own Postgres database with in
 - **Instant per-customer recovery** - If there’s an issue (or a customer request), you can instantly roll back any tenant’s database without affecting the rest of your fleet.
 - **API-first management** - Provision, scale, and manage all your Neon projects programmatically—one engineer can manage thousands of tenants.
 
-Sign up [using this link](http://fyi.neon.tech/credits) to claim $100 off your first invoice, and [follow this guide](https://neon.tech/docs/use-cases/database-per-user) to get started.
+Sign up [using this link](http://fyi.neon.tech/credits) to claim $100 off your first invoice, and follow this guide to get started.
 </Admonition>
 
 ## Why database-per-user?
@@ -212,7 +212,7 @@ In RDS, you’d have to choose an instance size and disk allocation up front—a
 - **Fine-grained control** - Set compute limits, quotas, and performance policies per tenant to match their plan or use case.
 
 <Admonition type="note" title="info">
-Keep reading about how [compute autoscaling](https://neon.tech/docs/introduction/autoscaling) works in Neon.
+Keep reading about how [compute autoscaling](/docs/introduction/autoscaling) works in Neon.
 </Admonition>
 
 ### Rollback a single customer in seconds
@@ -228,7 +228,7 @@ Neon takes a completely different approach. Thanks to our copy-on-write storage 
 This is especially valuable in B2B SaaS platforms, where customers may request a rollback to a specific date due to data errors, user mistakes, or compliance requirements. With Neon, you can fulfill these requests in seconds—without escalation, without disruption, and without touching the rest of your fleet.
 
 <Admonition type="note" title="info">
-Learn more about how [instant restore](https://neon.tech/docs/introduction/branch-restore) works in Neon.
+Learn more about how [instant restore](/docs/introduction/branch-restore) works in Neon.
 </Admonition>
 
 ### API-first management
@@ -242,7 +242,7 @@ Neon was built to help you manage thousands of Postgres databases like they’re
 - **One engineer can manage thousands of tenants** - With the right automation in place, there's no need for a large DevOps team.
 
 <Admonition type="note" title="Info">
-Explore the [Neon API documentation](https://neon.tech/docs/reference/api-reference) and start building.
+Explore the [Neon API documentation](/docs/reference/api-reference) and start building.
 </Admonition>
 
 ### Data compliance and security
@@ -256,19 +256,19 @@ When you're building a multi-tenant SaaS platform—especially in regulated indu
 - **Enterprise-level security** - All Neon projects use TLS for connections, and built-in encryption is applied to data at rest and in transit.
 
 <Admonition type="note" title="Info">
-[Review our security page](https://neon.tech/security) for details on compliance, SLAs, and our full security commitments.
+[Review our security page](/security) for details on compliance, SLAs, and our full security commitments.
 </Admonition>
 
 ### Development environments
 
-To take advantage of [database branching workflows for dev/test](https://neon.tech/use-cases/dev-test) whithin a project-per-tenant design, create a **separate Neon project as your single non-prod environment**. The methodology:
+To take advantage of [database branching workflows for dev/test](/use-cases/dev-test) whithin a project-per-tenant design, create a **separate Neon project as your single non-prod environment**. The methodology:
 
 - Load your testing data to the main branch. This main branch acts as the primary source for all dev/test environments (they can be hundreds).
 - To instantly create ephemeral environments, derive child branches from the main branch. These branches are fully isolated resource-wise and already include an up-to-date copy of the testing dataset. They can then be synced with the main branch with just one click.
 - Once the work is complete, ephemeral dev/test environments (child branches) can be deleted automatically via your CI/CD.
 
 <Admonition type="note" title="Info">
-Read more about [how to do dev/test environments in Neon](https://neon.tech/use-cases/dev-test) using branches.  
+Read more about [how to do dev/test environments in Neon](/use-cases/dev-test) using branches.  
 </Admonition>
 
 <CTA title="Start building" description="Sign up today and claim $100 in credits when you upgrade." buttonText="Claim offer" buttonUrl="https://fyi.neon.tech/credits" />
@@ -293,7 +293,7 @@ Database branching is a game-changer for dev/test environments: there's no need 
   - You "move" your non-prod environments to Neon (i.e. by syncing a subset of data daily)
   - To build / test / debug in Neon
   - Once the changes are tested, you apply them back to prod
-Try this workflow in Neon right away. You can follow the steps [in this guide](https://neon.tech/docs/use-cases/dev-test) to set things up.
+Try this workflow in Neon right away. You can follow the steps [in this guide](/docs/use-cases/dev-test) to set things up.
 </Admonition>
 
 <CTA title="Get $100 in credits" description="Sign up now and get $100 in credits when you upgrade." buttonText="Claim the offer" buttonUrl="https://fyi.neon.tech/credits" />
@@ -516,7 +516,7 @@ url="/blog/how-dispatch-speeds-up-development-with-neon-while-keeping-workloads-
 ## Get Started in Two Steps
 
 - **1. Create a Neon account**. Sign up for our Free Plan [here](https://console.neon.tech/signup) (no credit card required).
-- **2. Explore our guide in docs.** [Follow these steps](https://neon.tech/docs/use-cases/dev-test) help you get started.
+- **2. Explore our guide in docs.** [Follow these steps](/docs/use-cases/dev-test) help you get started.
 
 ---
 
@@ -594,7 +594,7 @@ One Branch per PR
 Ephemeral Environments for Dev/Test
 : Deploy confidently by using branches to run your test suite on an exact copy of your production database. No handling of seed data, no manual work keeping environments in sync.
 : - [See guide in docs](/docs/use-cases/dev-test)
-: - [Read how others do it](https://neon.tech/blog/from-days-to-minutes-how-neo-tax-accelerated-their-development-lifecycle)
+: - [Read how others do it](/blog/from-days-to-minutes-how-neo-tax-accelerated-their-development-lifecycle)
 
 </DefinitionList>
 
@@ -635,7 +635,7 @@ If your SaaS project could benefit from multitenancy, Neon makes it simple to cr
 - **No pre-provisioning**: You can scale your architecture progressively, from a few tenants to thousands.
 - **Pay per usage**: You only pay for the tenants that are actively running.
 
-[Learn how to build this](/docs/use-cases/database-per-user)
+[Learn how to build this](/docs/guides/multitenancy)
 
 <Testimonial
 text="The ability to spawn databases that can scale down to zero is incredibly helpful and a model fits well with our one database per customer architecture"
@@ -691,7 +691,7 @@ Private Link, IP Allow
 
 <DefinitionList bulletType="check">
 Subscription plans
-: Paid plans start at $19, with compute and storage resources already included. [Review our pricing plans](https://neon.tech/pricing).
+: Paid plans start at $19, with compute and storage resources already included. [Review our pricing plans](/pricing).
 
 Pay via AWS/Azure Marketplace
 : You can subscribe to Neon via the marketplaces to consolidate billing. Click [here](https://aws.amazon.com/marketplace/pp/prodview-fgeh3a7yeuzh6?sr=0-1&ref_=beagle&applicationId=AWSMPContessa) for AWS, and [here](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/neon1722366567200.neon_serverless_postgres_azure_prod?tab=PlansAndPrice) for Azure.

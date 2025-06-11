@@ -1170,7 +1170,7 @@ Third, quit the psql:
 First, download the sample database using the `curl` tool:
 
 ```shell
-curl -O https://neon.tech/postgresqltutorial/dvdrental.zip
+curl -O https://neon.com/postgresqltutorial/dvdrental.zip
 ```
 
 Second, unzip the dvdrental.zip file to get the dvdrental.tar file:
@@ -1272,7 +1272,7 @@ The `SELECT` statement has the following clauses:
 - Group rows into groups using [`GROUP BY`](postgresql-group-by) clause.
 - Filter groups using [`HAVING`](postgresql-having) clause.
 - Join with other tables using [joins](postgresql-joins) such as [`INNER JOIN`](postgresql-inner-join), [`LEFT JOIN`](postgresql-left-join), [`FULL OUTER JOIN`](postgresql-full-outer-join), [`CROSS JOIN`](postgresql-cross-join) clauses.
-- Perform set operations using [`UNION`](postgresql-union), [`INTERSECT`](postgresql-intersect), and [`EXCEPT`](https://neon.tech/postgresql/postgresql-tutorial/postgresql-tutorial/postgresql-except/).
+- Perform set operations using [`UNION`](postgresql-union), [`INTERSECT`](postgresql-intersect), and [`EXCEPT`](/postgresql/postgresql-tutorial/postgresql-tutorial/postgresql-except/).
 
 In this tutorial, you are going to focus on the `SELECT`and `FROM` clauses.
 
@@ -8120,7 +8120,7 @@ The following example uses the `INSERT` statement to insert a new row into the `
 
 ```sql
 INSERT INTO links (url, name)
-VALUES('https://neon.tech/postgresql','PostgreSQL Tutorial');
+VALUES('https://neon.com/postgresql','PostgreSQL Tutorial');
 ```
 
 The statement returns the following output:
@@ -8148,7 +8148,7 @@ Output:
 ```text
  id |                url                 |        name         | description | last_update
 ----+------------------------------------+---------------------+-------------+-------------
-  1 | https://neon.tech/postgresql | PostgreSQL Tutorial | null        | null
+  1 | https://neon.com/postgresql | PostgreSQL Tutorial | null        | null
 (1 row)
 ```
 
@@ -8178,7 +8178,7 @@ Output:
 ```
  id |                url                 |        name         | description | last_update
 ----+------------------------------------+---------------------+-------------+-------------
-  1 | https://neon.tech/postgresql | PostgreSQL Tutorial | null        | null
+  1 | https://neon.com/postgresql | PostgreSQL Tutorial | null        | null
   2 | http://www.oreilly.com             | O'Reilly Media      | null        | null
 (2 rows)
 ```
@@ -8205,7 +8205,7 @@ The following statement retrieves all data from the links table to verify the in
 ```
  id |                url                 |        name         | description | last_update
 ----+------------------------------------+---------------------+-------------+-------------
-  1 | https://neon.tech/postgresql | PostgreSQL Tutorial | null        | null
+  1 | https://neon.com/postgresql | PostgreSQL Tutorial | null        | null
   2 | http://www.oreilly.com             | O'Reilly Media      | null        | null
   3 | https://www.google.com             | Google              | null        | 2013-06-01
 (3 rows)
@@ -8314,7 +8314,7 @@ CREATE TABLE contacts (
 
 ### 1\) Basic inserting multiple rows example
 
-The following statement uses the `INSERT` statement to insert three rows into the `links` table:
+The following statement uses the `INSERT` statement to insert three rows into the `contacts` table:
 
 ```sql
 INSERT INTO contacts (first_name, last_name, email)
@@ -11300,7 +11300,7 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to use the PostgreSQL `SELECT INTO` statement to create a new table from the result set of a query.
 
-If you want to select data into variables, check out the [PL/pgSQL SELECT INTO statement](https://neon.tech/postgresql/postgresql-plpgsql/pl-pgsql-select-into/).
+If you want to select data into variables, check out the [PL/pgSQL SELECT INTO statement](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/).
 
 ## Introduction to PostgreSQL SELECT INTO statement
 
@@ -11330,7 +11330,7 @@ The [`WHERE`](postgresql-where) clause allows you to specify a condition that de
 
 Besides the `WHERE` clause, you can use other clauses in the `SELECT` statement for the `SELECT INTO` statement such as [`INNER JOIN`](postgresql-inner-join), [`LEFT JOIN`](postgresql-left-join), [`GROUP BY`](postgresql-group-by), and [`HAVING`](postgresql-having).
 
-Note that you cannot use the [`SELECT INTO`](https://neon.tech/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement in PL/pgSQL because it interprets the `INTO` clause differently. In this case, you can use the [`CREATE TABLE AS`](postgresql-create-table-as) statement which provides more functionality than the `SELECT INTO` statement.
+Note that you cannot use the [`SELECT INTO`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement in PL/pgSQL because it interprets the `INTO` clause differently. In this case, you can use the [`CREATE TABLE AS`](postgresql-create-table-as) statement which provides more functionality than the `SELECT INTO` statement.
 
 ## PostgreSQL SELECT INTO examples
 
@@ -12558,7 +12558,7 @@ If you [insert the new row](postgresql-insert) into the `links` table without sp
 
 ```sql
 INSERT INTO links (link_title, url)
-VALUES('PostgreSQL Tutorial','https://neon.tech/postgresql/');
+VALUES('PostgreSQL Tutorial','https://neon.com/postgresql/');
 ```
 
 The following statement selects data from the `links` table:
@@ -12598,14 +12598,14 @@ The following statement attempts to insert the url that already exists:
 
 ```sql
 INSERT INTO links(link_title,url)
-VALUES('PostgreSQL','https://neon.tech/postgresql/');
+VALUES('PostgreSQL','https://neon.com/postgresql/');
 ```
 
 It causes an error due to the unique_url constraint:
 
 ```sql
 ERROR:  duplicate key value violates unique constraint "unique_url"
-DETAIL:  Key (url)=(https://neon.tech/postgresql/) already exists.
+DETAIL:  Key (url)=(/postgresql/) already exists.
 ```
 
 The following statement changes the name of the `links` table to `urls`:
@@ -13055,7 +13055,7 @@ DROP COLUMN column_name;
 
 When you remove a column from a table, PostgreSQL will automatically remove all of the [indexes](../postgresql-indexes) and constraints that involved the dropped column.
 
-If the column that you want to remove is used in other database objects such as [views](../postgresql-views), [triggers](../postgresql-triggers), and [stored procedures](https://neon.tech/postgresql/postgresql-stored-procedures/), you cannot drop the column because other objects depend on it.
+If the column that you want to remove is used in other database objects such as [views](../postgresql-views), [triggers](../postgresql-triggers), and [stored procedures](/postgresql/postgresql-stored-procedures/), you cannot drop the column because other objects depend on it.
 
 In this case, you can use the `CASCADE` option in the `DROP COLUMN` clause to drop the column and all of its dependent objects:
 
@@ -13459,7 +13459,7 @@ ALTER TABLE table_name
 RENAME column_name2 TO new_column_name2;
 ```
 
-If you rename a column referenced by other database objects such as [views](../postgresql-views), [foreign key constraints](postgresql-foreign-key), [triggers](../postgresql-triggers), and [stored procedures](https://neon.tech/postgresql/postgresql-stored-procedures/), PostgreSQL will automatically change the column name in the dependent objects.
+If you rename a column referenced by other database objects such as [views](../postgresql-views), [foreign key constraints](postgresql-foreign-key), [triggers](../postgresql-triggers), and [stored procedures](/postgresql/postgresql-stored-procedures/), PostgreSQL will automatically change the column name in the dependent objects.
 
 ## PostgreSQL RENAME COLUMN examples
 
@@ -18962,7 +18962,7 @@ nextLink:
 Besides built\-in [data types](postgresql-data-types), PostgreSQL allows you to create user\-defined data types through the following statements:
 
 - `CREATE DOMAIN` creates a user\-defined data type with constraints such as [`NOT NULL`](postgresql-not-null-constraint), [`CHECK`](postgresql-check-constraint), etc.
-- `CREATE TYPE` creates a composite type used in [stored procedures](https://neon.tech/postgresql/postgresql-stored-procedures/) as the data types of returned values.
+- `CREATE TYPE` creates a composite type used in [stored procedures](/postgresql/postgresql-stored-procedures/) as the data types of returned values.
 
 ## PostgreSQL CREATE DOMAIN statement
 
@@ -24575,7 +24575,7 @@ In PostgreSQL, a superuser is a special role with the highest privileges. A supe
 In other words, a superuser can bypass all security checks except the right to log in.
 
 <Admonition type="tip" title="Neon Note">
-Neon is a managed Postgres service, so you cannot access the host operating system or connect using the Postgres `superuser` account like you can in a standalone Postgres installation. Instead, Neon provides the `neon_superuser` role with elevated privileges. For more information about roles in Neon, see [Manage roles](https://neon.tech/docs/manage/roles).
+Neon is a managed Postgres service, so you cannot access the host operating system or connect using the Postgres `superuser` account like you can in a standalone Postgres installation. Instead, Neon provides the `neon_superuser` role with elevated privileges. For more information about roles in Neon, see [Manage roles](/docs/manage/roles).
 </Admonition>
 
 By default, PostgreSQL has a superuser role called `postgres`. Typically, you use the `postgres` user role for performing administrative tasks and don’t need to create additional users with the superuser privilege.
@@ -26914,7 +26914,7 @@ Second, the defining query must not contain one of the following clauses at the 
 - [WITH](../postgresql-tutorial/postgresql-cte)
 - [UNION](../postgresql-tutorial/postgresql-union)
 - [INTERSECT](../postgresql-tutorial/postgresql-intersect)
-- [EXCEPT](https://neon.tech/postgresql/postgresql-tutorial/postgresql-tutorial/postgresql-except/)
+- [EXCEPT](/postgresql/postgresql-tutorial/postgresql-tutorial/postgresql-except/)
 
 Third, the selection list of the defining query must not contain any:
 
@@ -30453,7 +30453,7 @@ nextLink:
 
 A PostgreSQL trigger is a [function](../postgresql-plpgsql/postgresql-create-function) invoked automatically whenever an event associated with a table occurs. An event could be any of the following: [INSERT](../postgresql-tutorial/postgresql-insert 'PostgreSQL INSERT'), [UPDATE](../postgresql-tutorial/postgresql-update 'PostgreSQL UPDATE'), [DELETE](../postgresql-tutorial/postgresql-delete 'PostgreSQL DELETE') or [TRUNCATE](../postgresql-tutorial/postgresql-truncate-table 'PostgreSQL TRUNCATE TABLE').
 
-A trigger is a special [user\-defined function](https://neon.tech/postgresql/postgresql-stored-procedures/) associated with a table. To create a new trigger, you define a trigger function first, and then bind this trigger function to a table.
+A trigger is a special [user\-defined function](/postgresql/postgresql-stored-procedures/) associated with a table. To create a new trigger, you define a trigger function first, and then bind this trigger function to a table.
 
 The difference between a trigger and a user\-defined function is that a trigger is automatically invoked when a triggering event occurs.
 
@@ -30517,7 +30517,7 @@ To create a new trigger in PostgreSQL, you follow these steps:
 - First, create a trigger function using [`CREATE FUNCTION`](../postgresql-plpgsql/postgresql-create-function) statement.
 - Second, bind the trigger function to a table by using `CREATE TRIGGER` statement.
 
-If you are not familiar with creating a user\-defined function, you can check out the [PL/pgSQL section](https://neon.tech/postgresql/postgresql-stored-procedures/ 'PostgreSQL Stored Procedures').
+If you are not familiar with creating a user\-defined function, you can check out the [PL/pgSQL section](/postgresql/postgresql-stored-procedures/ 'PostgreSQL Stored Procedures').
 
 ## Create trigger function syntax
 
@@ -34034,7 +34034,7 @@ The `order_by_clause` is an optional clause that specifies the order of concaten
 ORDER BY expression1 {ASC | DESC}, [...]
 ```
 
-The `STRING_AGG()` is similar to the [`ARRAY_AGG()`](https://neon.tech/postgresql/postgresql-aggregate-functions/postgresql-array_agg-function/) function except for the return type. The return value of the `STRING_AGG()` function is a string whereas the return value of the `ARRAY_AGG()` function is an [array](../postgresql-tutorial/postgresql-array).
+The `STRING_AGG()` is similar to the [`ARRAY_AGG()`](/postgresql/postgresql-aggregate-functions/postgresql-array_agg-function/) function except for the return type. The return value of the `STRING_AGG()` function is a string whereas the return value of the `ARRAY_AGG()` function is an [array](../postgresql-tutorial/postgresql-array).
 
 Like other aggregate functions such as [`AVG()`](postgresql-avg-function), [`COUNT()`](postgresql-count-function), [`MAX()`](postgresql-max-function), [`MIN()`](postgresql-min-function), and [`SUM()`](postgresql-sum-function), the `STRING_AGG()` function is often used with the [`GROUP BY`](../postgresql-tutorial/postgresql-group-by) clause.
 
@@ -46607,7 +46607,7 @@ Output:
 
 ### 2\) Using the CONCAT() function with table data example
 
-We'll use the `customer` table from the [sample database](https://neon.tech/postgresql/download/dvd-rental-sample-database/):
+We'll use the `customer` table from the [sample database](/postgresql/download/dvd-rental-sample-database/):
 
 ![customer table](/postgresqltutorial/customer.png)The following statement uses the `CONCAT()` function to concatenate values in the `first_name`, a space, and values in the `last_name` columns of the `customer` table into a single string:
 
@@ -46822,7 +46822,7 @@ The following shows the syntax of the format specifier:
 %[position][flags][width]type
 ```
 
-A format specifier starts with `%` character and include three optional components `position`, `flags`, `with` and a required component `type`.
+A format specifier starts with `%` character and include three optional components `position`, `flags`, `width` and a required component `type`.
 
 **position**
 
@@ -46919,7 +46919,7 @@ In this example, we used two format specifiers `%s %s` which are then replaced b
 
 ### 3\) Using FORMAT() function with the flags component
 
-The following statement uses the FORMAT() function with the `flags` and `with` components in the format specifier:
+The following statement uses the FORMAT() function with the `flags` and `width` components in the format specifier:
 
 ```
 SELECT FORMAT('|%10s|', 'one');
@@ -48339,9 +48339,9 @@ Output:
 ```
  id |           title           |                              url
 ----+---------------------------+---------------------------------------------------------------
-  1 | PostgreSQL Tutorial       | https://neon.tech/postgresql
-  2 | PL/pgSQL                  | https://neon.tech/postgresql/postgresql-plpgsql/
-  3 | PostgreSQL Administration+| https://neon.tech/postgresql/postgresql-administration/
+  1 | PostgreSQL Tutorial       | https://neon.com/postgresql
+  2 | PL/pgSQL                  | https://neon.com/postgresql/postgresql-plpgsql/
+  3 | PostgreSQL Administration+| https://neon.com/postgresql/postgresql-administration/
     |                           |
 (3 rows)
 ```
@@ -54120,7 +54120,7 @@ Many PHP distributions include the `PDO_PGSQL` driver that allows you to interac
 - [Querying data from a table](postgresql-php/query) – shows you various ways to query data in the PostgreSQL database from PHP.
 - [Performing transactions](postgresql-php/transaction) – explains the transaction concept and shows you how to perform transactions in PHP.
 - [Working with the binary large objects (BLOB)](postgresql-php/postgresql-blob) – shows you how to insert, select, and delete large objects in PostgreSQL using PHP.
-- [Calling PostgreSQL stored procedures](postgresql-php/call-stored-procedures) – explains to you the steps of calling [PostgreSQL stored procedures](https://neon.tech/postgresql/postgresql-stored-procedures/) from PHP.
+- [Calling PostgreSQL stored procedures](postgresql-php/call-stored-procedures) – explains to you the steps of calling [PostgreSQL stored procedures](/postgresql/postgresql-stored-procedures/) from PHP.
 - [Deleting data in a PostgreSQL table using PHP PDO](postgresql-php/delete) – teaches you how to delete data from the PostgreSQL table in the PHP application using PDO.
 
 
