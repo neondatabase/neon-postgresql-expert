@@ -401,9 +401,11 @@ The DVD rental database represents the business processes of a DVD rental store.
 - 1 domain
 - 13 sequences
 
-## DVD Rental ER Model
-
 ## PostgreSQL Sample Database Diagram
+
+The following diagram shows the structure of the DVD rental database:
+
+![DVD Rental Database ER Diagram](/postgresqltutorial/dvd-rental-sample-database-diagram.png)
 
 In the diagram, the asterisk (\*), which appears in front of the field, indicates the [primary key](../postgresql-tutorial/postgresql-primary-key).
 
@@ -2050,7 +2052,7 @@ Output:
 
 ### 1\) PostgreSQL SELECT DISTINCT one column example
 
-The following statement selects unique values from the `bcolor` column of the `t1` table and [sorts](postgresql-order-by) the result set in alphabetical order by using the [`ORDER BY`](postgresql-order-by) clause.
+The following statement selects unique values from the `bcolor` column of the `colors` table and [sorts](postgresql-order-by) the result set in alphabetical order by using the [`ORDER BY`](postgresql-order-by) clause.
 
 ```sql
 SELECT
@@ -9532,7 +9534,6 @@ RETURNING
 ## Best Practices
 
 1. **Handle Source Data Carefully**:
-
    - Validate input data before the `MERGE`
    - Use subqueries to transform or clean data
    - Consider using CTEs for complex data preparation
@@ -18962,7 +18963,7 @@ nextLink:
 Besides built\-in [data types](postgresql-data-types), PostgreSQL allows you to create user\-defined data types through the following statements:
 
 - `CREATE DOMAIN` creates a user\-defined data type with constraints such as [`NOT NULL`](postgresql-not-null-constraint), [`CHECK`](postgresql-check-constraint), etc.
-- `CREATE TYPE` creates a composite type used in [stored procedures](/postgresql/postgresql-stored-procedures/) as the data types of returned values.
+- `CREATE TYPE` creates a composite type used in [stored procedures](../postgresql-plpgsql/postgresql-create-procedure) as the data types of returned values.
 
 ## PostgreSQL CREATE DOMAIN statement
 
@@ -29989,7 +29990,7 @@ SELECT
 FROM
   posts
 WHERE
-  body @@ to_tsquery('basic | advanced');
+  to_tsvector('english', body) @@ to_tsquery('basic | advanced');
 ```
 
 Output:
@@ -32457,10 +32458,6 @@ nextLink:
   title: 'Creating a PostgreSQL Trigger with a When Condition'
   slug: 'postgresql-triggers/postgresql-trigger-when-condition'
 ---
-
-<Admonition type="note">
-Neon Postgres currently does not support event triggers. For more information, see [Event triggers](/docs/reference/compatibility#event-triggers) in our _Postgres compatibility_ guide.
-</Admonition>
 
 **Summary**: in this tutorial, you will learn about PostgreSQL event triggers and how to use the `CREATE EVENT TRIGGER` statement to define a new event trigger.
 
@@ -36086,7 +36083,7 @@ Output:
 (1 row)
 ```
 
-### 10\) Extracting hour, minute, and second from a timestamp
+### 10\) Extracting day of the week, day of the year from a timestamp
 
 To extract the day of the week and or day of the year from a time stamp, you use the `dow` and `doy` arguments:
 

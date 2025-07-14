@@ -39,7 +39,6 @@ You can use fenced code blocks with three backticks (```) on the lines before an
 - enable highlighting single lines, multiple lines, and ranges of code lines
 
   Examples:
-
   - Single line highlight
 
     ````md
@@ -1038,7 +1037,7 @@ Create a `.env` file to securely store your API credentials:
 
 ```bash
 OPENAI_API_KEY=your_openai_api_key_here
-DATABASE_URL=postgresql://user:password@ep-abc123.region.aws.neon.tech/neondb
+DATABASE_URL=postgresql://user:password@ep-abc123.region.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
 
 Now let's create an embedding service that handles OpenAI API interactions. This service will preprocess text, generate embeddings, and handle errors gracefully:
@@ -1607,7 +1606,42 @@ for (const pr of pullRequests) {
 
 When pull requests are merged or closed, the corresponding branches get cleaned up automatically on the next run.
 
-Now let's set up a project and see this in action with Neon database branches.
+## Security and Encryption with Alchemy
+
+Before we dive into building our Neon branch automation, it's crucial to understand how Alchemy handles sensitive data like API keys and connection strings.
+
+### Why Secret Management Matters
+
+When working with database infrastructure, you'll be dealing with sensitive information like:
+
+- Neon API keys
+- Database connection strings
+- Authentication credentials
+
+Without proper handling, these values would be stored as plain text in Alchemy's state files, creating a security risk.
+
+### How Alchemy Secrets Work
+
+Alchemy provides built-in encryption for sensitive data through the `alchemy.secret()` function. When you wrap a value with this function, Alchemy automatically encrypts it before storing it in state files.
+
+Here's what happens behind the scenes:
+
+- **Plain text in code**: `alchemy.secret(process.env.API_KEY)`
+- **Encrypted in state**: `{"@secret": "Tgz3e/WAscu4U1oanm5S4YXH..."}`
+
+### Encryption Password
+
+Secrets are encrypted using a password that you provide when initializing your Alchemy app. This password is used to encrypt and decrypt all secret values in your application.
+
+**Important**: Always store your encryption password securely and never commit it to source control.
+
+```typescript
+const app = await alchemy('my-app', {
+  password: process.env.ENCRYPTION_PASSWORD,
+});
+```
+
+We'll see how to implement this properly in the next section.
 
 ## Setting up your project
 
@@ -1663,14 +1697,21 @@ Create a `tsconfig.json` file that tells TypeScript how to compile our code:
 
 This configuration sets up modern TypeScript with ESM modules, which Alchemy requires. The settings ensure compatibility with Alchemy's async-native design.
 
-Finally, we need to store our Neon credentials securely. Create a `.env` file in your project root:
+Finally, we need to store our credentials securely. Create a `.env` file in your project root:
 
 ```bash
 NEON_API_KEY=your_neon_api_key_here
 NEON_PROJECT_ID=your_project_id_here
+ENCRYPTION_PASSWORD=your_strong_encryption_password_here
 ```
 
-Replace `your_neon_api_key_here` with your actual Neon API key, and `your_project_id_here` with your project ID. You can find your project ID in the Neon Console URL (it looks like `ep-cool-darkness-123456`).
+Replace the values with:
+
+- `your_neon_api_key_here`: Your actual Neon API key
+- `your_project_id_here`: Your project ID from the Neon Console
+- `your_strong_encryption_password_here`: A strong password for encrypting secrets (generate this securely)
+
+> **Security note**: The `ENCRYPTION_PASSWORD` is used by Alchemy to encrypt sensitive data like API keys and connection strings. Choose a strong, unique password and store it securely. Never commit this to source control.
 
 ## Creating a Neon Branch resource
 
@@ -1681,19 +1722,20 @@ Think of this resource as a "blueprint" that Alchemy can use to create as many N
 Create a file called `neon-branch.ts`:
 
 ```typescript
-import { Resource } from 'alchemy';
+import alchemy, { Resource } from 'alchemy';
 
 interface NeonBranchProps {
   name: string;
   projectId: string;
   parentBranchId?: string;
-  apiKey: string;
+  apiKey: ReturnType<typeof alchemy.secret>;
 }
 
-interface NeonBranchState extends NeonBranchProps {
+interface NeonBranchState extends Omit<NeonBranchProps, 'apiKey'> {
   branchId: string;
-  connectionString: string;
+  connectionString: ReturnType<typeof alchemy.secret>;
   createdAt: string;
+  apiKey: ReturnType<typeof alchemy.secret>;
 }
 
 export const NeonBranch = Resource<NeonBranchState, NeonBranchProps>(
@@ -1801,12 +1843,13 @@ export const NeonBranch = Resource<NeonBranchState, NeonBranchProps>(
     const projectResult = await projectResponse.json();
     const databaseName = 'neondb';
 
-    const connectionString = `postgres://${primaryEndpoint.host}/${databaseName}?sslmode=require&options=project%3D${projectId}`;
+    const connectionString = `postgres://${primaryEndpoint.host}/${databaseName}?sslmode=require&channel_binding=require&options=project%3D${projectId}`;
 
     return {
       ...props,
       branchId: branch.id,
-      connectionString,
+      // Encrypt the connection string
+      connectionString: alchemy.secret(connectionString),
       createdAt: branch.created_at,
     };
   }
@@ -1820,12 +1863,9 @@ Let's break down what this code does:
   - Delete phase: If you've removed a branch from your code, Alchemy calls the Neon API to delete it
   - Create/Update phase: If the branch doesn't exist, it creates it. If it already exists, it returns the current state
 - The API calls use the standard Neon REST API to create branches and get connection information. This is the same API you could call manually with curl, but now it's automated.
+- Notice how we use `ReturnType<typeof alchemy.secret>` to type sensitive values like API keys and connection strings. This ensures they're properly encrypted when stored in Alchemy's state files. When we create the connection string, we wrap it with `alchemy.secret()` to encrypt it before storage.
 
-The great thing about this approach is that you define the resource once, and then Alchemy handles all the complexity of tracking state, making API calls, and cleaning up resources.
-
-The same resource can be reused across your application, so you can create as many branches as you need without duplicating code.
-
-You can use a similar approach to create resources for other Neon features, like managing users or roles, but for this guide, we'll focus on branches.
+The great thing about this approach is that you define the resource once, and then Alchemy handles all the complexity of tracking state, making API calls, and cleaning up resources while keeping your sensitive data secure.
 
 ## Using the Neon Branch resource
 
@@ -1839,25 +1879,32 @@ import { NeonBranch } from './neon-branch.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const app = await alchemy('neon-demo');
+// Initialize Alchemy with encryption password
+const app = await alchemy('neon-demo', {
+  password: process.env.ENCRYPTION_PASSWORD!,
+});
+
+// Create secrets from environment variables
+const apiKey = alchemy.secret(process.env.NEON_API_KEY!);
 
 // Create a feature branch
 const featureBranch = await NeonBranch('feature-auth-system', {
   name: 'feature/auth-system',
   projectId: process.env.NEON_PROJECT_ID!,
-  apiKey: process.env.NEON_API_KEY!,
+  apiKey: apiKey,
 });
 
 console.log('Feature branch created!');
 console.log('Branch ID:', featureBranch.branchId);
-console.log('Connection string:', featureBranch.connectionString);
+// Note: Connection string is encrypted, so we can't log it directly
+console.log('Connection string: [encrypted]');
 
 // Create a testing branch from the feature branch
 const testingBranch = await NeonBranch('testing-auth-system', {
   name: 'test/auth-system',
   projectId: process.env.NEON_PROJECT_ID!,
   parentBranchId: featureBranch.branchId,
-  apiKey: process.env.NEON_API_KEY!,
+  apiKey: apiKey,
 });
 
 console.log('Testing branch created!');
@@ -1868,10 +1915,13 @@ await app.finalize();
 
 Here's what this script does step by step:
 
-- First, we initialize an Alchemy app with the name 'neon-demo'. This creates a local state file where Alchemy tracks what resources exist.
-- Next, we create a feature branch using our `NeonBranch` resource. The first parameter (`'feature-auth-system'`) is a unique ID that Alchemy uses to track this specific branch. The second parameter contains the branch configuration.
-- Then, we create a testing branch that branches off from our feature branch. Notice how we pass `featureBranch.branchId` as the `parentBranchId` - this creates a branch hierarchy just like you'd have with git branches.
+- First, we initialize an Alchemy app with the name 'neon-demo' and provide an encryption password. This creates a local state file where Alchemy tracks what resources exist and encrypts sensitive data.
+- Next, we create a secret from our Neon API key using `alchemy.secret()`, ensuring it's encrypted before being passed to resources.
+- Then, we create a feature branch using our `NeonBranch` resource. The first parameter (`'feature-auth-system'`) is a unique ID that Alchemy uses to track this specific branch. The second parameter contains the branch configuration.
+- We create a testing branch that branches off from our feature branch. Notice how we pass `featureBranch.branchId` as the `parentBranchId` - this creates a branch hierarchy just like you'd have with git branches.
 - Finally, we call `app.finalize()` to tell Alchemy we're done. This is when Alchemy checks if there are any resources that need to be cleaned up.
+
+The connection strings returned by our resource are encrypted secrets. In a real application, you'd decrypt them when needed using Alchemy's mechanisms.
 
 Let's run this script and see it in action. Make sure you have your Neon API key and project ID set in your environment variables, then run:
 
@@ -1884,12 +1934,12 @@ When you run this command, you should see output similar to:
 ```
 Feature branch created!
 Branch ID: br_cool_darkness_12345
-Connection string: postgres://ep-cool-darkness-12345.us-east-2.aws.neon.tech/feature/auth-system?sslmode=require
+Connection string: [encrypted]
 Testing branch created!
 Testing branch ID: br_wispy_cloud_67890
 ```
 
-If you check your Neon Console now, you'll see two new branches have appeared in your project. The connection strings shown in the output are ready to use in your applications - you can connect to these branches just like any other Postgres database.
+If you check your Neon Console now, you'll see two new branches have appeared in your project. The connection strings are stored securely in Alchemy's encrypted state, but can be used by your application when needed.
 
 ## Automating branch cleanup
 
@@ -1903,7 +1953,13 @@ import { NeonBranch } from './neon-branch.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const app = await alchemy('feature-workflow');
+// Initialize with encryption password
+const app = await alchemy('feature-workflow', {
+  password: process.env.ENCRYPTION_PASSWORD!,
+});
+
+// Create encrypted API key
+const apiKey = alchemy.secret(process.env.NEON_API_KEY!);
 
 // Simulate different features being worked on
 const activeFeatures = [
@@ -1917,7 +1973,7 @@ for (const feature of activeFeatures) {
   const branch = await NeonBranch(`feature-${feature}`, {
     name: `feature/${feature}`,
     projectId: process.env.NEON_PROJECT_ID!,
-    apiKey: process.env.NEON_API_KEY!,
+    apiKey: apiKey,
   });
 
   console.log(`Branch created for ${feature}: ${branch.branchId}`);
@@ -2002,7 +2058,7 @@ Or by manually cleaning up resources in the Neon Console and starting fresh.
 
 ## Summary
 
-You've learned how to use Alchemy to automate Neon database branching.
+You've learned how to use Alchemy to automate Neon database branching with proper security practices.
 
 The combination of Alchemy's simple TypeScript approach and Neon's branching makes database infrastructure management almost invisible. You focus on building features, and the database branches you need just exist.
 
@@ -2056,7 +2112,6 @@ Once IAM Identity Center is configured, next you will have to create your Amazon
 1. Navigate to the [Amazon Q Business Console](https://us-east-1.console.aws.amazon.com/amazonq/business/welcome) and choose "Create application". You must add, assign, and subscribe at least one user to your Amazon Q Business application environment for it to work as intended.
 
 2. Configure basic settings:
-
    - Name: Pick a unique name for your application
    - Outcome: Choose 'Web experience', this will allow you to access Q as a managed web experience
    - For Access management method select 'IAM Identity Center' or 'IAM Identity Provider' depending on your setup
@@ -2106,7 +2161,6 @@ Head to the [Amazon Q Business Console](https://us-east-1.console.aws.amazon.com
 3. Configure connection details:
 
    Under '**Source**' add the following details:
-
    - Data source name: Neon Database
    - Host: your-neon-hostname.neon.tech
    - Port: 5432
@@ -2114,7 +2168,6 @@ Head to the [Amazon Q Business Console](https://us-east-1.console.aws.amazon.com
    - Check the '**Enable SSL Certificate Location**' box but leave the '**SSL Certificate Location**' field empty
 
    Under '**Authentication**', click on the '**Create and add a secret**' button and add the following details:
-
    - Secret name: Neon Database Secret
    - Username: `your_neon_database_username`
    - Password: `your_neon_database_password`
@@ -2136,7 +2189,6 @@ Head to the [Amazon Q Business Console](https://us-east-1.console.aws.amazon.com
    ```
 
    > Note: SQL queries must be less than 32 KB in size and must only use DQL (Data Query Language) operations.
-
    - Define the required columns:
      - **Primary key column**: `id`
      - **Title column**: `name`
@@ -2145,7 +2197,6 @@ Head to the [Amazon Q Business Console](https://us-east-1.console.aws.amazon.com
    Amazon Q Business offers additional configuration options like change-detecting columns, user IDs, groups, timestamps, and more. These settings help you fine-tune how the sync process works and when data should be updated. For most use cases, the default settings will work well.
 
 5. Once you've configured the sync scope, you can set up the '**Sync Mode**' and '**Sync Schedule**'. The sync mode determines how Amazon Q Business should handle data changes, while the sync schedule defines how often the sync job should run.
-
    - **Sync Mode**: Choose between '**Full Sync**' or '**New and Modified Content Sync**'. Full Sync will reindex all data each time, while New and Modified Content Sync will only update new or modified data.
    - **Sync Schedule**: Define the sync schedule. You can choose from options like on-demand, hourly, daily, weekly, monthly, or a custom cron expression. For most applications, a daily sync schedule is sufficient to keep data up-to-date unless you have a high amount of data changes.
 
@@ -2576,13 +2627,11 @@ Download and launch [Postman](https://www.postman.com/downloads/). Create a new 
 Open Postman and create the following requests:
 
 1. `GET`: `/api/products`
-
    - **Description**: Fetches all products.
    - Set to `GET`, enter `https://localhost:5001/api/products`, and click **Send**.
    - You should receive a `200 OK` response with a list of products.
 
 2. `POST`: `/api/products`
-
    - **Description**: Creates a new product.
    - Set to `POST`, enter `https://localhost:5001/api/products`, and go to **Body** → **raw** → **JSON**.
    - Add:
@@ -2596,7 +2645,6 @@ Open Postman and create the following requests:
    - Click **Send**. Expect a `201 Created` response.
 
 3. `PUT`: `/api/products/{id}`
-
    - **Description**: Updates a product.
    - Set to `PUT`, enter `https://localhost:5001/api/products/1`.
    - Add:
@@ -3106,7 +3154,6 @@ public class SecureController : ControllerBase
 With the above, we created a new controller called `SecureController` with two endpoints:
 
 1. General Protected Endpoint:
-
    - The `/api/secure` route is protected with `[Authorize]`, allowing access only to authenticated users with a valid JWT token.
    - If access is granted, it returns a confirmation message.
 
@@ -3364,7 +3411,6 @@ Let's quickly walk through setting up Auth0 with ASP.NET Core for secure authent
 To get started, follow these high-level steps:
 
 1. Start by creating an Auth0 API:
-
    - Log in to your [Auth0 Dashboard](https://manage.auth0.com/).
    - Navigate to the "APIs" section and click **Create API**.
    - Provide a name and a unique identifier for your API (e.g., `https://your-app.com/api`). Keep the default signing algorithm as `RS256`.
@@ -3483,7 +3529,6 @@ Before you begin, make sure you have the following prerequisites:
 - **Python 3.10 or higher:** This guide requires Python 3.10 or a later version. If you don't have it installed, download it from [python.org](https://www.python.org/downloads/).
 
 - **Neon account and API key:**
-
   - Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup).
   - After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon.
 
@@ -3508,7 +3553,6 @@ AutoGen is a framework designed to simplify the development of applications usin
 ### Key components of AutoGen
 
 - **Agents:** The foundational building blocks in AutoGen. Agents are autonomous entities that can:
-
   - **Receive and process messages:** Accept and understand messages from users or other agents.
   - **Act autonomously:** Perform tasks, utilize tools, or generate responses based on their programmed logic and received messages.
   - **Agent types:** AutoGen offers various agent types, including:
@@ -3517,12 +3561,10 @@ AutoGen is a framework designed to simplify the development of applications usin
     - **`UserProxyAgent`:** An agent that serves as an interface for human users. It can relay communications between the user and other agents and can be configured to request human input at specific workflow stages.
 
 - **Teams (Group chat):** AutoGen facilitates forming agent teams to tackle complex problems collaboratively. Key team configurations include:
-
   - **`RoundRobinGroupChat`:** A straightforward team setup where agents communicate in turns, following a round-robin approach to ensure balanced contribution from each member.
   - **`SelectorGroupChat`:** A more sophisticated team configuration enabling advanced agent selection mechanisms, including LLM-driven speaker selection for dynamic conversation flow.
 
 - **Tools:** AutoGen agents can leverage tools to interact with external environments or perform specialized functions. Tools can be:
-
   - **Python functions:** Custom Python functions that agents can call to execute specific actions or computations.
   - **External APIs:** Integrations with external services, allowing agents to access a wide range of functionalities like web searching.
 
@@ -4060,7 +4102,7 @@ Open the [new Neon Resource page](https://portal.azure.com/#view/Azure_Marketpl
 6. Once the project is created successfully, copy the Neon connection string and note it down. You can find the connection details in the Connection Details widget on the Neon Dashboard.
 
 ```bash
-    postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+    postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require
 ```
 
 ## Create an AI Foundry Project on Azure
@@ -4704,7 +4746,7 @@ Create a `.env` file in your project root with the following configuration:
 
 ```env
 # Database Configuration
-DATABASE_URL='postgresql://neondb_owner:<your_password>@<your_host>.eastus2.azure.neon.tech/neondb?sslmode=require'
+DATABASE_URL='postgresql://neondb_owner:<your_password>@<your_host>.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require'
 
 # Azure OpenAI Configuration
 AZURE_OPENAI_ENDPOINT=https://<your-resource-name>.openai.azure.com
@@ -6201,7 +6243,6 @@ If you haven't already, create an Azure account and enable Azure AI Search. Also
    Alternatively, you can create the search service using the [Azure Portal](https://learn.microsoft.com/en-us/azure/search/search-create-service-portal).
 
 1. To get your service endpoint, you can the Azure portal and [find your search service](https://portal.azure.com/#view/Microsoft_Azure_ProjectOxford/CognitiveServicesHub/%7E/CognitiveSearch).
-
    - Under the Overview section, copy the URL and save it for a later step.
    - Also grab the API key of your Azure AI Search service from the Azure Portal. In the 'Settings' > 'Keys' section, copy and save an admin key for full rights to create and delete objects. There are two interchangeable primary and secondary keys. Choose either one.
 
@@ -7359,7 +7400,7 @@ I'll paste that connection string into a new setting inside of the `local.settin
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
-    "DATABASE_URL": "postgresql://recipes_owner:secret_password@jchadwick-pooler.eastus2.azure.neon.tech/recipes?sslmode=require",
+    "DATABASE_URL": "postgresql://recipes_owner:secret_password@jchadwick-pooler.eastus2.azure.neon.tech/recipes?sslmode=require&channel_binding=require",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true"
   }
 }
@@ -7637,7 +7678,7 @@ Define an environment variable in the Azure Function App settings to store the d
 > az functionapp config appsettings set \
     --name recipes-api-2000 \
     --resource-group recipes-api-rg \
-    --settings DATABASE_URL="postgresql://recipes_owner:9WAzoqh2NvYm@ep-black-bush-a8jqxdjf-pooler.eastus2.azure.neon.tech/recipes?sslmode=require"
+    --settings DATABASE_URL="postgresql://recipes_owner:9WAzoqh2NvYm@ep-black-bush-a8jqxdjf-pooler.eastus2.azure.neon.tech/recipes?sslmode=require&channel_binding=require"
 ```
 
 Now when I hit the `/api/recipes` endpoint, I see the repsonse that I expect:
@@ -7788,7 +7829,6 @@ To start building serverless applications with Azure Functions you need to set u
 If you don't have the required tools installed, you can follow these steps to set up your development environment:
 
 1. Install the **Azure Functions** extension for VS Code (if you haven't already):
-
    - Open VS Code
    - Click the Extensions icon or press `Ctrl+Shift+X` or `Cmd+Shift+X`
    - Search for "Azure Functions"
@@ -7825,12 +7865,10 @@ With the required Azure tools installed, you're ready to create your first Azure
    ```
 
    When prompted, select:
-
    - Node.js as the runtime
    - JavaScript as the language
 
    This might take a few moments to complete, and it creates a basic project structure with the following files:
-
    - `host.json`: Contains global configuration options
    - `local.settings.json`: Stores app settings and connection strings for local development
    - `package.json`: Manages project dependencies
@@ -7842,7 +7880,6 @@ With the required Azure tools installed, you're ready to create your first Azure
    ```
 
    We're using:
-
    - `pg` for Postgres connection to Neon
    - `uuid` for generating unique referral codes
    - `dotenv` for environment variables management
@@ -8368,11 +8405,10 @@ After creating the Function App, you need to configure it to connect to your Neo
    az functionapp config appsettings set \
      --name referral-system \
      --resource-group referral-system \
-     --settings NEON_CONNECTION_STRING="postgres://user:password@ep-xyz.region.azure.neon.tech/neondb?sslmode=require"
+     --settings NEON_CONNECTION_STRING="postgres://user:password@ep-xyz.region.azure.neon.tech/neondb?sslmode=require&channel_binding=require"
    ```
 
 2. Alternative: Configure settings in the Azure Portal:
-
    - Go to your **Function App** in the Azure Portal.
    - Select **Configuration** under the **Settings** section.
    - Add a new application setting:
@@ -8757,7 +8793,6 @@ Follow these steps to create a service connection from your Azure compute servic
 
 3.  **Start connection creation:** Click the **+ Create** button on the Service Connector page.
 4.  **Configure basics:**
-
     - **Service type:** Search for and select `Neon Serverless Postgres`.
 
       ![Select Neon service type](/docs/guides/azure-service-connector/service-type-selection.png)
@@ -8769,10 +8804,8 @@ Follow these steps to create a service connection from your Azure compute servic
     - Click **Next: Authentication**.
 
 5.  **Configure authentication:**
-
     - The **Connection string** option will be pre-selected, as it's the only supported method for Neon.
     - You now need to provide your Neon **Username** and **Password**. Service Connector offers two ways to handle the _password_:
-
       1.  **Database credentials:**
 
           You can use database credentials for the first time connection to create a new Key Vault secret. For applications that already have a Key Vault secret, you can use the Key Vault option to reference the existing secret.
@@ -8810,7 +8843,6 @@ Follow these steps to create a service connection from your Azure compute servic
     - Click **Next: Networking**.
 
 6.  **Configure networking:**
-
     - For Neon connections via Service Connector in the portal, you can **skip** this step. Network access controls (like IP allow lists) are managed directly within your Neon project settings, not through Service Connector's network configuration options (Firewall, Service Endpoint, Private Endpoint) which apply primarily to Azure target services.
     - Refer to Neon's [IP Allow](/docs/introduction/ip-allow) documentation to configure network access if needed.
     - Click **Next: Review + Create**.
@@ -8876,7 +8908,7 @@ Adapt the code to fetch and use the environment variables according to your appl
 | .NET                    | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Standard Npgsql format. (eg, `Server=ep-still-mud-a12aa123.eastus2.azure.neon.tech;Database=<database-name>;Port=5432;Ssl Mode=Require;User Id=<username>`). |
 | Java (JDBC)             | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | `jdbc:postgresql://...` format.                                                                                                                              |
 | Java (Spring Boot JDBC) | Application Properties          | `spring.datasource.url`, `...username`, `...password`                                                                                                 | Service Connector sets corresponding env vars that Spring Boot picks up.                                                                                     |
-| Python (psycopg2)       | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Key-value format `dbname=... host=... user=... password=... port=... sslmode=require`                                                                        |
+| Python (psycopg2)       | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Key-value format `dbname=... host=... user=... password=... port=... sslmode=require&channel_binding=require`                                                |
 | Go (pg)                 | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Similar key-value format as Python.                                                                                                                          |
 | Node.js (pg)            | Env Vars: Individual Components | `NEON_POSTGRESQL_HOST`, `NEON_POSTGRESQL_USER`, `NEON_POSTGRESQL_PASSWORD`, `NEON_POSTGRESQL_DATABASE`, `NEON_POSTGRESQL_PORT`, `NEON_POSTGRESQL_SSL` | Construct connection object/string from parts.                                                                                                               |
 | PHP                     | Env var: connection string      | `NEON_POSTGRESQL_CONNECTIONSTRING`                                                                                                                    | Key-value format.                                                                                                                                            |
@@ -8945,7 +8977,6 @@ To begin building your Azure Static Web App with Neon Postgres, you'll need to s
 ### Installing required tools
 
 1. Install the **Azure Static Web Apps** and **Azure Functions** extensions for Visual Studio Code:
-
    - Open VS Code.
    - Click the Extensions icon or press `Ctrl+Shift+X` or `Cmd+Shift+X`.
    - Search for "Azure Static Web Apps" and "Azure Functions" extensions.
@@ -9276,21 +9307,18 @@ Let's break down the key functions and features of the todo app:
 Core Functions:
 
 1. `loadTodos()`
-
    - Fetches existing todos from the Azure Functions API endpoint via `GET` request
    - Handles loading states and error conditions
    - Automatically called when the DOM loads
    - Updates the UI with current todo items
 
 2. `addTodo()`
-
    - Creates new todo items via `POST` request to the API
    - Validates input to prevent empty submissions
    - Updates local state and UI after successful creation
    - Includes error handling with user feedback
 
 3. `toggleTodo(id)`
-
    - Updates todo completion status via `PUT` request
    - Includes error handling and state updates
 
@@ -9308,12 +9336,10 @@ UI Management:
 Utility Functions:
 
 1. `showLoading()`
-
    - Displays loading indicator during API operations.
    - Provides visual feedback for better user experience.
 
 2. `hideLoading()`
-
    - Removes loading indicator after operations complete.
    - Prepares UI for content display.
 
@@ -9532,24 +9558,19 @@ Core Components:
    ```
 
    Supported operations:
-
    1. `GET`: Retrieves all todos
-
       - Automatically creates table on first request.
       - Returns array of todo items.
 
    2. `POST`: Creates new todo
-
       - Requires: `text` field.
       - Returns: newly created todo.
 
    3. `PUT`: Updates todo completion status
-
       - Requires: `id` and `completed` status.
       - Returns: updated todo or `404` if not found.
 
    4. `DELETE`: Removes a todo
-
       - Requires: todo `id`.
       - Returns: success message or `404` if not found.
 
@@ -9569,7 +9590,7 @@ Start by configuring the `local.settings.json` in your `api` directory with your
 {
   "Values": {
     ...
-    "DATABASE_URL": "postgresql://neondb_owner:<your_password>@<your_host>.neon.tech/neondb?sslmode=require"
+    "DATABASE_URL": "postgresql://neondb_owner:<your_password>@<your_host>.neon.tech/neondb?sslmode=require&channel_binding=require"
   }
 }
 ```
@@ -9832,7 +9853,7 @@ You will then be presented with a dialog that provides a connection string of yo
 All Neon connection strings have the following format:
 
 ```bash
-postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require
 ```
 
 - `user` is the database user.
@@ -9840,7 +9861,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmo
 - `endpoint_hostname` is the host with `neon.tech` as the [top-level domain (TLD)](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `port` is the Neon port number. The default port number is 5432.
 - `dbname` is the name of the database. `neondb` is the default database created with a Neon project if you do not define your own database.
-- `?sslmode=require` an optional query parameter that enforces [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode for better security when connecting to the Postgres instance.
+- `?sslmode=require&channel_binding=require` optional query parameters that enforce [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding for better security when connecting to the Postgres instance.
 
 Save the connection string somewhere safe. It will be used to set the **POSTGRES_URL** variable later.
 
@@ -9978,7 +9999,7 @@ Create an `.env` file in the root directory of your project with the following e
 ```bash
 # Neon Postgres Pooled Connection URL
 
-POSTGRES_URL="postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
+POSTGRES_URL="postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require&channel_binding=require"
 ```
 
 The file, `.env`, should be kept secret and not included in your Git history. Ensure that `.env` is added to the `.gitignore` file in your project.
@@ -10711,6 +10732,14 @@ Imagine adjusting your database schema simply by describing the change in plain 
 
 This guide demonstrates how to use [Cline](https://docs.cline.bot/mcp-servers/mcp) and Neon's MCP server to perform database migrations in your Neon project.
 
+<Admonition type="important" title="Neon MCP Server Security Considerations">
+The Neon MCP Server grants powerful database management capabilities through natural language requests. **Always review and authorize actions requested by the LLM before execution.** Ensure that only authorized users and applications have access to the Neon MCP Server.
+
+The Neon MCP Server is intended for local development and IDE integrations only. **We do not recommend using the Neon MCP Server in production environments.** It can execute powerful operations that may lead to accidental or unauthorized changes.
+
+For more information, see [MCP security guidance →](/docs/ai/neon-mcp-server#mcp-security-guidance).
+</Admonition>
+
 ## Key components
 
 Let's break down the key components in this setup:
@@ -10761,7 +10790,7 @@ This method uses Neon's managed server and OAuth authentication.
      "mcpServers": {
        "Neon": {
          "command": "npx",
-         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
        }
      }
    }
@@ -10988,12 +11017,10 @@ Before you start, make sure you have the following prerequisites in place:
 - **Python 3.7 or higher:** This guide uses Python. If you don't have it already, download and install it from [python.org](https://www.python.org/downloads/).
 
 - **Neon account and API Key:**
-
   - Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup).
   - Once signed up, you can find your Neon API Key [here](https://console.neon.tech/app/settings/profile). You'll need this key to authenticate your application with Neon.
 
 - **Composio account and API Key:**
-
   - Create a Composio account by visiting [composio.dev](https://composio.dev/).
   - After signing up and logging in, your Composio API key will be available in your [Composio dashboard](https://app.composio.dev/dashboard). You will need this to authenticate your application.
 
@@ -12829,19 +12856,16 @@ You can test the moderation system with this command:
 Let's walk through how the content moderation system works in practice:
 
 1. Content Submission:
-
    - A user submits content through the `ContentSubmission` component
    - The content is saved to the database with status "pending"
    - The `ModerationService` immediately sends the content to OpenAI's moderation API
 
 2. AI Moderation:
-
    - OpenAI analyzes the content and returns categories, scores, and a flagged status
    - The `ModerationService` saves these results to the `ModerationResult` table in our Neon Postgres database
    - Based on settings, content may be auto-approved or auto-rejected
 
 3. Manual Review:
-
    - Content that isn't auto-approved or auto-rejected stays in the "pending" state
    - Moderators use the `ModerationQueue` component to review pending content
    - They can see which categories were flagged and why
@@ -12942,7 +12966,6 @@ Now, you'll set up the self-hosted Convex backend using Docker Compose, configur
     This command uses [`npx degit`](https://www.npmjs.com/package/degit) to fetch the `docker-compose.yml` file from the [Convex GitHub repository](https://github.com/get-convex/convex-backend/blob/main/self-hosted/docker/docker-compose.yml).
 
 3.  **Set up Neon connection string:** Add your Neon connection string you copied earlier to a `.env` file to configure Convex.
-
     1.  Create a `.env` file in the same directory as `docker-compose.yml`.
     1.  Add this line:
         ```env
@@ -12959,7 +12982,7 @@ Now, you'll set up the self-hosted Convex backend using Docker Compose, configur
         **Neon default:**
 
         ```bash
-        postgresql://neondb_owner:password@ep-xxxxx.aws.neon.tech/convex_self_hosted?sslmode=require
+        postgresql://neondb_owner:password@ep-xxxxx.aws.neon.tech/convex_self_hosted?sslmode=require&channel_binding=require
         ```
 
         **For Convex:**
@@ -12983,7 +13006,6 @@ Now, you'll set up the self-hosted Convex backend using Docker Compose, configur
     ![Convex Dashboard](/docs/guides/convex-dashboard.png)
 
     **Login to the Convex Dashboard:**
-
     - When you access the dashboard for the first time, you will be prompted to log in.
     - For the password, you will use the `CONVEX_SELF_HOSTED_ADMIN_KEY` generated in the next step.
 
@@ -13389,14 +13411,12 @@ Create.xyz instantly switches your app back to that earlier state.
 To make the most of Create and build apps efficiently, consider the following tips:
 
 - **Prompting Best Practices**:
-
   - **Context is key**: Start prompts with clear context. For example describe the app's purpose and main features. For example say, "I want to add a new feature to allow users to download images."
   - **Iterate in small steps**: Break down complex changes. For a whole new page, start by describing the header, then the body, then the footer in separate prompts. This gives you more control.
   - **Show, Don't just tell**: Use images! Paste screenshots or drag and drop images into the chat to show Create exactly what you want the style or layout to be wherever possible.
   - **Pinpoint errors**: Be specific when things go wrong. Instead of saying "it's broken", paste error messages or describe exactly what you expected to happen vs. what did happen.
 
 - **Leverage Create's integrations**:
-
   - **Explore the Integration library**: Create has many integrations ready to use. Type `/` in the chat to see them. Integrations include AI models, UI libraries, and services like Stripe.
   - **Choose the right AI model**: Experiment with different AI models for different tasks. For example, use Stable Diffusion for image generation, OpenAI/Claude for text generation etc.
 
@@ -13426,6 +13446,14 @@ Imagine adjusting your database schema simply by describing the change in plain 
 
 This guide demonstrates how to use [Cursor's Composer](https://docs.cursor.com/composer) and Neon's MCP server to perform database migrations in your Neon project.
 
+<Admonition type="important" title="Neon MCP Server Security Considerations">
+The Neon MCP Server grants powerful database management capabilities through natural language requests. **Always review and authorize actions requested by the LLM before execution.** Ensure that only authorized users and applications have access to the Neon MCP Server.
+
+The Neon MCP Server is intended for local development and IDE integrations only. **We do not recommend using the Neon MCP Server in production environments.** It can execute powerful operations that may lead to accidental or unauthorized changes.
+
+For more information, see [MCP security guidance →](/docs/ai/neon-mcp-server#mcp-security-guidance).
+</Admonition>
+
 ## Key components
 
 Let's break down the key components in this setup:
@@ -13452,13 +13480,21 @@ Before you begin, ensure you have the following:
 2. **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
 3. **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](/docs/manage/api-keys).
 
-   <Admonition type="warning" title="Neon API Key Security">
+   <Admonition type="important" title="Neon API Key Security">
    Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
    </Admonition>
 
 4. **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
 
 ### Option 1: Setting up the Remote Hosted Neon MCP Server
+
+#### Quick Install (Recommended)
+
+Click the button below to install the Neon MCP server in Cursor. When prompted, click **Install** within Cursor.
+
+<a href="cursor://anysphere.cursor-deeplink/mcp/install?name=Neon&config=eyJ1cmwiOiJodHRwczovL21jcC5uZW9uLnRlY2gvc3NlIn0%3D"><img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add Neon MCP server to Cursor" height="32" /></a>
+
+#### Manual Setup
 
 This method uses Neon's managed server and OAuth authentication.
 
@@ -13472,7 +13508,7 @@ This method uses Neon's managed server and OAuth authentication.
      "mcpServers": {
        "Neon": {
          "command": "npx",
-         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
        }
      }
    }
@@ -13774,7 +13810,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>
 - `endpoint_hostname` is the host with neon.tech as the [TLD](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `port` is the Neon port number. The default port number is 5432.
 - `dbname` is the name of the database. “neondb” is the default database created with each Neon project.
-- `?sslmode=require` is an optional query parameter that enforces the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode while connecting to the Postgres instance for better security.
+- `?sslmode=require&channel_binding=require` is an optional query parameter that enforces the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode while connecting to the Postgres instance for better security.
 
 You will be using these connection string components in the following steps to connect DBeaver to your Postgres database.
 
@@ -13783,14 +13819,12 @@ You will be using these connection string components in the following steps to c
 1. **Open DBeaver**: Ensure DBeaver is running. You will see the main dashboard.
 
 2. **Create a New Database Connection**:
-
    - Click on the "New Database Connection" button (usually a plug icon or from the "Database" menu).
    - In the "Connect to Database" wizard, select "PostgreSQL" from the list of database types and click "Next".
 
 3. **Enter Connection Details**:
 
    ![](/guides/images/dbeaver/conn-1.png)
-
    - Fill in the required fields based on your Neon connection string:
      - **Host**: The endpoint of your hosted Postgres database (e.g., `ep-...us-east-2.aws.neon.tech`).
      - **Port**: The port number (default is `5432`).
@@ -13800,11 +13834,9 @@ You will be using these connection string components in the following steps to c
    - Enable "Show all databases" to ensure all databases in your Neon project are listed.
 
    ![](/guides/images/dbeaver/conn-2.png)
-
    - Click "Edit Driver Settings" if needed to ensure SSL is enabled. Under the "Driver Properties" tab, set `sslmode` to `require`.
 
 4. **Test the Connection**:
-
    - Click the "Test Connection" button to verify the connection details.
    - If successful, click "Finish" to save the connection. Your new database connection will appear in the left sidebar.
 
@@ -13890,7 +13922,7 @@ services:
       ADMIN_EMAIL: 'admin@example.com'
       ADMIN_PASSWORD: 'd1r3ctu5'
       DB_CLIENT: 'pg'
-      DB_CONNECTION_STRING: 'postgresql://neondb_owner:...@ep-...us-east-1.aws.neon.tech/neondb?sslmode=require'
+      DB_CONNECTION_STRING: 'postgresql://neondb_owner:...@ep-...us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require'
       DB_SSL__REJECT_UNAUTHORIZED: 'true'
       WEBSOCKETS_ENABLED: 'true'
       CORS_ENABLED: 'true'
@@ -14356,25 +14388,21 @@ class ModelBenchmarkSerializer(serializers.ModelSerializer):
 Let's break down each serializer to better understand their purpose:
 
 1. `ModelAuthorSerializer`:
-
    - This serializer is used for the `ModelAuthor` model, it basically represents the author details.
    - It includes all fields of the model (`id`, `name`, `bio`, `contact_info`, `rating`).
    - By using `ModelSerializer`, we automatically get create and update functionality that matches the model fields.
 
 2. `AIModelSerializer`:
-
    - This serializer is more complex due to its relationship with `ModelAuthor`.
    - We include a nested `author` field using `ModelAuthorSerializer(read_only=True)`. This means when serializing an `AIModel`, it will include all the author's details, but this field can't be used for writing (creating or updating).
    - We also include an `author_id` field, which is write-only. This allows clients to specify an author when creating or updating an `AIModel` by just providing the author's ID.
    - The `source='author'` in the `author_id` field tells DRF to use this field to set the `author` attribute of the `AIModel`.
 
 3. `ModelPurchaseSerializer`:
-
    - This serializer includes all fields from the `ModelPurchase` model.
    - It will handle the serialization of purchase records, including details like the user, the AI model purchased, purchase date, and license information.
 
 4. `UsageScenarioSerializer`:
-
    - This serializer corresponds to the `UsageScenario` model.
    - It includes all fields, allowing for the representation of different use cases or scenarios for AI models.
 
@@ -14846,7 +14874,7 @@ In this guide, we'll walk through setting up a Neon database with a .NET applica
 Your connection string will look similar to this:
 
 ```shell
-postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require
 ```
 
 ## Creating a .NET Project with Neon Integration
@@ -14860,7 +14888,6 @@ With your Neon database set up, let's create a sample inventory management syste
    ```
 
    This command creates a new Web API project with a basic structure including:
-
    - `Program.cs`: The entry point of your application
    - `appsettings.json`: Configuration files
    - `Properties/launchSettings.json`: Debug and launch configuration
@@ -14880,7 +14907,6 @@ With your Neon database set up, let's create a sample inventory management syste
    ```
 
    These packages provide us with the following:
-
    - `Npgsql.EntityFrameworkCore.PostgreSQL`: The Postgres database provider for Entity Framework Core
    - `Microsoft.EntityFrameworkCore.Tools`: Command-line tools for migrations
    - `Microsoft.EntityFrameworkCore.Design`: Design-time tools for EF Core
@@ -14929,7 +14955,6 @@ With your Neon database set up, let's create a sample inventory management syste
    ```
 
    Our `Product` model includes the following:
-
    - Data annotations for validation
    - A unique identifier (`Id`)
    - Basic product information fields
@@ -14991,7 +15016,6 @@ With your Neon database set up, let's create a sample inventory management syste
    ```
 
    The `DbContext` includes:
-
    - Entity configuration using Fluent API
    - Precision settings for decimal values
    - Default value configurations
@@ -15393,7 +15417,7 @@ First, let's create a Neon database that we'll connect to from our .NET applicat
 3. Once created, you'll see your connection details. Your connection string will look like this:
 
 ```
-postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require
 ```
 
 Save these details - you'll need them when setting up your .NET application.
@@ -15463,7 +15487,7 @@ There are two levels of connection pooling available when working with Neon: [Ne
 Neon uses PgBouncer to provide connection pooling at the infrastructure level, supporting up to 10,000 concurrent connections. To use Neon's pooled connections, select the "Pooled connection" option in your project's connection settings. Your connection string will look like this:
 
 ```
-postgres://[user]:[password]@[pooled-hostname].pool.[region].neon.tech/[dbname]?sslmode=require
+postgres://[user]:[password]@[pooled-hostname].pool.[region].neon.tech/[dbname]?sslmode=require&channel_binding=require
 ```
 
 However, using a pooled connection string for database migrations can be prone to errors. For this reason, it is recommended to use a direct (non-pooled) connection when performing database migrations. For more information about direct and pooled connections, see [Connection pooling](/docs/connect/connection-pooling).
@@ -15822,7 +15846,7 @@ Use the connection string (`postgres://postgres:postgres@localhost:5432/postgres
 To set up Neon serverless Postgres, go to the [Neon console](https://console.neon.tech/app/projects) and create a new project. Once your project is created, you will receive a connection string that you can use to connect to your Neon database. The connection string will look like this:
 
 ```bash
-postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require
 ```
 
 Replace `<user>`, `<password>`, `<endpoint_hostname>`, `<port>`, and `<dbname>` with your specific details.
@@ -15950,7 +15974,6 @@ ElectricSQL requires a Postgres database with logical replication enabled. You'l
 
 1.  **Create a Neon Project:** If you haven't already, create a new Neon project. You can use the Neon Console or [pg.new](https://pg.new).
 2.  **Enable Logical Replication:** ElectricSQL uses Postgres logical replication (`wal_level = logical`) to receive changes from your database.
-
     - Navigate to your Neon Project in the [Neon Console](https://console.neon.tech/).
     - Open the **Settings** menu.
     - Click on **Logical Replication**.
@@ -15959,7 +15982,6 @@ ElectricSQL requires a Postgres database with logical replication enabled. You'l
       ![Neon dashboard settings with option to enable logical replication](/docs/guides/neon-console-settings-logical-replication.png)
 
 3.  **Retrieve connection string:**
-
     - Navigate to the **Dashboard** of your Neon project.
     - Click on the **Connect** button which opens a modal.
     - Select your database and branch, and copy the connection string with connection pooling disabled.
@@ -16110,7 +16132,6 @@ Your React application should now be running in your browser. It's actively conn
     ```
 
 2.  **Test real-time updates:**
-
     - Open the Neon SQL Editor or use `psql` to connect to your Neon database.
     - Insert a new row into the `scores` table:
 
@@ -16131,7 +16152,6 @@ Your React application should now be running in your browser. It's actively conn
 
 3.  **Understanding writes:**
     ElectricSQL handles the read-path synchronization (data from Postgres to client). To write data back to your Neon database (e.g., from user input in the React app), you would typically:
-
     - Implement an API endpoint in your backend application.
     - This API endpoint would receive write requests from your React app.
     - The API endpoint then performs these operations directly on your Neon Postgres database.
@@ -16187,7 +16207,6 @@ The read path (data syncing from Neon to your client via ElectricSQL) needs to b
     ```
 
 2.  **Authorization proxy:**
-
     - **Authentication:** The proxy validates the `Authorization` header (or other credentials) sent by the client. If authentication fails, it returns a `401 Unauthorized` or `403 Forbidden` error.
     - **Authorization & Dynamic Shape modification:** Upon successful authentication, the proxy determines the user's identity and permissions. It then _modifies_ the incoming shape request before forwarding it to Electric. This can be done by adding or augmenting `WHERE` clauses to the shape's `params`.
       For example, a user should only see projects belonging to their organization, the proxy would:
@@ -16279,11 +16298,10 @@ Follow these steps to set up your project and virtual environment:
     Next, add all the necessary dependencies for your project:
 
     ```bash
-    uv add python-dotenv asyncpg loguru fastapi uvicorn requests
+    uv add python-dotenv asyncpg loguru fastapi uvicorn
     ```
 
     Where each package does the following :
-
     - `FastAPI` : A Web / API framework
     - `AsyncPG` : An asynchronous PostgreSQL client
     - `Uvicorn` : An ASGI server for our app
@@ -16318,7 +16336,7 @@ In this section, you will set up the connection pool, ensure your database schem
 First, create a `.env` file in the root of your project to store the database connection URL. This file will hold environment-specific variables, such as the connection string to your Neon PostgreSQL database.
 
 ```bash
-DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
 
 Make sure to replace the placeholders (user, password, your-neon-hostname, etc.) with your actual Neon database credentials which are available in the console.
@@ -17115,36 +17133,30 @@ This signature is then Base64Url encoded to form the third part of the JWT.
 The overall process of using JWTs for authentication and authorization typically involves the following steps:
 
 1. **User Authentication**:
-
    - The process begins when a user logs in with their credentials (e.g., username and password).
    - The server verifies these credentials against the stored user information.
 
 2. **JWT Creation**:
-
    - Upon successful authentication, the server creates a JWT.
    - It generates the header and payload, encoding the necessary information.
    - Using a secret key (kept secure on the server), it creates the signature.
    - The three parts (header, payload, signature) are combined to form the complete JWT.
 
 3. **Sending the Token**:
-
    - The server sends this token back to the client in the response.
    - The client stores this token, often in local storage or a secure cookie.
 
 4. **Subsequent Requests**:
-
    - For any subsequent requests to protected routes or resources, the client includes this token in the Authorization header.
    - The format is: `Authorization: Bearer <token>`
 
 5. **Server-side Token Validation**:
-
    - When the server receives a request with a JWT, it first splits the token into its three parts.
    - It base64 decodes the header and payload.
    - The server then recreates the signature using the header, payload, and its secret key.
    - If this newly created signature matches the signature in the token, the server knows the token is valid and hasn't been tampered with.
 
 6. **Accessing Protected Resources**:
-
    - If the token is valid, the server can use the information in the payload without needing to query the database.
    - This allows the server to authenticate the user and know their permissions for each request without needing to store session data.
 
@@ -17210,7 +17222,7 @@ Next, let's set up a connection to Neon Postgres for storing user data.
 Create a `.env` file in your project root and add the following configuration:
 
 ```env
-DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/dbname?sslmode=require
+DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/dbname?sslmode=require&channel_binding=require
 ```
 
 Replace the placeholders with your actual Neon database credentials.
@@ -17584,7 +17596,6 @@ Let's start by creating a new project directory and setting up a virtual environ
    Creating a virtual environment isolates your project dependencies from other Python installations on your system.
 
 3. Activate the virtual environment:
-
    - On Windows:
      ```bash
      venv\Scripts\activate
@@ -17626,7 +17637,7 @@ This will create a `requirements.txt` file with all the installed packages in yo
 First, let's set up our database connection. Create a `.env` file in your project root:
 
 ```env
-DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
 
 Replace the placeholders with your actual Neon database credentials.
@@ -18028,7 +18039,7 @@ touch .env
 5. Set up the environment variables by adding the following to the `.env` file:
 
 ```
-DATABASE_URL=postgres://[user]:[password]@[hostname]/[database]?sslmode=require
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[database]?sslmode=require&channel_binding=require
 WEBHOOK_SECRET=your_webhook_secret  # We'll use this later for verification
 ```
 
@@ -18367,7 +18378,6 @@ ngrok http 8000
 ngrok will provide you with a public URL (e.g., `https://abc123.ngrok.io`) that forwards to your local server. For testing, you can use this URL as the webhook endpoint. For production, you would want to deploy your FastAPI application to a server with a public IP address and domain along with an SSL certificate.
 
 3. If you don't have a GitHub repository to test with, create a new repository or use an existing one, and set up a webhook:
-
    - Go to your GitHub repository
    - Click on "Settings" > "Webhooks" > "Add webhook"
    - Set "Payload URL" to your ngrok URL + `/webhooks/github` (e.g., `https://abc123.ngrok.io/webhooks/github`)
@@ -18377,7 +18387,6 @@ ngrok will provide you with a public URL (e.g., `https://abc123.ngrok.io`) that 
    - Click "Add webhook"
 
 4. Trigger an event in your repository:
-
    - Make a commit and push to the repository
    - Create or update an issue
    - Open a pull request
@@ -18453,7 +18462,7 @@ First, let's create a Neon project to store our feature flag configurations.
 After your project is created, you'll receive a connection string that looks like this:
 
 ```
-postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require&channel_binding=require
 ```
 
 Save this connection string, you'll need it to connect your Go application to the Neon database.
@@ -18583,7 +18592,7 @@ This structure follows an essential Go project layout:
 Now, let's create a configuration file to store our database connection details. Create a new file named `.env` in the project root:
 
 ```
-DATABASE_URL=postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require&channel_binding=require&channel_binding=require
 SERVER_PORT=8080
 ```
 
@@ -19510,7 +19519,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>
 - `endpoint_hostname` is the host with neon.tech as the [TLD](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `port` is the Neon port number. The default port number is 5432.
 - `dbname` is the name of the database. “neondb” is the default database created with each Neon project.
-- `?sslmode=require` an optional query parameter that enforces the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode while connecting to the Postgres instance for better security.
+- `?sslmode=require&channel_binding=require` optional query parameters that enforce the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding while connecting to the Postgres instance for better security.
 
 Save this connecting string somewhere safe to be used as the `DATABASE_URL` further in the guide. Proceed further in this guide to create a SvelteKit application.
 
@@ -20015,7 +20024,6 @@ This sets up a basic Flask application with SQLAlchemy and Flask-Migrate, and de
 5. **SQLAlchemy and Flask-Migrate Setup**: We initialize SQLAlchemy and Flask-Migrate with our Flask app. This sets up our ORM and migration capabilities.
 
 6. **User Model**: We define a `User` model that represents the structure of our `user` table in the database. It includes:
-
    - An `id` field as the primary key
    - A `name` field that's required and has a maximum length of 100 characters
    - An `email` field that's required, unique, and has a maximum length of 120 characters
@@ -20591,7 +20599,6 @@ To integrate Tailwind CSS with Flask templates, you can follow these steps:
    ```
 
    This base template sets up the basic structure of your HTML pages. It includes:
-
    - A title block that can be overridden in child templates
    - A link to the compiled Tailwind CSS file
    - A simple navigation bar with Tailwind classes for styling
@@ -20618,7 +20625,6 @@ To integrate Tailwind CSS with Flask templates, you can follow these steps:
    ```
 
    This template extends the base template using `{% extends "base.html" %}` and provides specific content for the users page. It includes:
-
    - A form for adding new users, styled with Tailwind classes
    - A list of existing users, also styled with Tailwind
    - Jinja2 template syntax for dynamic content (e.g., `{% for user in users %}`)
@@ -20988,11 +20994,9 @@ This can be particularly useful when testing complex features or changes that re
 ### Creating a Neon Branch
 
 1. **Log In to Neon Dashboard:**
-
    - Access your Neon dashboard by logging in at [Neon's official website](https://neon.tech).
 
 2. **Select Your Database:**
-
    - Navigate to the database project that you are using for your production environment.
 
 3. **Create a New Branch:**
@@ -21006,7 +21010,6 @@ This can be particularly useful when testing complex features or changes that re
 Go back to your Flask project and integrate the Neon branch into your testing setup:
 
 1. **Update Environment Configuration:**
-
    - Once your branch is created, obtain the get details (hostname, database name, username, and password) from the Neon dashboard.
    - Create a new environment file for testing, such as `.env.test`, and configure it to use the Neon testing branch:
 
@@ -21015,7 +21018,6 @@ Go back to your Flask project and integrate the Neon branch into your testing se
      ```
 
 2. **Update Test Configuration:**
-
    - Modify your `test_app.py` file to use the testing environment:
 
      ```python
@@ -21030,7 +21032,6 @@ Go back to your Flask project and integrate the Neon branch into your testing se
      ```
 
 3. **Run Tests:**
-
    - With the testing branch configured, you can run your tests against the isolated database environment:
 
      ```bash
@@ -21956,14 +21957,12 @@ With everything set up, you can now create a new branch in your project, open a 
 With everything set up, here's how you would use this in your development process:
 
 1. Create a new branch in your project and make your changes:
-
    - Create and switch to a new branch: `git checkout -b feature-branch-name`
    - Make your changes to the code
    - Commit your changes: `git add .` and `git commit -m "Description of changes"`
    - Push your branch to GitHub: `git push -u origin feature-branch-name`
 
 2. Open a pull request with your changes:
-
    - Go to your repository on GitHub
    - Click on "Pull requests" then "New pull request"
    - Select your feature branch as the compare branch
@@ -21971,27 +21970,23 @@ With everything set up, here's how you would use this in your development proces
    - Fill in the title and description, then click "Create pull request"
 
 3. GitHub Actions will automatically create a new Neon database branch for your pull request:
-
    - This happens automatically when the pull request is opened
    - You can check the "Actions" tab in your GitHub repository to see the progress
    - Once complete, you'll see a new branch in your Neon console named `pr-[number]`
 
 4. Open a Codespace for this pull request:
-
    - On the pull request page, click the "Code" dropdown
    - Select "Open with Codespaces"
    - Click "New codespace"
    - Wait for the Codespace to build and start
 
 5. Test your changes in the isolated environment:
-
    - The Codespace is now connected to your PR-specific database branch
    - Run your application: `php artisan serve`
    - Run tests: `php artisan test`
    - Make additional changes if needed, commit, and push
 
 6. Review and merge the pull request:
-
    - Once you're satisfied with the changes, request a review if required
    - Reviewers can open their own Codespaces to test the changes
    - When ready, merge the pull request on GitHub
@@ -22196,7 +22191,7 @@ Notice how the down migration drops objects in reverse order compared to how the
 To run migrations against your Neon database, you'll need to construct a proper connection string. Neon provides a secure, TLS-enabled connection:
 
 ```
-postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require
 ```
 
 Replace the placeholders with your actual Neon connection details, which you can find in the Neon Console under your project's connection settings.
@@ -22204,7 +22199,7 @@ Replace the placeholders with your actual Neon connection details, which you can
 For convenience, you might want to store this connection string in an environment variable:
 
 ```bash
-export NEON_DB_URL="postgresql://user:password@ep-example-123456.us-east-2.aws.neon.tech/neondb?sslmode=require"
+export NEON_DB_URL="postgresql://user:password@ep-example-123456.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ```
 
 ## Running Migrations
@@ -22594,7 +22589,6 @@ This approach provides several benefits:
 To use this workflow, you'll need to set up the following GitHub repository secrets and variables:
 
 - **Secrets**:
-
   - `NEON_API_KEY`: Your Neon API key
   - `NEON_PROD_DB_URL`: Production database connection string
 
@@ -22744,7 +22738,7 @@ import (
 
 func main() {
 	// Connection string for Neon Postgres
-	dsn := "postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
+	dsn := "postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require"
 
 	// Connect to the database
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
@@ -22777,7 +22771,7 @@ In this code, we're performing several important steps:
 4. Getting the underlying `*sql.DB` object to access lower-level database functions
 5. Verifying the connection is active by pinging the database
 
-Make sure to replace `[user]`, `[password]`, `[neon_hostname]`, and `[dbname]` with your actual Neon database credentials. The `?sslmode=require` part of the connection string ensures secure communication with your Neon database.
+Make sure to replace `[user]`, `[password]`, `[neon_hostname]`, and `[dbname]` with your actual Neon database credentials. The `?sslmode=require&channel_binding=require` part of the connection string ensures secure communication with your Neon database.
 
 Replace `[user]`, `[password]`, `[neon_hostname]`, and `[dbname]` with your actual Neon connection details. You can find these by clicking the **Connect** button on your Neon **Project Dashboard**.
 
@@ -22845,7 +22839,6 @@ Let's examine the key components of these models:
 1. **Basic Fields**: `ID`, `CreatedAt`, `UpdatedAt`, and `DeletedAt` are standard fields in GORM models. They handle primary keys, timestamps, and soft deletion.
 
 2. **Field Tags**: The struct tags like `gorm:"size:255;not null"` define constraints and properties for each field:
-
    - `primaryKey`: Designates a field as the table's primary key
    - `size:255`: Sets the column's maximum length
    - `not null`: Ensures the field cannot be empty
@@ -23314,7 +23307,7 @@ While `AutoMigrate` is convenient for development, production systems need more 
 9. Run the migrations:
 
    ```bash
-   export POSTGRESQL_URL="postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
+   export POSTGRESQL_URL="postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require"
    migrate -database ${POSTGRESQL_URL} -path migrations up
    ```
 
@@ -23344,7 +23337,7 @@ import (
 func runMigrations() {
 	m, err := migrate.New(
 		"file://migrations",
-		"postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require",
+		"postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require",
 	)
 	if err != nil {
 		log.Fatalf("Failed to create migration instance: %v", err)
@@ -23495,7 +23488,7 @@ type Post struct {
 
 func main() {
 	// Connection string for Neon Postgres
-	dsn := "postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require"
+	dsn := "postgresql://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require"
 
 	// Connect to the database
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
@@ -23692,13 +23685,11 @@ eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZXhwIjoxNjgwMDAwMDAwfQ.8Gj_9bJj
 To understand how JWT fits into our Go authentication system, let's walk through the flow of a user logging in and accessing protected routes:
 
 1. When a user successfully authenticates, our Go service:
-
    - Validates credentials against Neon Postgres
    - Creates JWT with appropriate claims and expiration
    - Signs the token with a secret key
 
 2. The client:
-
    - Stores the JWT (typically in `localStorage` or a secure cookie)
    - Includes the token in the `Authorization` header for subsequent requests
 
@@ -23707,7 +23698,6 @@ To understand how JWT fits into our Go authentication system, let's walk through
    ```
 
 3. Our middleware:
-
    - Extracts the JWT from the request header
    - Validates the signature using our secret key
    - Checks that the token hasn't expired
@@ -23730,7 +23720,7 @@ First, let's create a Neon project to store our authentication data.
 Once your project is created, you'll receive a connection string that looks like this:
 
 ```
-postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require&channel_binding=require
 ```
 
 Save this connection string, you'll need it to connect your Go application to the Neon database.
@@ -24724,7 +24714,7 @@ Create a `.env` file in the root of your project with the following variables:
 
 ```
 # Database connection
-DATABASE_URL=postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[dbname]?sslmode=require&channel_binding=require&channel_binding=require
 
 # JWT configuration
 JWT_SECRET=your-very-secure-jwt-secret-key
@@ -25099,7 +25089,6 @@ Now, add your Neon branches to the connection set for the data source you just c
 4.  Under "Available Connections for Templating", click `+ Add Connection`.
     ![Add Connections for Templating](/docs/guides/hasura/add-connection-for-templating.png)
 5.  In the modal:
-
     - **Connection name:** Enter a unique, lowercase name (e.g., `dev_branch`). This name will be used in the Kriti template.
     - **Connect Database via:** Select `Database URL`.
     - **Database URL:** Paste the connection string for your `dev` Neon branch which you copied earlier in the [Create Neon Branches](#create-neon-branches) section.
@@ -25182,9 +25171,7 @@ Hasura provides a convenient way to test your connection template directly withi
 
 2.  **Simulate Request Context:**
     This modal allows you to define the context (`$.request`) that your Kriti template will evaluate against.
-
     - **Test Routing to `dev_branch`:**
-
       - In the **Headers** section, click `+ Add`.
       - Enter `x-hasura-branch-name` as the header key and `dev` as the value.
       - Leave **Operation Type** as `Query`.
@@ -25415,7 +25402,6 @@ The easiest way to start a HONC project is by using the [`create-honc-app`](http
     ```
 
     Here's a breakdown of the options:
-
     - **Where to create your project:** Specify the directory for your new project. Here, we used `./honc-task-api`.
     - **Template:** Choose the Neon template for this guide.
     - **OpenAPI spec:** Opt-in to generate an OpenAPI spec for your API.
@@ -25488,7 +25474,6 @@ The `create-honc-app` template comes with an example schema (for `users`) in `sr
     ```
 
     The tasks table schema defines the structure for storing tasks. It includes:
-
     - A unique, auto-incrementing integer `id`.
     - `title` and `description` fields.
     - A `completed` status.
@@ -25597,14 +25582,12 @@ The `src/index.ts` file generated by `create-honc-app` will contain Hono routes 
     ```
 
     Here's a breakdown of the Zod schemas:
-
     - `TaskSchema` defines the full structure of a task for API responses.
     - `NewTaskSchema` defines the structure for creating a new task.
     - The `.openapi({ ref: "..." })` annotations are used to generate OpenAPI documentation.
 
 3.  **Adapt API router:**
     The `apiRouter` groups related routes. We'll modify the one for `/api/users` to handle `/api/tasks`.
-
     - Locate where `app.route` is defined for `/api/users` and change it to `/api/tasks`:
 
       ```typescript
@@ -25844,7 +25827,6 @@ The `src/index.ts` file generated by `create-honc-app` will contain Hono routes 
     ```
 
     **Breakdown of the API endpoints:**
-
     - **`GET /` (List tasks):** Fetches all tasks from the `schema.tasks` table using `db.select()`. It orders them by `createdAt` in descending order so newer tasks appear first. The response is a JSON array of `TaskSchema` objects.
     - **`POST /` (Create task):**
       - Validates the incoming JSON request body against `NewTaskSchema` (requires `title`, `description` is optional).
@@ -25877,7 +25859,6 @@ Run your HONC application locally using Wrangler:
 
 2.  **Test your API endpoints:**
     You can use tools like cURL, Postman, or the Fiberplane API Playground (see next section).
-
     - **Create a task:**
 
       ```bash
@@ -26227,7 +26208,6 @@ Before you begin, make sure you have the following prerequisites:
 - **Python 3.10 or higher:** This guide requires Python 3.10 or a later version. If you don't have it installed, download it from [python.org](https://www.python.org/downloads/).
 
 - **Neon account and API key:**
-
   - Sign up for a free Neon account at [neon.tech](https://console.neon.tech/signup).
   - After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/profile). This API key is needed to authenticate your application with Neon.
 
@@ -26567,13 +26547,11 @@ The graph visually represents the cyclical workflow of the LangGraph agent. Let'
 - **`__start__` Node:** This is the entry point of the graph. Execution begins here when a task is initiated. It represents the starting point of the agent's workflow.
 
 - **`agent` Node:** This node represents the core reasoning component of the agent, powered by the Gemini model.
-
   - **Decision Point:** The `agent` node is responsible for processing user input and deciding the next course of action. It determines whether to:
     - **Engage tools:** If the task requires database operations (like creating a project or running SQL queries), the agent decides to use the available tools. This is represented by the dotted line leading to the `tools` node.
     - **Respond directly:** If the agent can directly answer the user or has completed the task without needing further tool use, it can proceed to the `__end__` node. This is represented by the dotted line leading directly to the `__end__` node.
 
 - **`tools` Node:** This node is activated when the `agent` node decides to use a tool.
-
   - **Tool execution:** Within the `tools` node, the appropriate tool (either `create_database` or `run_sql_query` in this example) is executed based on the agent's decision.
   - **Feedback loop:** After executing the tool and obtaining results, the workflow loops back to the `agent` node (solid line). This allows the agent to process the tool's output, reason further, and decide on the next step based on the new information. This loop is central to the ReAct (Reason and Act) pattern, enabling iterative problem-solving.
 
@@ -26609,15 +26587,15 @@ Tool Calls:
 ================================= Tool Message =================================
 Name: create_database
 
-Project/database created, connection URI: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+Project/database created, connection URI: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ================================== Ai Message ==================================
 
-OK. I've created the project and the connection URI is postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require. Now, I will create the table and add the records.
+OK. I've created the project and the connection URI is postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require. Now, I will create the table and add the records.
 Tool Calls:
   run_sql_query (c3346333-b024-4fc5-99ba-d745e0108bb8)
  Call ID: c3346333-b024-4fc5-99ba-d745e0108bb8
   Args:
-    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
     query: CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255), email VARCHAR(255));
 ================================= Tool Message =================================
 Name: run_sql_query
@@ -26628,7 +26606,7 @@ Tool Calls:
   run_sql_query (4be2ae12-adfe-45ed-bba3-d321073902ef)
  Call ID: 4be2ae12-adfe-45ed-bba3-d321073902ef
   Args:
-    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
     query: INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john.doe@example.com'), (2, 'Jane Smith', 'jane.smith@example.com'), (3, 'Robert Jones', 'robert.jones@example.com'), (4, 'Emily Brown', 'emily.brown@example.com'), (5, 'Michael Davis', 'michael.davis@example.com'), (6, 'Jessica Wilson', 'jessica.wilson@example.com'), (7, 'Christopher Garcia', 'christopher.garcia@example.com'), (8, 'Ashley Rodriguez', 'ashley.rodriguez@example.com'), (9, 'Matthew Williams', 'matthew.williams@example.com'), (10, 'Brittany Miller', 'brittany.miller@example.com');
 ================================= Tool Message =================================
 Name: run_sql_query
@@ -26639,7 +26617,7 @@ Tool Calls:
   run_sql_query (f6484943-0dcc-4059-b794-2dc83ae31b1a)
  Call ID: f6484943-0dcc-4059-b794-2dc83ae31b1a
   Args:
-    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require
+    connection_uri: postgresql://neondb_owner:npg_HCFnoIvx5L9g@ep-broad-water-a53lox4z.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
     query: SELECT * FROM users;
 ================================= Tool Message =================================
 Name: run_sql_query
@@ -26687,7 +26665,7 @@ For optimizing application performance and user experience, LangGraph supports [
 
 ## Resources
 
-- [LangGraph Github](https://github.com/langchain-ai/langgraph)
+- [LangGraph GitHub](https://github.com/langchain-ai/langgraph)
 - [LangGraph Documentation](https://python.langchain.com/docs/langgraph)
 - [LangGraph Conceptual Guide](https://langchain-ai.github.io/langgraph/concepts)
 - [LangGraph Glossary](https://langchain-ai.github.io/langgraph/concepts/low_level/#langgraph-glossary)
@@ -31337,7 +31315,6 @@ Here's how to use it:
 If you encounter issues while rolling back migrations, follow these troubleshooting steps:
 
 - **Failed rollback command:** Check the Laravel logs for error messages. For instance, if you see an error about missing tables or columns:
-
   - Revisit the migration files and ensure they are consistent.
   - Adjust or fix the migrations as needed.
 
@@ -31434,7 +31411,6 @@ Smaller, manageable migrations make rollbacks simpler.
   Break changes into smaller, logical batches.
 
 - **Example workflow:**
-
   1. Create multiple smaller migrations instead of one large one.
 
   ```bash
@@ -32524,7 +32500,6 @@ Let's break down the key components of this job class:
 1. `implements ShouldQueue`: This interface tells Laravel that this job should be pushed onto the queue instead of running synchronously.
 
 2. Use statements:
-
    - `Dispatchable`: Allows the job to be dispatched to the queue.
    - `InteractsWithQueue`: Provides methods for interacting with the queue.
    - `Queueable`: Allows the job to be pushed onto queues.
@@ -34208,7 +34183,6 @@ Before you begin, ensure you have the following:
 To set up your testing environment with Neon and Laravel, follow these steps:
 
 1. **Configure Database Connection:**
-
    - After creating your Neon account and a new database branch, obtain the connection details from the Neon dashboard.
    - Open your Laravel project and update the `.env` file with the Neon database connection parameters:
 
@@ -34222,7 +34196,6 @@ To set up your testing environment with Neon and Laravel, follow these steps:
      ```
 
 2. **Install PEST PHP:**
-
    - PEST is a testing framework for PHP that works seamlessly with Laravel. Install PEST via Composer with the following command:
 
      ```
@@ -34233,7 +34206,6 @@ To set up your testing environment with Neon and Laravel, follow these steps:
 #### Creating a Migration and Seeder
 
 1. **Generate Migration and Model:**
-
    - Run the following command to create a new migration file for a `questions` table and its associated model:
 
    ```
@@ -34252,7 +34224,6 @@ To set up your testing environment with Neon and Laravel, follow these steps:
      ```
 
 2. **Create Seeder:**
-
    - Generate a seeder to populate the `questions` table:
 
      ```
@@ -34293,7 +34264,6 @@ To set up your testing environment with Neon and Laravel, follow these steps:
      ```
 
 3. **Run Migrations and Seeders:**
-
    - Migrate the database to create the `questions` table:
 
      ```
@@ -34310,7 +34280,6 @@ To set up your testing environment with Neon and Laravel, follow these steps:
 
 1. **Generate the Controller:**
    A controller is a PHP class that handles HTTP requests. You can create a controller to manage questions data in your Laravel application.
-
    - Use Artisan to create a new controller named `QuestionController`:
 
      ```
@@ -34318,7 +34287,6 @@ To set up your testing environment with Neon and Laravel, follow these steps:
      ```
 
 2. **Add a Method to Retrieve Questions:**
-
    - Open the newly created `QuestionController` in the `app/Http/Controllers` directory.
    - Add a method to fetch and return all questions:
 
@@ -34330,7 +34298,6 @@ To set up your testing environment with Neon and Laravel, follow these steps:
      ```
 
 3. **Update Routes:**
-
    - Open the `routes/web.php` file and add a route to handle GET requests for questions:
 
      ```php
@@ -34350,7 +34317,6 @@ Access the `/questions` endpoint in your browser or a tool like Postman to see t
 #### Writing a PEST Test for the `QuestionController`
 
 1. **Create the Test File:**
-
    - PEST allows you to write tests in a very expressive way. You can create a test file specifically for the `QuestionController`:
 
      ```
@@ -34359,7 +34325,6 @@ Access the `/questions` endpoint in your browser or a tool like Postman to see t
 
 2. **Write the Test:**
    Usually, you would write a test that uses the `RefreshDatabase` trait to migrate the database and then seed it with test data before each test. But in this case, we will use the Neon branch to test with real data instead.
-
    - Open the generated test file in `tests/Feature` and add a test to check the `/questions` endpoint:
 
      ```php
@@ -34397,11 +34362,9 @@ This can be particularly useful when testing complex features or changes that re
 ### Creating a Neon Branch
 
 1. **Log In to Neon Dashboard:**
-
    - Access your Neon dashboard by logging in at [Neon's official website](https://neon.tech).
 
 2. **Select Your Database:**
-
    - Navigate to the database project that you are using for your production environment.
 
 3. **Create a New Branch:**
@@ -34415,7 +34378,6 @@ This can be particularly useful when testing complex features or changes that re
 Go back to your Laravel project and integrate the Neon branch into your testing setup:
 
 1. **Update Environment Configuration:**
-
    - Once your branch is created, obtain the connection details (hostname, database name, username, and password) from the Neon dashboard.
    - Create a new environment file in your Laravel project, such as `.env.testing`, and configure it to use the Neon testing branch. This ensures that your testing environment uses its database configuration.
 
@@ -34429,7 +34391,6 @@ Go back to your Laravel project and integrate the Neon branch into your testing 
      ```
 
 1. **Update PHPUnit Configuration:**
-
    - Ensure that PHPUnit (used by PEST for running tests) is configured to use the `.env.testing` file. Update your `phpunit.xml` file to specify the environment file:
 
      ```xml
@@ -34440,7 +34401,6 @@ Go back to your Laravel project and integrate the Neon branch into your testing 
      ```
 
 1. **Run Tests:**
-
    - With the testing branch configured, you can write tests that interact with the database as if it were production data, without the risk of affecting real user data. Use PEST to run your tests:
 
      ```bash
@@ -35473,7 +35433,6 @@ To manually verify that everything works as expected, follow these steps:
 1. Submit the application and verify that you see a success message.
 
 1. To check if the data was persisted correctly:
-
    - Open a database client (like pgAdmin for Postgres) and connect to your Neon database.
    - Check the `applicants`, `educations`, and `work_experiences` tables. You should see your submitted data.
    - Verify that the `applicant_id` in the `educations` and `work_experiences` tables matches the `id` in the `applicants` table for your submission.
@@ -36890,7 +36849,7 @@ You will then be presented with a dialog that provides a connecting string of yo
 All Neon connection strings have the following format:
 
 ```bash
-postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require
 ```
 
 - `user` is the database user.
@@ -36898,7 +36857,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmo
 - `endpoint_hostname` is the host with neon.tech as the [TLD](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `port` is the Neon port number. The default port number is 5432.
 - `dbname` is the name of the database. “neondb” is the default database created with each Neon project.
-- `?sslmode=require` an optional query parameter that enforces the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode while connecting to the Postgres instance for better security.
+- `?sslmode=require&channel_binding=require` optional query parameters that enforce the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding while connecting to the Postgres instance for better security.
 
 Save this connecting string somewhere safe to be used as the `POSTGRES_URL` further in the guide. Proceed further in this guide to create a Astro application.
 
@@ -36985,7 +36944,7 @@ First, create an `.env` file in the root directory of your project with the foll
 ```bash
 # Neon Postgres Pooled Connection URL
 
-POSTGRES_URL="postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require"
+POSTGRES_URL="postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require&channel_binding=require"
 ```
 
 The file, `.env` should be kept secret and not included in Git history. Ensure that `.env` is added to the `.gitignore` file in your project.
@@ -38126,7 +38085,6 @@ Keep the following considerations in mind when importing data with relationships
 - **Establish referenced data first:** Postgres, being a relational database, relies on foreign key constraints to enforce relationships between tables. When you import data into the `Product` table that is intended to reference entries in the `Category` table, those `Category` entries must already exist in Postgres.
 
 - **ID handling depends on your strategy:** While FaunaDB uses its own distributed document ID system, Postgres ID generation is more flexible. **Whether you need to transform IDs depends on your chosen ID strategy in Postgres:**
-
   - **Scenario 1: Using Postgres-Generated IDs:** If you are using Postgres's default ID generation mechanisms (like `SERIAL`, `UUID`, or `IDENTITY` columns), then **Postgres will automatically generate _new_ IDs** for the rows in your tables. In this scenario, you _will_ need to manage ID transformation for relationships.
 
   - **Scenario 2: Retaining FaunaDB IDs:** If you are explicitly setting IDs during import to retain FaunaDB IDs in Postgres, you must ensure that the IDs are correctly mapped and managed. You may choose this approach if you:
@@ -38392,7 +38350,6 @@ There are several ways to migrate your Tembo Postgres database to Neon. The best
 Before you begin any migration method, complete these essential preparation steps:
 
 1.  **Assess your Tembo database:**
-
     - **Database size:** Determine the total size of your database. This will help you choose the right migration method.
     - **Postgres extensions:** Identify all custom Postgres extensions used in your Tembo instance. Run the following query on your Tembo database:
       ```sql
@@ -38413,7 +38370,7 @@ Neon's Import Data Assistant automates moving your existing database to Neon. It
 Before you start with the assistant, You'll need:
 
 - **Tembo connection string:** You'll need a direct connection string to your Tembo database in the format:
-  `postgresql://username:password@host:port/database?sslmode=require`
+  `postgresql://username:password@host:port/database?sslmode=require&channel_binding=require`
 - **Admin privileges:** Ensure the user in the connection string has `SUPERUSER` or sufficient privileges (`CREATE`, `SELECT`, `INSERT`, `REPLICATION`) on the source Tembo database.
 - **Database size:** Your Tembo database must be **smaller than 10GB**.
 - **Region:** The feature is currently supported only for Neon projects in AWS regions.
@@ -38431,7 +38388,6 @@ Before you start with the assistant, You'll need:
     - Extension compatibility.
     - Region availability.
 3.  **Import your data:** Once checks pass, Neon will:
-
     - Create a new branch for your imported data.
     - Copy your data automatically using `pg_dump` and `pg_restore`.
     - Verify the import.
@@ -38518,7 +38474,6 @@ Logical replication allows for near-zero downtime migration by continuously stre
 - Allow Connections from Neon to Tembo (IP Allow List):
 
   If you are having IP allow list restrictions on your Tembo database, you need to allow connections from Neon to Tembo. This is necessary for the logical replication process to work correctly.
-
   1.  **Obtain Neon NAT Gateway IP Addresses:**
       Refer to Neon's [NAT Gateway IP addresses](/docs/introduction/regions#nat-gateway-ip-addresses) to find the list of IP addresses for your Neon project's region. You will need to add these specific IP addresses to your Tembo project's allow list.
 
@@ -38602,7 +38557,6 @@ Once Neon is fully synchronized and replication lag is minimal:
 ## Post-migration (common steps)
 
 1.  **Verify data:**
-
     - Run checksums or row counts on key tables in both Tembo and Neon to ensure data integrity.
     - Perform functional testing of your application against Neon.
 
@@ -38676,14 +38630,12 @@ This workflow automates the process of ingesting and preparing your Google Drive
 2.  **Add Google Drive trigger:** Click the `+` button to add the first step. Search for and select "Google Drive".
 3.  **Configure trigger:** In the Google Drive node parameters, select "On changes involving a specific folder" under "Triggers".
 4.  **Connect Google Drive account (OAuth2):**
-
     - Under "Credential to connect with", click "Select Credential" and then "Create new credential".
     - This will open a dialog for "Google Drive account (Google Drive OAuth2 API)". Note the "OAuth Redirect URL" provided by n8n (you will need this in the next steps).
 
     ![Configuring Google Drive Trigger node](/docs/guides/n8n/n8n-add-google-drive-folder-node.gif)
 
 5.  **Create Google Drive OAuth credentials:**
-
     - Open the [Google Cloud console](https://console.cloud.google.com/) and navigate to "APIs & Services" -> "OAuth consent screen".
     - If not configured, click "Get started".
     - **App Information:** Provide an "App name" (e.g., `personal-n8n`), select "User support email", and enter your email address.
@@ -38699,14 +38651,12 @@ This workflow automates the process of ingesting and preparing your Google Drive
     ![Configuring Google Drive OAuth credentials in GCP](/docs/guides/n8n/n8n-configure-gdrive-oauth.gif)
 
 6.  **Enable Google Drive API in GCP:**
-
     - In the GCP console, search for "Google Drive API".
     - Select "Google Drive API" and click "Enable" if it's not already enabled.
 
     ![Enabling Google Drive API in GCP](/docs/guides/n8n/n8n-enable-gdrive-api.gif)
 
 7.  **Finalize n8n Credential:**
-
     - Back in n8n, paste the "Client ID" and "Client secret" you copied from GCP into the respective fields in the "Google Drive account (OAuth2)" credential dialog.
     - After entering the Client ID and Secret, click "Sign in with Google".
     - Authenticate with the Google account you added as a test user. Grant the necessary permissions.
@@ -38718,7 +38668,6 @@ This workflow automates the process of ingesting and preparing your Google Drive
     - Back in the Google Drive Trigger node, set the "Folder" to the specific folder you want to monitor for new files. You can enter the folder name or select from the list.
     - Select "File Created" under "Watch For". This will trigger the workflow when a new file is added to the specified folder.
 9.  **Test the Trigger:**
-
     - Upload a sample PDF document to your specified Google Drive folder.
     - In n8n, click "Fetch Test Event" on the Google Drive Trigger node. It should detect the new file and show its details in the output on the right side of the editor. This confirms that the trigger is working correctly.
 
@@ -39159,7 +39108,7 @@ By the end of this guide, you'll have a system where database changes are as sea
    Your connection string will look similar to this:
 
    ```shell
-   postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+   postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require
    ```
 
 ## Set up the project
@@ -39226,10 +39175,10 @@ By the end of this guide, you'll have a system where database changes are as sea
 4. Create a `.env` file in your project root:
 
    ```bash shouldWrap
-   DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require
+   DATABASE_URL=postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require
    ```
 
-5. Push your code to a Github repository.
+5. Push your code to a GitHub repository.
 
 ## Set up the Neon GitHub integration
 
@@ -39361,13 +39310,11 @@ The GitHub Actions workflow automates database branching and schema management f
 This job runs when a pull request is opened, reopened, or synchronized:
 
 1. **Branch Creation**:
-
    - Uses Neon's `create-branch-action` to create a new database branch
    - Names the branch using the pattern `preview/pr-{number}-{branch_name}`
    - Inherits the schema and data from the parent branch
 
 2. **Migration Handling**:
-
    - Installs project dependencies
    - Generates migration files using Drizzle
    - Applies migrations to the newly created branch
@@ -39384,7 +39331,6 @@ This job runs when a pull request is opened, reopened, or synchronized:
 This job executes when a pull request is closed (either merged or rejected):
 
 1. **Production Migration**:
-
    - If the PR is merged, applies migrations to the production database
    - Uses the main `DATABASE_URL` stored in repository secrets
    - Ensures production database stays in sync with merged changes
@@ -39692,7 +39638,15 @@ GitHub Copilot becomes your full-stack teammate. It can answer database-related 
 
 Let's get started with using the Neon MCP server and GitHub Copilot.
 
-## What You’ll Need
+<Admonition type="important" title="Neon MCP Server Security Considerations">
+The Neon MCP Server grants powerful database management capabilities through natural language requests. **Always review and authorize actions requested by the LLM before execution.** Ensure that only authorized users and applications have access to the Neon MCP Server.
+
+The Neon MCP Server is intended for local development and IDE integrations only. **We do not recommend using the Neon MCP Server in production environments.** It can execute powerful operations that may lead to accidental or unauthorized changes.
+
+For more information, see [MCP security guidance →](/docs/ai/neon-mcp-server#mcp-security-guidance).
+</Admonition>
+
+## What You'll Need
 
 - Node.js (>= v18.0.0) and npm: Download from [nodejs.org](https://nodejs.org/).
 - An Azure subscription ([create one](https://azure.microsoft.com/free/cognitive-services) for free)
@@ -39720,7 +39674,7 @@ Add the following Neon MCP server configuration to your [user settings](https://
     "servers": {
       "Neon": {
         "command": "npx",
-        "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+        "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
       }
     }
   }
@@ -39797,7 +39751,15 @@ Imagine managing your database with natural language. Instead of complex SQL, yo
 
 This guide will introduce you to [Neon's MCP server](https://github.com/neondatabase/mcp-server-neon), which allows you to use Large Language Models (LLMs) for intuitive database management. At its core, Neon MCP server allows tools like Claude to easily communicate with the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api).
 
-With Neon's MCP server and an LLM like Claude, you can simplify workflows, improve productivity, and manage your Postgres databases more naturally. Let’s explore how this approach can make database management easier and more efficient.
+With Neon's MCP server and an LLM like Claude, you can simplify workflows, improve productivity, and manage your Postgres databases more naturally. Let's explore how this approach can make database management easier and more efficient.
+
+<Admonition type="important" title="Neon MCP Server Security Considerations">
+The Neon MCP Server grants powerful database management capabilities through natural language requests. **Always review and authorize actions requested by the LLM before execution.** Ensure that only authorized users and applications have access to the Neon MCP Server.
+
+The Neon MCP Server is intended for local development and IDE integrations only. **We do not recommend using the Neon MCP Server in production environments.** It can execute powerful operations that may lead to accidental or unauthorized changes.
+
+For more information, see [MCP security guidance →](/docs/ai/neon-mcp-server#mcp-security-guidance).
+</Admonition>
 
 ## Understanding MCP
 
@@ -39831,7 +39793,7 @@ Neon MCP server, combined with Neon, offers:
 - **Natural Language:** Manage databases without direct **Neon API** coding.
 - **Empowering Non-Developers**: Intuitive database interaction for everyone.
 
-<Admonition type="warning">
+<Admonition type="important">
 The Neon MCP server's ability to execute arbitrary commands from natural language requests requires careful attention to security.  Always review and approve actions before they are committed.  Grant access only to authorized users and applications.
 </Admonition>
 
@@ -39872,7 +39834,7 @@ You have two options for connecting Claude to the Neon MCP Server:
      "mcpServers": {
        "Neon": {
          "command": "npx",
-         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
        }
      }
    }
@@ -40441,7 +40403,7 @@ AWS_SECRET_ACCESS_KEY=".../...+"
 AWS_S3_BUCKET_NAME="...-bucket-0"
 
 # Postgres (powered by Neon) Environment Variable
-DATABASE_URL="postgresql://neondb_owner:...@...-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL="postgresql://neondb_owner:...@...-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 ```
 
 Now, let's move on to creating an API route to obtain a presigned URL to upload objects to.
@@ -40873,7 +40835,7 @@ These packages provide:
 
 ```
 # Database
-DATABASE_URL=postgres://[user]:[password]@[hostname]/[database]?sslmode=require
+DATABASE_URL=postgres://[user]:[password]@[hostname]/[database]?sslmode=require&channel_binding=require
 
 # Redis
 REDIS_URL=redis://localhost:6379
@@ -41816,6 +41778,835 @@ You can extend this system by adding more specialized queues, extending the moni
 <NeedHelp />
 
 
+# Manage Neon with OpenTofu
+
+---
+title: Manage Neon with OpenTofu
+subtitle: Use OpenTofu to provision and manage your Neon projects, branches, endpoints, roles, databases, and other resources as code.
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-05-26T00:00:00.000Z'
+updatedOn: '2025-05-26T00:00:00.000Z'
+---
+
+[OpenTofu](https://opentofu.org) is an open-source infrastructure as code (IaC) tool, forked from Terraform, that allows you to define and provision cloud resources in a declarative configuration language. By codifying infrastructure, OpenTofu enables consistent, repeatable, and automated deployments, significantly reducing manual errors. It is a community-driven alternative governed by the Linux Foundation.
+
+This guide will show you how to use **OpenTofu to manage your Neon projects**, including your branches, databases, and compute endpoints. By using OpenTofu with Neon, you get better control, can track changes, and automate your database setup.
+
+Neon can be managed using the following community-developed Terraform provider, which is compatible with OpenTofu:
+
+**Terraform Provider Neon - Maintainer: Dmitry Kisler**
+
+- [GitHub repository](https://github.com/kislerdm/terraform-provider-neon)
+
+<Admonition type="note">
+This provider is a Terraform provider compatible with OpenTofu. It is not maintained or officially supported by Neon. Use at your own discretion. If you have questions about the provider, please contact the project maintainer.
+</Admonition>
+
+## Provider usage notes
+
+- **Provider upgrades**: When using `tofu init -upgrade` to update a provider, be aware that changes in the provider’s schema or defaults can lead to unintended resource replacements. This may occur when certain attributes are altered or reset.
+
+  To avoid unintended resource replacements which can result in data loss:
+  - Review the provider’s changelog for any breaking changes that might affect your resources before upgrading to a new version.
+  - For CI pipelines and auto-approved pull requests, only use `tofu init`. Running `tofu init -upgrade` should be done manually followed by plan reviews.
+  - Run `tofu plan` before applying any changes to detect potential differences and review the behavior of resource updates.
+  - Use [lifecycle protections](https://opentofu.org/docs/language/meta-arguments/lifecycle/) on critical resources to ensure they're not recreated unintentionally.
+  - Explicitly define all critical resource parameters in your OpenTofu configurations, even if they had defaults previously.
+  - On Neon paid plans, you can enable branch protection to prevent unintended deletion of branches and projects. To learn more, see [Protected branches](/docs/guides/protected-branches).
+
+- **Provider maintenance**: As Neon enhances existing features and introduces new ones, the [Neon API](https://api-docs.neon.tech/reference/getting-started-with-neon-api) will continue to evolve. These changes may not immediately appear in community-maintained providers. If you notice that a provider requires an update, please reach out to the maintainer by opening an issue or contributing to the provider's GitHub repository.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+1.  **OpenTofu CLI installed:** If you don't have OpenTofu installed, download and install it from the [official OpenTofu website](https://opentofu.org/docs/intro/install/).
+2.  **Neon Account:** You'll need a Neon account. If you don't have one, sign up at [neon.tech](https://console.neon.tech/signup).
+3.  **Neon API key:** Generate an API key from the Neon Console. Navigate to your Account Settings > API Keys. This key is required for the provider to authenticate with the Neon API. Learn more about creating API keys in [Manage API keys](/docs/manage/api-keys).
+
+## Set up the OpenTofu Neon provider
+
+1.  **Create a project directory:**
+    Create a new directory for your OpenTofu project and navigate into it.
+
+    ```shell
+    mkdir neon-opentofu-project
+    cd neon-opentofu-project
+    ```
+
+2.  **Create a `main.tf` file:**
+    This file will contain your OpenTofu configuration. Start by declaring the required Neon provider. OpenTofu can use providers from the tofu registry.
+
+    ```tofu
+    tofu {
+      required_providers {
+        neon = {
+          source  = "kislerdm/neon"
+        }
+      }
+    }
+
+    provider "neon" {}
+    ```
+
+3.  **Initialize OpenTofu:**
+    Run the `tofu init` command in your project directory. This command downloads and installs the Neon provider.
+    ```shell
+    tofu init
+    ```
+
+## Configure authentication
+
+The Neon provider needs your Neon API key to manage resources. You can configure it in two ways:
+
+1.  **Directly in the provider block (Less secure):**
+    For quick testing, you can **hardcode your API key** directly within `provider "neon"` block. However, this method isn't recommended for production environments or shared configurations. A more secure alternative is to retrieve the API key from a secrets management service like [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/) or [HashiCorp Vault](https://developer.hashicorp.com/vault), and then update your provider block to reflect this.
+
+    ```tofu
+    provider "neon" {
+      api_key = "<YOUR_NEON_API_KEY>"
+    }
+    ```
+
+2.  **Using environment variables:**
+    The provider will automatically use the `NEON_API_KEY` environment variable if set.
+
+    ```shell
+    export NEON_API_KEY="<YOUR_NEON_API_KEY>"
+    ```
+
+    If the environment variable is set, you can leave the `provider "neon"` block empty:
+
+    ```tofu
+    provider "neon" {}
+    ```
+
+<Admonition type="note">
+The following sections primarily detail the creation of Neon resources. To manage existing resources, use the `tofu import` command or `import` blocks. More information can be found in the [Import Existing Neon Resources](#import-existing-neon-resources-with-opentofu) section.
+</Admonition>
+
+## Manage Neon resources with OpenTofu
+
+This section provides examples of how to manage Neon resources using OpenTofu. You can create and manage projects, branches, endpoints, roles, databases, and more.
+
+### Managing projects
+
+A Neon project is the top-level container for your Postgres databases, branches, and endpoints.
+
+```tofu
+resource "neon_project" "my_app_project" {
+  name       = "my-application-project"
+  pg_version = 16
+  region_id  = "aws-us-east-1"
+
+  # Configure default branch settings (optional)
+  branch {
+    name          = "production"
+    database_name = "app_db"
+    role_name     = "app_admin"
+  }
+
+  # Configure default endpoint settings (optional)
+  default_endpoint_settings {
+    autoscaling_limit_min_cu = 0.25
+    autoscaling_limit_max_cu = 1.0
+    # suspend_timeout_seconds  = 300
+  }
+}
+```
+
+This configuration creates a new Neon project.
+
+**Key `neon_project` attributes:**
+
+- `name`: (Optional) Name of the project.
+- `pg_version`: (Optional) PostgreSQL version (e.g., 14, 15, 16, 17).
+- `region_id`: (Optional) The region where the project will be created (e.g., `aws-us-east-1`).
+  > For up-to-date information on available regions, see [Neon Regions](/docs/introduction/regions).
+- `branch {}`: (Optional) Block to configure the default primary branch.
+
+**Output project details:**
+You can output computed values like the project ID or connection URI:
+
+```tofu
+output "project_id" {
+  value = neon_project.my_app_project.id
+}
+
+output "project_connection_uri" {
+  description = "Default connection URI for the primary branch (contains credentials)."
+  value       = neon_project.my_app_project.connection_uri
+  sensitive   = true
+}
+
+output "project_default_branch_id" {
+  value = neon_project.my_app_project.default_branch_id
+}
+
+output "project_database_user" {
+  value = neon_project.my_app_project.database_user
+}
+```
+
+For more attributes and options on managing projects, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/project.md).
+
+### Managing branches
+
+You can create branches from the primary branch or any other existing branch.
+
+```tofu
+resource "neon_branch" "dev_branch" {
+  project_id = neon_project.my_app_project.id
+  name       = "feature-x-development"
+  parent_id  = neon_project.my_app_project.default_branch_id # Branch from the project's primary branch
+
+  # Optional: Create a protected branch
+  # protected = "yes"
+
+  # Optional: Create from a specific LSN or timestamp of the parent
+  # parent_lsn = "..."
+  # parent_timestamp = 1678886400 # Unix epoch
+}
+```
+
+**Key `neon_branch` attributes:**
+
+- `project_id`: (Required) ID of the parent project.
+- `name`: (Optional) Name for the new branch.
+- `parent_id`: (Optional) ID of the parent branch. If not specified, defaults to the project's primary branch.
+- `protected`: (Optional, String: "yes" or "no") Set to protect the branch.
+- `parent_lsn`: (Optional) LSN of the parent branch to create from.
+- `parent_timestamp`: (Optional) Timestamp of the parent branch to create from.
+
+> `protected` attribute is only available for paid plans. It allows you to protect branches from deletion or modification.
+
+For more attributes and options on managing branches, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/branch.md).
+
+### Managing endpoints
+
+Endpoints provide connection strings to access your branches. Each branch can have multiple read-only endpoints but only one read-write endpoint.
+
+Before creating an endpoint, you must first create a **branch** for it to connect to. Here's how to create a read-write endpoint for your `dev_branch`:
+
+```tofu
+resource "neon_endpoint" "dev_endpoint" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+  type       = "read_write" # "read_write" or "read_only"
+
+  autoscaling_limit_min_cu = 0.25
+  autoscaling_limit_max_cu = 0.5
+  # suspend_timeout_seconds  = 600
+
+  # Optional: Enable connection pooling
+  # pooler_enabled = true
+}
+
+output "dev_endpoint_host" {
+  value = neon_endpoint.dev_endpoint.host
+}
+```
+
+**Key `neon_endpoint` attributes:**
+
+- `project_id`: (Required) ID of the parent project.
+- `branch_id`: (Required) ID of the branch this endpoint connects to.
+- `type`: (Optional) `read_write` (default) or `read_only`. A branch can only have one `read_write` endpoint.
+- `autoscaling_limit_min_cu`/`autoscaling_limit_max_cu`: (Optional) Compute units for autoscaling.
+- `suspend_timeout_seconds`: (Optional) Inactivity period before suspension. Only available for paid plans.
+- `pooler_enabled`: (Optional) Enable connection pooling.
+
+<Admonition type="note">
+It is not possible currently to change the endpoint type after creation. The `type` attribute is immutable, meaning you cannot modify it once the endpoint is created. This includes changing from `read_write` to `read_only` or vice versa. This is a limitation of the Neon API and the provider's current implementation. You must destroy the existing endpoint and create a new one with the desired type.
+</Admonition>
+
+For more attributes and options on managing endpoints, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/endpoint.md)
+
+### Managing roles
+
+Roles (users) are managed per branch. Before creating a role, ensure you have a branch created. Follow the [Managing Branches](#managing-branches) section for details.
+
+```tofu
+resource "neon_role" "app_user" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+  name       = "application_user"
+}
+
+output "app_user_password" {
+  value     = neon_role.app_user.password
+  sensitive = true
+}
+```
+
+**Key `neon_role` attributes:**
+
+- `project_id`: (Required) ID of the parent project.
+- `branch_id`: (Required) ID of the branch for this role.
+- `name`: (Required) Name of the role.
+- `password`: (Computed, Sensitive) The generated password for the role.
+
+For more attributes and options on managing roles, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/role.md)
+
+### Managing databases
+
+Databases are also managed per branch. Follow the [Managing Branches](#managing-branches) section for details on creating a branch.
+
+```tofu
+resource "neon_database" "service_db" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+  name       = "service_specific_database"
+  owner_name = neon_role.app_user.name
+}
+```
+
+**Key `neon_database` attributes:**
+
+- `project_id`: (Required) ID of the parent project.
+- `branch_id`: (Required) ID of the branch for this database.
+- `name`: (Required) Name of the database.
+- `owner_name`: (Required) Name of the role that will own this database.
+
+For more attributes and options on managing databases, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/database.md)
+
+### Managing API keys
+
+You can manage Neon API keys themselves using OpenTofu.
+
+```tofu
+resource "neon_api_key" "ci_cd_key" {
+  name = "automation-key-for-ci"
+}
+
+output "ci_cd_api_key_value" {
+  description = "The actual API key token."
+  value       = neon_api_key.ci_cd_key.key
+  sensitive   = true
+}
+```
+
+**Key `neon_api_key` attributes:**
+
+- `name`: (Required) A descriptive name for the API key.
+- `key`: (Computed, Sensitive) The generated API key token.
+
+### Advanced: Project permissions
+
+Share project access with other users.
+
+```tofu
+resource "neon_project_permission" "share_with_colleague" {
+  project_id = neon_project.my_app_project.id
+  grantee    = "colleague@example.com"
+}
+```
+
+### Advanced: JWKS URL for RLS
+
+Configure JWKS URL for Row Level Security authorization.
+
+```tofu
+resource "neon_jwks_url" "auth_provider_jwks" {
+  project_id    = neon_project.my_app_project.id
+  # Use the default role from the project, or specify custom roles
+  role_names    = [neon_project.my_app_project.database_user]
+  provider_name = "YourAuthProviderName" # e.g., "clerk"
+  jwks_url      = "<https://<YOUR_AUTH_PROVIDER_JWKS_URL>" # Replace with your actual JWKS URL
+}
+```
+
+> For a list of supported providers, see [Neon RLS: Supported Providers](/docs/guides/neon-rls#supported-providers).
+
+For more attributes and options on managing JWKS URLs, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/jwks_url.md)
+
+### Advanced: VPC endpoint management (for Neon private networking)
+
+These resources are used for organizations with Scale or Enterprise plans requiring private networking.
+
+#### Assign VPC endpoint to organization
+
+```tofu
+resource "neon_vpc_endpoint_assignment" "org_vpc_endpoint" {
+  org_id          = "your-neon-organization-id" # Replace with your actual Org ID
+  region_id       = "aws-us-east-1"             # Neon region ID
+  vpc_endpoint_id = "vpce-xxxxxxxxxxxxxxxxx"    # Your AWS VPC Endpoint ID
+  label           = "main-aws-vpc-endpoint"
+}
+```
+
+For more attributes and options on managing VPC endpoints, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/vpc_endpoint_assignment.md)
+
+#### Restrict project to VPC endpoint
+
+```tofu
+resource "neon_vpc_endpoint_restriction" "project_to_vpc" {
+  project_id      = neon_project.my_app_project.id
+  vpc_endpoint_id = neon_vpc_endpoint_assignment.org_vpc_endpoint.vpc_endpoint_id
+  label           = "restrict-my-app-project-to-vpc"
+}
+```
+
+For more attributes and options on managing VPC endpoint restrictions, refer to the [Provider's documentation](https://github.com/kislerdm/terraform-provider-neon/blob/master/docs/resources/vpc_endpoint_restriction.md)
+
+## Apply the configuration with OpenTofu
+
+Once you have defined your resources:
+
+1.  **Format and validate:**
+
+    ```shell
+    tofu fmt
+    tofu validate
+    ```
+
+2.  **Plan:**
+    Run `tofu plan` to see what actions OpenTofu will take.
+
+    ```shell
+    tofu plan -out=tfplan
+    ```
+
+3.  **Apply:**
+    Run `tofu apply` to create the resources in Neon.
+    ```shell
+    tofu apply tfplan
+    ```
+    OpenTofu will ask for confirmation. Type `yes` to confirm.
+
+You have now successfully created and managed Neon resources using OpenTofu! You can continue to modify your `main.tf` file to add, change, or remove resources as needed. After making changes, repeat the `tofu plan` and `tofu apply` steps to update your resources on Neon.
+
+## Import existing Neon resources with OpenTofu
+
+If you have existing Neon resources that were created outside of OpenTofu (e.g., via the Neon Console or API directly), you can bring them under OpenTofu's management. This allows you to manage their lifecycle with code moving forward. OpenTofu supports both the CLI import command and declarative import blocks, similar to tofu 1.5.0+.
+
+Both methods involve telling OpenTofu about an existing resource and associating it with a `resource` block in your configuration.
+
+### Set up your OpenTofu configuration for import
+
+Ensure your OpenTofu environment is configured for the Neon provider as described previously:
+
+1.  Define the provider in your `main.tf`.
+2.  Run `tofu init`.
+3.  Configure authentication for the Neon provider.
+
+### Neon resource IDs for import
+
+When importing Neon resources, you need to know the specific ID format for each resource type. Always refer to the "Import" section of the specific resource's documentation page on the [Provider's GitHub: `kislerdm/terraform-provider-neon`](https://github.com/kislerdm/terraform-provider-neon/tree/master/docs/resources) for the exact ID format.
+
+Common formats:
+
+- **`neon_project`:** Project ID (e.g., `my-application-project-tofu-actual-id`).
+- **`neon_branch`:** Branch ID (e.g., `br-dev-branch-tofu-actual-id`).
+- **`neon_endpoint`:** Endpoint ID (e.g., `ep-dev-endpoint-tofu-actual-id`).
+- **`neon_role`:** Composite ID: `<project_id>/<branch_id>/<role_name>`.
+- **`neon_database`:** Composite ID: `<project_id>/<branch_id>/<database_name>`.
+- **`neon_api_key` and `neon_jwks_url`:** These do not support import.
+
+### Order of import for dependent resources
+
+When importing resources that depend on each other, it's important to import them in the order of their dependencies:
+
+```plaintext
+Project -> Branch -> Endpoint -> Role -> Database
+```
+
+### Method 1: Using the `tofu import` CLI command
+
+For each Neon resource you want to import:
+
+1.  **Write a resource block:** Add a corresponding minimal `resource` block to your OpenTofu configuration file (e.g., `main.tf`).
+2.  **Run `tofu import`:** Execute the import command: `tofu import <tofu_resource_address> <neon_resource_id>`.
+
+#### Example: Importing resources using `tofu import` CLI
+
+In this example, we'll import the resources we defined earlier in the [Manage Neon Resources](#manage-neon-resources-with-opentofu) section. This needs a project, a branch, an endpoint, a role, and a database already created in your Neon account. These resources will now be imported into a new OpenTofu configuration.
+
+##### Define the HCL resource blocks
+
+In your `main.tf` file, define the resource blocks for the existing resources. You can start with minimal definitions, as OpenTofu will populate the actual values during the import process. You primarily need to define the resource type and a name for OpenTofu to use. OpenTofu will populate the actual attribute values from the live resource into its state file during the import. You'll then use `tofu plan` to see these and update your HCL to match or to define your desired state.
+
+For required attributes (like `project_id` for a branch), you'll either need to hardcode the known ID or reference a resource that will also be imported.
+
+```tofu
+tofu {
+  required_providers {
+    neon = {
+      source  = "kislerdm/neon"
+    }
+  }
+}
+
+provider "neon" {}
+
+# --- Project ---
+resource "neon_project" "my_app_project" {}
+
+# --- Development Branch ---
+# Requires project_id. We'll reference the project we're about to import.
+# The actual value of neon_project.my_app_project.id will be known after its import.
+resource "neon_branch" "dev_branch" {
+  project_id = neon_project.my_app_project.id
+  name       = "feature-x-development"
+}
+
+# --- Development Branch Endpoint ---
+# Requires project_id and branch_id.
+resource "neon_endpoint" "dev_endpoint" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+}
+
+# --- Application User Role on Development Branch ---
+# Requires project_id, branch_id, and name.
+resource "neon_role" "app_user" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+  name       = "application_user"
+}
+
+# --- Service Database on Development Branch ---
+# Requires project_id, branch_id, name, and owner_name.
+resource "neon_database" "service_db" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+  name       = "service_specific_database"
+  owner_name = neon_role.app_user.name
+}
+```
+
+Here's a breakdown of the minimal HCL and why certain attributes are included:
+
+- **`neon_project.my_app_project`**:
+  - This block defines the OpenTofu resource for your main Neon project.
+  - No attributes are strictly required _in the HCL_ for the import command itself, as the project is imported using its unique Neon Project ID. Adding a `name` attribute matching the existing project can aid readability but isn't essential for the import operation.
+
+- **`neon_branch.dev_branch`**:
+  - This defines the OpenTofu resource for your development branch.
+  - It requires `project_id` in the HCL to link it to the (to-be-imported) project resource within OpenTofu.
+  - The `name` attribute should also be specified in the HCL, matching the existing branch's name, as it's a key identifier.
+  - The branch is imported using its unique Neon Branch ID.
+
+- **`neon_endpoint.dev_endpoint`**:
+  - This block defines the OpenTofu resource for the endpoint on your development branch.
+  - It requires both `project_id` and `branch_id` in the HCL to correctly associate it with the imported project and development branch resources within OpenTofu.
+  - Other attributes like `type` (which defaults if unspecified) or autoscaling limits will be read from the live resource during import.
+  - The endpoint is imported using its unique Neon Endpoint ID.
+
+- **`neon_role.app_user`**:
+  - This defines the OpenTofu resource for an application user role.
+  - The HCL requires `project_id` and `branch_id` to link to the respective imported OpenTofu resources.
+  - The `name` attribute must be specified in the HCL and match the existing role's name.
+
+- **`neon_database.service_db`**:
+  - This defines the OpenTofu resource for a service-specific database.
+  - The HCL requires `project_id` and `branch_id` to link to the imported OpenTofu resources.
+  - The `name` attribute must be specified in the HCL and match the existing database's name.
+  - The `owner_name` should also be included, linking to the OpenTofu role resource (e.g., `neon_role.app_user.name`) that owns this database.
+
+All other configurable attributes will be populated into OpenTofu's state file from the live Neon resource during the `tofu import` process. You will then refine your HCL by reviewing the `tofu plan` output.
+
+#### Run the import commands in order
+
+1.  **Import the project:**
+
+    ```shell
+    tofu import neon_project.my_app_project "actual_project_id_from_neon"
+    ```
+
+    You can retrieve the project ID via Neon Console/CLI/API. Learn more: [Manage projects](/docs/manage/projects#project-settings)
+
+    Example output:
+
+    ```shell
+    tofu import neon_project.my_app_project damp-recipe-88779456
+    ```
+
+    ```text
+    neon_project.my_app_project: Importing from ID "damp-recipe-88779456"...
+    neon_project.my_app_project: Import prepared!
+      Prepared neon_project for import
+    neon_project.my_app_project: Refreshing state... [id=damp-recipe-88779456]
+
+    Import successful!
+
+    The resources that were imported are shown above. These resources are now in
+    your OpenTofu state and will henceforth be managed by OpenTofu.
+    ```
+
+2.  **Import the development branch:**
+
+    ```shell
+    tofu import neon_branch.dev_branch "actual_dev_branch_id_from_neon"
+    ```
+
+    You can retrieve the branch ID via Neon Console/CLI/API. Learn more: [Manage branches](/docs/manage/branches)
+
+    The following image shows the branch ID in the Neon Console:
+    ![Neon Console Branch ID](/docs/guides/neon-console-branch-id.png)
+
+    Example output:
+
+    ```shell
+    tofu import neon_branch.dev_branch br-orange-bonus-a4v00wjl
+    ```
+
+    ```text
+    neon_branch.dev_branch: Importing from ID "br-orange-bonus-a4v00wjl"...
+    neon_branch.dev_branch: Import prepared!
+      Prepared neon_branch for import
+    neon_branch.dev_branch: Refreshing state... [id=br-orange-bonus-a4v00wjl]
+
+    Import successful!
+
+    The resources that were imported are shown above. These resources are now in
+    your OpenTofu state and will henceforth be managed by OpenTofu.
+    ```
+
+3.  **Import the development compute endpoint:**
+
+    ```shell
+    tofu import neon_endpoint.dev_endpoint "actual_dev_endpoint_id_from_neon"
+    ```
+
+    You can retrieve the endpoint ID via Neon Console/CLI/API. Learn more: [Manage computes](/docs/manage/computes).
+
+    The following image shows the endpoint ID in the Neon Console:
+    ![Neon Console Compute Endpoint ID](/docs/guides/neon-console-compute-endpoint-id.png)
+
+    Example output:
+
+    ```shell
+    tofu import neon_endpoint.dev_endpoint ep-blue-cell-a4xzunwf
+    ```
+
+    ```text
+    neon_endpoint.dev_endpoint: Importing from ID "ep-blue-cell-a4xzunwf"...
+    neon_endpoint.dev_endpoint: Import prepared!
+      Prepared neon_endpoint for import
+    neon_endpoint.dev_endpoint: Refreshing state... [id=ep-blue-cell-a4xzunwf]
+
+    Import successful!
+
+    The resources that were imported are shown above. These resources are now in
+    your OpenTofu state and will henceforth be managed by OpenTofu.
+    ```
+
+4.  **Import the application user role:**
+
+    ```shell
+    tofu import neon_role.app_user "actual_project_id_from_neon/actual_dev_branch_id_from_neon/application_user"
+    ```
+
+    > Replace `application_user` with the actual name of the role you want to import.
+
+    Example output:
+
+    ```shell
+    tofu import neon_role.app_user "damp-recipe-88779456/br-orange-bonus-a4v00wjl/application_user"
+    ```
+
+    ```text
+    neon_role.app_user: Importing from ID "damp-recipe-88779456/br-orange-bonus-a4v00wjl/application_user"...
+    neon_role.app_user: Import prepared!
+      Prepared neon_role for import
+    neon_role.app_user: Refreshing state... [id=damp-recipe-88779456/br-orange-bonus-a4v00wjl/application_user]
+
+    Import successful!
+
+    The resources that were imported are shown above. These resources are now in
+    your OpenTofu state and will henceforth be managed by OpenTofu.
+    ```
+
+5.  **Import the service database:**
+
+    ```shell
+    tofu import neon_database.service_db "actual_project_id_from_neon/actual_dev_branch_id_from_neon/service_specific_database"
+    ```
+
+    > Replace `service_specific_database` with the actual name of the database you want to import.
+
+    Example output:
+
+    ```shell
+    tofu import neon_database.service_db "damp-recipe-88779456/br-orange-bonus-a4v00wjl/service_specific_database"
+    ```
+
+    ```text
+    neon_database.service_db: Importing from ID "damp-recipe-88779456/br-orange-bonus-a4v00wjl/service_specific_database"...
+    neon_database.service_db: Import prepared!
+      Prepared neon_database for import
+    neon_database.service_db: Refreshing state... [id=damp-recipe-88779456/br-orange-bonus-a4v00wjl/service_specific_database]
+
+    Import successful!
+
+    The resources that were imported are shown above. These resources are now in
+    your OpenTofu state and will henceforth be managed by OpenTofu.
+    ```
+
+    After importing all resources, your OpenTofu state file (`terraform.tfstate`) will now contain the imported resources, and you can manage them using OpenTofu. Follow the [Reconcile your HCL with the imported state](#reconcile-your-hcl-with-the-imported-state) section to update your HCL files with the attributes that were populated during the import.
+
+### Method 2: Using `import` Blocks
+
+OpenTofu also supports a declarative way to import existing resources using `import` blocks in your `.tf` files. This method is similar to the `tofu import` command but allows you to define the import process directly in your configuration file.
+
+**The process with `import` Blocks:**
+
+For each existing Neon resource you want to bring under OpenTofu management, you'll define two blocks in your `.tf` file:
+
+- A standard `resource "resource_type" "resource_name" {}` block. For the initial import, this block can be minimal. It primarily tells OpenTofu the type and name of the resource in your configuration.
+- An `import {}` block:
+  - `to = resource_type.resource_name`: This refers to the OpenTofu address of the `resource` block you defined above.
+  - `id = "neon_specific_id"`: This is the actual ID of the resource as it exists in Neon (e.g., project ID, branch ID, or composite ID for roles/databases).
+
+**Example using `import` blocks:**
+
+In this example, we'll import the resources we defined earlier in the [Manage Neon Resources](#manage-neon-resources-with-opentofu) section. This needs a project, a branch, an endpoint, a role, and a database already created in your Neon account. These resources will now be imported into a new OpenTofu configuration.
+
+Let's say we have the following existing Neon resources and their IDs:
+
+- Project `my_app_project` ID: `damp-recipe-88779456`
+- Branch `dev_branch` ID: `br-orange-bonus-a4v00wjl`
+- Endpoint `dev_endpoint` ID: `ep-blue-cell-a4xzunwf`
+- Role `application_user`
+- Database `service_specific_database`
+
+You would add the following to your `main.tf`:
+
+```tofu
+tofu {
+  required_providers {
+    neon = {
+      source  = "kislerdm/neon"
+    }
+  }
+}
+
+provider "neon" {
+  # API key configured via environment variable or directly
+}
+
+# --- Project Import ---
+import {
+  to = neon_project.my_app_project
+  id = "damp-recipe-88779456" # Replace with your actual Project ID
+}
+
+resource "neon_project" "my_app_project" {
+  # Minimal definition for import.
+  # After import and plan, you'll populate this with actual/desired attributes.
+}
+
+# --- Development Branch Import ---
+import {
+  to = neon_branch.dev_branch
+  id = "br-orange-bonus-a4v00wjl" # Replace with your actual Branch ID
+}
+
+resource "neon_branch" "dev_branch" {
+  project_id = neon_project.my_app_project.id # Links to the TF resource
+  name       = "feature-x-development"        # Should match existing branch name
+}
+
+# --- Development Branch Endpoint Import ---
+import {
+  to = neon_endpoint.dev_endpoint
+  id = "ep-blue-cell-a4xzunwf" # Replace with your actual Endpoint ID
+}
+
+resource "neon_endpoint" "dev_endpoint" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id      # Links to the TF resource
+}
+
+# --- Application User Role on Development Branch Import ---
+import {
+  to = neon_role.app_user
+  # ID format: project_id/branch_id/role_name
+  id = "damp-recipe-88779456/br-orange-bonus-a4v00wjl/application_user"
+}
+
+resource "neon_role" "app_user" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+  name       = "application_user"             # Must match existing role name
+}
+
+# --- Service Database on Development Branch Import ---
+import {
+  to = neon_database.service_db
+  # ID format: project_id/branch_id/name
+  id = "damp-recipe-88779456/br-orange-bonus-a4v00wjl/service_specific_database"
+}
+
+resource "neon_database" "service_db" {
+  project_id = neon_project.my_app_project.id
+  branch_id  = neon_branch.dev_branch.id
+  name       = "service_specific_database"    # Must match existing database name
+  owner_name = neon_role.app_user.name        # Links to the TF role resource
+}
+```
+
+<Admonition type="important">
+You need to replace the IDs in the `import` blocks with the actual IDs of your existing Neon resources. The `to` field in each `import` block refers to the corresponding `resource` block defined in your configuration. The above configuration is a minimal example to get you started with the import process.
+</Admonition>
+
+### Reconcile your HCL with the imported state
+
+After importing your resources using either method, you need to ensure that your HCL configuration accurately reflects the current state of the imported resources. This is an iterative process where you will:
+
+1.  **Run `tofu plan`:**
+
+    ```shell
+    tofu plan
+    ```
+
+2.  **Understanding the plan output:**
+    OpenTofu will compare your HCL `resource` blocks against the detailed state just imported from Neon.
+    - The plan will likely propose to **add many attributes** to your HCL blocks. These are the actual current values of your Neon resources.
+    - You might see "update in-place" actions, for example, for `neon_endpoint` it might show `+ branch_id = "your-branch-id"`. This is normal as OpenTofu reconciles the explicit configuration (where `branch_id` might be a reference that has now resolved to a concrete ID) with the imported state.
+
+3.  **Update your HCL (`main.tf`):**
+    Carefully review the `tofu plan` output. Your primary goal is to update your HCL `resource` blocks to accurately match the actual, imported state of your resources, or to define your desired state if you intend to make changes. Copy the relevant attributes and their values from the plan output into your HCL.
+
+4.  **Repeat `tofu plan`:**
+    After updating your HCL, run `tofu plan` again. Iterate until `tofu plan` shows "No changes. Your infrastructure matches the configuration." or only shows changes you intentionally want to make.
+
+### Verify and reconcile
+
+Once your HCL is fully updated, `tofu plan` should report:
+
+```text
+No changes. Your infrastructure matches the configuration.
+
+OpenTofu has compared your real infrastructure against your configuration and found no
+differences, so no changes are needed.
+```
+
+This confirms that your Neon resources are now successfully managed by OpenTofu.
+
+## Destroying resources with OpenTofu
+
+To remove the resources managed by OpenTofu:
+
+```shell
+tofu destroy
+```
+
+OpenTofu will ask for confirmation.
+
+## Resources
+
+- [OpenTofu Documentation](https://opentofu.org/docs/)
+- [GitHub repository](https://github.com/kislerdm/terraform-provider-neon)
+- [Terraform Registry](https://registry.terraform.io/providers/kislerdm/neon)
+- [OpenTofu Registry](https://search.opentofu.org/provider/kislerdm/neon/latest)
+- [Manage Neon with tofu](/docs/reference/tofu)
+
+<NeedHelp/>
+
+
 # Distributed hyperparameter tuning with Optuna, Neon Postgres, and Kubernetes
 
 ---
@@ -42379,7 +43170,7 @@ Enable the **Connection pooling** toggle on the **Connection Details** panel to 
 All Neon connection strings have the following format:
 
 ```bash
-postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require
 ```
 
 - `<user>` is the database user.
@@ -42387,7 +43178,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmo
 - `<endpoint_hostname>.neon.tech` is the host with `neon.tech` as the [top-level domain (TLD)](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `<port>` is the Neon port number. The default port number is 5432.
 - `<dbname>` is the name of the database. **neondb** is the default database created with each Neon project if you do not define your own.
-- `?sslmode=require` is an optional query parameter that enforces [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode for better security when connecting to the Postgres instance.
+- `?sslmode=require&channel_binding=require` are optional query parameters that enforce [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding for better security when connecting to the Postgres instance.
 
 Save the connecting string somewhere safe. You will use it later to configure the `POSTGRES_URL` variable.
 
@@ -42407,7 +43198,7 @@ When prompted, choose the following:
 
 - `ecommerce` as the project template.
 - `PostgreSQL (beta)` as the database.
-- The connection string you obtained earlier as the PostgreSQL connection string: `postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require` .
+- The connection string you obtained earlier as the PostgreSQL connection string: `postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require&channel_binding=require` .
 
 Once that's done, change to the project directory and start the app:
 
@@ -42514,7 +43305,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>
 - `endpoint_hostname` is the host with neon.tech as the [TLD](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `port` is the Neon port number. The default port number is 5432.
 - `dbname` is the name of the database. “neondb” is the default database created with each Neon project.
-- `?sslmode=require` an optional query parameter that enforces the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode while connecting to the Postgres instance for better security.
+- `?sslmode=require&channel_binding=require` optional query parameters that enforce the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding while connecting to the Postgres instance for better security.
 
 Save this connecting string somewhere safe to be used as the `DATABASE_URL` further in the guide. Proceed further in this guide to create a Node.js application.
 
@@ -42968,7 +43759,6 @@ Once enabled, you'll have access to new operators and functions for full-text se
 Before diving into implementation, it's helpful to understand the two key components that make `pg_search` efficient:
 
 1. **BM25 scoring** calculates how relevant each result is based on:
-
    - Word frequency within a document (how often a search term appears)
    - Word rarity across all documents (uncommon terms get higher scores)
    - Document length (adjusts scores so longer documents don't automatically rank higher)
@@ -43743,7 +44533,6 @@ Next, we'll dockerize the frontend React application. We'll create a separate `D
    ```
 
    This Dockerfile does the following:
-
    - It first builds the React app using the Node.js image.
    - Then, it uses an Nginx image to serve the build files, ensuring that the app is ready for production.
 
@@ -43783,7 +44572,6 @@ Now, we'll use Docker Compose to run both the backend API and the frontend toget
    ```
 
    This file defines three services:
-
    - **`api`**: The backend service, built from the `snippet-search-api` directory. It expects the `DATABASE_URL` environment variable to connect to the Neon database. You should replace `[username]`, `[password]`, and `[endpoint]` with your actual Neon database credentials or use a `.env` file to manage these variables securely.
    - **`frontend`**: The React frontend service, built from the `snippet-search-ui` directory. It will serve the static build files via Nginx.
 
@@ -43798,12 +44586,10 @@ With the Dockerfiles and `compose.yml` file in place, we can now build and start
    ```
 
    This command will:
-
    - Build the Docker images for the backend API and the frontend.
    - Create and start the containers for the backend API, frontend, and Postgres database.
 
 2. Access the application:
-
    - The backend API will be available at `http://localhost:3000`.
    - The frontend React app will be served at `http://localhost`.
 
@@ -43901,7 +44687,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>
 - `endpoint_hostname` is the host with neon.tech as the [TLD](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `port` is the Neon port number. The default port number is 5432.
 - `dbname` is the name of the database. “neondb” is the default database created with each Neon project.
-- `?sslmode=require` an optional query parameter that enforces the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode while connecting to the Postgres instance for better security.
+- `?sslmode=require&channel_binding=require` optional query parameters that enforce the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding while connecting to the Postgres instance for better security.
 
 You will be using these connecting string components further in the guide. Proceed further in this guide to connect pgAdmin4 to your Postgres.
 
@@ -43910,12 +44696,10 @@ You will be using these connecting string components further in the guide. Proce
 1. **Open pgAdmin4**: Once pgAdmin4 is running, you will see the dashboard.
 
 2. **Create a New Server Connection**:
-
    - Right-click on "Servers" in the left sidebar and select "Create" > "Server...".
    - In the "Create - Server" dialog, enter a name for your server connection.
 
 3. **Configure Connection Settings**:
-
    - Go to the "Connection" tab.
    - Enter the following details:
      - **Host**: The endpoint of your hosted Postgres database (e.g., `ep-...us-east-2.aws.neon.tech`).
@@ -43951,6 +44735,554 @@ You will be using these connecting string components further in the guide. Proce
 pgAdmin4 is an essential tool for managing your hosted Postgres database. With its user-friendly interface, you can easily perform various database operations, from creating databases and tables to running complex queries. By following this guide, you should be well-equipped to utilize pgAdmin4 effectively.
 
 <NeedHelp />
+
+
+# Zero downtime schema migrations with pgroll
+
+---
+title: Zero downtime schema migrations with pgroll
+subtitle: A comprehensive guide to using pgroll for safe, reversible Postgres migrations
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-06-30T00:00:00.000Z'
+updatedOn: '2025-06-30T00:00:00.000Z'
+---
+
+Database schema migrations are a critical but often risky part of application development. Traditional migration tools can lock tables, cause downtime, and make rollbacks difficult, especially for applications that require high availability. [`pgroll`](https://github.com/xataio/pgroll) is an open-source CLI tool that solves this problem for Postgres, enabling zero-downtime, reversible schema changes.
+
+This guide will walk you through understanding `pgroll`, and how to use it effectively in your development workflow to ensure safe, continuous database migrations without service interruptions.
+
+## What is `pgroll`?
+
+`pgroll` is an open-source command-line tool for Postgres that enables **zero-downtime, reversible schema migrations** by allowing multiple schema versions to coexist during updates, so client applications remain uninterrupted even during breaking changes. It manages complex migrations safely without locking the database and supports instant rollbacks if needed.
+
+### Key features
+
+- **Zero downtime migrations:** `pgroll` employs an expand/contract workflow, ensuring changes are applied without taking your application offline or locking database tables.
+- **Instant, reversible changes:** Active migrations can be instantly rolled back with a single command, providing a critical safety net for production deployments.
+- **Multi-version schema support:** `pgroll` allows old and new versions of your schema to coexist simultaneously. This decouples application and database deployments, as new application versions can use the new schema while legacy versions continue to function on the old one.
+- **Declarative migrations:** You define the _desired end state_ of your schema in simple `yaml` or `json` files. `pgroll` handles the complex, lock-safe SQL execution required to achieve that state.
+- **Automated data backfilling:** When adding constraints like `NOT NULL` to a column with existing data, `pgroll` automates the entire backfilling process in the background without blocking writes.
+
+`pgroll` is the ideal solution for environments with high-availability requirements where schema changes must be deployed frequently and safely.
+
+### Why not traditional migration strategies?
+
+To appreciate `pgroll`'s approach, it helps to understand the trade-offs of conventional migration methods. Schema migrations in Postgres typically follow one of two strategies:
+
+#### Strategy 1: Scheduled downtime (The maintenance window)
+
+This method prioritizes operational simplicity at the cost of service availability. It is only viable for applications where scheduled downtime is acceptable.
+
+**Process:**
+
+1.  **Halt service:** Stop application servers to prevent all database writes.
+2.  **Apply migration:** Execute the migration script, which often acquires `ACCESS EXCLUSIVE` locks.
+3.  **Deploy new code:** Deploy the application version compatible with the new schema.
+4.  **Restore service:** Restart application servers.
+
+**Challenges:**
+
+- **Service interruption:** Unacceptable for high-availability systems.
+- **High-risk, high-pressure event:** Any failure during the migration extends the outage.
+- **Difficult rollbacks:** Reverting a failed migration is operationally complex, often requiring a database restore.
+
+#### Strategy 2: Manual Zero-downtime migration (The expand/contract pattern)
+
+This advanced strategy avoids downtime but transfers complexity to the application layer and development teams.
+
+**Process:**
+
+1.  **Expand phase:** Apply only backward-compatible changes (e.g., add a new column as `NULL`). Deploy new application code that handles both schema versions, often requiring complex dual-write logic.
+2.  **Transition phase:** Run a custom script to backfill data into the new column, usually in small batches to avoid table locks.
+3.  **Contract phase:** Once data is migrated and consistent, apply the breaking change (e.g., add a `NOT NULL` constraint).
+4.  **Cleanup:** Deploy a final application version that removes the dual-write logic and run another migration to drop the old column.
+
+**Challenges:**
+
+- **Engineering overhead:** This multi-stage process is slow and requires development effort to manage dual-writes, backfills, and feature flags.
+- **Operational complexity:** The process is error-prone and requires coordination across multiple deployments.
+- **Data consistency risks:** Bugs in the application's backfill or dual-write logic can lead to silent data corruption.
+
+### How `pgroll` solves these problems
+
+`pgroll` transforms the complex, manual migration process into a simple, automated one. It achieves this by codifying the **expand/contract** pattern, allowing you to focus on defining _what_ you want to change, while `pgroll` handles _how_ to apply it safely.
+
+#### The `pgroll` migration lifecycle
+
+A typical migration with `pgroll` involves a clear, two-phase process that separates database changes from application deployment, ensuring safety and reversibility.
+
+**Step 1: Define your migration**
+
+You start by creating a declarative migration file in `yaml` or `json` that defines the desired schema changes.
+
+**Step 2: Start the migration (`pgroll start`) - The "Expand" phase**
+
+Running `pgroll start <migration-file>` initiates the migration.
+
+- **What happens:** `pgroll` applies only _additive_ (non-breaking) changes. For breaking changes like adding a `NOT NULL` constraint, it creates a temporary helper column, backfills data, and sets up triggers to keep both old and new columns synchronized.
+- **The result:** A new, versioned schema is created and becomes accessible. The old schema version remains fully operational.
+
+**Step 3: Deploy your new application code**
+
+With the new schema available, you can safely deploy your new application.
+
+- **What you do:** Configure your new application instances to use the new schema version by setting their `search_path` connection parameter. You can get the latest schema name by running `pgroll latest schema`. Learn more about this in the [Connecting your application to the new schema version](#step-5-connecting-your-application-to-the-new-schema-version) section.
+- **The key benefit:** During this phase, both old and new application versions can run concurrently against their respective schema versions, enabling phased rollouts like canary or blue-green deployments.
+
+**Step 4: Complete the migration (`pgroll complete`) - The "Contract" phase**
+
+Once your new application is stable and no traffic is hitting instances that use the old schema, you finalize the process.
+
+- **What happens:** Running `pgroll complete` performs the "contract" steps. It removes the old schema version, drops temporary columns and triggers, and makes the schema changes permanent.
+- **The result:** The migration is complete, and the database schema is now in its final, clean state.
+
+Optionally, you can also run `pgroll rollback` at any point before completing the migration to revert to the previous schema version. This is a critical safety feature that allows you to quickly undo changes if issues arise during the migration process.
+
+![Migration Flow Diagram](https://raw.githubusercontent.com/xataio/pgroll/main/docs/img/schema-changes-flow@2x.png)
+
+> _Image source: [pgroll GitHub repository](https://github.com/xataio/pgroll/blob/main/docs/img/schema-changes-flow@2x.png)_
+
+#### How `pgroll` manages multiple schema versions
+
+For each migration, `pgroll` creates a new, versioned schema (e.g., `public_01_initial`, `public_02_add_column`). These schemas do not contain the physical tables themselves but rather [views](/postgresql/postgresql-views) that point to the underlying tables in your main schema (e.g., `public`).
+
+This abstracts the schema's structure. For example, when you rename a column, the new version schema's view presents the column with its new name, while the old version schema's view continues to show the old name. This allows different application versions to interact with the same underlying data through different schema _lenses_, completely unaware of the ongoing migration.
+
+![Multiple schema versions diagram](https://raw.githubusercontent.com/xataio/pgroll/main/docs/img/migration-schemas@2x.png)
+
+> _Image source: [pgroll GitHub repository](https://github.com/xataio/pgroll/blob/main/docs/img/migration-schemas@2x.png)_
+
+## Getting started
+
+Now that you understand the basics, let's dive into using `pgroll` for schema migrations in a Neon Postgres database. This guide will take you through installing and setting up `pgroll`, creating your first migration, and understanding how to manage schema changes safely.
+
+### Prerequisites
+
+- **`pgroll` CLI installed**: Follow the [installation instructions](#step-1-installation) below.
+- **Neon Account and Project**: A Neon account and a project with a running Postgres database. You can create a free Neon account and project at [pg.new](https://pg.new).
+
+### Step 1: Installation
+
+You can install `pgroll` using various methods depending on your operating system and preferences. The recommended way is to use the pre-built binaries available for major platforms.
+
+If you are on macOS, you can install `pgroll` using Homebrew:
+
+```bash shouldWrap
+brew tap xataio/pgroll
+brew install pgroll
+```
+
+If you prefer to install from source, ensure you have Go installed and run:
+
+```bash shouldWrap
+go install github.com/xataio/pgroll@latest
+```
+
+If you need a pre-compiled binary for your platform, please refer to [`pgroll` installation instructions](https://pgroll.com/docs/latest/installation).
+
+### Step 2: Initialize `pgroll`
+
+`pgroll` requires a dedicated schema (by default, `pgroll`) to store its internal state. Initialize it by running the following command:
+
+```bash shouldWrap
+pgroll init --postgres-url "postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require"
+```
+
+> Replace `<user>`, `<password>`, `<endpoint_hostname>`, `<port>`, and `<dbname>` with your Neon database connection details. You can find these in the [Neon Console](https://console.neon.tech) under your project's **Connect** section. Learn more: [Connect from any application](/docs/connect/connect-from-any-app)
+
+### Step 3: Your first migration
+
+<Admonition type="important" title="Working with an existing database?">
+The following steps start by creating new tables. If you are applying `pgroll` to a database that already contains tables, you must first create a baseline of your existing schema. Please follow the instructions in the **[Onboarding an Existing Database](#onboarding-an-existing-database-baseline)** section.
+</Admonition>
+
+Migrations in `pgroll` are defined declaratively in `yaml` or `json` files. This means you specify _what_ you want the end state of your schema to be, and `pgroll` handles the complex steps of _how_ to get there safely.
+
+Let's create a `users` table. Save the following content to a file named `migrations/01_create_users.yaml`:
+
+```yaml
+# A list of one or more schema change operations
+operations:
+  # The first operation is to create a table
+  - create_table:
+      # The name of the table to create
+      name: users
+      # A list of column definitions for the table
+      columns:
+        - name: id
+          type: serial
+          pk: true
+        - name: name
+          type: varchar(255)
+          unique: true
+        - name: description
+          type: text
+          nullable: true
+```
+
+#### Understanding the migration syntax
+
+Let's quickly break down the file you just created:
+
+- `operations`: This is the top-level key for a list of actions `pgroll` will perform. A single migration file can contain multiple operations.
+- `create_table`: This is a specific `pgroll` operation. It defines a new table and its properties.
+- `columns`: Inside `create_table`, this array defines each column's `name`, `type`, and any constraints like `pk` (primary key), `unique`, or `nullable`.
+
+This declarative approach is what allows `pgroll` to analyze the changes, manage locks intelligently, and perform migrations without downtime. For a complete list of all supported actions, such as `alter_column` or `drop_index`, see the official **[pgroll operations reference](https://pgroll.com/docs/latest/operations)**.
+
+<Admonition type="note" title="Coming from an ORM or SQL Scripts?">
+You don't always have to write these YAML files by hand. `pgroll` can automatically generate migrations from standard SQL files. We'll cover how to use this feature with tools like Drizzle in the [Generating migrations from ORMs](#generating-migrations-with-orms) section.
+</Admonition>
+
+Since this is the first migration, there's no "old" schema to preserve compatibility with, so we can start and complete it in one step using the `--complete` flag.
+
+```bash shouldWrap
+pgroll start migrations/01_create_users.yaml --postgres-url "postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require" --complete
+```
+
+### Step 4: A breaking change (add `NOT NULL` constraint)
+
+Now, let's make the `description` column non-nullable. This is a classic breaking change, as it introduces two immediate challenges that would cause downtime with a traditional migration tool:
+
+1.  **Existing data:** The `users` table may already contain rows where `description` is `NULL`, which would violate the new constraint.
+2.  **Live application:** Your running application code is still operating under the assumption that the column is nullable and may attempt to insert `NULL` values, which would result in runtime errors.
+
+This is precisely the type of scenario `pgroll` is designed to handle without disrupting your service. To perform this migration, we will use `pgroll`'s ability to create a new schema version that temporarily allows `NULL` values while we backfill existing data. In this case, we must provide an `up` SQL expression to tell `pgroll` how to backfill any existing `NULL` values and a `down` expression to revert the changes in case of a rollback.
+
+Create a new migration file named `migrations/02_make_description_not_null.yaml` with the following content:
+
+```yaml
+operations:
+  - alter_column:
+      table: users
+      column: description
+      nullable: false
+      up: SELECT CASE WHEN description IS NULL THEN 'No description provided' ELSE description END
+      down: description
+```
+
+We'll now start the migration using `pgroll start`, which will perform the "expand" phase. This phase prepares the database for the breaking change without applying it yet.
+
+```bash shouldWrap
+pgroll start migrations/02_make_description_not_null.yaml --postgres-url "postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require"
+```
+
+At this point, `pgroll` has performed the "expand" phase:
+
+1.  It created a temporary column `_pgroll_new_description` on the `users` table.
+2.  It backfilled this new column using your `up` SQL, converting `NULL`s to a valid string.
+3.  It created triggers to transparently sync writes between `description` and `_pgroll_new_description`.
+4.  It created a new schema version, `public_02_make_description_not_null`, whose view exposes `_pgroll_new_description` as `description`.
+
+Your old applications can continue using the previous schema version, while you deploy new applications configured to use the new version.
+
+### Step 5: Connecting your application to the new schema version
+
+The key to a zero-downtime rollout is updating your application to point to the new schema version. This is done by setting the `search_path` for the database connection.
+
+First, you can get the name of the latest schema version directly from `pgroll`. This is ideal for use in CI/CD pipelines:
+
+```bash shouldWrap
+export PGROLL_SCHEMA_VERSION=$(pgroll latest --with-schema --postgres-url "postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require")
+echo $PGROLL_SCHEMA_VERSION
+# Example output: public_02_make_description_not_null
+```
+
+You would then pass this environment variable (`PGROLL_SCHEMA_VERSION`) to your application during deployment.
+
+#### Example: Configuring a TypeScript/Drizzle Application
+
+To connect your application to a new schema version, you must configure your database client to use the correct `search_path`. Since Drizzle ORM does not have a built-in, session-level way to set this, the recommended approach is to wrap your queries within a **transaction**. This ensures the `SET search_path` command is executed for the current session before your application code queries the database.
+
+<Admonition type="warning" title="Session-Based Connection Required">
+Setting the `search_path` is a session-level command. This means you must use a database driver that supports persistent, interactive sessions.
+
+For Neon users, the stateless **`drizzle-orm/neon-http` driver is not suitable for this task**. You must use a session-based driver like `postgres-js`, `node-postgres` (`pg`), or the `neon-serverless` driver (which uses WebSockets).
+</Admonition>
+
+Here are examples for three popular drivers. In each case, we assume the schema name (e.g., `public_02_make_description_not_null`) is passed to the application via an environment variable like `PGROLL_SCHEMA_VERSION` as shown above.
+
+<CodeTabs reverse={true} labels={["postgres.js", "node-postgres", "Neon serverless driver"]}>
+
+```typescript
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import { users } from './db/schema';
+import 'dotenv/config';
+
+// Get the target schema from environment variables
+const schema = process.env.PGROLL_SCHEMA_VERSION || 'public';
+
+const client = postgres(process.env.DATABASE_URL!);
+const db = drizzle({ client });
+
+async function getUsers() {
+  try {
+    // Wrap your query in a transaction to set the search_path
+    const allUsers = await db.transaction(async (tx) => {
+      await tx.execute(`SET search_path TO ${schema}`);
+      return tx.select().from(users);
+    });
+
+    console.log(`Users from schema '${schema}':`, allUsers);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  } finally {
+    await client.end();
+  }
+}
+
+getUsers();
+```
+
+```typescript
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+import { users } from './db/schema';
+import 'dotenv/config';
+
+// Get the target schema from environment variables
+const schema = process.env.PGROLL_SCHEMA_VERSION || 'public';
+
+const client = new Pool({
+  connectionString: process.env.DATABASE_URL!,
+});
+
+const db = drizzle({ client });
+
+async function getUsers() {
+  try {
+    // Wrap your query in a transaction to set the search_path
+    const allUsers = await db.transaction(async (tx) => {
+      await tx.execute(`SET search_path TO ${schema}`);
+      return tx.select().from(users);
+    });
+
+    console.log(`Users from schema '${schema}':`, allUsers);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  } finally {
+    await client.end();
+  }
+}
+
+getUsers();
+```
+
+```typescript
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import { users } from './db/schema';
+import ws from 'ws';
+import 'dotenv/config';
+
+// Required for WebSocket connections in Node.js
+neonConfig.webSocketConstructor = ws;
+
+// Get the target schema from environment variables
+const schema = process.env.PGROLL_SCHEMA_VERSION || 'public';
+
+const client = new Pool({
+  connectionString: process.env.DATABASE_URL!,
+});
+const db = drizzle({ client });
+
+async function getUsers() {
+  try {
+    // Wrap your query in a transaction to set the search_path
+    const allUsers = await db.transaction(async (tx) => {
+      await tx.execute(`SET search_path TO ${schema}`);
+      return tx.select().from(users);
+    });
+
+    console.log(`Users from schema '${schema}':`, allUsers);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+  } finally {
+    await client.end();
+  }
+}
+
+getUsers();
+```
+
+</CodeTabs>
+
+The key pattern in all these examples is wrapping your database calls in a `db.transaction`. This guarantees that the `SET search_path` command and your actual queries are executed within the same database session, ensuring your application interacts with the correct `pgroll` version schema.
+
+For examples in other languages and frameworks, please refer to the official `pgroll` documentation on [integrating client applications](https://pgroll.com/docs/latest/guides/clientapps).
+
+### Step 6: Complete the migration
+
+Once all your application instances have been updated to use the new schema, you can safely complete the migration.
+
+```bash shouldWrap
+pgroll complete --postgres-url "postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require"
+```
+
+`pgroll` will now perform the "contract" phase: drop the old `description` column, rename `_pgroll_new_description` to `description`, apply the `NOT NULL` constraint permanently, and remove the temporary triggers and the old version schema.
+
+### Step 7: Rolling back
+
+If you discover an issue after `start` but before `complete`, you can instantly and safely roll back the changes.
+
+```bash shouldWrap
+pgroll rollback --postgres-url "postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require"
+```
+
+This command removes the new version schema and all temporary structures, reverting the database to its exact state before the migration began. This operation has no impact on applications still using the old schema version.
+
+## Integrating `pgroll` into your workflow
+
+`pgroll` is designed to fit seamlessly into modern development practices, including workflows with ORMs and CI/CD pipelines.
+
+### Generating migrations with ORMs
+
+You don't need to write `pgroll` migrations by hand. Most ORMs can generate schema changes as raw SQL, which `pgroll` can then convert into its declarative format.
+
+The key command is `pgroll convert`, which reads SQL statements and translates them into `pgroll`'s YAML or JSON format.
+
+### Example: Drizzle ORM
+
+A typical workflow with Drizzle ORM and `pgroll` involves the following steps:
+
+1.  **Modify your drizzle schema:** Start by making the desired changes to your schema definitions in your project's `db/schema.ts` file.
+
+2.  **Generate the SQL migration:** Use the Drizzle Kit CLI to generate a standard SQL migration file from your schema changes.
+
+    ```shell
+    npx drizzle-kit generate
+    ```
+
+    This creates a new `.sql` file in your migrations folder.
+
+3.  **Convert to a `pgroll` migration:** Use the `pgroll` CLI to convert the generated SQL file into `pgroll`'s declarative YAML format.
+
+    ```shell
+    pgroll convert <path-to-your-drizzle-generated.sql> > <path-to-your-new.yaml>
+    ```
+
+    **Crucially, review the output YAML.** For any breaking changes, you will likely need to manually provide the correct `up` and `down` SQL expression to handle data backfilling.
+
+    <Admonition type="important" title="Manual review required">
+    The `convert` command is a powerful starting point, but you may need to manually edit the output. For complex changes, `pgroll` often creates `TODO` markers for `up`/`down` expressions that it cannot infer automatically. Always review and complete the generated migration file.
+    </Admonition>
+
+4.  **Start the migration:** Apply the migration to your database using the `start` command. This creates the new schema version alongside the old one without causing downtime.
+
+    ```shell
+    pgroll start <path-to-your-new.yaml>
+    ```
+
+5.  **Test and deploy your new application:**
+    - Fetch the new schema name using `pgroll latest schema`.
+    - In your CI/CD pipeline, deploy the new version of your application, configuring it to use the new schema via an environment variable (e.g., `PGROLL_SCHEMA_VERSION`).
+    - This is the ideal stage for phased rollouts (canary, blue-green), as the old application version continues to run unaffected on the previous schema.
+
+6.  **Validate and finalize:**
+    - **If an issue is found,** you can instantly and safely revert the database changes with `pgroll rollback`. This will not affect the running (old) application.
+    - **If the new application is stable,** proceed with a full rollout.
+
+7.  **Complete the migration:** Once you are confident that no services are using the old schema, finalize the process by running:
+    ```shell
+    pgroll complete
+    ```
+    This removes the old schema version and cleans up all temporary columns and triggers, leaving your database in its new, permanent state.
+
+This workflow of generating and converting SQL can be adapted for other ORMs like Sequelize, TypeORM, or Prisma that can output schema changes as SQL files.
+
+## Onboarding an existing database (`baseline`)
+
+If you want to use `pgroll` on a project with an existing schema, you don't need to recreate its migration history. The `baseline` command establishes a starting point.
+
+```bash shouldWrap
+pgroll baseline 01_initial_schema ./migrations
+```
+
+This command:
+
+- Records the current schema state as the starting point in `pgroll`'s internal tables.
+- Creates an empty placeholder migration file (`01_initial_schema.yaml`).
+- Does **not** apply any changes to your database.
+
+You should then use a tool like `pg_dump --schema-only` to capture your current schema DDL and place it inside a `sql` operation within the placeholder file. All future migrations will now build upon this baseline.
+
+## Common migration operations
+
+`pgroll` migrations consist of a list of declarative operations. Below are a few common examples.
+
+<Admonition type="note" title="Refer to the Official Documentation">
+The following examples showcase some of the most common use cases, but `pgroll`'s capabilities are far more extensive. It provides a comprehensive suite of declarative operations for fine-grained schema control, including:
+
+- **Table Management:** `create_table`, `drop_table`, and `rename_table`.
+- **Column Manipulation:** `add_column`, `drop_column`, and a powerful `alter_column` operation for changing types, nullability, defaults, and comments.
+- **Indexes and Constraints:** Full lifecycle management for indexes and constraints, including `create_index`, `drop_index`, `create_constraint`, `drop_constraint`, and `rename_constraint`.
+- **Raw SQL Escape Hatch:** An `sql` operation for executing custom DDL or handling advanced scenarios not covered by the declarative operations.
+
+For a complete list of all operations and their detailed parameters, it is highly recommended to consult the official [pgroll Operations Reference](https://pgroll.com/docs/latest/operations).
+</Admonition>
+
+#### Create table
+
+To create a new table, you can use the `create_table` operation. This operation allows you to define the table name and its columns, including types and constraints.
+
+```yaml
+operations:
+  - create_table:
+      name: products
+      columns:
+        - name: id
+          type: serial
+          pk: true
+        - name: name
+          type: varchar(255)
+          unique: true
+        - name: price
+          type: decimal(10,2)
+```
+
+#### Add column
+
+Creating a new column in an existing table is straightforward with the `add_column` operation. You can specify the column name, type, and any default value.
+
+```yaml
+operations:
+  - add_column:
+      table: reviews
+      column:
+        name: rating
+        type: text
+        default: '0'
+```
+
+#### Raw SQL (escape hatch)
+
+For operations not natively supported, you can use raw SQL. Be aware that these operations do not come with `pgroll`'s zero-downtime guarantees and should be used with caution.
+
+```yaml
+operations:
+  - sql:
+      up: CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)
+      down: DROP TABLE users
+```
+
+## Conclusion
+
+`pgroll` provides a practical solution for Postgres schema migrations by using a declarative, multi-version approach. This method automates complex updates, turning them into a safer and more predictable workflow.
+
+The core benefits are the ability to achieve zero-downtime deployments and perform instant rollbacks, which reduces the risk associated with production schema changes. While this requires adapting deployment strategies to manage the `search_path` in client applications, the trade-off results in a more reliable migration process.
+
+For organizations that prioritize high availability and continuous delivery, `pgroll` offers a valuable framework for evolving database schemas safely.
+
+## Resources
+
+- [pgroll GitHub Repository](https://github.com/xataio/pgroll)
+- [pgroll Official Documentation](https://pgroll.com/docs)
+- [Introducing pgroll: zero-downtime, reversible, schema migrations for Postgres](https://pgroll.com/blog/introducing-pgroll-zero-downtime-reversible-schema-migrations-for-postgres)
+- [Postgres Schema Search Path Documentation](https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-PATH)
+
+<NeedHelp/>
 
 
 # Using LISTEN and NOTIFY for Pub/Sub in PostgreSQL
@@ -44123,7 +45455,7 @@ The development-specific libraries include:
 To set up a serverless Postgres, go to the [Neon console](https://console.neon.tech/app/projects) and create a new project. Once your project is created, you will receive a connection string that you can use to connect to your Neon database. The connection string will look like this:
 
 ```bash shouldWrap
-postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require
 ```
 
 Replace `<user>`, `<password>`, `<endpoint_hostname>`, `<port>`, and `<dbname>` with your specific details.
@@ -44793,7 +46125,6 @@ After creating the database, make sure to copy the connection details (such as *
     We will initialize an Azure Functions project where we will create an **HTTP Trigger function** in Visual Studio Code (VS Code) using the **Azure Functions extension**.
 
 2.  **Install the Azure Functions extension**:
-
     - Open VS Code, or install [Visual Studio Code](https://code.visualstudio.com/) if it's not yet installed.
     - Go to the extensions tab or press `Ctrl+Shift+X`.
     - Search for "Azure Functions" and install the official extension.
@@ -44801,7 +46132,6 @@ After creating the database, make sure to copy the connection details (such as *
 3.  **Create an Azure Functions Project**
 
     Open the command palette or press `Ctrl+Shift+P` to open the command palette.
-
     - Type `Azure Functions: Create New Project...` and select that option.
     - Choose a directory where you want to create the project.
     - Select the programming language (`JavaScript` in our case).
@@ -44863,7 +46193,7 @@ After creating the database, make sure to copy the connection details (such as *
     Here's an example of the connection string you'll copy:
 
     ```bash shouldWrap
-    DATABASE_URL='postgresql://neondb_owner:************@ep-quiet-leaf-a85k5wbg.eastus2.azure.neon.tech/neondb?sslmode=require'
+    DATABASE_URL='postgresql://neondb_owner:************@ep-quiet-leaf-a85k5wbg.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require'
     ```
 
 7.  **Modify the `local.settings.json` file**
@@ -44878,7 +46208,7 @@ After creating the database, make sure to copy the connection details (such as *
       "Values": {
         "AzureWebJobsStorage": "",
         "FUNCTIONS_WORKER_RUNTIME": "node",
-        "DATABASE_URL": "postgresql://neondb_owner:************@ep-quiet-leaf-a85k5wbg.eastus2.azure.neon.tech/neondb?sslmode=require"
+        "DATABASE_URL": "postgresql://neondb_owner:************@ep-quiet-leaf-a85k5wbg.eastus2.azure.neon.tech/neondb?sslmode=require&channel_binding=require"
       }
     }
     ```
@@ -45187,7 +46517,6 @@ After creating the database, make sure to copy the connection details (such as *
 ## Step 3: Test the Function Locally
 
 1. **Run the Function Locally**:
-
    - Open the integrated terminal in VS Code.
    - Run the following command `npm run start`, which will execute `func start` to start the project and launch the functions:
 
@@ -45196,14 +46525,12 @@ After creating the database, make sure to copy the connection details (such as *
      ```
 
 2. **Test with a Browser or Postman**:
-
    - Open a browser and navigate to `http://localhost:7071/api/manageClients` to test your function.
    - You can also use a tool like **Postman** to send **HTTP requests**.
 
 ## Step 4: Test and Deploy the Function to Azure
 
 1. **Deploy Your Function**:
-
    - Open the command palette with `Ctrl+Shift+P` and type `Azure Functions: Deploy to Function App...`.
    - Follow the instructions to select your Azure subscription and choose or create a Function App, then complete the deployment process.
 
@@ -45616,7 +46943,6 @@ Follow these steps to set up your backend for the full-stack portfolio website:
     ```
 
     where each package does the following:
-
     - `FastAPI` : A Web / API framework
     - `AsyncPG` : An asynchronous PostgreSQL client
     - `Uvicorn` : An ASGI server for our app
@@ -45671,7 +46997,7 @@ This table will store the embeddings generated by OpenAI for the chatbot respons
 With your schema in place, you're now ready to connect to your database in the FastAPI application. To do this you must create a `.env` file in the root of the project to hold environment-specific variables, such as the connection string to your Neon PostgreSQL database, and API keys.
 
 ```bash
-DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require&channel_binding=require
 OPENAI_API_KEY=your-api-key
 OPENAI_ORG_ID=your-org-id
 OPENAI_PROJECT_ID=your-project-id
@@ -46023,7 +47349,6 @@ Now that the backend is set up and running, it's time to set up the frontend usi
 
    Now, you will update the content of your portfolio, such as your bio, projects, and skills, and experience to match your personal details. Each of the section in the portfolio is a separate component that you can modify to include your own information.
    These include:
-
    - Landing: The landing page of the portfolio, which includes your name, bio, and a profile picture.
    - Experience: A section that lists your work experience, including the company name, logo, your position, and a brief description of your role.
    - Skills: A section that lists your technical skills, such as programming languages, frameworks, and tools you are proficient in. Find the logos of your technologies at [Devicon](https://devicon.dev/)
@@ -46080,7 +47405,6 @@ The only prerequisite for this section is having Docker installed on your machin
    ```
 
    This Dockerfile:
-
    - Copies your FastAPI app into the container
    - Installs all necessary Python dependencies
    - Exposes port 8000, which is where FastAPI will run
@@ -46116,7 +47440,6 @@ The only prerequisite for this section is having Docker installed on your machin
    ```
 
    This Dockerfile:
-
    - Uses Node.js to install frontend dependencies
    - Builds the React application
    - Serves the static build using the serve package
@@ -46159,7 +47482,6 @@ The only prerequisite for this section is having Docker installed on your machin
    ```
 
    This command will:
-
    - Build the Docker images for both the backend and frontend
    - Start both the FastAPI backend (on port 8000) and the React frontend (on port 3000)
    - Automatically manage the service dependencies (the frontend will wait until the backend is up before starting)
@@ -47846,7 +49168,7 @@ cp .env.example .env
 To set up a serverless Postgres, go to the [Neon console](https://console.neon.tech/app/projects) and create a new project. Once your project is created, you will receive a connection string that you can use to connect to your Neon database. The connection string will look like this:
 
 ```bash shouldWrap
-postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+postgresql://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require
 ```
 
 Replace `<user>`, `<password>`, `<endpoint_hostname>`, `<port>`, and `<dbname>` with your specific details.
@@ -48867,7 +50189,6 @@ Your AI MCQ Generator application should now be live and accessible to users. Sh
 To optimize your Replit Agent development experience and build applications effectively, consider these best practices:
 
 - **Prompt engineering:**
-
   - **Improve Prompt**: Use the "Improve Prompt" feature in Replit Agent to refine the prompt and provide additional context. This helps Replit Agent better understand your requirements and generate more accurate code.
     ![Replit Agent Improve Prompt](/docs/guides/replit-agent-improve-prompt.png)
   - **Contextual prompts:** Initiate prompts with clear and comprehensive context. For example, "Modify the MCQ display to show one question at a time."
@@ -48945,7 +50266,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>
 - `endpoint_hostname` is the host with neon.tech as the [top level domain (TLD)](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `port` is the Neon port number. The default port number is 5432.
 - `dbname` is the name of the database. “neondb” is the default database created with each Neon project if you don't specify your own database name.
-- `?sslmode=require` is an optional query parameter that enforces the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode for better security when connecting to the Postgres instance.
+- `?sslmode=require&channel_binding=require` are optional query parameters that enforce the [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding for better security when connecting to the Postgres instance.
 
 Please save the connection string somewhere safe. Later, you will use it to configure the `DATABASE_URL` variable.
 
@@ -49269,7 +50590,6 @@ Instead of Maven, you can use Gradle for dependency management. The steps will b
 ## Setting up the Project
 
 1. Let's create a new Spring Boot project using [Spring Initializr](https://start.spring.io/) with the following dependencies:
-
    - Spring Web
    - Spring Data JPA
    - PostgreSQL Driver
@@ -49388,7 +50708,7 @@ First, add the Flyway Maven plugin to your `pom.xml` file:
             <artifactId>flyway-maven-plugin</artifactId>
             <version>8.0.0</version>
             <configuration>
-				<url>jdbc:postgresql://<your_neon_hostname>/neondb?sslmode=require</url>
+				<url>jdbc:postgresql://<your_neon_hostname>/neondb?sslmode=require&channel_binding=require</url>
                 <user>${spring.datasource.username}</user>
                 <password>${spring.datasource.password}</password>
                 <locations>
@@ -49609,7 +50929,6 @@ Before we begin, ensure you have:
 ## Setting up the Project
 
 1. Create a new Spring Boot project using [Spring Initializr](https://start.spring.io/) with the following dependencies:
-
    - Spring Web
    - Spring Data JPA
    - PostgreSQL Driver
@@ -49916,7 +51235,7 @@ You will then be presented with a dialog that provides a connection string of yo
 All Neon connection strings have the following format:
 
 ```bash
-postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require
+postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmode=require&channel_binding=require
 ```
 
 - `<user>` is the database user.
@@ -49924,7 +51243,7 @@ postgres://<user>:<password>@<endpoint_hostname>.neon.tech:<port>/<dbname>?sslmo
 - `<endpoint_hostname>.neon.tech` is the host with `neon.tech` as the [top-level domain (TLD)](https://www.cloudflare.com/en-gb/learning/dns/top-level-domain/).
 - `<port>` is the Neon port number. The default port number is 5432.
 - `<dbname>` is the name of the database. **neondb** is the default database created with each Neon project if you do not define your own.
-- `?sslmode=require` is an optional query parameter that enforces [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode for better security when connecting to the Postgres instance.
+- `?sslmode=require&channel_binding=require` are optional query parameters that enforce [SSL](https://www.cloudflare.com/en-gb/learning/ssl/what-is-ssl/) mode and channel binding for better security when connecting to the Postgres instance.
 
 Each of the above values (except `sslmode`) is used in the next step &#8212; creating a local instance of the Strapi CMS application with Postgres.
 
@@ -50279,7 +51598,6 @@ Follow these steps to set up your project and virtual environment:
     ```
 
     where each package does the following:
-
     - `FastAPI`: A Web / API framework
     - `AsyncPG`: An asynchronous PostgreSQL client
     - `Uvicorn`: An ASGI server for our app
@@ -50378,7 +51696,7 @@ SELECT 2 as sensor_id,
 With your schema and sample data in place, you're now ready to connect to your database in the FastAPI application. To do this you must create a `.env` file in the root of the project to hold environment-specific variables, such as the connection string to your Neon PostgreSQL database.
 
 ```bash
-DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgres://user:password@your-neon-hostname.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
 
 Make sure to replace the placeholders (user, password, your-neon-hostname, etc.) with your actual Neon database credentials, which are available in the console.
@@ -51206,12 +52524,10 @@ async function transferFunds(fromId: number, toId: number, amount: number) { // 
 ## Best practices
 
 1.  **Choose the right connection method**:
-
     - Use HTTP (`neon()`) for single queries and simple transactions.
     - Use WebSockets (`Pool`) for complex transactions and session-based operations.
 
 2.  **Connection management**:
-
     - For HTTP queries, reuse the `sql` query function.
     - For WebSocket connections in serverless environments, always close connections:
 
@@ -51275,6 +52591,14 @@ Imagine adjusting your database schema simply by describing the change in plain 
 
 This guide demonstrates how to use [Windsurf's Cascade](https://docs.codeium.com/windsurf/cascade) and Neon's MCP server to perform database migrations in your Neon project.
 
+<Admonition type="important" title="Neon MCP Server Security Considerations">
+The Neon MCP Server grants powerful database management capabilities through natural language requests. **Always review and authorize actions requested by the LLM before execution.** Ensure that only authorized users and applications have access to the Neon MCP Server.
+
+The Neon MCP Server is intended for local development and IDE integrations only. **We do not recommend using the Neon MCP Server in production environments.** It can execute powerful operations that may lead to accidental or unauthorized changes.
+
+For more information, see [MCP security guidance →](/docs/ai/neon-mcp-server#mcp-security-guidance).
+</Admonition>
+
 ## Key components
 
 Let's break down the key components in this setup:
@@ -51301,7 +52625,7 @@ Before you begin, ensure you have the following:
 2.  **A Neon Account and Project:** You'll need a Neon account and a project. You can quickly create a new Neon project here [pg.new](https://pg.new)
 3.  **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](/docs/manage/api-keys).
 
-    <Admonition type="warning" title="Neon API Key Security">
+    <Admonition type="important" title="Neon API Key Security">
     Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
     </Admonition>
 
@@ -51329,7 +52653,7 @@ You can either watch the video below or follow the steps to set up the Neon MCP 
      "mcpServers": {
        "Neon": {
          "command": "npx",
-         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"]
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
        }
      }
    }
@@ -51570,7 +52894,6 @@ Before you begin, ensure you have the following:
 
 * **Neon Account and Project:** A Neon account and a project with a running Postgres database. You can create a free Neon account and project at [pg.new](https://pg.new).
 * **Database tables (for examples):** For the examples in this guide, we'll be using the following tables to demonstrate the functionality. Create these tables in your Neon database if you intend to follow along:
-
   - A table named `users` to demonstrate triggering actions from new rows.
   - A table named `form_submissions` to demonstrate adding data from an external source.
 
@@ -51612,7 +52935,6 @@ Before creating Zaps, you need to connect your Neon database to Zapier. Zapier u
 3.  Click "**Add connection**" and search for "**PostgreSQL**".
     ![Add connection page in Zapier](/docs/guides/zapier-add-connection.png)
 4.  A pop-up window will appear asking for connection details. You can find most of these in your Neon Console on the **Dashboard** page, by clicking on the **Connect** button for your database. Fill in the following fields:
-
     - **Host:** Your Neon host (e.g., `ep-tight-boat-a6aplura-pooler.us-west-2.aws.neon.tech`)
     - **Port:** `5432`
     - **Database:** Your Neon database name (e.g., `neondb`)
@@ -51621,7 +52943,6 @@ Before creating Zaps, you need to connect your Neon database to Zapier. Zapier u
 
     <Admonition type="important" title="Password Format for Neon Postgres in Zapier">
     To connect Zapier to Neon successfully, you must include your Neon **Endpoint ID** within the password field. This is because Neon uses SNI to route connections, and some clients like Zapier's PostgreSQL connector do not pass SNI information in a way that Neon can use directly without this workaround.
-
     1.  Find your **Endpoint ID**. It's the first part of your Neon hostname (e.g., if your host is `ep-tight-boat-a6aplura-pooler.us-west-2.aws.neon.tech`, your endpoint ID is `ep-tight-boat-a6aplura`).
     2.  In Zapier's **Password** field, enter the following string, replacing `[endpoint_id]` with your actual endpoint ID and `[your_actual_password]` with your database user's password:
 
@@ -51675,7 +52996,6 @@ Let's create a Zap that sends a Slack message whenever a new user is added to `u
 ### Step 2: Setting up the Action (Send Slack message)
 
 1.  **Action Setup:**
-
     - Search for and select "**Slack**" as the action app.
     - For "Event", choose "**Send Channel Message**".
     - **Connect Slack Account:** If you haven't already, connect your Slack account and grant Zapier permissions.
@@ -51778,7 +53098,6 @@ If you encounter issues connecting Neon to Zapier or if your Zaps involving Neon
 - **Specific Errors:**
 
   If you encounter an error message stating: "**Your Zap could not be turned on - AppVersions using SQL Zero require static-ip pool types**" when trying to activate or run a Zap involving the PostgreSQL connection.
-
   - **Observation:** This issue appears to be related to the Zapier platform's handling of PostgreSQL connections and can sometimes occur without any changes made to your Zap configuration. It has been [reported by users in the Zapier community](https://community.zapier.com/troubleshooting-99/your-zap-could-not-be-turned-on-appversions-using-sql-zero-require-static-ip-pool-types-47107).
   - **Recommended Action:** If you encounter this specific error, and you've confirmed your connection details (including the password format) are correct, the most effective course of action is to **contact Zapier Support directly** as described in the above community post. You can contact them through the [Zapier Support page](https://zapier.com/app/get-help).
 
@@ -51810,6 +53129,14 @@ updatedOn: '2025-04-10T00:00:00.000Z'
 Imagine you could interact with your database using plain English, whether you're asking for specific data or changing its schema. That's what the [Neon MCP Server](https://github.com/neondatabase/mcp-server-neon) allows you to do. It lets you manage your Neon Postgres databases using everyday language, simplifying tasks like running queries and performing database migrations.
 
 In this guide, we'll explore how to set up the Neon MCP Server within [Zed](https://zed.dev), a next-generation AI-powered code editor, to handle various database operations. These include creating projects, managing database branches, running SQL queries, and performing safe database migrations.
+
+<Admonition type="important" title="Neon MCP Server Security Considerations">
+The Neon MCP Server grants powerful database management capabilities through natural language requests. **Always review and authorize actions requested by the LLM before execution.** Ensure that only authorized users and applications have access to the Neon MCP Server.
+
+The Neon MCP Server is intended for local development and IDE integrations only. **We do not recommend using the Neon MCP Server in production environments.** It can execute powerful operations that may lead to accidental or unauthorized changes.
+
+For more information, see [MCP security guidance →](/docs/ai/neon-mcp-server#mcp-security-guidance).
+</Admonition>
 
 <Admonition type="note">
 MCP support in Zed is currently in **preview**. Ensure you're using the Preview version of Zed to add MCP servers. You can download the **Preview** version from [zed.dev/releases/preview](https://zed.dev/releases/preview).
@@ -51884,7 +53211,6 @@ This method runs the Neon MCP server locally on your machine, using a Neon API k
 4.  In the **Context Servers** section, click **+ Add Context Server**.
     ![Zed add context server](/docs/guides/zed/add-context-server.png)
 5.  Configure Neon Server:
-
     - Enter **Neon** in the **Name** field.
     - In the **Command** field, enter:
       ```bash
@@ -51929,7 +53255,7 @@ If you experience issues adding an MCP server from the Assistant panel, you can 
    "neon": {
       "command": {
          "path": "npx",
-         "args": ["-y", "mcp-remote", "https://mcp.neon.tech/sse"],
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"],
          "env": null
       },
       "settings": {}
@@ -52167,7 +53493,6 @@ Zero requires a Postgres database (version 15+) with logical replication enabled
 
 1.  **Create a Neon Project:** If you haven't already, create a new Neon project using [pg.new](https://pg.new).
 2.  **Enable Logical Replication:** Zero uses Postgres logical replication (`wal_level = logical`) to receive changes from your database.
-
     - Navigate to your Neon Project using the [Neon Console](https://console.neon.tech/).
     - Open the **Settings** menu.
     - Click on **Logical Replication**.
@@ -52264,11 +53589,9 @@ You should now have the `hello-zero` application running in your browser. It con
 Congratulations! You have successfully set up Rocicorp Zero with Neon Postgres using the `hello-zero` example application. Check out [Canvas](https://github.com/neondatabase-labs/canvas), a collaborative drawing app built with Zero and Neon, for a more complex example of Zero in action.
 
 <Admonition type="note" title="Schema Changes">
-Zero uses Postgres event triggers for efficient schema migration handling. However, Neon currently does not support event triggers for tracking DDL (schema) changes due to limitations around superuser privileges.
+Zero uses Postgres event triggers for efficient schema migration handling. While Neon now supports event triggers, Zero may still perform a **full reset of the `zero-cache` and all connected client states** whenever schema changes are detected to ensure correctness.
 
-Without event triggers, Zero ensures correctness by performing a **full reset of the `zero-cache` and all connected client states** whenever _any_ schema change is detected.
-
-While this reset mechanism works, it can be inefficient for larger databases (e.g., > 1GB) or applications undergoing frequent schema evolution. For smaller databases or projects with stable schemas, the impact might be acceptable. Please consider this limitation when managing schema changes for your Zero application on Neon, especially for larger projects.
+This reset mechanism can be inefficient for larger databases (e.g., > 1GB) or applications undergoing frequent schema evolution. For smaller databases or projects with stable schemas, the impact is typically acceptable. Consider this behavior when managing schema changes for your Zero application, especially for larger projects.
 </Admonition>
 
 ## Resources
