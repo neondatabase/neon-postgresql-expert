@@ -10778,6 +10778,10 @@ This method uses Neon's managed server and OAuth authentication.
 
 ### Installation and configuration
 
+<Admonition type="note">
+By default, the Remote MCP Server connects to your personal Neon account. To connect to an organization's account, you must authenticate with an API key. For more information, see [API key-based authentication](/docs/ai/neon-mcp-server#api-key-based-authentication).
+</Admonition>
+
 1. Open Cline by clicking on the Cline icon in the VS Code sidebar.
 2. To configure MCP Servers in Cline, you need to modify the `cline_mcp_settings.json` file.
    ![Cline Add MCP Tool](/docs/guides/cline-add-mcp.gif)
@@ -12935,7 +12939,7 @@ Before you begin, ensure you have the following prerequisites installed and conf
 
 To get started with your Postgres database, create a new Neon project using [pg.new](https://pg.new). This project will provide the Postgres instance that Convex will use to store your application data. Within this Neon project, you'll need to create a database named `convex_self_hosted` – this is the specific database Convex is configured to use for storing chat messages. Follow these steps to set up your Neon Postgres database:
 
-- Navigate to the [SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) in your Neon project console to create the `convex_self_hosted` database.
+- Navigate to the [SQL Editor](/docs/get-started/query-with-neon-sql-editor) in your Neon project console to create the `convex_self_hosted` database.
 - Execute the following SQL command to create the database:
 
   ```sql
@@ -13488,11 +13492,15 @@ Before you begin, ensure you have the following:
 
 ### Option 1: Setting up the Remote Hosted Neon MCP Server
 
+<Admonition type="note">
+By default, the Remote MCP Server connects to your personal Neon account. To connect to an organization's account, you must authenticate with an API key. For more information, see [API key-based authentication](/docs/ai/neon-mcp-server#api-key-based-authentication).
+</Admonition>
+
 #### Quick Install (Recommended)
 
 Click the button below to install the Neon MCP server in Cursor. When prompted, click **Install** within Cursor.
 
-<a href="cursor://anysphere.cursor-deeplink/mcp/install?name=Neon&config=eyJ1cmwiOiJodHRwczovL21jcC5uZW9uLnRlY2gvc3NlIn0%3D"><img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add Neon MCP server to Cursor" height="32" /></a>
+<a href="cursor://anysphere.cursor-deeplink/mcp/install?name=Neon&config=eyJ1cmwiOiJodHRwczovL21jcC5uZW9uLnRlY2gvbWNwIn0%3D"><img src="https://cursor.com/deeplink/mcp-install-dark.svg" alt="Add Neon MCP server to Cursor" height="32" /></a>
 
 #### Manual Setup
 
@@ -13508,15 +13516,13 @@ This method uses Neon's managed server and OAuth authentication.
      "mcpServers": {
        "Neon": {
          "command": "npx",
-         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/mcp"]
        }
      }
    }
    ```
 
    If you have other MCP servers configured, you can copy just the `Neon` part.
-
-   ![Cursor MCP JSON](/docs/guides/cursor-remote-mcp-server-json.png)
 
    Save the `mcp.json` file after pasting the configuration.
 
@@ -16051,7 +16057,7 @@ Now that Electric is running and connected to your Neon database, you can test i
 
 ### Create sample data in Neon
 
-Connect to your Neon database using `psql` or the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) and run the following SQL commands to create a sample table and insert some data. This is the schema our React application will use.
+Connect to your Neon database using `psql` or the [Neon SQL Editor](/docs/get-started/query-with-neon-sql-editor) and run the following SQL commands to create a sample table and insert some data. This is the schema our React application will use.
 
 ```sql
 CREATE TABLE scores (
@@ -21135,7 +21141,7 @@ The `tsvector` type enables you to use full text search on your text content in 
 
 ## Set up a table with a `tsvector` column
 
-To set up full text search, you need to create a column of type `tsvector` that will enable full text search. You can run the following `CREATE TABLE` statement in the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or from a client such as [psql](/docs/connect/query-with-psql-editor) that is connected to Neon. This statement will create a table with a column `searchable` of type `tsvector`.
+To set up full text search, you need to create a column of type `tsvector` that will enable full text search. You can run the following `CREATE TABLE` statement in the [Neon SQL Editor](/docs/get-started/query-with-neon-sql-editor) or from a client such as [psql](/docs/connect/query-with-psql-editor) that is connected to Neon. This statement will create a table with a column `searchable` of type `tsvector`.
 
 ```sql
 CREATE TABLE documents (
@@ -26059,6 +26065,85 @@ You can find the source code for the application described in this guide on GitH
 - **Cloudflare Workers:** [developers.cloudflare.com/workers](https://developers.cloudflare.com/workers/)
 
 <NeedHelp/>
+
+
+# Building Internal Tools Using Neon, StackAuth, and Vercel’s Free Plans
+
+---
+title: Building Internal Tools Using Neon, StackAuth, and Vercel’s Free Plans
+subtitle: Get secure, host, and deploy internal tools in minutes, for free
+author: sam-harri
+enableTableOfContents: true
+createdAt: '2025-07-08T00:00:00.000Z'
+---
+
+Almost every tech company, from small startups to Fortune 500 enterprises, relies on internal tools. Larger organizations often have dedicated services and structured procedures in place, but for many others, internal tools can be messy, often ending up as either insecure setups hosted behind a VPN or overly complex solutions cobbled together from a surprising number of AWS services.
+
+It shouldn't feel like you're managing a full-fledged production application or rack up monthly bills for basic functionalities, especially without compromising on security.
+
+[This template](https://github.com/sam-harri/internal_tooling_neon_stack), built with Neon, StackAuth, and Vercel’s free plans, gives you a secure and scalable starting point for internal tools. It comes preconfigured with a Postgres database, API routes, authentication, authorization, and a built-in admin panel - everything you need to get an application running in minutes.
+
+![Tool Overview](/guides/images/internal-tool-template/internal-tool-template.gif)
+
+## Getting Started with the Template
+
+Using the template, you can get your internal tool up and running in minutes, and all you need are Neon, Stack Auth, and Vercel accounts.
+
+```bash
+git clone https://github.com/sam-harri/internal_tooling_neon_stack.git
+```
+
+Then open that new project in your editor of choice, and install the dependencies:
+
+```bash
+npm install
+```
+
+Next, set up the environment variables by copying over the `.env.example` to a new `.env` file. Fill these in with the connection string from your Neon database project in the console, and the Stack Auth keys from the Auth tab.
+
+Since the template comes with some admin logic already, you’ll need to sync your database by applying the schema:
+
+```bash
+npx drizzle-kit push
+```
+
+## Set Up Roles and Claim Your Project
+
+Head to the Auth tab in the Neon console and claim the project with your Stack Auth account. From there, create two project roles: `admin` and `user`, where `user` is contained within `admin`.
+
+Your Project Permissions section should look like this afterward:
+
+![Project Permissions settings in the Neon Console Auth tab](/guides/images/internal-tool-template/project-permissions.png)
+
+Once that’s done, boot up the project locally, log in, and head over to `/setup` to claim your admin privileges. You can then deploy your app with Vercel. Don’t forget to add your Vercel-provided domain to the allowed domains in Neon’s Auth tab, or your custom domain if you're using one.
+
+## Authentication and Access Control with StackAuth
+
+You obviously don't want just anyone to be able to access your internal tools. Luckily, Neon comes with an auth solution supporting social and password sign-on, role-based access control, and much more.
+
+In this template, only authorized users can access the tools. The application admin can whitelist domains, allowing anyone with an email from a specific domain (e.g. `yourcompany.tld`) and a verified email to sign up and get access.
+
+Likewise, you can grant and revoke access to specific external email addresses, perfect for contractors or partners. Emails can also be explicitly blocked even if their domain is whitelisted. Managing access is straightforward via the built-in admin panel at `/tools/admin`. Admins can assign or revoke privileges to other users, giving you complete control over your application's access policies.
+
+These rules are meant to cover most of the common scenarios you might face, but since it’s a template, you can easily update it to add features like regex validation or subdomain whitelisting.
+
+![Admin Panel Overview](/guides/images/internal-tool-template/admin-page.png)
+
+## Database and Logic with Neon and Next.js
+
+Internal tools inherently require business logic and data storage. Neon provides a free serverless Postgres database, along with all the most popular Postgres extensions, and offers a serverless database driver that’s perfect for single-shot queries in Next.js serverless functions.
+
+For business logic, you can use Next’s server actions and API routes without the overhead of managing and deploying a separate API—ideal for simple internal tools. Vercel makes hosting your Next.js app painless, even allowing you to attach a custom domain so that you can host it at something like `yourtool.yourcompany.tld`.
+
+## Customize the App for Your Team
+
+Customization is designed to be simple. Just fill out your company-specific details in `config/app.ts`, then add your custom tools to the `app/tools` directory and declare them within the configuration file.
+
+To get started, play around with `app/tools/tool1/page.tsx`.
+
+## Get Started
+
+[Clone the template](https://github.com/sam-harri/internal_tooling_neon_stack), connect your Neon and StackAuth accounts, and deploy to Vercel. Your next internal tool is just a few commands away!
 
 
 # Using Postgres as a Key-Value Store with hstore and JSONB
@@ -37720,8 +37805,6 @@ This guide is designed to help FaunaDB users understand how to transition to Neo
 
 <Admonition type="note">
 Migrating from FaunaDB to Neon Postgres involves schema translation, data migration, and query conversion. This guide provides a structured approach to help you navigate the migration process effectively.
-
-If you have questions or require help with migrating large production datasets from FaunaDB, please [contact Neon for migration assistance](/migration-assistance).
 </Admonition>
 
 ## FaunaDB vs. Neon (Postgres)
@@ -38007,7 +38090,7 @@ CREATE INDEX idx_products_price_asc ON products(price) INCLUDE (name, descriptio
 Here we are adding a foreign key constraint `fk_category` to ensure that the `category_id` in the `products` table references the `id` column in the `categories` table. This constraint enforces referential integrity between the two tables.
 
 <Admonition type="tip" title="Don't want to use Raw SQL?">
-If you prefer a more programmatic approach to schema translation, you can use any Postgres library or ORM (object-relational mapping) tool in your chosen programming language. These tools can help automate the schema creation process and provide a more structured way to define your Postgres schema. Learn more on our [language guides](/docs/get-started-with-neon/languages) and [ORM guides](/docs/get-started-with-neon/orms) section.
+If you prefer a more programmatic approach to schema translation, you can use any Postgres library or ORM (object-relational mapping) tool in your chosen programming language. These tools can help automate the schema creation process and provide a more structured way to define your Postgres schema. Learn more on our [language guides](/docs/get-started/languages) and [ORM guides](/docs/get-started/orms) section.
 </Admonition>
 
 ### Step 4: Data import to Neon Postgres
@@ -38018,7 +38101,7 @@ For this guide, we'll demonstrate importing data from the `product.json` file (e
 
 This example Node.js script reads the `Product.json` file, parses the JSON data, and then generates and executes `INSERT` statements to populate your `products` table in Neon Postgres.
 
-You can get `NEON_CONNECTION_STRING` from your Neon dashboard. Learn more about [Connecting Neon to your stack](/docs/get-started-with-neon/connect-neon)
+You can get `NEON_CONNECTION_STRING` from your Neon dashboard. Learn more about [Connecting Neon to your stack](/docs/get-started/connect-neon)
 
 ```javascript
 import pg from 'pg';
@@ -38312,7 +38395,7 @@ createdAt: '2025-05-08T00:00:00.000Z'
 updatedOn: '2025-05-08T00:00:00.000Z'
 ---
 
-[Tembo.io](https://legacy.tembo.io/cloud) recently announced that it's sunsetting its managed Postgres service. If you've decided to migrate your serviced from Tembio.io to Neon, follow the steps in this guide. If you're facing a production migration requiring minimal downtime, [reach out to us](/migration-assistance).
+[Tembo.io](https://legacy.tembo.io/cloud) recently announced that it's sunsetting its managed Postgres service. If you've decided to migrate your serviced from Tembio.io to Neon, follow the steps in this guide.
 
 <Admonition type="warning" title="Tembo Shutdown Timeline">
 Please be aware of Tembo's [official shutdown timeline](https://tembo-io.notion.site/Tembo-Cloud-Migration-Guide-1de7c9367d6a80349570e7469ba7f17b)
@@ -38361,7 +38444,7 @@ Before you begin any migration method, complete these essential preparation step
       ```
       This provides a list of your installed extensions, their versions, and descriptions. Compare this list to Neon's supported extensions. Neon supports many common extensions, and the full list is available here: [Neon supported extensions list](/docs/extensions/pg-extensions). For any unsupported extensions, consider finding alternatives or modifying your application.
 
-2.  **Set up your Neon project:** If you don't have one, [create a Neon account and project](/docs/get-started-with-neon/signing-up#sign-up).
+2.  **Set up your Neon project:** If you don't have one, [create a Neon account and project](/docs/get-started/signing-up#sign-up).
 
 ## Option 1: Using Neon's Import Data Assistant
 
@@ -39019,8 +39102,8 @@ To connect your application to the Neon database, copy the connection URL from t
 
 For more about connecting your application to Neon, see [Connect to Neon](/docs/connect/connect-intro). Neon also provides the following resources to help get you up and running:
 
-- [Neon framework guides](/docs/get-started-with-neon/frameworks)
-- [Neon language guides](/docs/get-started-with-neon/languages)
+- [Neon framework guides](/docs/get-started/frameworks)
+- [Neon language guides](/docs/get-started/languages)
 - [Connection examples repo](https://github.com/neondatabase/examples)
 - [Application templates repo](/templates)
 
@@ -39418,7 +39501,7 @@ You can find the complete source code for this example on GitHub.
 ## Resources
 
 - [Neon GitHub Integration Documentation](/docs/guides/neon-github-integration)
-- [Database Branching Workflows](/flow)
+- [Database Branching Workflows](/branching)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 
 <NeedHelp/>
@@ -39658,28 +39741,31 @@ For more information, see [MCP security guidance →](/docs/ai/neon-mcp-server#m
 
 ## Connect GitHub Copilot to the Neon MCP Server
 
-### **Create Neon Database**
+### Create Neon Database
 
 Visit the [Neon on Azure Marketplace](https://portal.azure.com/#view/Azure_Marketplace_Neon/NeonCreateResource.ReactView) page and follow the [Create a Neon resource](/docs/azure/azure-deploy#create-a-neon-resource) guide to deploy Neon on Azure for your subscription. Neon offers a [Free plan](/pricing) that provides more than enough resources to build a proof of concept or kick off a new startup project.
 
 ### Install the Neon MCP Server for VS Code
 
-Neon MCP Server offers two options for connecting your VS Code MCP client to Neon. We will use the [Remote Hosted MCP Server option](https://github.com/neondatabase-labs/mcp-server-neon?tab=readme-ov-file#option-1-remote-hosted-mcp-server-preview). This is the simplest setup—no need to install anything locally or configure a Neon API key in your client.
+Neon MCP Server offers two options for connecting your VS Code MCP client to Neon. We will use the [Remote Hosted MCP Server option](https://github.com/neondatabase-labs/mcp-server-neon?tab=readme-ov-file#option-1-remote-hosted-mcp-server-preview). This is the simplest setup — no need to install anything locally or configure a Neon API key in your client.
 
-Add the following Neon MCP server configuration to your [user settings](https://code.visualstudio.com/docs/copilot/chat/mcp-servers#_add-an-mcp-server-to-your-user-settings) in VS Code:
+In your project directory, create a new file named `.vscode/mcp.json` and add the following configuration:
 
 ```json
 {
-  "mcp": {
-    "servers": {
-      "Neon": {
-        "command": "npx",
-        "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
-      }
+  "servers": {
+    "Neon": {
+      "url": "https://mcp.neon.tech/mcp",
+      "type": "http"
     }
-  }
+  },
+  "inputs": []
 }
 ```
+
+<Admonition type="note">
+By default, the Remote MCP Server connects to your personal Neon account. To connect to an organization's account, you must authenticate with an API key. For more information, see [API key-based authentication](/docs/ai/neon-mcp-server#api-key-based-authentication).
+</Admonition>
 
 Click on `Start` on the MCP server. A browser window will open with an OAuth prompt. Just follow the steps to give your VS Code MCP client access to your Neon account.
 
@@ -39822,6 +39908,10 @@ You have two options for connecting Claude to the Neon MCP Server:
 
 ### Option 1: Setting up the remote hosted Neon MCP Server
 
+<Admonition type="note">
+By default, the Remote MCP Server connects to your personal Neon account. To connect to an organization's account, you must authenticate with an API key. For more information, see [API key-based authentication](/docs/ai/neon-mcp-server#api-key-based-authentication).
+</Admonition>
+
 1. Open Claude desktop and navigate to **Settings**.
    ![Claude settings](/guides/images/claude_mcp/claude_settings.png)
 2. Under the **Developer** tab, click **Edit Config** (On Windows, it's under File -> Settings -> Developer -> Edit Config) to open the location of configuration file (`claude_desktop_config.json`).
@@ -39834,7 +39924,7 @@ You have two options for connecting Claude to the Neon MCP Server:
      "mcpServers": {
        "Neon": {
          "command": "npx",
-         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/mcp"]
        }
      }
    }
@@ -39854,23 +39944,24 @@ The remote hosted MCP server is in preview due to the [new OAuth MCP specificati
 This method runs the Neon MCP server locally on your machine, using a Neon API key for authentication.
 
 1.  Open your terminal.
-2.  Run the following command to install the Neon MCP server. This command uses the `@smithery/cli` package to install the Neon MCP server and configure it for use with Claude.
+2.  Run the following command to install the Local Neon MCP server for use with Claude Desktop:
 
     ```bash
-    npx -y @smithery/cli@latest install neon --client claude
+    npx @neondatabase/mcp-server-neon init $NEON_API_KEY
     ```
 
-    You will be prompted to enter your Neon API key during the installation process. You can enter the API key which you obtained from the [prerequisites](#prerequisites) section. You should see output similar to this:
+    > Make sure to replace `$NEON_API_KEY` with your actual Neon API key. You can generate one through the Neon Console by following the instructions in [Creating API keys](/docs/manage/api-keys#creating-api-keys).
+
+    You will be prompted to install the required dependencies. Type `y` to proceed. You should see output similar to this:
 
     ```bash
-    npx -y @smithery/cli@latest install neon --client claude
-    ✔ Successfully resolved neon
-    Installing remote server. Please ensure you trust the server author, especially when sharing sensitive data.
-    For information on Smithery's data policy, please visit: https://smithery.ai/docs/data-policy
-    ? The API key for accessing the Neon. You can generate one through the Neon
-    console. (required)
-    *********************************************************************
-    neon successfully installed for claude
+    npx @neondatabase/mcp-server-neon init napi_xxxx
+    Need to install the following packages:
+    @neondatabase/mcp-server-neon@0.x.x
+    Ok to proceed? (y) y
+
+    Config written to: /Users/USERNAME/Library/Application Support/Claude/claude_desktop_config.json
+    The Neon MCP server will start automatically the next time you open Claude.
     ```
 
 3.  Restart Claude Desktop. You can do so by quitting the Claude Desktop and opening it again.
@@ -39879,9 +39970,9 @@ This method runs the Neon MCP server locally on your machine, using a Neon API k
 
 You can verify that the connection to the Neon MCP server either remote or local is successful by following these steps:
 
-1. In Claude hover over the 🔨 icon to see the available tools.
+1. In Claude click on the search and tools icon to see the available tools.
    ![Claude available tools](/guides/images/claude_mcp/claude_available_tools.png)
-2. Click on the icon to see the list of available tools in detail. You should see the Neon MCP server's tools listed.
+2. You should see the Neon MCP server's tools listed. Click on the **neon** tool to see the available tools in detail.
    ![Claude list available tools](/guides/images/claude_mcp/claude_list_available_tools.png)
 3. Claude is now connected to Neon's remote MCP server.
 
@@ -41776,6 +41867,776 @@ You can extend this system by adding more specialized queues, extending the moni
 - [Redis Documentation](https://redis.io/documentation)
 
 <NeedHelp />
+
+
+# Building a Nuxt.js app with a Vercel and Neon branching workflow
+
+---
+title: 'Building a Nuxt.js app with a Vercel and Neon branching workflow'
+subtitle: 'Automate database branching for every preview deployment using the native Neon Vercel Integration'
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-07-14T00:00:00.000Z'
+updatedOn: '2025-07-14T00:00:00.000Z'
+---
+
+[Nuxt.js](https://nuxt.com) is an open-source, progressive framework built on [Vue.js](https://vuejs.org/) that simplifies web development. It enhances Vue with versatile rendering options, including default [universal rendering (SSR)](https://nuxt.com/docs/guide/concepts/rendering#universal-rendering) for fast initial loads and strong SEO, and [client-side rendering](https://nuxt.com/docs/guide/concepts/rendering#client-side-rendering) for highly interactive applications. Nuxt also supports advanced strategies like [hybrid rendering](https://nuxt.com/docs/guide/concepts/rendering#hybrid-rendering) to mix modes per-route.
+
+As your Nuxt application grows, managing database changes for new features can be challenging. How do you test a feature that requires database schema changes without disrupting your live application? This is where the integration between [Vercel](https://vercel.com) and [Neon](https://neon.com) comes in. Vercel is a deployment platform, and Neon provides a serverless Postgres database. Together, they offer seamless [**database branching**](/branching).
+
+When you enable the integration, every time you push a new feature branch, Vercel automatically creates a preview deployment. Simultaneously, Neon creates an isolated copy of your database just for that branch. This gives you a safe, sandboxed environment to develop and test with realistic data, without any risk to your live application.
+
+In this guide, you will learn how to:
+
+- Set up a Nuxt.js project and connect it to a GitHub repository.
+- Install and configure the Vercel-managed Neon Integration.
+- Define a database schema and manage migrations with Drizzle ORM.
+- Build a full-stack Todo application with Nuxt.js server routes.
+- Test the automated branching workflow: Push a new feature branch and see Vercel and Neon automatically create a sandboxed environment with its own database branch.
+- Safely merge schema changes into production.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- Node.js `v18.0` or later.
+- A Vercel account
+- A Neon account. The Vercel integration can create one for you if you don't have one.
+
+<Steps>
+
+## Initialize Nuxt.js project
+
+First, create a new Nuxt.js application and push it to a GitHub repository, which Vercel will use for deployments.
+
+1.  **Create a Nuxt.js app:**
+    Open your terminal and run the following command:
+
+    ```bash
+    npm create nuxt nuxt-neon-vercel-todo
+    ```
+
+    When prompted, choose the following options:
+    - **Package manager:** `npm`
+    - **Initialize git repository:** `Yes`
+    - **Install official modules:** `No`
+
+    You should see output similar to this:
+
+    ```text
+    > npm create nuxt nuxt-neon-vercel-todo
+    Need to install the following packages:
+    create-nuxt@3.26.0
+    Ok to proceed? (y) y
+
+           .d$b.
+          i$$A$$L  .d$b
+        .$$F` `$$L.$$A$$.
+       j$$'    `4$$:` `$$.
+      j$$'     .4$:    `$$.
+     j$$`     .$$:      `4$L
+    :$$:____.d$$:  _____.:$$:
+    `4$$$$$$$$P` .i$$$$$$$$P`
+
+    ℹ Welcome to Nuxt!                                                                                            nuxi 9:46:56 AM
+    ℹ Creating a new project in nuxt-neon-vercel-todo.                                                            nuxi 9:46:58 AM
+
+    ✔ Which package manager would you like to use?
+    npm
+    ◐ Installing dependencies...                                                                                   nuxi 9:47:02 AM
+    npm WARN deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+    npm WARN deprecated @types/parse-path@7.1.0: This is a stub types definition. parse-path provides its own type definitions, so you do not need this installed.
+
+    > postinstall
+    > nuxt prepare
+
+    ✔ Types generated in .nuxt                                                                                    nuxi 9:48:15 AM
+
+    added 751 packages, and audited 753 packages in 1m
+
+    171 packages are looking for funding
+    run `npm fund` for details
+
+    found 0 vulnerabilities
+    ✔ Installation completed.                                                                                     nuxi 9:48:15 AM
+
+    ✔ Initialize git repository?
+    Yes
+    ℹ Initializing git repository...                                                                              nuxi 9:48:18 AM
+
+    Initialized empty Git repository in /nuxt-neon-vercel-todo/.git/
+
+    ✔ Would you like to install any of the official modules?
+    No
+    ```
+
+2.  Navigate into the project directory
+
+    ```bash
+    cd nuxt-neon-vercel-todo
+    ```
+
+3.  Push the initial project to a GitHub repository:
+
+    [Create a new repository on GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/quickstart-for-repositories) (e.g., `nuxt-neon-vercel-todo`). Then, run the following commands in your terminal, replacing `<your-github-repo-url>` with your repository's URL.
+
+    ```bash
+    git add .
+    git commit -m "Initial commit"
+    git remote add origin <your-github-repo-url>
+    git push -u origin main
+    ```
+
+To begin, you will set up the Vercel-managed Neon Integration. This is a crucial first step that provisions a Neon database and automatically injects the `DATABASE_URL` environment variable into your Nuxt.js application. This setup streamlines both local development and Vercel deployments.
+
+## Create a Vercel project
+
+1.  Login to [Vercel dashboard](https://vercel.com/dashboard).
+2.  Click on **Add New** and select **Project**.
+3.  Select the GitHub repository you created earlier (`nuxt-neon-vercel-todo`).
+4.  Vercel will automatically detect that this is a Nuxt.js application and configure the build settings accordingly.
+5.  Click **Deploy** to create your Vercel project.
+
+    ![Create Nuxt.js project in Vercel](/docs/guides/nuxt-vercel-create-project.png)
+
+## Configure the Vercel Neon integration
+
+Install the Neon integration from the Vercel Marketplace. This process will create a Neon project and link it to your Vercel account.
+
+1.  Navigate to the [Neon integration page on the Vercel Marketplace](https://vercel.com/marketplace/neon) and click **Install**.
+2.  Accept the terms, pick a region & plan, then name your database. (Remember: a "Database" in Vercel is a Project in Neon.)
+
+## Connect the database to your Vercel project
+
+With the integration installed, you need to connect your `nuxt-neon-vercel-todo` Vercel project to your new Neon database. This is where you enable the automated branching feature.
+
+1.  From the **Storage** tab in your Vercel dashboard, select your Neon database.
+2.  Click the **Connect Project** tab and select your `nuxt-neon-vercel-todo` project from the dropdown.
+3.  **Enable Preview Branches:** In the **Deployments Configuration** section, ensure the **Preview** toggle is enabled. This is the key step that instructs Vercel to create a new Neon database branch for every Preview Deployment.
+    ![Connect Vercel Project and enable Preview deployments](/docs/guides/nuxt-vercel-neon-connect-project.png)
+4.  Click **Connect**.
+
+Vercel will now automatically add the `DATABASE_URL` environment variable to your project, making it available in Production, Preview, and Development environments.
+
+Now that your Vercel project is connected to Neon, you can start defining your database schema and managing migrations.
+
+## Add database schema and migrations
+
+To manage your database schema and migrations, you will use [Drizzle ORM](https://orm.drizzle.team) with the Neon serverless driver. Drizzle ORM provides a type-safe way to define your database schema and run migrations.
+
+1.  Install Drizzle dependencies
+
+    ```bash
+    npm install drizzle-orm @neondatabase/serverless
+    npm install -D drizzle-kit
+    ```
+
+2.  **Define the schema:**
+
+    Create a new file at `server/db/schema.ts` to define the `todos` table.
+
+    ```typescript
+    import { pgTable, serial, text, boolean, timestamp } from 'drizzle-orm/pg-core';
+
+    export const todos = pgTable('todos', {
+      id: serial('id').primaryKey(),
+      text: text('text').notNull(),
+      completed: boolean('completed').default(false).notNull(),
+      createdAt: timestamp('created_at').defaultNow().notNull(),
+    });
+    ```
+
+    The `todos` table has the following fields:
+    - `id`: A unique identifier for each todo item.
+    - `text`: The text of the todo item.
+    - `completed`: A boolean indicating whether the todo is completed.
+    - `createdAt`: A timestamp for when the todo was created.
+
+3.  **Configure Drizzle Kit:**
+
+    Create `drizzle.config.ts` in your project root. Drizzle Kit will use this to connect to your database to generate and run migrations.
+
+    ```typescript
+    import { defineConfig } from 'drizzle-kit';
+
+    export default defineConfig({
+      schema: './server/db/schema.ts',
+      out: './server/db/migrations',
+      dialect: 'postgresql',
+      dbCredentials: {
+        url: process.env.DATABASE_URL!,
+      },
+    });
+    ```
+
+4.  **Add migration scripts to `package.json`:**
+
+    ```json
+    {
+      "scripts": {
+        // ... other scripts
+        "db:generate": "drizzle-kit generate",
+        "db:migrate": "drizzle-kit migrate",
+        "build": "nuxt build && npm run db:migrate"
+      }
+    }
+    ```
+
+    > The build script is modified to run `db:migrate` after building the Nuxt application. This ensures that any pending migrations are applied to the database before the application starts.
+
+5.  **Generate the initial migration:**
+
+    To run migrations locally or in the Vercel build step, you need the `DATABASE_URL` available. Create a `.env` file in your root directory.
+
+    Now, go to your Vercel project's **Settings** -> **Environment Variables**, reveal the value for `DATABASE_URL`, and copy it into your `.env` file.
+
+    ```ini
+    DATABASE_URL="postgres://..."
+    ```
+
+    Now, generate your first migration file:
+
+    ```bash
+    npm run db:generate
+    ```
+
+    This creates a new SQL file in the `server/db/migrations` directory.
+
+6.  **Commit the changes:**
+    Add all the new files to git and commit them.
+
+    ```bash
+    git add .
+    git commit -m "feat: setup drizzle and initial schema"
+    git push
+    ```
+
+    Pushing to `main` will trigger a production deployment on Vercel. The `npm run build` command will execute `npm run db:migrate`, applying your initial migration to the main database branch.
+
+## Build the Todo application
+
+With the database configured, let's build the Todo application. This will include creating server routes for CRUD operations and a simple frontend to interact with the database.
+
+    <Admonition type="warning" title="Security Note">
+    The following code is a basic example and does not include authentication or input validation. In a production application, you should implement proper security measures to protect your API endpoints and database.
+    </Admonition>
+
+1.  **Create a Drizzle client utility:**
+
+    Create `server/utils/db.ts` to instantiate and export the Drizzle client.
+
+    ```typescript
+    import { drizzle } from 'drizzle-orm/neon-http';
+    import { neon } from '@neondatabase/serverless';
+    import * as schema from '~/server/db/schema';
+
+    const sql = neon(process.env.DATABASE_URL!);
+    export const db = drizzle(sql, { schema });
+    ```
+
+2.  **Create API endpoints:**
+
+    Nuxt automatically scans the `server/api` directory to create your API.
+    - **GET `/api/todos`:** Create `server/api/todos.get.ts`
+
+      ```typescript
+      import { db } from '~/server/utils/db';
+      import { todos } from '~/server/db/schema';
+      import { desc } from 'drizzle-orm';
+
+      export default defineEventHandler(async () => {
+        return await db.select().from(todos).orderBy(desc(todos.createdAt));
+      });
+      ```
+
+      The `GET` endpoint retrieves all todo items from the database, ordered by creation date.
+
+    - **POST `/api/todos`:** Create `server/api/todos.post.ts`
+
+      ```typescript
+      import { db } from '~/server/utils/db';
+      import { todos } from '~/server/db/schema';
+
+      export default defineEventHandler(async (event) => {
+        const body = await readBody(event);
+        const [newTodo] = await db.insert(todos).values({ text: body.text }).returning();
+        return newTodo;
+      });
+      ```
+
+      The `POST` endpoint creates a new todo item with the provided text.
+
+    - **PUT `/api/todos/:id`:** Create `server/api/todos/[id].put.ts`
+
+      ```typescript
+      import { db } from '~/server/utils/db';
+      import { todos } from '~/server/db/schema';
+      import { eq } from 'drizzle-orm';
+
+      export default defineEventHandler(async (event) => {
+        const id = getRouterParam(event, 'id');
+        const body = await readBody(event);
+        const [updatedTodo] = await db
+          .update(todos)
+          .set({ completed: body.completed })
+          .where(eq(todos.id, Number(id)))
+          .returning();
+        return updatedTodo;
+      });
+      ```
+
+      The `PUT` endpoint updates the completion status of a todo item by its ID.
+
+    - **DELETE `/api/todos/:id`:** Create `server/api/todos/[id].delete.ts`
+
+      ```typescript
+      import { db } from '~/server/utils/db';
+      import { todos } from '~/server/db/schema';
+      import { eq } from 'drizzle-orm';
+
+      export default defineEventHandler(async (event) => {
+        const id = getRouterParam(event, 'id');
+        await db.delete(todos).where(eq(todos.id, Number(id)));
+        return { message: 'Todo deleted' };
+      });
+      ```
+
+      The `DELETE` endpoint deletes a todo item by its ID.
+
+3.  **Build the user interface:**
+
+    Replace the content of `app.vue` with the following code to create frontend for the todo app.
+
+    ```vue
+    <template>
+      <div class="container">
+        <h1>Todo List</h1>
+        <p>
+          A Nuxt.js app with a serverless Postgres database from Neon, deployed on Vercel with
+          automated database branching.
+        </p>
+        <form @submit.prevent="addTodo">
+          <input v-model="newTodoText" placeholder="Add a new todo item" required />
+          <button type="submit">Add Todo</button>
+        </form>
+        <ul>
+          <li v-for="todo in todos" :key="todo.id">
+            <span :class="{ completed: todo.completed }" @click="toggleTodo(todo)">
+              {{ todo.text }}
+            </span>
+            <button class="remove-btn" @click="removeTodo(todo)">Remove</button>
+          </li>
+        </ul>
+      </div>
+    </template>
+
+    <script setup>
+    const { data: todos, refresh } = await useFetch('/api/todos');
+    const newTodoText = ref('');
+
+    const addTodo = async () => {
+      if (!newTodoText.value.trim()) return;
+      await $fetch('/api/todos', {
+        method: 'POST',
+        body: { text: newTodoText.value },
+      });
+      newTodoText.value = '';
+      await refresh();
+    };
+
+    const toggleTodo = async (todo) => {
+      await $fetch(`/api/todos/${todo.id}`, {
+        method: 'PUT',
+        body: { completed: !todo.completed },
+      });
+      await refresh();
+    };
+
+    const removeTodo = async (todo) => {
+      await $fetch(`/api/todos/${todo.id}`, {
+        method: 'DELETE',
+      });
+      await refresh();
+    };
+    </script>
+
+    <style>
+    body {
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      font-family: sans-serif;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #000000;
+    }
+    p {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    form {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+    input {
+      flex-grow: 1;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #00b04f;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid #eee;
+    }
+    li span {
+      cursor: pointer;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+    .remove-btn {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    </style>
+    ```
+
+    The above code creates a simple Todo application. It includes a form to add new todos, a list to display existing todos, and buttons to toggle completion status and remove todos. It uses the API endpoints you created earlier to interact with the database.
+
+4.  **Run the application locally:**
+
+    Start your Nuxt.js application locally to test the functionality.
+
+    ```bash
+    npm run dev
+    ```
+
+    Open your browser and navigate to [http://localhost:3000](http://localhost:3000). You should see your Todo application running. You can add, toggle, and remove todos, which will interact with your Neon database.
+
+    ![Nuxt Todo Application](/docs/guides/nuxt-todo-app.png)
+
+5.  **Commit and push the application code:**
+
+    ```bash
+    git add .
+    git commit -m "build: complete todo application"
+    git push
+    ```
+
+## The branching workflow in action
+
+To demonstrate the automated branching workflow, you will add a new feature to your Todo application that requires a database schema change. This will show how Vercel and Neon work together to create a safe, isolated environment for testing new features. For this example, you will add a `priority` field to the todos.
+
+1.  **Create a new feature branch in git:**
+
+    Run the following command to create a new branch. This will allow you to work on the new feature without affecting the main branch.
+
+    ```bash
+    git checkout -b feature/add-priority
+    ```
+
+2.  **Modify the database schema:**
+
+    Update `server/db/schema.ts` to include a `priority` field.
+
+    ```typescript
+    import { pgTable, serial, text, boolean, timestamp } from 'drizzle-orm/pg-core'; // [!code --]
+    import { pgTable, serial, text, boolean, timestamp, pgEnum } from 'drizzle-orm/pg-core'; // [!code ++]
+
+    export const priorityEnum = pgEnum('priority', ['low', 'medium', 'high']); // [!code ++]
+
+    export const todos = pgTable('todos', {
+      id: serial('id').primaryKey(),
+      text: text('text').notNull(),
+      completed: boolean('completed').default(false).notNull(),
+      priority: priorityEnum().default('medium').notNull(), // [!code ++]
+      createdAt: timestamp('created_at').defaultNow().notNull(),
+    });
+    ```
+
+3.  **Generate a new migration:**
+
+    Run the `db:generate` command again. It will compare your updated schema to the database state and create a new migration file.
+
+    ```bash
+    npm run db:generate
+    ```
+
+4.  Update `app.vue` with the new priority field in the UI. Copy the following code to replace the existing content in `app.vue`.
+
+    ```vue
+    <template>
+      <div class="container">
+        <h1>Todo List</h1>
+        <p>
+          A Nuxt.js app with a serverless Postgres database from Neon, deployed on Vercel with
+          automated database branching.
+        </p>
+        <form @submit.prevent="addTodo">
+          <div class="form-row">
+            <input v-model="newTodoText" placeholder="Add a new todo item" required />
+            <select v-model="newTodoPriority" class="priority-select">
+              <option value="low">Low Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="high">High Priority</option>
+            </select>
+            <button type="submit">Add Todo</button>
+          </div>
+        </form>
+        <ul>
+          <li v-for="todo in todos" :key="todo.id" :class="`priority-${todo.priority}`">
+            <div class="todo-content">
+              <span :class="{ completed: todo.completed }" @click="toggleTodo(todo)">
+                {{ todo.text }}
+              </span>
+              <span class="priority-badge" :class="`priority-${todo.priority}`">
+                {{ todo.priority }}
+              </span>
+            </div>
+            <button class="remove-btn" @click="removeTodo(todo)">Remove</button>
+          </li>
+        </ul>
+      </div>
+    </template>
+
+    <script setup>
+    const { data: todos, refresh } = await useFetch('/api/todos');
+    const newTodoText = ref('');
+    const newTodoPriority = ref('medium');
+
+    const addTodo = async () => {
+      if (!newTodoText.value.trim()) return;
+      await $fetch('/api/todos', {
+        method: 'POST',
+        body: {
+          text: newTodoText.value,
+          priority: newTodoPriority.value,
+        },
+      });
+      newTodoText.value = '';
+      newTodoPriority.value = 'medium';
+      await refresh();
+    };
+
+    const toggleTodo = async (todo) => {
+      await $fetch(`/api/todos/${todo.id}`, {
+        method: 'PUT',
+        body: { completed: !todo.completed },
+      });
+      await refresh();
+    };
+
+    const removeTodo = async (todo) => {
+      await $fetch(`/api/todos/${todo.id}`, {
+        method: 'DELETE',
+      });
+      await refresh();
+    };
+    </script>
+
+    <style>
+    body {
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      font-family: sans-serif;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #000000;
+    }
+    p {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    form {
+      margin-bottom: 1rem;
+    }
+    .form-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    input {
+      flex-grow: 1;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .priority-select {
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background: white;
+      min-width: 140px;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background-color: #00b04f;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid #eee;
+      border-left: 4px solid #ddd;
+    }
+    li.priority-high {
+      border-left-color: #ff4444;
+    }
+    li.priority-medium {
+      border-left-color: #ffaa00;
+    }
+    li.priority-low {
+      border-left-color: #44ff44;
+    }
+    .todo-content {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-grow: 1;
+    }
+    li span {
+      cursor: pointer;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: #aaa;
+    }
+    .priority-badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      text-transform: uppercase;
+      font-weight: bold;
+      cursor: default !important;
+    }
+    .priority-badge.priority-high {
+      background-color: #ffe6e6;
+      color: #cc0000;
+    }
+    .priority-badge.priority-medium {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+    .priority-badge.priority-low {
+      background-color: #e8f5e8;
+      color: #2e7d32;
+    }
+    .remove-btn {
+      background-color: #ff4d4d;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    </style>
+    ```
+
+5.  Update the `server/api/todos.post.ts` endpoint to handle the new `priority` field:
+
+    ```typescript
+    import { db } from '~/server/utils/db';
+    import { todos } from '~/server/db/schema';
+
+    export default defineEventHandler(async (event) => {
+      const body = await readBody(event);
+      const [newTodo] = await db
+        .insert(todos)
+        .values({
+          text: body.text,
+          priority: body.priority || 'medium', // [!code ++]
+        })
+        .returning();
+      return newTodo;
+    });
+    ```
+
+6.  **Push the feature branch to GitHub:**
+
+    Commit the schema and migration changes and push the new branch.
+
+    ```bash
+    git add .
+    git commit -m "feat: add priority field to todos"
+    git push -u origin feature/add-priority
+    ```
+
+7.  **Check the Preview deployment:**
+    - **Vercel:** Go to your project in Vercel. You will see a new **Preview deployment** being built for the `feature/add-priority` branch.
+    - **Neon:** Go to your project in the Neon Console and click on the **Branches** tab. You will see a new branch has been automatically created, named something like `preview/feature/add-priority`. This branch is an instant, copy-on-write clone of your main branch.
+
+    When Vercel built the preview deployment, the `npm run build` command ran `db:migrate` against the **new preview database branch**, applying the migration to add the `priority` column. Your preview URL is now running the new feature code against a database with the updated schema, all without touching production.
+
+    ![Preview deployment](/docs/guides/nuxt-vercel-neon-preview-deployment.png)
+
+8.  **Merge the pull request:**
+
+    On GitHub, create and merge the pull request for your feature branch.
+    Merging to `main` will trigger a new **Production Deployment** in Vercel. The build process will run again, but this time `db:migrate` will run against your main production database, safely applying the new schema change.
+
+</Steps>
+
+## Summary
+
+You have successfully configured a Nuxt.js application with a fully automated and safe database branching workflow. For every pull request, Vercel and Neon now work together to create an isolated preview environment, complete with its own copy-on-write database branch.
+
+This workflow allows developers to make and test schema changes with confidence, eliminating a common bottleneck in the development lifecycle and accelerating your team's ability to ship features safely.
+
+## Resources
+
+- **Vercel-managed Neon Integration:** [Vercel Marketplace](https://vercel.com/marketplace/neon)
+- **Nuxt.js Documentation:** [nuxt.com](https://nuxt.com)
+- **Drizzle ORM:** [orm.drizzle.team](https://orm.drizzle.team)
+- **Neon Documentation:** [neon.tech/docs](/docs)
+
+<NeedHelp/>
 
 
 # Manage Neon with OpenTofu
@@ -47514,7 +48375,7 @@ This guide explains how to integrate Neon read replicas into your Django applica
 
 Before you begin, make sure you have:
 
-- A Neon account and project. If you don't have one, sign up for a Neon account and create a project by following the [Getting started guide](/docs/get-started-with-neon/signing-up).
+- A Neon account and project. If you don't have one, sign up for a Neon account and create a project by following the [Getting started guide](/docs/get-started/signing-up).
 - Basic knowledge of [Django](https://docs.djangoproject.com/en) and Python.
 - [Python](https://www.python.org/downloads/) installed on your local machine.
 
@@ -47864,7 +48725,7 @@ This guide demonstrates how to leverage Neon read replicas to efficiently scale 
 
 ## Prerequisites
 
-- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started-with-neon/signing-up).
+- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started/signing-up).
 - Basic knowledge of [Next.js](https://nextjs.org/docs) and TypeScript
 - [Node.js](https://nodejs.org/en/download/package-manager) and npm installed on your local machine
 
@@ -48309,7 +49170,7 @@ This guide demonstrates how to leverage Neon read replicas to efficiently scale 
 
 ## Prerequisites
 
-- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started-with-neon/signing-up).
+- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started/signing-up).
 - Basic knowledge of .NET Core
 - Dotnet SDK installed on your local machine. You can download it from the [official .NET website](https://dotnet.microsoft.com/download).
 - Dotnet Entity Framework Core CLI tools installed. You can install them by running the following command:
@@ -48758,7 +49619,7 @@ This guide demonstrates how to leverage Neon read replicas to efficiently scale 
 
 ## Prerequisites
 
-- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started-with-neon/signing-up).
+- A Neon account and a Project. If you don't have one, you can sign up for a Neon account and create a project by following the [Getting Started guide](/docs/get-started/signing-up).
 - Basic knowledge of [Laravel](https://laravel.com/docs) and PHP
 - [Composer](https://getcomposer.org/) installed on your local machine
 - [PHP](https://www.php.net/manual/en/install.php) installed on your local machine
@@ -49779,7 +50640,7 @@ There are several ways to do this, but here's a straightforward approach using `
 
 ## Running partial data dumps inside GitHub Actions
 
-You can run `pg_dump`, `pg_restore`, and `psql` from the command line, but sometimes, an automated, reproducible approach is more convenient. To better control when data dumps occur, I use a [scheduled GitHub Action](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule) to export data from my production database and restore it to a testing database. This method works across different Postgres database providers, but if you're looking for a cost-effective testing environment, consider trying Neon. Check out our [getting started guide](/docs/get-started-with-neon/signing-up#sign-up) to see how easy it is to set up.
+You can run `pg_dump`, `pg_restore`, and `psql` from the command line, but sometimes, an automated, reproducible approach is more convenient. To better control when data dumps occur, I use a [scheduled GitHub Action](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule) to export data from my production database and restore it to a testing database. This method works across different Postgres database providers, but if you're looking for a cost-effective testing environment, consider trying Neon. Check out our [getting started guide](/docs/get-started/signing-up#sign-up) to see how easy it is to set up.
 
 ## What is a scheduled GitHub Action?
 
@@ -50051,7 +50912,7 @@ In this step, I use `psql` to restore the data to the target database from the `
 
 Once the Action completes successfully, your target database will have a fresh test data set ready for use!
 
-This Action is part of our [Dev/Test use case](/use-cases/dev-test), widely used by Neon customers who face limitations with traditional databases for testing. By leveraging a dedicated Neon database, while leaving production environments where they are, developers gain access to Neon's full suite of features, including the [built-in SQL editor](/docs/get-started-with-neon/query-with-neon-sql-editor), [table explorer](/docs/guides/tables), and [branching](/docs/introduction/branching).
+This Action is part of our [Dev/Test use case](/use-cases/dev-test), widely used by Neon customers who face limitations with traditional databases for testing. By leveraging a dedicated Neon database, while leaving production environments where they are, developers gain access to Neon's full suite of features, including the [built-in SQL editor](/docs/get-started/query-with-neon-sql-editor), [table explorer](/docs/guides/tables), and [branching](/docs/introduction/branching).
 
 If you'd like to learn more about using Neon for testing, check out our [dev/test use case](/use-cases/dev-test) or contact our [sales team](/contact-sales).
 
@@ -50208,6 +51069,187 @@ To optimize your Replit Agent development experience and build applications effe
 - [Bringing Postgres to Replit with Neon](/blog/neon-replit-integration)
 
 <NeedHelp />
+
+
+# Track Schema Changes in Production with Postgres Event Triggers
+
+---
+title: Track Schema Changes in Production with Postgres Event Triggers
+subtitle: Log every schema change with metadata in your Neon database
+author: sam-harri
+enableTableOfContents: true
+createdAt: '2025-07-15T00:00:00.000Z'
+---
+
+Event triggers are now fully supported in Neon Postgres databases, and allow you to automatically respond to DDL events like `CREATE`, `ALTER`, `DROP`, or any other statements that define or modify the structure of the database. In this post, we'll show how you can use this feature to build a simple schema audit trail that can record who made schema changes in your production database, what those changes were, and when they occurred.
+
+## Set Up Schema Auditing in Postgres
+
+### Set Up the Audit Schema and Tables
+
+First, we need two tables to store the audit log. To keep our auditing mechanism separate from the main application schema and to simplify permissions later, we'll place it in its own `audit` schema. Here, we have one table for the transactions containing the DDL changes, along with their metadata, then another table for all the DDL changes which reference the transaction they were a part of.
+
+```sql
+CREATE SCHEMA IF NOT EXISTS audit;
+
+CREATE TABLE audit.transaction_audit (
+  transaction_id         BIGINT PRIMARY KEY,
+  event_time             TIMESTAMPTZ NOT NULL DEFAULT now(),
+  database_user          TEXT NOT NULL,
+  application_user_name  TEXT,
+  application_user_email TEXT,
+  client_address         INET
+);
+
+CREATE TABLE audit.ddl_audit (
+  id              BIGSERIAL PRIMARY KEY,
+  transaction_id  BIGINT NOT NULL
+    REFERENCES audit.transaction_audit(transaction_id)
+    ON DELETE CASCADE,
+  command_tag     TEXT NOT NULL,
+  object_identity TEXT,
+  query_text      TEXT NOT NULL
+);
+```
+
+### Create the Event Trigger Function
+
+In Postgres, event triggers are executed using functions, so we need to create a function that returns the `event_trigger` type. This function will create the transaction entry if it does not already exist, then insert the DDL record. Given each DDL change within the same transaction will fire the trigger, we handle the case where the transaction has already been logged.
+
+The `usr_name` and `usr_email` values are taken from the connection's context using `current_setting()`, though more on these later.
+
+```sql
+CREATE OR REPLACE FUNCTION audit.log_schema_changes()
+  RETURNS event_trigger
+  LANGUAGE plpgsql
+AS $$
+DECLARE
+  obj       record;
+  tx        BIGINT := txid_current_if_assigned();
+  usr_name  TEXT := current_setting('audit.user_name', true);
+  usr_email TEXT := current_setting('audit.user_email', true);
+BEGIN
+  INSERT INTO audit.transaction_audit (
+    transaction_id,
+    database_user,
+    application_user_name,
+    application_user_email,
+    client_address
+  ) VALUES (
+    tx,
+    session_user,
+    usr_name,
+    usr_email,
+    inet_client_addr()
+  )
+  ON CONFLICT (transaction_id) DO NOTHING;
+
+  FOR obj IN SELECT * FROM pg_event_trigger_ddl_commands() LOOP
+    INSERT INTO audit.ddl_audit (
+      transaction_id,
+      command_tag,
+      object_identity,
+      query_text
+    ) VALUES (
+      tx,
+      obj.command_tag,
+      obj.object_identity,
+      current_query()
+    );
+  END LOOP;
+END;
+$$;
+```
+
+### Attach the Trigger to DDL Events
+
+Now, we can attach this function to an event trigger, and have it run after the DDL commands complete.
+
+```sql
+CREATE EVENT TRIGGER track_schema_changes
+  ON ddl_command_end
+  EXECUTE FUNCTION audit.log_schema_changes();
+```
+
+## Integrate Audit Logging in Production Workflows
+
+In a production environment, you would rarely apply database migrations manually. Changes would instead be managed through a CI pipeline, which typically require passing a test suite, a staging environment, and review before being able to be merged.
+
+### Create a CI-Only Role
+
+Here, we'll create a dedicated `ci_user` role to run migrations in GitHub Actions. We'll grant this role the minimum permissions necessary, which includes creating objects in the public and audit schemas, referencing users in the Neon Auth schema (if you’re using auth for your project), and inserting records into the log table. This also makes it easy to spot any manual changes made outside of the CI process, since the `database_user` would be something other than `ci_user`, and the application user fields would be empty.
+
+```sql
+CREATE ROLE ci_user WITH LOGIN PASSWORD '<some-strong-password>';
+
+GRANT CREATE ON DATABASE neondb TO ci_user;
+GRANT USAGE, CREATE ON SCHEMA public TO ci_user;
+GRANT USAGE ON SCHEMA neon_auth TO ci_user;
+GRANT REFERENCES, SELECT ON TABLE neon_auth.users_sync TO ci_user;
+GRANT USAGE, CREATE ON SCHEMA audit TO ci_user;
+GRANT INSERT, SELECT ON ALL TABLES IN SCHEMA audit TO ci_user;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA audit TO ci_user;
+```
+
+### Configure GitHub Actions
+
+Then, in a `.github/workflows/migrate.yml` file we can define the steps to apply the migration in the pipeline. Likewise, we need to add the `DATABASE_URL` environment variable in the GitHub repo’s Secrets and Variables section.
+
+```yaml
+name: Migrate Database
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Set PGOPTIONS for audit
+        run: |
+          echo "PGOPTIONS=-c audit.user_name=${{ github.event.head_commit.author.name }} -c audit.user_email=${{ github.event.head_commit.author.email }}" >> $GITHUB_ENV
+
+      - name: Run Drizzle migrations
+        run: npx drizzle-kit migrate
+```
+
+The key part of this workflow is setting the `PGOPTIONS` environment variable which allows us to set connection parameters and easily pass context from GitHub Actions to our database. Here, we use it to pass `audit.user_name` and `audit.user_email`, and supply information on who the last committer was.
+
+Realistically, schema migrations in production often involve multiple commits, possibly from different authors, and merged by reviewers. Ideally, your audit log should include information about all of these, though this can easily be added based on your needs.
+
+## Visualize the Audit Log Safely with Read-Only Access
+
+Once audit data is collected, you'll want a straightforward way to visualize it. Using the Neon internal tool template seen in a previous blog post, you can quickly build, secure, and host a UI to display these audit entries. Though, given the audit data lives in our production database, it’s a good idea to create a new read-only role that only has access to the `audit` schema to avoid exposing the entire production database to this tool.
+
+```sql
+CREATE ROLE audit_reader WITH LOGIN PASSWORD '<some-strong-password>';
+REVOKE ALL ON SCHEMA public FROM audit_reader;
+REVOKE ALL ON ALL TABLES IN SCHEMA public FROM audit_reader;
+REVOKE ALL ON ALL FUNCTIONS IN SCHEMA public FROM audit_reader;
+GRANT USAGE ON SCHEMA audit TO audit_reader;
+GRANT SELECT ON ALL TABLES IN SCHEMA audit TO audit_reader;
+```
+
+From this dashboard, we now have a clear view of who made what changes, and when. DDLs are grouped by transaction, and you can easily search for keywords in the raw SQL.
+
+![Audit log dashboard](/guides/images/schema-change-log/audit_log_frontend.gif)
 
 
 # Run your own analytics with Umami, Fly.io and Neon
@@ -52422,7 +53464,7 @@ Switching to the Neon serverless driver provides several advantages. It offers g
 To begin, you’ll need:
 
 - An existing application using the Vercel Postgres SDK
-- A [Neon account](/docs/get-started-with-neon/signing-up) (your Vercel Postgres database will automatically migrate to Neon)
+- A [Neon account](/docs/get-started/signing-up) (your Vercel Postgres database will automatically migrate to Neon)
 
 ## Migration Steps
 
@@ -52641,19 +53683,24 @@ You can either watch the video below or follow the steps to set up the Neon MCP 
   <source type="video/mp4" src="https://neondatabase.wpengine.com/wp-content/uploads/2025/04/neon-hosted-mcp-server.mp4"/>
 </video>
 
+<Admonition type="note">
+By default, the Remote MCP Server connects to your personal Neon account. To connect to an organization's account, you must authenticate with an API key. For more information, see [API key-based authentication](/docs/ai/neon-mcp-server#api-key-based-authentication).
+</Admonition>
+
 1. Open Windsurf.
 2. Open Cascade by using `⌘L` on MacOS or `Ctrl+L` on Windows/Linux.
 3. Click on the hammer icon (🔨), then click the **"Configure"** button.
    ![Windsurf Configure MCP](/docs/guides/windsurf-configure-mcp.png)
-4. This will open the `~/.codeium/windsurf/mcp_config.json` file in the IDE.
-5. Paste the following JSON configuration into the `mcp_config.json` file:
+4. This will open up the "Manage MCPs" file in Windsurf.
+5. Click on "View raw config" to open the Windsurf's MCP configuration file.
+6. Add the "Neon" server entry within the `mcpServers` object:
 
    ```json
    {
      "mcpServers": {
        "Neon": {
          "command": "npx",
-         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/sse"]
+         "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/mcp"]
        }
      }
    }
@@ -52661,15 +53708,15 @@ You can either watch the video below or follow the steps to set up the Neon MCP 
 
    If you have other MCP servers configured, you can copy just the Neon part.
 
-6. **Save** the `mcp_config.json` file.
-7. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade.
-8. An OAuth window will open in your browser. Follow the prompts to authorize Windsurf to access your Neon account.
+7. **Save** the MCP configuration file.
+8. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade.
+9. An OAuth window will open in your browser. Follow the prompts to authorize Windsurf to access your Neon account.
    ![Neon OAuth window](/docs/guides/neon-oauth-window.png)
-9. You can verify that the connection is successful by checking the available MCP servers in Cascade. The toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
+10. You can verify that the connection is successful by checking the available MCP servers in Cascade. The toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
 
-   ![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
+    ![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
 
-10. Windsurf is now connected to the Neon MCP server.
+11. Windsurf is now connected to the Neon MCP server.
 
 <Admonition type="note">
 The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
@@ -52694,8 +53741,9 @@ key for authentication.
 2. Open Cascade by using `⌘L` on MacOS or `Ctrl+L` on Windows/Linux.
 3. Click on the hammer icon (🔨), then click the **"Configure"** button.
    ![Windsurf Configure MCP](/docs/guides/windsurf-configure-mcp.png)
-4. This will open the `~/.codeium/windsurf/mcp_config.json` file in the IDE.
-5. Paste the following JSON configuration. Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained from the [prerequisites](#prerequisites) section:
+4. This will open up the "Manage MCPs" file in Windsurf.
+5. Click on "View raw config" to open the Windsurf's MCP configuration file.
+6. Add the "Neon" server entry within the `mcpServers` object:
 
    <CodeTabs labels={["MacOS/Linux", "Windows", "Windows (WSL)"]}>
 
@@ -52741,11 +53789,13 @@ key for authentication.
 
    </CodeTabs>
 
+   > Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained from the [prerequisites](#prerequisites) section:
+
    If you have other MCP servers configured, you can copy just the `Neon` part.
 
-6. **Save** the `mcp_config.json` file.
-7. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade to refresh the configuration.
-8. You can verify that the connection is successful by checking the available MCP servers in Cascade. The toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
+7. **Save** the MCP configuration file.
+8. Click **"Refresh"** (🔄) in the MCP toolbar in Windsurf Cascade to refresh the configuration.
+9. You can verify that the connection is successful by checking the available MCP servers in Cascade. The toolbar should indicate that you have MCP servers available, and you should see "1 available MCP server" (or more if you configured additional servers).
    ![Windsurf MCP Toolbar with Server Available](/docs/guides/windsurf-mcp-server-available.png)
 
    You've now configured Neon MCP Server in Windsurf and can manage your Neon Postgres databases using AI.
@@ -52897,7 +53947,7 @@ Before you begin, ensure you have the following:
   - A table named `users` to demonstrate triggering actions from new rows.
   - A table named `form_submissions` to demonstrate adding data from an external source.
 
-    You can create these tables using the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor) or any Postgres client such as [`psql`](/docs/connect/query-with-psql-editor)
+    You can create these tables using the [Neon SQL Editor](/docs/get-started/query-with-neon-sql-editor) or any Postgres client such as [`psql`](/docs/connect/query-with-psql-editor)
 
     **Example SQL for `users` table:**
 
@@ -53169,6 +54219,10 @@ In Zed, MCP servers are known as **context servers**. These context servers enab
 </Admonition>
 
 ### Option 1: Setting up the Remote Hosted Neon MCP Server
+
+<Admonition type="note">
+By default, the Remote MCP Server connects to your personal Neon account. To connect to an organization's account, you must authenticate with an API key. For more information, see [API key-based authentication](/docs/ai/neon-mcp-server#api-key-based-authentication).
+</Admonition>
 
 This method uses Neon's managed server and OAuth authentication.
 
@@ -53530,7 +54584,7 @@ With your Neon database prepared, let's set up the `hello-zero` example applicat
 2.  **Apply database schema/seed data:**
     To run the example application, you need to set up the database schema and seed initial data by running the SQL migrations. The project includes the necessary SQL commands in the `docker/seed.sql` file.
 
-    You can execute this file using `psql` (ensure it's installed locally) or the [Neon SQL Editor](/docs/get-started-with-neon/query-with-neon-sql-editor).
+    You can execute this file using `psql` (ensure it's installed locally) or the [Neon SQL Editor](/docs/get-started/query-with-neon-sql-editor).
 
     Using `psql`, run the following command. Replace `YOUR_NEON_CONNECTION_STRING` with your database connection string copied from the Neon Console:
 

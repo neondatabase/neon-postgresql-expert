@@ -1438,13 +1438,13 @@ In this example, we used the [concatenation operator](../postgresql-string-funct
 Notice the first column of the output doesn't have a name but `?column?`. To assign a name to a column temporarily in the query, you can use a [column alias](postgresql-column-alias):
 
 ```
-expression AS column_lias
+expression AS column_alias
 ```
 
 The AS keyword is optional. Therefore, you can use a shorter syntax:
 
 ```
-expression column_lias
+expression column_alias
 ```
 
 For example, you can assign a column alias full_name to the first column of the query as follows:
@@ -4719,8 +4719,8 @@ SELECT
   p.payment_date
 FROM
   customer c
-  INNER JOIN payment p USING (customer_id)
-  INNER JOIN staff s using(staff_id)
+  INNER JOIN payment p USING(customer_id)
+  INNER JOIN staff s USING(staff_id)
 ORDER BY
   payment_date;
 ```
@@ -4923,7 +4923,7 @@ nextLink:
   slug: 'postgresql-tutorial/postgresql-self-join'
 ---
 
-**Summary**: in this tutorial, you will how to use PostgreSQL `RIGHT JOIN` to join two tables and return rows from the right table that may or may not have matching rows in the left table.
+**Summary**: in this tutorial, you will learn how to use PostgreSQL `RIGHT JOIN` to join two tables and return rows from the right table that may or may not have matching rows in the left table.
 
 ## Introduction to PostgreSQL RIGHT JOIN clause
 
@@ -5970,7 +5970,7 @@ The `GROUP BY` clause divides the rows by the values in the columns specified in
 
 It’s possible to use other clauses of the `SELECT` statement with the `GROUP BY` clause.
 
-PostgreSQL evaluates the `GROUP BY` clause after the `FROM` and [`WHERE`](postgresql-where) clauses and before the [`HAVING`](postgresql-having) [`SELECT`](postgresql-select), [`DISTINCT`](postgresql-select-distinct), [`ORDER BY`](postgresql-order-by) and [`LIMIT`](postgresql-limit) clauses.
+PostgreSQL evaluates the `GROUP BY` clause after the `FROM` and [`WHERE`](postgresql-where) clauses and before the [`HAVING`](postgresql-having), [`SELECT`](postgresql-select), [`DISTINCT`](postgresql-select-distinct), [`ORDER BY`](postgresql-order-by) and [`LIMIT`](postgresql-limit) clauses.
 
 ![PostgreSQL GROUP BY](/postgresqltutorial/PostgreSQL-GROUP-BY-1.png)
 
@@ -6792,7 +6792,7 @@ GROUPING SETS (
 
 ```
 
-In general, if the number of columns specified in the `CUBE` is `n`, then you will have 2ncombinations.
+In general, if the number of columns specified in the `CUBE` is `n`, then you will have $2^n$ combinations.
 
 PostgreSQL allows you to perform a partial cube to reduce the number of aggregates calculated. The following shows the syntax:
 
@@ -24710,8 +24710,6 @@ nextLink:
 
 **Summary**: in this tutorial, you will learn how to use PostgreSQL row\-level security to control access to individual rows in a table.
 
-<CTA title="Looking to use Postgres RLS?" description="<a href='/docs/guides/neon-authorize'>Neon Authorize</a> uses the open-source <a href='https://github.com/neondatabase/pg_session_jwt'>pg_session_jwt</a> extension to help you write RLS policies that map to your app's or service's auth." buttonText="Learn More" buttonUrl="/docs/guides/neon-authorize" />
-
 ## Introduction to the PostgreSQL Row\-Level Security
 
 Row\-level security (RLS) is a feature that allows you to restrict rows returned by a query based on the user executing the query.
@@ -26382,6 +26380,3108 @@ Output:
 ## Summary
 
 - Calculate the PostgreSQL uptime using the current time and start time.
+
+
+# PostgreSQL 18
+
+---
+title: 'PostgreSQL 18 New Features'
+page_title: "PostgreSQL 18 New Features: What's New and Why It Matters"
+page_description: 'In this tutorial, you will learn about PostgreSQL 18 new features, including asynchronous I/O, UUIDv7 support, virtual generated columns, and more. Discover how these changes will impact performance, development, and operations.'
+ogImage: ''
+updatedOn: '2025-07-05T07:20:00+00:00'
+enableTableOfContents: true
+nextLink:
+  title: 'PostgreSQL 18 Asynchronous I/O'
+  slug: 'postgresql-18/asynchronous-io'
+---
+
+**Summary**: PostgreSQL 18 introduces many new features including asynchronous I/O with 2-3x performance improvements, virtual generated columns, UUIDv7 support, temporal constraints, and enhanced security. This overview covers the major features that will impact developers and DBAs.
+
+## Introduction
+
+PostgreSQL 18 Beta 1 was released on May 8, 2025, marking one of the most significant releases in recent years. This version introduces fundamental changes to how PostgreSQL handles I/O operations, along with numerous developer-friendly features and security enhancements.
+
+The release focuses on three core areas:
+
+- **Performance**: Revolutionary asynchronous I/O and query optimizations
+- **Developer Experience**: New features like UUIDv7 and virtual generated columns
+- **Operations**: Better upgrades, enhanced monitoring, and improved security
+
+Let's explore what makes PostgreSQL 18 a landmark release.
+
+## Major Performance Improvements
+
+With PostgreSQL 18, we see a major shift in how the database handles I/O operations, particularly for read-heavy workloads. The introduction of asynchronous I/O (AIO) which gives up to 2-3x performance improvements in many scenarios.
+
+### [Asynchronous I/O](/postgresql/postgresql-18/asynchronous-io)
+
+PostgreSQL 18 introduces an asynchronous I/O (AIO) subsystem that fundamentally changes how the database handles I/O operations. This represents a major architectural shift from PostgreSQL's traditional synchronous I/O model.
+
+**Key benefits:**
+
+- Up to 2-3x performance improvements for read-heavy workloads
+- Reduced I/O latency, especially in cloud environments
+- Support for both Linux io_uring and cross-platform worker implementations
+
+```sql
+-- New configuration options
+SHOW io_method;        -- 'worker', 'sync', or 'io_uring'
+SHOW io_workers;       -- Number of I/O worker processes
+```
+
+The new `pg_aios` system view allows you to monitor asynchronous I/O operations in real-time.
+
+### [B-tree Skip Scan Support](/postgresql/postgresql-18/skip-scan-btree)
+
+PostgreSQL 18 adds "skip scan" capability to B-tree indexes, enabling faster queries that don't specify all leading index columns.
+
+```sql
+-- With index on (region, category, date)
+-- This query can now use skip scan:
+SELECT * FROM sales WHERE category = 'Electronics' AND date > '2024-01-01';
+-- No need to specify 'region' anymore!
+```
+
+### Query Optimization Enhancements
+
+- **Smarter OR/IN processing**: Automatic conversion to ANY(array) operations
+- **Improved hash joins**: Better performance for table joins
+- **Parallel GIN index builds**: Faster creation of indexes for JSON and full-text search
+- **Enhanced partitioned table support**: Better pruning and join optimizations
+
+## Developer Experience Improvements
+
+With PostgreSQL 18, developers gain access to several new features that simplify schema design and improve application performance.
+
+### [Virtual Generated Columns](/postgresql/postgresql-18/virtual-generated-columns) (Default)
+
+PostgreSQL 18 makes virtual generated columns the default, computing values on-demand rather than storing them.
+
+```sql
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    subtotal DECIMAL(10,2),
+    tax_rate DECIMAL(5,4) DEFAULT 0.0875,
+
+    -- Virtual by default - computed when read
+    total DECIMAL(10,2) GENERATED ALWAYS AS (subtotal * (1 + tax_rate)),
+
+    -- Explicitly stored if needed
+    audit_info TEXT GENERATED ALWAYS AS (...) STORED
+);
+```
+
+**Benefits:**
+
+- Reduced storage requirements
+- Faster INSERT/UPDATE operations
+- Always up-to-date calculated values
+- Stored generated columns can now be logically replicated
+
+### [UUIDv7: Timestamp-Ordered UUIDs](/postgresql/postgresql-18/uuidv7-support)
+
+Native support for UUIDv7 brings the best of both worlds: global uniqueness and database-friendly ordering.
+
+```sql
+-- Generate timestamp-ordered UUIDs
+SELECT uuidv7();
+-- Result: 01980de8-ad3d-715c-b739-faf2bb1a7aad
+
+-- Extract timestamp information
+SELECT uuid_extract_timestamp(uuidv7());
+-- Result: 2025-06-21 10:20:28.549+01
+```
+
+**Why UUIDv7 matters:**
+
+- Better B-tree index performance than random UUIDs
+- Natural chronological ordering
+- Reduced page splits and improved caching
+- Ideal for distributed systems requiring sortable IDs
+
+It is worth noting that `uuidv4()` in this release is now an alias for `gen_rand_uuid`.
+
+### [Enhanced RETURNING Clause](/postgresql/postgresql-18/enhanced-returning)
+
+With PostgreSQL 18, the `RETURNING` clause has been enhanced to allow more flexible access to both old and new values in DML operations.
+
+You can now access both the old and new values in a single `RETURNING` clause, making it easier to track changes.
+
+```sql
+-- Get both old and new values in UPDATE
+UPDATE users
+SET email = 'new@example.com'
+WHERE id = 1
+RETURNING
+    OLD.email as previous_email,
+    NEW.email as current_email;
+```
+
+### [Temporal Constraints WITHOUT OVERLAPS](/postgresql/postgresql-18/temporal-constraints)
+
+Support for time-based constraints using the WITHOUT OVERLAPS clause.
+
+```sql
+-- Prevent overlapping time periods
+CREATE TABLE room_bookings (
+    room_id INT,
+    booking_period tstzrange,
+    PRIMARY KEY (room_id, booking_period WITHOUT OVERLAPS)
+);
+```
+
+## Enhanced Security Features
+
+In addition to performance and developer experience improvements, PostgreSQL 18 introduces several security enhancements for better authentication and data integrity.
+
+### [OAuth Authentication](/postgresql/postgresql-18/oauth-authentication)
+
+PostgreSQL 18 introduces OAuth 2.0 authentication support, allowing integration with modern identity providers.
+
+You configure it in `pg_hba.conf` like other auth methods, and load token validators using the new `oauth_validator_libraries` setting. This adds an extensible option for integrating with identity providers.
+
+### MD5 Deprecation Warning
+
+MD5 password authentication is now deprecated in favor of the more secure SCRAM-SHA-256 method. The MD5 method will still work, but you will be removed in the next major release.
+
+### Enhanced TLS Support
+
+New `ssl_tls13_ciphers` parameter allows fine-grained control over TLS 1.3 cipher suites.
+
+## Operational Improvements
+
+In addition to performance and developer features, PostgreSQL 18 introduces several operational enhancements that simplify management and improve upgrade processes.
+
+### Smoother Major Version Upgrades
+
+PostgreSQL 18 significantly improves the upgrade experience:
+
+**Statistics preservation**: Keep planner statistics during upgrades, eliminating the need for lengthy post-upgrade `ANALYZE` operations which were required in previous versions.
+
+**Enhanced `pg_upgrade`**:
+
+- `--jobs` flag for parallel processing
+- `--swap` flag for faster directory operations
+- Better handling of large installations
+
+### [Enhanced Query Analysis with EXPLAIN](/postgresql/postgresql-18/enhanced-explain)
+
+PostgreSQL 18 expands the capabilities of the `EXPLAIN` utility, making it easier to understand and optimize query performance.
+
+```sql
+-- Now includes buffer usage by default
+EXPLAIN ANALYZE SELECT * FROM large_table WHERE id > 1000;
+
+-- Get detailed metrics including CPU, WAL, and read stats
+EXPLAIN (ANALYZE, VERBOSE) SELECT * FROM large_table WHERE id > 1000;
+```
+
+These improvements help identify costly operations by showing how many shared buffers were accessed, how many index lookups occurred, and how much I/O, CPU, and WAL activity each plan node generated.
+
+PostgreSQL 18 also adds vacuum and analyze timing directly in `pg_stat_all_tables`, plus per-backend statistics for I/O and WAL usage. Logical replication now logs write conflicts and surfaces them in `pg_stat_subscription_stats`, making it easier to diagnose replication issues in real time.
+
+### Improved Monitoring
+
+Some notable monitoring enhancements included in PostgreSQL 18 are:
+
+- Enhanced `pg_stat_io` with byte-level statistics
+- Per-backend I/O and WAL statistics
+- Better logical replication conflict reporting
+- Vacuum and analyze timing in `pg_stat_all_tables`
+
+### Data Checksums by Default
+
+New PostgreSQL 18 clusters enable data checksums by default, providing better data integrity validation.
+
+```bash
+# Disable if needed during initialization
+initdb --no-data-checksums
+```
+
+This change helps catch data corruption issues early, especially in cloud environments where storage reliability can vary.
+
+## Schema Management Enhancements
+
+### [NOT NULL Constraints as NOT VALID](/postgresql/postgresql-18/not-null-as-not-valid)
+
+Add NOT NULL constraints without immediate table scans:
+
+```sql
+-- Add constraint without full table scan
+ALTER TABLE large_table
+ADD CONSTRAINT users_email_not_null
+CHECK (email IS NOT NULL) NOT VALID;
+
+-- Validate later with minimal locking
+ALTER TABLE large_table
+VALIDATE CONSTRAINT users_email_not_null;
+```
+
+This is especially useful in production environments where downtime must be minimized. By deferring validation, you can add the constraint instantly and then validate it during off-peak hours with minimal impact on live traffic.
+
+### Enhanced Constraint Features
+
+- Constraints can be marked as NOT ENFORCED
+- Better inheritance behavior for NOT NULL constraints
+- Support for NOT VALID and NO INHERIT clauses
+
+## Wire Protocol Updates
+
+PostgreSQL 18 introduces wire protocol version 3.2 - the first update since PostgreSQL 7.4 in 2003. While libpq continues to use version 3.0 by default, this enables future client improvements.
+
+## Getting Started with PostgreSQL 18
+
+PostgreSQL 18 Beta 1 is available for testing. While not recommended for production, it's an excellent time to:
+
+- Test your applications for compatibility
+- Benchmark the new asynchronous I/O features
+- Experiment with UUIDv7 and virtual generated columns
+- Validate upgrade procedures
+
+Neon will support PostgreSQL 18 shortly after the official release, just like with previous versions. But if you want to try it out locally right now, you can spin up a PostgreSQL 18 container using Docker:
+
+```bash
+docker run --name pg18 \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 \
+  postgres:18beta1
+```
+
+This will give you a PostgreSQL 18 instance running locally for testing purposes. You can then connect using your favorite PostgreSQL client or `psql`.
+
+## Looking Ahead
+
+PostgreSQL 18 represents a major release that modernizes the database for cloud-native workloads but also maintaining backward compatibility. The asynchronous I/O system alone makes this a compelling upgrade.
+
+The beta testing period is crucial for ensuring a stable release. We encourage testing your applications against PostgreSQL 18 Beta 1 to help identify any compatibility issues before the final release.
+
+**Expected timeline**: PostgreSQL 18 final release is anticipated for September/October 2025.
+
+As always, Neon will have PostgreSQL 18 support ready shortly after the official release, just as we did with PostgreSQL 17.
+
+
+# Overview & Performance
+
+# Asynchronous I/O
+
+---
+title: 'PostgreSQL 18 Asynchronous I/O'
+page_title: 'PostgreSQL 18 Asynchronous I/O - Improve Read Performance'
+page_description: 'In this tutorial, you will learn about PostgreSQL 18 asynchronous I/O and how to configure it to improve read performance for your database workloads.'
+ogImage: ''
+updatedOn: '2025-06-21T08:40:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 New Features'
+  slug: 'postgresql-18-new-features'
+nextLink:
+  title: 'PostgreSQL 18 B-tree Skip Scan'
+  slug: 'postgresql-18/skip-scan-btree'
+---
+
+**Summary**: In this tutorial, you will learn how to configure and use PostgreSQL 18's new asynchronous I/O features to improve database performance for read-heavy workloads.
+
+## Introduction to PostgreSQL 18 Asynchronous I/O
+
+PostgreSQL 18 introduces asynchronous I/O (AIO) for read operations. This feature changes how PostgreSQL handles disk reads by allowing the database to initiate multiple read operations without waiting for each one to complete before starting the next.
+
+In previous versions, PostgreSQL used synchronous I/O, where each read operation would block until the data was retrieved from disk. While this approach worked well for local storage, it creates bottlenecks when storage has higher latency, such as in cloud environments.
+
+With asynchronous I/O, PostgreSQL can start multiple read operations and continue processing while waiting for the results. This can improve performance for queries that need to read large amounts of data from disk.
+
+## Understanding the Three I/O Methods
+
+PostgreSQL 18 introduces the `io_method` configuration parameter that controls how asynchronous I/O works. You can choose from three options:
+
+### sync: Traditional Synchronous I/O
+
+The `sync` method works the same way as PostgreSQL 17. Reads are synchronous and blocking, using `posix_fadvise()` to provide hints to the operating system about upcoming reads.
+
+Use this method when you want to maintain the exact same behavior as previous PostgreSQL versions or when troubleshooting performance issues.
+
+### worker: Background I/O Workers
+
+The `worker` method uses dedicated background worker processes to handle I/O operations. When your query needs data from disk, PostgreSQL sends the I/O request to an available worker process instead of blocking the main query process.
+
+The `io_workers` parameter controls how many worker processes are available, with a default of 3. The optimal number depends on your workload and hardware.
+
+### io_uring: Modern Linux I/O Interface
+
+The `io_uring` method uses Linux's io_uring interface, available in kernel version 5.1 and later. This method creates a shared ring buffer between PostgreSQL and the Linux kernel, reducing the overhead of system calls.
+
+This method typically provides the best performance but requires a recent Linux kernel and PostgreSQL built with `--with-liburing` support.
+
+## Setting Up Your Environment
+
+Before configuring asynchronous I/O, verify that your PostgreSQL 18 installation includes the necessary features:
+
+```sql
+-- Check your PostgreSQL version
+SELECT version();
+
+-- Check available async I/O settings
+SELECT name, setting, context, short_desc
+FROM pg_settings
+WHERE name LIKE '%io_%'
+ORDER BY name;
+```
+
+You should see settings like `io_method`, `io_workers`, `effective_io_concurrency`, and `maintenance_io_concurrency`.
+
+## Configuring Asynchronous I/O
+
+The `io_method` parameter requires a server restart to take effect. First, check your current configuration:
+
+```sql
+-- Check current I/O settings
+SHOW io_method;
+SHOW io_workers;
+SHOW effective_io_concurrency;
+SHOW maintenance_io_concurrency;
+```
+
+Configure the I/O method you want to use:
+
+```sql
+-- For worker method (default in Beta 1)
+ALTER SYSTEM SET io_method = 'worker';
+ALTER SYSTEM SET io_workers = 4;
+
+-- For io_uring method (Linux only, requires liburing)
+ALTER SYSTEM SET io_method = 'io_uring';
+
+-- For sync method (traditional behavior)
+ALTER SYSTEM SET io_method = 'sync';
+
+-- Adjust I/O concurrency settings
+ALTER SYSTEM SET effective_io_concurrency = 16;
+ALTER SYSTEM SET maintenance_io_concurrency = 16;
+```
+
+After changing `io_method`, restart PostgreSQL:
+
+```sql
+-- Check if restart is required
+SELECT name, setting, pending_restart
+FROM pg_settings
+WHERE name = 'io_method';
+```
+
+If `pending_restart` shows `t`, restart your PostgreSQL server.
+
+## Creating a Test Environment
+
+To test asynchronous I/O performance, create a workload that requires substantial disk reads:
+
+```sql
+-- Install required extensions
+CREATE EXTENSION IF NOT EXISTS pg_prewarm;
+
+-- Create test table
+CREATE TABLE async_io_test (
+    id SERIAL PRIMARY KEY,
+    data TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    random_num INTEGER,
+    filler TEXT DEFAULT repeat('x', 100)
+);
+
+-- Insert test data
+INSERT INTO async_io_test (data, random_num)
+SELECT
+    'Performance test data for async I/O - row ' || i,
+    (random() * 1000000)::INTEGER
+FROM generate_series(1, 500000) AS i;
+
+-- Create indexes
+CREATE INDEX idx_async_io_random ON async_io_test(random_num);
+CREATE INDEX idx_async_io_created ON async_io_test(created_at);
+CREATE INDEX idx_async_io_text ON async_io_test USING gin(to_tsvector('english', data));
+```
+
+This creates a table with approximately 75-100 MB of data plus indexes.
+
+## Testing Performance
+
+To test performance differences between I/O methods, you need to ensure you're reading data from disk rather than from PostgreSQL's buffer cache.
+
+### Preparing Tests
+
+```sql
+-- Clear statistics
+SELECT pg_stat_reset();
+
+-- Clear buffer cache for the test table
+SELECT pg_prewarm('async_io_test'::regclass, 'buffer', 'main', NULL, NULL);
+```
+
+### Running Tests
+
+Enable timing and run test queries:
+
+```sql
+\timing on
+
+-- Test 1: Sequential scan
+EXPLAIN (ANALYZE, BUFFERS, VERBOSE)
+SELECT COUNT(*)
+FROM async_io_test
+WHERE data LIKE '%500000%';
+
+-- Test 2: Index range scan
+EXPLAIN (ANALYZE, BUFFERS, VERBOSE)
+SELECT id, data, random_num
+FROM async_io_test
+WHERE random_num BETWEEN 100000 AND 200000;
+
+-- Test 3: Join operation
+EXPLAIN (ANALYZE, BUFFERS, VERBOSE)
+SELECT t1.id, COUNT(t2.id)
+FROM async_io_test t1
+LEFT JOIN async_io_test t2 ON t1.random_num = t2.random_num
+WHERE t1.id < 10000
+GROUP BY t1.id;
+
+\timing off
+```
+
+Run these tests with different `io_method` settings, restarting PostgreSQL between configuration changes.
+
+### Understanding Results
+
+Look for these metrics in the output:
+
+- **Execution Time**: Total query duration
+- **Buffers**: Shared hits vs reads from disk
+- **I/O Timing**: Time spent on I/O operations
+
+Enable I/O timing for more detailed information:
+
+```sql
+ALTER SYSTEM SET track_io_timing = on;
+SELECT pg_reload_conf();
+```
+
+## Monitoring Asynchronous I/O Operations
+
+### Checking Background Workers
+
+When using the `worker` method, monitor I/O worker processes:
+
+```sql
+-- View background processes
+SELECT
+    pid,
+    application_name,
+    backend_type,
+    state,
+    wait_event_type,
+    wait_event
+FROM pg_stat_activity
+WHERE backend_type LIKE '%worker%'
+   OR application_name LIKE '%io%'
+ORDER BY backend_type, pid;
+```
+
+### System-Level Monitoring
+
+If your PostgreSQL server is running on Linux, you can monitor I/O activity using system tools:
+
+```bash
+# Monitor I/O operations (Linux)
+iostat -x 1
+
+# Watch PostgreSQL processes
+watch 'ps aux | grep postgres'
+```
+
+With `iostat`, you can see disk I/O statistics, including read/write operations and latency.
+
+### Available Monitoring Views
+
+PostgreSQL 18 includes new system views to help monitor asynchronous I/O operations. You can query these views to get insights into I/O performance:
+
+```sql
+-- Look for AIO-related system views
+SELECT schemaname, viewname
+FROM pg_views
+WHERE viewname LIKE '%aio%'
+   OR viewname LIKE '%async%'
+   OR viewname LIKE '%io%';
+```
+
+Note that some monitoring features may not be available in Beta 1 or could change before the final release.
+
+## Performance Tuning
+
+The exact performance improvements from asynchronous I/O depend on your workload and hardware, but what you can usually do is:
+
+### Adjusting I/O Workers
+
+For the `worker` method, adjust the number of workers based on your system:
+
+```sql
+-- For systems with many CPU cores and high I/O latency
+ALTER SYSTEM SET io_workers = 8;
+
+-- For smaller systems or fast local storage
+ALTER SYSTEM SET io_workers = 2;
+```
+
+Start with a worker count around half your CPU cores and adjust based on testing.
+
+### Memory Settings
+
+Configure memory settings to work well with async I/O:
+
+```sql
+-- Adjust shared buffers
+ALTER SYSTEM SET shared_buffers = '1GB';
+
+-- Increase work memory for large operations
+ALTER SYSTEM SET work_mem = '16MB';
+
+-- Enable huge pages if available
+ALTER SYSTEM SET huge_pages = 'try';
+```
+
+### I/O Concurrency
+
+Async I/O works better with higher concurrency settings:
+
+```sql
+-- Increase effective I/O concurrency
+ALTER SYSTEM SET effective_io_concurrency = 32;
+
+-- Increase maintenance I/O concurrency
+ALTER SYSTEM SET maintenance_io_concurrency = 32;
+```
+
+## Troubleshooting
+
+In case you encounter issues with asynchronous I/O, here are some common troubleshooting steps when using PostgreSQL 18's async I/O features:
+
+### io_uring Not Available
+
+If `io_uring` doesn't work, start with the `worker` method instead. Make sure your PostgreSQL is built with `liburing` support:
+
+```sql
+-- Test if io_uring is supported
+ALTER SYSTEM SET io_method = 'io_uring';
+SELECT pg_reload_conf();
+```
+
+### No Performance Improvement
+
+If you don't see expected improvements:
+
+1. **Verify cold reads**: Use `pg_prewarm` to clear buffers
+2. **Check storage type**: Local NVMe SSDs may show smaller improvements
+3. **Sufficient test data**: Dataset should be larger than `shared_buffers`
+4. **Monitor actual I/O**: Use `iostat` to verify disk reads
+
+## Performance Results
+
+Asynchronous I/O provides the most benefit in specific scenarios:
+
+- **Cloud storage**: Network-attached storage typically shows 2-3x improvement for cold reads
+- **High-latency storage**: Larger improvements with higher base latency
+- **Read-heavy workloads**: Sequential scans and large index range scans benefit most
+- **Mixed workloads**: Benefits decrease with higher cache hit ratios
+
+The `io_uring` method usually provides the best performance on compatible Linux systems, followed by the `worker` method.
+
+## Current Limitations
+
+As of the PostgreSQL 18 Beta 1 release, asynchronous I/O has some limitations that you should be aware of:
+
+**Read operations only**: Write operations, including WAL writes, remain synchronous.
+
+**Limited access methods**: Supports sequential scans, bitmap heap scans, and maintenance operations like VACUUM. Other access methods may gain support in future releases.
+
+**Platform requirements**: `io_uring` requires Linux kernel 5.1+ and PostgreSQL built with `--with-liburing`.
+
+**Beta status**: Some features may change before the final PostgreSQL 18 release.
+
+## Best Practices
+
+As a general guideline for using asynchronous I/O in PostgreSQL 18, consider the following best practices:
+
+1. Start with the `worker` method as it works on all platforms
+2. Test `io_uring` on Linux systems for better performance
+3. Use `sync` method only for compatibility testing
+4. Size test data larger than your buffer cache
+5. Monitor both PostgreSQL and system metrics
+6. Adjust worker counts based on your hardware
+7. Plan for server restarts when changing `io_method`
+
+## Summary
+
+PostgreSQL 18's asynchronous I/O changes how the database handles disk operations by allowing I/O and computation to overlap. This can improve performance for read-heavy workloads, particularly in environments with higher storage latency.
+
+The three I/O methods provide options for different environments and requirements. Test with your specific workloads to determine which method works best for your use case.
+
+As PostgreSQL 18 moves toward final release, expect continued improvements in monitoring capabilities and potentially expanded async I/O support for additional operations.
+
+
+# B-tree Skip Scan for Better Queries
+
+---
+title: 'PostgreSQL 18 B-tree Skip Scan for Better Queries'
+page_title: 'PostgreSQL 18 B-tree Skip Scan for Better Queries'
+page_description: "Learn how PostgreSQL 18's new B-tree skip scan feature enables efficient queries on multicolumn indexes even when you omit conditions on prefix columns, dramatically improving query performance for analytics and reporting workloads."
+ogImage: ''
+updatedOn: '2025-06-28T02:20:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 Asynchronous I/O'
+  slug: 'postgresql-18/asynchronous-io'
+nextLink:
+  title: 'PostgreSQL 18 Enhanced EXPLAIN'
+  slug: 'postgresql-18/enhanced-explain'
+---
+
+**Summary**: In this tutorial, you will learn how PostgreSQL 18's new B-tree skip scan feature enables efficient queries on multicolumn indexes even when you omit equality conditions on prefix columns, dramatically improving performance for analytics and reporting workloads.
+
+## Introduction to B-tree Skip Scan
+
+PostgreSQL 18 introduces an improvement to B-tree index scanning called "skip scan." This feature addresses a long-standing limitation where multicolumn B-tree indexes could only be used efficiently when queries included equality conditions on the leading (leftmost) columns of the index.
+
+Before PostgreSQL 18, if you had an index on `(region, category, date)` and wanted to query by `category` and `date` without specifying `region`, PostgreSQL would typically resort to a sequential scan or a less efficient index scan. The skip scan optimization changes this by allowing PostgreSQL to intelligently "skip" over portions of the index to find relevant data, even when prefix columns are omitted from the query.
+
+This feature is particularly valuable for analytics and reporting workloads where you often need to query different combinations of indexed columns without always specifying the leading ones.
+
+## Understanding the Problem
+
+To understand why skip scan is important, let's first look at how traditional multicolumn B-tree indexes work and their limitations.
+
+### Traditional B-tree Index Limitations
+
+In previous PostgreSQL versions, multicolumn B-tree indexes were most effective when queries included conditions on the leading columns. The index structure organizes data first by the first column, then by the second column within each first column value, and so on.
+
+```sql
+-- Consider this index
+CREATE INDEX idx_sales_region_category_date
+ON sales (region, category, date);
+
+-- This query uses the index efficiently
+SELECT * FROM sales
+WHERE region = 'North' AND category = 'Electronics';
+
+-- This query cannot use the index efficiently
+SELECT * FROM sales
+WHERE category = 'Electronics' AND date > '2025-01-01';
+```
+
+The second query above would traditionally require PostgreSQL to scan through all index entries or fall back to a sequential scan because it doesn't specify the leading `region` column.
+
+### The Skip Scan Solution
+
+Skip scan solves this by allowing PostgreSQL to efficiently navigate the index structure even when prefix columns are missing from the query. It does this by identifying distinct values in the unspecified prefix columns and performing targeted scans for each value.
+
+## Setting Up a Test Environment
+
+Let's set up a PostgreSQL 18 environment to demonstrate the skip scan feature. We'll create a sample table and populate it with data that illustrates the benefits of this new functionality.
+
+Start by creating a PostgreSQL database and a table that will benefit from skip scan optimization:
+
+```sql
+-- Create a sales table
+CREATE TABLE sales (
+    id SERIAL PRIMARY KEY,
+    region VARCHAR(20),
+    category VARCHAR(30),
+    product_name VARCHAR(100),
+    sale_date DATE,
+    amount DECIMAL(10,2),
+    sales_rep VARCHAR(50)
+);
+```
+
+In this table, we have several columns that represent sales data, including `region`, `category`, `sale_date`, and others. The goal is to create a multicolumn index that allows efficient querying across these columns.
+
+Next, we will create a multicolumn index on the `sales` table that includes `region`, `category`, and `sale_date`. This index will be used to demonstrate the skip scan functionality.
+
+```sql
+-- Create the multicolumn index
+CREATE INDEX idx_sales_analytics
+ON sales (region, category, sale_date);
+```
+
+This index will allow us to efficiently query sales data based on combinations of `region`, `category`, and `sale_date`. This also represents a common scenario in analytics applications where you might want to analyze sales data by different dimensions.
+
+### Loading Sample Data
+
+Now let's populate the table with sample data that demonstrates the skip scan benefits:
+
+```sql
+-- Insert sample data with various combinations
+INSERT INTO sales (region, category, product_name, sale_date, amount, sales_rep)
+SELECT
+    CASE (random() * 3)::int
+        WHEN 0 THEN 'North'
+        WHEN 1 THEN 'South'
+        ELSE 'West'
+    END,
+    CASE (random() * 4)::int
+        WHEN 0 THEN 'Electronics'
+        WHEN 1 THEN 'Clothing'
+        WHEN 2 THEN 'Books'
+        ELSE 'Home'
+    END,
+    'Product ' || i,
+    '2025-01-01'::date + (random() * 365)::int,
+    (random() * 1000 + 100)::decimal(10,2),
+    'Rep ' || (random() * 10)::int
+FROM generate_series(1, 100000) i;
+```
+
+The above SQL statement generates 100,000 rows of sample sales data with random regions, categories, product names, sale dates throughout 2025, and amounts. This dataset will allow us to test the skip scan functionality effectively.
+
+After inserting the data, we can update the statistics for the query planner to ensure it has the latest information about the table and index:
+
+```sql
+-- Update statistics for the query planner
+ANALYZE sales;
+```
+
+This creates a dataset with three regions, four categories, and dates spread throughout 2025, providing a good test case for skip scan functionality.
+
+## Demonstrating Skip Scan in Action
+
+Let's see how PostgreSQL 18's skip scan feature improves query performance for different scenarios.
+
+### Basic Skip Scan Example
+
+First, let's examine a query that benefits from skip scan:
+
+```sql
+-- Query that omits the leading 'region' column
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT category, COUNT(*), AVG(amount)
+FROM sales
+WHERE category = 'Electronics'
+  AND sale_date BETWEEN '2025-06-01' AND '2025-08-31'
+GROUP BY category;
+```
+
+In PostgreSQL 18, this query can use the skip scan optimization to efficiently use the `idx_sales_analytics` index even though it doesn't specify the `region` column.
+
+The query planner will identify the distinct region values and perform targeted scans for each region where the category and date conditions match.
+
+### Comparing with Traditional Approach
+
+To see the difference, you can compare this with a query that includes all prefix columns:
+
+```sql
+-- Traditional approach: specify all prefix columns
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT region, category, COUNT(*), AVG(amount)
+FROM sales
+WHERE region IN ('North', 'South', 'West')
+  AND category = 'Electronics'
+  AND sale_date BETWEEN '2025-06-01' AND '2025-08-31'
+GROUP BY region, category;
+```
+
+Both queries should now show similar performance characteristics, whereas in previous PostgreSQL versions, the first query would be significantly slower.
+
+## When Skip Scan Provides the Most Benefit
+
+Skip scan optimization is most effective in specific scenarios. Understanding these helps you design better indexes and queries.
+
+### Low Cardinality Leading Columns
+
+Skip scan works best when the leading columns that you're omitting have relatively few distinct values:
+
+```sql
+-- Effective: region has only 3 distinct values
+SELECT * FROM sales
+WHERE category = 'Electronics'
+  AND sale_date > '2025-06-01';
+
+-- Less effective if region had thousands of distinct values
+-- because skip scan would need to check many different values
+```
+
+The optimization works by essentially performing separate index scans for each distinct value in the omitted leading columns, so fewer distinct values mean fewer separate scans.
+
+## Monitoring Skip Scan Usage
+
+PostgreSQL 18 provides [enhanced EXPLAIN](/postgresql/postgresql-18/enhanced-explain) output that helps you understand when skip scan is being used.
+
+### Enhanced EXPLAIN Output
+
+When examining query plans, look for indicators that skip scan is being used:
+
+```sql
+-- Use verbose explain to see detailed execution information
+EXPLAIN (ANALYZE, BUFFERS, VERBOSE)
+SELECT category, AVG(amount)
+FROM sales
+WHERE category = 'Electronics'
+  AND sale_date > '2025-09-01'
+GROUP BY category;
+```
+
+The output will show how PostgreSQL is handling the index scan and whether it's using skip scan optimization. You'll see information about the number of index lookups and how efficiently the query is using the available index.
+
+## Performance Considerations
+
+While skip scan significantly improves query performance in many scenarios, it's important to understand its characteristics and limitations.
+
+### When Skip Scan May Not Help
+
+Skip scan isn't beneficial in all situations. Let's examine the scenarios where PostgreSQL's query planner will choose other strategies.
+
+#### High Cardinality Leading Columns
+
+High cardinality means the leading column in your index has many distinct values.
+
+When the leading column has too many distinct values, skip scan becomes inefficient:
+
+```sql
+-- Example: user_id has millions of distinct values
+SELECT * FROM user_events
+WHERE event_type = 'login'
+  AND event_date > '2025-01-01';
+```
+
+With an index on `(user_id, event_type, event_date)`, skip scan would need to perform separate scans for each `user_id` value - potentially millions of them. This makes it slower than alternatives. In such cases, PostgreSQL will likely choose a sequential scan or bitmap index scan instead.
+
+#### Large Result Sets
+
+When your query returns most of the table, sequential scan is typically faster:
+
+```sql
+-- If this matches 90% of all rows
+SELECT * FROM sales
+WHERE category IN ('Electronics', 'Clothing', 'Books', 'Home')
+  AND sale_date > '2025-01-01';
+```
+
+Even with skip scan, reading most of the table through an index is slower than just scanning the table directly.
+
+#### Automatic Decision Making
+
+PostgreSQL's query planner automatically determines when skip scan is worthwhile based on table statistics and cost estimates. You don't need to manually configure when to use it - the planner chooses the most efficient approach for each query.
+
+### Maintenance Considerations
+
+Keep your table statistics updated to ensure the query planner makes good decisions about when to use skip scan:
+
+```sql
+-- Regular analysis ensures good skip scan decisions
+ANALYZE sales;
+
+-- Consider automatic analyze settings
+ALTER TABLE sales SET (autovacuum_analyze_scale_factor = 0.02);
+```
+
+Here the `ANALYZE` command updates the statistics for the `sales` table, which is crucial for the query planner to make informed decisions about using skip scan. With the `autovacuum_analyze_scale_factor` set, PostgreSQL will automatically analyze the table when a certain percentage of rows have changed, keeping statistics fresh, in this case, 2% of the table but you can adjust this based on your workload.
+
+Fresh statistics help PostgreSQL accurately estimate the cardinality of index columns and make optimal skip scan decisions.
+
+### Limitations
+
+While skip scan is a handy feature, it's important to understand its current limitations in PostgreSQL 18.
+
+Skip scan in PostgreSQL 18 has specific scope:
+
+- Works only with B-tree indexes. This should be generally applicable as B-tree is the most common index type.
+- Most effective when omitted leading columns have low cardinality
+- Requires at least one equality condition on a later column in the index
+- Performance benefit decreases as the number of distinct values in omitted columns increases
+
+## Summary
+
+PostgreSQL 18's B-tree skip scan feature represents an improvement in query performance for analytics and reporting workloads. It enables efficient use of multicolumn indexes even when prefix columns are omitted, skip scan reduces the need for additional indexes and improves query performance across a wide range of scenarios. The feature is most beneficial when working with multicolumn indexes where leading columns have low cardinality.
+
+
+# Enhanced EXPLAIN with Automatic Buffers
+
+---
+title: 'PostgreSQL 18 Enhanced EXPLAIN with Automatic Buffers'
+page_title: 'PostgreSQL 18 Enhanced EXPLAIN with Automatic Buffers'
+page_description: 'Learn about PostgreSQL 18s enhanced EXPLAIN command that automatically includes buffer information, index lookup counts, and comprehensive CPU and WAL statistics for better query optimization.'
+ogImage: ''
+updatedOn: '2025-06-21T04:40:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 B-tree Skip Scan for Better Queries'
+  slug: 'postgresql-18/btree-skip-scan'
+nextLink:
+  title: 'PostgreSQL 18 Virtual Generated Columns'
+  slug: 'postgresql-18/virtual-generated-columns'
+---
+
+**Summary**: In this tutorial, you will learn about PostgreSQL 18's enhanced EXPLAIN command that automatically includes buffer information, shows index lookup counts, and provides comprehensive CPU and WAL statistics, making query optimization more accessible and detailed than ever before.
+
+## Introduction to Enhanced EXPLAIN
+
+PostgreSQL 18 introduces significant improvements to the EXPLAIN command that address a long-standing request from the PostgreSQL community. The most notable change is that EXPLAIN ANALYZE now automatically shows how many buffers (the fundamental unit of data storage) are accessed when executing EXPLAIN ANALYZE.
+
+This enhancement eliminates the need to remember to add the BUFFERS option manually, which database experts have consistently recommended for effective query optimization. The change makes query performance analysis more accessible to developers and DBAs while providing richer diagnostic information by default.
+
+Additionally, PostgreSQL 18 expands EXPLAIN's capabilities with new metrics including index lookup counts and comprehensive CPU and WAL statistics, giving you unprecedented insight into query execution characteristics.
+
+## The Problem with Previous Versions
+
+Before PostgreSQL 18, getting comprehensive query execution information required remembering specific EXPLAIN options and syntax that many developers found cumbersome.
+
+### Manual BUFFERS Option
+
+In previous versions, you needed to explicitly request buffer information.
+
+Let's create a simple table and run a query to illustrate this:
+
+```sql
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INTEGER NOT NULL,
+    order_date DATE NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL
+);
+CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+```
+
+Now, if you wanted to analyze a query on this table, you had to remember to include the BUFFERS option:
+
+```sql
+-- Before PostgreSQL 18: Manual syntax required
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT * FROM orders
+WHERE customer_id = 12345;
+```
+
+Without the BUFFERS option, you would miss crucial I/O information that shows whether data comes from cache (shared hits) or requires disk reads, making it difficult to understand query performance characteristics.
+
+### Limited Visibility
+
+The traditional EXPLAIN ANALYZE output provided execution times and row counts but lacked the detailed resource usage information that's essential for identifying performance bottlenecks:
+
+```sql
+-- Limited information without BUFFERS
+EXPLAIN ANALYZE
+SELECT * FROM orders WHERE order_date > '2025-01-01';
+```
+
+This would show execution time but not reveal whether the query was I/O-bound, cache-friendly, or experiencing other resource constraints.
+
+## Automatic Buffer Information
+
+PostgreSQL 18's most significant EXPLAIN enhancement is the automatic inclusion of buffer statistics in all EXPLAIN ANALYZE operations.
+
+### Default Buffer Display
+
+Now, simply running EXPLAIN ANALYZE provides comprehensive buffer information automatically:
+
+```sql
+-- PostgreSQL 18: Automatic buffer information
+EXPLAIN ANALYZE
+SELECT customer_id, SUM(total_amount)
+FROM orders
+WHERE order_date >= '2025-06-01'
+GROUP BY customer_id;
+```
+
+The output now automatically includes buffer statistics like this:
+
+```sql
+                                                 QUERY PLAN
+------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=36.21..38.16 rows=195 width=12) (actual time=0.009..0.009 rows=0.00 loops=1)
+   Group Key: customer_id
+   Batches: 1  Memory Usage: 32kB
+   ->  Seq Scan on orders  (cost=0.00..33.12 rows=617 width=8) (actual time=0.007..0.007 rows=0.00 loops=1)
+         Filter: (order_date >= '2025-06-01'::date)
+ Planning:
+   Buffers: shared hit=43 read=2
+   I/O Timings: shared read=0.061
+ Planning Time: 0.403 ms
+ Execution Time: 0.041 ms
+```
+
+This shows that the query accessed 43 shared buffers from cache and read 2 buffers from disk, providing immediate insight into how well the query utilizes memory and whether it incurs I/O costs.
+
+If you were to run the same query without the BUFFERS option in PostgreSQL 17 or earlier, you would not see this buffer information, making it harder to diagnose performance issues:
+
+```sql
+                                               QUERY PLAN
+---------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=36.21..38.16 rows=195 width=12) (actual time=0.007..0.008 rows=0 loops=1)
+   Group Key: customer_id
+   Batches: 1  Memory Usage: 40kB
+   ->  Seq Scan on orders  (cost=0.00..33.12 rows=617 width=8) (actual time=0.005..0.006 rows=0 loops=1)
+         Filter: (order_date >= '2025-06-01'::date)
+ Planning Time: 0.053 ms
+ Execution Time: 0.034 ms
+(7 rows)
+```
+
+As you can see, the output lacks buffer statistics, making it difficult to understand the query's resource usage.
+
+### Understanding Buffer Statistics
+
+The automatic buffer information provides three key metrics that help understand query performance:
+
+**Shared Hits**: Data blocks found in PostgreSQL's shared buffer cache, indicating efficient memory usage and avoiding disk I/O.
+
+**Shared Reads**: Data blocks that had to be read from disk (or OS cache), which is more expensive than cache hits and can indicate I/O bottlenecks.
+
+**Shared Dirtied/Written**: For data modification queries, shows blocks that were modified and written, helping understand write workload impact.
+
+## Enhanced Index Lookup Information
+
+PostgreSQL 18 also provides detailed information about how many index lookups occur during an index scan, giving you better insight into index efficiency.
+
+### Index Scan Metrics
+
+When your queries use indexes, PostgreSQL 18 now shows exactly how much index work is happening.
+
+To demonstrate, let's create a table with an index:
+
+```sql
+CREATE TABLE customers (
+    customer_id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(150) UNIQUE,
+    city VARCHAR(50),
+    registration_date DATE
+);
+CREATE INDEX idx_customers_email ON customers(email);
+CREATE INDEX idx_customers_city ON customers(city);
+
+INSERT INTO customers (name, email, city, registration_date)
+VALUES
+('John Doe', 'john@example.com', 'New York', '2025-01-15'),
+('Jane Smith', 'jane@example.com', 'Los Angeles', '2025-02-20'),
+('Alice Johnson', 'alice@example.com', 'Chicago', '2025-03-10');
+```
+
+Now, if you run a query that uses this index, the output will include index lookup counts:
+
+```sql
+EXPLAIN ANALYZE
+SELECT * FROM customers
+WHERE email = 'john.doe@example.com';
+```
+
+The output includes enhanced index scan information:
+
+```sql
+                                                             QUERY PLAN
+------------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_customers_email on customers  (cost=0.14..8.16 rows=1 width=544) (actual time=0.003..0.004 rows=0.00 loops=1)
+   Index Cond: ((email)::text = 'john.doe@example.com'::text)
+   Index Searches: 1
+   Buffers: shared hit=2
+ Planning:
+   Buffers: shared hit=46 read=3 dirtied=3
+   I/O Timings: shared read=0.066
+ Planning Time: 0.393 ms
+ Execution Time: 0.037 ms
+```
+
+This shows that the index scan performed exactly 1 index lookup and accessed 2 shared buffers from cache, providing clear visibility into how efficiently the index is being used.
+
+In previous versions, you would not see the "Index Searches" metric, making it harder to understand how many index lookups were required for the query:
+
+```sql
+                                                           QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using idx_customers_email on customers  (cost=0.14..8.16 rows=1 width=544) (actual time=0.010..0.011 rows=0 loops=1)
+   Index Cond: ((email)::text = 'john.doe@example.com'::text)
+ Planning Time: 0.166 ms
+ Execution Time: 0.040 ms
+```
+
+This output lacks the index lookup count, making it difficult to assess index efficiency.
+
+### Nested Loop Join Analysis
+
+The enhanced index information is particularly valuable for understanding nested loop joins, where index lookups can multiply:
+
+```sql
+EXPLAIN ANALYZE
+SELECT c.name, o.order_date, o.total_amount
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+WHERE c.registration_date >= '2025-01-01';
+```
+
+The output will show how many index lookups were performed for each part of the join:
+
+```sql
+                                                   QUERY PLAN
+----------------------------------------------------------------------------------------------------------------
+ Hash Join  (cost=12.34..40.72 rows=341 width=238) (actual time=0.012..0.014 rows=0.00 loops=1)
+   Hash Cond: (o.customer_id = c.customer_id)
+   ->  Seq Scan on orders o  (cost=0.00..24.50 rows=1450 width=24) (actual time=0.011..0.012 rows=0.00 loops=1)
+   ->  Hash  (cost=11.75..11.75 rows=47 width=222) (never executed)
+         ->  Seq Scan on customers c  (cost=0.00..11.75 rows=47 width=222) (never executed)
+               Filter: (registration_date >= '2025-01-01'::date)
+ Planning:
+   Buffers: shared hit=23 read=1 dirtied=2
+   I/O Timings: shared read=1.523
+ Planning Time: 1.983 ms
+ Execution Time: 0.050 ms
+```
+
+The output shows the hash join performance, including buffer access patterns and the number of index lookups performed for each side of the join. This helps you understand how efficiently the join is executed and whether indexes are being utilized effectively.
+
+## Comprehensive VERBOSE Statistics
+
+PostgreSQL 18 significantly enhances the VERBOSE option of EXPLAIN ANALYZE to include CPU, WAL, and average read statistics, providing the most comprehensive query analysis ever available.
+
+### CPU Usage Statistics
+
+The enhanced VERBOSE mode now includes detailed CPU usage information.
+
+Let's create a sample table and run a query to see the CPU statistics:
+
+```sql
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    category VARCHAR(50),
+    price DECIMAL(10, 2),
+    stock_quantity INTEGER,
+    last_updated TIMESTAMP
+);
+CREATE INDEX idx_products_category ON products(category);
+
+INSERT INTO products (category, price, stock_quantity, last_updated)
+VALUES
+('Electronics', 299.99, 50, NOW()),
+('Books', 19.99, 200, NOW()),
+('Clothing', 49.99, 100, NOW()),
+('Electronics', 199.99, 30, NOW()),
+('Books', 29.99, 150, NOW());
+```
+
+When you run a query with the enhanced VERBOSE mode, it provides detailed CPU statistics:
+
+```sql
+EXPLAIN (ANALYZE, VERBOSE)
+SELECT category, AVG(price), COUNT(*)
+FROM products
+WHERE stock_quantity > 0
+GROUP BY category;
+```
+
+This provides output including CPU statistics:
+
+```sql
+                                                              QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------------
+ Update on public.products  (cost=4.16..9.51 rows=0 width=0) (actual time=0.214..0.215 rows=0.00 loops=1)
+   Buffers: shared hit=6
+   ->  Bitmap Heap Scan on public.products  (cost=4.16..9.51 rows=2 width=22) (actual time=0.147..0.151 rows=2.00 loops=1)
+         Output: (price * 1.05), ctid
+         Recheck Cond: ((products.category)::text = 'Electronics'::text)
+         Heap Blocks: exact=1
+         Buffers: shared hit=2
+         ->  Bitmap Index Scan on idx_products_category  (cost=0.00..4.16 rows=2 width=0) (actual time=0.034..0.034 rows=2.00 loops=1)
+               Index Cond: ((products.category)::text = 'Electronics'::text)
+               Index Searches: 1
+               Buffers: shared hit=1
+ Planning Time: 0.128 ms
+ Execution Time: 0.362 ms
+```
+
+The above output shows CPU usage statistics, including the time spent in user and system CPU modes, which helps you understand how much computational work the query requires.
+
+## Practical Examples and Analysis
+
+Let's examine real-world scenarios where PostgreSQL 18's enhanced EXPLAIN provides valuable insights.
+
+### Analyzing Cache Efficiency
+
+Use the automatic buffer information to understand cache behavior:
+
+```sql
+-- Test query with good cache behavior
+EXPLAIN ANALYZE
+SELECT COUNT(*) FROM customers
+WHERE city = 'New York';
+```
+
+Look for output patterns like:
+
+```sql
+                                                 QUERY PLAN
+------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=1.04..1.05 rows=1 width=8) (actual time=0.029..0.029 rows=1.00 loops=1)
+   Buffers: shared hit=1
+   ->  Seq Scan on customers  (cost=0.00..1.04 rows=1 width=0) (actual time=0.023..0.024 rows=1.00 loops=1)
+         Filter: ((city)::text = 'New York'::text)
+         Rows Removed by Filter: 2
+         Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=15 read=1
+   I/O Timings: shared read=0.206
+ Planning Time: 0.772 ms
+ Execution Time: 0.067 ms
+```
+
+This shows excellent cache performance with all data found in shared buffers, indicating efficient memory usage.
+
+### Understanding Join Performance
+
+Analyze complex joins with the enhanced index lookup information:
+
+```sql
+EXPLAIN ANALYZE
+SELECT c.name, COUNT(o.order_id) as order_count
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+WHERE c.registration_date >= '2025-01-01'
+GROUP BY c.customer_id, c.name
+ORDER BY order_count DESC;
+```
+
+The enhanced output shows exactly how many index lookups the join requires and the buffer access patterns for each part of the execution plan, helping you understand join efficiency.
+
+## Disabling Automatic Buffers
+
+If you need to disable the automatic buffer information for compatibility or other reasons, you can explicitly turn it off:
+
+```sql
+-- Disable automatic buffers if needed
+EXPLAIN (ANALYZE, BUFFERS OFF)
+SELECT * FROM customers WHERE email = 'test@example.com';
+```
+
+The output will revert to the previous format without buffer statistics:
+
+```sql
+                                               QUERY PLAN
+---------------------------------------------------------------------------------------------------------
+ Seq Scan on customers  (cost=0.00..1.04 rows=1 width=662) (actual time=0.030..0.030 rows=0.00 loops=1)
+   Filter: ((email)::text = 'test@example.com'::text)
+   Rows Removed by Filter: 3
+ Planning Time: 0.131 ms
+ Execution Time: 0.055 ms
+```
+
+This produces output similar to previous PostgreSQL versions without buffer information, useful for situations where you need consistent output format or are comparing with older versions.
+
+## Summary
+
+PostgreSQL 18's enhanced EXPLAIN represents a significant step forward in query optimization accessibility and depth. By automatically including buffer information, showing index lookup counts, and providing comprehensive CPU and WAL statistics, PostgreSQL 18 makes query performance analysis more accessible to developers while giving DBAs unprecedented insight into query execution characteristics.
+
+The key improvements include:
+
+- **Automatic buffer statistics** that eliminate the need to remember the BUFFERS option
+- **Index lookup counts** that provide precise insight into index efficiency
+- **Comprehensive VERBOSE mode** with CPU, WAL, and timing statistics
+- **Backward compatibility** with the ability to disable new features when needed
+
+These enhancements make PostgreSQL 18's EXPLAIN command the most powerful query analysis tool in PostgreSQL's history, helping you optimize performance more effectively while reducing the learning curve for new database developers.
+
+As you adopt PostgreSQL 18, take advantage of these enhanced capabilities to gain deeper insights into your query performance and build more efficient database applications.
+
+
+# Developer Features
+
+# Virtual Generated Columns (Now Default)
+
+---
+title: 'PostgreSQL 18 Virtual Generated Columns: Compute On-Demand'
+page_title: 'PostgreSQL 18 Virtual Generated Columns: Compute On-Demand'
+page_description: 'In this tutorial, you will learn about PostgreSQL 18 virtual generated columns, which are now the default option. These columns compute their values on-demand during query execution, saving storage space and providing automatic calculations without the overhead of stored values.'
+ogImage: ''
+updatedOn: '2025-06-29T05:50:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 Enhanced EXPLAIN'
+  slug: 'postgresql-18/enhanced-explain'
+nextLink:
+  title: 'PostgreSQL 18 UUIDv7 Support'
+  slug: 'postgresql-18/uuidv7-support'
+---
+
+**Summary**: Learn how PostgreSQL 18 makes virtual generated columns the default, enabling compute-on-demand columns that save storage space while providing automatic calculations without the overhead of stored values.
+
+## Introduction to Virtual Generated Columns
+
+PostgreSQL 18 introduces a fundamental change to how generated columns work by making **virtual generated columns** the default option. This represents a significant shift from previous versions where generated columns were required to be stored (STORED) and took up disk space like regular columns.
+
+Virtual generated columns compute their values just-in-time during query execution instead of storing pre-calculated values on disk. This approach offers several advantages: reduced storage requirements, faster INSERT and UPDATE operations, and always up-to-date calculated values without the overhead of maintaining stored data.
+
+Additionally, PostgreSQL 18 enables logical replication of stored generated columns, providing enhanced flexibility for replication scenarios where calculated values need to be replicated across database instances.
+
+## Sample Database Setup
+
+Let's create a sample database schema which we can use to demonstrate the capabilities of virtual generated columns in PostgreSQL 18.
+
+```sql
+-- Create the main products table
+CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    base_price DECIMAL(10,2) NOT NULL,
+    cost DECIMAL(10,2) NOT NULL,
+    weight_kg DECIMAL(6,2),
+    length_cm INTEGER,
+    width_cm INTEGER,
+    height_cm INTEGER,
+    tax_rate DECIMAL(5,4) DEFAULT 0.0875,
+    discount_rate DECIMAL(5,4) DEFAULT 0.00,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create orders and order items for more complex examples
+CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INTEGER NOT NULL,
+    order_date DATE DEFAULT CURRENT_DATE,
+    shipping_address TEXT,
+    order_status VARCHAR(20) DEFAULT 'pending'
+);
+
+CREATE TABLE order_items (
+    item_id SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES orders(order_id),
+    product_id INTEGER REFERENCES products(product_id),
+    quantity INTEGER NOT NULL,
+    unit_price DECIMAL(10,2) NOT NULL
+);
+
+-- Insert sample data
+INSERT INTO products (name, category, base_price, cost, weight_kg, length_cm, width_cm, height_cm, tax_rate, discount_rate)
+VALUES
+    ('Laptop Pro 15', 'Electronics', 1299.99, 800.00, 2.1, 34, 24, 2, 0.0875, 0.05),
+    ('Wireless Mouse', 'Electronics', 49.99, 15.00, 0.15, 12, 7, 4, 0.0875, 0.10),
+    ('Desk Chair', 'Furniture', 299.99, 120.00, 15.5, 65, 65, 110, 0.0625, 0.00),
+    ('Coffee Mug', 'Kitchen', 12.99, 3.50, 0.4, 10, 10, 12, 0.0875, 0.15),
+    ('Book: PostgreSQL Guide', 'Books', 39.99, 8.00, 0.6, 23, 18, 3, 0.00, 0.00);
+
+INSERT INTO orders (customer_id, order_date, shipping_address, order_status)
+VALUES
+    (1001, '2024-12-01', '123 Main St, City, State', 'shipped'),
+    (1002, '2024-12-05', '456 Oak Ave, City, State', 'processing'),
+    (1003, '2024-12-07', '789 Pine Rd, City, State', 'pending');
+
+INSERT INTO order_items (order_id, product_id, quantity, unit_price)
+VALUES
+    (1, 1, 1, 1299.99),
+    (1, 2, 2, 49.99),
+    (2, 3, 1, 299.99),
+    (2, 4, 3, 12.99),
+    (3, 5, 2, 39.99);
+```
+
+This creates a basic e-commerce schema with products, orders, and order items.
+
+## Understanding Virtual vs Stored Generated Columns
+
+The key difference between virtual and stored generated columns lies in when and where the computation happens.
+
+### Stored Generated Columns (Traditional)
+
+Before PostgreSQL 18, generated columns were required to be STORED, meaning values were calculated during INSERT or UPDATE operations and saved to disk:
+
+```sql
+-- Pre-PostgreSQL 18 approach: Required STORED keyword
+ALTER TABLE products
+ADD COLUMN profit_margin DECIMAL(8,4)
+GENERATED ALWAYS AS ((base_price - cost) / base_price) STORED;
+```
+
+### Virtual Generated Columns (PostgreSQL 18 Default)
+
+PostgreSQL 18 makes virtual generated columns the default, computing values on-demand during query execution.
+
+In this case, you do not need to specify the STORED keyword, as virtual columns are computed dynamically:
+
+```sql
+-- PostgreSQL 18: Virtual is now the default
+ALTER TABLE products
+ADD COLUMN selling_price DECIMAL(10,2)
+GENERATED ALWAYS AS (
+    base_price * (1 - discount_rate) * (1 + tax_rate)
+);
+
+-- Explicitly specifying virtual (optional in PostgreSQL 18)
+ALTER TABLE products
+ADD COLUMN profit_amount DECIMAL(10,2)
+GENERATED ALWAYS AS (base_price - cost) VIRTUAL;
+```
+
+The above example creates a virtual column `selling_price` that calculates the selling price based on the base price, discount rate, and tax rate. The `profit_amount` column is also virtual, calculating the profit based on base price and cost. You can query these columns without any additional storage overhead:
+
+```sql
+SELECT
+    name,
+    base_price,
+    selling_price,
+    profit_amount
+FROM products
+WHERE category = 'Electronics';
+```
+
+This query will compute the `selling_price` and `profit_amount` dynamically without storing them on disk, saving space and ensuring the values are always current.
+
+### Comparing the Two Approaches
+
+Let's examine how both approaches work with a practical example.
+
+We will add both a stored and a virtual generated column to the `products` table to compare their behavior:
+
+```sql
+-- Add both types for comparison
+ALTER TABLE products
+ADD COLUMN stored_volume_cm3 INTEGER
+GENERATED ALWAYS AS (length_cm * width_cm * height_cm) STORED,
+ADD COLUMN virtual_volume_cm3 INTEGER
+GENERATED ALWAYS AS (length_cm * width_cm * height_cm);
+```
+
+The above SQL adds a stored generated column `stored_volume_cm3` that calculates the volume in cubic centimeters and stores it on disk, while `virtual_volume_cm3` is a virtual column that computes the same value on-the-fly.
+
+Now, let's see how they behave:
+
+```sql
+-- Check storage impact
+SELECT pg_size_pretty(pg_total_relation_size('products')) as table_size;
+```
+
+This will show the size of the `products` table, including the storage used by the stored generated column. The virtual column does not contribute to the disk size, as it is computed dynamically.
+
+You can query both columns to see their values:
+
+```sql
+-- View the calculated values
+SELECT
+    name,
+    base_price,
+    selling_price,
+    profit_amount,
+    stored_volume_cm3,
+    virtual_volume_cm3
+FROM products
+WHERE category = 'Electronics';
+```
+
+## Benefits of Virtual Generated Columns
+
+Now that we understand the basics, let's explore the benefits of using virtual generated columns in PostgreSQL 18.
+
+### Storage Space Savings
+
+Virtual columns consume no disk storage, leading to significant space savings, especially for large datasets with complex calculations. This is particularly useful in scenarios where calculated values are not frequently queried or indexed.
+
+To see the storage impact, let's add some virtual columns to our `products` table:
+
+```sql
+-- Add multiple virtual calculations without storage overhead
+ALTER TABLE products
+ADD COLUMN shipping_weight_lbs DECIMAL(6,2)
+GENERATED ALWAYS AS (weight_kg * 2.20462),
+ADD COLUMN price_per_kg DECIMAL(10,2)
+GENERATED ALWAYS AS (base_price / weight_kg),
+ADD COLUMN margin_percentage DECIMAL(5,2)
+GENERATED ALWAYS AS (((base_price - cost) / base_price) * 100),
+ADD COLUMN discounted_price DECIMAL(10,2)
+GENERATED ALWAYS AS (base_price * (1 - discount_rate));
+
+-- Check storage impact - table size remains unchanged!
+SELECT pg_size_pretty(pg_total_relation_size('products')) as size;
+```
+
+This will show that the size of the `products` table remains unchanged, even after adding multiple virtual columns.
+
+### Always Current Values
+
+Virtual columns automatically reflect changes to underlying data. When you update the base data, the virtual columns are recalculated on-the-fly, ensuring that you always get the most up-to-date values without needing to manage stored data.
+
+You can test this by updating a product's base price and discount rate:
+
+```sql
+-- Update base price and see automatic recalculation
+UPDATE products
+SET base_price = 1399.99, discount_rate = 0.10
+WHERE name = 'Laptop Pro 15';
+
+-- Virtual columns automatically show updated values
+SELECT
+    name,
+    base_price,
+    discount_rate,
+    selling_price,
+    profit_amount
+FROM products
+WHERE name = 'Laptop Pro 15';
+```
+
+This query will show the updated `selling_price` and `profit_amount` based on the new base price and discount rate, which are calculated dynamically.
+
+### Faster Data Modification Operations
+
+INSERT and UPDATE operations are faster with virtual columns because calculations are deferred:
+
+```sql
+-- Fast insertion - no generation calculations during INSERT
+INSERT INTO products (name, category, base_price, cost, weight_kg, length_cm, width_cm, height_cm)
+VALUES ('Gaming Keyboard', 'Electronics', 129.99, 45.00, 1.2, 45, 18, 4);
+
+-- Virtual columns are available immediately for queries
+SELECT
+    name,
+    selling_price,
+    profit_amount,
+    margin_percentage
+FROM products
+WHERE name = 'Gaming Keyboard';
+```
+
+With a small overhead for the first read, subsequent queries will benefit from the fact that no additional storage or recalculation is needed.
+
+## Performance Considerations
+
+While virtual generated columns provide many benefits, there are performance considerations to keep in mind. Since values are computed on-the-fly, complex calculations can impact query performance, especially if they involve multiple columns or subqueries.
+
+Let's explore some examples of how to optimize performance when using virtual generated columns.
+
+### CPU vs Storage Trade-off
+
+Virtual columns trade storage space for computation time. For simple calculations, this is usually beneficial, but complex expressions can impact query performance.
+
+Let's look at an example so we can compare the performance of simple versus complex virtual columns:
+
+```sql
+-- Simple calculation (low overhead)
+ALTER TABLE products
+ADD COLUMN simple_calc DECIMAL(10,2)
+GENERATED ALWAYS AS (base_price * 1.1);
+
+-- Complex calculation (higher overhead)
+ALTER TABLE products
+ADD COLUMN complex_calc DECIMAL(10,2)
+GENERATED ALWAYS AS (
+    CASE
+        WHEN category = 'Electronics' THEN
+            base_price * (1 + tax_rate) * (1 - GREATEST(discount_rate, 0.05))
+        WHEN category = 'Books' THEN
+            base_price * (1 - discount_rate)
+        ELSE
+            base_price * (1 + tax_rate) * (1 - discount_rate)
+    END
+);
+```
+
+In this example, `simple_calc` is a straightforward calculation that will perform well, while `complex_calc` involves conditional logic and multiple columns, which may slow down queries that access it.
+
+You can analyze the performance impact using the `EXPLAIN` command:
+
+```sql
+EXPLAIN (ANALYZE)
+SELECT
+    name,
+    simple_calc,
+    complex_calc
+FROM products
+WHERE category = 'Electronics'
+ORDER BY complex_calc DESC;
+```
+
+This will show you the execution plan and time taken for the query, allowing you to identify any performance bottlenecks.
+
+## Limitations and Restrictions
+
+### Indexing Limitations
+
+Virtual columns cannot have indexes directly created on them:
+
+```sql
+-- This will fail with virtual columns
+-- CREATE INDEX idx_virtual_price ON products(selling_price);
+```
+
+If you were to try creating an index on a virtual column, PostgreSQL will raise an error indicating that virtual columns cannot be indexed directly.
+
+As a workaround, you can use expression indexes or stored generated columns:
+
+```sql
+-- Workaround: Use expression indexes
+CREATE INDEX idx_selling_price_expr ON products(
+    (base_price * (1 - discount_rate) * (1 + tax_rate))
+);
+
+-- Or use stored generated columns when indexing is required
+ALTER TABLE products
+ADD COLUMN indexed_selling_price DECIMAL(10,2)
+GENERATED ALWAYS AS (base_price * (1 - discount_rate) * (1 + tax_rate)) STORED;
+
+CREATE INDEX idx_stored_selling_price ON products(indexed_selling_price);
+```
+
+This allows you to index the calculated values while still benefiting from the virtual column's compute-on-demand nature.
+
+### Logical Replication Limitations
+
+Virtual generated columns cannot be replicated through logical replication. However, now stored generated columns can be replicated.
+
+If you need to replicate calculated values, you must use stored generated columns:
+
+```sql
+-- Only stored generated columns can be logically replicated
+ALTER TABLE products
+ADD COLUMN replicable_total DECIMAL(10,2)
+GENERATED ALWAYS AS (base_price * (1 - discount_rate) * (1 + tax_rate)) STORED;
+```
+
+## Logical Replication of Stored Generated Columns
+
+PostgreSQL 18 introduces the ability to logically replicate stored generated columns:
+
+```sql
+-- Create a publication that includes stored generated columns
+CREATE PUBLICATION pub_products
+FOR TABLE products
+WITH (publish_generated_columns = stored);
+
+-- Or specify it for specific tables only
+CREATE PUBLICATION pub_products_selective
+FOR TABLE products (name, base_price, replicable_total);
+```
+
+This flexibility allows you to replicate calculated values to systems that may not support generated columns or need different calculation logic.
+
+## Best Practices and Recommendations
+
+When designing your database schema with virtual generated columns, consider the following best practices:
+
+**Choose virtual columns when:**
+
+- Storage space is a concern
+- Calculations are relatively simple
+- Values change frequently
+- No indexing is required on the calculated values
+
+**Choose stored columns when:**
+
+- You need to create indexes on calculated values
+- Calculations are computationally expensive
+- Query performance is more critical than storage space
+- You need to replicate calculated values
+
+## Summary
+
+PostgreSQL 18 introduces virtual generated columns as the new default, allowing values to be computed at query time instead of being stored on disk. This change improves storage efficiency, keeps calculations always up to date, and reduces overhead on data writes.
+
+While virtual columns can't be indexed or replicated, they offer flexible support for dynamic business logic. For use cases requiring indexing or logical replication, stored generated columns remain available. Together, these enhancements give developers more control over performance, storage, and schema design.
+
+
+# UUIDv7: Timestamp-Ordered UUIDs
+
+---
+title: 'PostgreSQL 18 UUIDv7 Support'
+page_title: 'PostgreSQL 18 UUIDv7 Support - Generate Timestamp-Ordered UUIDs'
+page_description: 'In this tutorial, you will learn about PostgreSQL 18 UUIDv7 support, which allows you to generate timestamp-ordered UUIDs that improve B-tree index performance while maintaining global uniqueness.'
+ogImage: ''
+updatedOn: '2025-06-29T03:30:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 Asynchronous I/O'
+  slug: 'postgresql-18/asynchronous-io'
+nextLink:
+  title: 'PostgreSQL 18 Enhanced Returning'
+  slug: 'postgresql-18/enhanced-returning'
+---
+
+**Summary**: In this tutorial, you will learn how to use PostgreSQL 18's new UUIDv7 support to generate timestamp-ordered UUIDs that improve B-tree index performance while maintaining global uniqueness.
+
+## Introduction to UUIDv7
+
+PostgreSQL 18 introduces native support for UUIDv7, a new UUID format specified in RFC 9562. UUIDv7 addresses performance limitations that have made developers hesitant to use UUIDs as primary keys in database applications.
+
+Traditional UUIDs (like UUIDv4) are completely random, which creates problems for database indexes. When you insert records with random UUIDs as primary keys, the database must insert new rows at random locations in B-tree indexes rather than at the end. This causes index page splits, reduces cache efficiency, and can significantly impact insert performance.
+
+UUIDv7 solves this problem by incorporating a timestamp as the most significant part of the UUID, making new UUIDs naturally sortable by creation time. This allows B-tree indexes to perform sequential inserts, similar to auto-incrementing integers, while maintaining the global uniqueness and distributed generation benefits of UUIDs.
+
+## Understanding UUIDv7 Structure
+
+UUIDv7 uses a 128-bit structure that combines temporal and random components:
+
+- **48 bits**: Unix timestamp in milliseconds
+- **12 bits**: Sub-millisecond timestamp fraction for additional ordering
+- **62 bits**: Random data for uniqueness
+- **6 bits**: Version and variant identifiers
+
+This structure ensures that UUIDs generated later in time will have lexicographically larger values, making them naturally sortable and optimal for B-tree indexes.
+
+Some of the key benefits of UUIDv7 include chronological ordering, reduced index fragmentation, and improved cache locality. This makes UUIDv7 particularly suitable for applications that require high insert rates and efficient querying.
+
+## New UUID Functions in PostgreSQL 18
+
+PostgreSQL 18 introduces several new UUID-related functions to work with UUIDv7. These functions allow you to generate, manipulate, and extract information from UUIDs easily.
+
+Let's explore the key functions:
+
+### `uuidv7()` Function
+
+The `uuidv7()` function generates new UUIDv7 values:
+
+```sql
+-- Generate a UUIDv7 with current timestamp
+SELECT uuidv7();
+
+-- Example output: 0197f96c-b278-7f64-a32f-dae3cabe1ff0
+```
+
+You can also generate UUIDs for different timestamps by providing an interval:
+
+```sql
+-- Generate a UUIDv7 for 1 hour ago
+SELECT uuidv7(INTERVAL '-1 hour');
+
+-- Generate a UUIDv7 for 30 minutes in the future
+SELECT uuidv7(INTERVAL '30 minutes');
+```
+
+### `uuidv4()` Alias
+
+For consistency, PostgreSQL 18 adds `uuidv4()` as an alias for the existing `gen_random_uuid()` function:
+
+```sql
+-- These are equivalent
+SELECT gen_random_uuid();
+SELECT uuidv4();
+```
+
+This allows you to generate random UUIDs (UUIDv4) alongside the new timestamp-ordered UUIDv7.
+
+### Enhanced uuid_extract_timestamp()
+
+The existing `uuid_extract_timestamp()` function now supports UUIDv7 in addition to UUIDv1:
+
+```sql
+-- Extract timestamp from a UUIDv7
+SELECT uuid_extract_timestamp(uuidv7());
+
+-- Example output: 2025-06-30 12:20:49.409+00
+```
+
+This function returns the timestamp when the UUID was generated, allowing you to track when records were created.
+
+### `uuid_extract_version()` Function
+
+You can determine which UUID version you're working with:
+
+```sql
+-- Check UUID version
+SELECT uuid_extract_version(uuidv7());  -- Returns 7
+SELECT uuid_extract_version(uuidv4());  -- Returns 4
+```
+
+This is useful for validating UUIDs and ensuring compatibility with your application logic.
+
+## Setting Up UUIDv7 in Your Database
+
+To start using UUIDv7 in PostgreSQL 18, you need to ensure your database is configured correctly. Let's go through the steps to enable UUIDv7 support and create tables that utilize it.
+
+### Creating Tables with UUIDv7 Primary Keys
+
+Here's how to create a table using UUIDv7 as the primary key:
+
+```sql
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+The `id` column is defined as a UUID with a default value generated by the `uuidv7()` function. This ensures that every new user record will automatically receive a timestamp-ordered UUID.
+
+### Inserting Data
+
+When you insert data, the UUIDv7 is automatically generated:
+
+```sql
+INSERT INTO users (username, email)
+VALUES ('alice', 'alice@example.com');
+
+INSERT INTO users (username, email)
+VALUES ('bob', 'bob@example.com');
+
+-- View the results ordered by ID (chronological order)
+SELECT id, username, uuid_extract_timestamp(id) as uuid_timestamp
+FROM users
+ORDER BY id;
+```
+
+This will show the users in the order they were created, thanks to the timestamp-ordered nature of UUIDv7.
+
+## Performance Benefits
+
+With UUIDv7, you can expect significant performance improvements over traditional UUIDs, especially in B-tree indexes. The timestamp-ordered structure allows for more efficient inserts and better cache utilization.
+
+### B-tree Index Efficiency
+
+UUIDv7's timestamp-ordered structure provides significant benefits for B-tree indexes. Let's compare the performance of UUIDv4 and UUIDv7 in a PostgreSQL database.
+
+```sql
+-- Create a test table to demonstrate performance
+CREATE TABLE performance_test (
+    id_v4 UUID DEFAULT uuidv4(),
+    id_v7 UUID DEFAULT uuidv7(),
+    data TEXT DEFAULT 'sample data'
+);
+
+-- Create indexes
+CREATE INDEX idx_v4 ON performance_test (id_v4);
+CREATE INDEX idx_v7 ON performance_test (id_v7);
+
+-- Insert test data
+INSERT INTO performance_test (data)
+SELECT 'test record ' || i
+FROM generate_series(1, 100000) i;
+```
+
+The above creates a table with both UUIDv4 and UUIDv7 columns, allowing you to compare their performance.
+
+### Comparing Insert Performance
+
+You can observe the difference in index behavior by examining page splits and index bloat:
+
+```sql
+-- Check index statistics
+SELECT
+    schemaname,
+    relname AS table_name,
+    indexrelname AS index_name,
+    idx_blks_read,
+    idx_blks_hit
+FROM pg_statio_user_indexes
+WHERE indexrelname IN ('idx_v4', 'idx_v7');
+```
+
+This query will show you how many index blocks were read and hit for both UUIDv4 and UUIDv7 indexes. You should see that the UUIDv7 index has fewer page splits and better cache utilization due to its natural ordering.
+
+### Sorting Performance
+
+UUIDv7's natural ordering eliminates the need for additional timestamp columns in many cases:
+
+```sql
+-- This query benefits from the natural ordering of UUIDv7
+SELECT id_v7, data
+FROM performance_test
+ORDER BY id_v7
+LIMIT 10;
+
+-- Compare with UUIDv4 (no meaningful order)
+SELECT id_v4, data
+FROM performance_test
+ORDER BY id_v4  -- Random order, no chronological meaning
+LIMIT 10;
+```
+
+The first query will return results in the order they were created, while the second will return random results. This is helpful for applications that need to display records in the order they were created without additional timestamp columns.
+
+## Practical Usage Patterns
+
+The timestamp-ordered nature of UUIDv7 makes it suitable for various application scenarios. Some common use cases include:
+
+### Multi-tenant Applications
+
+UUIDv7 is particularly useful in multi-tenant applications where you need globally unique identifiers:
+
+```sql
+CREATE TABLE tenant_records (
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
+    tenant_id UUID NOT NULL,
+    record_type VARCHAR(50) NOT NULL,
+    data JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create a composite index that benefits from UUIDv7 ordering
+CREATE INDEX idx_tenant_records_tenant_created
+ON tenant_records (tenant_id, id);
+```
+
+With the above setup, you can efficiently query records by tenant while maintaining chronological order.
+
+### Distributed Systems
+
+UUIDv7 works well in distributed systems where multiple services generate IDs:
+
+```sql
+-- Each service can generate UUIDs independently
+-- while maintaining chronological ordering
+CREATE TABLE distributed_events (
+    event_id UUID PRIMARY KEY DEFAULT uuidv7(),
+    service_name VARCHAR(50) NOT NULL,
+    event_type VARCHAR(50) NOT NULL,
+    payload JSONB,
+    processed_at TIMESTAMP WITH TIME ZONE
+);
+
+-- Natural ordering by creation time across all services
+SELECT event_id, service_name, event_type
+FROM distributed_events
+ORDER BY event_id
+LIMIT 100;
+```
+
+This allows you to maintain a global event log that is naturally ordered by creation time, making it easier to process events in the correct sequence.
+
+## Best Practices
+
+With the introduction of UUIDv7, consider the following factors when designing your database schema:
+
+### When to Use UUIDv7
+
+Use UUIDv7 when you need:
+
+- Globally unique identifiers across distributed systems
+- Natural chronological ordering
+- Better B-tree index performance than UUIDv4
+- Protection against sequential ID enumeration attacks
+
+### When to Stick with Auto-incrementing IDs
+
+Consider staying with `SERIAL` or `BIGSERIAL` when:
+
+- Your application is not distributed
+- You need the smallest possible primary key size
+- You frequently perform range scans on the primary key
+- Legacy systems require integer keys
+
+## Current Limitations and Considerations
+
+With PostgreSQL 18 beta releases, there are some limitations and considerations to keep in mind when using UUIDv7:
+
+### Clock Synchronization
+
+UUIDv7 relies on system clocks, so ensure your servers have synchronized time:
+
+- Use NTP or similar time synchronization
+- Be aware of clock skew in distributed environments
+- Consider the impact of leap seconds or clock adjustments
+
+### Timestamp Precision
+
+UUIDv7 uses millisecond precision for timestamps:
+
+```sql
+-- The extracted timestamp may differ slightly from the actual generation time
+SELECT
+    uuidv7() as uuid,
+    CURRENT_TIMESTAMP as actual_time,
+    uuid_extract_timestamp(uuidv7()) as extracted_time;
+```
+
+This means that if you generate multiple UUIDs within the same millisecond, they will still be unique but may not reflect the exact order of creation. This is generally acceptable for most applications, but be aware of this behavior in high-frequency scenarios.
+
+### Migration Planning
+
+When migrating from UUIDv4 to UUIDv7:
+
+- Plan for application changes to handle the new format
+- Consider the impact on existing indexes and queries
+- Test performance thoroughly with your specific workload
+- Update any external systems that depend on UUID format
+
+## Summary
+
+PostgreSQL 18's UUIDv7 support addresses long-standing performance concerns with using UUIDs as primary keys. Thanks to the global uniqueness benefits of UUIDs with the B-tree index efficiency of chronologically ordered values, UUIDv7 provides a practical solution for modern distributed applications.
+
+The timestamp-ordered nature of UUIDv7 makes it particularly suitable for applications that need both global uniqueness and efficient database operations. Combined with PostgreSQL 18's other performance improvements like skip scans and async I/O, UUIDv7 enables more efficient database designs for distributed systems.
+
+
+# Enhanced RETURNING with OLD/NEW Values
+
+---
+title: 'PostgreSQL 18 Enhanced Returning'
+page_title: 'PostgreSQL 18 Enhanced Returning Clause'
+page_description: 'In this tutorial, you will learn about PostgreSQL 18 Enhanced Returning Clause, which allows you to access both old and new values in DML operations, making it easier to track changes and improve data integrity.'
+ogImage: ''
+updatedOn: '2025-06-22T09:30:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 UUIDv7 Support'
+  slug: 'postgresql-18/uuidv7-support'
+nextLink:
+  title: 'PostgreSQL 18 Temporal Constraints'
+  slug: 'postgresql-18/temporal-constraints'
+---
+
+**Summary**: Learn how PostgreSQL 18 enhances the RETURNING clause to access both old and new values in DML operations, providing capabilities for audit trails, change tracking, and application logic.
+
+## Introduction to Enhanced RETURNING Clause
+
+PostgreSQL 18 introduces a significant improvement to the RETURNING clause that fundamentally changes how you can capture data during DML operations. Prior to this release, the RETURNING clause had a limitation: it could only return one set of values depending on the operation type.
+
+The traditional behavior was straightforward but limiting:
+
+- **INSERT and UPDATE**: returned only the new/current values
+- **DELETE**: returned only the old/deleted values
+- **MERGE**: returned values based on the specific internal operation executed
+
+This limitation often forced developers to write separate queries, implement complex triggers, or use workarounds when they needed to compare before-and-after values or capture comprehensive change information.
+
+PostgreSQL 18 eliminates this limitation by introducing special aliases `old` and `new` that allow you to explicitly access both the previous state and the current state of data within a single DML statement. This enhancement works across all DML operations: INSERT, UPDATE, DELETE, and MERGE.
+
+## Understanding the Enhancement
+
+The enhanced RETURNING clause provides two special aliases that become available in your DML statements:
+
+- **`old`**: References the row values before the operation
+- **`new`**: References the row values after the operation
+
+These aliases behave differently depending on the type of operation you're performing. Understanding this behavior is crucial for effectively using the enhanced RETURNING clause.
+
+For **INSERT** operations, `old` values are typically NULL since no previous row existed, while `new` values contain the inserted data. However, there's an important exception: when using `INSERT ... ON CONFLICT DO UPDATE`, the `old` values will contain the existing row data that conflicted with your insert.
+
+For **UPDATE** operations, `old` contains the row values before the update, and `new` contains the values after the update. This is where the enhancement really shines, as you can now capture both states in a single operation.
+
+For **DELETE** operations, `old` contains the values of the row being deleted, while `new` is typically NULL. However, if a DELETE operation is transformed into an UPDATE by a rewrite rule, `new` values may contain the updated row data.
+
+For **MERGE** operations, the behavior depends on the specific action taken (INSERT, UPDATE, or DELETE) and can include values from both the source and target tables.
+
+## Sample Database Setup
+
+To demonstrate these concepts effectively, let's create a realistic inventory management database that mirrors common business scenarios where change tracking is essential:
+
+```sql
+-- Create inventory table for tracking product changes
+CREATE TABLE inventory (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    category VARCHAR(50) NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 0,
+    unit_price DECIMAL(10,2) NOT NULL,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by VARCHAR(50) DEFAULT CURRENT_USER
+);
+
+-- Insert sample data to work with
+INSERT INTO inventory (product_name, category, quantity, unit_price)
+VALUES
+    ('Laptop Computer', 'Electronics', 50, 999.99),
+    ('Office Chair', 'Furniture', 75, 249.50),
+    ('Wireless Mouse', 'Electronics', 120, 29.95),
+    ('Standing Desk', 'Furniture', 30, 399.00),
+    ('USB Cable', 'Electronics', 200, 12.99),
+    ('Gaming Chair', 'Furniture', 0, 89.99);
+```
+
+This setup provides us with a scenario where we might need to track inventory changes, price adjustments, and stock movements—all common requirements that benefit from enhanced change tracking capabilities.
+
+## Basic Usage: INSERT Operations
+
+Let's start with INSERT operations to understand how the enhanced RETURNING clause works in the simplest case. When inserting new data, you typically want to capture the generated values like auto-incremented IDs or default timestamps.
+
+```sql
+-- Basic INSERT with enhanced RETURNING
+INSERT INTO inventory (product_name, category, quantity, unit_price)
+VALUES ('Gaming Keyboard', 'Electronics', 85, 89.99)
+RETURNING
+    old.product_name AS previous_name,
+    new.product_name AS current_name,
+    new.product_id,
+    new.quantity;
+```
+
+In this example, `old.product_name` will be NULL because this is a new insert with no previous row, while `new.product_name` contains the inserted value "Gaming Keyboard". The `new.product_id` gives us the auto-generated ID, which is particularly useful for applications that need to reference the newly created record.
+
+This might seem redundant for simple inserts, but the real usefulness becomes apparent when dealing with complex insert scenarios or when you need to maintain consistency in your audit trail format across different operation types.
+
+## INSERT with ON CONFLICT: Where OLD Values Matter
+
+The enhanced RETURNING clause becomes particularly powerful with `INSERT ... ON CONFLICT` operations, where the `old` alias actually refers to the existing conflicting row. This allows you to update existing records while still capturing the previous state of the data.
+
+Let's say you want to insert a new product but update the existing one if it already exists based on the product name. You can do this with an `ON CONFLICT` clause:
+
+```sql
+-- First, add a unique constraint for our demonstration
+ALTER TABLE inventory ADD CONSTRAINT unique_product_name UNIQUE (product_name);
+
+-- Now attempt to insert a duplicate
+INSERT INTO inventory (product_name, category, quantity, unit_price)
+VALUES ('Laptop Computer', 'Electronics', 25, 1099.99)
+ON CONFLICT (product_name)
+DO UPDATE SET
+    quantity = inventory.quantity + EXCLUDED.quantity,
+    unit_price = EXCLUDED.unit_price,
+    last_updated = CURRENT_TIMESTAMP
+RETURNING
+    old.quantity AS original_quantity,
+    new.quantity AS updated_quantity,
+    old.unit_price AS original_price,
+    new.unit_price AS updated_price,
+    new.quantity - old.quantity AS quantity_added;
+```
+
+You will get the following output:
+
+```sql
+ original_quantity | updated_quantity | original_price | updated_price | quantity_added
+-------------------+------------------+----------------+---------------+----------------
+                50 |               75 |         999.99 |       1099.99 |             25
+(1 row)
+```
+
+This example shows a common scenario: when you receive new stock of an existing product, you want to add to the existing quantity rather than create a duplicate record. The enhanced RETURNING clause lets you see exactly what happened: how much inventory you had before (`old.quantity`), how much you have now (`new.quantity`), and how much was added (`new.quantity - old.quantity`).
+
+Without this enhancement, you would need to write a separate query before the operation to capture the original values, making your code more complex and potentially introducing race conditions in concurrent environments.
+
+## UPDATE Operations: The Primary Use Case
+
+`UPDATE` operations are where the enhanced RETURNING clause truly excels, as this is where you most commonly need to see both the before and after states of your data:
+
+```sql
+-- Update prices with a 5% increase for Electronics
+UPDATE inventory
+SET
+    unit_price = unit_price * 1.05,
+    last_updated = CURRENT_TIMESTAMP
+WHERE category = 'Electronics'
+RETURNING
+    product_name,
+    old.unit_price AS before_price,
+    new.unit_price AS after_price,
+    ROUND(new.unit_price - old.unit_price, 2) AS price_increase;
+```
+
+Output from this query would look like this:
+
+```sql
+  product_name   | before_price | after_price | price_increase
+-----------------+--------------+-------------+----------------
+ Wireless Mouse  |        29.95 |       31.45 |           1.50
+ USB Cable       |        12.99 |       13.64 |           0.65
+ Gaming Keyboard |        89.99 |       94.49 |           4.50
+ Laptop Computer |      1099.99 |     1154.99 |          55.00
+(4 rows)
+```
+
+This query increases prices for all electronics by 5% and immediately shows you the impact of the change. You can see the original price, the new price, and the calculated increase for each affected product. This is particularly useful for business operations where you need to communicate changes or maintain detailed audit trails without additional queries.
+
+The ability to perform calculations with both old and new values in the RETURNING clause means you can generate rich, informative output without additional queries.
+
+Let's take this a step further by adding conditional logic to the RETURNING clause to provide business intelligence directly in the output:
+
+```sql
+-- Reduce inventory for a flash sale
+UPDATE inventory
+SET
+    quantity = GREATEST(quantity - 15, 0),  -- Never go below 0
+    unit_price = unit_price * 0.85,        -- 15% discount
+    last_updated = CURRENT_TIMESTAMP
+WHERE category = 'Electronics' AND quantity > 20
+RETURNING
+    product_name,
+    old.quantity AS stock_before,
+    new.quantity AS stock_after,
+    old.unit_price AS regular_price,
+    new.unit_price AS sale_price,
+    CASE
+        WHEN old.quantity - new.quantity > 0
+        THEN old.quantity - new.quantity
+        ELSE 0
+    END AS units_sold,
+    CASE
+        WHEN new.quantity < 10
+        THEN 'LOW_STOCK_WARNING'
+        ELSE 'NORMAL'
+    END AS stock_status;
+```
+
+This example showcases how the enhanced RETURNING clause can provide comprehensive business intelligence in a single operation. You're not just updating data; you're generating a detailed report of what changed, including calculated fields and business logic conditions.
+
+## DELETE Operations: Capturing What Was Lost
+
+DELETE operations with enhanced RETURNING are particularly useful for audit trails and "soft delete" implementations.
+
+When deleting data, you often want to preserve information about what was removed:
+
+```sql
+-- Remove discontinued products
+DELETE FROM inventory
+WHERE quantity = 0 AND category = 'Furniture'
+RETURNING
+    old.product_id,
+    old.product_name,
+    old.unit_price AS final_price,
+    old.last_updated AS last_activity,
+    'DELETED' AS status,
+    CURRENT_TIMESTAMP AS deletion_time;
+```
+
+In this example, `old` contains all the information from the deleted row, while `new` would be NULL. However, you can still use expressions and constants in your RETURNING clause to add context to the deletion.
+
+Another approach might involve implementing a soft delete pattern:
+
+```sql
+-- Add a status column for soft deletes
+ALTER TABLE inventory ADD COLUMN status VARCHAR(10) DEFAULT 'active';
+
+-- Implement soft delete with change tracking
+UPDATE inventory
+SET
+    status = 'soft_d',
+    last_updated = CURRENT_TIMESTAMP
+WHERE quantity < 150 AND category = 'Electronics'
+RETURNING
+    product_name,
+    old.status AS previous_status,
+    new.status AS current_status,
+    old.quantity AS remaining_stock,
+    EXTRACT(DAYS FROM (CURRENT_TIMESTAMP - old.last_updated)) AS days_since_last_update;
+```
+
+This approach preserves the data while marking it as discontinued, and the enhanced RETURNING clause provides a complete picture of what changed.
+
+## Custom Alias Names
+
+One of the thoughtful design aspects of PostgreSQL 18's enhanced RETURNING clause is the ability to customize the `old` and `new` alias names. This is particularly important when these reserved words conflict with your existing column names or when working within trigger functions where `OLD` and `NEW` already have special meanings.
+
+The syntax for custom aliases uses a `WITH` clause that precedes your RETURNING expressions:
+
+```sql
+-- Use custom aliases for clarity
+UPDATE inventory
+SET quantity = quantity * 2
+WHERE product_id = 1
+RETURNING WITH (OLD AS before, NEW AS after)
+    product_name,
+    before.quantity AS previous_amount,
+    after.quantity AS current_amount,
+    after.quantity - before.quantity AS increase;
+```
+
+This feature ensures that the enhanced RETURNING clause doesn't break existing code and provides flexibility in naming that makes your SQL more readable and self-documenting.
+
+Custom aliases are particularly valuable in complex applications where you might have columns named "old" or "new", or when you want to use more domain-specific terminology:
+
+```sql
+-- Domain-specific aliases for financial operations
+UPDATE inventory
+SET unit_price = unit_price * 1.08  -- Add 8% tax
+WHERE category = 'Electronics'
+RETURNING WITH (OLD AS pre_tax, NEW AS post_tax)
+    product_name,
+    pre_tax.unit_price AS base_price,
+    post_tax.unit_price AS taxed_price,
+    post_tax.unit_price - pre_tax.unit_price AS tax_amount;
+```
+
+This allows you to maintain clarity in your SQL statements while using the useful capabilities of the improved RETURNING clause.
+
+## Performance Considerations
+
+While the enhanced RETURNING clause is useful, it's important to understand its performance implications. PostgreSQL needs to maintain both the old and new row versions in memory during the operation, which can impact performance for large batch operations.
+
+For operations affecting many rows, consider processing in batches:
+
+```sql
+-- Process large updates in batches
+UPDATE inventory
+SET unit_price = unit_price * 1.05
+WHERE product_id BETWEEN 1 AND 1000  -- Process 1000 records at a time
+RETURNING old.unit_price, new.unit_price;
+```
+
+When using the enhanced RETURNING clause in WHERE clauses or complex expressions, make sure you have appropriate indexes on the columns involved:
+
+```sql
+-- Ensure efficient access patterns
+CREATE INDEX idx_inventory_category_quantity ON inventory(category, quantity);
+
+-- Efficient query with indexed columns
+UPDATE inventory
+SET quantity = quantity + 10
+WHERE category = 'Electronics' AND quantity < 150
+RETURNING old.quantity, new.quantity;
+```
+
+This ensures that your DML operations remain performant even as you take advantage of the enhanced RETURNING clause.
+
+## Best Practices
+
+When using the enhanced RETURNING clause, follow these guidelines for optimal results:
+
+**Be selective with returned columns**. While `RETURNING old.*, new.*` is convenient, it can impact performance and memory usage. Return only the columns you actually need:
+
+```sql
+-- Good: Specific columns
+RETURNING old.quantity, new.quantity, new.unit_price
+
+-- Less optimal for large tables: All columns
+RETURNING old.*, new.*
+```
+
+**Use meaningful expressions** to add value to your returned data:
+
+```sql
+-- Add business logic to your RETURNING clause
+RETURNING
+    product_name,
+    old.quantity,
+    new.quantity,
+    CASE
+        WHEN new.quantity < 10 THEN 'Reorder Required'
+        WHEN new.quantity < old.quantity THEN 'Stock Reduced'
+        ELSE 'Stock Increased'
+    END AS inventory_status;
+```
+
+**Handle NULL values appropriately** when working with operations where old or new values might not exist:
+
+```sql
+-- Safe handling of potential NULLs
+RETURNING
+    product_name,
+    COALESCE(old.quantity, 0) AS safe_old_quantity,
+    new.quantity;
+```
+
+## Summary
+
+PostgreSQL 18's enhanced RETURNING clause is a major improvement in data manipulation. It gives you access to both old and new row values in a single statement, removing the need for workarounds like extra queries or complex triggers.
+
+This makes it much easier to build audit logs, track changes, and understand how data evolves over time. Whether you're working on financial systems, inventory tools, or any application that relies on clear change tracking, this feature gives you a clean and efficient solution. It reflects PostgreSQL's ongoing focus on practical, developer-friendly features that solve real problems.
+
+
+# Temporal Constraints with WITHOUT OVERLAPS
+
+---
+title: 'PostgreSQL 18 Temporal Constraints'
+page_title: 'PostgreSQL 18 Temporal Constraints with WITHOUT OVERLAPS'
+page_description: 'In this tutorial, you will learn about PostgreSQL 18 Temporal Constraints, which allow you to enforce time-based data integrity using the WITHOUT OVERLAPS clause for primary keys and unique constraints, plus the PERIOD clause for foreign keys.'
+ogImage: ''
+updatedOn: '2025-06-29T04:10:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 Enhanced Returning'
+  slug: 'postgresql-18/enhanced-returning'
+nextLink:
+  title: 'PostgreSQL 18 OAuth Support'
+  slug: 'postgresql-18/oauth-authentication'
+---
+
+**Summary**: Learn how PostgreSQL 18 introduces temporal constraints using the WITHOUT OVERLAPS clause for primary keys and unique constraints, plus the PERIOD clause for foreign keys, enabling robust time-based data integrity at the database level.
+
+## Introduction to Temporal Constraints
+
+PostgreSQL 18 introduces temporal constraints, a new feature that allows you to enforce data integrity rules over time periods. This improvement addresses a common challenge in applications that track historical data: ensuring that time periods don't overlap when they shouldn't, and maintaining referential integrity across temporal relationships.
+
+Before PostgreSQL 18, preventing overlapping time periods required additional application logic, custom triggers, or exclusion constraints with manual setup. The new temporal constraints bring this functionality directly into the database schema definition, making it both simpler to implement and more reliable to maintain.
+
+Temporal constraints work with PostgreSQL's range types, such as `daterange`, `tstzrange` (timestamp with timezone range), and `tsrange` (timestamp range). These constraints are particularly valuable for applications that need to track the validity periods of data, such as employee records, pricing information, equipment assignments, or any scenario where you need to maintain a complete historical timeline without gaps or overlaps.
+
+## Understanding Range Types
+
+Before diving into temporal constraints, it's important to understand PostgreSQL's range types, which form the foundation of temporal functionality. Range types represent a continuous span between two values and are essential for temporal constraints.
+
+PostgreSQL provides several built-in range types:
+
+- **`daterange`**: A range of dates
+- **`tsrange`**: A range of timestamps without timezone
+- **`tstzrange`**: A range of timestamps with timezone
+- **`int4range`**: A range of integers
+- **`numrange`**: A range of numeric values
+
+For temporal constraints, you'll typically use `daterange` for date-only scenarios and `tstzrange` when you need precise timestamps with timezone awareness. Range types support various operators, with the overlap operator (`&&`) being particularly important for temporal constraints—it returns true when two ranges have any time in common.
+
+```sql
+-- Examples of range types and the overlap operator
+SELECT daterange('2025-01-01', '2025-01-31') && daterange('2025-01-15', '2025-02-15');  -- true (overlaps)
+SELECT daterange('2025-01-01', '2025-01-31') && daterange('2025-02-01', '2025-02-28');  -- false (no overlap)
+SELECT tstzrange('2025-01-01 10:00', '2025-01-01 15:00') && tstzrange('2025-01-01 14:00', '2025-01-01 18:00');  -- true
+```
+
+These range types allow you to represent time periods effectively, enabling powerful queries and constraints that ensure data integrity over time.
+
+## Setting Up the Environment
+
+To use temporal constraints, you need to install the `btree_gist` extension, which provides the necessary operator classes for creating GiST indexes on scalar data types:
+
+```sql
+-- Install the required extension
+CREATE EXTENSION btree_gist;
+```
+
+This extension is necessary because temporal constraints use GiST (Generalized Search Tree) indexes instead of traditional B-tree indexes. The GiST index can handle both scalar values (like integers) and range types together, which is essential for temporal constraints that combine regular columns with time ranges.
+
+## Sample Database Setup
+
+Let's create a sample PostgreSQL schema for an employee management database to demonstrate temporal constraints in action:
+
+```sql
+-- Create employees table with temporal constraints
+CREATE TABLE employees (
+    emp_id INTEGER,
+    emp_name VARCHAR(100) NOT NULL,
+    department VARCHAR(50) NOT NULL,
+    position VARCHAR(50) NOT NULL,
+    salary DECIMAL(10,2) NOT NULL,
+    valid_period tstzrange NOT NULL DEFAULT tstzrange(now(), 'infinity', '[)'),
+
+    -- Temporal primary key: no overlapping periods for same employee
+    PRIMARY KEY (emp_id, valid_period WITHOUT OVERLAPS)
+);
+
+-- Create department budget table
+CREATE TABLE department_budgets (
+    dept_name VARCHAR(50),
+    budget_amount DECIMAL(12,2) NOT NULL,
+    budget_period daterange NOT NULL,
+
+    -- Temporal unique constraint: no overlapping budget periods per department
+    UNIQUE (dept_name, budget_period WITHOUT OVERLAPS)
+);
+
+-- Create project assignments table
+CREATE TABLE project_assignments (
+    assignment_id SERIAL PRIMARY KEY,
+    emp_id INTEGER NOT NULL,
+    project_name VARCHAR(100) NOT NULL,
+    assignment_period tstzrange NOT NULL,
+
+    -- Temporal foreign key to employees (to be added after inserting data)
+    CHECK (NOT isempty(assignment_period))  -- Ensure non-empty ranges
+);
+```
+
+This setup demonstrates the key concepts: the `employees` table uses a temporal primary key to make sure that each employee can have multiple historical records without overlapping time periods, while `department_budgets` uses a temporal unique constraint to prevent overlapping budget periods for the same department.
+
+## WITHOUT OVERLAPS: Temporal Primary Keys and Unique Constraints
+
+The `WITHOUT OVERLAPS` clause is the heart of temporal constraints for primary keys and unique constraints. It makes sure that for any given set of scalar column values, the associated time ranges do not overlap.
+
+### Temporal Primary Keys
+
+A temporal primary key combines regular columns with a range column and the `WITHOUT OVERLAPS` clause:
+
+```sql
+-- Insert employee data to demonstrate temporal primary key
+INSERT INTO employees (emp_id, emp_name, department, position, salary, valid_period)
+VALUES
+    (1, 'Alice Johnson', 'Engineering', 'Software Engineer', 75000,
+     tstzrange('2024-01-01', '2025-01-01', '[)')),
+    (1, 'Alice Johnson', 'Engineering', 'Senior Software Engineer', 85000,
+     tstzrange('2025-01-01', 'infinity', '[)')),
+    (2, 'Bob Wilson', 'Marketing', 'Marketing Specialist', 60000,
+     tstzrange('2024-06-01', 'infinity', '[)'));
+```
+
+The temporal primary key `(emp_id, valid_period WITHOUT OVERLAPS)` allows multiple rows for the same employee (`emp_id = 1`) as long as their time periods don't overlap. This enables you to maintain a complete history of changes while ensuring data integrity.
+
+PostgreSQL automatically rejects empty ranges in temporal primary key and unique constraints, so you don't need to manually enforce this with a `CHECK (NOT isempty(...))` constraint—though adding one can make intent explicit.
+
+If you try to insert overlapping periods for the same employee, PostgreSQL will reject the operation:
+
+```sql
+-- This will fail due to overlapping periods
+INSERT INTO employees (emp_id, emp_name, department, position, salary, valid_period)
+VALUES (1, 'Alice Johnson', 'Engineering', 'Lead Engineer', 95000,
+        tstzrange('2024-06-01', '2025-06-01', '[)'));  -- Overlaps with existing data
+```
+
+This will throw an error saying that the primary key constraint is violated, preventing overlapping time periods for the same employee.
+
+### Temporal Unique Constraints
+
+Temporal unique constraints work similarly but for unique constraints rather than primary keys:
+
+```sql
+-- Insert department budget data
+INSERT INTO department_budgets (dept_name, budget_amount, budget_period)
+VALUES
+    ('Engineering', 500000, daterange('2025-01-01', '2025-12-31', '[)')),
+    ('Marketing', 200000, daterange('2025-01-01', '2025-12-31', '[)')),
+    ('Engineering', 550000, daterange('2025-01-01', '2025-12-31', '[)'));  -- Different period, allowed
+```
+
+The temporal unique constraint `UNIQUE (dept_name, budget_period WITHOUT OVERLAPS)` makes sure that each department can have only one budget for any given time period, but multiple non-overlapping budget periods are allowed.
+
+## Querying Temporal Data
+
+Temporal constraints enable powerful querying capabilities. You can easily find data that was valid at specific points in time or during time ranges:
+
+```sql
+-- Find who worked in Engineering on a specific date
+SELECT emp_name, position, salary
+FROM employees
+WHERE department = 'Engineering'
+  AND valid_period @> '2024-06-15'::timestamptz;
+
+-- Find all salary changes for a specific employee
+SELECT emp_name, position, salary, valid_period
+FROM employees
+WHERE emp_id = 1
+ORDER BY lower(valid_period);
+
+-- Find departments with budget changes
+SELECT dept_name, budget_amount, budget_period
+FROM department_budgets
+WHERE dept_name = 'Engineering'
+ORDER BY lower(budget_period);
+```
+
+The containment operator (`@>`) checks if a range contains a specific point in time, while `lower()` and `upper()` functions extract the start and end points of ranges.
+
+This is particularly useful for applications that need to track changes over time, such as employee history, budget adjustments, or project assignments. Temporal constraints make it easy to enforce rules that ensure data integrity while allowing for complex historical queries.
+
+## PERIOD Clause: Temporal Foreign Keys
+
+PostgreSQL 18 also introduces temporal foreign keys using the `PERIOD` clause. These constraints ensure that foreign key relationships are maintained across time periods, checking for range containment rather than simple equality.
+
+### Setting Up Temporal Foreign Keys
+
+A temporal foreign key ensures that the referenced row exists during the entire time period of the referencing row:
+
+```sql
+-- Add temporal foreign key to project assignments
+ALTER TABLE project_assignments
+ADD CONSTRAINT fk_emp_temporal
+FOREIGN KEY (emp_id, PERIOD assignment_period)
+REFERENCES employees (emp_id, PERIOD valid_period);
+```
+
+This constraint ensures that whenever you assign an employee to a project, that employee must exist in the employees table for the entire duration of the project assignment.
+
+Note the use of the `PERIOD` clause, which specifies that the foreign key relationship is based on the time ranges defined in the `assignment_period` and `valid_period` columns.
+
+### Demonstrating Temporal Foreign Keys
+
+Let's see how temporal foreign keys work in practice. Start by inserting some employee records:
+
+```sql
+-- Insert Alice (emp_id = 1) with a valid period covering 2024-03-01 to 2025-04-01
+INSERT INTO employees (emp_id, emp_name, department, position, salary, valid_period)
+VALUES
+  (1, 'Alice Johnson', 'Engineering', 'Software Engineer', 75000,
+   tstzrange('2024-01-01', '2025-07-01', '[)'));
+
+-- Insert Bob (emp_id = 2) with a valid period covering 2024-08-01 to 2024-12-01
+INSERT INTO employees (emp_id, emp_name, department, position, salary, valid_period)
+VALUES
+  (2, 'Bob Wilson', 'Marketing', 'Marketing Specialist', 60000,
+   tstzrange('2024-06-01', '2025-01-01', '[)'));
+```
+
+Then, you can insert project assignments that reference these employees:
+
+```sql
+-- Insert valid project assignments
+INSERT INTO project_assignments (emp_id, project_name, assignment_period)
+VALUES
+    (1, 'Website Redesign', tstzrange('2024-03-01', '2024-06-01', '[)')),  -- Valid: Alice existed then
+    (2, 'Marketing Campaign', tstzrange('2024-08-01', '2024-12-01', '[)'));  -- Valid: Bob existed then
+
+-- This will succeed because Alice exists during the entire assignment period
+INSERT INTO project_assignments (emp_id, project_name, assignment_period)
+VALUES (1, 'Database Migration', tstzrange('2025-02-01', '2025-04-01', '[)'));
+```
+
+Now let's try to insert an invalid assignment:
+
+```sql
+-- This will fail: trying to assign Alice to a project before she was hired
+INSERT INTO project_assignments (emp_id, project_name, assignment_period)
+VALUES (1, 'Legacy Project', tstzrange('2022-01-01', '2022-06-01', '[)'));
+```
+
+The temporal foreign key prevents this insertion because Alice's employee record doesn't cover the period from 2022-01-01 to 2022-06-01.
+
+The key thing to note is that the `PERIOD` clause allows you to define foreign key relationships based on time ranges, ensuring that referential integrity is maintained across temporal data.
+
+## Performance Considerations
+
+Temporal constraints use GiST indexes, which have different performance characteristics than B-tree indexes. Understanding these differences helps you optimize your temporal database design.
+
+### Index Structure
+
+GiST indexes store range data efficiently and support overlap operations, but they're generally larger than B-tree indexes and may have different update performance characteristics. They're essential for supporting temporal constraints on range types.
+
+```sql
+-- Check the indexes created by temporal constraints
+SELECT
+    indexname,
+    indexdef
+FROM pg_indexes
+WHERE tablename = 'employees';
+```
+
+> Learn more: [`btree_gist` extension in Neon Docs](https://neon.com/docs/extensions/btree_gist)
+
+### Query Optimization
+
+For optimal performance with temporal queries, consider your query patterns and how you use range types. Use the containment operator (`@>`) for point-in-time lookups, as it is index-supported:
+
+```sql
+-- Efficient: Uses the GiST index
+SELECT * FROM employees
+WHERE emp_id = 1 AND valid_period @> '2025-01-15'::timestamptz;
+
+-- Less efficient: May require full scan
+SELECT * FROM employees
+WHERE upper(valid_period) > '2025-01-01'::timestamptz;
+```
+
+The `@>` operator is index-supported on range columns using GiST, making it ideal for point-in-time lookups.
+
+On the other hand, expressions that apply functions to the range column (like `upper(...)`) can bypass the index unless a functional index is explicitly created.
+
+## Summary
+
+PostgreSQL 18's temporal constraints with `WITHOUT OVERLAPS` and `PERIOD` clauses bring a nice time-based data integrity directly into the database schema. These features eliminate the need for complex application logic or custom triggers when dealing with temporal data, making it easier to build robust applications that track changes over time.
+
+The `WITHOUT OVERLAPS` clause for primary keys and unique constraints prevents overlapping time periods, while the `PERIOD` clause for foreign keys ensures referential integrity across temporal relationships. Together, these features provide a solid foundation for building temporal databases that maintain data integrity while preserving complete historical information.
+
+
+# Security & Operations
+
+# OAuth 2.0 Authentication Setup
+
+---
+title: 'PostgreSQL 18 OAuth Support'
+page_title: 'PostgreSQL 18 OAuth Support'
+page_description: 'PostgreSQL 18 introduces native OAuth 2.0 authentication, enabling secure token-based database connections with your existing identity providers like Google, Auth0, or enterprise SSO systems.'
+ogImage: ''
+updatedOn: '2025-06-28T01:40:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 Temporal Constraints'
+  slug: 'postgresql-18/temporal-constraints'
+nextLink:
+  title: 'PostgreSQL 18 NOT NULL as NOT VALID'
+  slug: 'postgresql-18/not-null-as-not-valid'
+---
+
+**Summary**: PostgreSQL 18 adds native OAuth 2.0 authentication, letting you connect to your database using tokens from identity providers like Google, Auth0, or your company's SSO system instead of managing database passwords.
+
+> **Note**: As of this writing, PostgreSQL 18 is in beta. The OAuth features described here are subject to change before the final release. Always refer to the [official PostgreSQL 18 documentation](https://www.postgresql.org/docs/18/) for the most current information.
+
+## What's New with OAuth Authentication
+
+PostgreSQL 18 introduces built-in OAuth 2.0 support, making it a resource server that can validate bearer tokens from external identity providers. This means your apps can authenticate against your existing identity infrastructure instead of managing separate database credentials.
+
+This feature enables a range of authentication scenarios like:
+
+- Single Sign-On (SSO) for database access
+- Centralized user management through your existing identity provider
+- Token-based authentication that eliminates password storage in applications
+- Fine-grained access control through OAuth scopes
+
+PostgreSQL validates tokens but doesn't issue them, that's handled by your OAuth provider (Google, Microsoft Azure AD, Keycloak, Auth0, etc.).
+
+## Build Requirements
+
+OAuth support must be enabled when PostgreSQL is compiled.
+
+As of the latest beta, most distributions do not include this by default, but if you're building from source, you can `--with-libcurl` to enable OAuth client features.
+
+Note that you will also need a compatible PostgreSQL client which supports OAuth connections, in the case of `psql`, this is available in PostgreSQL 18 and later.
+
+## How It Works
+
+When a client connects with OAuth:
+
+1. Your app presents a bearer token to PostgreSQL (an opaque string that proves authentication)
+2. PostgreSQL uses a validator module to verify the token with your OAuth provider
+3. If valid, PostgreSQL extracts the user identity and maps it to a database role
+4. Connection proceeds with the mapped role's permissions
+
+The client-side flow is handled automatically by `libpq`, including support for the OAuth Device Authorization flow (great for CLI tools like `psql`).
+
+The main components that you need to understand are:
+
+- **Discovery Process**: When you specify an issuer, PostgreSQL's client automatically discovers OAuth endpoints by fetching `/.well-known/openid-configuration` from your provider. This follows OpenID Connect Discovery standards, so most modern identity providers work out of the box.
+
+- **Validator Modules**: These are the bridge between PostgreSQL and your specific OAuth provider. The validator handles provider-specific token verification, whether that's validating JWT signatures, calling token introspection endpoints, or other methods. You can write custom validators for proprietary systems or use existing ones for popular providers.
+
+## Basic Setup
+
+To enable OAuth authentication, you need to configure PostgreSQL's `pg_hba.conf` file and set up a validator module. Along with the PostgreSQL server, you will also need to ensure your OAuth provider is set up to issue tokens that PostgreSQL can validate.
+
+OAuth authentication is configured in `pg_hba.conf` using the `oauth` method with specific parameters for your OAuth provider. Similar to how you configure other authentication methods. Here's a basic example:
+
+```
+host  myapp  all  0.0.0.0/0  oauth  issuer=https://your-provider.com  scope="openid profile"
+```
+
+Key parameters:
+
+- `issuer`: Your OAuth provider's HTTPS URL (must exactly match the issuer in tokens)
+- `scope`: Required OAuth scopes (space-separated)
+- `validator`: Which validator module to use (required if you have multiple)
+- `map`: Optional identity mapping name for complex user mapping
+
+You'll also need to configure a validator module in `postgresql.conf`:
+
+```sql
+oauth_validator_libraries = 'your_oauth_validator'
+```
+
+The issuer URL must match exactly between your `pg_hba.conf`, the provider's discovery document, and client connections. No variations in case, trailing slashes, or formatting are allowed, OAuth is strict about issuer matching.
+
+If you configure multiple validator libraries, each `pg_hba.conf` entry must specify which validator to use with the `validator` parameter.
+
+## Connecting with OAuth
+
+To connect to PostgreSQL using OAuth, clients must provide the necessary connection parameters. In the case of `psql`, you can use the following connection string format:
+
+```bash
+# Using psql with OAuth Device Authorization flow
+psql "host=db.example.com dbname=myapp oauth_issuer=https://your-provider.com oauth_client_id=your-client-id"
+```
+
+This triggers a web-based authentication flow where you'll complete login in your browser, then `psql` automatically receives the token and connects.
+
+For applications, you can provide tokens directly:
+
+```bash
+# Direct token usage (for apps that already have tokens)
+psql "host=db.example.com dbname=myapp oauth_issuer=https://your-provider.com oauth_client_id=your-client-id oauth_token=your-bearer-token"
+```
+
+Additional OAuth connection parameters:
+
+- `oauth_client_secret`: For confidential clients that require authentication
+- `oauth_scope`: Override the default scopes (useful for requesting additional permissions)
+- `require_auth`: Specify acceptable authentication methods (e.g., `require_auth=oauth`)
+
+## User Mapping
+
+OAuth user identities often don't match PostgreSQL role names directly. You have several mapping options:
+
+- **Direct matching**: The username from your OAuth provider must exactly match a PostgreSQL role.
+
+- **Identity mapping**: Use `pg_ident.conf` to map OAuth identities to database roles:
+
+  ```
+  # In pg_hba.conf
+  host  myapp  all  0.0.0.0/0  oauth  issuer=https://provider.com  scope="openid"  map=oauth_map
+
+  # In pg_ident.conf
+  oauth_map    alice@company.com    alice
+  oauth_map    admin@company.com    postgres
+  ```
+
+- **Delegated mapping**: Let your validator module handle all user mapping logic by setting `delegate_ident_mapping=1` in `pg_hba.conf`. This is an advanced option where the validator takes full responsibility for determining which PostgreSQL role the user should connect as.
+
+  ```
+  host  myapp  all  0.0.0.0/0  oauth  issuer=https://provider.com  scope="openid"  delegate_ident_mapping=1
+  ```
+
+> **Warning**: `delegate_ident_mapping` requires careful validator implementation since it bypasses PostgreSQL's standard user mapping. The validator must verify that the token holder has sufficient privileges for the requested role. Use with caution and ensure your validator properly handles authorization checks.
+
+## Security Considerations
+
+OAuth authentication requires HTTPS for all endpoints, PostgreSQL enforces this unless you explicitly enable debug mode. Always treat bearer tokens as sensitive credentials and ensure proper token lifetime management.
+
+The validator module is critical for security since it verifies token authenticity and extracts user identity. Choose a well-maintained validator that properly handles signature verification, expiration checks, and audience validation.
+
+## Summary
+
+PostgreSQL 18's OAuth support is a great addition for many applications, allowing you to use existing identity providers for database authentication. This simplifies user management, security, and access control.
+
+For complete configuration details check out the [official PostgreSQL OAuth documentation](https://www.postgresql.org/docs/18/auth-oauth.html).
+
+The OAuth implementation also integrates with PostgreSQL's existing authentication features, so you can gradually migrate from password-based authentication while maintaining compatibility with legacy systems.
+
+
+# NOT NULL Constraints as NOT VALID
+
+---
+title: 'PostgreSQL 18 NOT NULL Constraints as NOT VALID'
+page_title: 'PostgreSQL 18 NOT NULL Constraints as NOT VALID: Zero-Downtime Schema Changes'
+page_description: "In this tutorial, you will learn how to use PostgreSQL 18's new NOT NULL constraints with NOT VALID to add constraints to large tables without downtime or table scans."
+ogImage: ''
+updatedOn: '2025-06-22T09:50:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL 18 OAuth Support'
+  slug: 'postgresql-18/oauth-authentication'
+---
+
+**Summary**: In this tutorial, you will learn how to use PostgreSQL 18's new NOT NULL constraints with NOT VALID to add constraints to large tables without lengthy table scans or extended downtime.
+
+## Introduction to NOT NULL Constraints as NOT VALID
+
+PostgreSQL 18 introduces a new feature for database administrators and developers: the ability to add NOT NULL constraints with the `NOT VALID` attribute. This feature addresses one of the most common pain points in production database management: adding NOT NULL constraints to large tables without causing extended downtime.
+
+In previous PostgreSQL versions, adding a NOT NULL constraint to an existing table required scanning the entire table to verify that no existing rows contained NULL values. For large tables with millions or billions of rows, this could take a very long time and lock the table for the entire duration, making it impractical for production environments and leading to significant downtime.
+
+PostgreSQL 18 solves this problem by allowing you to add NOT NULL constraints that are immediately enforced for new data but don't require validating existing data upfront. This creates a path for zero-downtime schema changes in production environments.
+
+## Understanding the Problem with Traditional NOT NULL Constraints
+
+Before exploring the new feature, let's understand why traditional NOT NULL constraints can be problematic for large tables.
+
+### The Traditional Approach (PostgreSQL 17 and Earlier)
+
+In PostgreSQL 17 and earlier versions, adding a NOT NULL constraint works like this:
+
+```sql
+-- Traditional approach - scans entire table
+ALTER TABLE large_table
+ALTER COLUMN email SET NOT NULL;
+```
+
+This operation:
+
+1. Acquires an ACCESS EXCLUSIVE lock on the table
+2. Scans every row to verify no NULL values exist
+3. Holds the lock until the scan completes
+4. Only then commits the constraint
+
+For a table with millions of rows, this can take significant time during which the table is completely unavailable for reads and writes.
+
+### The Impact on Production Systems
+
+Consider this scenario:
+
+- Table with 50 million rows
+- Table scan takes about 5 minutes to complete
+- During those 5 minutes: no reads, no writes, no queries can access the table
+- Applications time out, users see errors, and business operations are disrupted
+
+This is why many teams avoid adding NOT NULL constraints to existing large tables or schedule them during maintenance windows, compromising data integrity for availability.
+
+## PostgreSQL 18's Solution: NOT NULL with NOT VALID
+
+PostgreSQL 18 introduces a new approach that separates constraint addition from constraint validation:
+
+```sql
+-- New approach - no table scan required
+ALTER TABLE large_table
+ADD CONSTRAINT email_not_null NOT NULL email NOT VALID;
+```
+
+This command:
+
+1. Takes only a brief ACCESS EXCLUSIVE lock
+2. Creates the constraint without scanning existing data
+3. Immediately enforces the constraint for new rows
+4. Marks the constraint as "not validated" for existing data
+
+## Basic Syntax and Usage
+
+With PostgreSQL 18, you can add a NOT NULL constraint without validating existing data.
+
+### Adding a NOT NULL Constraint as NOT VALID
+
+The basic syntax for adding a NOT NULL constraint with NOT VALID is:
+
+```sql
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name NOT NULL column_name NOT VALID;
+```
+
+Let's see this in action with a practical example.
+
+Suppose we have a table called `users` that already contains data, and we want to ensure that the `email` column cannot contain NULL values going forward.
+
+```sql
+-- Create a sample table with existing data
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50),
+    email VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+Next, let's insert some test data, including rows with NULL emails:
+
+```sql
+-- Insert some test data, including rows with NULL emails
+INSERT INTO users (username, email) VALUES
+    ('alice', 'alice@example.com'),
+    ('bob', NULL),
+    ('charlie', 'charlie@example.com'),
+    ('diana', NULL);
+```
+
+Now, we can add a NOT NULL constraint to the `email` column without validating existing data:
+
+```sql
+-- Add NOT NULL constraint without validating existing data
+ALTER TABLE users
+ADD CONSTRAINT users_email_not_null NOT NULL email NOT VALID;
+```
+
+After this operation:
+
+- The constraint exists and has a name (`users_email_not_null`)
+- New INSERTs or UPDATEs cannot set email to NULL
+- Existing NULL values remain in the table
+- The operation completed almost instantly
+
+### Verifying the Constraint Behavior
+
+After adding the constraint, let's test its behavior with both existing and new data.
+
+Try inserting a new row with a NULL email:
+
+```sql
+-- This will fail - constraint prevents new NULL values
+INSERT INTO users (username, email)
+VALUES ('eve', NULL);
+
+-- ERROR:  null value in column "email" of relation "users" violates not-null constraint
+
+-- This will succeed
+INSERT INTO users (username, email)
+VALUES ('eve', 'eve@example.com');
+```
+
+### Validating the Constraint
+
+When you're ready to validate existing data, use the VALIDATE CONSTRAINT command:
+
+```sql
+-- This will fail because existing NULL values exist
+ALTER TABLE users
+VALIDATE CONSTRAINT users_email_not_null;
+
+-- Error: column "email" of relation "users" contains null values
+```
+
+To successfully validate, first clean up existing NULL values:
+
+```sql
+-- Clean up existing NULL values
+UPDATE users
+SET email = username || '@example.com'
+WHERE email IS NULL;
+
+-- Now validation will succeed
+ALTER TABLE users
+VALIDATE CONSTRAINT users_email_not_null;
+```
+
+This operation scans the table to ensure all existing rows comply with the constraint, but it does so using a less restrictive lock that allows normal operations to continue.
+
+## Advanced Features and Benefits
+
+With the new NOT NULL constraints in PostgreSQL 18, you gain several advanced features and benefits. Let's explore these in the next sections.
+
+### Named Constraints
+
+PostgreSQL 18 also improves NOT NULL constraint naming. Unlike previous versions where NOT NULL constraints were anonymous, you can now give them meaningful names:
+
+```sql
+-- Named constraint
+ALTER TABLE products
+ADD CONSTRAINT products_name_required NOT NULL name NOT VALID;
+
+-- List all constraints on the table
+SELECT conname AS constraint_name
+FROM pg_constraint
+WHERE conrelid = 'products'::regclass
+  AND contype = 'n';  -- 'n' for NOT NULL constraints
+
+-- You can reference it by name later
+ALTER TABLE products
+VALIDATE CONSTRAINT products_name_required;
+```
+
+### Checking Constraint Status
+
+You can check the status of your constraints using the system catalogs:
+
+```sql
+-- View constraint information
+SELECT
+    conname AS constraint_name,
+    contype AS constraint_type,
+    convalidated AS is_validated,
+    pg_get_constraintdef(oid) AS definition
+FROM pg_constraint
+WHERE conrelid = 'users'::regclass
+  AND contype = 'n';  -- 'n' for NOT NULL constraints
+```
+
+This query will show you all NOT NULL constraints on the `users` table, their validation status, and definitions.
+
+## Practical Workflow for Production Environments
+
+Here's a recommended workflow for adding NOT NULL constraints to large production tables:
+
+### Step 1: Add the NOT VALID Constraint
+
+```sql
+-- Fast operation - takes only milliseconds
+ALTER TABLE large_production_table
+ADD CONSTRAINT large_table_email_not_null NOT NULL email NOT VALID;
+```
+
+This immediately protects against new NULL values while allowing you to address existing data at your own pace.
+
+### Step 2: Identify and Fix Existing NULL Values
+
+```sql
+-- Find rows with NULL values
+SELECT COUNT(*)
+FROM large_production_table
+WHERE email IS NULL;
+
+-- Fix them in batches to avoid long-running transactions
+UPDATE large_production_table
+SET email = 'unknown@company.com'
+WHERE email IS NULL
+  AND id BETWEEN 1 AND 10000;
+
+-- Continue in batches...
+```
+
+The goal is to ensure all existing rows comply with the new constraint without locking the table for an extended period.
+
+### Step 3: Validate the Constraint
+
+Once all existing NULL values are addressed, validate the constraint using:
+
+```sql
+-- This operation uses SHARE UPDATE EXCLUSIVE lock
+-- Allows reads and writes during validation
+ALTER TABLE large_production_table
+VALIDATE CONSTRAINT large_table_email_not_null;
+```
+
+The validation step scans the table but uses a less restrictive lock that allows normal database operations to continue.
+
+## Limitations and Considerations
+
+As of PostgreSQL 18 Beta 1, there are some limitations to be aware of:
+
+1. **Only NOT NULL constraints**: This feature specifically applies to NOT NULL constraints, not other constraint types
+2. **Inheritance complexity**: Constraint inheritance behavior with NOT VALID requires careful consideration
+3. **pg_dump considerations**: The dump/restore process should handle these constraints appropriately, but be aware of the behavior
+
+### Migration from CHECK Constraints
+
+If you've been using the CHECK constraint workaround from earlier PostgreSQL versions:
+
+```sql
+-- Old workaround
+ALTER TABLE users
+ADD CONSTRAINT users_email_check CHECK (email IS NOT NULL) NOT VALID;
+
+-- PostgreSQL 18 native approach
+ALTER TABLE users
+ADD CONSTRAINT users_email_not_null NOT NULL email NOT VALID;
+```
+
+The native NOT NULL constraint is preferred as it's recognized properly by the PostgreSQL optimizer and tools.
+
+## Summary
+
+PostgreSQL 18 introduces a practical way to add NOT NULL constraints using the new NOT VALID option. This allows teams to enforce data integrity without scanning large tables or causing downtime. The constraint is applied instantly for new data, while validation of existing rows can be done later, at a time that works best for the team.
+
+This change is especially useful for large production systems, high-availability environments, and teams practicing continuous deployment. By separating constraint creation from validation, PostgreSQL makes it easier to evolve schemas safely, even on active workloads. It's a thoughtful improvement that reflects PostgreSQL's ongoing focus on real-world needs and operational flexibility.
 
 
 # Advanced
@@ -29564,7 +32664,7 @@ In addition, the query planner can use a B\-tree index for queries that involve 
 
 ```
 column_name LIKE 'foo%'
-column_name LKE 'bar%'
+column_name LIKE 'bar%'
 column_name  ~ '^foo'
 ```
 

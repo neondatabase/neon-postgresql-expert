@@ -122,7 +122,7 @@ For teams used to traditional server-based databases (managing long-lived instan
 
 This section outlines common branching strategies based on real-world patterns. Navigate to the scenario that most resembles your use case.
 
-![Decision tree](/images/pages/flow/decision-tree.png)
+![Decision tree](/images/pages/branching/decision-tree.png)
 
 
 # Traditional database workflows are broken
@@ -154,11 +154,11 @@ Not every team is ready to move production infrastructure overnight. Migrating a
 Some teams choose to adopt Neon first for development, testing, CI/CD, or preview environments, while keeping production on platforms like AWS RDS. This approach allows developers to instantly spin up isolated Postgres environments, test against production-like data, and iterate faster, without the overhead or risk of a full migration.
 Neon’s Neon Twin workflow makes this easy to adopt without changing your production pipeline.
 
-![Branching diagram 4](/images/pages/flow/branching-diagram-4.png)
+![Branching diagram 4](/images/pages/branching/diagram-4.png)
 
 1. **Create a Neon project for dev/test**. Use the `main` branch as the baseline for development and test environments.
 2. **Import production data into `main`**. Keep your Neon environment in sync with production using `pg_dump` / `pg_restore` or logical replication.
-3. **Derive child branches from `main` as needed**. Examples (see [Common branching workflows](/flow#workflows)):
+3. **Derive child branches from `main` as needed**. Examples (see [Common branching workflows](/branching#workflows)):
    - `dev-alice`, `dev-bob` (per developer)
    - `preview-pr-42` (per PR)
    - `qa-metrics-test` (for load or feature testing)
@@ -186,11 +186,11 @@ Your application has one primary database that serves all users. You manage all 
 
 Not all production databases include personally identifiable information. If this is your case, you can safely use production-like data in non-production environments. Follow this pattern:
 
-![Branching diagram 1](/images/pages/flow/branching-diagram-1.png)
+![Branching diagram 1](/images/pages/branching/diagram-1.png)
 
 1. **Use `main` as your production branch**. This holds your live application data and schema.
 2. **Create a long-lived dev branch**, calling it something like `main-dev`. You’ll use this as the base for all development and testing environments.
-3. **Derive non-prod environments from `main-dev`**. Examples (see [Common branching workflows](/flow#workflows)):
+3. **Derive non-prod environments from `main-dev`**. Examples (see [Common branching workflows](/branching#workflows)):
    - `dev-alice`, `dev-bob` (per developer)
    - `preview-pr-42` (per PR)
    - `qa-metrics-test` (for testing feature flags, upgrades, etc.)
@@ -200,13 +200,13 @@ Not all production databases include personally identifiable information. If thi
 
 If your production database includes sensitive data such as user names and emails, payment or health information, or internal records, then non-prod environments must avoid exposing this data. Here’s a recommended branching architecture for this scenario.
 
-![Branching diagram 2](/images/pages/flow/branching-diagram-2.png)
+![Branching diagram 2](/images/pages/branching/diagram-2.png)
 
 1. **Use `main` as your production branch**. This is your live environment, containing real user data.
 2. **Create a schema-only branch from `main`**. This duplicates only the database structure (tables, views, functions) without copying any sensitive data.
 3. **Load anonymized data into the schema-only branch**. Use Neon’s integration with PostgreSQL Anonymizer, or your own masking scripts, to populate the branch with safe test data that mirrors production shape and scale.
 4. **Promote this branch as your template for non-prod environments**. Name it something like `main-anon` or `dev-anon`. This becomes the base for all development, preview, and QA branches.
-5. **Derive all non-prod environments from `main-anon`**. Examples (see [Common branching workflows](/flow#workflows)):
+5. **Derive all non-prod environments from `main-anon`**. Examples (see [Common branching workflows](/branching#workflows)):
    - `dev-alice`, `dev-bob` (per developer)
    - `preview-pr-42` (per PR)
    - `qa-metrics-test` (for load or feature testing)
@@ -222,11 +222,11 @@ This setup is common for multi-tenant SaaS platforms that offer database-level i
 
 Here’s how to structure branching in this model:
 
-![Branching diagram 3](/images/pages/flow/branching-diagram-3.png)
+![Branching diagram 3](/images/pages/branching/diagram-3.png)
 
 1. **Create a dedicated Neon project for development and testing**. This non-prod project serves as the shared workspace for all ephemeral environments.
 2. **Load testing data into the `main` branch**. This branch holds a sanitized dataset that reflects the structure and scale of production. It acts as the base for all dev/test environments.
-3. **Derive child branches from `main` as needed**. Examples (see [Common branching workflows](/flow#workflows)):
+3. **Derive child branches from `main` as needed**. Examples (see [Common branching workflows](/branching#workflows)):
    - `dev-alice`, `dev-bob` (per developer)
    - `preview-pr-42` (per PR)
    - `qa-metrics-test` (for load or feature testing)
@@ -259,7 +259,7 @@ All branches in a project share the same storage backend, which is what makes Ne
 ---
 title: 'Resources and next steps'
 subtitle: 'Explore documentation, guides, and integrations to get the most out of Neon branching workflows'
-updatedOn: '2025-07-08T12:47:21.296Z'
+updatedOn: '2025-08-01T12:47:21.296Z'
 ---
 
 Neon branches set a powerful new standard to manage Postgres environments.
@@ -293,7 +293,7 @@ If you have any questions, [reach out to us on Discord](https://discord.gg/92vNT
 ## Guides and tutorials
 
 - [Automate branching with GitHub Actions](/docs/guides/branching-github-actions)
-- [A branch for every Vercel environment](/docs/get-started-with-neon/workflow-primer#a-branch-for-every-environment)
+- [A branch for every Vercel environment](/docs/get-started/workflow-primer#a-branch-for-every-environment)
 - [Preview branches with Fly.io](https://github.com/neondatabase-labs/preview-branches-with-fly)
 - [Logical Replication](/docs/guides/logical-replication-guide)
 - [Create a Neon Twin](/docs/guides/neon-twin-intro)

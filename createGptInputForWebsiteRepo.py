@@ -100,9 +100,9 @@ def main():
 
     ## create content for directories not referenced in sidebar.yaml
 
-    combine_markdown_files('../website/content/flow', 'markdown/flow.md')
+    combine_markdown_files('../website/content/branching', 'markdown/flow.md')
     combine_markdown_files('../website/content/guides', 'markdown/guides.md')
-    combine_markdown_files('../website/content/use-cases', 'markdown/use-cases.md')
+    combine_markdown_files('../website/content/pages/use-cases', 'markdown/use-cases.md')
 
 if __name__ == "__main__":
     main()
