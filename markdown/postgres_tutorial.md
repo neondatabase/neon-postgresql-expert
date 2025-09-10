@@ -1,4 +1,4 @@
-# Home
+# PostgreSQL Tutorial
 
 ---
 title: 'PostgreSQL Tutorial'
@@ -221,6 +221,8 @@ In this tutorial, you will learn how to use PostgreSQL indexes to enhance the da
 
 PostgreSQL administration covers common database administrative tasks including role and database management, backup, and restore.
 
+
+# Introduction
 
 # Getting Started
 
@@ -746,7 +748,7 @@ nextLink:
   slug: 'postgresql-getting-started/install-postgresql-macos'
 ---
 
-**Summary**: in this tutorial, you will learn how to load the **PostgreSQL sample database** into the PostgreSQL database server**.**
+**Summary**: in this tutorial, you will learn how to load the **PostgreSQL sample database** into the PostgreSQL database server.
 
 Before going forward with this tutorial, you need to have:
 
@@ -1307,7 +1309,7 @@ Note that the SQL keywords are case\-insensitive. It means that `SELECT` is equi
 
 Let's explore some examples of using the `SELECT` statement.
 
-We will use the following `customer` table in the `dvdrental` [sampledatabase](../postgresql-getting-started/postgresql-sample-database 'PostgreSQL Sample Database') for the demonstration.
+We will use the following `customer` table in the `dvdrental` [sample database](../postgresql-getting-started/postgresql-sample-database 'PostgreSQL Sample Database') for the demonstration.
 
 ![customer table](/postgresqltutorial/customer.png)First, [connect to the PostgreSQL server](../postgresql-getting-started/connect-to-postgresql-database) using the `postgres` user:
 
@@ -1995,7 +1997,7 @@ The star or asterisk (`*`) means all columns of the `table_name`.
 
 Let’s [create a new table](postgresql-create-table) to practice the `SELECT DISTINCT` clause.
 
-Note that you will learn how to [create a table](postgresql-create-table) and [insert data into it](postgresql-insert) in the subsequent tutorial. In this tutorial, you need to execute the statement in psql or pgAdmin to execute the statements.
+Note that you will learn how to [create a table](postgresql-create-table) and [insert data into it](postgresql-insert) in the subsequent tutorial. In this tutorial, you need to execute the statement in `psql` or use pgAdmin to execute the statements.
 
 First, create the `colors` table that has three columns: `id`, `bcolor` and `fcolor` using the following [`CREATE TABLE`](postgresql-create-table) statement:
 
@@ -2075,7 +2077,7 @@ Output:
 (4 rows)
 ```
 
-The `bcolor` column has 3 red values, two NULL, 1 green value, and two blue values. The `DISTINCT` removes two red values, 1 NULL, and one blue.
+The `bcolor` column has three 'red' entries, two `NULL`, one 'green', and two 'blue'. `SELECT DISTINCT` removes two 'red' values, one `NULL`, and one 'blue'.
 
 Note that PostgreSQL treats `NULL`s as duplicates so that it keeps one `NULL` for all `NULL`s when you apply the `SELECT DISTINCT` clause.
 
@@ -2138,6 +2140,12 @@ Output:
 ```
 
 The output indicates that there are only three distinct rental rates 0\.99, 2\.99, and 4\.99\.
+
+Note that for executing the query above your current database should be `dvdrental`. To switch the current database to `dvdrental` run:
+
+```
+\c dvdrental
+```
 
 ## Summary
 
@@ -2249,7 +2257,7 @@ Output:
 
 ### 2\) Using the WHERE clause with the AND operator example
 
-The following example uses a `WHERE` clause with the `AND` logical operator to find customers whose first name and last names are `Jamie` and `rice`:
+The following example uses a `WHERE` clause with the `AND` logical operator to find customers whose first name and last names are `Jamie` and `Rice`:
 
 ```
 SELECT
@@ -2273,7 +2281,7 @@ Output:
 
 ### 3\) Using the WHERE clause with the OR operator example
 
-The following example uses a WHERE clause with an OR operator to find the customers whose last name is `Rodriguez` or first name is `Adam`:
+The following example uses a `WHERE` clause with an `OR` operator to find the customers whose last name is `Rodriguez` or first name is `Adam`:
 
 ```
 SELECT
@@ -2300,7 +2308,7 @@ Output:
 
 If you want to find a value in a list of values, you can use the [`IN`](postgresql-in) operator.
 
-The following example uses the WHERE clause with the IN operator to find the customers with first names in the list Ann, Anne, and Annie:
+The following example uses the `WHERE` clause with the `IN` operator to find the customers with first names in the list Ann, Anne, and Annie:
 
 ```
 SELECT
@@ -2327,7 +2335,7 @@ Output:
 
 To find a string that matches a specified pattern, you use the [`LIKE`](postgresql-like) operator.
 
-The following example uses the LIKE operator in the WHERE clause to find customers whose first names start with the word `Ann`:
+The following example uses the `LIKE` operator in the `WHERE` clause to find customers whose first names start with the word `Ann`:
 
 ```
 SELECT
@@ -2483,13 +2491,16 @@ In this syntax, `expression1` and `expression2` are boolean expressions that eva
 
 The `AND` operator returns `true` only if both expressions are `true`. It returns `false` if one of the expressions is `false`. Otherwise, it returns `null`.
 
-The following table shows the results of the `AND` operator when combining `true`, `false`, and `null`.
+The following table shows the results of the `AND` operator when combining `true`, `false`, and `null`. Note that the order of the expressions doesn't matter, for example both `true AND null` and `null AND true` will evaluate to `null`.
 
-| AND       | True  | False | Null  |
-| --------- | ----- | ----- | ----- |
-| **True**  | True  | False | Null  |
-| **False** | False | False | False |
-| **Null**  | Null  | False | Null  |
+| expression1 | expression2 | expression1 AND expression2 |
+| ----------- | ----------- | --------------------------- |
+| True        | True        | True                        |
+| True        | False       | False                       |
+| True        | Null        | Null                        |
+| False       | False       | False                       |
+| False       | Null        | False                       |
+| Null        | Null        | Null                        |
 
 In practice, you often use the `AND` operator in a [`WHERE`](postgresql-where) clause to ensure that all specified expressions must be true for a row to be included in the result set.
 
@@ -2683,13 +2694,16 @@ In this syntax, `expression1` and `expression2` are boolean expressions that eva
 
 The `OR` operator returns `true` only if any of the expressions is `true`. It returns `false` if both expressions are false. Otherwise, it returns null.
 
-The following table shows the results of the `OR` operator when combining `true`, `false`, and `null`.
+The following table shows the results of the `OR` operator when combining `true`, `false`, and `null`. Note that the order of the expressions doesn't matter, for example both `false OR null` and `null OR false` will evaluate to `null`.
 
-| OR        | True | False | Null |
-| --------- | ---- | ----- | ---- |
-| **True**  | True | True  | True |
-| **False** | True | False | Null |
-| **Null**  | True | Null  | Null |
+| expression1 | expression2 | expression1 OR expression2 |
+| ----------- | ----------- | -------------------------- |
+| True        | True        | True                       |
+| True        | False       | True                       |
+| True        | Null        | True                       |
+| False       | False       | False                      |
+| False       | Null        | Null                       |
+| Null        | Null        | Null                       |
 
 In practice, you usually use the `OR` operator in a [`WHERE`](postgresql-where) clause to ensure that either of the specified expressions must be true for a row to be included in the result set.
 
@@ -2962,7 +2976,7 @@ How it works.
 - Second, skip the first three rows using the `OFFSET 3` clause.
 - Second, take the next four rows using the `LIMIT 4` clause.
 
-### 3\) Using LIMIT OFFSET to get top/bottom N rows
+### 3\) Using LIMIT to get top/bottom N rows
 
 Typically, you often use the `LIMIT` clause to select rows with the highest or lowest values from a table.
 
@@ -3006,7 +3020,7 @@ How it works.
 
 ## Summary
 
-- Use the PostgreSQL `LIMIT OFFSET` clause to retrieve a subset of rows returned by a query.
+- Use the PostgreSQL `LIMIT` and `OFFSET` clauses to retrieve a subset of rows returned by a query.
 
 
 # FETCH
@@ -3289,6 +3303,10 @@ Output:
 ```
 
 ### 3\) Using the PostgreSQL IN operator with a list of dates
+
+We’ll use the `payment` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![](/postgresqltutorial/payment.png)
 
 The following statement uses the IN operator to find payments whose payment dates are in a list of dates: `2007-02-15` and `2007-02-16`:
 
@@ -21171,14 +21189,14 @@ PostgreSQL represents user accounts as roles. Roles that can log in are called l
 - [Superuser](postgresql-administration/create-superuser-postgresql) – learn about a special role called superuser in PostgreSQL.
 - [Row\-level Security](postgresql-administration/postgresql-row-level-security) – show you how to use row\-level security (RLS) to restrict rows returned by a query based on a condition.
 
-## Section 5\. Backup \& Restore Databases
+## Section 5\. Backup \& Restore
 
 This section shows you how to use various PostgreSQL backup and restore tools including `pg_dump`, `pg_dumpall`, `psql`,  `pg_restore` and  `pgAdmin` to backup and restore databases.
 
 - [Backup](postgresql-administration/postgresql-backup-database 'PostgreSQL Backup') – introduce you to practical ways to perform a logical backup of a database or all databases in a PostgreSQL cluster using the `pg_dump` and `pg_dumpall` tools.
 - [Restore](postgresql-administration/postgresql-restore-database 'PostgreSQL Restore Database') –  show how to restore a PostgreSQL database from an archive file using the `pg_restore` tool.
 
-## Section 6\. PostgreSQL Tips
+## Section 6\. Administration Tips
 
 - [Reset Password](postgresql-administration/postgresql-reset-password) – show you how to reset the forgotten password of the postgres user.
 - [psql Commands](postgresql-administration/psql-commands) – give you the most common psql command to help you query data from PostgreSQL faster and more effectively.
@@ -22380,7 +22398,7 @@ GRANT CREATE ON SCHEMA schema_name
 TO user_name;
 ```
 
-Note that, by default, every user has the `CREATE` and `USAGE` on the `public` schema.
+Note that, by default, every user has the `CREATE` and `USAGE` on the `public` schema. (However, starting from PostgreSQL 15, users are granted only `USAGE`.)
 
 ## PostgreSQL schema operations
 
@@ -29486,6 +29504,43 @@ This change is especially useful for large production systems, high-availability
 
 # Advanced
 
+---
+title: 'PostgreSQL Advanced'
+page_title: 'PostgreSQL Advanced'
+page_description: 'Learn advanced PostgreSQL features including stored procedures, triggers, views, indexing strategies, window functions, and JSON data manipulation'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-advanced/'
+ogImage: ''
+updatedOn: '2025-09-06T10:00:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL API'
+  slug: 'postgresql-api'
+nextLink:
+  title: 'PostgreSQL PL/pgSQL Block Structure'
+  slug: 'postgresql-plpgsql/plpgsql-block-structure'
+---
+
+The **PostgreSQL Advanced** section covers sophisticated PostgreSQL features and techniques for building enterprise-level applications. These advanced topics will help you optimize performance, implement complex business logic, and leverage PostgreSQL's powerful capabilities for modern application development.
+
+## Section 1. Advanced Database Programming
+
+Learn advanced PostgreSQL programming concepts including stored procedures, triggers, and complex data manipulation techniques that enable sophisticated database-driven applications.
+
+- [PostgreSQL PL/pgSQL](postgresql-plpgsql) – learn PostgreSQL's procedural language for creating stored procedures, functions, and complex database logic with powerful programming constructs for sophisticated database applications.
+- [PostgreSQL Triggers](postgresql-triggers) – automate database operations with triggers that execute automatically when data changes, implementing complex business rules and maintaining data integrity.
+- [PostgreSQL Views](postgresql-views) – create virtual tables and materialized views to simplify complex queries, improve performance, and provide secure data access patterns for your applications.
+
+## Section 2. Performance and Optimization
+
+Advanced techniques for optimizing PostgreSQL performance, managing large datasets, and implementing efficient data access patterns.
+
+- [PostgreSQL Indexes](postgresql-indexes) – learn database indexing strategies to dramatically improve query performance with different index types and optimization techniques.
+- [PostgreSQL JSON Functions](postgresql-json-functions) – learn PostgreSQL's JSON functions for working with JSON and JSONB data types, essential for modern applications handling semi-structured data and API integrations.
+- [PostgreSQL Window Functions](postgresql-window-function) – perform advanced analytical calculations across sets of rows using ranking functions, lead/lag functions, and window frame specifications for sophisticated data analysis.
+
+Each section provides comprehensive tutorials with practical examples that demonstrate real-world applications of these advanced PostgreSQL capabilities.
+
+
 # PostgreSQL Views
 
 ---
@@ -33462,7 +33517,7 @@ The output indicates that the query uses the `customer_json_index` index.
 - Use the `GIN` index to create an index for a JSONB column of a table to improve query performance.
 
 
-# PostgreSQL Trigger Basics
+# PostgreSQL Triggers
 
 ---
 title: 'PostgreSQL Triggers'
@@ -33528,9 +33583,7 @@ A PostgreSQL trigger is a database object that automatically executes a [functio
 - [Conditional trigger](postgresql-triggers/postgresql-trigger-when-condition) – Define a conditional trigger that fires only when a condition is satisfied.
 
 
-# noname
-
-# PostgreSQL Triggers
+# Introduction
 
 ---
 title: 'Introduction to PostgreSQL Trigger'
@@ -34039,8 +34092,6 @@ COMMIT;
 - Use the pair of the `DROP TRIGGER` and `CREATE TRIGGER` statements to replace a trigger with a new one.
 
 
-# Insert Triggers
-
 # AFTER INSERT Trigger
 
 ---
@@ -34368,8 +34419,6 @@ Eighth, retrieve the data from the `inventory_stat` table:
 - A `BEFORE INSERT` trigger is activated before an `INSERT` event occurs on a table.
 
 
-# Update Triggers
-
 # BEFORE UPDATE Trigger
 
 ---
@@ -34680,8 +34729,6 @@ The output shows that the salary before and after changes have been logged to th
 
 - Use a `BEFORE` `UPDATE` trigger to execute a function before an update operation occurs.
 
-
-# Delete Triggers
 
 # BEFORE DELETE Trigger
 
@@ -34997,8 +35044,6 @@ The output indicates that the `AFTER DELETE` trigger has successfully archived t
 - Use a `BEFORE DELETE` trigger to automatically call a function before a row is deleted from a table.
 
 
-# Instead Of Triggers
-
 # INSTEAD OF Triggers
 
 ---
@@ -35279,8 +35324,6 @@ Output:
 - Use the `INSTEAD OF` trigger to customize the behavior of `INSERT`, `UPDATE`, and `DELETE` operations on a database view.
 
 
-# Truncate Triggers
-
 # BEFORE TRUNCATE Trigger
 
 ---
@@ -35421,8 +35464,6 @@ The output indicates that the `BEFORE TRUNCATE` trigger fires, raising an except
 - Create a `BEFORE TRUNCATE` trigger to fire before a `TRUNCATE` event.
 
 
-# Enable & Disable Triggers
-
 # Disable Triggers
 
 ---
@@ -35538,8 +35579,6 @@ ENABLE TRIGGER ALL;
 
 - Use the `ALTER TABLE ENABLE TRIGGER` statement to enable a trigger or all triggers that belong to a table.
 
-
-# Advanced Triggers
 
 # Event Triggers
 
@@ -35839,7 +35878,4988 @@ Output:
 - Specify a condition in the `WHEN` clause of the `CREATE TRIGGER` statement to instruct PostgreSQL to fire the trigger when the condition is true.
 
 
+# PostgreSQL PL/pgSQL
+
+---
+title: 'PostgreSQL PL/pgSQL'
+page_title: 'PostgreSQL PL/pgSQL'
+page_description: 'In this section, you will learn how to develop user-defined functions and stored procedures in PostgreSQL using PL/pgSQL programming language.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/'
+ogImage: ''
+updatedOn: '2024-03-22T09:00:29+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL generate_series() Function'
+  slug: 'postgresql-tutorial/postgresql-generate_series'
+nextLink:
+  title: 'Introduction to PostgreSQL PL/pgSQL'
+  slug: 'postgresql-plpgsql/introduction-to-postgresql-stored-procedures'
+---
+
+![](/postgresqltutorial/PostgreSQL-Stored-Procedure.png?alignright)
+This section shows you step by step how to use the PL/pgSQL to develop PostgreSQL user\-defined functions and stored procedures.
+
+PL/pgSQL procedural language adds many procedural elements, e.g., control structures, loops, and complex computations, to extend standard SQL. It allows you to develop complex functions and stored procedures in PostgreSQL that may not be possible using plain SQL.
+
+PL/pgSQL procedural language is similar to the [Oracle PL/SQL](https://www.oracletutorial.com/plsql-tutorial/). The following are reasons to learn PL/pgSQL:
+
+- PL/pgSQL is easy to learn and simple to use.
+- PL/pgSQL comes with PostgreSQL by default. The user\-defined functions and stored procedures developed in PL/pgSQL can be used like any built\-in functions and stored procedures.
+- PL/pgSQL inherits all user\-defined types, functions, and operators.
+- PL/pgSQL has many features that allow you to develop complex functions and stored procedures.
+- PL/pgSQL can be defined to be trusted by the PostgreSQL database server.
+
+Let’s get started programming with PL/pgSQL.
+
+## Section 1\. Getting started
+
+- [Introduction to PostgreSQL PL/pgSQL](postgresql-plpgsql/introduction-to-postgresql-stored-procedures) – introduce you to PostgreSQL PL/pgSQL and explain to you their advantages and disadvantages.
+- [Dollar\-quoted string constants](postgresql-plpgsql/dollar-quoted-string-constants) – learn how to use dollar\-quoted string constant syntax.
+- [Block Structure](postgresql-plpgsql/plpgsql-block-structure) – introduce you to the PL/pgSQL block structure and show you how to develop and execute anonymous blocks.
+
+## Section 2\. Variables \& constants
+
+- [Variables](postgresql-plpgsql/plpgsql-variables) – show you how to declare variables in PL/pgSQL.
+- [Select into](postgresql-plpgsql/pl-pgsql-select-into) – guide you on how to use the `select into` to select data and assign it to a variable.
+- [Row type variables](postgresql-plpgsql/pl-pgsql-row-types) – learn how to use the row variables to store a complete row of a result set.
+- [Record type variables](postgresql-plpgsql/plpgsql-record-types) – show you how to declare record variables to hold a single row of a result set.
+- [Constants](postgresql-plpgsql/plpgsql-constants) – guide you on how to use constants to make the code more readable and easier to maintain.
+
+## Section 3\. Reporting messages and errors
+
+- [Raising errors and reporting messages](postgresql-plpgsql/plpgsql-errors-messages) – show you how to report messages and raise errors in PL/pgSQL.
+- [Assert](postgresql-plpgsql/pl-pgsql-assert) – show you how to use the assert statement to add debugging checks to PL/pgSQL code.
+
+## Section 4\. Control structures
+
+- [If statement](postgresql-plpgsql/plpgsql-if-else-statements) – introduce you to three forms of the `if` statement.
+- [Case statements](postgresql-plpgsql/plpgsql-case-statement) – explain `case` statements including the simple and searched `case` statements.
+- [Loop statements](postgresql-plpgsql/plpgsql-loop-statements) – show you how to use loop statements to execute a block of code repeatedly based on a condition.
+- [While loop](postgresql-plpgsql/pl-pgsql-while-loop) – learn how to use `while` loop statement to create a pre\-test loop.
+- [For loop](postgresql-plpgsql/plpgsql-for-loop) – show you how to use the `for` loop statement to iterate over rows of a result set.
+- [Exit](postgresql-plpgsql/plpgsql-exit) – guide you on using the `exit` statement to terminate a loop.
+- [Continue](postgresql-plpgsql/pl-pgsql-continue) – provide you with a way to use the `continue` statement to skip the current loop iteration and start a new one.
+
+## Section 5\. User\-defined functions
+
+- [Create Function](postgresql-plpgsql/postgresql-create-function) – show you how to develop a user\-defined function by using the `create function` statement.
+- [Function parameter modes](postgresql-plpgsql/plpgsql-function-parameters) – introduce you to various parameter modes including `IN`, `OUT`, and `INOUT`.
+- [Function overloading](postgresql-plpgsql/plpgsql-function-overloading) – introduce you to function overloading.
+- [Functions that return a table](postgresql-plpgsql/plpgsql-function-returns-a-table) – show you how to develop a function that returns a table.
+- [Functions that return one or more rows](postgresql-plpgsql/plpgsql-returns-setof) – learn how to define a function that returns one or more rows.
+- [Drop function](postgresql-plpgsql/postgresql-drop-function) – learn how to remove an existing function.
+
+## Section 6\. Exception handling
+
+- [Handling exceptions](postgresql-plpgsql/postgresql-exception) – show you how to use the exception clause to catch and handle exceptions.
+
+## Section 7\. Stored procedures
+
+- [Create procedure](postgresql-plpgsql/postgresql-create-procedure) – show you how to create a stored procedure using the `create procedure` statement and invoke it.
+- [Drop procedure](postgresql-plpgsql/postgresql-drop-procedure) – learn how to remove a stored procedure from the database.
+- [Stored procedures with INOUT parameters](postgresql-plpgsql/postgresql-stored-procedure-with-inout-parameters) – return values from stored procedures using the `inout` parameters.
+
+## Section 8\. Cursors
+
+- [Cursors](postgresql-plpgsql/plpgsql-cursor) – show you how to use cursors to process a result set, row by row.
+
+## Section 9\. Trigger functions
+
+- [Trigger procedures using PL/pgSQL](postgresql-triggers) – apply PL/pgSQL to define [trigger](postgresql-triggers) procedures.
+
+
+# Introduction
+
+---
+title: 'Introduction to PostgreSQL PL/pgSQL'
+page_title: 'Introduction to PostgreSQL PL/pgSQL Procedural Language'
+page_description: 'This tutorial introduces you to PostgreSQL PL/pgSQL for developing user-defined functions and stored procedures.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/introduction-to-postgresql-stored-procedures/'
+ogImage: ''
+updatedOn: '2024-02-07T02:29:23+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL PL/pgSQL'
+  slug: 'postgresql-plpgsql/'
+nextLink:
+  title: 'Dollar-Quoted String Constants'
+  slug: 'postgresql-plpgsql/dollar-quoted-string-constants'
+---
+
+**Summary**: in this tutorial, you will learn about **PostgreSQL PL/pgSQL** procedural language.
+
+## Overview of PostgreSQL PL/pgSQL
+
+PL/pgSQL is a procedural programming language for the PostgreSQL database system.
+
+PL/pgSQL allows you to extend the functionality of the PostgreSQL database server by creating server objects with complex logic.
+
+PL/pgSQL is designed to :
+
+- Create user\-defined [functions](postgresql-create-function), [stored procedures](postgresql-create-procedure), and [triggers](../postgresql-triggers).
+- Extend standard SQL by adding control structures such as [if\-else](plpgsql-if-else-statements), [case](../postgresql-tutorial/postgresql-case), and [loop](plpgsql-loop-statements) statements.
+- Inherit all user\-defined functions, operators, and types.
+
+Since PostgreSQL 9\.0, PL/pgSQL is installed by default.
+
+## Advantages of using PL/pgSQL
+
+SQL is a query language that allows you to effectively manage data in the database. However, PostgreSQL only can execute SQL statements individually.
+
+It means that you have multiple statements, and you need to execute them one by one like this:
+
+- First, send a query to the PostgreSQL database server.
+- Next, wait for it to process.
+- Then, process the result set.
+- After that, do some calculations.
+- Finally, send another query to the PostgreSQL database server and repeat this process.
+
+This process incurs the interprocess communication and network overheads.
+
+To resolve this issue, PostgreSQL uses PL/pgSQL.
+
+PL/pgSQL wraps multiple statements in an object and stores it on the PostgreSQL database server.
+
+Instead of sending multiple statements to the server one by one, you can send one statement to execute the object stored in the server. This allows you to:
+
+- Reduce the number of round trips between the application and the PostgreSQL database server.
+- Avoid transferring the immediate results between the application and the server.
+
+## PostgreSQL PL/pgSQL disadvantages
+
+Besides the advantages of using PL/pgSQL, there are some caveats:
+
+- Slower in software development because PL/pgSQL requires specialized skills that many developers do not possess.
+- Difficult to manage versions and hard to debug.
+- May not be portable to other database management systems[.](http://www.mysqltutorial.org)
+
+In this tutorial, you have a brief overview of PostgreSQL PL/pgSQL, its advantages, and disadvantages.
+
+
+# Block Structure
+
+---
+title: 'PL/pgSQL Block Structure'
+page_title: 'PL/pgSQL Block Structure'
+page_description: 'This tutorial explains you the block structure of PL/pgSQL and shows you step by step how to develop anonymous blocks.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-block-structure/'
+ogImage: '/postgresqltutorial/plpgSQL-block-Structure.png'
+updatedOn: '2024-04-19T08:08:48+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'Dollar-Quoted String Constants'
+  slug: 'postgresql-plpgsql/dollar-quoted-string-constants'
+nextLink:
+  title: 'PL/pgSQL Variables'
+  slug: 'postgresql-plpgsql/plpgsql-variables'
+---
+
+**Summary**: in this tutorial, you will learn about the block structure of PL/pgSQL and how to write and execute your first PL/pgSQL block.
+
+## Introduction to PL/pgSQL Block Structure
+
+PL/pgSQL is a block\-structured language. Here’s the syntax of a block in PL/pgSQL:
+
+```sql
+[ <<label>> ]
+[ declare
+    declarations ]
+begin
+    statements;
+	...
+end [ label ];
+```
+
+Each block has two sections:
+
+- Declaration
+- Body
+
+The declaration section is optional whereas the body section is required.
+
+A block may have an optional `label` that is located at the beginning and end of the block. A block ends with a semicolon (`;`) after the `end` keyword.
+
+Typically, you use the block label when you want to specify it in the [`EXIT`](plpgsql-exit) statement of the block body or to qualify the names of [variables](plpgsql-variables) declared in the block.
+
+The declaration section is where you [declare all variables](plpgsql-variables) used within the body section. Each statement in the declaration section is terminated with a semicolon (`;`).
+
+The syntax for declaring a variable is as follows:
+
+```sql
+variable_name type = initial_value;
+```
+
+For example, the following declares a variable called `counter` with the type `int` and has an initial value of zero:
+
+```
+counter int = 0;
+```
+
+Sometimes, you’ll see the :\= operator instead of \= operator. They have the same meaning:
+
+```
+counter int := 0;
+```
+
+The initial value is optional. For example, you can declare a variable called `max` with the type `int` like this:
+
+```
+max int;
+```
+
+Please note that you’ll learn about variables in more detail in the upcoming [variable tutorial](plpgsql-variables).
+
+The body section is where you place the code. Each statement in the body section is terminated with a semicolon (;).
+
+## PL/pgSQL block structure example
+
+The following example illustrates a simple block. Because the block has no name, it is called an anonymous block.
+
+```
+do $$
+<<first_block>>
+declare
+  film_count integer := 0;
+begin
+   -- get the number of films
+   select count(*)
+   into film_count
+   from film;
+
+   -- display a message
+   raise notice 'The number of films is %', film_count;
+end first_block $$;
+```
+
+Output:
+
+```php
+NOTICE:  The number of films is 1000
+DO
+```
+
+To execute a block from pgAdmin, you click the **Execute** button as shown in the following picture:
+
+![](/postgresqltutorial/plpgSQL-block-Structure.png)Notice that the `DO` statement does not belong to the block. It is used to execute an anonymous block. PostgreSQL introduced the `DO` statement since version 9\.0\.
+
+The anonymous block has to be surrounded by single quotes like this:
+
+```sql
+'<<first_block>>
+declare
+  film_count integer := 0;
+begin
+   -- get the number of films
+   select count(*)
+   into film_count
+   from film;
+   -- display a message
+   raise notice ''The number of films is %'', film_count;
+end first_block';
+```
+
+However, we use the [dollar\-quoted string constant syntax](dollar-quoted-string-constants) to make it more readable.
+
+In the declaration section, we declare a [variable](plpgsql-variables) `film_count` and initialize its value to zero.
+
+```sql
+film_count integer = 0;
+```
+
+Inside the body section, we use a [`select into`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement with the [`count()`](../postgresql-aggregate-functions/postgresql-count-function) function to retrieve the number of films from the `film` table and assign it to the `film_count` variable:
+
+```sql
+select count(*)
+into film_count
+from film;
+```
+
+After that, we show a message using [`raise notice`](plpgsql-errors-messages) statement:
+
+```sql
+raise notice 'The number of films is %', film_count;
+```
+
+The `%` is a placeholder that is replaced by the content of the `film_count` variable.
+
+Note that the `first_block` label is just for demonstration purposes. It does nothing in this example.
+
+## PL/pgSQL Subblocks
+
+PL/pgSQL allows you to place a block inside the body of another block.
+
+The block nested inside another block is called a **subblock**. The enclosing block, which contains the subblock, is often referred to as the outer block.
+
+The following picture illustrates an outer block and subblocks:
+
+![plpgsql block structure](/postgresqltutorial/plpgsql-block-structure.png)
+Typically, you divide a large block into smaller, more logical subblocks. The following example illustrates how to use a subblock inside a block:
+
+```php
+do
+$$
+<<outer>>
+declare
+   x int = 0;
+begin
+   x = x + 1;
+   <<inner>>
+   declare
+       y int = 2;
+   begin
+   	   y = y + x;
+	   raise notice 'x=% y=%', x, y;
+   end inner;
+end outer;
+$$
+```
+
+Output:
+
+```php
+NOTICE:  x=1 y=3
+DO
+```
+
+In this example, the anonymous block (outer) has a subblock (inner).
+
+In the outer block:
+
+- Declare a variable x and initialize its value to zero.
+- Increase the value of x by one in the body.
+
+In the inner block (subblock or nested block):
+
+- Declare a variable y and initialize its value to zero.
+- Increase the value of y by x.
+- Display the values of the variables x and y using the raise notice.
+
+## Summary
+
+- PL/pgSQL is a blocked\-structure language that organizes a program into blocks.
+- A block contains two parts: declaration and body. The declaration part is optional whereas the body part is mandatory.
+- Blocks can be nested. A nested block is a block placed inside the body of another block.
+
+
+# Variables
+
+---
+title: 'PL/pgSQL Variables'
+page_title: 'PL/pgSQL Variables'
+page_description: 'In this tutorial, you will learn how to declare PL/pgSQL variables in blocks and how to use variables effectively.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-variables/'
+ogImage: '/postgresqltutorial/film.png'
+updatedOn: '2024-03-19T03:19:49+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Block Structure'
+  slug: 'postgresql-plpgsql/plpgsql-block-structure'
+nextLink:
+  title: 'PL/pgSQL Select Into'
+  slug: 'postgresql-plpgsql/pl-pgsql-select-into'
+---
+
+**Summary**: in this tutorial, you will learn about PL/pgSQL variables and various ways to declare them
+
+## Introduction to PL/pgSQL variables
+
+In PL/pgSQL, variables are placeholders for storing data within a [block](plpgsql-block-structure). These variables can hold values of various types such as integers, booleans, text, and more.
+
+Variables allow you to hold values for calculations, store query results, and so on.
+
+Before using variables, you must declare them in the declaration section of a block.
+
+Variables are scoped to the block in which they’re declared. It means that variables are accessible only within the block and any nested blocks.
+
+The following illustrates the syntax of declaring a variable.
+
+```sqlsqlsql
+variable_name data_type [= expression];
+```
+
+In this syntax:
+
+- First, specify the name of the variable. It is a good practice to assign a meaningful name to a variable. For example, instead of naming a variable `i` you should use `index` or `counter`.
+- Second, associate a specific [data type](../postgresql-tutorial/postgresql-data-types) with the variable. The data type can be any valid data type such as [integer](../postgresql-tutorial/postgresql-integer), [numeric](../postgresql-tutorial/postgresql-numeric), [varchar](../postgresql-tutorial/postgresql-char-varchar-text), and [char](../postgresql-tutorial/postgresql-char-varchar-text).
+- Third, optionally assign a default value to the variable. If you don’t do so, the initial value of the variable is `NULL`.
+
+Please note that you can use either `:=` or `=` assignment operator to set an initial value for a variable.
+
+To assign a value to a variable, you can use the assignment operator (\=) as follows:
+
+```sql
+variable_name = value;
+```
+
+Alternatively, you can use the `:=` assignment operator:
+
+```
+variable_name := value;
+```
+
+## Basic PL/pgSQL variable example
+
+### 1\) Declare variables
+
+The following example shows how to declare and initialize variables:
+
+```
+do $$
+declare
+   counter    integer = 1;
+   first_name varchar(50) = 'John';
+   last_name  varchar(50) = 'Doe';
+   payment    numeric(11,2) = 20.5;
+begin
+   raise notice '% % % has been paid % USD',
+       counter,
+	   first_name,
+	   last_name,
+	   payment;
+end $$;
+```
+
+Output:
+
+```css
+notice: 1 John Doe has been paid 20.5 USD;
+```
+
+How it works.
+
+First, declare four variables in the declaration part of the block:
+
+- The `counter` variable is an integer with an initial value of 1\.
+- The `first_name` and `last_name` are `varchar(50)` with the initial values of `'John'` and `'Doe'` respectively.
+- The `payment` variable has the numeric type with the initial value `20.5`.
+
+Second, display the values of the variables using the `raise notice` statement.
+
+### 2\) Assign values to variables
+
+The following example shows how to assign a value to a variable:
+
+```php
+do $$
+declare
+	first_name VARCHAR(50);
+begin
+	first_name = split_part('John Doe',' ', 1);
+	raise notice 'The first name is %', first_name;
+end;
+$$;
+```
+
+Output:
+
+```php
+NOTICE:  The first name is John
+DO
+```
+
+How it works.
+
+First, declare a variable in the declaration block:
+
+```sql
+first_name VARCHAR(50);
+```
+
+Second, split a string literal into two parts using a space, return the first part, and assign it to the `first_name` variable:
+
+```
+first_name = split_part('John Doe',' ', 1);
+```
+
+Third, display the value of the `first_name` variable using the `raise notice` statement:
+
+```sql
+raise notice 'The first name is %', first_name;
+```
+
+## Variable initialization timing
+
+PostgreSQL evaluates the initial value of a variable and assigns it when the block is entered. For example:
+
+```
+do $$
+declare
+   created_at time = clock_timestamp();
+begin
+   raise notice '%', created_at;
+   perform pg_sleep(3);
+   raise notice '%', created_at;
+end $$;
+```
+
+Here is the output:
+
+```shell
+NOTICE:  14:23:33.064008
+NOTICE:  14:23:33.064008
+```
+
+In this example:
+
+- First, declare a variable `created_at` and initialize its value to the current time.
+- Second, display the variable.
+- Third, pause the execution for 3 seconds using the `pg_sleep()` function.
+- Finally, display the value of the `created_at` variable again.
+
+The output indicates that the value of the `created_at` variable is only initialized once when the block is entered.
+
+## Copying data types
+
+The `%type` provides the data type of a table column or another variable. Typically, you use the `%type` to declare a variable that holds a value from the database or another variable.
+
+The following illustrates how to declare a variable with the data type of a table column:
+
+```sql
+variable_name table_name.column_name%type;
+```
+
+The following shows how to declare a variable with the data type of another variable:
+
+```sql
+variable_name variable%type;
+```
+
+We’ll use the following `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![](/postgresqltutorial/film.png)This example uses the type\-copying technique to declare variables that hold values that come from the `film` table:
+
+```
+do
+$$
+declare
+   film_title film.title%type;
+   featured_title film_title%type;
+begin
+   -- get title of the film id 100
+   select title
+   from film
+   into film_title
+   where film_id = 100;
+
+   -- show the film title
+   raise notice 'Film title id 100: %s', film_title;
+end; $$;
+```
+
+Output:
+
+```php
+NOTICE:  Film title id 100: Brooklyn Deserts
+DO
+```
+
+In this example, we declare two variables:
+
+- The `film_title` variable has the same data type as the `title` column in the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database).
+- The `featured_title` has the same data type as the data type of the `film_title` variable.
+
+We use the [select into](pl-pgsql-select-into) statement to retrieve from the `film_title` column of the `film` table and assign it to the `film_title` variable.
+
+Using the type\-copying feature offers the following advantages:
+
+- First, you don’t need to know the type of column or reference being accessed.
+- Second, if the data type of the referenced column name (or variable) changes, you don’t need to change the block.
+
+## Variables in blocks and subblocks
+
+When you declare a variable in a subblock with the same name as another variable in the outer block, the variable in the outer block is hidden within the subblock.
+
+To access a variable in the outer block, you use the block label to qualify its name, as shown in the following example:
+
+```sql
+do
+$$
+<<outer_block>>
+declare
+  counter integer := 0;
+begin
+   counter := counter + 1;
+   raise notice 'The current value of the counter is %', counter;
+
+   declare
+       counter integer := 0;
+   begin
+       counter := counter + 10;
+       raise notice 'Counter in the subblock is %', counter;
+       raise notice 'Counter in the outer block is %', outer_block.counter;
+   end;
+
+   raise notice 'Counter in the outer block is %', counter;
+
+end outer_block $$;
+```
+
+```http
+NOTICE:  The current value of the counter is 1
+NOTICE:  Counter in the subblock is 10
+NOTICE:  Counter in the outer block is 1
+NOTICE:  Counter in the outer block is 1
+```
+
+In this example:
+
+- First, declare a variable named `counter` in the `outer_block`.
+- Next, declare a variable with the same name in the subblock.
+- Then, before entering into the subblock, the value of `counter` is one. Within the subblock, we increase the value of the `counter` variable to ten and print it out. Note that this change only affects the `counter` variable within the subblock.
+- After that, reference the `counter` variable in the outer block using the block label `outer_block.counter`.
+- Finally, display the value of the `counter` variable in the outer block, its value remains unchanged.
+
+## Summary
+
+- A variable is a named storage location with a data type that can hold a value.
+- PostgreSQL evaluates the default value of a variable and assigns it to the variable when it enters the block.
+- Declare variables and optionally an initial value to it in the declaration section of the block.
+
+
+# Constants
+
+---
+title: 'PL/pgSQL Constants'
+page_title: 'PL/pgSQL Constants'
+page_description: 'In this tutorial, you will learn how to declare and PL/pgSQL constants in a block.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-constants/'
+ogImage: ''
+updatedOn: '2024-03-19T02:45:18+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Record Types'
+  slug: 'postgresql-plpgsql/plpgsql-record-types'
+nextLink:
+  title: 'PL/pgSQL Errors and Messages'
+  slug: 'postgresql-plpgsql/plpgsql-errors-messages'
+---
+
+**Summary**: in this tutorial, you will learn about PL/pgSQL constants whose values cannot be changed.
+
+## Introduction to PL/pgSQL constants
+
+In PL/pgSQL, constants are identifiers whose values cannot be changed during the execution of the code.
+
+Typically, you use constants to assign meaningful names to values that remain constants throughout the execution of a [block](plpgsql-block-structure), a [function](../postgresql-functions), or a [stored procedure](postgresql-create-procedure).
+
+The following are the reasons to use constants:
+
+First, constants make code more readable and maintainable. Suppose you have the following formula:
+
+```sqlsql
+selling_price = net_price + net_price * 0.1;
+```
+
+In this formula, the magic value 0\.1 does not convey any meaning.
+
+However, when using the following formula, the meaning for determining the selling price becomes clear:
+
+```sql
+selling_price = net_price + net_price * vat;
+```
+
+Second, constants help reduce maintenance effort.
+
+Suppose you have a formula that calculates the selling price throughout a function. When the VAT changes from 0\.1 to 0\.12, you’ll need to update all of these hard\-coded values.
+
+By using a constant, you only need to modify its value in one place where you define the constant.
+
+So how do you define a constant in PL/pgSQL?
+
+## Defining constants
+
+To define a constant in PL/pgSQL, you use the following syntax:
+
+```sql
+constant_name constant data_type = expression;
+```
+
+In this syntax:
+
+- First, specify the name of the constant. The name should be as descriptive as possible.
+- Second, add the `constant` keyword after the name and specify the [data type](../postgresql-tutorial/postgresql-data-types) of the constant.
+- Third, initialize a value for the constant after the assignment operator (`=`).
+
+## PL/pgSQL constants example
+
+The following example declares a constant named `vat` that stores the value\-added tax and calculates the selling price from the net price:
+
+```sql
+do $$
+declare
+   vat constant numeric = 0.1;
+   net_price    numeric = 20.5;
+begin
+   raise notice 'The selling price is %', net_price * ( 1 + vat );
+end $$;
+```
+
+Output:
+
+```sql
+NOTICE:  The selling price is 22.55
+```
+
+Now, if you try to change the value of the constant as follows:
+
+```sql
+do $$
+declare
+   vat constant numeric = 0.1;
+   net_price    numeric = 20.5;
+begin
+   raise notice 'The selling price is %', net_price * ( 1 + vat);
+   vat = 0.05; -- error
+end $$;
+```
+
+You will get the following error message:
+
+```sql
+ERROR: "vat" is declared CONSTANT
+SQL state: 22005
+Character: 155
+```
+
+Similar to the default value of a [variable](plpgsql-variables), PostgreSQL evaluates the value for the constant when the block is entered at run\-time, not compile\-time. For example:
+
+```sql
+do $$
+declare
+   started_at constant time := clock_timestamp();
+begin
+   -- pause 3s
+   perform pg_sleep(3);
+
+   -- show the current time
+   raise notice '3s later';
+   raise notice 'Current time: %', clock_timestamp();
+
+   -- pause 3s
+   perform pg_sleep(3);
+   -- show the value of the started_at
+   -- later than the one above
+   raise notice 'Started at: %', started_at;
+end $$;
+```
+
+Output:
+
+```
+NOTICE:  3s later
+NOTICE:  Current time: 2024-03-19 09:30:09.28782+07
+NOTICE:  Started at: 09:30:06.276246
+DO
+```
+
+## Summary
+
+- A constant holds a value that cannot be changed.
+- Use the `constant` keyword to define a constant in PL/pgSQL.
+
+
+# IF-ELSE Statements
+
+---
+title: 'PL/pgSQL IF Statement'
+page_title: 'PL/pgSQL IF Statement'
+page_description: 'Show you how to use three forms of the PL/pgSQL IF statement that executes a command based on a certain condition.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-if-else-statements/'
+ogImage: '/postgresqltutorial/plpgsql-if-statement.png'
+updatedOn: '2024-03-19T03:39:48+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Assert Statement'
+  slug: 'postgresql-plpgsql/pl-pgsql-assert'
+nextLink:
+  title: 'PL/pgSQL CASE Statement'
+  slug: 'postgresql-plpgsql/plpgsql-case-statement'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PL/pgSQL `if` statements to execute a command based on a specific condition.
+
+## Introduction to PL/pgSQL IF Statement
+
+The `if` statement allows you to execute one or more statements based on a condition. PL/pgSQL provides you with three forms of the `if` statements:
+
+1. `if then`
+2. `if then else`
+3. `if then elsif`
+
+### 1\) PL/pgSQL if\-then statement
+
+The following illustrates the simplest form of the `if` statement:
+
+```sql
+if condition then
+   statements;
+end if;
+```
+
+The `if` statement executes `statements` when a `condition` is true. If the `condition` evaluates to `false`, the control is passed to the next statement after the `end if` .
+
+The `condition` is a boolean expression that evaluates to `true` or `false`.
+
+The `statements` can be one or more statements that you want to execute when the `condition` is true. It may contain other `if` statements.
+
+When you place an `if` statement is within another `if` statement, you’ll have a nested\-if statement.
+
+The following flowchart illustrates the simple `if` statement.
+
+[![PL/pgSQL if statement](/postgresqltutorial/plpgsql-if-statement.png)](/postgresqltutorial/plpgsql-if-statement.png)The following example uses an `if` statement to check if a query returns any rows:
+
+```sql
+do $$
+declare
+  selected_film film%rowtype;
+  input_film_id film.film_id%type = 0;
+begin
+
+  select * from film
+  into selected_film
+  where film_id = input_film_id;
+
+  if not found then
+     raise notice'The film % could not be found',
+	    input_film_id;
+  end if;
+end $$;
+```
+
+Output:
+
+```http
+NOTICE:  The film 0 could not be found
+
+```
+
+In this example, we select a film by a specific film id (`0`).
+
+The `found` is a global variable that is available in PL/pgSQL. The [`select into`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement sets the `found` variable if a row is assigned or `false` if no row is returned.
+
+We use the `if` statement to check if the film with id (0\) exists and raise a notice if it does not.
+
+```shell
+if not found then
+   raise notice'The film % could not be found', input_film_id;
+end if;
+```
+
+If you change the value of the `input_film_id` variable to some value that exists in the film table like 100, you will not see any message.
+
+### 2\) PL/pgSQL if\-then\-else statement
+
+The `if...then...else` statement executes the statements in the `if` branch if the `condition` evaluates to true; otherwise, it executes the statements in the `else` branch.
+
+Here’s the syntax of the `if...then...else` statement:
+
+```sql
+if condition then
+  statements;
+else
+  alternative-statements;
+end if;
+```
+
+The following flowchart illustrates the `if else` statement.
+
+![PL/pgSQL if else statement](/postgresqltutorial/plpgsql-if-else-statement.png)
+The following example uses an if…then…else statement to display a message showing that a film with a specific id exists or not:
+
+```sql
+do $$
+declare
+  selected_film film%rowtype;
+  input_film_id film.film_id%type := 100;
+begin
+
+  select * from film
+  into selected_film
+  where film_id = input_film_id;
+
+  if not found then
+     raise notice 'The film % could not be found',
+	    input_film_id;
+  else
+     raise notice 'The film title is %', selected_film.title;
+  end if;
+end $$;
+```
+
+Output:
+
+```shell
+NOTICE:  The film title is Brooklyn Desert
+```
+
+In this example, because the film id 100 exists in the film table the `found` variable is true. Therefore, the statement in the `else` branch is executed.
+
+### 3\) PL/pgSQL if\-then\-elsif Statement
+
+Unlike the `if` and `if...then...else` statements that evaluate only one condition, the `if then elsif` statement allows you to evaluate multiple conditions. and execute one or more statements when a condition is true.
+
+Here’s the syntax of the `if...then...elsif` statement:
+
+```sql
+if condition_1 then
+  statement_1;
+elsif condition_2 then
+  statement_2
+...
+elsif condition_n then
+  statement_n;
+else
+  else-statement;
+end if;
+```
+
+In this syntax, if the `condition_1` is `true` then the `if...then...elsif` statement executes the `statement_1` and stops evaluating the other conditions such as `condition_2`, `condition_3`, and so on.
+
+If all conditions are evaluated to `false`, the `if...then...elsif` executes the statements in the `else` branch.
+
+The following flowchart illustrates the `if then elsif` statement:
+
+![PL/pgSQL if ELSif else Statement](/postgresqltutorial/if-elsif-else-statement.png)
+Let’s look at the following example:
+
+```sql
+do $$
+declare
+   v_film film%rowtype;
+   len_description varchar(100);
+begin
+
+  select * from film
+  into v_film
+  where film_id = 100;
+
+  if not found then
+     raise notice 'Film not found';
+  else
+      if v_film.length >0 and v_film.length <= 50 then
+		 len_description := 'Short';
+	  elsif v_film.length > 50 and v_film.length < 120 then
+		 len_description := 'Medium';
+	  elsif v_film.length > 120 then
+		 len_description := 'Long';
+	  else
+		 len_description := 'N/A';
+	  end if;
+
+	  raise notice 'The % film is %.',
+	     v_film.title,
+	     len_description;
+  end if;
+end $$;
+```
+
+Output:
+
+```http
+NOTICE:  The Brooklyn Desert film is Long.
+```
+
+How it works:
+
+- First, select the film with id 100\. If the film does not exist, raise a notice that the film is not found.
+- Second, use the `if...then....elsif` statement to assign a description to a film based on the length of the film.
+
+## Summary
+
+- Use the `if..then` statement to execute one or more statements when a condition is `true`.
+- Use the `if...then...else` statement to execute statements when a condition is `true` and execute other statements when the condition is `false`.
+- Use the `if...then...elsif` statement to evaluate multiple conditions and execute statements when the corresponding condition is `true`.
+
+
+# CASE Statement
+
+---
+title: 'PL/pgSQL CASE Statement'
+page_title: 'PL/pgSQL CASE Statements'
+page_description: 'In this tutorial, you will learn about the PL/pgSQL CASE statement that executes a command based on a certain condition.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-case-statement/'
+ogImage: '/postgresqltutorial/plpgsql-simple-case-statement.png'
+updatedOn: '2024-02-07T04:18:40+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL IF Statement'
+  slug: 'postgresql-plpgsql/plpgsql-if-else-statements'
+nextLink:
+  title: 'PL/pgSQL Loop Statements'
+  slug: 'postgresql-plpgsql/plpgsql-loop-statements'
+---
+
+**Summary**: in this tutorial, you will learn about the PL/pgSQL `case` that executes statements based on a certain condition.
+
+## Introduction to PL/pgSQL CASE Statment
+
+Besides the [if statement](plpgsql-if-else-statements), PostgreSQL provides the `case` statements that allow you to execute a block of code based on conditions.
+
+The `case` statement selects a `when` section to execute from a list of `when` sections based on a condition.
+
+The `case` statement has two forms:
+
+- Simple `case` statement
+- Searched `case` statement
+
+Notice that you should not be confused about the `case` statement and [case expression](../postgresql-tutorial/postgresql-case). The `case` expression evaluates to a value while the `case` statement selects a section to execute based on conditions.
+
+## 1\) Simple case statement
+
+Here’s the basic syntax of the simple `case` statement:
+
+```sql
+case search-expression
+   when expression_1 [, expression_2, ...] then
+      when-statements
+  [ ... ]
+  [else
+      else-statements ]
+END case;
+```
+
+The `search-expression` is an expression that evaluates to a result.
+
+The `case` statement compares the result of the `search-expression` with the `expression` in each `when` branch using equal operator ( `=`) from top to bottom.
+
+If the `case` statement finds a match, it will execute the corresponding `when` section. Additionally, it stops checking the remaining `when` sections
+
+If the `case` statement cannot find any match, it will execute the `else` section.
+
+The `else` section is optional. If the result of the `search-expression` does not match `expression` in the `when` sections and the `else` section does not exist, the `case` statement will raise a `case_not_found` exception.
+
+The following example shows how to use a simple `case` statement:
+
+```sql
+do $$
+declare
+	rate film.rental_rate%type;
+	price_segment varchar(50);
+begin
+    -- get the rental rate
+    select rental_rate into rate
+    from film
+    where film_id = 100;
+
+	-- assign the price segment
+	if found then
+		case rate
+		   when 0.99 then
+              price_segment =  'Mass';
+		   when 2.99 then
+              price_segment = 'Mainstream';
+		   when 4.99 then
+              price_segment = 'High End';
+		   else
+	    	  price_segment = 'Unspecified';
+		   end case;
+
+		raise notice '%', price_segment;
+	else
+		raise notice 'film not found';
+    end if;
+end; $$
+```
+
+Output:
+
+```http
+NOTICE:  High End
+```
+
+How it works.
+
+First, select the rental rate of the film with id 100\.
+
+Second, assign price segment to the price_segment variable if the film id 100 exists or a message otherwise.
+
+Based on the rental rates 0\.99, 2\.99, or 4\.99, the case statement assigns mass, mainstream, or high\-end to the `price_segment` variable. If the rental rate is not one of these values, the `case` statement assigns the string Unspecified to the `price_segment` variable.
+
+The following flowchart illustrates the simple `case` statement in this example:
+
+![PL/pgSQL simple case statement](/postgresqltutorial/plpgsql-simple-case-statement.png)
+
+## 2\) Searched case statement
+
+The following syntax shows the basic syntax of the searched `case` statement:
+
+```sql
+case
+    when boolean-expression-1 then
+      statements
+  [ when boolean-expression-2 then
+      statements
+    ... ]
+  [ else
+      statements ]
+end case;
+```
+
+In this syntax, the `case` statement evaluates the boolean expressions sequentially from top to bottom until it finds an expression that evaluates to `true`
+
+Subsequently, the case statement executes the corresponding `when` section and immediately stops searching for the remaining expressions.
+
+If no expression evaluates to true, the `case` statement will execute the `else` section.
+
+The `else` section is optional. If you omit the `else` section and there is no expression evaluated to `true`, the `case` statement will raise the `case_not_found` exception.
+
+The following example illustrates how to use a simple `case` statement:
+
+```sql
+do $$
+declare
+    total_payment numeric;
+    service_level varchar(25) ;
+begin
+     select sum(amount) into total_payment
+     from Payment
+     where customer_id = 100;
+
+	 if found then
+	    case
+		   when total_payment > 200 then
+               service_level = 'Platinum' ;
+           when total_payment > 100 then
+	           service_level = 'Gold' ;
+           else
+               service_level = 'Silver' ;
+        end case;
+		raise notice 'Service Level: %', service_level;
+     else
+	    raise notice 'Customer not found';
+	 end if;
+end; $$
+
+```
+
+How it works:
+
+- First, select the total payment paid by the customer id 100 from the `payment` table.
+- Then, assign the service level to the customer based on the total payment
+
+The following diagram illustrates the logic:
+
+![PL/pgSQL searched case statement](/postgresqltutorial/plpgsql-searched-case-statement.png)
+
+Notice that the searched `case` statement is similar to the [if then elsif statement](plpgsql-if-else-statements).
+
+## Summary
+
+- Use the `case` statement to execute a section based on certain conditions.
+- Use a simple `case` statement to compare a value with a list of values and if a match is found, execute a section.
+- Use a searched `case` statement to evaluate a list of conditions and execute a section if the condition is true.
+
+
+# Loop Statements
+
+---
+title: 'PL/pgSQL Loop Statements'
+page_title: 'PL/pgSQL Loop Statements'
+page_description: 'in this tutorial, we will introduce you to various kinds of PL/pgSQL loop statements that execute a block of statements repeatedly.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-loop-statements/'
+ogImage: ''
+updatedOn: '2024-03-19T03:57:07+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL CASE Statement'
+  slug: 'postgresql-plpgsql/plpgsql-case-statement'
+nextLink:
+  title: 'PL/pgSQL While Loop'
+  slug: 'postgresql-plpgsql/pl-pgsql-while-loop'
+---
+
+**Summary**: in this tutorial, you will learn about the PL/pgSQL loop statement that executes a block of code repeatedly.
+
+## Introduction to PL/pgSQL Loop statement
+
+The `loop` defines an unconditional loop that executes a block of code repeatedly until terminated by an `exit` or `return` statement.
+
+The following illustrates the syntax of the `loop` statement:
+
+```sqlsql
+<<label>>
+loop
+   statements;
+end loop;
+```
+
+Typically, you use an [`if`](plpgsql-if-else-statements) statement to terminate the loop based on a condition like this:
+
+```sql
+<<label>>
+loop
+   statements;
+   if condition then
+      exit;
+   end if;
+end loop;
+```
+
+The `exit` statement terminates the loop immediately.
+
+It’s possible to place a loop statement inside another loop statement. When a `loop` statement is placed inside another `loop` statement, it is called a nested loop:
+
+```sql
+<<outer>>
+loop
+   statements;
+   <<inner>>
+   loop
+     /* ... */
+     exit <<inner>>
+   end loop;
+end loop;
+```
+
+When you have nested loops, it’s necessary to use loop labels. The loop labels allow you to specify the loop in the `exit` and `continue` statements, indicating which loop these statements refer to.
+
+## PL/pgSQL loop statement examples
+
+Let’s explore some examples of using the loop statement.
+
+### 1\) Basic PL/pgSQL loop example
+
+The following example uses a `loop` statement to display five numbers from 1 to five:
+
+```sql
+do $$
+
+declare
+    counter int := 0;
+begin
+
+  loop
+  	counter = counter + 1;
+	raise notice '%', counter;
+
+	if counter = 5 then
+		exit;
+	end if;
+
+  end loop;
+
+end;
+
+$$;
+```
+
+Output:
+
+```http
+NOTICE:  1
+NOTICE:  2
+NOTICE:  3
+NOTICE:  4
+NOTICE:  5
+```
+
+How it works.
+
+First, declare a variable `counter` and initialize its value to zero:
+
+```php
+counter int := 0;
+```
+
+Second, increase the value of the `counter` variable by one in each iteration of the loop:
+
+```
+counter = counter + 1;
+```
+
+Third, display the current value of the `counter`:
+
+```
+raise notice '%', counter;
+```
+
+Finally, terminate the loop if the current value of the `counter` variable is 5:
+
+```
+if counter = 5 then
+   exit;
+end if;
+```
+
+Since the initial value of the `counter` is zero, the loop executes five times before it is terminated.
+
+In practice, you can combine the `if` and `exit` statements into a single statement like this:
+
+```php
+exit when counter = 5;
+```
+
+For example:
+
+```sql
+do $$
+
+declare
+    counter int := 0;
+begin
+
+  loop
+  	counter = counter + 1;
+	raise notice '%', counter;
+	exit when counter = 5;
+  end loop;
+
+end;
+
+$$;
+```
+
+Note that you will learn more about the [exit statement](plpgsql-exit) in the upcoming tutorial.
+
+### 2\) Using a loop with a label
+
+The following example illustrates how to use a loop label:
+
+```sql
+do $$
+
+declare
+    counter int := 0;
+begin
+
+ <<my_loop>>
+  loop
+  	counter = counter + 1;
+	raise notice '%', counter;
+	exit my_loop when counter = 5;
+  end loop;
+
+end;
+
+$$;
+```
+
+Output:
+
+```http
+NOTICE:  1
+NOTICE:  2
+NOTICE:  3
+NOTICE:  4
+NOTICE:  5
+```
+
+How it works.
+
+In this example, we place a loop label `my_loop` inside `<<>>` before the `LOOP` keyword.
+
+Inside the loop’s body, we reference the loop label (`my_loop`) in the `exit` statement to explicitly instruct PostgreSQL to terminate the loop specified by the loop label: `my_loop`.
+
+It’ll be more practical to use a loop label when you have a nested loop.
+
+### 3\) Nested loop example
+
+The following example illustrates how to use a nested loop with labels:
+
+```sql
+do $$
+
+declare
+	row_var int := 0;
+	col_var int := 0;
+begin
+	<<outer_loop>>
+	loop
+		row_var = row_var + 1;
+		<<inner_loop>>
+		loop
+			col_var = col_var + 1;
+			raise notice '(%, %)', row_var, col_var;
+
+			-- terminate the inner loop
+			exit inner_loop when col_var = 3;
+		end loop;
+		-- reset the column
+		col_var = 0;
+
+		-- terminate the outer loop
+		exit outer_loop when row_var = 3;
+	end loop;
+end;
+
+$$;
+```
+
+Output:
+
+```http
+NOTICE:  (1, 1)
+NOTICE:  (1, 2)
+NOTICE:  (1, 3)
+NOTICE:  (2, 1)
+NOTICE:  (2, 2)
+NOTICE:  (2, 3)
+NOTICE:  (3, 1)
+NOTICE:  (3, 2)
+NOTICE:  (3, 3)
+```
+
+How it works.
+
+First, declare two variables `row_var` and `col_var`, and initialize their values to zero:
+
+```
+row_var int := 0;
+col_var int := 0;
+```
+
+Second, use the `outer_loop` as the label for the outer loop. In the outer loop, increase the value of the `row_var` by one, execute the nested loop, and reset the `col_var` in each iteration.
+
+If the `row_var` is 3, exit the outer loop by referencing the `outer_loop` label in the `exit` statement.
+
+Third, use the `inner_loop` as the label for the inner loop. In the inner loop, increase the value of `col_var` by one, display the current values of `row_var` and `col_var` variables, and terminate the inner loop when the value of `col_var` is 3\.
+
+## Summary
+
+- Use the PL/pgSQL `LOOP` statement to create unconditional loops.
+- The loop can be nested.
+- Use the `exit` statement to terminate a loop prematurely.
+
+
+# FOR Loop
+
+---
+title: 'PL/pgSQL For Loop'
+page_title: 'PL/pgSQL For Loop in PostgreSQL'
+page_description: 'In this tutorial, you will learn about PL/pgSQL for loop statements to iterate over a range of integers and a result set of a query.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-for-loop/'
+ogImage: '/postgresqltutorial/plpgsql-FOR-loop.png'
+updatedOn: '2024-03-19T04:07:19+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL While Loop'
+  slug: 'postgresql-plpgsql/pl-pgsql-while-loop'
+nextLink:
+  title: 'PL/pgSQL Exit Statement'
+  slug: 'postgresql-plpgsql/plpgsql-exit'
+---
+
+**Summary**: in this tutorial, you will learn about PL/pgSQL `for` loop statements to iterate over a range of integers or a result set of a query.
+
+## Using PL/pgSQL for loop to iterate over a range of integers
+
+The following illustrates the syntax of the `for` loop statement that iterates over integers of a range:
+
+```sql
+[ <<label>> ]
+for loop_counter in [ reverse ] from.. to [ by step ] loop
+    statements
+end loop [ label ];
+```
+
+In this syntax:
+
+- First, the `for` loop creates an integer variable `loop_counter` which is accessible only inside the loop. By default, the `for` loop increases the `loop_counter` by `step` after each iteration. However, when you use the `reverse` option, the `for` loop decreases the `loop_counter` by the `step`.
+- Second, the `from` and `to` are expressions that specify the lower and upper bound of the range. The `for` loop evaluates these expressions before entering the loop.
+- Third, the `step` that follows the `by` keyword specifies the iteration step. It is optional and defaults to 1\. The `for loop` evaluates the `step` expression once only.
+
+The following flowchart illustrates the `for` loop statement:
+
+![PL/pgSQL FOR loop](/postgresqltutorial/plpgsql-FOR-loop.png)The following example uses the `for` loop statement to iterate over five numbers from 1 to 5 and display each of them in each iteration:
+
+```sql
+do
+$$
+begin
+   for counter in 1..5 loop
+	raise notice 'counter: %', counter;
+   end loop;
+end;
+$$;
+```
+
+Output:
+
+```shell
+NOTICE:  Counter: 1
+NOTICE:  Counter: 2
+NOTICE:  Counter: 3
+NOTICE:  Counter: 4
+NOTICE:  Counter: 5
+```
+
+The following example iterates over 5 numbers from 5 to 1 and shows each of them in each iteration:
+
+```sql
+do $$
+begin
+   for counter in reverse 5..1 loop
+      raise notice 'counter: %', counter;
+   end loop;
+end; $$
+```
+
+Output:
+
+```shell
+NOTICE:  Counter: 5
+NOTICE:  Counter: 4
+NOTICE:  Counter: 3
+NOTICE:  Counter: 2
+NOTICE:  Counter: 1
+```
+
+The following example uses the `for` loop statement to iterate over six numbers from 1 to 6\. It adds 2 to the counter after each iteration:
+
+```sql
+do $$
+begin
+  for counter in 1..6 by 2 loop
+    raise notice 'counter: %', counter;
+  end loop;
+end; $$
+```
+
+Output:
+
+```shell
+NOTICE:  Counter 1
+NOTICE:  Counter 3
+NOTICE:  Counter 5
+```
+
+## Using PL/pgSQL for loop to iterate over a result set
+
+The following statement shows how to use the `for` loop statement to iterate over a result set of a query:
+
+```sql
+[ <<label>> ]
+for target in query loop
+    statements
+end loop [ label ];
+```
+
+The following statement uses the `for` loop to display the titles of the top 10 longest films.
+
+```sql
+do
+$$
+declare
+    f record;
+begin
+    for f in select title, length
+	       from film
+	       order by length desc, title
+	       limit 10
+    loop
+	raise notice '%(% mins)', f.title, f.length;
+    end loop;
+end;
+$$
+```
+
+```shell
+NOTICE:  Chicago North(185 mins)
+NOTICE:  Control Anthem(185 mins)
+NOTICE:  Darn Forrester(185 mins)
+NOTICE:  Gangs Pride(185 mins)
+NOTICE:  Home Pity(185 mins)
+NOTICE:  Muscle Bright(185 mins)
+NOTICE:  Pond Seattle(185 mins)
+NOTICE:  Soldiers Evolution(185 mins)
+NOTICE:  Sweet Brotherhood(185 mins)
+NOTICE:  Worst Banger(185 mins)
+```
+
+## Using PL/pgSQL for loop to iterate over the result set of a dynamic query
+
+The following form of the `for` loop statement allows you to execute a dynamic query and iterate over its result set:
+
+```sql
+[ <<label>> ]
+for row in execute query_expression [ using query_param [, ... ] ]
+loop
+    statements
+end loop [ label ];
+```
+
+In this syntax:
+
+- The `query_expression` is an SQL statement.
+- The `using` clause is used to pass parameters to the query.
+
+The following block shows how to use the `for` loop statement to loop through a dynamic query. It has two configuration variables:
+
+- `sort_type`: 1 to sort the films by title, 2 to sort the films by release year.
+- `rec_count`: is the number of rows to query from the `film` table. We’ll use it in the `using` clause of the `for` loop.
+
+This [anonymous block](plpgsql-block-structure) composes the query based on the `sort_type` variable and uses the for loop to iterate over the row of the result set.
+
+```sql
+do $$
+declare
+    -- sort by 1: title, 2: release year
+    sort_type smallint := 1;
+	-- return the number of films
+	rec_count int := 10;
+	-- use to iterate over the film
+	rec record;
+	-- dynamic query
+    query text;
+begin
+
+	query := 'select title, release_year from film ';
+
+	if sort_type = 1 then
+		query := query || 'order by title';
+	elsif sort_type = 2 then
+	  query := query || 'order by release_year';
+	else
+	   raise 'invalid sort type %s', sort_type;
+	end if;
+
+	query := query || ' limit $1';
+
+	for rec in execute query using rec_count
+        loop
+	     raise notice '% - %', rec.release_year, rec.title;
+	end loop;
+end;
+$$
+```
+
+Output:
+
+```shell
+NOTICE:  2006 - Academy Dinosaur
+NOTICE:  2006 - Ace Goldfinger
+NOTICE:  2006 - Adaptation Holes
+NOTICE:  2006 - Affair Prejudice
+NOTICE:  2006 - African Egg
+NOTICE:  2006 - Agent Truman
+NOTICE:  2006 - Airplane Sierra
+NOTICE:  2006 - Airport Pollock
+NOTICE:  2006 - Alabama Devil
+NOTICE:  2006 - Aladdin Calendar
+```
+
+If you change the `sort_type` to 2, you’ll get the following output:
+
+```shell
+NOTICE:  2006 - Grosse Wonderful
+NOTICE:  2006 - Airport Pollock
+NOTICE:  2006 - Bright Encounters
+NOTICE:  2006 - Academy Dinosaur
+NOTICE:  2006 - Ace Goldfinger
+NOTICE:  2006 - Adaptation Holes
+NOTICE:  2006 - Affair Prejudice
+NOTICE:  2006 - African Egg
+NOTICE:  2006 - Agent Truman
+NOTICE:  2006 - Chamber Italian
+```
+
+In this tutorial, you have learned various forms of the PL/pgSQL for loop statements
+
+
+# WHILE Loop
+
+---
+title: 'PL/pgSQL While Loop'
+page_title: 'PostgreSQL PL/pgSQL While Loop'
+page_description: 'In this tutorial, you will learn how to use the PL/pgSQL while loop statement to execute a block of code as long as a condition is true.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/pl-pgsql-while-loop/'
+ogImage: '/postgresqltutorial/plpgsql-WHILE-loop.png'
+updatedOn: '2024-03-19T04:00:13+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Loop Statements'
+  slug: 'postgresql-plpgsql/plpgsql-loop-statements'
+nextLink:
+  title: 'PL/pgSQL For Loop'
+  slug: 'postgresql-plpgsql/plpgsql-for-loop'
+---
+
+**Summary**: in this tutorial, you will learn how to use PL/pgSQL `while` loop statement to execute statements as long as a condition is true.
+
+## Introduction to PL/pgSQL while loop statement
+
+The `while` loop statement executes one or more statements as long as a specified condition is true.
+
+Here’s the basic syntax of a `while` loop statement:
+
+```sql
+[ <<label>> ]
+while condition loop
+   statements;
+end loop;
+```
+
+In this syntax, PostgreSQL evaluates the `condition` before executing the `statements`.
+
+If the condition is true, it executes the `statements`. After each iteration, the `while` loop evaluates the `codition` again.
+
+Inside the body of the `while` loop, you need to change the some [variables](plpgsql-variables) to make the `condition` `false` or `null` at some points. Otherwise, you will have an indefinite loop.
+
+Because the `while` loop tests the `condition` before executing the `statements`, it is often referred to as a **pretest loop**.
+
+The following flowchart illustrates the `while` loop statement:
+
+![PL/pgSQL WHILE loop](/postgresqltutorial/plpgsql-WHILE-loop.png)
+
+## PL/pgSQL while loop example
+
+The following example uses the `while` loop statement to display the value of a `counter`:
+
+```sql
+do $$
+
+declare
+	counter integer := 0;
+begin
+	while counter < 5 loop
+		raise notice 'Counter %', counter;
+		counter := counter + 1;
+	end loop;
+end;
+
+$$;
+```
+
+Output:
+
+```shell
+NOTICE:  Counter 0
+NOTICE:  Counter 1
+NOTICE:  Counter 2
+NOTICE:  Counter 3
+NOTICE:  Counter 4
+```
+
+How it works.
+
+- First, declare the `counter` variable and initialize its value to 0\.
+- Second, use the `while` loop statement to show the current value of the `counter` as long as it is less than 5\. In each iteration, increase the value of `counter` by one. After 5 iterations, the `counter` is 5 therefore the `while` loop is terminated.
+
+## Summary
+
+- Use the PL/pgSQL `while` loop statement to execute one or more statements as long as long as a specified condition is true.
+
+
+# EXIT Statement
+
+---
+title: 'PL/pgSQL Exit Statement'
+page_title: 'PL/pgSQL EXIT Statement'
+page_description: 'In this tutorial, you will learn about the PL/pgSQL exit statement and how to use it to terminate a loop or a block.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-exit/'
+ogImage: ''
+updatedOn: '2024-03-19T04:05:44+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL For Loop'
+  slug: 'postgresql-plpgsql/plpgsql-for-loop'
+nextLink:
+  title: 'PL/pgSQL Continue Statement'
+  slug: 'postgresql-plpgsql/pl-pgsql-continue'
+---
+
+**Summary**: in this tutorial, you will learn about the PL/pgSQL `exit` statement and how to use it to terminate a loop or exit a block.
+
+## Introduction to the PL/pgSQL exit statement
+
+The `exit` statement allows you to prematurely terminate a loop including an unconditional [loop](plpgsql-loop-statements), a [while loop](/postgresql/plpgsql-while-loop/), and a [for loop](plpgsql-for-loop).
+
+The following shows the syntax of the `exit` statement:
+
+```csssql
+exit [label] [when boolean_expression]
+```
+
+In this syntax:
+
+- The `label` is the loop label of the current loop where the `exit` is in or the loop label of the outer loop. Depending on the label, the `exit` statement will terminate the corresponding loop. If you don’t use the label, the `exit` statement will terminate the enclosing loop.
+- Use the `when boolean_expression` clause to specify a condition that terminates a loop. The `exit` statement will terminate the loop if the `boolean_expression` evaluates to `true`.
+
+The following statements are equivalent:
+
+```php
+exit when counter > 10;
+```
+
+```php
+if counter > 10 then
+   exit;
+end if;
+```
+
+The `exit when` is cleaner and shorter.
+
+Besides terminating a loop, you can use the `exit` statement to exit a block specified by the `begin...end` keywords.
+
+In this case, the control is passed to the statement after the `end` keyword of the current block:
+
+```css
+<<block_label>>
+BEGIN
+    -- some code
+    EXIT [block_label] [WHEN condition];
+    -- some more code
+END block_label;
+```
+
+## PL/pgSQL Exit statement examples
+
+Let’s take some examples of using the PL/pgSQL `exit` statement.
+
+### 1\) Using PL/pgSQL Exit statement to terminate an unconditional loop
+
+The following example illustrates how to use the `exit` statement in unconditional loops:
+
+```php
+do
+$$
+declare
+   i int = 0;
+   j int = 0;
+begin
+  <<outer_loop>>
+  loop
+     i = i + 1;
+     exit when i > 3;
+	 -- inner loop
+	 j = 0;
+     <<inner_loop>>
+     loop
+		j = j + 1;
+		exit when j > 3;
+		raise notice '(i,j): (%,%)', i, j;
+	 end loop inner_loop;
+  end loop outer_loop;
+end;
+$$
+```
+
+Output:
+
+```http
+NOTICE:  (i,j): (1,1)
+NOTICE:  (i,j): (1,2)
+NOTICE:  (i,j): (1,3)
+NOTICE:  (i,j): (2,1)
+NOTICE:  (i,j): (2,2)
+NOTICE:  (i,j): (2,3)
+NOTICE:  (i,j): (3,1)
+NOTICE:  (i,j): (3,2)
+NOTICE:  (i,j): (3,3)
+```
+
+How it works.
+
+This example contains two loops: outer and inner loops.
+
+Since both `exit` statements don’t use any loop labels, they will terminate the current loop.
+
+The first `exit` statement terminates the outer loop when `i` is greater than `3`. That’s why you see the value of `i` in the output is `1`, `2`, and `3`.
+
+The second `exit` statement terminates the inner loop when `j` is greater than `3`. It is the reason you see that `j` is `1`, `2`, and `3` for each iteration of the outer loop.
+
+The following example places the label of the outer loop in the second `exit` statement:
+
+```php
+do
+$$
+declare
+   i int = 0;
+   j int = 0;
+begin
+  <<outer_loop>>
+  loop
+     i = i + 1;
+     exit when i > 3;
+	 -- inner loop
+	 j = 0;
+     <<inner_loop>>
+     loop
+		j = j + 1;
+		exit outer_loop when j > 3;
+		raise notice '(i,j): (%,%)', i, j;
+	 end loop inner_loop;
+  end loop outer_loop;
+end;
+$$
+```
+
+Output:
+
+```http
+NOTICE:  (i,j): (1,1)
+NOTICE:  (i,j): (1,2)
+NOTICE:  (i,j): (1,3)
+```
+
+In this example, the second `exit` statement terminates the outer loop when `j` is greater than 3\.
+
+### 2\) Using the PL/pgSQL Exit statement to exit a block
+
+The following example illustrates how to use the `exit` statement to terminate a block:
+
+```php
+do
+$$
+begin
+
+  <<simple_block>>
+   begin
+  	 exit simple_block;
+         -- for demo purposes
+	 raise notice '%', 'unreachable!';
+   end;
+   raise notice '%', 'End of block';
+end;
+$$
+```
+
+Output
+
+```http
+NOTICE:  End of block
+```
+
+In this example, the exit statement terminates the `simple_block` immediately:
+
+```php
+exit simple_block;
+```
+
+This statement will never be reached:
+
+```
+raise notice '%', 'unreachable!';
+```
+
+## Summary
+
+- Use the `exit` statement to terminate a loop including an unconditional `loop`, `while`, and `for` loop.
+- Use the `exit` statement to exit a block.
+
+
+# CONTINUE Statement
+
+---
+title: 'PL/pgSQL Continue Statement'
+page_title: 'PL/pgSQL Continue Statement By Examples'
+page_description: 'In this tutorial, you will learn about the PL/pgSQL Continue statement to skip the current loop iteration and continue the next one.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/pl-pgsql-continue/'
+ogImage: ''
+updatedOn: '2024-03-19T04:07:31+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Exit Statement'
+  slug: 'postgresql-plpgsql/plpgsql-exit'
+nextLink:
+  title: 'PostgreSQL Exception'
+  slug: 'postgresql-plpgsql/postgresql-exception'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PL/pgSQL `continue` statement to control the loop.
+
+## Introduction to PL/pgSQL continue statement
+
+The `continue` statement prematurely skips the current iteration of the loop and starts the next one.
+
+In practice, you can use the `continue` statement within the loops including [unconditional loops,](plpgsql-loop-statements) [while loops](/postgresql/plpgsql-while-loop/), and [for loops](plpgsql-for-loop).
+
+Here’s the syntax of the `continue` statement:
+
+```css
+continue [loop_label] [when condition]
+```
+
+In this syntax, the `loop_label` and `when condition` are optional.
+
+The `loop_label` is the label of the loop that you want to skip the current iteration. If you omit the `loop_label`, the `continue` statement skips the current iteration of the loop. If you specify a loop label, the `continue` statement skips the current iteration of that loop.
+
+The `condition` is a boolean expression that specifies the condition to skip the current iteration of the loop. If the `condition` is `true`, then the `continue` will skip the current loop iteration.
+
+## PL/pgSQL Continue statement example
+
+The following example uses the `continue` statement in an unconditional loop to print out the odd numbers from 1 to 10:
+
+```sql
+do
+$$
+declare
+   counter int = 0;
+begin
+
+  loop
+     counter = counter + 1;
+
+	 -- exit the loop if counter > 10
+	 exit when counter > 10;
+
+	 -- skip the current iteration if counter is an even number
+	 continue when mod(counter,2) = 0;
+
+	 -- print out the counter
+	 raise notice '%', counter;
+  end loop;
+end;
+
+$$;
+```
+
+Output:
+
+```http
+NOTICE:  1
+NOTICE:  3
+NOTICE:  5
+NOTICE:  7
+NOTICE:  9
+```
+
+How it works.
+
+- First, initialize the `counter` to zero.
+- Second, increase the counter by one in each iteration. If the `counter` is greater than 10, then [exit](plpgsql-exit) the loop. If the `counter` is an even number, then skip the current iteration.
+
+The `mod(counter,2)` returns the remainder of the division of the `counter` by two.
+
+If it is zero, then the `counter` is an even number. All the statements between the `continue` statement and `end loop` will be skipped.
+
+## Summary
+
+- Use the `continue` statement to skip the current loop iteration prematurely and start a new one.
+
+
+# Cursor
+
+---
+title: 'PL/pgSQL Cursor'
+page_title: 'PL/pgSQL Cursor By Examples'
+page_description: 'In this tutorial, we will show you how to use PL/pgSQL Cursor and give you some practical examples of using PL/pgSQL cursor.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-cursor/'
+ogImage: '/postgresqltutorial/plpgsql-cursor.png'
+updatedOn: '2024-03-22T14:04:21+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL Stored Procedure with INOUT Parameters'
+  slug: 'postgresql-plpgsql/postgresql-stored-procedure-with-inout-parameters'
+nextLink:
+  title: 'PostgreSQL Triggers'
+  slug: 'postgresql-plpgsql/../postgresql-triggers'
+---
+
+**Summary**: in this tutorial, you will learn about the PL/pgSQL Cursors and how to use them to process a result set, row by row.
+
+## Introduction to PL/pgSQL Cursor
+
+In PostgreSQL, a cursor is a database object that allows you to traverse the result set of a query one row at a time.
+
+Cursors can be useful when you deal with large result sets or when you need to process rows sequentially.
+
+The following diagram illustrates how to use a cursor in PostgreSQL:
+
+![PL/pgSQL Cursor](/postgresqltutorial/plpgsql-cursor.png)1. First, declare a cursor. 2. Next, open the cursor. 3. Then, fetch rows from the result set into a record or a variable list. 4. After that, process the fetched row and exit the loop if there is no more row to fetch. 5. Finally, close the cursor.
+
+We will examine each step in more detail in the following sections.
+
+### Step 1\. Declaring a cursor
+
+To declare a cursor, you use the `DECLARE` statement. Here’s the syntax for declaring a cursor:
+
+```sql
+DECLARE cursor_name CURSOR FOR query;
+```
+
+In this syntax:
+
+- First, specify the name of the cursor (`cursor_name`) after the `DECLARE` keyword.
+- Second, provide a `query` that defines the result set of the cursor.
+
+### Step 2\. Opening the cursor
+
+After declaring a cursor, you need to open it using the `OPEN` statement:
+
+```sql
+OPEN cursor_name;
+```
+
+### Step 3\. Fetching rows from the cursor
+
+Once the cursor is open, you can fetch rows from it using the `FETCH` statement. PostgreSQL offers different ways to fetch rows:
+
+- FETCH NEXT: fetches the next row from the cursor.
+- FETCH PRIOR: fetches the previous row from the cursor.
+- FETCH FIRST: fetches the first row from the cursor.
+- FETCH LAST: fetches the last row from the cursor.
+- FETCH ALL: fetches all rows from the cursor.
+
+In practice, you often use the `FETCH NEXT` that fetches the next row from a cursor:
+
+```sql
+FETCH NEXT FROM cursor_name INTO variable_list;
+```
+
+In this syntax:
+
+- `cursor_name` specifies the name of the cursor.
+- `variable_list`: is a comma\-separated list of variables that store the values fetched from the cursor. It also can be a record.
+
+### Step 4\. Processing rows
+
+After fetching a row, you can process it. Typically, you use a [LOOP](plpgsql-loop-statements) statement to process the rows fetched from the cursor:
+
+```sql
+LOOP
+    -- Fetch the next row
+    FETCH NEXT FROM cursor_name INTO variable_list;
+
+    -- exit if not found
+    EXIT WHEN NOT FOUND;
+
+    -- Process the fetched row
+    ...
+
+END LOOP;
+```
+
+### Step 5\. Closing the cursor
+
+Once completing fetching rows, you need to close the cursor using the `CLOSE` statement:
+
+```sql
+CLOSE cursor_name;
+```
+
+The `CLOSE` statement releases the resources and frees up the cursor variable, allowing it to be opened again using the `OPEN` statement.
+
+## PL/pgSQL cursor example
+
+The following example illustrates how to use a cursor to traverse the rows from the film table in the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+```sql
+CREATE OR REPLACE FUNCTION fetch_film_titles_and_years(
+   OUT p_title VARCHAR(255),
+   OUT p_release_year INTEGER
+)
+RETURNS SETOF RECORD AS
+$$
+DECLARE
+    film_cursor CURSOR FOR
+        SELECT title, release_year
+        FROM film;
+    film_record RECORD;
+BEGIN
+    -- Open cursor
+    OPEN film_cursor;
+
+    -- Fetch rows and return
+    LOOP
+        FETCH NEXT FROM film_cursor INTO film_record;
+        EXIT WHEN NOT FOUND;
+
+        p_title = film_record.title;
+        p_release_year = film_record.release_year;
+        RETURN NEXT;
+    END LOOP;
+
+    -- Close cursor
+    CLOSE film_cursor;
+END;
+$$
+LANGUAGE PLPGSQL;
+```
+
+The following shows how to call the `fetch_film_titles_and_years()` function:
+
+```sql
+SELECT * FROM fetch_film_titles_and_years();
+```
+
+Output:
+
+```
+           p_title           | p_release_year
+-----------------------------+----------------
+ Chamber Italian             |           2006
+ Grosse Wonderful            |           2006
+ Airport Pollock             |           2006
+ Bright Encounters           |           2006
+...
+```
+
+## Summary
+
+- A cursor is a database object that allows you to traverse the rows of a result of a query one by one.
+
+
+# Function Parameters
+
+---
+title: 'PL/pgSQL Function Parameter Modes: IN, OUT, INOUT'
+page_title: 'PL/pgSQL Function Parameter Modes: IN, OUT, and INOUT'
+page_description: 'In this tutorial, you will learn about parameter modes of functions including in, out, and inout.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-function-parameters/'
+ogImage: ''
+updatedOn: '2024-02-07T12:54:31+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL Create Function Statement'
+  slug: 'postgresql-plpgsql/postgresql-create-function'
+nextLink:
+  title: 'PL/pgSQL Function Overloading'
+  slug: 'postgresql-plpgsql/plpgsql-function-overloading'
+---
+
+**Summary**: in this tutorial, you will learn about parameter modes of functions including: `in`, `out`, and `inout`.
+
+## Introduction to PL/pgSQL parameter modes
+
+The parameter modes determine the behaviors of parameters. PL/pgSQL supports three parameter modes: `in`, `out`, and `inout`. A parameter takes the `in` mode by default if you do not explicitly specify it.
+
+The following table illustrates the parameter modes:
+
+| IN                                 | OUT                                               | INOUT                                                   |
+| ---------------------------------- | ------------------------------------------------- | ------------------------------------------------------- |
+| The default                        | Explicitly specified                              | Explicitly specified                                    |
+| Pass a value to function           | Return a value from a function                    | Pass a value to a function and return an updated value. |
+| `in` parameters act like constants | `out` parameters act like uninitialized variables | `inout` parameters act like initialized variables       |
+| Cannot be assigned a value         | Must assign a value                               | Should be assigned a value                              |
+
+## The IN mode
+
+The following function finds a film by its id and returns the title of the film:
+
+```csssqlsql
+create or replace function find_film_by_id(p_film_id int)
+returns varchar
+language plpgsql
+as $$
+declare
+   film_title film.title%type;
+begin
+  -- find film title by id
+  select title
+  into film_title
+  from film
+  where film_id = p_film_id;
+
+  if not found then
+     raise 'Film with id % not found', p_film_id;
+  end if;
+
+  return film_title;
+
+end;$$
+```
+
+Because we don’t specify the mode for `p_film_id` parameter, it takes the `in` mode by default.
+
+The following shows how to call the find_film_by_id() function to find the title of the film with the id 100:
+
+```sql
+select * from find_film_by_id(1);
+```
+
+Output:
+
+```
+ find_film_by_id
+------------------
+ Academy Dinosaur
+(1 row)
+```
+
+## The OUT mode
+
+The `out` parameters are defined as a part of the argument list and are returned as a part of the result.
+
+The `out` parameters are very useful in functions that need to return multiple values.
+
+Note that PostgreSQL has supported the `out` parameters since version 8\.1\.
+
+To define `out` parameters, you explicitly precede the parameter name with the `out` keyword as follows:
+
+```
+out parameter_name type
+```
+
+The following example defines the `get_film_stat` function that has three `out` parameters:
+
+```
+create or replace function get_film_stat(
+    out min_len int,
+    out max_len int,
+    out avg_len numeric)
+language plpgsql
+as $$
+begin
+
+  select min(length),
+         max(length),
+		 avg(length)::numeric(5,1)
+  into min_len, max_len, avg_len
+  from film;
+
+end;$$
+```
+
+In the `get_film_stat` function, we select the min, max, and average film length from the `film` table using the `min`, `max`, and `avg` aggregate functions and assign the results to the corresponding `out` parameters.
+
+The following statement calls the `get_film_stat` function:
+
+```sql
+select get_film_stat();
+```
+
+Output:
+
+```text
+ get_film_stat
+----------------
+ (46,185,115.3)
+(1 row)
+```
+
+The output of the function is a record. To make the output separated as columns, you use the following statement:
+
+```
+select * from get_film_stat();
+```
+
+Output:
+
+```text
+ min_len | max_len | avg_len
+---------+---------+---------
+      46 |     185 |   115.3
+(1 row)
+```
+
+## The INOUT mode
+
+The `inout` mode is the combination `in` and `out` modes.
+
+It means that the caller can pass an argument to a function. The function changes the argument and returns the updated value.
+
+The following `swap` function accepts two integers and swap their values:
+
+```sql
+create or replace function swap(
+	inout x int,
+	inout y int
+)
+language plpgsql
+as $$
+begin
+   select x,y into y,x;
+end; $$;
+```
+
+The following statement calls the `swap()` function:
+
+```sql
+select * from swap(10,20);
+```
+
+Output:
+
+```
+ x  | y
+----+----
+ 20 | 10
+(1 row)
+```
+
+## Summary
+
+- PL/pgSQL supports three parameter modes: `in`, `out`, and `intout`. By default, a parameter takes the `in` mode.
+- Use the `in` mode if you want to pass a value to the function.
+- Use the `out` mode if you want to return a value from a function.
+- Use the `inout` mode when you want to pass in an initial value, update the value in the function, and return its updated value.
+
+
+# Function Overloading
+
+---
+title: 'PL/pgSQL Function Overloading'
+page_title: 'PL/pgSQL Function Overloading'
+page_description: 'In this tutorial, you will learn about the PL/pgSQL function overloading feature that helps you develop flexible functions.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-function-overloading/'
+ogImage: ''
+updatedOn: '2024-02-07T13:59:52+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Function Parameter Modes: IN, OUT, INOUT'
+  slug: 'postgresql-plpgsql/plpgsql-function-parameters'
+nextLink:
+  title: 'How to Develop a PL/pgSQL Function That Returns a Table'
+  slug: 'postgresql-plpgsql/plpgsql-function-returns-a-table'
+---
+
+**Summary**: in this tutorial, you will learn about function overloading in PostgreSQL.
+
+## Introduction to PL/pgSQL Function Overloading
+
+PostgreSQL allows multiple [functions](postgresql-create-function) to share the same name as long as they have different arguments.
+
+If two or more functions share the same name, they are considered overloaded.
+
+When you call an overloaded function, PostgreSQL selects the best candidate function to execute based on the function argument list.
+
+The following `get_rental_duration()` function returns the total rental days of a specified customer:
+
+```sqlsql
+create or replace function get_rental_duration(
+	p_customer_id integer
+)
+returns integer
+language plpgsql
+as $$
+declare
+	rental_duration integer;
+begin
+	select
+		sum( extract(day from return_date - rental_date))
+	into rental_duration
+    from rental
+	where customer_id = p_customer_id;
+
+	return rental_duration;
+end; $$
+
+```
+
+The `get_rental_function` function has the `p_customer_id` as an `in` parameter.
+
+The following returns the number of rental days of customer id 232:
+
+```sql
+SELECT get_rental_duration(232);
+```
+
+Output:
+
+```text
+ get_rental_duration
+---------------------
+                  90
+(1 row)
+```
+
+Suppose that you want to know the rental duration of a customer from a specific date up to now.
+
+To do that, you can add one more parameter `p_from_date` to the `get_retal_duration()` function. Alternatively, you can develop a new function with the same name but have two parameters like this:
+
+```
+create or replace function get_rental_duration(
+	p_customer_id integer,
+	p_from_date date
+)
+returns integer
+language plpgsql
+as $$
+declare
+	rental_duration integer;
+begin
+	-- get the rental duration based on customer_id
+	-- and rental date
+	select sum( extract( day from return_date + '12:00:00' - rental_date))
+	into rental_duration
+	from rental
+	where customer_id = p_customer_id and
+		  rental_date >= p_from_date;
+
+	-- return the rental duration in days
+	return rental_duration;
+end; $$
+
+```
+
+This function shares the same name as the first one, except it has two parameters.
+
+In other words, the `get_rental_duration(integer)` function is overloaded by the `get_rental_duration(integer,date)` function.
+
+The following statement returns the rental duration of the customer id `232` since `July 1st 2005`:
+
+```sql
+SELECT get_rental_duration(232,'2005-07-01');
+```
+
+```text
+ get_rental_duration
+---------------------
+                  85
+(1 row)
+
+```
+
+Note that if you omit the second argument, PostgreSQL will call the `get_rental_duration(integer)` function that has one parameter.
+
+## PL/pgSQL function overloading and default values
+
+In the `get_rental_duration(integer,date)` function, if you want to set a default value to the second argument like this:
+
+```
+create or replace function get_rental_duration(
+	p_customer_id integer,
+	p_from_date date default '2005-01-01'
+)
+returns integer
+language plpgsql
+as $$
+declare
+	rental_duration integer;
+begin
+	select sum(
+		extract( day from return_date + '12:00:00' - rental_date)
+	)
+	into rental_duration
+	from rental
+	where customer_id= p_customer_id and
+		  rental_date >= p_from_date;
+
+	return rental_duration;
+
+end; $$
+```
+
+The following calls the `get_rental_duration()` function and passes the customer id 232:
+
+```sql
+SELECT get_rental_duration(232);
+```
+
+Error:
+
+```sql
+ERROR:  function get_rental_duration(integer) is not unique
+LINE 1: SELECT get_rental_duration(232);
+               ^
+HINT:  Could not choose the best candidate function. You might need to add explicit type casts.
+SQL state: 42725
+Character: 8
+```
+
+In this case, PostgreSQL could not choose the best candidate function to execute.
+
+In this scenario, you have three functions:
+
+```
+get_rental_duration(p_customer_id integer);
+get_rental_duration(p_customer_id integer, p_from_date date)
+get_rental_duration(p_customer_id integer, p_from_date date default '2005-01-01'
+)
+```
+
+PostgreSQL did not know whether it should execute the first or the third ones.
+
+As a rule of thumb, when overloading functions, you should always ensure their parameter lists are unique.
+
+## Summary
+
+- Multiple functions can share the same names as long as they have different arguments. These function names are overloaded.
+- Use a unique function argument list to define overloaded functions.
+
+
+# Function Returns Table
+
+---
+title: 'How to Develop a PL/pgSQL Function That Returns a Table'
+page_title: 'PL/pgSQL Function Returns a Table'
+page_description: 'In this tutorial, you will learn how to develop PostgreSQL functions that return a table using PL/pgSQL.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-function-returns-a-table/'
+ogImage: '/postgresqltutorial/film.png'
+updatedOn: '2024-03-22T06:58:32+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Function Overloading'
+  slug: 'postgresql-plpgsql/plpgsql-function-overloading'
+nextLink:
+  title: 'PL/pgSQL Returns SetOf'
+  slug: 'postgresql-plpgsql/plpgsql-returns-setof'
+---
+
+**Summary**: in this tutorial, you will learn how to develop PostgreSQL functions that return a table using PL/pgSQL.
+
+To define a function that returns a table, you use the following form of the [create function](postgresql-create-function) statement:
+
+```sqlsqlsql
+create or replace function function_name (
+   parameter_list
+)
+returns table ( column_list )
+language plpgsql
+as
+$$
+declare
+-- variable declaration
+begin
+-- body
+end;
+$$;
+```
+
+Instead of returning a single value, this syntax allows you to return a table with a specified column list:
+
+```sql
+returns table ( column_list )
+```
+
+We will use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database) for the demonstration:
+
+![](/postgresqltutorial/film.png)The following function returns all films whose titles match a particular pattern using the [ILIKE operator](../postgresql-tutorial/postgresql-like).
+
+```sql
+create or replace function get_film (
+  p_pattern varchar
+)
+returns table (
+	film_title varchar,
+	film_release_year int
+)
+language plpgsql
+as $$
+begin
+	return query
+		select
+			title,
+			release_year::integer
+		from
+			film
+		where
+			title ilike p_pattern;
+end;
+$$;
+```
+
+This `get_film(varchar)` accepts one parameter `p_pattern`, which is a pattern you want to match with the film title.
+
+The function returns a query set based on a select statement. You need to ensure that the columns in the result set match those you define in the table after the `returns table` clause.
+
+Since the [data type](../postgresql-tutorial/postgresql-data-types) of `release_year` column from the `film` table is not an integer, you need to cast it to an integer using the [cast operator](../postgresql-tutorial/postgresql-cast) `::`.
+
+The following shows how to call the `get_film()` function:
+
+```sql
+SELECT * FROM get_film ('Al%');
+```
+
+Output:
+
+```text
+    film_title    | film_release_year
+------------------+-------------------
+ Alabama Devil    |              2006
+ Aladdin Calendar |              2006
+ Alamo Videotape  |              2006
+ Alaska Phantom   |              2006
+ Ali Forever      |              2006
+ Alice Fantasia   |              2006
+ Alien Center     |              2006
+ Alley Evolution  |              2006
+ Alone Trip       |              2006
+ Alter Victory    |              2006
+(10 rows)
+```
+
+If you call the function using the following statement, PostgreSQL returns a table that consists of one column that holds an array of rows:
+
+```
+SELECT get_film ('Al%');
+```
+
+Output:
+
+```
+         get_film
+---------------------------
+ ("Alabama Devil",2006)
+ ("Aladdin Calendar",2006)
+ ("Alamo Videotape",2006)
+ ("Alaska Phantom",2006)
+ ("Ali Forever",2006)
+ ("Alice Fantasia",2006)
+ ("Alien Center",2006)
+ ("Alley Evolution",2006)
+ ("Alone Trip",2006)
+ ("Alter Victory",2006)
+(10 rows)
+```
+
+In practice, you often process each row before appending it to the function’s result set:
+
+```
+create or replace function get_film (
+	p_pattern varchar,
+	p_year int
+)
+returns table (
+	film_title varchar,
+	film_release_year int
+)
+language plpgsql
+as $$
+declare
+    var_r record;
+begin
+	for var_r in(
+            select title, release_year
+            from film
+	     where title ilike p_pattern and
+		    release_year = p_year
+        ) loop  film_title := upper(var_r.title) ;
+		film_release_year := var_r.release_year;
+           return next;
+	end loop;
+end; $$
+```
+
+In this example, we create the `get_film(varchar,int)` that accepts two parameters:
+
+- The `p_pattern` is used to search for films.
+- The `p_year` is the release year of the films.
+
+In the function body, we use a `for` loop statement to process the query, row by row.
+
+The `return next` statement adds a row to the returned table of the function.
+
+The following illustrates how to call the `get_film()` function:
+
+```sql
+SELECT * FROM get_film ('%er', 2006);
+```
+
+Output:
+
+```
+         film_title          | film_release_year
+-----------------------------+-------------------
+ ACE GOLDFINGER              |              2006
+ ALI FOREVER                 |              2006
+ ALIEN CENTER                |              2006
+ AMISTAD MIDSUMMER           |              2006
+ ARACHNOPHOBIA ROLLERCOASTER |              2006
+ DYING MAKER                 |              2006
+ BIRDCAGE CASPER             |              2006
+...
+```
+
+## Summary
+
+- Use the `returns table (column_list)` in the `create function` to define a function that returns a table (or result set).
+
+
+# Returns SETOF
+
+---
+title: 'PL/pgSQL Returns SetOf'
+page_title: 'PL/pgSQL Returns SetOf'
+page_description: ''
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-returns-setof/'
+ogImage: 'https://www.postgresqltutorial.com//postgresqltutorial/film_table.png'
+updatedOn: '2024-03-22T08:26:57+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'How to Develop a PL/pgSQL Function That Returns a Table'
+  slug: 'postgresql-plpgsql/plpgsql-function-returns-a-table'
+nextLink:
+  title: 'PostgreSQL Drop Function'
+  slug: 'postgresql-plpgsql/postgresql-drop-function'
+---
+
+**Summary**: in this tutorial, you will learn how to use the `returns setof` option to define a function that returns one or more rows.
+
+## Defining a function with returns setof option
+
+[PostgreSQL functions](postgresql-create-function) allow you to encapsulate reusable logic within the database. To return one or more rows from a function, you can use the `returns setof` option.
+
+The `returns setof` option allows you to return one or more rows with a predefined structure from a function.
+
+Here’s the syntax for creating a function that returns a set of rows:
+
+```sql
+create or replace function function_name(parameters)
+returns setof row_structure
+as
+$$
+   -- logic
+   -- ...
+   -- return one or more rows
+   return query select_query;
+$$ language plpgsql;
+```
+
+In this syntax:
+
+- First, specify the function name after the `create or replace function` keywords.
+- Second, use the `returns setof` with a predefined row structure. The row structure can be a composite type defined in the database.
+- Third, return rows inside the function body using the `return query` statement followed by a select statement.
+
+## Calling the function
+
+To call a function with the `returns setof`, you use the following statement:
+
+```sql
+SELECT function_name(argument);
+```
+
+It’ll return a single column containing an array of all columns of the returned rows.
+
+To retrieve data from a specific column of the return rows, you specify the dot (.) and column name after the function call:
+
+```sql
+SELECT (function_name(argument)).column_name;
+```
+
+If you want to retrieve data from all columns of the returned rows, you can use the `.*` like this:
+
+```sql
+SELECT (function_name(argument)).*;
+```
+
+Alternatively, you can call the function using the `SELECT...FROM` statement:
+
+```sql
+SELECT * FROM function_name(argument);
+```
+
+## PL/pgSQL Returns SetOf example
+
+We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database) for the demonstration.
+
+![Film table](/postgresqltutorial/film_table.png)First, define a function that retrieves a film by its id from the `film` table:
+
+```sql
+create or replace function find_film_by_id(
+	p_id int
+)
+returns setof film
+as
+$$
+begin
+   return query select * from film
+   where film_id = p_id;
+end;
+$$
+language plpgsql;
+```
+
+Second, call the `find_film_by_id()` function:
+
+```sql
+SELECT find_film_by_id(100);
+```
+
+Output:
+
+```sql
+
+                                   find_film_by_id
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ (100,"Brooklyn Desert","A Beautiful Drama of a Dentist And a Composer who must Battle a Sumo Wrestler in The First Manned Space Station",2006,1,7,4.99,161,21.99,R,"2013-05-26 14:50:58.951",{Commentaries},"'battl':14 'beauti':4 'brooklyn':1 'compos':11 'dentist':8 'desert':2 'drama':5 'first':20 'man':21 'must':13 'space':22 'station':23 'sumo':16 'wrestler':17")
+(1 row)
+```
+
+The output is an array that contains column data.
+
+Third, retrieve the title of the film with id 100:
+
+```sql
+select (find_film_by_id(100)).title;
+```
+
+Output:
+
+```text
+      title
+-----------------
+ Brooklyn Desert
+(1 row)
+```
+
+Fourth, retrieve the data from all columns of the returned row:
+
+```sql
+SELECT * FROM find_film_by_id(100);
+```
+
+Output:
+
+```sql
+-[ RECORD 1 ]----+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+film_id          | 100
+title            | Brooklyn Desert
+description      | A Beautiful Drama of a Dentist And a Composer who must Battle a Sumo Wrestler in The First Manned Space Station
+release_year     | 2006
+language_id      | 1
+rental_duration  | 7
+rental_rate      | 4.99
+length           | 161
+replacement_cost | 21.99
+rating           | R
+last_update      | 2013-05-26 14:50:58.951
+special_features | {Commentaries}
+fulltext         | 'battl':14 'beauti':4 'brooklyn':1 'compos':11 'dentist':8 'desert':2 'drama':5 'first':20 'man':21 'must':13 'space':22 'station':23 'sumo':16 'wrestler':17
+```
+
+Note that we use `\x` command in psql to display the result set vertically.
+
+## Summary
+
+- Use the `returns setof` to return one or more rows from a function.
+
+
+# Record Types
+
+---
+title: 'PL/pgSQL Record Types'
+page_title: 'PL/pgSQL Record Types Explained Clearly By Examples'
+page_description: 'You will learn about the PL/pgSQL record types that allow you to define variables that can hold a sinle row of a result set.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-record-types/'
+ogImage: ''
+updatedOn: '2024-03-19T02:14:47+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Row Types'
+  slug: 'postgresql-plpgsql/pl-pgsql-row-types'
+nextLink:
+  title: 'PL/pgSQL Constants'
+  slug: 'postgresql-plpgsql/plpgsql-constants'
+---
+
+**Summary**: in this tutorial, you will learn about the PL/pgSQL record types, which enables you to define variables that can hold a single row from a result set.
+
+## Introduction to PL/pgSQL record types
+
+PostgreSQL provides a “type” called the `record` that is similar to the [row\-type](/postgresql/plpgsql-row-types/).
+
+It’s important to note that a record isn’t a true type but rather a placeholder. Furthermore, the structure of a record variable will change when you reassign it to another value.
+
+To declare a `record` variable, you simply use a variable name followed by the `record` keyword like this:
+
+```sql
+variable_name record;
+```
+
+A `record` variable is similar to a [row\-type variable](/postgresql/plpgsql-row-types/), which can hold only one row of a result set.
+
+Unlike a row\-type variable, a `record` variable lacks a predefined structure. Instead, the structure of a `record` variable is determined when an actual row is assigned to it via the [`select`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) or [`for`](plpgsql-for-loop) statement.
+
+To access a field in the record, you use the dot notation (`.`) syntax like this:
+
+```sql
+record_variable.field_name;
+```
+
+If you attempt to access a field in a record variable before it’s assigned, you’ll encounter an error.
+
+## PL/pgSQL record examples
+
+Let’s take some examples of using the record variables.
+
+### 1\) Using record with the select into statement
+
+The following example illustrates how to use the record variable with the `select into` statement:
+
+```sql
+do
+$$
+declare
+	rec record;
+begin
+	-- select the film
+	select film_id, title, length
+	into rec
+	from film
+	where film_id = 200;
+
+	raise notice '% % %', rec.film_id, rec.title, rec.length;
+
+end;
+$$
+language plpgsql;
+```
+
+How it works.
+
+- First, declare a record variable called `rec` in the declaration section.
+- Second use the `select into` statement to select a row whose `film_id` is 200 into the `rec` variable
+- Third, print out the information of the film via the record variable.
+
+### 2\) Using record variables in the for loop statement
+
+The following shows how to use a record variable in a `for loop` statement:
+
+```sql
+do
+$$
+declare
+	rec record;
+begin
+	for rec in select title, length
+			from film
+			where length > 50
+			order by length
+	loop
+		raise notice '% (%)', rec.title, rec.length;
+	end loop;
+end;
+$$;
+```
+
+Here is the partial output:
+
+```shell
+NOTICE:  Hall Cassidy (51)
+NOTICE:  Champion Flatliners (51)
+NOTICE:  Deep Crusade (51)
+NOTICE:  Simon North (51)
+NOTICE:  English Bulworth (51)
+...
+```
+
+Note that you will learn more about the [`for loop`](plpgsql-for-loop) statement in the [for\-loop tutorial](plpgsql-for-loop).
+
+How it works:
+
+- First, declare a variable named r with the type `record`.
+- Second, use the `for loop` statement to fetch rows from the `film` table (in the [sample database](../postgresql-getting-started/postgresql-sample-database)). The `for loop` statement assigns the row that consists of `title` and `length` to the `rec` variable in each iteration.
+- Third, show the contents of the fields of the record variable by using the dot notation (`rec.title` and `rec.length`)
+
+## Summary
+
+- A record is a placeholder that can hold a single row of a result set.
+- A record does not have a predefined structure like a row variable. Its structure is determined when you assign a row to it.
+
+
+# Row Types
+
+---
+title: 'PL/pgSQL Row Types'
+page_title: 'PL/pgSQL Row Types'
+page_description: 'In this tutorial, you will learn how to use the PL/pgSQL row types to declare row variables that hold a complete row of a result set.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/pl-pgsql-row-types/'
+ogImage: '/postgresqltutorial/actor.png'
+updatedOn: '2024-03-19T01:58:41+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Select Into'
+  slug: 'postgresql-plpgsql/pl-pgsql-select-into'
+nextLink:
+  title: 'PL/pgSQL Record Types'
+  slug: 'postgresql-plpgsql/plpgsql-record-types'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PL/pgSQL row types to declare row variables that hold a complete row of a result set.
+
+## Introduction to PL/pgSQL row types
+
+Row variables or row\-type variables are variables of composite types that can store the entire rows of a result set.
+
+These row variables can hold the entire row returned by the [`select into`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) or `for` statement.
+
+Here’s the syntax for [declaring a row variable](plpgsql-variables):
+
+```sql
+row_variable table_name%ROWTYPE;
+row_variable view_name%ROWTYPE;
+```
+
+In this syntax:
+
+- First, specify the variable name.
+- Second, provide the name of a table or view followed by `%` and `ROWTYPE`.
+
+To access the individual field of a row variable, you use the dot notation (`.`) as follows:
+
+```sql
+row_variable.field_name
+```
+
+## PL/pgSQL row\-type variable example
+
+We’ll use the `actor` table from the [sample database](../postgresql-getting-started/postgresql-sample-database) to show how row types work:
+
+![](/postgresqltutorial/actor.png)
+The following example retrieves the row with id 10 from the actor table and assigns it to a row variable:
+
+```sql
+do
+$$
+declare
+   selected_actor actor%rowtype;
+begin
+   -- select actor with id 10
+   select *
+   from actor
+   into selected_actor
+   where actor_id = 10;
+
+   -- show the number of actor
+   raise notice 'The actor name is % %',
+      selected_actor.first_name,
+      selected_actor.last_name;
+end;
+$$;
+```
+
+How it works.
+
+- First, declare a row variable called `selected_actor` with the same type as the row in the `actor` table.
+- Second, assign the row whose value in the `actor_id` column is 10 to the `selected_actor` variable using the [`select into`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement.
+- Third, show the first and last names of the selected actor using the `raise notice` statement.
+
+## Summary
+
+- Use row type variables (`%ROWTYPE`) to hold a row of a result set returned by the `select into` statement.
+
+
+# Error Messages
+
+---
+title: 'PL/pgSQL Errors and Messages'
+page_title: 'PL/pgSQL Errors and Messages'
+page_description: 'In this tutorial, you will learn how to report messages and raise errors using the RAISE statement.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/plpgsql-errors-messages/'
+ogImage: ''
+updatedOn: '2024-03-19T02:58:12+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Constants'
+  slug: 'postgresql-plpgsql/plpgsql-constants'
+nextLink:
+  title: 'PL/pgSQL Assert Statement'
+  slug: 'postgresql-plpgsql/pl-pgsql-assert'
+---
+
+**Summary**: in this tutorial, you will learn how to report messages and raise errors using the `raise` statement.
+
+## Reporting messages
+
+In PL/pgSQL, you use the `raise` statement to issue a message. Here's the syntax of the `raise` statement:
+
+```csssql
+raise level format;
+```
+
+In this syntax:
+
+### Level
+
+The `level` option determines the error severity with the following values:
+
+- `debug`
+- `log`
+- `notice`
+- `info`
+- `warning`
+- `exception`
+
+If you don't specify the `level`, the `raise` statement will use `exception` level that raises an error and stops the current transaction by default. We'll discuss the `raise exception` shortly.
+
+### Format
+
+The `format` is a string that specifies the message. The `format` uses percentage ( `%`) placeholders that will be substituted by the arguments.
+
+The number of placeholders must be the same as the number of arguments. Otherwise, PostgreSQL will issue an error:
+
+```sql
+[Err] ERROR:  too many parameters specified for raise
+```
+
+The following example illustrates the `raise` statement that reports different messages at the current time.
+
+```
+do $$
+begin
+  raise info 'information message %', now() ;
+  raise log 'log message %', now();
+  raise debug 'debug message %', now();
+  raise warning 'warning message %', now();
+  raise notice 'notice message %', now();
+end $$;
+```
+
+Output:
+
+```sql
+info:  information message 2015-09-10 21:17:39.398+07
+warning:  warning message 2015-09-10 21:17:39.398+07
+notice:  notice message 2015-09-10 21:17:39.398+07
+```
+
+Notice that not all messages are reported back to the client. PostgreSQL only reports the `info`, `warning`, and `notice` level messages back to the client. This is controlled by `client_min_messages` and `log_min_messages` configuration parameters.
+
+## Raising errors
+
+To raise an error, you use the `exception` level after the `raise` statement. The `raise` statement uses the `exception` level by default.
+
+Besides raising an error, you can add more information by using the following additional clause:
+
+```sql
+using option = expression
+```
+
+The `option` can be:
+
+- `hint`: provide the hint message so that the root cause of the error is easier to discover.
+- `detail`: give detailed information about the error.
+- `errcode`: identify the error code, which can be either by condition name or an `SQLSTATE` code. Please refer to the [table of error codes and condition names](https://www.postgresql.org/docs/current/static/errcodes-appendix.html).
+
+The `expression` is a string\-valued expression.
+
+The following example raises a duplicate email error message:
+
+```sql
+do $$
+declare
+  email varchar(255) := 'john.doe@example.com';
+begin
+  -- check email for duplicate
+  -- ...
+  -- report duplicate email
+  raise exception 'duplicate email: %', email
+		using hint = 'check the email again';
+end $$;
+```
+
+```sql
+ERROR:  duplicate email: john.doe@example.com
+HINT:  check the email again
+CONTEXT:  PL/pgSQL function inline_code_block line 8 at RAISE
+```
+
+The following examples illustrate how to raise an `SQLSTATE` and its corresponding condition:
+
+```sql
+do $$
+begin
+	--...
+	raise sqlstate '77777';
+end $$;
+```
+
+```sql
+do $$
+begin
+	--...
+	raise invalid_regular_expression;
+end $$;
+```
+
+Now you can use `raise` statement to either raise a message or report an error.
+
+## Summary
+
+- Use the `raise` statement to issue a message in PL/pgSQL.
+- Utilize the `using` clause to provide a hint for the error message.
+
+
+# Exception Handling
+
+---
+title: 'PostgreSQL Exception'
+page_title: 'PostgreSQL Exception'
+page_description: 'In this tutorial, you will learn how to catch and handle exceptions in PL/pgSQL.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/postgresql-exception/'
+ogImage: 'https://www.postgresqltutorial.com//postgresqltutorial/film_table.png'
+updatedOn: '2024-03-19T08:01:05+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Continue Statement'
+  slug: 'postgresql-plpgsql/pl-pgsql-continue'
+nextLink:
+  title: 'PostgreSQL Create Function Statement'
+  slug: 'postgresql-plpgsql/postgresql-create-function'
+---
+
+**Summary**: in this tutorial, you will learn how to catch and handle exceptions in PL/pgSQL.
+
+## Introduction to the PL/pgSQL Exception clause
+
+When an error occurs within a [block](plpgsql-block-structure), PostgreSQL will abort the execution of that block as well as the surrounding transaction.
+
+To recover from the error, you can use the `exception` clause in the `begin...end` block.
+
+Here’s the syntax of the `exception` clause:
+
+```sql
+<<label>>
+declare
+   ...
+begin
+    ...
+exception
+    when condition [or condition...] then
+       handle_exception;
+   [when condition [or condition...] then
+       handle_exception;]
+   [when others then
+       handle_other_exceptions;
+   ]
+end;
+```
+
+How it works.
+
+- First, when an error occurs between the `begin` and `exception` clause, PL/pgSQL stops the execution and passes the control to the `exception` section.
+- Second, PL/pgSQL sequentially searches for the first `condition` that matches the error.
+- Third, if there is a match, the corresponding `handle_exception` statements will execute and the control is passed to the statement after the `end` keyword.
+- Finally, if no match is found, the error propagates out and can be caught by the `exception` clause of the enclosing block. If there is no enclosing block with the `exception` clause, PL/pgSQL will abort the processing.
+
+The condition names can be `no_data_found` in case of a [`select`](../postgresql-tutorial/postgresql-select) statement returns no rows or `too_many_rows` if the `select` statement returns more than one row. For a complete list of [condition names on the PostgreSQL website](https://www.postgresql.org/docs/current/errcodes-appendix.html).
+
+It’s also possible to specify the error condition by `SQLSTATE` code. For example, `P0002` for `no_data_found` and `P0003` for `too_many_rows`.
+
+Typically, you will catch a specific exception and handle it properly.
+
+To handle other exceptions rather than the one on the list, you can use the `when others then` clause.
+
+## Handling exception examples
+
+We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database) for the demonstration.
+
+![Film table](/postgresqltutorial/film_table.png)
+
+### 1\) Handling no_data_found exception example
+
+The following example issues an error because the film id 2000 does not exist.
+
+```sql
+do
+$$
+declare
+	rec record;
+	v_film_id int = 2000;
+begin
+	-- select a film
+	select film_id, title
+	into strict rec
+	from film
+	where film_id = v_film_id;
+end;
+$$
+language plpgsql;
+
+```
+
+Output:
+
+```shell
+ERROR:  query returned no rows
+CONTEXT:  PL/pgSQL function inline_code_block line 6 at SQL statement
+SQL state: P0002
+```
+
+The following example uses the `exception` clause to catch the `no_data_found` exception and report a more meaningful message:
+
+```sql
+do
+$$
+declare
+	rec record;
+	v_film_id int = 2000;
+begin
+	-- select a film
+	select film_id, title
+	into strict rec
+	from film
+	where film_id = v_film_id;
+        -- catch exception
+	exception
+	   when no_data_found then
+	      raise exception 'film % not found', v_film_id;
+end;
+$$;
+```
+
+Output:
+
+```shell
+ERROR:  film 2000 not found
+CONTEXT:  PL/pgSQL function inline_code_block line 14 at RAISE
+SQL state: P0001
+```
+
+### 2\) Handling too_many_rows exception example
+
+The following example illustrates how to handle the `too_many_rows` exception:
+
+```sql
+do
+$$
+declare
+	rec record;
+begin
+	-- select film
+	select film_id, title
+	into strict rec
+	from film
+	where title LIKE 'A%';
+
+	exception
+	   when too_many_rows then
+	      raise exception 'Search query returns too many rows';
+end;
+$$;
+```
+
+Output:
+
+```shell
+ERROR:  Search query returns too many rows
+CONTEXT:  PL/pgSQL function inline_code_block line 15 at RAISE
+SQL state: P0001
+```
+
+In this example, the `too_many_rows` exception occurs because the [`select into`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement returns more than one row while it is supposed to return one row.
+
+### 3\) Handling multiple exceptions
+
+The following example illustrates how to catch multiple exceptions:
+
+```sql
+do
+$$
+declare
+	rec record;
+	v_length int = 90;
+begin
+	-- select a film
+	select film_id, title
+	into strict rec
+	from film
+	where length = v_length;
+
+        -- catch exception
+	exception
+	   when sqlstate 'P0002' then
+	      raise exception 'film with length % not found', v_length;
+	   when sqlstate 'P0003' then
+	      raise exception 'The with length % is not unique', v_length;
+end;
+$$;
+```
+
+Output:
+
+```shell
+ERROR:  The with length 90 is not unique
+CONTEXT:  PL/pgSQL function inline_code_block line 17 at RAISE
+SQL state: P0001
+```
+
+### 4\) Handling exceptions as SQLSTATE codes
+
+The following example is the same as the one above except that it uses the `SQLSTATE` codes instead of the condition names:
+
+```sql
+do
+$$
+declare
+	rec record;
+	v_length int = 30;
+begin
+	-- select a film
+	select film_id, title
+	into strict rec
+	from film
+	where length = v_length;
+
+        -- catch exception
+	exception
+	   when sqlstate 'P0002' then
+	      raise exception 'film with length % not found', v_length;
+	   when sqlstate 'P0003' then
+	      raise exception 'The with length % is not unique', v_length;
+end;
+$$;
+```
+
+Output:
+
+```shell
+ERROR:  film with length 30 not found
+CONTEXT:  PL/pgSQL function inline_code_block line 15 at RAISE
+SQL state: P0001
+```
+
+## Summary
+
+- Use the `exception` clause in the `begin...end` block to catch and handle exceptions.
+
+
+# CREATE FUNCTION
+
+---
+title: 'PostgreSQL Create Function Statement'
+page_title: 'PostgreSQL CREATE FUNCTION Statement'
+page_description: 'In this tutorial, you will learn how to develop user-defined functions using the PostgreSQL CREATE FUNCTION statement.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/postgresql-create-function/'
+ogImage: '/postgresqltutorial/film.png'
+updatedOn: '2024-03-22T06:51:44+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL Exception'
+  slug: 'postgresql-plpgsql/postgresql-exception'
+nextLink:
+  title: 'PL/pgSQL Function Parameter Modes: IN, OUT, INOUT'
+  slug: 'postgresql-plpgsql/plpgsql-function-parameters'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `CREATE FUNCTION` statement to develop user\-defined functions.
+
+## Introduction to Create Function Statement
+
+The `create function` statement allows you to define a new user\-defined function.
+
+Here’s the syntax of the `create function` statement:
+
+```sql
+create [or replace] function function_name(param_list)
+   returns return_type
+   language plpgsql
+  as
+$$
+declare
+   -- variable declaration
+begin
+   -- logic
+end;
+$$;
+```
+
+In this syntax:
+
+- First, specify the name of the function after the `create function` keywords. To replace the existing function, use the `or replace` option.
+- Then, list out parameters surrounded by parentheses after the function name. A function can have zero or more parameters.
+- Next, define the datatype of the returned value after the `returns` keyword.
+- After that, use the `language plpgsql` to define the procedural language of the function. Note that PostgreSQL supports many languages including `plpgsql`.
+- Finally, place a [block](plpgsql-block-structure) in the [dollar\-quoted string constant](dollar-quoted-string-constants) to define the function body.
+
+## PostgreSQL Create Function statement examples
+
+We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database).
+
+![](/postgresqltutorial/film.png)The following statement creates a function that returns the number films whose length between the `len_from` and `len_to` parameters:
+
+```sql
+create function get_film_count(len_from int, len_to int)
+returns int
+language plpgsql
+as
+$$
+declare
+   film_count integer;
+begin
+   select count(*)
+   into film_count
+   from film
+   where length between len_from and len_to;
+
+   return film_count;
+end;
+$$;
+```
+
+Output:
+
+```php
+CREATE FUNCTION
+```
+
+The function `get_film_count` has two main sections:
+
+- header
+- body
+
+In the header section:
+
+- First, the name of the function is `get_film_count` that follows the `create function` keywords.
+- Second, the `get_film_count()` function accepts two parameters `len_from` and `len_to` with the `integer` type.
+- Third, the `get_film_count` function returns an integer specified by the `returns int` clause.
+- Finally, the language of the function is `plpgsql` indicated by the `language plpgsql`.
+
+In the function body:
+
+- Use the [dollar\-quoted string constant syntax](dollar-quoted-string-constants) that starts with `$$` and ends with `$$`. Between these `$$`, you can place a [block](plpgsql-block-structure) containing the declaration and logic of the function.
+- In the declaration section, declare a variable `film_count` that stores the number of films from the `film` table.
+- In the body of the block, use the [`select into`](/postgresql/postgresql-plpgsql/pl-pgsql-select-into/) statement to select the number of films whose lengths are between `len_from` and `len_to` and assign it to the `film_count` variable. At the end of the block, use the `return` statement to return the `film_count`.
+
+To execute the create function statement, you can use any PostgreSQL client tool including psql and pgAdmin
+
+### 1\) Creating a function using pgAdmin
+
+First, launch the pgAdmin tool and connect to the [sample database](../postgresql-getting-started/postgresql-sample-database).
+
+Second, open the query tool by selecting **Tools \> Query Tool**.
+
+Third, enter the above code in the query tool and click the **Execute** button to create the `get_film_count` function.
+
+![](/postgresqltutorial/PostgreSQL-Create-Function-example.png)
+If everything is fine, you will see the following message:
+
+```shell
+CREATE FUNCTION
+
+Query returned successfully in 44 msec.
+```
+
+It means that the function `get_film_count` is created successfully.
+
+Finally, view the function `get_film_count` in the **Functions** list:
+
+![](/postgresqltutorial/PostgreSQL-Create-Function-Function-List.png)
+If you cannot find the function name, right\-click the Functions node and select **Refresh…** menu item to refresh the function list.
+
+### 2\) Creating a function using psql
+
+First, launch the psql interactive tool and connect to the `dvdrental` database:
+
+```shell
+psql -U postgresql -d dvdrental
+```
+
+Second, enter the above code in the psql to create the function. Note that you can copy \& paste on Windows, macOS, and Ubuntu desktop.
+
+You will see the following message if the function is created successfully:
+
+```
+CREATE FUNCTION
+```
+
+Third, use the `\df` command to list all user\-defined in the current database:
+
+```shell
+dvdrental=# \df
+```
+
+## Calling a user\-defined function
+
+PostgreSQL provides you with three ways to call a user\-defined function:
+
+- Using positional notation
+- Using named notation
+- Using the mixed notation.
+
+### 1\) Using positional notation
+
+When invoking a function using the positional notation, you need to supply the arguments in the exact order as the parameters are defined within the function signature:
+
+```sql
+select get_film_count(40,90);
+```
+
+Output:
+
+```shell
+ get_film_count
+----------------
+            325
+(1 row)
+```
+
+In this example, the arguments of the `get_film_count()` are `40` and `90` that corresponds to the `from_len` and `to_len` parameters.
+
+You call a function using the positional notation when the function has few parameters.
+
+If the function has many parameters, you should call it using the named notation because it will make the function call more obvious.
+
+### 2\) Using named notation
+
+The following shows how to call the `get_film_count` function using the named notation:
+
+```sql
+select get_film_count(
+    len_from => 40,
+     len_to => 90
+);
+```
+
+Output:
+
+```shell
+ get_film_count
+----------------
+            325
+(1 row)
+```
+
+In the named notation, you use the `=>` to separate the argument’s name and its value.
+
+For backward compatibility, PostgreSQL supports the older syntax based on `:=` as follows:
+
+```sql
+select get_film_count(
+    len_from := 40,
+    len_to := 90
+);
+```
+
+### 3\) Using mixed notation
+
+The mixed notation is the combination of positional and named notations. For example:
+
+```sql
+select get_film_count(40, len_to => 90);
+```
+
+Note that you cannot use the named arguments before positional arguments like this:
+
+```sql
+select get_film_count(len_from => 40, 90);
+```
+
+Error:
+
+```shell
+ERROR:  positional argument cannot follow named argument
+LINE 1: select get_film_count(len_from => 40, 90);
+```
+
+## Summary
+
+- Use the `CREATE FUNCTION` statement to create a user\-defined function.
+
+
+# CREATE PROCEDURE
+
+---
+title: 'PostgreSQL CREATE PROCEDURE'
+page_title: 'PostgreSQL CREATE PROCEDURE By Examples'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL CREATE PROCEDURE statement to create new stored procedures.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/postgresql-create-procedure/'
+ogImage: ''
+updatedOn: '2024-02-01T13:52:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL Drop Function'
+  slug: 'postgresql-plpgsql/postgresql-drop-function'
+nextLink:
+  title: 'PostgreSQL DROP PROCEDURE Statement'
+  slug: 'postgresql-plpgsql/postgresql-drop-procedure'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `CREATE PROCEDURE` statement to create new stored procedures.
+
+## Introduction to PostgreSQL CREATE PROCEDURE statement
+
+So far, you have learned how to [define user\-defined functions](postgresql-create-function) using the `create function` statement.
+
+A drawback of user\-defined functions is that they cannot execute [transactions](../postgresql-tutorial/postgresql-transaction). In other words, inside a user\-defined function, you cannot [start a transaction](../postgresql-tutorial/postgresql-transaction), and commit or rollback it.
+
+PostgreSQL 11 introduced stored procedures that support transactions.
+
+To define a new stored procedure, you use the `create procedure` statement with the following syntax:
+
+```sqlsql
+create [or replace] procedure procedure_name(parameter_list)
+language plpgsql
+as $$
+declare
+-- variable declaration
+begin
+-- stored procedure body
+end; $$
+```
+
+In this syntax:
+
+- First, specify the name of the stored procedure after the `create procedure` keywords.
+- Second, define parameters for the stored procedure. A stored procedure can accept zero or more parameters.
+- Third, specify `plpgsql` as the procedural language for the stored procedure. Note that you can use other procedural languages for the stored procedure such as SQL, C, etc.
+- Finally, use the dollar\-quoted string constant syntax to define the body of the stored procedure.
+
+Parameters in stored procedures can have the `in` and `inout` modes but cannot have the `out` mode.
+
+A stored procedure does not return a value. You cannot use the `return` statement with a value inside a store procedure like this:
+
+```sql
+return expression;
+```
+
+However, you can use the `return` statement without the `expression` to stop the stored procedure immediately:
+
+```
+return;
+```
+
+If you want to return a value from a stored procedure, you can use parameters with the `inout` mode.
+
+## PostgreSQL CREATE PROCEDURE statement examples
+
+We will use the following `accounts` table for the demonstration:
+
+```sql
+drop table if exists accounts;
+
+create table accounts (
+    id int generated by default as identity,
+    name varchar(100) not null,
+    balance dec(15,2) not null,
+    primary key(id)
+);
+
+insert into accounts(name,balance)
+values('Bob',10000);
+
+insert into accounts(name,balance)
+values('Alice',10000);
+```
+
+The following statement shows the data from the `accounts` table:
+
+```sql
+select * from accounts;
+```
+
+Output:
+
+```text
+ id | name  | balance
+----+-------+----------
+  1 | Bob   | 10000.00
+  2 | Alice | 10000.00
+(2 rows)
+```
+
+The following example creates a stored procedure named `transfer` that transfers a specified amount of money from one account to another.
+
+```
+create or replace procedure transfer(
+   sender int,
+   receiver int,
+   amount dec
+)
+language plpgsql
+as $$
+begin
+    -- subtracting the amount from the sender's account
+    update accounts
+    set balance = balance - amount
+    where id = sender;
+
+    -- adding the amount to the receiver's account
+    update accounts
+    set balance = balance + amount
+    where id = receiver;
+
+    commit;
+end;$$;
+```
+
+## Calling a stored procedure
+
+To call a stored procedure, you use the `CALL` statement as follows:
+
+```sql
+call stored_procedure_name(argument_list);
+```
+
+For example, this statement invokes the `transfer` stored procedure to transfer `$1,000` from Bob’s account to Alice’s account.
+
+```sql
+call transfer(1,2,1000);
+```
+
+The following statement verifies the data in the `accounts` table after the transfer:
+
+```sql
+SELECT * FROM accounts;
+```
+
+Output:
+
+```
+ id | name  | balance
+----+-------+----------
+  1 | Bob   |  9000.00
+  2 | Alice | 11000.00
+(2 rows)
+```
+
+The output shows that the transfer has been successful.
+
+## Summary
+
+- Use `create procedure` statement to define a new stored procedure.
+- Use the `call` statement to invoke a stored procedure.
+
+
+# DROP FUNCTION
+
+---
+title: 'PostgreSQL Drop Function'
+page_title: 'PostgreSQL DROP FUNCTION Statement'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL DROP FUNCTION statement to delete one or more functions from a database.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/postgresql-drop-function/'
+ogImage: ''
+updatedOn: '2024-02-07T14:14:09+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Returns SetOf'
+  slug: 'postgresql-plpgsql/plpgsql-returns-setof'
+nextLink:
+  title: 'PostgreSQL CREATE PROCEDURE'
+  slug: 'postgresql-plpgsql/postgresql-create-procedure'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `drop function` statement to remove a function.
+
+## Introduction to PostgreSQL DROP FUNCTION statement
+
+To remove a user\-defined function, you use the `drop function` statement.
+
+Here’s the syntax of the `drop function` statement:
+
+```sql
+drop function [if exists] function_name(argument_list)
+[cascade | restrict]
+```
+
+In this syntax:
+
+- First, specify the name of the function that you want to remove after the `drop function` keywords.
+- Second, use the `if exists` option if you want to instruct PostgreSQL to issue a notice instead of an error if the function does not exist.
+- Third, specify the argument list of the function. Since [functions can be overloaded,](plpgsql-function-overloading) PostgreSQL needs to know which function you want to remove by checking the argument list. If a function is unique within the schema, you do not need to specify the argument list.
+
+When a function has any dependent objects such as operators or [triggers](../postgresql-triggers), you cannot drop that function.
+
+To drop the function and its dependent objects, you can use the `cascade` option. The `drop function` with the `cascade` option will recursively remove the function, its dependent objects, and the objects that depend on those objects, and so on.
+
+By default, the `drop function` statement uses the `restrict` option that rejects the removal of a function when it has any dependent objects.
+
+To drop multiple functions using a single `drop function` statement, you specify a comma\-separated list of function names after the `drop function` keyword like this:
+
+```sql
+drop function [if exists] function1, function2, ...;
+```
+
+## PostgreSQL Drop Function examples
+
+The following statement uses the [`create function`](postgresql-create-function) statement to define a function that returns a set of films including `film_id`, `title`, and `actor`:
+
+```sql
+create or replace function get_film_actors()
+	returns setof record
+as $$
+declare
+   rec record;
+begin
+   for rec in select
+			film_id,
+			title,
+            (first_name || ' ' || last_name)::varchar
+		from film
+		inner join film_actor using(film_id)
+		inner join actor using (actor_id)
+		order by title
+	loop
+        return next rec;
+	end loop;
+
+	return;
+end;
+$$
+language plpgsql;
+```
+
+The following statement defines a function with the same name `get_film_actors`. However, it accepts a film id as the argument:
+
+```sql
+create or replace function get_film_actors(p_fiml_id int)
+	returns setof record
+as $$
+declare
+   rec record;
+begin
+   for rec in select
+			film_id,
+			title,
+            (first_name || ' ' || last_name)::varchar
+		from film
+		inner join film_actor using(film_id)
+		inner join actor using (actor_id)
+		where film_id = p_fiml_id
+		order by title
+	loop
+        return next rec;
+	end loop;
+
+	return;
+end;
+$$
+language plpgsql;
+```
+
+The following statement attempts to drop the `get_film_actors` function:
+
+```sql
+drop function get_film_actors;
+```
+
+PostgreSQL issued an error:
+
+```shell
+ERROR:  function name "get_film_actors" is not unique
+HINT:  Specify the argument list to select the function unambiguously.
+SQL state: 42725
+```
+
+Since the `get_film_actors` stored procedure is not unique, you need to specify which function you want to drop.
+
+The following statement drops the `get_film_actors` function that has zero parameters:
+
+```sql
+drop function get_film_actors();
+```
+
+Now, there is only one `get_film_actors` function left. Since it is unique in the database, you can drop it without specifying its argument list like this:
+
+```sql
+drop function get_film_actors;
+```
+
+Alternatively, if you want to specify the exact function, you can use the function name with the argument list:
+
+```sql
+drop function get_film_actors(int);
+```
+
+## Summary
+
+- Use the `drop function` statement to delete a function from a database.
+- Specify the argument list in the function if the function is overloaded.
+- Use the `drop function` statement with the `cascade` option to drop a function and its dependent objects and objects that depend on those objects, and so on.
+
+
+# DROP PROCEDURE
+
+---
+title: 'PostgreSQL DROP PROCEDURE Statement'
+page_title: 'PostgreSQL DROP PROCEDURE Statement'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL DROP PROCEDURE statement to remove a procedure.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/postgresql-drop-procedure/'
+ogImage: '/postgresqltutorial/actor.png'
+updatedOn: '2024-02-07T14:17:58+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL CREATE PROCEDURE'
+  slug: 'postgresql-plpgsql/postgresql-create-procedure'
+nextLink:
+  title: 'PostgreSQL Stored Procedure with INOUT Parameters'
+  slug: 'postgresql-plpgsql/postgresql-stored-procedure-with-inout-parameters'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `DROP PROCEDURE` statement to remove a procedure.
+
+## Introduction to PostgreSQL DROP PROCEDURE statement
+
+The `drop procedure` statement deletes one or more [stored procedures](postgresql-create-procedure) from a database.
+
+The following illustrates the syntax of the `drop procedure` statement:
+
+```sql
+drop procedure [if exists] procedure_name (argument_list)
+[cascade | restrict]
+```
+
+In this syntax:
+
+- First, specify the name (`procedure_name`) of the stored procedure that you want to remove after the `drop procedure` keywords.
+- Second, use the `if exists` option if you want PostgreSQL to issue a notice instead of an error if you drop a stored procedure that does not exist.
+- Third, specify the argument list of the stored procedure if the stored procedure’s name is not unique in the database. Note that stored procedures that have different argument lists can share the same name. PostgreSQL needs the argument list to determine which stored procedure that you want to remove.
+- Finally, use the `cascade` option to drop a stored procedure and its dependent objects, the objects that depend on those objects, and so on. The default option is `restrict` that will reject the removal of the stored procedure in case it has any dependent objects.
+
+To drop multiple stored procedures, you specify a comma\-separated list of stored procedure names after the `drop procedure` keyword like this:
+
+```sql
+drop procedure [if exists] name1, name2, ...;
+```
+
+## Creating sample stored procedures
+
+Let’s create a couple of stored procedures that manage actors so that you can learn how to drop them:
+
+![](/postgresqltutorial/actor.png)
+The following `insert_actor()` stored procedure [inserts a new row](../postgresql-tutorial/postgresql-insert) into the `actor` table. It accepts two arguments which are the first name and last name of the actor.
+
+```sql
+create or replace procedure insert_actor(
+	fname varchar,
+	lname varchar)
+language plpgsql
+as $$
+begin
+	insert into actor(first_name, last_name)
+	values('John','Doe');
+end;
+$$;
+```
+
+The following `insert_actor` stored procedure also inserts a row into the `actor` table. However, it accepts one argument which is the full name of the actor. The `insert_actor()` uses the [`split_part()`](../postgresql-string-functions/postgresql-split_part) function to split the full name into first name and last name before inserting them into the `actor` table.
+
+```sql
+create or replace procedure insert_actor(
+	full_name varchar
+)
+language plpgsql
+as $$
+declare
+	fname varchar;
+	lname varchar;
+begin
+	-- split the fullname into first & last name
+	select
+		split_part(full_name,' ', 1),
+		split_part(full_name,' ', 2)
+	into fname,
+	     lname;
+
+	-- insert first & last name into the actor table
+	insert into actor(first_name, last_name)
+	values(fname, lname);
+end;
+$$;
+```
+
+The following stored procedure [deletes](../postgresql-tutorial/postgresql-delete) an actor by id:
+
+```sql
+create or replace procedure delete_actor(
+	p_actor_id int
+)
+language plpgsql
+as $$
+begin
+	delete from actor
+	where actor_id = p_actor_id;
+end;
+$$;
+```
+
+The following stored procedure [updates](../postgresql-tutorial/postgresql-update) the first name and last name of an actor:
+
+```sql
+create or replace procedure update_actor(
+	p_actor_id int,
+	fname varchar,
+	lname varchar
+)
+language plpgsql
+as $$
+begin
+	update actor
+	set first_name = fname,
+	    last_name = lname
+	where actor_id = p_actor_id;
+end;
+$$;
+```
+
+## PostgreSQL Drop Procedure examples
+
+First, attempt to drop the `insert_actor` stored procedure:
+
+```sql
+drop procedure insert_actor;
+```
+
+PostgreSQL issued the following error:
+
+```shell
+ERROR:  procedure name "insert_actor" is not unique
+HINT:  Specify the argument list to select the procedure unambiguously.
+SQL state: 42725
+```
+
+Because there are two `insert_actor` stored procedures, you need to specify the argument list so that PostgreSQL can select the right stored procedure to drop.
+
+Second, drop the `insert_actor(varchar)` stored procedure that accepts one argument:
+
+```sql
+drop procedure insert_actor(varchar);
+```
+
+Since the `insert_actor` stored procedure is unique now, you can drop it without specifying the argument list:
+
+```sql
+drop procedure insert_actor;
+```
+
+It is the same as:
+
+```sql
+drop procedure insert_actor(varchar,varchar);
+```
+
+Third, remove two stored procedures using a single `drop procedure` statement:
+
+```sql
+drop procedure
+	delete_actor,
+	update_actor;
+```
+
+## Summary
+
+- Use the `drop procedure` statement to remove a stored procedure.
+- Specify a comma\-separated list of stored procedure names after the `drop procedure` keywords to drop multiple stored procedures.
+- If the stored procedure name is not unique, use the argument list to specify which stored procedure you want to drop.
+
+
+# Stored Procedure with INOUT Parameters
+
+---
+title: 'PostgreSQL Stored Procedure with INOUT Parameters'
+page_title: 'PostgreSQL Stored Procedure with INOUT Parameters'
+page_description: 'In this tutorial, you will learn how to create PostgreSQL stored procedures with INOUT parameters.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/postgresql-stored-procedure-with-inout-parameters/'
+ogImage: '/postgresqltutorial/film.png'
+updatedOn: '2024-04-19T08:15:13+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL DROP PROCEDURE Statement'
+  slug: 'postgresql-plpgsql/postgresql-drop-procedure'
+nextLink:
+  title: 'PL/pgSQL Cursor'
+  slug: 'postgresql-plpgsql/plpgsql-cursor'
+---
+
+**Summary**: in this tutorial, you will learn how to create PostgreSQL stored procedures with `INOUT` parameters.
+
+## Creating stored procedures with INOUT parameters
+
+Sometimes, you may want to return values from [stored procedures](postgresql-create-procedure). To achieve this, you can use the `create procedure` statement with `INOUT` parameters.
+
+Here’s the basic syntax for creating a stored procedure with `INOUT` parameters:
+
+```sql
+create or replace procedure sp_name(
+    inout parameter type, ...
+)
+as
+$$
+   -- body
+$$
+language plpgsql;
+```
+
+## Calling stored procedures with INOUT parameters
+
+To call a stored procedure, you use the `call` statement without providing the `INOUT` parameters:
+
+```sql
+call sp_name();
+```
+
+If you call a stored procedure with `INOUT` parameters in an [anonymous block](plpgsql-block-structure), you need to pass arguments to the stored procedure call as follows:
+
+```sql
+do
+$$
+   declare
+      v_name1 type;
+      v_name2 type;
+   begin
+      -- call the stored procedure with inout parameters
+      call sp_name(v_name1, v_name2);
+
+      -- process v_name1, v_name2
+   end;
+$$;
+```
+
+## PostgreSQL Stored Procedures with INOUT parameter examples
+
+Let’s take some examples of creating stored procedures with `INOUT` parameters. We’ll use the `film` table in the sample database for the demonstration:
+
+![](/postgresqltutorial/film.png)
+
+### 1\) Basic PostgreSQL stored procedures with INOUT parameter example
+
+First, create a stored procedure that counts the number of rows from the `film` table:
+
+```sql
+create or replace procedure count_film(
+    inout total_film int default 0
+)
+as
+$$
+begin
+    select count(*) from film
+    into total_film;
+end;
+$$
+language plpgsql;
+```
+
+Second, call the stored procedure without providing the `total_film` parameter:
+
+```sql
+call count_film();
+```
+
+Output:
+
+```text
+ total_film
+------------
+       1000
+(1 row)
+```
+
+Third, call the stored procedure `count_film()` in an anonymous block:
+
+```sql
+do
+$$
+declare
+   total_film int = 0;
+begin
+   call count_film(total_film);
+   raise notice 'Total film: %', total_film;
+end;
+$$;
+```
+
+Output:
+
+```sql
+NOTICE:  Total film: 1000
+```
+
+### 2\) Creating stored procedures with multiple INOUT parameters
+
+First, create a new stored procedure that retrieves the film statistics including film count, total length, and average rental rate:
+
+```sql
+create or replace procedure film_stat(
+   inout total_film int default 0,
+   inout total_length int default 0,
+   inout avg_rental_rate numeric(4,2) default 0
+)
+as
+$$
+begin
+  select count(*) into total_film
+  from film;
+
+  select sum(length) into total_length
+  from film;
+
+  select round(avg(rental_rate),2) into avg_rental_rate
+  from film;
+end;
+$$
+language plpgsql;
+```
+
+Second, call the stored procedure `film_stat()`:
+
+```sql
+call film_stat();
+```
+
+Since all the parameters in the `film_stat()` stored procedure are the `inout` parameters, you don’t need to pass any parameters.
+
+Output:
+
+```text
+ total_film | total_length | avg_rental_rate
+------------+--------------+-----------------
+       1000 |       115272 |            2.98
+(1 row)
+```
+
+## Summary
+
+- Use the `INOUT` parameters to return values from stored procedures in PostgreSQL.
+
+
+# Introduction to Stored Procedures
+
+---
+title: 'Introduction to PostgreSQL PL/pgSQL'
+page_title: 'Introduction to PostgreSQL PL/pgSQL Procedural Language'
+page_description: 'This tutorial introduces you to PostgreSQL PL/pgSQL for developing user-defined functions and stored procedures.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/introduction-to-postgresql-stored-procedures/'
+ogImage: ''
+updatedOn: '2024-02-07T02:29:23+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL PL/pgSQL'
+  slug: 'postgresql-plpgsql/'
+nextLink:
+  title: 'Dollar-Quoted String Constants'
+  slug: 'postgresql-plpgsql/dollar-quoted-string-constants'
+---
+
+**Summary**: in this tutorial, you will learn about **PostgreSQL PL/pgSQL** procedural language.
+
+## Overview of PostgreSQL PL/pgSQL
+
+PL/pgSQL is a procedural programming language for the PostgreSQL database system.
+
+PL/pgSQL allows you to extend the functionality of the PostgreSQL database server by creating server objects with complex logic.
+
+PL/pgSQL is designed to :
+
+- Create user\-defined [functions](postgresql-create-function), [stored procedures](postgresql-create-procedure), and [triggers](../postgresql-triggers).
+- Extend standard SQL by adding control structures such as [if\-else](plpgsql-if-else-statements), [case](../postgresql-tutorial/postgresql-case), and [loop](plpgsql-loop-statements) statements.
+- Inherit all user\-defined functions, operators, and types.
+
+Since PostgreSQL 9\.0, PL/pgSQL is installed by default.
+
+## Advantages of using PL/pgSQL
+
+SQL is a query language that allows you to effectively manage data in the database. However, PostgreSQL only can execute SQL statements individually.
+
+It means that you have multiple statements, and you need to execute them one by one like this:
+
+- First, send a query to the PostgreSQL database server.
+- Next, wait for it to process.
+- Then, process the result set.
+- After that, do some calculations.
+- Finally, send another query to the PostgreSQL database server and repeat this process.
+
+This process incurs the interprocess communication and network overheads.
+
+To resolve this issue, PostgreSQL uses PL/pgSQL.
+
+PL/pgSQL wraps multiple statements in an object and stores it on the PostgreSQL database server.
+
+Instead of sending multiple statements to the server one by one, you can send one statement to execute the object stored in the server. This allows you to:
+
+- Reduce the number of round trips between the application and the PostgreSQL database server.
+- Avoid transferring the immediate results between the application and the server.
+
+## PostgreSQL PL/pgSQL disadvantages
+
+Besides the advantages of using PL/pgSQL, there are some caveats:
+
+- Slower in software development because PL/pgSQL requires specialized skills that many developers do not possess.
+- Difficult to manage versions and hard to debug.
+- May not be portable to other database management systems[.](http://www.mysqltutorial.org)
+
+In this tutorial, you have a brief overview of PostgreSQL PL/pgSQL, its advantages, and disadvantages.
+
+
+# SELECT INTO
+
+---
+title: 'PL/pgSQL Select Into'
+page_title: 'PL/pgSQL SELECT INTO Statement'
+page_description: 'In this tutorial, you will learn how to use the PL/pgSQL SELECT INTO statement to select data from the database and assign it to a variable.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/pl-pgsql-select-into/'
+ogImage: ''
+updatedOn: '2024-03-19T01:05:56+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Variables'
+  slug: 'postgresql-plpgsql/plpgsql-variables'
+nextLink:
+  title: 'PL/pgSQL Row Types'
+  slug: 'postgresql-plpgsql/pl-pgsql-row-types'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PL/pgSQL `select into` statement to select data from the database and assign it to a variable.
+
+## Introduction to PL/pgSQL Select Into statement
+
+The `select into` statement allows you to [select data from the database](../postgresql-tutorial/postgresql-select) and assign it to a [variable](plpgsql-variables).
+
+Here’s the basic syntax of the `select into` statement:
+
+```sql
+select column1, column2, ...
+into variable1, variable2, ...
+from table_expression;
+```
+
+In this syntax,
+
+- First, specify one or more columns from which you want to retrieve data in the `select` clause.
+- Second, place one or more variables after the `into` keyword.
+- Third, provide the name of the table in the `from` clause.
+
+The `select` `into` statement will assign the data returned by the `select` clause to the corresponding variables.
+
+Besides selecting data from a table, you can use other clauses of the `select` statement such as [`join`](../postgresql-tutorial/postgresql-joins), [`group by,`](../postgresql-tutorial/postgresql-group-by) and [`having`](../postgresql-tutorial/postgresql-having).
+
+## PL/pgSQL Select Into statement examples
+
+Let’s take some examples of using the `select into` statement.
+
+### 1\) Basic select into statement example
+
+The following example uses the `select into` statement to retrieve the number of actors from the `actor` table and assign it to the `actor_count` variable:
+
+```sql
+do
+$$
+declare
+   actor_count integer;
+begin
+   -- select the number of actors from the actor table
+   select count(*)
+   into actor_count
+   from actor;
+
+   -- show the number of actors
+   raise notice 'The number of actors: %', actor_count;
+end;
+$$;
+```
+
+Output:
+
+```shell
+NOTICE:  The number of actors: 200
+```
+
+In this example:
+
+- First, declare a variable called `actor_count` that stores the number of actors from the `actor` table.
+- Second, assign the number of actors to the `actor_count` using the `select into` statement.
+- Third, display a message that shows the value of the `actor_count` variable using the `raise notice` statement.
+
+### 2\) Using the select into with multiple variables
+
+The following example uses the `select into` statement to assign the first and last names of the actor id 1 to two variables:
+
+```sql
+do
+$$
+declare
+   v_first_name varchar;
+   v_last_name varchar;
+begin
+   -- select the first_name and last_name of the actor id 1
+   select first_name, last_name
+   into v_first_name, v_last_name
+   from actor
+   where actor_id = 1;
+
+   -- show the full name
+   raise notice '% %', v_first_name, v_last_name;
+end;
+$$;
+```
+
+Output:
+
+```http
+NOTICE:  Penelope Guiness
+```
+
+How it works.
+
+First, declare two variables `v_first_name` and `v_last_name` with the types `varchar`:
+
+```sql
+v_first_name varchar;
+v_last_name varchar;
+```
+
+Second, retrieve the `first_name` and `last_name` of the actor id 1 from the `actor` table and assign them to the `v_first_name` and `v_last_name` variables:
+
+```
+select first_name, last_name
+into v_first_name, v_last_name
+from actor
+where actor_id = 1;
+```
+
+Third, show the values of `v_first_name` and `v_last_name` variables:
+
+```sql
+raise notice '% %', v_first_name, v_last_name;
+```
+
+Because we assign data retrieved from the `first_name` and `last_name` columns of the `actor` table, we can use the type\-copying technique to declare the `v_first_name` and `v_last_name` variables:
+
+```sql
+do
+$$
+declare
+   v_first_name actor.first_name%type;
+   v_last_name actor.last_name%type;
+begin
+   -- select the first_name and last_name of the actor id 1
+   select first_name, last_name
+   into v_first_name, v_last_name
+   from actor
+   where actor_id = 1;
+
+   -- show the full name
+   raise notice '% %', v_first_name, v_last_name;
+end;
+$$;
+```
+
+## Summary
+
+- Use the `select into` statement to select data from the database and assign it to a variable.
+
+
+# ASSERT Statement
+
+---
+title: 'PL/pgSQL Assert Statement'
+page_title: 'PL/pgSQL Assert Statement'
+page_description: 'In this tutorial, you will learn about the PostgreSQL assert statement and how to use it for debugging purposes.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/pl-pgsql-assert/'
+ogImage: ''
+updatedOn: '2024-03-19T03:00:24+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PL/pgSQL Errors and Messages'
+  slug: 'postgresql-plpgsql/plpgsql-errors-messages'
+nextLink:
+  title: 'PL/pgSQL IF Statement'
+  slug: 'postgresql-plpgsql/plpgsql-if-else-statements'
+---
+
+**Summary**: in this tutorial, you will learn about the PostgreSQL assert statement and how to use it for debugging purposes.
+
+Notice that PostgreSQL introduces the `assert` statement in version 9\.5 or later. Check your PostgreSQL version before using it.
+
+## Introduction to the assert statement
+
+The `assert` statement is a useful shorthand for inserting debugging checks into PL/pgSQL code.
+
+Here’s the basic syntax of the `assert` statement:
+
+```sql
+assert condition [, message];
+```
+
+In this syntax:
+
+### 1\) condition
+
+The `condition` is a Boolean expression that is expected to always return `true`.
+
+If the `condition` evaluates to `true`, the `assert` statement does nothing.
+
+In case the `condition` evaluates to `false` or `null`, PostgreSQL raises an `assert_failure` exception.
+
+### 2\) message
+
+The message is optional.
+
+If you don’t pass the `message`, PostgreSQL uses the “`assertion failed`” message by default. In case you pass the `message` to the `assert` statement, PostgreSQL will use it instead of the default message.
+
+Note that you should use the `assert` statement solely for detecting bugs, not for reporting. To report a message or an error, you use the [`raise`](plpgsql-errors-messages) statement instead.
+
+### Enable / Disable Assertions
+
+PostgreSQL provides the `plpgsql.check_asserts` configuration parameter to enable or disable assertion testing. If you set this parameter to `off`, the assert statement will do nothing.
+
+## PostgreSQL assert statement example
+
+The following example uses the `assert` statement to check if the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database) has data:
+
+```sql
+do $$
+declare
+   film_count integer;
+begin
+   select count(*)
+   into film_count
+   from film;
+
+   assert film_count < 0, 'Film not found, check the film table';
+end$$;
+```
+
+Because the `film` table has data, the block did not issue any message.
+
+The following example issues an error because the number of films from the film table is not greater than `1,000`.
+
+```sql
+do $$
+declare
+   film_count integer;
+begin
+   select count(*)
+   into film_count
+   from film;
+
+   assert film_count > 1000, '1000 Film found, check the film table';
+end$$;
+```
+
+Output:
+
+```shell
+ERROR:  1000 Film found, check the film table
+CONTEXT:  PL/pgSQL function inline_code_block line 9 at ASSERT
+SQL state: P0004
+```
+
+## Summary
+
+- Use the `assert` statement to add debugging checks to the PL/pgSQL code.
+- The `assert` statement evaluates a `condition` that is expected to be `true` and issues an error in case the condition is `false` or `null`.
+- Use the `assert` statement for detecting bugs only. For reporting messages and errors, use the `raise` statement instead.
+
+
+# Dollar-Quoted String Constants
+
+---
+title: 'Dollar-Quoted String Constants'
+page_title: 'PostgreSQL Dollar-quoted String Constants'
+page_description: 'In this tutorial, you will learn about PostgreSQL Dollar-quoted String Constants ($$) and how to use them in anonymous blocks.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-plpgsql/dollar-quoted-string-constants/'
+ogImage: ''
+updatedOn: '2024-03-18T14:51:14+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'Introduction to PostgreSQL PL/pgSQL'
+  slug: 'postgresql-plpgsql/introduction-to-postgresql-stored-procedures'
+nextLink:
+  title: 'PL/pgSQL Block Structure'
+  slug: 'postgresql-plpgsql/plpgsql-block-structure'
+---
+
+**Summary**: in this tutorial, you will learn how to use the dollar\-quoted string constants (`$$`) in user\-defined functions and stored procedures.
+
+## Introduction the dollar\-quoted string constant syntax
+
+In PostgreSQL, dollar\-quoted string constants allow you to construct strings that contain single quotes without a need to escape them.
+
+For example, you can surround a string constant using single quotes like this:
+
+```sqlsql
+select 'String constant';
+```
+
+But when a string constant contains a single quote (`'`), you need to escape it by doubling up the single quote:
+
+```sql
+select 'I''m a string constant';
+```
+
+To make the code more readable, PostgreSQL offers a better syntax called dollar\-quoted string constant or dollar quoting:
+
+```php
+select $$I'm a string constant$$;
+```
+
+In this example, we don’t have to double up the single quote.
+
+Here’s the basic syntax of the dollar\-quoted string constants:
+
+```sql
+$tag$<string_constant>$tag$
+```
+
+In this syntax, the `tag` is optional. It follows the same rules as unquoted identifiers:
+
+- Must begin with a letter (a\-z, A\-Z) or underscore.
+- Can include letters (case\-insensitive), digits, and underscores.
+- Limited to 63 characters (longer ones are truncated).
+- Cannot contain whitespaces, or reserved keywords without quotes.
+
+Between the `$tag$`, you can place any string including single quotes (`'`). For example:
+
+```sql
+select $$I'm a string constant$$ as message;
+```
+
+Output:
+
+```text
+        message
+-----------------------
+ I'm a string constant
+(1 row)
+```
+
+In this example, we do not specify the `tag` between the two dollar signs(`$`).
+
+The following example uses the dollar\-quoted string constant syntax with a tag:
+
+```
+SELECT $message$I'm a string constant$message$ s;
+```
+
+Output:
+
+```text
+           s
+-----------------------
+ I'm a string constant
+
+```
+
+In this example, we use the string `message` as a tag between the two dollar signs (`$` ).
+
+## Using dollar\-quoted string constants in anonymous blocks
+
+The following shows the anonymous block in PL/pgSQL:
+
+```
+do
+'declare
+   film_count integer;
+begin
+   select count(*) into film_count
+   from film;
+
+   raise notice ''The number of films: %'', film_count;
+end;'
+;
+```
+
+Note that you will learn about the anonymous block in the [PL/pgSQL block structure](plpgsql-block-structure) tutorial. In this tutorial, you can copy and paste the code in any PostgreSQL client tool like pgAdmin or psql to execute it.
+
+Output:
+
+```php
+NOTICE:  The number of films: 1000
+DO
+```
+
+The code in a block must be surrounded by single quotes. If it has any single quote, you need to escape it by doubling it like this:
+
+```text
+ raise notice ''The number of films: %'', film_count;
+```
+
+To avoid escaping every single quotes and backslashes, you can use the dollar\-quoted string as follows:
+
+```
+do
+$$
+declare
+   film_count integer;
+begin
+   select count(*) into film_count
+   from film;
+   raise notice 'The number of films: %', film_count;
+end;
+$$;
+```
+
+## Using dollar\-quoted string constants in functions
+
+The following shows the syntax of the [`CREATE FUNCTION`](postgresql-create-function) statement that allows you to create a user\-defined function:
+
+```sql
+create function function_name(param_list)
+    returns datatype
+language lang_name
+as
+ 'function_body'
+```
+
+Note that you will learn about the syntax of `CREATE FUNCTION` statement in the [creating function tutorial](postgresql-create-function).
+
+In this syntax, the `function_body` is a string constant. For example, the following function finds a film by its id:
+
+```sql
+create function find_film_by_id(
+   id int
+) returns film
+language sql
+as
+  'select * from film
+   where film_id = id';
+```
+
+In this example, the body of the `find_film_by_id()` function is surrounded by single quotes.
+
+If the function has many statements, it becomes more difficult to read. In this case, you can use dollar\-quoted string constant syntax:
+
+```sql
+create function find_film_by_id(
+   id int
+) returns film
+language sql
+as
+$$
+  select * from film
+  where film_id = id;
+$$;
+```
+
+Now, you can place any piece of code between the `$$` and `$$` without using the need to escape single quotes.
+
+## Using dollar\-quoted string constants in stored procedures
+
+Similarly, you can use the dollar\-quoted string constant syntax in [stored procedures](postgresql-create-procedure) like this:
+
+```sql
+create procedure proc_name(param_list)
+language lang_name
+as $$
+  -- stored procedure body
+$$
+```
+
+## Summary
+
+- Use quoted\-dollar string constant syntax to construct string constants without the need to escape single quotes.
+- Do use quoted\-dollar string constants in anonymous blocks, user\-defined functions, and stored procedures.
+
+
 # Functions
+
+---
+title: 'PostgreSQL Functions'
+page_title: 'PostgreSQL Functions'
+page_description: 'Learn PostgreSQL functions including aggregate functions, string functions, date functions, math functions, window functions, and JSON functions for powerful data manipulation and analysis.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-functions/'
+ogImage: 'https://www.postgresqltutorial.com//postgresqltutorial/PostgreSQL-Functions.png'
+updatedOn: '2025-09-06T10:00:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL Advanced'
+  slug: 'postgresql-advanced'
+nextLink:
+  title: 'PostgreSQL Aggregate Functions'
+  slug: 'postgresql-aggregate-functions'
+---
+
+The **PostgreSQL Functions** section provides comprehensive coverage of PostgreSQL's powerful built-in functions for data manipulation, analysis, and transformation. These functions are essential tools for working with data in PostgreSQL, enabling you to perform complex calculations, format data, and extract meaningful insights from your databases.
+
+PostgreSQL offers hundreds of built-in functions organized into several categories, each designed for specific types of data operations. Whether you're aggregating data, manipulating strings, working with dates, or processing JSON, PostgreSQL provides robust and efficient functions to handle your needs.
+
+## Section 1. Data Aggregation and Analysis
+
+Learn to summarize and analyze data using PostgreSQL's powerful aggregate and window functions.
+
+- [PostgreSQL Aggregate Functions](postgresql-aggregate-functions) – learn PostgreSQL's aggregate functions for summarizing data across multiple rows including COUNT, SUM, AVG, MIN, MAX, STRING_AGG, and advanced aggregation techniques.
+- [PostgreSQL Window Functions](postgresql-window-function) – perform advanced analytical calculations across sets of rows using ranking functions, lead/lag functions, and window frame specifications for sophisticated data analysis.
+
+## Section 2. String and Text Processing
+
+Comprehensive string manipulation functions for text processing, formatting, and data cleaning operations.
+
+- [PostgreSQL String Functions](postgresql-string-functions) – learn PostgreSQL's string functions for text manipulation, pattern matching, data formatting, and advanced text processing techniques essential for data cleaning and validation.
+
+## Section 3. Date and Time Operations
+
+Powerful date and time functions for temporal data processing, scheduling, and time-based analysis.
+
+- [PostgreSQL Date Functions](postgresql-date-functions) – work effectively with date and time data using PostgreSQL's comprehensive date functions for temporal data processing, scheduling, and time-based reporting.
+
+## Section 4. Mathematical Operations
+
+Mathematical functions for calculations, statistical analysis, and numerical data processing.
+
+- [PostgreSQL Math Functions](postgresql-math-functions) – perform mathematical calculations and statistical operations using PostgreSQL's math functions essential for financial applications, scientific computing, and data analysis.
+
+## Section 5. JSON Data Processing
+
+Advanced JSON manipulation functions for working with semi-structured data in PostgreSQL.
+
+- [PostgreSQL JSON Functions](postgresql-json-functions) – learn PostgreSQL's JSON functions for working with JSON and JSONB data types, essential for modern applications that handle semi-structured data and API integrations.
+
+Each section provides detailed tutorials with practical examples that demonstrate real-world applications of PostgreSQL functions.
+
 
 # PostgreSQL Aggregate Functions
 
@@ -36123,6 +41143,123 @@ The following picture illustrates the result:
 - Use the `MAX()` function to get the maximum value in a set of values.
 
 
+# ARRAY_AGG
+
+---
+title: 'PostgreSQL ARRAY_AGG Function'
+page_title: 'PostgreSQL ARRAY_AGG Function By Practical Examples'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL ARRAY_AGG() aggregate function to return an array from a set of input values.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-aggregate-functions/postgresql-array_agg/'
+ogImage: '/postgresqltutorial/PostgreSQL-ARRAY_AGG-example.png'
+updatedOn: '2024-01-26T04:00:31+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL SUM Function'
+  slug: 'postgresql-aggregate-functions/postgresql-sum-function'
+nextLink:
+  title: 'PostgreSQL BOOL_AND() Function'
+  slug: 'postgresql-aggregate-functions/postgresql-bool_and'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `ARRAY_AGG()` aggregate function to return an array from a set of input values.
+
+## Introduction to PostgreSQL ARRAY_AGG() function
+
+The PostgreSQL `ARRAY_AGG()` function is an aggregate function that accepts a set of values and returns an [array](../postgresql-tutorial/postgresql-array) in which each value in the set is assigned to an element of the array.
+
+The following shows the syntax of the `ARRAY_AGG()` function:
+
+```css
+ARRAY_AGG(expression [ORDER BY [sort_expression {ASC | DESC}], [...])
+```
+
+The `ARRAY_AGG()` accepts an expression that returns a value of any type that is valid for an array element.
+
+The `ORDER BY` clause specifies the order of rows processed in the aggregation, which determines the order of the elements in the result array. The `ORDER BY` clause is optional.
+
+Similar to other aggregate functions such as [`AVG()`](postgresql-avg-function), [`COUNT()`](postgresql-count-function), [`MAX()`](postgresql-max-function), [`MIN()`](postgresql-min-function), and [`SUM()`](postgresql-sum-function), the `ARRAY_AGG()` is often used with the [`GROUP BY`](../postgresql-tutorial/postgresql-group-by) clause.
+
+## PostgreSQL ARRAY_AGG() function examples
+
+We will use the `film`, `film_actor`, and `actor` tables from the [sample database](../postgresql-getting-started/postgresql-sample-database) for the demonstration.
+
+### 1\) Using PostgreSQL ARRAY_AGG() function without the ORDER BY clause example
+
+The following example uses the `ARRAY_AGG()` function to return the list of film titles and a list of actors for each film:
+
+```sql
+SELECT
+    title,
+    ARRAY_AGG (first_name || ' ' || last_name) actors
+FROM
+    film
+INNER JOIN film_actor USING (film_id)
+INNER JOIN actor USING (actor_id)
+GROUP BY
+    title
+ORDER BY
+    title;
+```
+
+Here is the partial output:
+
+![](/postgresqltutorial/PostgreSQL-ARRAY_AGG-example.png)As you can see, the actors in each film are arbitrarily ordered. To sort the actors by last name or first name, you can use the `ORDER BY` clause in the `ARRAY_AGG()` function.
+
+### 2\) Using PostgreSQL ARRAY_AGG() function with the ORDER BY clause example
+
+This example uses the `ARRAY_AGG()` function to return a list of films and a list of actors for each film sorted by the actor’s first name:
+
+```sql
+SELECT
+    title,
+    ARRAY_AGG (
+        first_name || ' ' || last_name
+        ORDER BY
+            first_name
+    ) actors
+FROM
+    film
+INNER JOIN film_actor USING (film_id)
+INNER JOIN actor USING (actor_id)
+GROUP BY
+    title
+ORDER BY
+    title;
+```
+
+The following shows the partial output:
+
+![](/postgresqltutorial/PostgreSQL-ARRAY_AGG-with-ORDER-BY-clause.png)
+You can sort the actor list for each film by the actor’s first name and last name as shown in the following query:
+
+```sql
+SELECT
+    title,
+    ARRAY_AGG (
+        first_name || ' ' || last_name
+        ORDER BY
+            first_name ASC,
+            last_name DESC
+    ) actors
+FROM
+    film
+INNER JOIN film_actor USING (film_id)
+INNER JOIN actor USING (actor_id)
+GROUP BY
+    title
+ORDER BY
+    title;
+```
+
+This picture shows the partial output of the query:
+
+![](/postgresqltutorial/PostgreSQL-ARRAY_AGG-with-ORDER-BY-clause-example-2.png)
+
+## Summary
+
+- Use the PostgreSQL `ARRAY_AGG()` function to return an array from a set of input values.
+
+
 # AVG
 
 ---
@@ -36391,123 +41528,6 @@ It returns 20, meaning that the `AVG()` function ignores `NULL` values.
 - Use PostgreSQL `AVG()` function to calculate the average value of a set.
 - The `AVG()` function ignores NULL in the calculation.
 - The `AVG()` function returns NULL if the set is empty.
-
-
-# ARRAY_AGG
-
----
-title: 'PostgreSQL ARRAY_AGG Function'
-page_title: 'PostgreSQL ARRAY_AGG Function By Practical Examples'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL ARRAY_AGG() aggregate function to return an array from a set of input values.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-aggregate-functions/postgresql-array_agg/'
-ogImage: '/postgresqltutorial/PostgreSQL-ARRAY_AGG-example.png'
-updatedOn: '2024-01-26T04:00:31+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL SUM Function'
-  slug: 'postgresql-aggregate-functions/postgresql-sum-function'
-nextLink:
-  title: 'PostgreSQL BOOL_AND() Function'
-  slug: 'postgresql-aggregate-functions/postgresql-bool_and'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `ARRAY_AGG()` aggregate function to return an array from a set of input values.
-
-## Introduction to PostgreSQL ARRAY_AGG() function
-
-The PostgreSQL `ARRAY_AGG()` function is an aggregate function that accepts a set of values and returns an [array](../postgresql-tutorial/postgresql-array) in which each value in the set is assigned to an element of the array.
-
-The following shows the syntax of the `ARRAY_AGG()` function:
-
-```css
-ARRAY_AGG(expression [ORDER BY [sort_expression {ASC | DESC}], [...])
-```
-
-The `ARRAY_AGG()` accepts an expression that returns a value of any type that is valid for an array element.
-
-The `ORDER BY` clause specifies the order of rows processed in the aggregation, which determines the order of the elements in the result array. The `ORDER BY` clause is optional.
-
-Similar to other aggregate functions such as [`AVG()`](postgresql-avg-function), [`COUNT()`](postgresql-count-function), [`MAX()`](postgresql-max-function), [`MIN()`](postgresql-min-function), and [`SUM()`](postgresql-sum-function), the `ARRAY_AGG()` is often used with the [`GROUP BY`](../postgresql-tutorial/postgresql-group-by) clause.
-
-## PostgreSQL ARRAY_AGG() function examples
-
-We will use the `film`, `film_actor`, and `actor` tables from the [sample database](../postgresql-getting-started/postgresql-sample-database) for the demonstration.
-
-### 1\) Using PostgreSQL ARRAY_AGG() function without the ORDER BY clause example
-
-The following example uses the `ARRAY_AGG()` function to return the list of film titles and a list of actors for each film:
-
-```sql
-SELECT
-    title,
-    ARRAY_AGG (first_name || ' ' || last_name) actors
-FROM
-    film
-INNER JOIN film_actor USING (film_id)
-INNER JOIN actor USING (actor_id)
-GROUP BY
-    title
-ORDER BY
-    title;
-```
-
-Here is the partial output:
-
-![](/postgresqltutorial/PostgreSQL-ARRAY_AGG-example.png)As you can see, the actors in each film are arbitrarily ordered. To sort the actors by last name or first name, you can use the `ORDER BY` clause in the `ARRAY_AGG()` function.
-
-### 2\) Using PostgreSQL ARRAY_AGG() function with the ORDER BY clause example
-
-This example uses the `ARRAY_AGG()` function to return a list of films and a list of actors for each film sorted by the actor’s first name:
-
-```sql
-SELECT
-    title,
-    ARRAY_AGG (
-        first_name || ' ' || last_name
-        ORDER BY
-            first_name
-    ) actors
-FROM
-    film
-INNER JOIN film_actor USING (film_id)
-INNER JOIN actor USING (actor_id)
-GROUP BY
-    title
-ORDER BY
-    title;
-```
-
-The following shows the partial output:
-
-![](/postgresqltutorial/PostgreSQL-ARRAY_AGG-with-ORDER-BY-clause.png)
-You can sort the actor list for each film by the actor’s first name and last name as shown in the following query:
-
-```sql
-SELECT
-    title,
-    ARRAY_AGG (
-        first_name || ' ' || last_name
-        ORDER BY
-            first_name ASC,
-            last_name DESC
-    ) actors
-FROM
-    film
-INNER JOIN film_actor USING (film_id)
-INNER JOIN actor USING (actor_id)
-GROUP BY
-    title
-ORDER BY
-    title;
-```
-
-This picture shows the partial output of the query:
-
-![](/postgresqltutorial/PostgreSQL-ARRAY_AGG-with-ORDER-BY-clause-example-2.png)
-
-## Summary
-
-- Use the PostgreSQL `ARRAY_AGG()` function to return an array from a set of input values.
 
 
 # BOOL_AND
@@ -37090,6 +42110,379 @@ Output:
 - Use the PostgreSQL `COUNT()` function to return the number of rows in a table.
 
 
+# MAX
+
+---
+title: 'PostgreSQL MAX Function'
+page_title: 'PostgreSQL MAX() Function'
+page_description: 'This tutorial shows you how to use the PostgreSQL MAX() function to get the maximum value of a set of values.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-aggregate-functions/postgresql-max-function/'
+ogImage: '/postgresqltutorial/payment-table.png'
+updatedOn: '2024-01-26T03:03:53+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL COUNT Function'
+  slug: 'postgresql-aggregate-functions/postgresql-count-function'
+nextLink:
+  title: 'PostgreSQL MIN() Function'
+  slug: 'postgresql-aggregate-functions/postgresql-min-function'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAX()` function to get the maximum value of a set of values.
+
+## Introduction to PostgreSQL MAX() function
+
+PostgreSQL `MAX()` function is an aggregate function that returns the maximum value in a set of values.
+
+The `MAX()` function can be useful in many cases. For example, you can use it to find the employees with the highest salary or to identify the most expensive products.
+
+Here’s the syntax of the `MAX` function:
+
+```csssql
+MAX(expression);
+```
+
+You can use the `MAX()` function not just in the [`SELECT`](../postgresql-tutorial/postgresql-select) clause but also in the [`WHERE`](../postgresql-tutorial/postgresql-where) and [`HAVING`](../postgresql-tutorial/postgresql-having) clauses.
+
+## PostgreSQL MAX() function examples
+
+Let’s take some examples of using the `MAX()` function. We’ll use the `payment` table from the [sample database](../postgresql-getting-started/postgresql-sample-database).
+
+[![payment table](/postgresqltutorial/payment-table.png)](/postgresqltutorial/payment-table.png)
+
+### 1\) Basic PostgreSQL MAX() function example
+
+The following query uses the `MAX()` function to find the highest amount paid by customers in the `payment` table:
+
+```sql
+SELECT
+  MAX(amount)
+FROM
+  payment;
+```
+
+Output:
+
+```text
+  max
+-------
+ 11.99
+(1 row)
+```
+
+### 2\) Using the PostgreSQL MAX() function in subquery
+
+The following example uses the `MAX()` function in a subquery to get the detailed payment information:
+
+```
+SELECT
+  payment_id,
+  customer_id,
+  amount
+FROM
+  payment
+WHERE
+  amount = (
+    SELECT
+      MAX (amount)
+    FROM
+      payment
+  );
+```
+
+Output:
+
+```text
+ payment_id | customer_id | amount
+------------+-------------+--------
+      20403 |         362 |  11.99
+      22650 |         204 |  11.99
+      23757 |         116 |  11.99
+...
+```
+
+How it works.
+
+- First, the subquery uses the `MAX()` function to return the highest payment.
+- Second, the outer query retrieves all the payments whose amounts are equal to the highest payment returned from the subquery.
+
+### 3\) Using PostgreSQL MAX() function with the GROUP BY clause
+
+You can combine the `MAX`function with the [`GROUP BY`](../postgresql-tutorial/postgresql-group-by) clause to get the maximum value for each group.
+
+The following example uses the `MAX()` function with a `GROUP BY` clause to retrieve the highest payment paid by each customer.
+
+```
+SELECT
+  customer_id,
+  MAX (amount)
+FROM
+  payment
+GROUP BY
+  customer_id;
+```
+
+Output:
+
+```text
+ customer_id |  max
+-------------+-------
+         184 |  9.99
+          87 | 10.99
+         477 | 10.99
+         273 |  8.99
+```
+
+### 4\) Using PostgreSQL MAX() function with a HAVING clause
+
+If you use the `MAX()` function in a [`HAVING`](../postgresql-tutorial/postgresql-having) clause, you can apply a filter for a group. For example, the following query uses the `MAX()` function to select the highest payment made by each customer and includes those that are over `8.99`:
+
+```
+SELECT
+  customer_id,
+  MAX (amount)
+FROM
+  payment
+GROUP BY
+  customer_id
+HAVING
+  MAX(amount) > 8.99;
+```
+
+Output:
+
+```
+customer_id |  max
+-------------+-------
+         184 |  9.99
+          87 | 10.99
+         477 | 10.99
+         550 | 10.99
+          51 |  9.99
+...
+```
+
+## Summary
+
+- Use the PostgreSQL `MAX()` function to find the maximum value of a set.
+
+
+# MIN
+
+---
+title: 'PostgreSQL MIN() Function'
+page_title: 'PostgreSQL MIN() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL MIN() function to get the minimum value in a set of values.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-aggregate-functions/postgresql-min-function/'
+ogImage: '/postgresqltutorial/film-film_category-category-tables.png'
+updatedOn: '2024-01-26T03:16:19+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL MAX Function'
+  slug: 'postgresql-aggregate-functions/postgresql-max-function'
+nextLink:
+  title: 'PostgreSQL SUM Function'
+  slug: 'postgresql-aggregate-functions/postgresql-sum-function'
+---
+
+**Summary**: in this tutorial, you will learn how to use PostgreSQL`MIN()` function to get the minimum value of a set.
+
+## Introduction to PostgreSQL MIN function
+
+PostgreSQL `MIN()` function is an aggregate function that returns the minimum value in a set of values.
+
+To find the minimum value in a column of a table, you pass the column name the `MIN()` function. The [data type](../postgresql-tutorial/postgresql-data-types) of the column can be [numeric](../postgresql-tutorial/postgresql-integer), [string](../postgresql-tutorial/postgresql-char-varchar-text), or any comparable type.
+
+Here’s the basic syntax of the `MIN()` function:
+
+```csssqlsql
+MIN(expression)
+```
+
+Unlike the [`AVG()`](postgresql-avg-function), [`COUNT()`](postgresql-count-function) and [`SUM()`](postgresql-sum-function) functions, the `DISTINCT` option does not have any effects on the `MIN()` function.
+
+## PostgreSQL MIN() function examples
+
+We will use the `film` , `film_category`, and `category` tables from the [dvdrental sample database](../postgresql-getting-started/postgresql-sample-database 'PostgreSQL Sample Database') for demonstration.
+
+![film film_category category tables](/postgresqltutorial/film-film_category-category-tables.png)
+
+### 1\) Basic PostgreSQL MIN() function example
+
+The following example uses the `MIN()` function to get the lowest rental rate from the `rental_rate` column the `film` table:
+
+```sql
+SELECT
+   MIN (rental_rate)
+FROM
+   film;
+```
+
+Output:
+
+```text
+ min
+------
+ 0.99
+(1 row)
+```
+
+The query returns 0\.99, which is the lowest rental rate.
+
+### 2\) Using the PostgreSQL MIN() function in a subquery example
+
+The following example uses the `MIN()` function in a subquery to get the film information of the film with the lowest rental rate:
+
+```php
+SELECT
+  film_id,
+  title,
+  rental_rate
+FROM
+  film
+WHERE
+  rental_rate = (
+    SELECT
+      MIN(rental_rate)
+    FROM
+      film
+  );
+```
+
+Output:
+
+```text
+ film_id |          title          | rental_rate
+---------+-------------------------+-------------
+       1 | Academy Dinosaur        |        0.99
+      11 | Alamo Videotape         |        0.99
+      12 | Alaska Phantom          |        0.99
+     213 | Date Speed              |        0.99
+...
+```
+
+How it works.
+
+- First, the [subquery](../postgresql-tutorial/postgresql-subquery) to select the lowest rental rate.
+- Then, the outer query selects films with rental rates equal to the lowest rental rate returned by the subquery.
+
+### 3\) Using PostgreSQL MIN() function with GROUP BY clause example
+
+In practice, you often use the `MIN` function with the [`GROUP BY`](../postgresql-tutorial/postgresql-group-by) clause to find the lowest value in each group.
+
+The following statement uses the `MIN()` function with the `GROUP BY` clause to find the lowest replacement cost of films by category:
+
+```
+SELECT
+  name category,
+  MIN(replacement_cost) replacement_cost
+FROM
+  category
+  INNER JOIN film_category USING (category_id)
+  INNER JOIN film USING (film_id)
+GROUP BY
+  name
+ORDER BY
+  name;
+```
+
+Output:
+
+```text
+  category   | replacement_cost
+-------------+------------------
+ Action      |             9.99
+ Animation   |             9.99
+ Children    |             9.99
+ Classics    |            10.99
+ Comedy      |             9.99
+...
+```
+
+### 4\) Using PostgreSQL MIN() function with the HAVING clause example
+
+It’s possible to use the `MIN` function in the [`HAVING`](../postgresql-tutorial/postgresql-having) clause the filter of the groups whose minimum values meet a specific condition.
+
+The following query uses the `MIN()` function to find the lowest replacement costs of films grouped by category, selecting only groups with replacement costs greater than `9.99`:
+
+```
+SELECT
+  name category,
+  MIN(replacement_cost) replacement_cost
+FROM
+  category
+  INNER JOIN film_category USING (category_id)
+  INNER JOIN film USING (film_id)
+GROUP BY
+  name
+HAVING
+  MIN(replacement_cost) > 9.99
+ORDER BY
+  name;
+```
+
+Output:
+
+```text
+ category | replacement_cost
+----------+------------------
+ Classics |            10.99
+ Horror   |            10.99
+ Music    |            10.99
+(3 rows)
+```
+
+### 5\) Using the PostgreSQL MIN() function with other aggregate functions example
+
+It’s possible to use the  `MIN()` function with other aggregate functions such as `MAX()` function in the same query.
+
+The following example uses the `MIN()` and `MAX()` function to find the shortest and longest films by category:
+
+```
+SELECT
+  name category,
+  MIN(length) min_length,
+  MAX(length) max_length
+FROM
+  category
+  INNER JOIN film_category USING (category_id)
+  INNER JOIN film USING (film_id)
+GROUP BY
+  name
+ORDER BY
+  name;
+```
+
+Output:
+
+```
+  category   | min_length | max_length
+-------------+------------+------------
+ Action      |         47 |        185
+ Animation   |         49 |        185
+ Children    |         46 |        178
+ Classics    |         46 |        184
+ Comedy      |         47 |        185
+ Documentary |         47 |        183
+ Drama       |         46 |        181
+ Family      |         48 |        184
+ Foreign     |         46 |        184
+ Games       |         57 |        185
+ Horror      |         48 |        181
+ Music       |         47 |        185
+ New         |         46 |        183
+ Sci-Fi      |         51 |        185
+ Sports      |         47 |        184
+ Travel      |         47 |        185
+(16 rows)
+```
+
+### Summary
+
+- Use the `MIN()` function to find the lowest value in a set of values.
+- Use the `MIN()` with `GROUP BY` clause to find the lowest value in a group of values.
+
+
 # STRING_AGG
 
 ---
@@ -37465,382 +42858,490 @@ Output:
 - Use the `SUM()` function with the `GROUP BY` clause to calculate the sum for each group.
 
 
-# MAX
+# Date Functions
 
 ---
-title: 'PostgreSQL MAX Function'
-page_title: 'PostgreSQL MAX() Function'
-page_description: 'This tutorial shows you how to use the PostgreSQL MAX() function to get the maximum value of a set of values.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-aggregate-functions/postgresql-max-function/'
-ogImage: '/postgresqltutorial/payment-table.png'
-updatedOn: '2024-01-26T03:03:53+00:00'
+title: 'PostgreSQL Date Functions'
+page_title: 'PostgreSQL Date Functions'
+page_description: 'This page provides you with the PostgreSQL date functions that allow you to handle date and time data effectively.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/'
+ogImage: 'https://www.postgresqltutorial.com//postgresqltutorial/postgresql-date-functions.png'
+updatedOn: '2024-03-25T05:06:59+00:00'
 enableTableOfContents: true
 previousLink:
-  title: 'PostgreSQL COUNT Function'
-  slug: 'postgresql-aggregate-functions/postgresql-count-function'
+  title: 'PostgreSQL BOOL_OR() Function'
+  slug: 'postgresql-aggregate-functions/postgresql-bool_or'
 nextLink:
-  title: 'PostgreSQL MIN() Function'
-  slug: 'postgresql-aggregate-functions/postgresql-min-function'
+  title: 'PostgreSQL CURRENT_DATE Function'
+  slug: 'postgresql-date-functions/postgresql-current_date'
 ---
 
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAX()` function to get the maximum value of a set of values.
+The following page shows the most commonly used PostgreSQL date functions that allow you to effectively manipulate date and time values.
 
-## Introduction to PostgreSQL MAX() function
+## Section 1\. Getting the current date and time
 
-PostgreSQL `MAX()` function is an aggregate function that returns the maximum value in a set of values.
+This section shows you various functions for getting the current date, current date and time, current timestamp, without or without timezone.
 
-The `MAX()` function can be useful in many cases. For example, you can use it to find the employees with the highest salary or to identify the most expensive products.
+- [CURRENT_DATE](postgresql-date-functions/postgresql-current_date) – Return the current date.
+- [CURRENT_TIME](postgresql-date-functions/postgresql-current_time) – Return the current time without date parts.
+- [CURRENT_TIMESTAMP](postgresql-date-functions/postgresql-current_timestamp) – Return the current date and time with the time zone at which the current transaction starts.
+- [CLOCK_TIMESTAMP](postgresql-date-functions/postgresql-clock_timestamp) – Return the current timestamp which changes during statement execution.
+- [STATEMENT_TIMESTAMP](postgresql-date-functions/postgresql-statement_timestamp) – Return the current timestamp and time of the current statement.
+- [NOW](postgresql-date-functions/postgresql-now) – Return the date and time with the time zone at which the current transaction starts.
+- [TRANSACTION_TIMESTAMP](postgresql-date-functions/postgresql-current_timestamp) – Same as the [CURRENT_TIMESTAMP](postgresql-date-functions/postgresql-current_timestamp) or [NOW()](postgresql-date-functions/postgresql-now) function.
+- [LOCALTIME](postgresql-date-functions/postgresql-localtime) – Return the time at which the current transaction starts.
+- [LOCALTIMESTAMP](postgresql-date-functions/postgresql-localtimestamp) – Return the date and time at which the current transaction starts.
 
-Here’s the syntax of the `MAX` function:
+## Section 2\. Extracting date and time components
 
-```csssql
-MAX(expression);
+This section provides you with functions for extracting date and time components
+
+- [DATE_PART](postgresql-date-functions/postgresql-date_part) – Get a field of a timestamp or an interval e.g., year, month, day, etc.
+- [EXTRACT](postgresql-date-functions/postgresql-extract) – Same as [DATE_PART()](postgresql-date-functions/postgresql-date_part) function.
+
+## Section 3\. Converting to date and time
+
+This section introduces the functions that convert a string to a date and timestamp.
+
+- [TO_DATE](postgresql-date-functions/postgresql-to_date) – Convert a string to a date.
+- [TO_TIMESTAMP](postgresql-date-functions/postgresql-to_timestamp) – Convert a string to a timestamp.
+- [MAKE_DATE](postgresql-date-functions/postgresql-make_date) – Create a date from year, month, and day.
+- [MAKE_TIME](postgresql-date-functions/postgresql-make_time) – Create a time from hour, minute, and second.
+
+## Section 4\. Handling intervals
+
+This section covers the function that handles intervals such as calculating age based on intervals and justifying intervals for enhanced readability.
+
+- [AGE](postgresql-date-functions/postgresql-age) – Calculate the age and return an interval.
+- [JUSTIFY_DAYS](postgresql-date-functions/postgresql-justify_days) – Adjust 30\-day intervals as months.
+- [JUSTIFY_HOURS](postgresql-date-functions/postgresql-justify_hours) – Adjust 24\-hour intervals as days
+- [JUSTIFY_INTERVAL](postgresql-date-functions/postgresql-justify_interval) – Adjust interval using justify_days and justify_hours functions, with additional sign adjustments.
+- [MAKE_INTERVAL](postgresql-date-functions/postgresql-make_interval) – Create an interval from the provided interval’s components.
+
+## Section 5\. Operators
+
+This section shows you how to use the date and time operators.
+
+- [AT TIME ZONE](postgresql-date-functions/postgresql-at-time-zone) – Convert a timestamp or a timestamp with time zone to a different time zone.
+
+## Section 6\. Utility functions
+
+This section shows you various date and time utility functions.
+
+- [DATE_TRUNC](postgresql-date-functions/postgresql-date_trunc) – Truncate a date.
+- [ISFINITE](postgresql-date-functions/postgresql-isfinite) – Check if a date, a timestamp, or an interval is finite or not (not \+/\-infinity).
+- [TIMEOFDAY](postgresql-date-functions/postgresql-timeofday) – Return the current date and time, like clock_timestamp, as a text string).
+- [PG_SLEEP](postgresql-date-functions/postgresql-pg_sleep) – Pause the execution of a statement for some seconds.
+
+
+# AGE
+
+---
+title: 'PostgreSQL AGE() Function'
+page_title: 'PostgreSQL AGE() Function: Calculate Ages'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL AGE() function to calculate ages based on two timestamps.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-age/'
+ogImage: '/postgresqltutorial/rental-table.png'
+updatedOn: '2024-03-21T04:14:17+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL MAKE_TIME() Function'
+  slug: 'postgresql-date-functions/postgresql-make_time'
+nextLink:
+  title: 'PostgreSQL JUSTIFY_DAYS() Function'
+  slug: 'postgresql-date-functions/postgresql-justify_days'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `AGE()` function to calculate ages.
+
+## Introduction to PostgreSQL AGE() function
+
+In business applications, you often have to calculate ages such as the ages of employees, and years of service of employees. In PostgreSQL, you can use the `AGE()` function to accomplish these tasks.
+
+Here’s the basic syntax of the `AGE()` function:
+
+```shellsql
+AGE(timestamp,timestamp);
 ```
 
-You can use the `MAX()` function not just in the [`SELECT`](../postgresql-tutorial/postgresql-select) clause but also in the [`WHERE`](../postgresql-tutorial/postgresql-where) and [`HAVING`](../postgresql-tutorial/postgresql-having) clauses.
+The `AGE()` function accepts two [`TIMESTAMP`](../postgresql-tutorial/postgresql-timestamp) values. It subtracts the second argument from the first one and returns an [interval](../postgresql-tutorial/postgresql-interval) as a result.
 
-## PostgreSQL MAX() function examples
+For example:
 
-Let’s take some examples of using the `MAX()` function. We’ll use the `payment` table from the [sample database](../postgresql-getting-started/postgresql-sample-database).
+```sql
+SELECT AGE('2017-01-01','2011-06-24');
+```
 
-[![payment table](/postgresqltutorial/payment-table.png)](/postgresqltutorial/payment-table.png)
+Output:
 
-### 1\) Basic PostgreSQL MAX() function example
+```text
+   age
+-----------------------
+ 5 years 6 mons 7 days
+```
 
-The following query uses the `MAX()` function to find the highest amount paid by customers in the `payment` table:
+If you want to use the current date as the first argument, you can use the following form of the `AGE()` function:
+
+```shell
+AGE(timestamp);
+```
+
+For example, if someone’s birth date is `2000-01-01`, and the current date is `2024-01-26`, their age would be:
 
 ```sql
 SELECT
-  MAX(amount)
-FROM
-  payment;
+  current_date,
+  AGE(timestamp '2000-01-01');
 ```
 
 Output:
 
 ```text
-  max
--------
- 11.99
+ current_date |       age
+--------------+------------------
+ 2024-01-26   | 24 years 25 days
 (1 row)
 ```
 
-### 2\) Using the PostgreSQL MAX() function in subquery
+## PostgreSQL AGE() function example
 
-The following example uses the `MAX()` function in a subquery to get the detailed payment information:
+We’ll use the following `rental` table in the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![PostgreSQL age Function: Rental Table Sample](/postgresqltutorial/rental-table.png)
+The following example uses the `AGE()` function to retrieve the top 10 rentals that have the longest durations:
 
 ```
 SELECT
-  payment_id,
+  rental_id,
   customer_id,
-  amount
+  AGE(return_date, rental_date) AS duration
 FROM
-  payment
+  rental
 WHERE
-  amount = (
-    SELECT
-      MAX (amount)
-    FROM
-      payment
-  );
+  return_date IS NOT NULL
+ORDER BY
+  duration DESC
+LIMIT
+  10;
 ```
 
 Output:
 
 ```text
- payment_id | customer_id | amount
-------------+-------------+--------
-      20403 |         362 |  11.99
-      22650 |         204 |  11.99
-      23757 |         116 |  11.99
-...
-```
-
-How it works.
-
-- First, the subquery uses the `MAX()` function to return the highest payment.
-- Second, the outer query retrieves all the payments whose amounts are equal to the highest payment returned from the subquery.
-
-### 3\) Using PostgreSQL MAX() function with the GROUP BY clause
-
-You can combine the `MAX`function with the [`GROUP BY`](../postgresql-tutorial/postgresql-group-by) clause to get the maximum value for each group.
-
-The following example uses the `MAX()` function with a `GROUP BY` clause to retrieve the highest payment paid by each customer.
+ rental_id | customer_id |    duration
+-----------+-------------+-----------------
+      2412 |         127 | 9 days 05:59:00
+     14678 |         383 | 9 days 05:59:00
+     13947 |         218 | 9 days 05:58:00
+     14468 |         224 | 9 days 05:58:00
+      7874 |          86 | 9 days 05:58:00
+     11629 |         299 | 9 days 05:58:00
+      5738 |         187 | 9 days 05:56:00
+      9938 |          63 | 9 days 05:56:00
+     12159 |         106 | 9 days 05:55:00
+      3873 |         394 | 9 days 05:55:00
+(10 rows)
 
 ```
-SELECT
-  customer_id,
-  MAX (amount)
-FROM
-  payment
-GROUP BY
-  customer_id;
-```
 
-Output:
-
-```text
- customer_id |  max
--------------+-------
-         184 |  9.99
-          87 | 10.99
-         477 | 10.99
-         273 |  8.99
-```
-
-### 4\) Using PostgreSQL MAX() function with a HAVING clause
-
-If you use the `MAX()` function in a [`HAVING`](../postgresql-tutorial/postgresql-having) clause, you can apply a filter for a group. For example, the following query uses the `MAX()` function to select the highest payment made by each customer and includes those that are over `8.99`:
-
-```
-SELECT
-  customer_id,
-  MAX (amount)
-FROM
-  payment
-GROUP BY
-  customer_id
-HAVING
-  MAX(amount) > 8.99;
-```
-
-Output:
-
-```
-customer_id |  max
--------------+-------
-         184 |  9.99
-          87 | 10.99
-         477 | 10.99
-         550 | 10.99
-          51 |  9.99
-...
-```
+In this example, we use the `AGE()` function to calculate the rental duration based on the values of the `rental_date` and `return_date` columns.
 
 ## Summary
 
-- Use the PostgreSQL `MAX()` function to find the maximum value of a set.
+- Use the PostgreSQL `AGE()` function to calculate ages.
 
 
-# MIN
+# AT TIME ZONE Operator
 
 ---
-title: 'PostgreSQL MIN() Function'
-page_title: 'PostgreSQL MIN() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL MIN() function to get the minimum value in a set of values.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-aggregate-functions/postgresql-min-function/'
-ogImage: '/postgresqltutorial/film-film_category-category-tables.png'
-updatedOn: '2024-01-26T03:16:19+00:00'
+title: 'PostgreSQL AT TIME ZONE Operator'
+page_title: 'PostgreSQL AT TIME ZONE Operator'
+page_description: 'You will learn how to use the PostgreSQL AT TIME ZONE operator to convert a timestamp or a timestamp with time zone to a different time zone.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-at-time-zone/'
+ogImage: ''
+updatedOn: '2024-03-21T09:22:23+00:00'
 enableTableOfContents: true
 previousLink:
-  title: 'PostgreSQL MAX Function'
-  slug: 'postgresql-aggregate-functions/postgresql-max-function'
+  title: 'PostgreSQL MAKE_INTERVAL() Function'
+  slug: 'postgresql-date-functions/postgresql-make_interval'
 nextLink:
-  title: 'PostgreSQL SUM Function'
-  slug: 'postgresql-aggregate-functions/postgresql-sum-function'
+  title: 'PostgreSQL DATE_TRUNC() Function'
+  slug: 'postgresql-date-functions/postgresql-date_trunc'
 ---
 
-**Summary**: in this tutorial, you will learn how to use PostgreSQL`MIN()` function to get the minimum value of a set.
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `AT TIME ZONE` operator to convert a timestamp or a timestamp with time zone to a different time zone.
 
-## Introduction to PostgreSQL MIN function
+## Introduction to the PostgreSQL AT TIME ZONE operator
 
-PostgreSQL `MIN()` function is an aggregate function that returns the minimum value in a set of values.
+In PostgreSQL, the `AT TIME ZONE` is an operator that allows you to convert a [timestamp](../postgresql-tutorial/postgresql-timestamp) or a timestamp with time zone to a different time zone.
 
-To find the minimum value in a column of a table, you pass the column name the `MIN()` function. The [data type](../postgresql-tutorial/postgresql-data-types) of the column can be [numeric](../postgresql-tutorial/postgresql-integer), [string](../postgresql-tutorial/postgresql-char-varchar-text), or any comparable type.
+The `AT TIME ZONE` operator can be useful when you want to perform timezone conversions within your SQL queries.
 
-Here’s the basic syntax of the `MIN()` function:
+Here’s the syntax of the `AT TIME ZONE` operator:
 
 ```csssqlsql
-MIN(expression)
+timestamp_expression AT TIME ZONE target_timezone
 ```
 
-Unlike the [`AVG()`](postgresql-avg-function), [`COUNT()`](postgresql-count-function) and [`SUM()`](postgresql-sum-function) functions, the `DISTINCT` option does not have any effects on the `MIN()` function.
+In this syntax:
 
-## PostgreSQL MIN() function examples
+- timestamp_expression is a timestamp or timestamp with time zone value that you want to convert.
+- target_timezone is the target time zone to which you want to convert. This can be either a time zone name or an expression that evaluates to a time zone name.
 
-We will use the `film` , `film_category`, and `category` tables from the [dvdrental sample database](../postgresql-getting-started/postgresql-sample-database 'PostgreSQL Sample Database') for demonstration.
+The `AT TIME ZONE` operator always returns a value of type `TIMESTAMP WITH TIME ZONE`.
 
-![film film_category category tables](/postgresqltutorial/film-film_category-category-tables.png)
+## PostgreSQL AT TIME ZONE operator examples
 
-### 1\) Basic PostgreSQL MIN() function example
+Let’s explore some examples of using the `AT TIME ZONE` operator. It is assumed that the server’s time zone is `'America/Los_Angeles'`.
 
-The following example uses the `MIN()` function to get the lowest rental rate from the `rental_rate` column the `film` table:
+If you want to have consistent results like the following examples, you can set the PostgreSQL server’s timezone to `'America/Los_Angeles'` by executing the following statement in any PostgreSQL client (such as pgAdmin or psql):
 
 ```sql
-SELECT
-   MIN (rental_rate)
-FROM
-   film;
+set timezone to 'America/Los_Angeles'
+```
+
+Once you execute the command, you can verify it by showing the current timezone:
+
+```sql
+show timezone;
 ```
 
 Output:
 
 ```text
- min
-------
- 0.99
+      TimeZone
+---------------------
+ America/Los_Angeles
 (1 row)
 ```
 
-The query returns 0\.99, which is the lowest rental rate.
+### 1\) Basic AT TIME ZONE operator example
 
-### 2\) Using the PostgreSQL MIN() function in a subquery example
+The following example uses the `AT TIME ZONE` operator to convert a timestamp to Coordinated Universal time (UTC):
 
-The following example uses the `MIN()` function in a subquery to get the film information of the film with the lowest rental rate:
+```
+SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE 'UTC';
+```
 
-```php
-SELECT
-  film_id,
-  title,
-  rental_rate
-FROM
-  film
-WHERE
-  rental_rate = (
-    SELECT
-      MIN(rental_rate)
-    FROM
-      film
-  );
+Output:
+
+```
+        timezone
+------------------------
+ 2024-03-21 03:00:00-07
+(1 row)
+```
+
+### 2\) Converting timestamp with time zone
+
+The following example uses the `AT TIME ZONE` operator to convert a timestamp with time zone to UTC:
+
+```css
+SELECT TIMESTAMP WITH TIME ZONE '2024-03-21 10:00:00-04' AT TIME ZONE 'UTC';
 ```
 
 Output:
 
 ```text
- film_id |          title          | rental_rate
----------+-------------------------+-------------
-       1 | Academy Dinosaur        |        0.99
-      11 | Alamo Videotape         |        0.99
-      12 | Alaska Phantom          |        0.99
-     213 | Date Speed              |        0.99
-...
+      timezone
+---------------------
+ 2024-03-21 14:00:00
+(1 row)
 ```
 
-How it works.
+### 3\) Using the AT TIME ZONE operator with time zone abbreviation
 
-- First, the [subquery](../postgresql-tutorial/postgresql-subquery) to select the lowest rental rate.
-- Then, the outer query selects films with rental rates equal to the lowest rental rate returned by the subquery.
+The following query uses the `AT TIME ZONE` operator to convert a timestamp to Pacific Standard Time (PST) from the default time zone:
 
-### 3\) Using PostgreSQL MIN() function with GROUP BY clause example
-
-In practice, you often use the `MIN` function with the [`GROUP BY`](../postgresql-tutorial/postgresql-group-by) clause to find the lowest value in each group.
-
-The following statement uses the `MIN()` function with the `GROUP BY` clause to find the lowest replacement cost of films by category:
-
-```
-SELECT
-  name category,
-  MIN(replacement_cost) replacement_cost
-FROM
-  category
-  INNER JOIN film_category USING (category_id)
-  INNER JOIN film USING (film_id)
-GROUP BY
-  name
-ORDER BY
-  name;
+```css
+SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE 'PST';
 ```
 
 Output:
 
 ```text
-  category   | replacement_cost
--------------+------------------
- Action      |             9.99
- Animation   |             9.99
- Children    |             9.99
- Classics    |            10.99
- Comedy      |             9.99
-...
+        timezone
+------------------------
+ 2024-03-21 11:00:00-07
+(1 row)
 ```
 
-### 4\) Using PostgreSQL MIN() function with the HAVING clause example
+### 4\) Converting a timestamp using a time zone offset
 
-It’s possible to use the `MIN` function in the [`HAVING`](../postgresql-tutorial/postgresql-having) clause the filter of the groups whose minimum values meet a specific condition.
+The following example uses the `AT TIME ZONE` operator to convert a timestamp using a time zone offset:
 
-The following query uses the `MIN()` function to find the lowest replacement costs of films grouped by category, selecting only groups with replacement costs greater than `9.99`:
-
-```
-SELECT
-  name category,
-  MIN(replacement_cost) replacement_cost
-FROM
-  category
-  INNER JOIN film_category USING (category_id)
-  INNER JOIN film USING (film_id)
-GROUP BY
-  name
-HAVING
-  MIN(replacement_cost) > 9.99
-ORDER BY
-  name;
+```css
+SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE '-08:00';
 ```
 
 Output:
 
 ```text
- category | replacement_cost
-----------+------------------
- Classics |            10.99
- Horror   |            10.99
- Music    |            10.99
-(3 rows)
+        timezone
+------------------------
+ 2024-03-20 19:00:00-07
+(1 row)
 ```
 
-### 5\) Using the PostgreSQL MIN() function with other aggregate functions example
+### 5\) Converting a timestamp using named time zones
 
-It’s possible to use the  `MIN()` function with other aggregate functions such as `MAX()` function in the same query.
+The following example uses the `AT TIME ZONE` operator to convert a timestamp using a named time zone:
 
-The following example uses the `MIN()` and `MAX()` function to find the shortest and longest films by category:
-
-```
-SELECT
-  name category,
-  MIN(length) min_length,
-  MAX(length) max_length
-FROM
-  category
-  INNER JOIN film_category USING (category_id)
-  INNER JOIN film USING (film_id)
-GROUP BY
-  name
-ORDER BY
-  name;
+```css
+SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE 'America/New_York';
 ```
 
 Output:
 
 ```
-  category   | min_length | max_length
--------------+------------+------------
- Action      |         47 |        185
- Animation   |         49 |        185
- Children    |         46 |        178
- Classics    |         46 |        184
- Comedy      |         47 |        185
- Documentary |         47 |        183
- Drama       |         46 |        181
- Family      |         48 |        184
- Foreign     |         46 |        184
- Games       |         57 |        185
- Horror      |         48 |        181
- Music       |         47 |        185
- New         |         46 |        183
- Sci-Fi      |         51 |        185
- Sports      |         47 |        184
- Travel      |         47 |        185
-(16 rows)
+        timezone
+------------------------
+ 2024-03-21 07:00:00-07
+(1 row)
 ```
 
-### Summary
+Please note that PostgreSQL uses the [IANA time zone database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for time zone information.
 
-- Use the `MIN()` function to find the lowest value in a set of values.
-- Use the `MIN()` with `GROUP BY` clause to find the lowest value in a group of values.
+## Summary
+
+- Use the `AT TIME ZONE` operator to convert a timestamp to a different time zone.
 
 
-# Date Functions
+# CLOCK_TIMESTAMP
 
-# Getting Current Date & Time
+---
+title: 'PostgreSQL CLOCK_TIMESTAMP() Function'
+page_title: 'PostgreSQL CLOCK_TIMESTAMP() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL CLOCK_TIMESTAMP() function to return the current date and time.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-clock_timestamp/'
+ogImage: ''
+updatedOn: '2024-03-20T09:24:37+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL CURRENT_TIMESTAMP Function'
+  slug: 'postgresql-date-functions/postgresql-current_timestamp'
+nextLink:
+  title: 'PostgreSQL STATEMENT_TIMESTAMP() Function'
+  slug: 'postgresql-date-functions/postgresql-statement_timestamp'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `CLOCK_TIMESTAMP()` function to return the current date and time.
+
+## Introduction to the PostgreSQL CLOCK_TIMESTAMP() function
+
+The `CLOCK_TIMESTAMP()` function returns the current date and time with a timezone.
+
+Here’s the basic syntax of the `CLOCK_TIMESTAMP()` function:
+
+```sql
+CLOCK_TIMESTAMP()
+```
+
+The `CLOCK_TIMESTAMP()` function has no parameters.
+
+The `CLOCK_TIMESTAMP()` function returns the current date and time as a [timestamp with a timezone](postgresql-current_timestamp).
+
+When you call the `CLOCK_TIMESTAMP()` function multiple times within a statement, you’ll get different results.
+
+## PostgreSQL CLOCK_TIMESTAMP() function examples
+
+Let’s take some examples of using the `CLOCK_TIMESTAMP()` function.
+
+### 1\) Basic CLOCK_TIMESTAMP() function example
+
+The following example uses the `CLOCK_TIMESTAMP()` function to obtain the current date and time:
+
+```sql
+SELECT CLOCK_TIMESTAMP();
+```
+
+Output:
+
+```text
+        clock_timestamp
+-------------------------------
+ 2024-03-20 14:49:07.875891-07
+(1 row)
+```
+
+The result is a timestamp with a time zone.
+
+### 2\) Calling CLOCK_TIMESTAMP() function multiple times within a statement
+
+The following example calls the `CLOCK_TIMESTAMP()` function multiple times within a statement:
+
+```sql
+SELECT
+  clock_timestamp(),
+  pg_sleep(3),
+  clock_timestamp(),
+  pg_sleep(3),
+  clock_timestamp();
+```
+
+Output:
+
+```sql
+-[ RECORD 1 ]---+------------------------------
+clock_timestamp | 2024-03-20 14:51:21.92144-07
+pg_sleep        |
+clock_timestamp | 2024-03-20 14:51:24.924244-07
+pg_sleep        |
+clock_timestamp | 2024-03-20 14:51:27.931263-07
+```
+
+The output shows that the `CLOCK_TIMESTAMP()` function returns the actual date and time between the calls within the same statement.
+
+### 3\) Using the CLOCK_TIMESTAMP() function to measure the execution time of a statement
+
+First, [define a new function](../postgresql-plpgsql/postgresql-create-function) called `time_it` to measure the execution time of a statement:
+
+```sql
+CREATE OR REPLACE FUNCTION time_it(
+    p_statement TEXT
+) RETURNS NUMERIC AS $$
+DECLARE
+    start_time TIMESTAMP WITH TIME ZONE;
+    end_time TIMESTAMP WITH TIME ZONE;
+    execution_time NUMERIC; -- ms
+BEGIN
+    -- Capture start time
+    start_time := CLOCK_TIMESTAMP();
+
+    -- Execute the statement
+    EXECUTE p_statement;
+
+    -- Capture end time
+    end_time := CLOCK_TIMESTAMP();
+
+    -- Calculate execution time in milliseconds
+    execution_time := EXTRACT(EPOCH FROM end_time - start_time) * 1000;
+
+    RETURN execution_time;
+END;
+$$ LANGUAGE plpgsql;
+```
+
+Second, use the `time_it()` function to measure the execution time of the statement that uses the `pg_sleep()` function:
+
+```sql
+SELECT time_it('SELECT pg_sleep(1)');
+```
+
+Output:
+
+```text
+   time_it
+-------------
+ 1007.731000
+```
+
+It takes about 1008 ms or 1s to complete.
+
+## Summary
+
+- Use the `CLOCK_TIMESTAMP()` function to return the current date and time.
+
 
 # CURRENT_DATE
 
@@ -38254,719 +43755,6 @@ In PostgreSQL, the `TRANSACTION_TIMESTAMP()` function is synonymous with the `
 - Use the PostgreSQL `CURRENT_TIMESTAMP()` to get the date and time at which the transaction starts.
 
 
-# CLOCK_TIMESTAMP
-
----
-title: 'PostgreSQL CLOCK_TIMESTAMP() Function'
-page_title: 'PostgreSQL CLOCK_TIMESTAMP() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL CLOCK_TIMESTAMP() function to return the current date and time.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-clock_timestamp/'
-ogImage: ''
-updatedOn: '2024-03-20T09:24:37+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL CURRENT_TIMESTAMP Function'
-  slug: 'postgresql-date-functions/postgresql-current_timestamp'
-nextLink:
-  title: 'PostgreSQL STATEMENT_TIMESTAMP() Function'
-  slug: 'postgresql-date-functions/postgresql-statement_timestamp'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `CLOCK_TIMESTAMP()` function to return the current date and time.
-
-## Introduction to the PostgreSQL CLOCK_TIMESTAMP() function
-
-The `CLOCK_TIMESTAMP()` function returns the current date and time with a timezone.
-
-Here’s the basic syntax of the `CLOCK_TIMESTAMP()` function:
-
-```sql
-CLOCK_TIMESTAMP()
-```
-
-The `CLOCK_TIMESTAMP()` function has no parameters.
-
-The `CLOCK_TIMESTAMP()` function returns the current date and time as a [timestamp with a timezone](postgresql-current_timestamp).
-
-When you call the `CLOCK_TIMESTAMP()` function multiple times within a statement, you’ll get different results.
-
-## PostgreSQL CLOCK_TIMESTAMP() function examples
-
-Let’s take some examples of using the `CLOCK_TIMESTAMP()` function.
-
-### 1\) Basic CLOCK_TIMESTAMP() function example
-
-The following example uses the `CLOCK_TIMESTAMP()` function to obtain the current date and time:
-
-```sql
-SELECT CLOCK_TIMESTAMP();
-```
-
-Output:
-
-```text
-        clock_timestamp
--------------------------------
- 2024-03-20 14:49:07.875891-07
-(1 row)
-```
-
-The result is a timestamp with a time zone.
-
-### 2\) Calling CLOCK_TIMESTAMP() function multiple times within a statement
-
-The following example calls the `CLOCK_TIMESTAMP()` function multiple times within a statement:
-
-```sql
-SELECT
-  clock_timestamp(),
-  pg_sleep(3),
-  clock_timestamp(),
-  pg_sleep(3),
-  clock_timestamp();
-```
-
-Output:
-
-```sql
--[ RECORD 1 ]---+------------------------------
-clock_timestamp | 2024-03-20 14:51:21.92144-07
-pg_sleep        |
-clock_timestamp | 2024-03-20 14:51:24.924244-07
-pg_sleep        |
-clock_timestamp | 2024-03-20 14:51:27.931263-07
-```
-
-The output shows that the `CLOCK_TIMESTAMP()` function returns the actual date and time between the calls within the same statement.
-
-### 3\) Using the CLOCK_TIMESTAMP() function to measure the execution time of a statement
-
-First, [define a new function](../postgresql-plpgsql/postgresql-create-function) called `time_it` to measure the execution time of a statement:
-
-```sql
-CREATE OR REPLACE FUNCTION time_it(
-    p_statement TEXT
-) RETURNS NUMERIC AS $$
-DECLARE
-    start_time TIMESTAMP WITH TIME ZONE;
-    end_time TIMESTAMP WITH TIME ZONE;
-    execution_time NUMERIC; -- ms
-BEGIN
-    -- Capture start time
-    start_time := CLOCK_TIMESTAMP();
-
-    -- Execute the statement
-    EXECUTE p_statement;
-
-    -- Capture end time
-    end_time := CLOCK_TIMESTAMP();
-
-    -- Calculate execution time in milliseconds
-    execution_time := EXTRACT(EPOCH FROM end_time - start_time) * 1000;
-
-    RETURN execution_time;
-END;
-$$ LANGUAGE plpgsql;
-```
-
-Second, use the `time_it()` function to measure the execution time of the statement that uses the `pg_sleep()` function:
-
-```sql
-SELECT time_it('SELECT pg_sleep(1)');
-```
-
-Output:
-
-```text
-   time_it
--------------
- 1007.731000
-```
-
-It takes about 1008 ms or 1s to complete.
-
-## Summary
-
-- Use the `CLOCK_TIMESTAMP()` function to return the current date and time.
-
-
-# STATEMENT_TIMESTAMP
-
----
-title: 'PostgreSQL STATEMENT_TIMESTAMP() Function'
-page_title: 'PostgreSQL statement_timestamp() Function'
-page_description: 'How to use the PostgreSQL statement_timestamp() function to retrieve the start time of the current statement.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-statement_timestamp/'
-ogImage: ''
-updatedOn: '2024-03-21T04:12:51+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL CLOCK_TIMESTAMP() Function'
-  slug: 'postgresql-date-functions/postgresql-clock_timestamp'
-nextLink:
-  title: 'PostgreSQL NOW() Function'
-  slug: 'postgresql-date-functions/postgresql-now'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `STATEMENT_TIMESTAMP()` function to retrieve the start time of the current statement.
-
-## Introduction to the PostgreSQL STATEMENT_TIMESTAMP() function
-
-The `STATEMENT_TIMESTAMP()` function returns the start time of the current statement.
-
-Here’s the syntax of the `STATEMENT_TIMESTAMP()` function:
-
-```sql
-STATEMENT_TIMESTAMP()
-```
-
-The `STATEMENT_TIMESTAMP()` function doesn’t accept any argument. It returns a value of the type `TIMESTAMP WITH TIME ZONE`, representing a [timestamp](../postgresql-tutorial/postgresql-timestamp) at the start of the current statement.
-
-## PostgreSQL STATEMENT_TIMESTAMP() function examples
-
-Let’s take some examples of using the `STATEMENT_TIMESTAMP()` function.
-
-### 1\) Basic statement_timestamp() function example
-
-The following statement uses the `STATEMENT_TIMESTAMP()` function to retrieve the start time of the current statement:
-
-```sql
-SELECT STATEMENT_TIMESTAMP();
-```
-
-Output:
-
-```text
-      statement_timestamp
--------------------------------
- 2024-03-20 11:30:47.001021-07
-(1 row)
-```
-
-The output indicates that the `STATEMENT_TIMESTAMP()` function returns a timestamp with a time zone of the start time when the statement is executed.
-
-### 2\) Using the statement_timestamp() within a transaction
-
-The following example calls the `STATEMENT_TIMESTAMP()` function within a transaction multiple times and log the result into a table:
-
-```sql
--- create a new table for logging
-CREATE TABLE logs(
-   id SERIAL PRIMARY KEY,
-   started_at TIMESTAMP WITH TIME ZONE
-);
-
--- start a transaction
-BEGIN;
-
-INSERT INTO logs(started_at) VALUES(statement_timestamp());
-SELECT pg_sleep(3);
-
-INSERT INTO logs(started_at) VALUES(statement_timestamp());
-SELECT pg_sleep(3);
-
-INSERT INTO logs(started_at) VALUES(statement_timestamp());
-END;
-
--- retrieve data from the logs table
-SELECT * FROM logs;
-```
-
-Output:
-
-```text
- id |          started_at
-----+-------------------------------
-  1 | 2024-03-20 13:22:13.056783+07
-  2 | 2024-03-20 13:22:16.228492+07
-  3 | 2024-03-20 13:22:19.390211+07
-(3 rows)
-```
-
-In this example, we use the `pg_sleep()` function to delay the execution of each [INSERT](../postgresql-tutorial/postgresql-insert) statement.
-
-Since we invoke the `STATEMENT_TIMESTAMP()` function in its own SQL statement, it returns a timestamp differently with each call.
-
-Notice that the `STATEMENT_TIMESTAMP()` function is unlike the `TRANSACTION_TIMESTAMP()` function which does not change with each statement. The `TRANSACTION_TIMESTAMP()` will return the same start time of the transaction.
-
-### 3\) Call the statement_timestamp() function multiple times within a statement
-
-The following example calls the `STATEMENT_TIMESTAMP()` function multiple times within a single statement:
-
-```sql
-SELECT
-  statement_timestamp(),
-  pg_sleep(3),
-  statement_timestamp(),
-  pg_sleep(3),
-  statement_timestamp();
-```
-
-Output:
-
-```sql
--[ RECORD 1 ]-------+------------------------------
-statement_timestamp | 2024-03-20 13:52:55.861004-07
-pg_sleep            |
-statement_timestamp | 2024-03-20 13:52:55.861004-07
-pg_sleep            |
-statement_timestamp | 2024-03-20 13:52:55.861004-07
-```
-
-Note that to display vertical results in psql, you execute the \\x command first.
-
-In this example, the `STATEMENT_TIMESTAMP()` function returns the same values for all three calls, even though we call the `pg_sleep()` to delay execution between each call.
-
-It is important to notice that this behavior contrasts with the [`CLOCK_TIMESTAMP()`](postgresql-clock_timestamp) function, which continues to change as it progresses through the statement.
-
-## Summary
-
-- Use the `STATEMENT_TIMESTAMP()` function to retrieve the start time of the current statement.
-
-
-# NOW
-
----
-title: 'PostgreSQL NOW() Function'
-page_title: 'PostgreSQL NOW() Function: Getting the Current Date and Time'
-page_description: 'This tutorial shows you how to use the PostgreSQL NOW() function to get the current date and time with the timezone.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-now/'
-ogImage: ''
-updatedOn: '2024-01-27T02:24:06+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL STATEMENT_TIMESTAMP() Function'
-  slug: 'postgresql-date-functions/postgresql-statement_timestamp'
-nextLink:
-  title: 'PostgreSQL LOCALTIME Function'
-  slug: 'postgresql-date-functions/postgresql-localtime'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `NOW()` function to get the current date and time with the time zone.
-
-## Introduction to PostgreSQL NOW() function
-
-The `NOW()` function returns the current date and time with the time zone of the database server.
-
-Here’s the basic syntax of the `NOW()` function:
-
-```csssql
-NOW()
-```
-
-The `NOW()` function doesn’t require any argument. Its return type is the [timestamp with time zone](../postgresql-tutorial/postgresql-timestamp). For example:
-
-```
-SELECT NOW();
-```
-
-Output:
-
-```
-              now
--------------------------------
- 2024-01-26 18:14:09.101641-08
-(1 row)
-```
-
-Note that the `NOW()` function returns the current date and time based on the database server’s time zone setting.
-
-For example, if you change the timezone to ‘Africa/Cairo’ and get the current date and time:
-
-```sql
-SET TIMEZONE='Africa/Cairo';
-SELECT NOW();
-```
-
-Output:
-
-```text
-              now
--------------------------------
- 2024-01-27 04:15:20.112974+02
-(1 row)
-```
-
-The output indicates that the value returned by the `NOW()` function is adjusted to the new timezone.
-
-Note that to get a complete list of time zones, you can query from the `pg_timezone_names`:
-
-```sql
-SELECT * FROM pg_timezone_names;
-```
-
-Partial output:
-
-```
-               name               | abbrev | utc_offset | is_dst
-----------------------------------+--------+------------+--------
- Africa/Abidjan                   | GMT    | 00:00:00   | f
- Africa/Accra                     | GMT    | 00:00:00   | f
- Africa/Addis_Ababa               | EAT    | 03:00:00   | f
-...
-```
-
-If you want to get the current date and time without a timezone, you can cast it explicitly as follows:
-
-```
-SELECT NOW()::timestamp;
-```
-
-Output:
-
-```php
-            now
-----------------------------
- 2017-03-17 18:37:29.229991
-(1 row)
-
-```
-
-You can use the common date and time operators for the `NOW()` function. For example, to get 1 hour from now:
-
-```text
-        an_hour_later
-------------------------------
- 2024-01-27 05:16:17.15237+02
-(1 row)
-```
-
-To get this time tomorrow, you add 1 day to the current time:
-
-```sql
-SELECT (NOW() + interval '1 day') AS this_time_tomorrow;
-```
-
-Output:
-
-```php
-      this_time_tomorrow
--------------------------------
- 2024-01-28 04:16:28.308575+02
-(1 row)
-
-```
-
-To get 2 hours 30 minutes ago, you use the minus (\-) operator as follows:
-
-```sql
-SELECT now() - interval '2 hours 30 minutes' AS two_hour_30_min_go;
-```
-
-Output:
-
-```
-      two_hour_30_min_go
--------------------------------
- 2024-01-27 01:47:18.246763+02
-(1 row)
-```
-
-## PostgreSQL NOW() related functions
-
-Besides the `NOW()` function, you can use the `CURRENT_TIME` or `CURRENT_TIMESTAMP` to get the current date and time with the timezone:
-
-```sql
-SELECT CURRENT_TIME, CURRENT_TIMESTAMP;
-```
-
-Output:
-
-```
-    current_time    |       current_timestamp
---------------------+-------------------------------
- 04:17:46.412062+02 | 2024-01-27 04:17:46.412062+02
-(1 row)
-
-```
-
-To get the current date and time without a timezone, you use the `LOCALTIME` and `LOCALTIMESTAMP` functions.
-
-```sql
-SELECT LOCALTIME, LOCALTIMESTAMP;
-```
-
-Output:
-
-```
-      time       |         timestamp
------------------+----------------------------
- 19:13:41.423371 | 2017-03-17 19:13:41.423371
-(1 row)
-```
-
-Notice that `NOW()` and its related functions return the start time of the current transaction. In other words, the return values of the function calls are the same within a transaction.
-
-The following example illustrates the concept:
-
-```sql
-postgres=# BEGIN;
-BEGIN
-postgres=# SELECT now();
-              now
--------------------------------
- 2017-03-17 19:21:43.049715-07
-(1 row)
-
-
-postgres=# SELECT pg_sleep(3);
- pg_sleep
-----------
-
-(1 row)
-
-
-postgres=# SELECT now();
-              now
--------------------------------
- 2017-03-17 19:21:43.049715-07
-(1 row)
-
-
-postgres=# COMMIT;
-COMMIT
-
-```
-
-In this example, we called the `NOW()` function within a transaction and its return values do not change through the transaction.
-
-Note that the `pg_sleep()` function pauses the current session’s process sleep for a specified of seconds.
-
-If you want to get the current date and time that does advance during the transaction, you can use the `TIMEOFDAY()` function. Consider the following example:
-
-```sql
-SELECT
-    TIMEOFDAY(),
-    pg_sleep(5),
-    TIMEOFDAY();
-```
-
-Output:
-
-```
-              timeofday              | pg_sleep |              timeofday
--------------------------------------+----------+-------------------------------------
- Sat Jan 27 04:19:08.650831 2024 EET |          | Sat Jan 27 04:19:13.655833 2024 EET
-(1 row)
-```
-
-After pausing 5 seconds, the current date and time increased.
-
-## PostgreSQL NOW() function as default values
-
-You can use the `NOW()` function as the default value for a column of a table. For example:
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) named posts with the `created_at` column that has a default value provided by the `NOW()` function:
-
-```sql
-CREATE TABLE posts (
-     id         SERIAL PRIMARY KEY,
-     title      VARCHAR NOT NULL,
-     created_at TIMESTAMPTZ DEFAULT Now()
-);
-
-```
-
-Second, [insert a new row](../postgresql-tutorial/postgresql-insert) into the `posts` table:
-
-```sql
-INSERT INTO posts (title)
-VALUES     ('PostgreSQL NOW function');
-```
-
-Third, [query data](../postgresql-tutorial/postgresql-select) from the `posts` table:
-
-```sql
-SELECT * FROM posts;
-```
-
-Output:
-
-```
- id |          title          |          created_at
-----+-------------------------+-------------------------------
-  1 | PostgreSQL NOW function | 2024-01-27 04:20:11.286958+02
-(1 row)
-```
-
-Even though we did not provide the value for the `created_at` column, the statement used the value returned by the `NOW()` function for that column.
-
-## Summary
-
-- Use the PostgreSQL `NOW()` function to get the current date and time with the timezone.
-
-
-# LOCALTIME
-
----
-title: 'PostgreSQL LOCALTIME Function'
-page_title: 'PostgreSQL LOCALTIME Function'
-page_description: 'You will learn how to use the PostgreSQL LOCALTIME function to return the current time at which the current transaction starts.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-localtime/'
-ogImage: ''
-updatedOn: '2024-01-26T09:40:37+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL NOW() Function'
-  slug: 'postgresql-date-functions/postgresql-now'
-nextLink:
-  title: 'PostgreSQL LOCALTIMESTAMP Function'
-  slug: 'postgresql-date-functions/postgresql-localtimestamp'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LOCALTIME` function to return the current time at which the current transaction starts.
-
-## Introduction to PostgreSQL LOCALTIME function
-
-The `LOCALTIME()` function returns the current time at which the current transaction starts.
-
-Here’s the basic syntax of the `LOCALTIME` function:
-
-```css
-LOCALTIME(precision)
-```
-
-The `LOCALTIME` function takes one optional argument:
-
-**1\) `precision`**
-
-The `precision` argument specifies fractional seconds precision of the second field.
-
-If you omit the `precision` argument, it defaults to 6\.
-
-The `LOCALTIME` function returns a [`TIME`](../postgresql-tutorial/postgresql-time) value that represents the time at which the current transaction starts.
-
-Note that the `LOCATIME` function returns a `TIME` without time zone whereas the [`CURRENT_TIME`](postgresql-current_time) function returns a `TIME` with the timezone.
-
-## PostgreSQL LOCALTIME function examples
-
-Let’s take some examples of using the `LOCALTIME` function.
-
-### 1\) Basic PostgreSQL LOCALTIME function example
-
-The following example uses the `LOCALTIME` function to get the time of the current transaction:
-
-```
-SELECT LOCALTIME;
-```
-
-Output:
-
-```
-    localtime
------------------
- 16:37:59.950622
-(1 row)
-
-```
-
-### 2\) Using the PostgreSQL LOCALTIME function with fractional seconds precision
-
-The following example uses the `LOCALTIME(2)` function to get the time with a specified fractional seconds precision:
-
-```css
-SELECT LOCALTIME(2);
-```
-
-Output:
-
-```
-  localtime
--------------
- 16:38:07.97
-(1 row)
-```
-
-## Summary
-
-- Use the PostgreSQL `LOCALTIME` function to get the time at which the current transaction starts.
-
-
-# LOCALTIMESTAMP
-
----
-title: 'PostgreSQL LOCALTIMESTAMP Function'
-page_title: 'PostgreSQL LOCALTIMESTAMP Function By Examples'
-page_description: 'This tutorial shows you how to use the PostgreSQL LOCALTIMESTAMP function to return the date and time at which the current transaction starts.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-localtimestamp/'
-ogImage: ''
-updatedOn: '2024-01-26T10:03:19+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL LOCALTIME Function'
-  slug: 'postgresql-date-functions/postgresql-localtime'
-nextLink:
-  title: 'PostgreSQL DATE_PART() Function'
-  slug: 'postgresql-date-functions/postgresql-date_part'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LOCALTIMESTAMP` function to return the current date and time at which the current transaction starts.
-
-## Introduction to PostgreSQL LOCALTIMESTAMP function
-
-The following illustrates the syntax of the `LOCALTIMESTAMP` function:
-
-```csssql
-LOCALTIMESTAMP(precision)
-```
-
-The `LOCALTIMESTAMP` function accepts one argument:
-
-**1\) `precision`**
-
-The `precision` argument specifies fractional seconds precision of the second field.
-
-The `precision` argument is optional. If you omit it, its default value is 6\.
-
-The `LOCALTIMESTAMP` function returns a [`TIMESTAMP`](../postgresql-tutorial/postgresql-timestamp) value that represents the date and time at which the current transaction starts.
-
-The `LOCALTIMESTAMP` function returns a `TIMESTAMP` value **without** time zone whereas the [`CURRENT_TIMESTAMP`](postgresql-current_timestamp) function returns a `TIMESTAMP` **with** the timezone.
-
-## PostgreSQL LOCALTIMESTAMP function examples
-
-Let’s explore some examples of using the `LOCALTIMESTAMP` function
-
-### 1\) Basic PostgreSQL LOCALTIMESTAMP function example
-
-The following example uses the `LOCALTIMESTAMP` function to get the current date and time of the transaction:
-
-```
-SELECT LOCALTIMESTAMP;
-```
-
-Output:
-
-```
-         timestamp
-----------------------------
- 2017-08-16 09:37:38.443431
-(1 row)
-```
-
-### 2\) Using PostgreSQL LOCALTIMESTAMP function with a fractional seconds precision example
-
-To get the timestamp of the current transaction with specific fractional seconds precision, you use the `precision` argument as follows:
-
-```css
-SELECT LOCALTIMESTAMP(2);
-```
-
-The result is:
-
-```
-       timestamp
-------------------------
- 2017-08-16 09:39:06.64
-(1 row)
-```
-
-## Summary
-
-- Use the PostgreSQL `LOCALTIMESTAMP` function to return the date and time at which the current transaction starts.
-
-
-# Extracting Date & Time Parts
-
 # DATE_PART
 
 ---
@@ -39204,6 +43992,207 @@ Output:
 ## Summary
 
 - Use the PostgreSQL `DATE_PART()` function to extract a subfield of a timestamp.
+
+
+# DATE_TRUNC
+
+---
+title: 'PostgreSQL DATE_TRUNC() Function'
+page_title: 'PostgreSQL DATE_TRUNC Function By Examples'
+page_description: 'This tutorial shows you how to use the PostgreSQL DATE_TRUNC function to truncate a timestamp or interval to a specified precision.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-date_trunc/'
+ogImage: '/postgresqltutorial/rental-table.png'
+updatedOn: '2024-03-22T01:11:13+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL AT TIME ZONE Operator'
+  slug: 'postgresql-date-functions/postgresql-at-time-zone'
+nextLink:
+  title: 'PostgreSQL ISFINITE() Function'
+  slug: 'postgresql-date-functions/postgresql-isfinite'
+---
+
+**Summary**: This tutorial shows you how to use the PostgreSQL `DATE_TRUNC()` function to truncate a timestamp or interval to a specified precision.
+
+## Introduction to the PostgreSQL DATE_TRUNC() function
+
+The `DATE_TRUNC()` function truncates a [`TIMESTAMP`](../postgresql-tutorial/postgresql-timestamp), a `TIMESTAMP WITH TIME ZONE`, or an  [`INTERVAL`](../postgresql-tutorial/postgresql-interval) value to a specified precision.
+
+Here’s the basic syntax of the `DATE_TRUNC` function:
+
+```sqlsql
+DATE_TRUNC(field, source [,time_zone])
+```
+
+In this syntax:
+
+### source
+
+`source` is a value or an expression of type timestamp, timestamp with time zone, or interval. If you use a value of the date or time type, the function will cast it automatically to timestamp or interval respectively.
+
+### field
+
+`field` specifies the to which precision to truncate the `source`.
+
+Here are the valid values for the `field`:
+
+- millennium
+- century
+- decade
+- year
+- quarter
+- month
+- week
+- day
+- hour
+- minute
+- second
+- milliseconds
+- microseconds
+
+### time_zone
+
+`time_zone` specifies the time zone in which the function will perform the truncation. The `time_zone` argument is the default.
+
+If you omit the `time_zone`, the function will truncate the `source` based on the current time zone setting.
+
+The `DATE_TRUNC` function returns a `TIMESTAMP` or an `INTERVAL` value.
+
+## PostgreSQL DATE_TRUNC() function examples
+
+Let’s explore some examples of using the `DATE_TRUNC()` function.
+
+### 1\) Basic PostgreSQL DATE_TRUNC() function example
+
+The following example uses the `DATE_TRUNC()` function to truncate a `TIMESTAMP` value to `hour` part:
+
+```sql
+SELECT DATE_TRUNC('hour', TIMESTAMP '2017-03-17 02:09:30');
+```
+
+Output:
+
+```text
+     date_trunc
+---------------------
+ 2017-03-17 02:00:00
+(1 row)
+```
+
+In this example, the `DATE_TRUNC()` function returns a timestamp with the hour precision.
+
+If you want to truncate a `TIMESTAMP` value to a minute, you use the `'minute'` field as shown in the following example:
+
+```sql
+SELECT DATE_TRUNC('minute', TIMESTAMP '2017-03-17 02:09:30');
+```
+
+The function returns a `TIMESTAMP` with the precision is minute:
+
+```text
+     date_trunc
+---------------------
+ 2017-03-17 02:09:00
+(1 row)
+```
+
+### 2\) Using PostgreSQL DATE_TRUNC() function with table data
+
+See the following `rental` table in the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![Rental table - PostgreSQL date_trunc function demo](/postgresqltutorial/rental-table.png)
+The following example uses the `DATE_TRUNC()` function to retrieve the number of rentals by month from the rental table:
+
+```sql
+SELECT
+    DATE_TRUNC('month', rental_date) m,
+    COUNT (rental_id)
+FROM
+    rental
+GROUP BY
+    m
+ORDER BY
+    m;
+```
+
+Output:
+
+```text
+          m          | count
+---------------------+-------
+ 2005-05-01 00:00:00 |  1156
+ 2005-06-01 00:00:00 |  2311
+ 2005-07-01 00:00:00 |  6709
+ 2005-08-01 00:00:00 |  5686
+ 2006-02-01 00:00:00 |   182
+(5 rows)
+```
+
+This query retrieves the month of each rental date and counts the number of rentals each month from the `rental` table. It then groups the counts by month and sorts the result set by month.
+
+If you want to count the rentals by week, you can pass the week to the DATE_TRUNC() function as follows:
+
+```sql
+SELECT
+    DATE_TRUNC('week', rental_date) week,
+    COUNT (rental_id)
+FROM
+    rental
+GROUP BY
+    week
+ORDER BY
+    week;
+```
+
+Output:
+
+```
+        week         | count
+---------------------+-------
+ 2005-05-23 00:00:00 |   835
+ 2005-05-30 00:00:00 |   321
+ 2005-06-13 00:00:00 |  1705
+ 2005-06-20 00:00:00 |   606
+ 2005-07-04 00:00:00 |  2497
+ 2005-07-11 00:00:00 |   956
+ 2005-07-25 00:00:00 |  3256
+ 2005-08-01 00:00:00 |  1314
+ 2005-08-15 00:00:00 |  3148
+ 2005-08-22 00:00:00 |  1224
+ 2006-02-13 00:00:00 |   182
+(11 rows)
+```
+
+The following example uses the `DATE_TRUNC()` function to count the number of rentals by staff per year:
+
+```
+SELECT
+	staff_id,
+	date_trunc('year', rental_date) y,
+	COUNT (rental_id) rental
+FROM
+	rental
+GROUP BY
+	staff_id, y
+ORDER BY
+	staff_id;
+```
+
+Output:
+
+```text
+ staff_id |          y          | rental
+----------+---------------------+--------
+        1 | 2006-01-01 00:00:00 |     85
+        1 | 2005-01-01 00:00:00 |   7955
+        2 | 2006-01-01 00:00:00 |     97
+        2 | 2005-01-01 00:00:00 |   7907
+(4 rows)
+```
+
+## Summary
+
+- Use the PostgreSQL `DATE_TRUNC` function to truncate a timestamp or an interval value to a specified level of precision
 
 
 # EXTRACT
@@ -39721,7 +44710,1582 @@ Result:
 - Use the PostgreSQL `EXTRACT()` function to extract a field from a date/time or interval value.
 
 
-# Converting to Date & Time
+# ISFINITE
+
+---
+title: 'PostgreSQL ISFINITE() Function'
+page_title: 'PostgreSQL ISFINITE() Function'
+page_description: 'You will learn how to use the PostgreSQL ISFINITE() function to determine if a date, a timestamp, or an interval is finite or not.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-isfinite/'
+ogImage: ''
+updatedOn: '2024-03-20T09:23:01+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL DATE_TRUNC() Function'
+  slug: 'postgresql-date-functions/postgresql-date_trunc'
+nextLink:
+  title: 'PostgreSQL TIMEOFDAY() Function'
+  slug: 'postgresql-date-functions/postgresql-timeofday'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `ISFINITE()` function to determine if a date, a timestamp, or an interval is finite or not.
+
+## Introduction to the PostgreSQL ISFINITE() function
+
+The `ISFINITE()` function accepts a [date](../postgresql-tutorial/postgresql-date), a [timestamp](../postgresql-tutorial/postgresql-timestamp), or an [interval](../postgresql-tutorial/postgresql-interval) and returns true if the value is finite.
+
+Here’s the syntax of the `ISFINITE()` function:
+
+```sql
+isfinite ( value ) → boolean
+```
+
+The `isfinite()` function accepts a value with the type date, timestamp, or interval.
+
+The `isfinite()` function returns true if the value is finite or false otherwise. It returns `NULL` if the value is `NULL`.
+
+## PostgreSQL ISFINITE() function examples
+
+Let’s explore some examples of using the `ISFINITE()` function.
+
+### 1\) Using the ISFINITE() function with dates
+
+The following example uses the `ISFINITE()` function to check if a date is finite or not:
+
+```sql
+SELECT ISFINITE('2024-03-20'::date) result;
+```
+
+Output:
+
+```text
+ result
+--------
+ t
+(1 row)
+```
+
+The result is t, which is true in PostgreSQL.
+
+The following example uses the `ISFINITE()` function to determine whether the date infinity is finite or not:
+
+```sql
+SELECT ISFINITE(DATE 'infinity') result;
+```
+
+Output:
+
+```text
+ result
+--------
+ f
+(1 row)
+```
+
+The result is false because the infinity date is not finite.
+
+### 2\) Using the ISFINITE() function with intervals
+
+The following statement uses the `ISFINITE()` function to check if an interval is finite or not:
+
+```sql
+SELECT ISFINITE(INTERVAL '1 day') result;
+```
+
+Output:
+
+```text
+ result
+--------
+ t
+(1 row)
+```
+
+Since PostgreSQL doesn’t support infinity intervals, the `ISFINITE()` function always returns true for an interval.
+
+### 3\) Using the ISFINITE() function with timestamps
+
+The following statement uses the `ISFINITE()` function to test for a finite timestamp:
+
+```sql
+SELECT ISFINITE(TIMESTAMP '2024-03-20 00:00:00') result;
+```
+
+Output:
+
+```text
+ result
+--------
+ t
+(1 row)
+```
+
+The following statement uses the `ISFINITE()` function to check for an infinite timestamp:
+
+```sql
+SELECT ISFINITE(TIMESTAMP 'infinity') result;
+```
+
+Output:
+
+```text
+ result
+--------
+ f
+(1 row)
+```
+
+## Summary
+
+- Use the `ISFINITE()` function to test if a date, a timestamp, or an interval is finite or not.
+
+
+# JUSTIFY_DAYS
+
+---
+title: 'PostgreSQL JUSTIFY_DAYS() Function'
+page_title: 'PostgreSQL JUSTIFY_DAYS() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL JUSTIFY_DAYS() function to adjust 30-day intervals as months.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-justify_days/'
+ogImage: ''
+updatedOn: '2024-03-21T03:38:28+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL AGE() Function'
+  slug: 'postgresql-date-functions/postgresql-age'
+nextLink:
+  title: 'PostgreSQL JUSTIFY_HOURS() Function'
+  slug: 'postgresql-date-functions/postgresql-justify_hours'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `JUSTIFY_DAYS()` function to adjust 30\-day intervals as months.
+
+## Introduction to the PostgreSQL JUSTIFY_DAYS() function
+
+The `JUSTIFY_DAYS()` function allows you to normalize an [interval](../postgresql-tutorial/postgresql-interval) by converting days exceeding 30 days into months and remaining days.
+
+Here’s the basic syntax of the `JUSTIFY_DAYS()` function:
+
+```sql
+JUSTIFY_DAYS ( value) → interval
+```
+
+In this syntax:
+
+- `value` is an interval value you want to justify.
+
+The `JUSTIFY_DAYS()` function returns an adjusted interval with:
+
+- Days exceeding 30 converted to months.
+- The remaining days are kept as days.
+- Hours, minutes, and seconds remain intact.
+
+If the input interval (`value`) is `NULL`, the function returns `NULL`.
+
+## PostgreSQL JUSTIFY_DAYS() function examples
+
+Let’s explore some examples of using the PostgreSQL `JUSTIFY_DAYS()` function.
+
+### 1\) Basic PostgreSQL JUSTIFY_DAYS() function example
+
+The following statement uses the `JUSTIFY_DAYS()` function to adjust intervals that are multiples of 30 days:
+
+```sql
+SELECT JUSTIFY_DAYS(INTERVAL '30 days'),
+       JUSTIFY_DAYS(INTERVAL '60 days'),
+       JUSTIFY_DAYS(INTERVAL '90 days');
+```
+
+Output:
+
+```text
+ justify_days | justify_days | justify_days
+--------------+--------------+--------------
+ 1 mon        | 2 mons       | 3 mons
+(1 row)
+```
+
+### 2\) Using JUSTIFY_DAYS() function with intervals that are not multiple of 30 days
+
+The following example uses the `JUSTIFY_DAYS()` function to adjust intervals that are not multiples of 30 days:
+
+```sql
+SELECT JUSTIFY_DAYS(INTERVAL '15 days'),
+       JUSTIFY_DAYS(INTERVAL '45 days'),
+       JUSTIFY_DAYS(INTERVAL '75 days');
+```
+
+Output:
+
+```text
+ justify_days | justify_days  |  justify_days
+--------------+---------------+----------------
+ 15 days      | 1 mon 15 days | 2 mons 15 days
+(1 row)
+```
+
+### 3\) Using JUSTIFY_DAYS() function with intervals that include hours
+
+The following example uses the `JUSTIFY_DAYS()` function to adjust intervals that include hours, minutes, and seconds:
+
+```sql
+SELECT JUSTIFY_DAYS(INTERVAL '15 days 2 hours'),
+       JUSTIFY_DAYS(INTERVAL '55 days 30 minutes'),
+       JUSTIFY_DAYS(INTERVAL '75 days 45 seconds');
+```
+
+Output:
+
+```text
+   justify_days   |      justify_days      |      justify_days
+------------------+------------------------+-------------------------
+ 15 days 02:00:00 | 1 mon 25 days 00:30:00 | 2 mons 15 days 00:00:45
+(1 row)
+```
+
+The output indicates that the adjusted intervals have the time parts.
+
+## Summary
+
+- Use the `JUSTIFY_DAYS()` function to normalize an interval by converting days exceeding 30 days as months.
+
+
+# JUSTIFY_HOURS
+
+---
+title: 'PostgreSQL JUSTIFY_HOURS() Function'
+page_title: 'PostgreSQL JUSTIFY_HOURS() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL JUSTIFY_HOURS() function to adjust 24-hour intervals as days.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-justify_hours/'
+ogImage: ''
+updatedOn: '2024-03-21T03:42:38+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL JUSTIFY_DAYS() Function'
+  slug: 'postgresql-date-functions/postgresql-justify_days'
+nextLink:
+  title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
+  slug: 'postgresql-date-functions/postgresql-justify_interval'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `JUSTIFY_HOURS()` function to adjust 24\-hour intervals as days.
+
+## Introduction to the PostgreSQL JUSTIFY_HOURS() function
+
+The `JUSTIFY_HOURS()` function normalizes an [interval](../postgresql-tutorial/postgresql-interval) by converting hours exceeding 24 to days.
+
+Here’s the syntax of the `JUSTIFY_HOURS()` function:
+
+```sql
+JUSTIFY_HOURS ( value) → interval
+```
+
+In this syntax:
+
+- `value` is an interval value you want to justify.
+
+The `JUSTIFY_HOURS()` function returns an adjusted interval with:
+
+- Hours exceeding 24 are converted to days.
+- The remaining hours are kept the same.
+- Minutes, seconds, and other units remain unchanged.
+
+If the value is `NULL`, the function returns `NULL`.
+
+## PostgreSQL JUSTIFY_HOURS() function examples
+
+Let’s take some examples of using the PostgreSQL `JUSTIFY_HOURS()` function.
+
+### 1\) Basic PostgreSQL JUSTIFY_HOURS() function example
+
+The following statement uses the `JUSTIFY_HOURS()` function to adjust intervals that are multiples of 24 hours:
+
+```sql
+SELECT JUSTIFY_HOURS(INTERVAL '24 hours'),
+       JUSTIFY_HOURS(INTERVAL '48 hours'),
+       JUSTIFY_HOURS(INTERVAL '72 hours');
+```
+
+Output:
+
+```text
+ justify_hours | justify_hours | justify_hours
+---------------+---------------+---------------
+ 1 day         | 2 days        | 3 days
+
+```
+
+### 2\) Using JUSTIFY_HOURS() function with intervals that are not multiple of 24 hours
+
+The following example uses the `JUSTIFY_HOURS()` function to adjust intervals that are not multiples of 24 hours:
+
+```sql
+SELECT JUSTIFY_HOURS(INTERVAL '25 hours'),
+       JUSTIFY_HOURS(INTERVAL '50 hours'),
+       JUSTIFY_HOURS(INTERVAL '70 hours');
+```
+
+Output:
+
+```text
+ justify_hours  |  justify_hours  |  justify_hours
+----------------+-----------------+-----------------
+ 1 day 01:00:00 | 2 days 02:00:00 | 2 days 22:00:00
+
+```
+
+### 3\) Using the JUSTIFY_HOURS() function with intervals that include hours
+
+The following example uses the `JUSTIFY_HOURS()` function to adjust intervals that include hours, minutes, and seconds:
+
+```sql
+SELECT JUSTIFY_HOURS(INTERVAL '15 days 2 hours'),
+       JUSTIFY_HOURS(INTERVAL '55 days 30 minutes'),
+       JUSTIFY_HOURS(INTERVAL '75 days 45 seconds');
+```
+
+Output:
+
+```text
+   justify_days   |      justify_days      |      justify_days
+------------------+------------------------+-------------------------
+ 15 days 02:00:00 | 1 mon 25 days 00:30:00 | 2 mons 15 days 00:00:45
+(1 row)
+```
+
+## Summary
+
+- Use the `JUSTIFY_HOURS()` function to adjust 24\-hour intervals as days.
+
+
+# JUSTIFY_INTERVAL
+
+---
+title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
+page_title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
+page_description: 'How to use the PostgreSQL JUSTIFY_INTERVAL() to normalize an interval by using the JUSTIFY_DAYS() and JUSTIFY_HOURS() functions.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-justify_interval/'
+ogImage: ''
+updatedOn: '2024-03-21T03:47:04+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL JUSTIFY_HOURS() Function'
+  slug: 'postgresql-date-functions/postgresql-justify_hours'
+nextLink:
+  title: 'PostgreSQL MAKE_INTERVAL() Function'
+  slug: 'postgresql-date-functions/postgresql-make_interval'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `JUSTIFY_INTERVAL()` to adjust an interval.
+
+## Introduction to the PostgreSQL JUSTIFY_INTERVAL() function
+
+The `JUSTIFY_INTERVAL()` function allows you to adjust an interval by converting days exceeding 30 days into months and hours exceeding 24 hours into days. It essentially normalizes an interval for enhanced readability.
+
+The `JUSTIFY_INTERVAL()` function achieves this by utilizing the `JUSTIFY_DAYS()` and `JUSTIFY_HOURS()` functions, with additional sign adjustments:
+
+- [`JUSTIFY_DAYS()`](postgresql-justify_days): Convert days exceeding 30 days into months and remaining days.
+- [`JUSTIFY_HOURS()`](postgresql-justify_hours): Convert hours exceeding 24 hours into days and remaining hours.
+
+Here’s the syntax of the `JUSTIFY_INTERVAL()` function:
+
+```sql
+JUSTIFY_INTERVAL( value ) → interval
+```
+
+In this syntax, the `value` parameter is an interval value you want to justify.
+
+The `JUSTIFY_INTERVAL()` function returns an adjusted interval by:
+
+- Convert days exceeding 30 days into months and remaining days.
+- Convert hours exceeding 24 hours into days and remaining hours.
+- Correct signs (positive or negative) for the overall duration.
+
+## PostgreSQL JUSTIFY_INTERVAL() function examples
+
+Let’s take some examples of using the `JUSTIFY_INTERVAL()` function.
+
+### 1\) Basic JUSTIFY_INTERVAL() function examples
+
+The following example uses the `JUSTIFY_INTERVAL()` function to justify an interval in days to months:
+
+```sql
+SELECT JUSTIFY_INTERVAL('35 days');
+```
+
+Output:
+
+```text
+ justify_interval
+------------------
+ 1 mon 5 days
+(1 row)
+```
+
+The following statement uses the `JUSTIFY_INTERVAL()` function to justify an interval in hours to days:
+
+```sql
+SELECT JUSTIFY_INTERVAL('30 hours');
+```
+
+Output:
+
+```sql
+justify_interval
+------------------
+ 1 day 06:00:00
+(1 row)
+```
+
+### 2\) Using the JUSTIFY_INTERVAL() function with negative intervals
+
+The following example uses the `JUSTIFY_INTERVAL()` function to convert a negative interval into hours days and hours:
+
+```sql
+SELECT JUSTIFY_INTERVAL('-2 days 5 hours');
+```
+
+Output:
+
+```text
+ justify_interval
+-------------------
+ -1 days -19:00:00
+(1 row)
+```
+
+In this example:
+
+- \-2 days 5 hours is \-48 hours \+ 5 hours which is 43 hours.
+- The function converts – 43 hours to \-24 hours \+ – 19 hours, which results in \-1 days \-19:00:00\.
+
+## Summary
+
+- Use the `JUSTIFY_INTERVAL()` function to normalize an interval by converting days exceeding 30 days into months and hours exceeding 24 hours into days, while maintaining correct signs for positive or negative intervals.
+
+
+# LOCALTIME
+
+---
+title: 'PostgreSQL LOCALTIME Function'
+page_title: 'PostgreSQL LOCALTIME Function'
+page_description: 'You will learn how to use the PostgreSQL LOCALTIME function to return the current time at which the current transaction starts.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-localtime/'
+ogImage: ''
+updatedOn: '2024-01-26T09:40:37+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL NOW() Function'
+  slug: 'postgresql-date-functions/postgresql-now'
+nextLink:
+  title: 'PostgreSQL LOCALTIMESTAMP Function'
+  slug: 'postgresql-date-functions/postgresql-localtimestamp'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LOCALTIME` function to return the current time at which the current transaction starts.
+
+## Introduction to PostgreSQL LOCALTIME function
+
+The `LOCALTIME()` function returns the current time at which the current transaction starts.
+
+Here’s the basic syntax of the `LOCALTIME` function:
+
+```css
+LOCALTIME(precision)
+```
+
+The `LOCALTIME` function takes one optional argument:
+
+**1\) `precision`**
+
+The `precision` argument specifies fractional seconds precision of the second field.
+
+If you omit the `precision` argument, it defaults to 6\.
+
+The `LOCALTIME` function returns a [`TIME`](../postgresql-tutorial/postgresql-time) value that represents the time at which the current transaction starts.
+
+Note that the `LOCATIME` function returns a `TIME` without time zone whereas the [`CURRENT_TIME`](postgresql-current_time) function returns a `TIME` with the timezone.
+
+## PostgreSQL LOCALTIME function examples
+
+Let’s take some examples of using the `LOCALTIME` function.
+
+### 1\) Basic PostgreSQL LOCALTIME function example
+
+The following example uses the `LOCALTIME` function to get the time of the current transaction:
+
+```
+SELECT LOCALTIME;
+```
+
+Output:
+
+```
+    localtime
+-----------------
+ 16:37:59.950622
+(1 row)
+
+```
+
+### 2\) Using the PostgreSQL LOCALTIME function with fractional seconds precision
+
+The following example uses the `LOCALTIME(2)` function to get the time with a specified fractional seconds precision:
+
+```css
+SELECT LOCALTIME(2);
+```
+
+Output:
+
+```
+  localtime
+-------------
+ 16:38:07.97
+(1 row)
+```
+
+## Summary
+
+- Use the PostgreSQL `LOCALTIME` function to get the time at which the current transaction starts.
+
+
+# LOCALTIMESTAMP
+
+---
+title: 'PostgreSQL LOCALTIMESTAMP Function'
+page_title: 'PostgreSQL LOCALTIMESTAMP Function By Examples'
+page_description: 'This tutorial shows you how to use the PostgreSQL LOCALTIMESTAMP function to return the date and time at which the current transaction starts.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-localtimestamp/'
+ogImage: ''
+updatedOn: '2024-01-26T10:03:19+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL LOCALTIME Function'
+  slug: 'postgresql-date-functions/postgresql-localtime'
+nextLink:
+  title: 'PostgreSQL DATE_PART() Function'
+  slug: 'postgresql-date-functions/postgresql-date_part'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LOCALTIMESTAMP` function to return the current date and time at which the current transaction starts.
+
+## Introduction to PostgreSQL LOCALTIMESTAMP function
+
+The following illustrates the syntax of the `LOCALTIMESTAMP` function:
+
+```csssql
+LOCALTIMESTAMP(precision)
+```
+
+The `LOCALTIMESTAMP` function accepts one argument:
+
+**1\) `precision`**
+
+The `precision` argument specifies fractional seconds precision of the second field.
+
+The `precision` argument is optional. If you omit it, its default value is 6\.
+
+The `LOCALTIMESTAMP` function returns a [`TIMESTAMP`](../postgresql-tutorial/postgresql-timestamp) value that represents the date and time at which the current transaction starts.
+
+The `LOCALTIMESTAMP` function returns a `TIMESTAMP` value **without** time zone whereas the [`CURRENT_TIMESTAMP`](postgresql-current_timestamp) function returns a `TIMESTAMP` **with** the timezone.
+
+## PostgreSQL LOCALTIMESTAMP function examples
+
+Let’s explore some examples of using the `LOCALTIMESTAMP` function
+
+### 1\) Basic PostgreSQL LOCALTIMESTAMP function example
+
+The following example uses the `LOCALTIMESTAMP` function to get the current date and time of the transaction:
+
+```
+SELECT LOCALTIMESTAMP;
+```
+
+Output:
+
+```
+         timestamp
+----------------------------
+ 2017-08-16 09:37:38.443431
+(1 row)
+```
+
+### 2\) Using PostgreSQL LOCALTIMESTAMP function with a fractional seconds precision example
+
+To get the timestamp of the current transaction with specific fractional seconds precision, you use the `precision` argument as follows:
+
+```css
+SELECT LOCALTIMESTAMP(2);
+```
+
+The result is:
+
+```
+       timestamp
+------------------------
+ 2017-08-16 09:39:06.64
+(1 row)
+```
+
+## Summary
+
+- Use the PostgreSQL `LOCALTIMESTAMP` function to return the date and time at which the current transaction starts.
+
+
+# MAKE_DATE
+
+---
+title: 'PostgreSQL MAKE_DATE() Function'
+page_title: 'PostgreSQL MAKE_DATE() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL MAKE_DATE() function to generate a date value from the year, month, and day.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-make_date/'
+ogImage: ''
+updatedOn: '2024-03-25T01:39:34+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL TO_TIMESTAMP Function'
+  slug: 'postgresql-date-functions/postgresql-to_timestamp'
+nextLink:
+  title: 'PostgreSQL MAKE_TIME() Function'
+  slug: 'postgresql-date-functions/postgresql-make_time'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAKE_DATE()` function to generate a date value from the year, month, and day.
+
+## Introduction to PostgreSQL MAKE_DATE() function
+
+The `MAKE_DATE()` function allows you to construct a [date](../postgresql-tutorial/postgresql-date) value from the specified year, month, and day values.
+
+Here’s the syntax of the `MAKE_DATE()` function:
+
+```sql
+MAKE_DATE( year int, month int, day int ) → date
+```
+
+In this syntax, `year`, `month`, and `day` are the year, month, and day parts of the date. The negative year indicates BC.
+
+The `MAKE_DATE()` function returns a value of the `DATE` type.
+
+## PostgreSQL MAKE_DATE() function examples
+
+Let’s explore some examples of using the `MAKE_DATE()` function.
+
+### 1\) Basic PostgreSQL MAKE_DATE() function example
+
+The following example uses the `MAKE_DATE()` function to generate the date `2024-03-25`:
+
+```sql
+SELECT MAKE_DATE(2023,3, 25);
+```
+
+Output:
+
+```text
+ make_date
+------------
+ 2023-03-25
+(1 row)
+```
+
+### 2\) Using the MAKE_DATE() function with leap years
+
+The `MAKE_DATE()` function automatically handles the leap years for you. For example, you can create a date of `February 29th` in a leap year such as `2024` as follows:
+
+```sql
+SELECT MAKE_DATE(2024, 2, 29);
+```
+
+Output:
+
+```text
+ make_date
+------------
+ 2024-02-29
+(1 row)
+```
+
+### 3\) Using the MAKE_DATE() function to generate sequential dates
+
+The following example uses the `MAKE_DATE()` function to generate a list of date values from `Jan 1, 2024` to `Jan 7, 2024`:
+
+```sql
+SELECT MAKE_DATE(2023, 1, day) dates
+FROM generate_series(1, 7) AS day;
+```
+
+Output:
+
+```text
+   dates
+------------
+ 2023-01-01
+ 2023-01-02
+ 2023-01-03
+ 2023-01-04
+ 2023-01-05
+ 2023-01-06
+ 2023-01-07
+(7 rows)
+```
+
+## Summary
+
+- Use the `MAKE_DATE()` function to generate a date value from the year, month, and day
+
+
+# MAKE_INTERVAL
+
+---
+title: 'PostgreSQL MAKE_INTERVAL() Function'
+page_title: 'PostgreSQL MAKE_INTERVAL() Function'
+page_description: "In this tutorial, you will learn how to use the PostgreSQL MAKE_INTERVAL() function to create an interval from the interval's components"
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-make_interval/'
+ogImage: ''
+updatedOn: '2024-03-25T05:04:35+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
+  slug: 'postgresql-date-functions/postgresql-justify_interval'
+nextLink:
+  title: 'PostgreSQL AT TIME ZONE Operator'
+  slug: 'postgresql-date-functions/postgresql-at-time-zone'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAKE_INTERVAL()` function to create an interval from the interval’s components
+
+## Introduction to the PostgreSQL MAKE_INTERVAL() function
+
+The `MAKE_INTERVAL()` function allows you to create an [interval](../postgresql-tutorial/postgresql-interval) from years, months, weeks, days, hours, minutes, and seconds.
+
+Here’s the syntax of the `MAKE_INTERVAL()` function:
+
+```csssqlsql
+MAKE_INTERVAL ( [ years int [, months int [, weeks int [, days int [, hours int [, mins int [, secs double precision ]]]]]]] ) → interval
+```
+
+In this syntax:
+
+- `years` is an integer representing the number of years.
+- `months` is an integer representing the number of months.
+- `weeks` is an integer representing the number of weeks.
+- `days` is an integer representing the number of days.
+- `hours` is an integer representing the number of hours.
+- `mins` is an integer representing the number of minutes.
+- `secs` is a double\-precision number representing the number of seconds.
+
+All of these parameters are optional and default to zero.
+
+The `MAKE_INTERVAL()` function returns a value of interval type.
+
+Besides the `MAKE_INTERVAL()` function, you can use the `INTERVAL` literal syntax to create an interval:
+
+```sql
+INTERVAL 'X years Y months Z days W hours V minutes U seconds'
+```
+
+The `INTERVAL` literal syntax allows you to create an interval by specifying all components in a single string. It is suitable for creating static or predefined intervals.
+
+On the other hand, the `MAKE_INTERVAL()` function offers the flexibility to specify each component separately and is ideal for creating an interval dynamically. For example, you can use the `MAKE_INTERVAL()` function to create an interval from values stored in a table.
+
+## PostgreSQL MAKE_INTERVAL() function examples
+
+Let’s explore some examples of using the `MAKE_INTERVAL()` function.
+
+### 1\) Basic MAKE_INTERVAL() function example
+
+The following example uses the `MAKE_INTERVAL()` function to create an interval that represents 1 year, 2 months, 3 days, and 4 hours:
+
+```
+SELECT
+  MAKE_INTERVAL(
+    years => 3, months => 6, days => 15, hours => 4
+  );
+```
+
+Output:
+
+```text
+          make_interval
+---------------------------------
+ 3 years 6 mons 15 days 04:00:00
+(1 row)
+```
+
+### 2\) Using the MAKE_INTERVAL() function with default values
+
+All of the parameters of the `MAKE_INTERVAL()` function are optional and default to zero. For example, the following statement creates an interval zero:
+
+```sql
+SELECT MAKE_INTERVAL();
+```
+
+Output:
+
+```text
+ make_interval
+---------------
+ 00:00:00
+(1 row)
+```
+
+### 3\) Using the MAKE_INTERVAL( ) function with table data
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `time_data`:
+
+```sql
+CREATE TABLE time_data (
+    id SERIAL PRIMARY KEY,
+    year INTEGER,
+    month INTEGER,
+    day INTEGER,
+    hour INTEGER,
+    minute INTEGER,
+    second INTEGER
+);
+```
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the time_data table:
+
+```sql
+INSERT INTO time_data (year, month, day, hour, minute, second)
+VALUES
+    (1, 3, 25, 10, 0, 0),
+    (2, 2, 25, 11, 30, 0),
+    (3, 1, 25, 13, 15, 0)
+RETURNING *;
+```
+
+Output:
+
+```text
+ id | year | month | day | hour | minute | second
+----+------+-------+-----+------+--------+--------
+  1 |    1 |     3 |  25 |   10 |      0 |      0
+  2 |    2 |     2 |  25 |   11 |     30 |      0
+  3 |    3 |     1 |  25 |   13 |     15 |      0
+(3 rows)
+```
+
+Third, use the `MAKE_INTERVAL()` function to create intervals from the data stored in the `time_data` table:
+
+```
+SELECT
+  MAKE_INTERVAL(
+    year, month, 0, day, hour, minute, second
+  ) AS interval_data
+FROM
+  time_data;
+```
+
+Output:
+
+```
+          interval_data
+---------------------------------
+ 1 year 3 mons 25 days 10:00:00
+ 2 years 2 mons 25 days 11:30:00
+ 3 years 1 mon 25 days 13:15:00
+(3 rows)
+```
+
+## Summary
+
+- Use the `MAKE_INTERVAL()` function to construct an interval from the provided components, such as years, months, days, hours, minutes, and seconds.
+
+
+# MAKE_TIME
+
+---
+title: 'PostgreSQL MAKE_TIME() Function'
+page_title: 'PostgreSQL MAKE_TIME() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL MAKE_TIME() function to create a time value from hour, minute, and second values.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-make_time/'
+ogImage: ''
+updatedOn: '2024-03-25T02:56:31+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL MAKE_DATE() Function'
+  slug: 'postgresql-date-functions/postgresql-make_date'
+nextLink:
+  title: 'PostgreSQL AGE() Function'
+  slug: 'postgresql-date-functions/postgresql-age'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAKE_TIME()` function to create a time value from hour, minute, and second values.
+
+## Introduction to the PostgreSQL MAKE_TIME() function
+
+The `MAKE_TIME()` function allows you to create a [time](../postgresql-tutorial/postgresql-time) value from hour, minute, and second values.
+
+Here’s the syntax of the `MAKE_TIME()` function:
+
+```sql
+MAKE_TIME ( hour int, min int, sec double precision ) → time
+```
+
+In this syntax:
+
+- `hour`: The hour part of the time. The valid range for the hour is from 0 to 23\. 0 represents midnight (12:00 AM) and 24 represents noon.
+- `min`: The minute part of the time. The valid range for the second is from 0 to 59\.
+- `sec`: The second within a minute. Its valid range is from 0 to `59.999999`.
+
+The `MAKE_TIME()` function returns a time value constructed from the hour, min, and sec.
+
+If you use invalid values for hour, min, and sec, the function will issue an error.
+
+## PostgreSQL MAKE_TIME() function examples
+
+Let’s explore some examples of using the `MAKE_TIME()` function.
+
+### 1\) Basic MAKE_TIME() function examples
+
+The following example uses the `MAKE_TIME()` function to construct a time `22:30:45` from hour, minute, and second:
+
+```sql
+SELECT MAKE_TIME(22,30,45);
+```
+
+Output:
+
+```text
+ make_time
+-----------
+ 22:30:45
+(1 row)
+```
+
+The following example attempts to use invalid values for hour, minute, and second to construct a time and results in an error:
+
+```sql
+SELECT MAKE_TIME(25,30,45);
+```
+
+Error:
+
+```sql
+ERROR:  time field value out of range: 25:30:45
+```
+
+### 2\) Using the MAKE_TIME() function with string arguments
+
+Even though the type of hour and minute parameters are integers and seconds are double precision, you can pass string arguments to the `MAKE_TIME()` function.
+
+Behind the scenes, the function will implicitly convert these string arguments to the proper types, as long as the results of the conversions are in the valid range.
+
+```sql
+SELECT MAKE_TIME('8', '30', '59.999999');
+```
+
+Output:
+
+```text
+    make_time
+-----------------
+ 08:30:59.999999
+(1 row)
+```
+
+## Summary
+
+- Use the `MAKE_TIME()` function to create a time value from hour, minute, and second values.
+
+
+# NOW
+
+---
+title: 'PostgreSQL NOW() Function'
+page_title: 'PostgreSQL NOW() Function: Getting the Current Date and Time'
+page_description: 'This tutorial shows you how to use the PostgreSQL NOW() function to get the current date and time with the timezone.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-now/'
+ogImage: ''
+updatedOn: '2024-01-27T02:24:06+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL STATEMENT_TIMESTAMP() Function'
+  slug: 'postgresql-date-functions/postgresql-statement_timestamp'
+nextLink:
+  title: 'PostgreSQL LOCALTIME Function'
+  slug: 'postgresql-date-functions/postgresql-localtime'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `NOW()` function to get the current date and time with the time zone.
+
+## Introduction to PostgreSQL NOW() function
+
+The `NOW()` function returns the current date and time with the time zone of the database server.
+
+Here’s the basic syntax of the `NOW()` function:
+
+```csssql
+NOW()
+```
+
+The `NOW()` function doesn’t require any argument. Its return type is the [timestamp with time zone](../postgresql-tutorial/postgresql-timestamp). For example:
+
+```
+SELECT NOW();
+```
+
+Output:
+
+```
+              now
+-------------------------------
+ 2024-01-26 18:14:09.101641-08
+(1 row)
+```
+
+Note that the `NOW()` function returns the current date and time based on the database server’s time zone setting.
+
+For example, if you change the timezone to ‘Africa/Cairo’ and get the current date and time:
+
+```sql
+SET TIMEZONE='Africa/Cairo';
+SELECT NOW();
+```
+
+Output:
+
+```text
+              now
+-------------------------------
+ 2024-01-27 04:15:20.112974+02
+(1 row)
+```
+
+The output indicates that the value returned by the `NOW()` function is adjusted to the new timezone.
+
+Note that to get a complete list of time zones, you can query from the `pg_timezone_names`:
+
+```sql
+SELECT * FROM pg_timezone_names;
+```
+
+Partial output:
+
+```
+               name               | abbrev | utc_offset | is_dst
+----------------------------------+--------+------------+--------
+ Africa/Abidjan                   | GMT    | 00:00:00   | f
+ Africa/Accra                     | GMT    | 00:00:00   | f
+ Africa/Addis_Ababa               | EAT    | 03:00:00   | f
+...
+```
+
+If you want to get the current date and time without a timezone, you can cast it explicitly as follows:
+
+```
+SELECT NOW()::timestamp;
+```
+
+Output:
+
+```php
+            now
+----------------------------
+ 2017-03-17 18:37:29.229991
+(1 row)
+
+```
+
+You can use the common date and time operators for the `NOW()` function. For example, to get 1 hour from now:
+
+```text
+        an_hour_later
+------------------------------
+ 2024-01-27 05:16:17.15237+02
+(1 row)
+```
+
+To get this time tomorrow, you add 1 day to the current time:
+
+```sql
+SELECT (NOW() + interval '1 day') AS this_time_tomorrow;
+```
+
+Output:
+
+```php
+      this_time_tomorrow
+-------------------------------
+ 2024-01-28 04:16:28.308575+02
+(1 row)
+
+```
+
+To get 2 hours 30 minutes ago, you use the minus (\-) operator as follows:
+
+```sql
+SELECT now() - interval '2 hours 30 minutes' AS two_hour_30_min_go;
+```
+
+Output:
+
+```
+      two_hour_30_min_go
+-------------------------------
+ 2024-01-27 01:47:18.246763+02
+(1 row)
+```
+
+## PostgreSQL NOW() related functions
+
+Besides the `NOW()` function, you can use the `CURRENT_TIME` or `CURRENT_TIMESTAMP` to get the current date and time with the timezone:
+
+```sql
+SELECT CURRENT_TIME, CURRENT_TIMESTAMP;
+```
+
+Output:
+
+```
+    current_time    |       current_timestamp
+--------------------+-------------------------------
+ 04:17:46.412062+02 | 2024-01-27 04:17:46.412062+02
+(1 row)
+
+```
+
+To get the current date and time without a timezone, you use the `LOCALTIME` and `LOCALTIMESTAMP` functions.
+
+```sql
+SELECT LOCALTIME, LOCALTIMESTAMP;
+```
+
+Output:
+
+```
+      time       |         timestamp
+-----------------+----------------------------
+ 19:13:41.423371 | 2017-03-17 19:13:41.423371
+(1 row)
+```
+
+Notice that `NOW()` and its related functions return the start time of the current transaction. In other words, the return values of the function calls are the same within a transaction.
+
+The following example illustrates the concept:
+
+```sql
+postgres=# BEGIN;
+BEGIN
+postgres=# SELECT now();
+              now
+-------------------------------
+ 2017-03-17 19:21:43.049715-07
+(1 row)
+
+
+postgres=# SELECT pg_sleep(3);
+ pg_sleep
+----------
+
+(1 row)
+
+
+postgres=# SELECT now();
+              now
+-------------------------------
+ 2017-03-17 19:21:43.049715-07
+(1 row)
+
+
+postgres=# COMMIT;
+COMMIT
+
+```
+
+In this example, we called the `NOW()` function within a transaction and its return values do not change through the transaction.
+
+Note that the `pg_sleep()` function pauses the current session’s process sleep for a specified of seconds.
+
+If you want to get the current date and time that does advance during the transaction, you can use the `TIMEOFDAY()` function. Consider the following example:
+
+```sql
+SELECT
+    TIMEOFDAY(),
+    pg_sleep(5),
+    TIMEOFDAY();
+```
+
+Output:
+
+```
+              timeofday              | pg_sleep |              timeofday
+-------------------------------------+----------+-------------------------------------
+ Sat Jan 27 04:19:08.650831 2024 EET |          | Sat Jan 27 04:19:13.655833 2024 EET
+(1 row)
+```
+
+After pausing 5 seconds, the current date and time increased.
+
+## PostgreSQL NOW() function as default values
+
+You can use the `NOW()` function as the default value for a column of a table. For example:
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) named posts with the `created_at` column that has a default value provided by the `NOW()` function:
+
+```sql
+CREATE TABLE posts (
+     id         SERIAL PRIMARY KEY,
+     title      VARCHAR NOT NULL,
+     created_at TIMESTAMPTZ DEFAULT Now()
+);
+
+```
+
+Second, [insert a new row](../postgresql-tutorial/postgresql-insert) into the `posts` table:
+
+```sql
+INSERT INTO posts (title)
+VALUES     ('PostgreSQL NOW function');
+```
+
+Third, [query data](../postgresql-tutorial/postgresql-select) from the `posts` table:
+
+```sql
+SELECT * FROM posts;
+```
+
+Output:
+
+```
+ id |          title          |          created_at
+----+-------------------------+-------------------------------
+  1 | PostgreSQL NOW function | 2024-01-27 04:20:11.286958+02
+(1 row)
+```
+
+Even though we did not provide the value for the `created_at` column, the statement used the value returned by the `NOW()` function for that column.
+
+## Summary
+
+- Use the PostgreSQL `NOW()` function to get the current date and time with the timezone.
+
+
+# PG_SLEEP
+
+---
+title: 'PostgreSQL PG_SLEEP() Function'
+page_title: 'PostgreSQL PG_SLEEP() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL PG_SLEEP() function to pause the execution of a query.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-pg_sleep/'
+ogImage: ''
+updatedOn: '2024-03-21T09:32:51+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL TIMEOFDAY() Function'
+  slug: 'postgresql-date-functions/postgresql-timeofday'
+nextLink:
+  title: 'PostgreSQL String Functions'
+  slug: 'postgresql-date-functions/../postgresql-string-functions'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `PG_SLEEP()` function to pause the execution of a query.
+
+## Introduction to the PostgreSQL PG_SLEEP() function
+
+The `PG_SLEEP()` function allows you to create a delay (sleep) in your queries. The function can be useful when you want to test, simulate real\-time processes, or add a pause between operations.
+
+Here’s the syntax of the `PG_SLEEP()` function:
+
+```sql
+PG_SLEEP(seconds)
+```
+
+In this syntax, the `seconds` parameter specifies the number of seconds for which you want the execution to pause. It can be an integer or a decimal number with fractions.
+
+## The PostgreSQL PG_SLEEP() function examples
+
+Let’s explore some examples of using the `PG_SLEEP()` function.
+
+### 1\) Basic usage of PG_SLEEP() function
+
+The following example uses the `PG_SLEEP()` function to pause the execution for 3 seconds before returning any result:
+
+```sql
+SELECT pg_sleep(3);
+```
+
+After 3 seconds:
+
+```text
+ pg_sleep
+----------
+
+(1 row)
+```
+
+### 2\) Using Fractional Seconds
+
+The following example uses the `PG_SLEEP()` function to pause the execution for `1.5` seconds:
+
+```sql
+SELECT PG_SLEEP(1.5);
+```
+
+After `1.5` seconds:
+
+```text
+ pg_sleep
+----------
+
+(1 row)
+```
+
+### 3\) Using the PG_SLEEP() function with NOW() function
+
+The following example uses the `PG_SLEEP()` function between the [`NOW()`](postgresql-now) functions:
+
+```sql
+SELECT NOW(), PG_SLEEP(3), NOW();
+```
+
+Output:
+
+```sql
+-[ RECORD 1 ]---------------------------
+now      | 2024-03-21 02:26:37.710939-07
+pg_sleep |
+now      | 2024-03-21 02:26:37.710939-07
+```
+
+The output indicates that the result of the `NOW()` function does not change within the same statement even though we use pause the execution between the calls of the `NOW()` functions for 3 seconds.
+
+### 4\) Using the PG_SLEEP() function with CLOCK_TIMESTAMP() function
+
+The following example uses the `PG_SLEEP()` function between the [`CLOCK_TIMESTAMP()`](postgresql-clock_timestamp) functions:
+
+```sql
+SELECT CLOCK_TIMESTAMP(), PG_SLEEP(3), CLOCK_TIMESTAMP();
+```
+
+Output:
+
+```sql
+-[ RECORD 1 ]---+------------------------------
+clock_timestamp | 2024-03-21 02:27:03.181753-07
+pg_sleep        |
+clock_timestamp | 2024-03-21 02:27:06.186789-07
+```
+
+The output shows that the [`CLOCK_TIMESTAMP()`](postgresql-clock_timestamp) returns the actual current timestamp when it executes. The results of the `CLOCK_TIMESTAMP()` function calls are 3 seconds difference.
+
+## Summary
+
+- Use the `PG_SLEEP()` function to pause the SQL execution for a number of seconds.
+
+
+# STATEMENT_TIMESTAMP
+
+---
+title: 'PostgreSQL STATEMENT_TIMESTAMP() Function'
+page_title: 'PostgreSQL statement_timestamp() Function'
+page_description: 'How to use the PostgreSQL statement_timestamp() function to retrieve the start time of the current statement.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-statement_timestamp/'
+ogImage: ''
+updatedOn: '2024-03-21T04:12:51+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL CLOCK_TIMESTAMP() Function'
+  slug: 'postgresql-date-functions/postgresql-clock_timestamp'
+nextLink:
+  title: 'PostgreSQL NOW() Function'
+  slug: 'postgresql-date-functions/postgresql-now'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `STATEMENT_TIMESTAMP()` function to retrieve the start time of the current statement.
+
+## Introduction to the PostgreSQL STATEMENT_TIMESTAMP() function
+
+The `STATEMENT_TIMESTAMP()` function returns the start time of the current statement.
+
+Here’s the syntax of the `STATEMENT_TIMESTAMP()` function:
+
+```sql
+STATEMENT_TIMESTAMP()
+```
+
+The `STATEMENT_TIMESTAMP()` function doesn’t accept any argument. It returns a value of the type `TIMESTAMP WITH TIME ZONE`, representing a [timestamp](../postgresql-tutorial/postgresql-timestamp) at the start of the current statement.
+
+## PostgreSQL STATEMENT_TIMESTAMP() function examples
+
+Let’s take some examples of using the `STATEMENT_TIMESTAMP()` function.
+
+### 1\) Basic statement_timestamp() function example
+
+The following statement uses the `STATEMENT_TIMESTAMP()` function to retrieve the start time of the current statement:
+
+```sql
+SELECT STATEMENT_TIMESTAMP();
+```
+
+Output:
+
+```text
+      statement_timestamp
+-------------------------------
+ 2024-03-20 11:30:47.001021-07
+(1 row)
+```
+
+The output indicates that the `STATEMENT_TIMESTAMP()` function returns a timestamp with a time zone of the start time when the statement is executed.
+
+### 2\) Using the statement_timestamp() within a transaction
+
+The following example calls the `STATEMENT_TIMESTAMP()` function within a transaction multiple times and log the result into a table:
+
+```sql
+-- create a new table for logging
+CREATE TABLE logs(
+   id SERIAL PRIMARY KEY,
+   started_at TIMESTAMP WITH TIME ZONE
+);
+
+-- start a transaction
+BEGIN;
+
+INSERT INTO logs(started_at) VALUES(statement_timestamp());
+SELECT pg_sleep(3);
+
+INSERT INTO logs(started_at) VALUES(statement_timestamp());
+SELECT pg_sleep(3);
+
+INSERT INTO logs(started_at) VALUES(statement_timestamp());
+END;
+
+-- retrieve data from the logs table
+SELECT * FROM logs;
+```
+
+Output:
+
+```text
+ id |          started_at
+----+-------------------------------
+  1 | 2024-03-20 13:22:13.056783+07
+  2 | 2024-03-20 13:22:16.228492+07
+  3 | 2024-03-20 13:22:19.390211+07
+(3 rows)
+```
+
+In this example, we use the `pg_sleep()` function to delay the execution of each [INSERT](../postgresql-tutorial/postgresql-insert) statement.
+
+Since we invoke the `STATEMENT_TIMESTAMP()` function in its own SQL statement, it returns a timestamp differently with each call.
+
+Notice that the `STATEMENT_TIMESTAMP()` function is unlike the `TRANSACTION_TIMESTAMP()` function which does not change with each statement. The `TRANSACTION_TIMESTAMP()` will return the same start time of the transaction.
+
+### 3\) Call the statement_timestamp() function multiple times within a statement
+
+The following example calls the `STATEMENT_TIMESTAMP()` function multiple times within a single statement:
+
+```sql
+SELECT
+  statement_timestamp(),
+  pg_sleep(3),
+  statement_timestamp(),
+  pg_sleep(3),
+  statement_timestamp();
+```
+
+Output:
+
+```sql
+-[ RECORD 1 ]-------+------------------------------
+statement_timestamp | 2024-03-20 13:52:55.861004-07
+pg_sleep            |
+statement_timestamp | 2024-03-20 13:52:55.861004-07
+pg_sleep            |
+statement_timestamp | 2024-03-20 13:52:55.861004-07
+```
+
+Note that to display vertical results in psql, you execute the \\x command first.
+
+In this example, the `STATEMENT_TIMESTAMP()` function returns the same values for all three calls, even though we call the `pg_sleep()` to delay execution between each call.
+
+It is important to notice that this behavior contrasts with the [`CLOCK_TIMESTAMP()`](postgresql-clock_timestamp) function, which continues to change as it progresses through the statement.
+
+## Summary
+
+- Use the `STATEMENT_TIMESTAMP()` function to retrieve the start time of the current statement.
+
+
+# TIMEOFDAY
+
+---
+title: 'PostgreSQL TIMEOFDAY() Function'
+page_title: 'PostgreSQL TIMEOFDAY() Function'
+page_description: 'How to use the PostgreSQL TIMEOFDAY() function to retrieve the current date and time as a formatted string.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-timeofday/'
+ogImage: ''
+updatedOn: '2024-03-20T04:01:17+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL ISFINITE() Function'
+  slug: 'postgresql-date-functions/postgresql-isfinite'
+nextLink:
+  title: 'PostgreSQL PG_SLEEP() Function'
+  slug: 'postgresql-date-functions/postgresql-pg_sleep'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `TIMEOFDAY()` function to retrieve the current date and time as a formatted string.
+
+## Introduction to the PostgreSQL TIMEOFDAY() function
+
+The `TIMEOFDAY()` function returns the [current date and time](postgresql-current_timestamp) as a formatted string.
+
+Here’s the syntax of the `TIMEOFDAY()` function:
+
+```sql
+TIMEOFDAY()
+```
+
+The function does not have any parameters and returns the current date and time as a string.
+
+Note that the `TIMEOFDAY()` function returns the same result as the `CLOCK_TIMESTAMP()` function but in the text string.
+
+## PostgreSQL TIMEOFDAY() function examples
+
+Let’s take some examples of using the `TIMEOFDAY()` function.
+
+### 1\) Basic TIMEOFDAY() function example
+
+The following example uses the `TIMEOFDAY()` function to retrieve the current date and time as a string:
+
+```text
+              timeofday
+-------------------------------------
+ Wed Mar 20 10:20:10.108369 2024 -07
+(1 row)
+```
+
+The output shows the date, time, and timezone.
+
+### 2\) Formatting the output
+
+If you want a specific format, you can cast the result of the `TIMEOFDAY()` function into a timestamp and use the `to_char()` function to achieve the desired format:
+
+```sql
+SELECT
+  to_char(
+    timeofday():: timestamp,
+    'YYYY-MM-DD HH24:MI:SS'
+  ) current_time;
+```
+
+Output:
+
+```text
+    current_time
+---------------------
+ 2024-03-20 10:26:57
+(1 row)
+```
+
+## Summary
+
+- Use the `TIMEOFDAY()` function to obtain the current date and time as a formatted string.
+
 
 # TO_DATE
 
@@ -40125,1488 +46689,6 @@ to_timestamp
 In this tutorial, you have learned how to use the PostgreSQL `TO_TIMESTAMP()` function to convert a string to a timestamp.
 
 
-# MAKE_DATE
-
----
-title: 'PostgreSQL MAKE_DATE() Function'
-page_title: 'PostgreSQL MAKE_DATE() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL MAKE_DATE() function to generate a date value from the year, month, and day.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-make_date/'
-ogImage: ''
-updatedOn: '2024-03-25T01:39:34+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL TO_TIMESTAMP Function'
-  slug: 'postgresql-date-functions/postgresql-to_timestamp'
-nextLink:
-  title: 'PostgreSQL MAKE_TIME() Function'
-  slug: 'postgresql-date-functions/postgresql-make_time'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAKE_DATE()` function to generate a date value from the year, month, and day.
-
-## Introduction to PostgreSQL MAKE_DATE() function
-
-The `MAKE_DATE()` function allows you to construct a [date](../postgresql-tutorial/postgresql-date) value from the specified year, month, and day values.
-
-Here’s the syntax of the `MAKE_DATE()` function:
-
-```sql
-MAKE_DATE( year int, month int, day int ) → date
-```
-
-In this syntax, `year`, `month`, and `day` are the year, month, and day parts of the date. The negative year indicates BC.
-
-The `MAKE_DATE()` function returns a value of the `DATE` type.
-
-## PostgreSQL MAKE_DATE() function examples
-
-Let’s explore some examples of using the `MAKE_DATE()` function.
-
-### 1\) Basic PostgreSQL MAKE_DATE() function example
-
-The following example uses the `MAKE_DATE()` function to generate the date `2024-03-25`:
-
-```sql
-SELECT MAKE_DATE(2023,3, 25);
-```
-
-Output:
-
-```text
- make_date
-------------
- 2023-03-25
-(1 row)
-```
-
-### 2\) Using the MAKE_DATE() function with leap years
-
-The `MAKE_DATE()` function automatically handles the leap years for you. For example, you can create a date of `February 29th` in a leap year such as `2024` as follows:
-
-```sql
-SELECT MAKE_DATE(2024, 2, 29);
-```
-
-Output:
-
-```text
- make_date
-------------
- 2024-02-29
-(1 row)
-```
-
-### 3\) Using the MAKE_DATE() function to generate sequential dates
-
-The following example uses the `MAKE_DATE()` function to generate a list of date values from `Jan 1, 2024` to `Jan 7, 2024`:
-
-```sql
-SELECT MAKE_DATE(2023, 1, day) dates
-FROM generate_series(1, 7) AS day;
-```
-
-Output:
-
-```text
-   dates
-------------
- 2023-01-01
- 2023-01-02
- 2023-01-03
- 2023-01-04
- 2023-01-05
- 2023-01-06
- 2023-01-07
-(7 rows)
-```
-
-## Summary
-
-- Use the `MAKE_DATE()` function to generate a date value from the year, month, and day
-
-
-# MAKE_TIME
-
----
-title: 'PostgreSQL MAKE_TIME() Function'
-page_title: 'PostgreSQL MAKE_TIME() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL MAKE_TIME() function to create a time value from hour, minute, and second values.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-make_time/'
-ogImage: ''
-updatedOn: '2024-03-25T02:56:31+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL MAKE_DATE() Function'
-  slug: 'postgresql-date-functions/postgresql-make_date'
-nextLink:
-  title: 'PostgreSQL AGE() Function'
-  slug: 'postgresql-date-functions/postgresql-age'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAKE_TIME()` function to create a time value from hour, minute, and second values.
-
-## Introduction to the PostgreSQL MAKE_TIME() function
-
-The `MAKE_TIME()` function allows you to create a [time](../postgresql-tutorial/postgresql-time) value from hour, minute, and second values.
-
-Here’s the syntax of the `MAKE_TIME()` function:
-
-```sql
-MAKE_TIME ( hour int, min int, sec double precision ) → time
-```
-
-In this syntax:
-
-- `hour`: The hour part of the time. The valid range for the hour is from 0 to 23\. 0 represents midnight (12:00 AM) and 24 represents noon.
-- `min`: The minute part of the time. The valid range for the second is from 0 to 59\.
-- `sec`: The second within a minute. Its valid range is from 0 to `59.999999`.
-
-The `MAKE_TIME()` function returns a time value constructed from the hour, min, and sec.
-
-If you use invalid values for hour, min, and sec, the function will issue an error.
-
-## PostgreSQL MAKE_TIME() function examples
-
-Let’s explore some examples of using the `MAKE_TIME()` function.
-
-### 1\) Basic MAKE_TIME() function examples
-
-The following example uses the `MAKE_TIME()` function to construct a time `22:30:45` from hour, minute, and second:
-
-```sql
-SELECT MAKE_TIME(22,30,45);
-```
-
-Output:
-
-```text
- make_time
------------
- 22:30:45
-(1 row)
-```
-
-The following example attempts to use invalid values for hour, minute, and second to construct a time and results in an error:
-
-```sql
-SELECT MAKE_TIME(25,30,45);
-```
-
-Error:
-
-```sql
-ERROR:  time field value out of range: 25:30:45
-```
-
-### 2\) Using the MAKE_TIME() function with string arguments
-
-Even though the type of hour and minute parameters are integers and seconds are double precision, you can pass string arguments to the `MAKE_TIME()` function.
-
-Behind the scenes, the function will implicitly convert these string arguments to the proper types, as long as the results of the conversions are in the valid range.
-
-```sql
-SELECT MAKE_TIME('8', '30', '59.999999');
-```
-
-Output:
-
-```text
-    make_time
------------------
- 08:30:59.999999
-(1 row)
-```
-
-## Summary
-
-- Use the `MAKE_TIME()` function to create a time value from hour, minute, and second values.
-
-
-# Handling Intervals
-
-# AGE
-
----
-title: 'PostgreSQL AGE() Function'
-page_title: 'PostgreSQL AGE() Function: Calculate Ages'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL AGE() function to calculate ages based on two timestamps.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-age/'
-ogImage: '/postgresqltutorial/rental-table.png'
-updatedOn: '2024-03-21T04:14:17+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL MAKE_TIME() Function'
-  slug: 'postgresql-date-functions/postgresql-make_time'
-nextLink:
-  title: 'PostgreSQL JUSTIFY_DAYS() Function'
-  slug: 'postgresql-date-functions/postgresql-justify_days'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `AGE()` function to calculate ages.
-
-## Introduction to PostgreSQL AGE() function
-
-In business applications, you often have to calculate ages such as the ages of employees, and years of service of employees. In PostgreSQL, you can use the `AGE()` function to accomplish these tasks.
-
-Here’s the basic syntax of the `AGE()` function:
-
-```shellsql
-AGE(timestamp,timestamp);
-```
-
-The `AGE()` function accepts two [`TIMESTAMP`](../postgresql-tutorial/postgresql-timestamp) values. It subtracts the second argument from the first one and returns an [interval](../postgresql-tutorial/postgresql-interval) as a result.
-
-For example:
-
-```sql
-SELECT AGE('2017-01-01','2011-06-24');
-```
-
-Output:
-
-```text
-   age
------------------------
- 5 years 6 mons 7 days
-```
-
-If you want to use the current date as the first argument, you can use the following form of the `AGE()` function:
-
-```shell
-AGE(timestamp);
-```
-
-For example, if someone’s birth date is `2000-01-01`, and the current date is `2024-01-26`, their age would be:
-
-```sql
-SELECT
-  current_date,
-  AGE(timestamp '2000-01-01');
-```
-
-Output:
-
-```text
- current_date |       age
---------------+------------------
- 2024-01-26   | 24 years 25 days
-(1 row)
-```
-
-## PostgreSQL AGE() function example
-
-We’ll use the following `rental` table in the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-![PostgreSQL age Function: Rental Table Sample](/postgresqltutorial/rental-table.png)
-The following example uses the `AGE()` function to retrieve the top 10 rentals that have the longest durations:
-
-```
-SELECT
-  rental_id,
-  customer_id,
-  AGE(return_date, rental_date) AS duration
-FROM
-  rental
-WHERE
-  return_date IS NOT NULL
-ORDER BY
-  duration DESC
-LIMIT
-  10;
-```
-
-Output:
-
-```text
- rental_id | customer_id |    duration
------------+-------------+-----------------
-      2412 |         127 | 9 days 05:59:00
-     14678 |         383 | 9 days 05:59:00
-     13947 |         218 | 9 days 05:58:00
-     14468 |         224 | 9 days 05:58:00
-      7874 |          86 | 9 days 05:58:00
-     11629 |         299 | 9 days 05:58:00
-      5738 |         187 | 9 days 05:56:00
-      9938 |          63 | 9 days 05:56:00
-     12159 |         106 | 9 days 05:55:00
-      3873 |         394 | 9 days 05:55:00
-(10 rows)
-
-```
-
-In this example, we use the `AGE()` function to calculate the rental duration based on the values of the `rental_date` and `return_date` columns.
-
-## Summary
-
-- Use the PostgreSQL `AGE()` function to calculate ages.
-
-
-# JUSTIFY_DAYS
-
----
-title: 'PostgreSQL JUSTIFY_DAYS() Function'
-page_title: 'PostgreSQL JUSTIFY_DAYS() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL JUSTIFY_DAYS() function to adjust 30-day intervals as months.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-justify_days/'
-ogImage: ''
-updatedOn: '2024-03-21T03:38:28+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL AGE() Function'
-  slug: 'postgresql-date-functions/postgresql-age'
-nextLink:
-  title: 'PostgreSQL JUSTIFY_HOURS() Function'
-  slug: 'postgresql-date-functions/postgresql-justify_hours'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `JUSTIFY_DAYS()` function to adjust 30\-day intervals as months.
-
-## Introduction to the PostgreSQL JUSTIFY_DAYS() function
-
-The `JUSTIFY_DAYS()` function allows you to normalize an [interval](../postgresql-tutorial/postgresql-interval) by converting days exceeding 30 days into months and remaining days.
-
-Here’s the basic syntax of the `JUSTIFY_DAYS()` function:
-
-```sql
-JUSTIFY_DAYS ( value) → interval
-```
-
-In this syntax:
-
-- `value` is an interval value you want to justify.
-
-The `JUSTIFY_DAYS()` function returns an adjusted interval with:
-
-- Days exceeding 30 converted to months.
-- The remaining days are kept as days.
-- Hours, minutes, and seconds remain intact.
-
-If the input interval (`value`) is `NULL`, the function returns `NULL`.
-
-## PostgreSQL JUSTIFY_DAYS() function examples
-
-Let’s explore some examples of using the PostgreSQL `JUSTIFY_DAYS()` function.
-
-### 1\) Basic PostgreSQL JUSTIFY_DAYS() function example
-
-The following statement uses the `JUSTIFY_DAYS()` function to adjust intervals that are multiples of 30 days:
-
-```sql
-SELECT JUSTIFY_DAYS(INTERVAL '30 days'),
-       JUSTIFY_DAYS(INTERVAL '60 days'),
-       JUSTIFY_DAYS(INTERVAL '90 days');
-```
-
-Output:
-
-```text
- justify_days | justify_days | justify_days
---------------+--------------+--------------
- 1 mon        | 2 mons       | 3 mons
-(1 row)
-```
-
-### 2\) Using JUSTIFY_DAYS() function with intervals that are not multiple of 30 days
-
-The following example uses the `JUSTIFY_DAYS()` function to adjust intervals that are not multiples of 30 days:
-
-```sql
-SELECT JUSTIFY_DAYS(INTERVAL '15 days'),
-       JUSTIFY_DAYS(INTERVAL '45 days'),
-       JUSTIFY_DAYS(INTERVAL '75 days');
-```
-
-Output:
-
-```text
- justify_days | justify_days  |  justify_days
---------------+---------------+----------------
- 15 days      | 1 mon 15 days | 2 mons 15 days
-(1 row)
-```
-
-### 3\) Using JUSTIFY_DAYS() function with intervals that include hours
-
-The following example uses the `JUSTIFY_DAYS()` function to adjust intervals that include hours, minutes, and seconds:
-
-```sql
-SELECT JUSTIFY_DAYS(INTERVAL '15 days 2 hours'),
-       JUSTIFY_DAYS(INTERVAL '55 days 30 minutes'),
-       JUSTIFY_DAYS(INTERVAL '75 days 45 seconds');
-```
-
-Output:
-
-```text
-   justify_days   |      justify_days      |      justify_days
-------------------+------------------------+-------------------------
- 15 days 02:00:00 | 1 mon 25 days 00:30:00 | 2 mons 15 days 00:00:45
-(1 row)
-```
-
-The output indicates that the adjusted intervals have the time parts.
-
-## Summary
-
-- Use the `JUSTIFY_DAYS()` function to normalize an interval by converting days exceeding 30 days as months.
-
-
-# JUSTIFY_HOURS
-
----
-title: 'PostgreSQL JUSTIFY_HOURS() Function'
-page_title: 'PostgreSQL JUSTIFY_HOURS() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL JUSTIFY_HOURS() function to adjust 24-hour intervals as days.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-justify_hours/'
-ogImage: ''
-updatedOn: '2024-03-21T03:42:38+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL JUSTIFY_DAYS() Function'
-  slug: 'postgresql-date-functions/postgresql-justify_days'
-nextLink:
-  title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
-  slug: 'postgresql-date-functions/postgresql-justify_interval'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `JUSTIFY_HOURS()` function to adjust 24\-hour intervals as days.
-
-## Introduction to the PostgreSQL JUSTIFY_HOURS() function
-
-The `JUSTIFY_HOURS()` function normalizes an [interval](../postgresql-tutorial/postgresql-interval) by converting hours exceeding 24 to days.
-
-Here’s the syntax of the `JUSTIFY_HOURS()` function:
-
-```sql
-JUSTIFY_HOURS ( value) → interval
-```
-
-In this syntax:
-
-- `value` is an interval value you want to justify.
-
-The `JUSTIFY_HOURS()` function returns an adjusted interval with:
-
-- Hours exceeding 24 are converted to days.
-- The remaining hours are kept the same.
-- Minutes, seconds, and other units remain unchanged.
-
-If the value is `NULL`, the function returns `NULL`.
-
-## PostgreSQL JUSTIFY_HOURS() function examples
-
-Let’s take some examples of using the PostgreSQL `JUSTIFY_HOURS()` function.
-
-### 1\) Basic PostgreSQL JUSTIFY_HOURS() function example
-
-The following statement uses the `JUSTIFY_HOURS()` function to adjust intervals that are multiples of 24 hours:
-
-```sql
-SELECT JUSTIFY_HOURS(INTERVAL '24 hours'),
-       JUSTIFY_HOURS(INTERVAL '48 hours'),
-       JUSTIFY_HOURS(INTERVAL '72 hours');
-```
-
-Output:
-
-```text
- justify_hours | justify_hours | justify_hours
----------------+---------------+---------------
- 1 day         | 2 days        | 3 days
-
-```
-
-### 2\) Using JUSTIFY_HOURS() function with intervals that are not multiple of 24 hours
-
-The following example uses the `JUSTIFY_HOURS()` function to adjust intervals that are not multiples of 24 hours:
-
-```sql
-SELECT JUSTIFY_HOURS(INTERVAL '25 hours'),
-       JUSTIFY_HOURS(INTERVAL '50 hours'),
-       JUSTIFY_HOURS(INTERVAL '70 hours');
-```
-
-Output:
-
-```text
- justify_hours  |  justify_hours  |  justify_hours
-----------------+-----------------+-----------------
- 1 day 01:00:00 | 2 days 02:00:00 | 2 days 22:00:00
-
-```
-
-### 3\) Using the JUSTIFY_HOURS() function with intervals that include hours
-
-The following example uses the `JUSTIFY_HOURS()` function to adjust intervals that include hours, minutes, and seconds:
-
-```sql
-SELECT JUSTIFY_HOURS(INTERVAL '15 days 2 hours'),
-       JUSTIFY_HOURS(INTERVAL '55 days 30 minutes'),
-       JUSTIFY_HOURS(INTERVAL '75 days 45 seconds');
-```
-
-Output:
-
-```text
-   justify_days   |      justify_days      |      justify_days
-------------------+------------------------+-------------------------
- 15 days 02:00:00 | 1 mon 25 days 00:30:00 | 2 mons 15 days 00:00:45
-(1 row)
-```
-
-## Summary
-
-- Use the `JUSTIFY_HOURS()` function to adjust 24\-hour intervals as days.
-
-
-# JUSTIFY_INTERVAL
-
----
-title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
-page_title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
-page_description: 'How to use the PostgreSQL JUSTIFY_INTERVAL() to normalize an interval by using the JUSTIFY_DAYS() and JUSTIFY_HOURS() functions.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-justify_interval/'
-ogImage: ''
-updatedOn: '2024-03-21T03:47:04+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL JUSTIFY_HOURS() Function'
-  slug: 'postgresql-date-functions/postgresql-justify_hours'
-nextLink:
-  title: 'PostgreSQL MAKE_INTERVAL() Function'
-  slug: 'postgresql-date-functions/postgresql-make_interval'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `JUSTIFY_INTERVAL()` to adjust an interval.
-
-## Introduction to the PostgreSQL JUSTIFY_INTERVAL() function
-
-The `JUSTIFY_INTERVAL()` function allows you to adjust an interval by converting days exceeding 30 days into months and hours exceeding 24 hours into days. It essentially normalizes an interval for enhanced readability.
-
-The `JUSTIFY_INTERVAL()` function achieves this by utilizing the `JUSTIFY_DAYS()` and `JUSTIFY_HOURS()` functions, with additional sign adjustments:
-
-- [`JUSTIFY_DAYS()`](postgresql-justify_days): Convert days exceeding 30 days into months and remaining days.
-- [`JUSTIFY_HOURS()`](postgresql-justify_hours): Convert hours exceeding 24 hours into days and remaining hours.
-
-Here’s the syntax of the `JUSTIFY_INTERVAL()` function:
-
-```sql
-JUSTIFY_INTERVAL( value ) → interval
-```
-
-In this syntax, the `value` parameter is an interval value you want to justify.
-
-The `JUSTIFY_INTERVAL()` function returns an adjusted interval by:
-
-- Convert days exceeding 30 days into months and remaining days.
-- Convert hours exceeding 24 hours into days and remaining hours.
-- Correct signs (positive or negative) for the overall duration.
-
-## PostgreSQL JUSTIFY_INTERVAL() function examples
-
-Let’s take some examples of using the `JUSTIFY_INTERVAL()` function.
-
-### 1\) Basic JUSTIFY_INTERVAL() function examples
-
-The following example uses the `JUSTIFY_INTERVAL()` function to justify an interval in days to months:
-
-```sql
-SELECT JUSTIFY_INTERVAL('35 days');
-```
-
-Output:
-
-```text
- justify_interval
-------------------
- 1 mon 5 days
-(1 row)
-```
-
-The following statement uses the `JUSTIFY_INTERVAL()` function to justify an interval in hours to days:
-
-```sql
-SELECT JUSTIFY_INTERVAL('30 hours');
-```
-
-Output:
-
-```sql
-justify_interval
-------------------
- 1 day 06:00:00
-(1 row)
-```
-
-### 2\) Using the JUSTIFY_INTERVAL() function with negative intervals
-
-The following example uses the `JUSTIFY_INTERVAL()` function to convert a negative interval into hours days and hours:
-
-```sql
-SELECT JUSTIFY_INTERVAL('-2 days 5 hours');
-```
-
-Output:
-
-```text
- justify_interval
--------------------
- -1 days -19:00:00
-(1 row)
-```
-
-In this example:
-
-- \-2 days 5 hours is \-48 hours \+ 5 hours which is 43 hours.
-- The function converts – 43 hours to \-24 hours \+ – 19 hours, which results in \-1 days \-19:00:00\.
-
-## Summary
-
-- Use the `JUSTIFY_INTERVAL()` function to normalize an interval by converting days exceeding 30 days into months and hours exceeding 24 hours into days, while maintaining correct signs for positive or negative intervals.
-
-
-# MAKE_INTERVAL
-
----
-title: 'PostgreSQL MAKE_INTERVAL() Function'
-page_title: 'PostgreSQL MAKE_INTERVAL() Function'
-page_description: "In this tutorial, you will learn how to use the PostgreSQL MAKE_INTERVAL() function to create an interval from the interval's components"
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-make_interval/'
-ogImage: ''
-updatedOn: '2024-03-25T05:04:35+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL JUSTIFY_INTERVAL() Function'
-  slug: 'postgresql-date-functions/postgresql-justify_interval'
-nextLink:
-  title: 'PostgreSQL AT TIME ZONE Operator'
-  slug: 'postgresql-date-functions/postgresql-at-time-zone'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `MAKE_INTERVAL()` function to create an interval from the interval’s components
-
-## Introduction to the PostgreSQL MAKE_INTERVAL() function
-
-The `MAKE_INTERVAL()` function allows you to create an [interval](../postgresql-tutorial/postgresql-interval) from years, months, weeks, days, hours, minutes, and seconds.
-
-Here’s the syntax of the `MAKE_INTERVAL()` function:
-
-```csssqlsql
-MAKE_INTERVAL ( [ years int [, months int [, weeks int [, days int [, hours int [, mins int [, secs double precision ]]]]]]] ) → interval
-```
-
-In this syntax:
-
-- `years` is an integer representing the number of years.
-- `months` is an integer representing the number of months.
-- `weeks` is an integer representing the number of weeks.
-- `days` is an integer representing the number of days.
-- `hours` is an integer representing the number of hours.
-- `mins` is an integer representing the number of minutes.
-- `secs` is a double\-precision number representing the number of seconds.
-
-All of these parameters are optional and default to zero.
-
-The `MAKE_INTERVAL()` function returns a value of interval type.
-
-Besides the `MAKE_INTERVAL()` function, you can use the `INTERVAL` literal syntax to create an interval:
-
-```sql
-INTERVAL 'X years Y months Z days W hours V minutes U seconds'
-```
-
-The `INTERVAL` literal syntax allows you to create an interval by specifying all components in a single string. It is suitable for creating static or predefined intervals.
-
-On the other hand, the `MAKE_INTERVAL()` function offers the flexibility to specify each component separately and is ideal for creating an interval dynamically. For example, you can use the `MAKE_INTERVAL()` function to create an interval from values stored in a table.
-
-## PostgreSQL MAKE_INTERVAL() function examples
-
-Let’s explore some examples of using the `MAKE_INTERVAL()` function.
-
-### 1\) Basic MAKE_INTERVAL() function example
-
-The following example uses the `MAKE_INTERVAL()` function to create an interval that represents 1 year, 2 months, 3 days, and 4 hours:
-
-```
-SELECT
-  MAKE_INTERVAL(
-    years => 3, months => 6, days => 15, hours => 4
-  );
-```
-
-Output:
-
-```text
-          make_interval
----------------------------------
- 3 years 6 mons 15 days 04:00:00
-(1 row)
-```
-
-### 2\) Using the MAKE_INTERVAL() function with default values
-
-All of the parameters of the `MAKE_INTERVAL()` function are optional and default to zero. For example, the following statement creates an interval zero:
-
-```sql
-SELECT MAKE_INTERVAL();
-```
-
-Output:
-
-```text
- make_interval
----------------
- 00:00:00
-(1 row)
-```
-
-### 3\) Using the MAKE_INTERVAL( ) function with table data
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `time_data`:
-
-```sql
-CREATE TABLE time_data (
-    id SERIAL PRIMARY KEY,
-    year INTEGER,
-    month INTEGER,
-    day INTEGER,
-    hour INTEGER,
-    minute INTEGER,
-    second INTEGER
-);
-```
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the time_data table:
-
-```sql
-INSERT INTO time_data (year, month, day, hour, minute, second)
-VALUES
-    (1, 3, 25, 10, 0, 0),
-    (2, 2, 25, 11, 30, 0),
-    (3, 1, 25, 13, 15, 0)
-RETURNING *;
-```
-
-Output:
-
-```text
- id | year | month | day | hour | minute | second
-----+------+-------+-----+------+--------+--------
-  1 |    1 |     3 |  25 |   10 |      0 |      0
-  2 |    2 |     2 |  25 |   11 |     30 |      0
-  3 |    3 |     1 |  25 |   13 |     15 |      0
-(3 rows)
-```
-
-Third, use the `MAKE_INTERVAL()` function to create intervals from the data stored in the `time_data` table:
-
-```
-SELECT
-  MAKE_INTERVAL(
-    year, month, 0, day, hour, minute, second
-  ) AS interval_data
-FROM
-  time_data;
-```
-
-Output:
-
-```
-          interval_data
----------------------------------
- 1 year 3 mons 25 days 10:00:00
- 2 years 2 mons 25 days 11:30:00
- 3 years 1 mon 25 days 13:15:00
-(3 rows)
-```
-
-## Summary
-
-- Use the `MAKE_INTERVAL()` function to construct an interval from the provided components, such as years, months, days, hours, minutes, and seconds.
-
-
-# Operators
-
-# AT TIME ZONE Operator
-
----
-title: 'PostgreSQL AT TIME ZONE Operator'
-page_title: 'PostgreSQL AT TIME ZONE Operator'
-page_description: 'You will learn how to use the PostgreSQL AT TIME ZONE operator to convert a timestamp or a timestamp with time zone to a different time zone.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-at-time-zone/'
-ogImage: ''
-updatedOn: '2024-03-21T09:22:23+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL MAKE_INTERVAL() Function'
-  slug: 'postgresql-date-functions/postgresql-make_interval'
-nextLink:
-  title: 'PostgreSQL DATE_TRUNC() Function'
-  slug: 'postgresql-date-functions/postgresql-date_trunc'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `AT TIME ZONE` operator to convert a timestamp or a timestamp with time zone to a different time zone.
-
-## Introduction to the PostgreSQL AT TIME ZONE operator
-
-In PostgreSQL, the `AT TIME ZONE` is an operator that allows you to convert a [timestamp](../postgresql-tutorial/postgresql-timestamp) or a timestamp with time zone to a different time zone.
-
-The `AT TIME ZONE` operator can be useful when you want to perform timezone conversions within your SQL queries.
-
-Here’s the syntax of the `AT TIME ZONE` operator:
-
-```csssqlsql
-timestamp_expression AT TIME ZONE target_timezone
-```
-
-In this syntax:
-
-- timestamp_expression is a timestamp or timestamp with time zone value that you want to convert.
-- target_timezone is the target time zone to which you want to convert. This can be either a time zone name or an expression that evaluates to a time zone name.
-
-The `AT TIME ZONE` operator always returns a value of type `TIMESTAMP WITH TIME ZONE`.
-
-## PostgreSQL AT TIME ZONE operator examples
-
-Let’s explore some examples of using the `AT TIME ZONE` operator. It is assumed that the server’s time zone is `'America/Los_Angeles'`.
-
-If you want to have consistent results like the following examples, you can set the PostgreSQL server’s timezone to `'America/Los_Angeles'` by executing the following statement in any PostgreSQL client (such as pgAdmin or psql):
-
-```sql
-set timezone to 'America/Los_Angeles'
-```
-
-Once you execute the command, you can verify it by showing the current timezone:
-
-```sql
-show timezone;
-```
-
-Output:
-
-```text
-      TimeZone
----------------------
- America/Los_Angeles
-(1 row)
-```
-
-### 1\) Basic AT TIME ZONE operator example
-
-The following example uses the `AT TIME ZONE` operator to convert a timestamp to Coordinated Universal time (UTC):
-
-```
-SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE 'UTC';
-```
-
-Output:
-
-```
-        timezone
-------------------------
- 2024-03-21 03:00:00-07
-(1 row)
-```
-
-### 2\) Converting timestamp with time zone
-
-The following example uses the `AT TIME ZONE` operator to convert a timestamp with time zone to UTC:
-
-```css
-SELECT TIMESTAMP WITH TIME ZONE '2024-03-21 10:00:00-04' AT TIME ZONE 'UTC';
-```
-
-Output:
-
-```text
-      timezone
----------------------
- 2024-03-21 14:00:00
-(1 row)
-```
-
-### 3\) Using the AT TIME ZONE operator with time zone abbreviation
-
-The following query uses the `AT TIME ZONE` operator to convert a timestamp to Pacific Standard Time (PST) from the default time zone:
-
-```css
-SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE 'PST';
-```
-
-Output:
-
-```text
-        timezone
-------------------------
- 2024-03-21 11:00:00-07
-(1 row)
-```
-
-### 4\) Converting a timestamp using a time zone offset
-
-The following example uses the `AT TIME ZONE` operator to convert a timestamp using a time zone offset:
-
-```css
-SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE '-08:00';
-```
-
-Output:
-
-```text
-        timezone
-------------------------
- 2024-03-20 19:00:00-07
-(1 row)
-```
-
-### 5\) Converting a timestamp using named time zones
-
-The following example uses the `AT TIME ZONE` operator to convert a timestamp using a named time zone:
-
-```css
-SELECT TIMESTAMP '2024-03-21 10:00:00' AT TIME ZONE 'America/New_York';
-```
-
-Output:
-
-```
-        timezone
-------------------------
- 2024-03-21 07:00:00-07
-(1 row)
-```
-
-Please note that PostgreSQL uses the [IANA time zone database](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones) for time zone information.
-
-## Summary
-
-- Use the `AT TIME ZONE` operator to convert a timestamp to a different time zone.
-
-
-# Utility Functions
-
-# DATE_TRUNC
-
----
-title: 'PostgreSQL DATE_TRUNC() Function'
-page_title: 'PostgreSQL DATE_TRUNC Function By Examples'
-page_description: 'This tutorial shows you how to use the PostgreSQL DATE_TRUNC function to truncate a timestamp or interval to a specified precision.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-date_trunc/'
-ogImage: '/postgresqltutorial/rental-table.png'
-updatedOn: '2024-03-22T01:11:13+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL AT TIME ZONE Operator'
-  slug: 'postgresql-date-functions/postgresql-at-time-zone'
-nextLink:
-  title: 'PostgreSQL ISFINITE() Function'
-  slug: 'postgresql-date-functions/postgresql-isfinite'
----
-
-**Summary**: This tutorial shows you how to use the PostgreSQL `DATE_TRUNC()` function to truncate a timestamp or interval to a specified precision.
-
-## Introduction to the PostgreSQL DATE_TRUNC() function
-
-The `DATE_TRUNC()` function truncates a [`TIMESTAMP`](../postgresql-tutorial/postgresql-timestamp), a `TIMESTAMP WITH TIME ZONE`, or an  [`INTERVAL`](../postgresql-tutorial/postgresql-interval) value to a specified precision.
-
-Here’s the basic syntax of the `DATE_TRUNC` function:
-
-```sqlsql
-DATE_TRUNC(field, source [,time_zone])
-```
-
-In this syntax:
-
-### source
-
-`source` is a value or an expression of type timestamp, timestamp with time zone, or interval. If you use a value of the date or time type, the function will cast it automatically to timestamp or interval respectively.
-
-### field
-
-`field` specifies the to which precision to truncate the `source`.
-
-Here are the valid values for the `field`:
-
-- millennium
-- century
-- decade
-- year
-- quarter
-- month
-- week
-- day
-- hour
-- minute
-- second
-- milliseconds
-- microseconds
-
-### time_zone
-
-`time_zone` specifies the time zone in which the function will perform the truncation. The `time_zone` argument is the default.
-
-If you omit the `time_zone`, the function will truncate the `source` based on the current time zone setting.
-
-The `DATE_TRUNC` function returns a `TIMESTAMP` or an `INTERVAL` value.
-
-## PostgreSQL DATE_TRUNC() function examples
-
-Let’s explore some examples of using the `DATE_TRUNC()` function.
-
-### 1\) Basic PostgreSQL DATE_TRUNC() function example
-
-The following example uses the `DATE_TRUNC()` function to truncate a `TIMESTAMP` value to `hour` part:
-
-```sql
-SELECT DATE_TRUNC('hour', TIMESTAMP '2017-03-17 02:09:30');
-```
-
-Output:
-
-```text
-     date_trunc
----------------------
- 2017-03-17 02:00:00
-(1 row)
-```
-
-In this example, the `DATE_TRUNC()` function returns a timestamp with the hour precision.
-
-If you want to truncate a `TIMESTAMP` value to a minute, you use the `'minute'` field as shown in the following example:
-
-```sql
-SELECT DATE_TRUNC('minute', TIMESTAMP '2017-03-17 02:09:30');
-```
-
-The function returns a `TIMESTAMP` with the precision is minute:
-
-```text
-     date_trunc
----------------------
- 2017-03-17 02:09:00
-(1 row)
-```
-
-### 2\) Using PostgreSQL DATE_TRUNC() function with table data
-
-See the following `rental` table in the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-![Rental table - PostgreSQL date_trunc function demo](/postgresqltutorial/rental-table.png)
-The following example uses the `DATE_TRUNC()` function to retrieve the number of rentals by month from the rental table:
-
-```sql
-SELECT
-    DATE_TRUNC('month', rental_date) m,
-    COUNT (rental_id)
-FROM
-    rental
-GROUP BY
-    m
-ORDER BY
-    m;
-```
-
-Output:
-
-```text
-          m          | count
----------------------+-------
- 2005-05-01 00:00:00 |  1156
- 2005-06-01 00:00:00 |  2311
- 2005-07-01 00:00:00 |  6709
- 2005-08-01 00:00:00 |  5686
- 2006-02-01 00:00:00 |   182
-(5 rows)
-```
-
-This query retrieves the month of each rental date and counts the number of rentals each month from the `rental` table. It then groups the counts by month and sorts the result set by month.
-
-If you want to count the rentals by week, you can pass the week to the DATE_TRUNC() function as follows:
-
-```sql
-SELECT
-    DATE_TRUNC('week', rental_date) week,
-    COUNT (rental_id)
-FROM
-    rental
-GROUP BY
-    week
-ORDER BY
-    week;
-```
-
-Output:
-
-```
-        week         | count
----------------------+-------
- 2005-05-23 00:00:00 |   835
- 2005-05-30 00:00:00 |   321
- 2005-06-13 00:00:00 |  1705
- 2005-06-20 00:00:00 |   606
- 2005-07-04 00:00:00 |  2497
- 2005-07-11 00:00:00 |   956
- 2005-07-25 00:00:00 |  3256
- 2005-08-01 00:00:00 |  1314
- 2005-08-15 00:00:00 |  3148
- 2005-08-22 00:00:00 |  1224
- 2006-02-13 00:00:00 |   182
-(11 rows)
-```
-
-The following example uses the `DATE_TRUNC()` function to count the number of rentals by staff per year:
-
-```
-SELECT
-	staff_id,
-	date_trunc('year', rental_date) y,
-	COUNT (rental_id) rental
-FROM
-	rental
-GROUP BY
-	staff_id, y
-ORDER BY
-	staff_id;
-```
-
-Output:
-
-```text
- staff_id |          y          | rental
-----------+---------------------+--------
-        1 | 2006-01-01 00:00:00 |     85
-        1 | 2005-01-01 00:00:00 |   7955
-        2 | 2006-01-01 00:00:00 |     97
-        2 | 2005-01-01 00:00:00 |   7907
-(4 rows)
-```
-
-## Summary
-
-- Use the PostgreSQL `DATE_TRUNC` function to truncate a timestamp or an interval value to a specified level of precision
-
-
-# ISFINITE
-
----
-title: 'PostgreSQL ISFINITE() Function'
-page_title: 'PostgreSQL ISFINITE() Function'
-page_description: 'You will learn how to use the PostgreSQL ISFINITE() function to determine if a date, a timestamp, or an interval is finite or not.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-isfinite/'
-ogImage: ''
-updatedOn: '2024-03-20T09:23:01+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL DATE_TRUNC() Function'
-  slug: 'postgresql-date-functions/postgresql-date_trunc'
-nextLink:
-  title: 'PostgreSQL TIMEOFDAY() Function'
-  slug: 'postgresql-date-functions/postgresql-timeofday'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `ISFINITE()` function to determine if a date, a timestamp, or an interval is finite or not.
-
-## Introduction to the PostgreSQL ISFINITE() function
-
-The `ISFINITE()` function accepts a [date](../postgresql-tutorial/postgresql-date), a [timestamp](../postgresql-tutorial/postgresql-timestamp), or an [interval](../postgresql-tutorial/postgresql-interval) and returns true if the value is finite.
-
-Here’s the syntax of the `ISFINITE()` function:
-
-```sql
-isfinite ( value ) → boolean
-```
-
-The `isfinite()` function accepts a value with the type date, timestamp, or interval.
-
-The `isfinite()` function returns true if the value is finite or false otherwise. It returns `NULL` if the value is `NULL`.
-
-## PostgreSQL ISFINITE() function examples
-
-Let’s explore some examples of using the `ISFINITE()` function.
-
-### 1\) Using the ISFINITE() function with dates
-
-The following example uses the `ISFINITE()` function to check if a date is finite or not:
-
-```sql
-SELECT ISFINITE('2024-03-20'::date) result;
-```
-
-Output:
-
-```text
- result
---------
- t
-(1 row)
-```
-
-The result is t, which is true in PostgreSQL.
-
-The following example uses the `ISFINITE()` function to determine whether the date infinity is finite or not:
-
-```sql
-SELECT ISFINITE(DATE 'infinity') result;
-```
-
-Output:
-
-```text
- result
---------
- f
-(1 row)
-```
-
-The result is false because the infinity date is not finite.
-
-### 2\) Using the ISFINITE() function with intervals
-
-The following statement uses the `ISFINITE()` function to check if an interval is finite or not:
-
-```sql
-SELECT ISFINITE(INTERVAL '1 day') result;
-```
-
-Output:
-
-```text
- result
---------
- t
-(1 row)
-```
-
-Since PostgreSQL doesn’t support infinity intervals, the `ISFINITE()` function always returns true for an interval.
-
-### 3\) Using the ISFINITE() function with timestamps
-
-The following statement uses the `ISFINITE()` function to test for a finite timestamp:
-
-```sql
-SELECT ISFINITE(TIMESTAMP '2024-03-20 00:00:00') result;
-```
-
-Output:
-
-```text
- result
---------
- t
-(1 row)
-```
-
-The following statement uses the `ISFINITE()` function to check for an infinite timestamp:
-
-```sql
-SELECT ISFINITE(TIMESTAMP 'infinity') result;
-```
-
-Output:
-
-```text
- result
---------
- f
-(1 row)
-```
-
-## Summary
-
-- Use the `ISFINITE()` function to test if a date, a timestamp, or an interval is finite or not.
-
-
-# TIMEOFDAY
-
----
-title: 'PostgreSQL TIMEOFDAY() Function'
-page_title: 'PostgreSQL TIMEOFDAY() Function'
-page_description: 'How to use the PostgreSQL TIMEOFDAY() function to retrieve the current date and time as a formatted string.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-timeofday/'
-ogImage: ''
-updatedOn: '2024-03-20T04:01:17+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL ISFINITE() Function'
-  slug: 'postgresql-date-functions/postgresql-isfinite'
-nextLink:
-  title: 'PostgreSQL PG_SLEEP() Function'
-  slug: 'postgresql-date-functions/postgresql-pg_sleep'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `TIMEOFDAY()` function to retrieve the current date and time as a formatted string.
-
-## Introduction to the PostgreSQL TIMEOFDAY() function
-
-The `TIMEOFDAY()` function returns the [current date and time](postgresql-current_timestamp) as a formatted string.
-
-Here’s the syntax of the `TIMEOFDAY()` function:
-
-```sql
-TIMEOFDAY()
-```
-
-The function does not have any parameters and returns the current date and time as a string.
-
-Note that the `TIMEOFDAY()` function returns the same result as the `CLOCK_TIMESTAMP()` function but in the text string.
-
-## PostgreSQL TIMEOFDAY() function examples
-
-Let’s take some examples of using the `TIMEOFDAY()` function.
-
-### 1\) Basic TIMEOFDAY() function example
-
-The following example uses the `TIMEOFDAY()` function to retrieve the current date and time as a string:
-
-```text
-              timeofday
--------------------------------------
- Wed Mar 20 10:20:10.108369 2024 -07
-(1 row)
-```
-
-The output shows the date, time, and timezone.
-
-### 2\) Formatting the output
-
-If you want a specific format, you can cast the result of the `TIMEOFDAY()` function into a timestamp and use the `to_char()` function to achieve the desired format:
-
-```sql
-SELECT
-  to_char(
-    timeofday():: timestamp,
-    'YYYY-MM-DD HH24:MI:SS'
-  ) current_time;
-```
-
-Output:
-
-```text
-    current_time
----------------------
- 2024-03-20 10:26:57
-(1 row)
-```
-
-## Summary
-
-- Use the `TIMEOFDAY()` function to obtain the current date and time as a formatted string.
-
-
-# PG_SLEEP
-
----
-title: 'PostgreSQL PG_SLEEP() Function'
-page_title: 'PostgreSQL PG_SLEEP() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL PG_SLEEP() function to pause the execution of a query.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-date-functions/postgresql-pg_sleep/'
-ogImage: ''
-updatedOn: '2024-03-21T09:32:51+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL TIMEOFDAY() Function'
-  slug: 'postgresql-date-functions/postgresql-timeofday'
-nextLink:
-  title: 'PostgreSQL String Functions'
-  slug: 'postgresql-date-functions/../postgresql-string-functions'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `PG_SLEEP()` function to pause the execution of a query.
-
-## Introduction to the PostgreSQL PG_SLEEP() function
-
-The `PG_SLEEP()` function allows you to create a delay (sleep) in your queries. The function can be useful when you want to test, simulate real\-time processes, or add a pause between operations.
-
-Here’s the syntax of the `PG_SLEEP()` function:
-
-```sql
-PG_SLEEP(seconds)
-```
-
-In this syntax, the `seconds` parameter specifies the number of seconds for which you want the execution to pause. It can be an integer or a decimal number with fractions.
-
-## The PostgreSQL PG_SLEEP() function examples
-
-Let’s explore some examples of using the `PG_SLEEP()` function.
-
-### 1\) Basic usage of PG_SLEEP() function
-
-The following example uses the `PG_SLEEP()` function to pause the execution for 3 seconds before returning any result:
-
-```sql
-SELECT pg_sleep(3);
-```
-
-After 3 seconds:
-
-```text
- pg_sleep
-----------
-
-(1 row)
-```
-
-### 2\) Using Fractional Seconds
-
-The following example uses the `PG_SLEEP()` function to pause the execution for `1.5` seconds:
-
-```sql
-SELECT PG_SLEEP(1.5);
-```
-
-After `1.5` seconds:
-
-```text
- pg_sleep
-----------
-
-(1 row)
-```
-
-### 3\) Using the PG_SLEEP() function with NOW() function
-
-The following example uses the `PG_SLEEP()` function between the [`NOW()`](postgresql-now) functions:
-
-```sql
-SELECT NOW(), PG_SLEEP(3), NOW();
-```
-
-Output:
-
-```sql
--[ RECORD 1 ]---------------------------
-now      | 2024-03-21 02:26:37.710939-07
-pg_sleep |
-now      | 2024-03-21 02:26:37.710939-07
-```
-
-The output indicates that the result of the `NOW()` function does not change within the same statement even though we use pause the execution between the calls of the `NOW()` functions for 3 seconds.
-
-### 4\) Using the PG_SLEEP() function with CLOCK_TIMESTAMP() function
-
-The following example uses the `PG_SLEEP()` function between the [`CLOCK_TIMESTAMP()`](postgresql-clock_timestamp) functions:
-
-```sql
-SELECT CLOCK_TIMESTAMP(), PG_SLEEP(3), CLOCK_TIMESTAMP();
-```
-
-Output:
-
-```sql
--[ RECORD 1 ]---+------------------------------
-clock_timestamp | 2024-03-21 02:27:03.181753-07
-pg_sleep        |
-clock_timestamp | 2024-03-21 02:27:06.186789-07
-```
-
-The output shows that the [`CLOCK_TIMESTAMP()`](postgresql-clock_timestamp) returns the actual current timestamp when it executes. The results of the `CLOCK_TIMESTAMP()` function calls are 3 seconds difference.
-
-## Summary
-
-- Use the `PG_SLEEP()` function to pause the SQL execution for a number of seconds.
-
-
 # JSON Functions
 
 ---
@@ -41697,1160 +46779,321 @@ This section discusses the JSON utility functions for getting types of JSONB val
 - [jsonb_pretty()](postgresql-json-functions/postgresql-jsonb_pretty) – Format a JSON value into human\-readable, indented format, making it easier to read.
 
 
-# Creating JSON Data
-
-# to_jsonb
+# Extracting JSON Data
 
 ---
-title: 'PostgreSQL to_jsonb() Function'
-page_title: 'PostgreSQL to_jsonb() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL to_jsonb() function to convert an SQL value to a value of JSONB type.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-to_jsonb/'
+title: 'PostgreSQL JSON Extract'
+page_title: 'PostgreSQL JSON Extract Operators: -> And ->>'
+page_description: 'You will learn how to use the operators -> and ->> to extract an element from a JSON array or a value of a key from a JSON object.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-json-extract/'
 ogImage: ''
-updatedOn: '2024-02-25T02:38:36+00:00'
+updatedOn: '2024-02-23T10:18:42+00:00'
 enableTableOfContents: true
 previousLink:
-  title: 'PostgreSQL JSON Functions'
-  slug: 'postgresql-json-functions/'
+  title: 'PostgreSQL jsonb_extract_path_text() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_extract_path_text'
 nextLink:
-  title: 'PostgreSQL jsonb_build_array() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_build_array'
+  title: 'PostgreSQL jsonb_insert() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_insert'
 ---
 
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `to_jsonb()` function to convert an SQL value to a value of `JSONB` type.
+**Summary**: in this tutorial, you will learn how to use the operator `->` and `->>` to extract an element from a JSON array or a value of a key from a JSON object.
 
-## Introduction to the PostgreSQL to_jsonb() function
+## Extracting elements from JSON arrays
 
-The `to_jsonb()` function allows you to convert an SQL value to a `JSONB` value.
+To extract an element of a JSON array as a `JSONB` value, you use the `->` operator.
 
-Here’s the syntax of the `to_jsonb()` function:
+Here’s the syntax for using the `->` operator:
 
-```sqlsql
-to_jsonb ( value ) → jsonb
+```phpsqlsql
+json_array -> n
 ```
 
-In this syntax, you specify an SQL value that you want to convert to a `JSONB` value.
+In this syntax, `n` locates the nth element in a JSON array. n can be positive or negative. If the n is negative, the operator `->` returns the element from the end of the array.
 
-The `to_jsonb()` function returns a value converted to a `JSONB` value. If the value is an array or a composite value, the function will convert to arrays or objects in JSON.
+Note that the first element has an index of zero and the last element has an index of \-1\.
 
-## PostgreSQL to_jsonb() function examples
-
-Let’s explore some examples of using the `to_jsonb()` function.
-
-### 1\) Converting a text string to a JSONB value
-
-The following example uses the `to_jsonb()` function to convert a text string into a `JSONB` value:
+If the nth element does not exist, the operator `->` returns `null`. To extract an array element as a text string, you can use the `->>` operator:
 
 ```sql
-SELECT to_jsonb('Hello'::text);
+json_array ->> n
 ```
 
-Output:
+## Extracting JSON array element examples
 
-```text
- to_jsonb
-----------
- "Hello"
-(1 row)
-```
+Let’s explore some examples of using the `->` and `->>` operators.
 
-The “Hello” is a `JSONB` value.
+### 1\) Setting up a sample table
 
-To verify it, you can pass the result of the `to_jsonb()` function to the `jsonb_typeof()` function.
-
-The `jsonb_typeof()` function returns the type of a top\-level JSON value as a text string.
-
-For example:
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `employees` to store employee data:
 
 ```sql
-SELECT
-  JSONB_TYPEOF(
-    to_jsonb('Hello' :: text)
-  );
-```
-
-Output:
-
-```text
- jsonb_typeof
---------------
- string
-(1 row)
-```
-
-### 2\) Converting numbers to a JSONB values
-
-The following example uses the `to_jsonb()` function to convert numbers to `JSONB` values:
-
-```sql
-SELECT
-  to_jsonb(10 :: int),
-  to_jsonb(9.99 :: numeric);
-```
-
-Output:
-
-```text
- to_jsonb | to_jsonb
-----------+----------
- 10       | 9.99
-(1 row)
-```
-
-### 3\) Converting bool values to a JSONB values
-
-The following example uses the `to_jsonb()` function to convert boolean values to `JSONB` values:
-
-```sql
-SELECT
-  to_jsonb(true :: bool),
-  to_jsonb(false :: bool);
-```
-
-Output:
-
-```text
- to_jsonb | to_jsonb
-----------+----------
- true     | false
-(1 row)
-```
-
-### 4\) Converting NULL to a JSONB value
-
-The following example uses the `to_jsonb()` function to convert `NULL` to a `JSONB` value:
-
-```sql
-SELECT
-  to_jsonb(NULL::text);
-```
-
-Output:
-
-```text
- to_jsonb
-----------
- null
-(1 row)
-```
-
-### 5\) Converting a PostgreSQL array into a JSON array
-
-The following example uses the `to_jsonb()` function to convert an array in PostgreSQL to a JSON array with the `JSONB` type:
-
-```sql
-SELECT
-  to_jsonb(
-    ARRAY[ 'red', 'green', 'blue' ]
-  ) AS jsonb_array;
-```
-
-Output:
-
-```text
-       jsonb_array
---------------------------
- ["red", "green", "blue"]
-(1 row)
-```
-
-### 6\) Using the to_jsonb() function with table data
-
-We’ll use the `to_jsonb()` function to convert data in the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database) to `JSONB` values:
-
-```
-SELECT
-  to_jsonb(title),
-  to_jsonb(length)
-FROM
-  film
-ORDER BY
-  title;
-```
-
-Output:
-
-```
-           to_jsonb            | to_jsonb
--------------------------------+----------
- "Academy Dinosaur"            | 86
- "Ace Goldfinger"              | 48
- "Adaptation Holes"            | 50
-...
-```
-
-## Summary
-
-- Use the PostgreSQL `to_jsonb()` function to convert an SQL value to a `JSONB` value.
-
-
-# jsonb_build_array
-
----
-title: 'PostgreSQL jsonb_build_array() Function'
-page_title: 'PostgreSQL jsonb_build_array() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_build_array() function to create a JSON array.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_build_array/'
-ogImage: '/postgresqltutorial/film.png'
-updatedOn: '2024-02-23T07:45:10+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL to_jsonb() Function'
-  slug: 'postgresql-json-functions/postgresql-to_jsonb'
-nextLink:
-  title: 'PostgreSQL jsonb_build_object() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_build_object'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_build_array()` function to create a JSON array.
-
-## Introduction to the PostgreSQL jsonb_build_array() function
-
-The `jsonb_build_array()` function allows you to construct a JSONB array from a variadic list of arguments.
-
-Here’s the basic syntax of the `jsonb_build_array()` function:
-
-```sql
-jsonb_build_array ( VARIADIC "any" ) → jsonb
-```
-
-In this syntax, you provide a list of arguments that you want to convert to elements of a JSON array.
-
-The `jsonb_build_array()` will convert each argument using the [`to_jsonb()`](postgresql-to_jsonb) function.
-
-## PostgreSQL jsonb_build_array() function examples
-
-Let’s take some examples of using the `jsonb_build_array()` function.
-
-### 1\) Basic PostgreSQL jsonb_build_array() function example
-
-The following example uses the `jsonb_build_array()` function to create a JSON array from a list of values:
-
-```sql
-SELECT jsonb_build_array(10, null, 'Hi', true) result;
-```
-
-Output:
-
-```text
-         result
-------------------------
- [10, null, "Hi", true]
-(1 row)
-```
-
-### 2\) Using PostgreSQL jsonb_build_array() function with table data
-
-We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-![](/postgresqltutorial/film.png)The following example uses the `jsonb_build_array()` function to convert the title and length of each film into elements of a JSON array:
-
-```sql
-SELECT
-  jsonb_build_array(title, length)
-FROM
-  film
-ORDER BY
-  title;
-```
-
-Output:
-
-```text
-          jsonb_build_array
---------------------------------------
- ["Academy Dinosaur", 86]
- ["Ace Goldfinger", 48]
- ["Adaptation Holes", 50]
- ["Affair Prejudice", 117]
-...
-```
-
-## Summary
-
-- Use the PostgreSQL `jsonb_build_array()` function to create a `JSONB` array from a variadic list of arguments.
-
-
-# jsonb_build_object
-
----
-title: 'PostgreSQL jsonb_build_object() Function'
-page_title: 'PostgreSQL jsonb_build_object() Function'
-page_description: 'You will learn how to use the PostgreSQL jsonb_build_object() function to create a JSON object based on a variadic argument list.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_build_object/'
-ogImage: ''
-updatedOn: '2024-02-23T08:02:53+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_build_array() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_build_array'
-nextLink:
-  title: 'PostgreSQL jsonb_object() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_object'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_build_object()` function to create a JSON object based on a variadic argument list.
-
-## Introduction to the PostgreSQL jsonb_build_object() function
-
-The `jsonb_build_object()` function allows you to build an object out of a variadic argument list.
-
-Here’s the basic syntax of the `jsonb_build_object()` function:
-
-```sql
-jsonb_build_object ( VARIADIC "any" ) → jsonb
-```
-
-In this syntax, you pass a list of alternative keys and values. The list must have an even number of elements or you’ll get an error.
-
-The function will coerce the key to text and value to a JSON value using the `to_jsonb()` function.
-
-The `jsonb_build_object()` function returns a JSON object with the specified key and values.
-
-## PostgreSQL jsonb_build_object() function examples
-
-Let’s explore some examples of using the PostgreSQL `jsonb_build_object()` function.
-
-### 1\) Basic jsonb_build_object() function example
-
-The following example uses the `jsonb_build_object()` function to build an object out of the alternating keys and values:
-
-```sql
-SELECT
-  jsonb_build_object(
-    'title', 'Academy Dinosaur', 'length',
-    86
-  );
-```
-
-Output:
-
-```text
-             jsonb_build_object
----------------------------------------------
- {"title": "Academy Dinosaur", "length": 86}
-(1 row)
-```
-
-### 2\) Using jonb_build_object() function with table data example
-
-The following example uses the `jsonb_build_object()` function to create a JSON object based on the title and length of films in the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-```sql
-SELECT
-  jsonb_build_object('title', title, 'length', length)
-FROM
-  film
-ORDER BY
-  length DESC;
-```
-
-Output:
-
-```text
-                   jsonb_build_object
----------------------------------------------------------
- {"title": "Muscle Bright", "length": 185}
- {"title": "Control Anthem", "length": 185}
- {"title": "Sweet Brotherhood", "length": 185}
-...
-```
-
-### 3\) Using the jonb_build_object() function with an odd number of values
-
-The following example attempts to use the `jsonb_build_object()` function with an odd number of values:
-
-```sql
-SELECT
-  jsonb_build_object(
-    'title', 'Theory Mermaid', 'length'
-  );
-```
-
-It returns the following error:
-
-```sql
-ERROR:  argument list must have even number of elements
-HINT:  The arguments of jsonb_build_object() must consist of alternating keys and values.
-```
-
-## Summary
-
-- Use the PostgreSQL `jsonb_build_object()` function to build a JSON object out of a variadic argument list.
-
-
-# jsonb_object
-
----
-title: 'PostgreSQL jsonb_object() Function'
-page_title: 'PostgreSQL jsonb_object() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_object() function to create a JSON object from a text array.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_object/'
-ogImage: '/postgresqltutorial/film.png'
-updatedOn: '2024-02-25T13:23:04+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_build_object() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_build_object'
-nextLink:
-  title: 'PostgreSQL row_to_json() Function'
-  slug: 'postgresql-json-functions/postgresql-row_to_json'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_object()` function to create a JSON object from a text array.
-
-## Introduction to the PostgreSQL jsonb_object() function
-
-The `jsonb_object()` function allows you to build a JSON object from a [text](../postgresql-tutorial/postgresql-char-varchar-text) [array](../postgresql-tutorial/postgresql-array).
-
-Here’s the syntax of the `jsonb_object()` function:
-
-```sql
-jsonb_object(text[]) → jsonb
-```
-
-In this syntax, `text[]` array can be:
-
-- A one\-dimensional array that contains an even number of elements. The elements are the alternating key/value pairs.
-- A two\-dimensional array. Each inner array has exactly two elements representing the key/value pair.
-
-The `jsonb_object()` function returns a JSON object constructed from the text array with the type of JSONB.
-
-The `jsonb_object()` function has another syntax that takes keys and values pairwise from separate text arrays:
-
-```sql
-jsonb_object ( keys text[], values text[] ) → jsonb
-```
-
-In this syntax, the keys and values arrays in this syntax have the same number of elements. The `keys` array contains the keys of the JSON object whereas the `values` array contains the corresponding values of the `keys`.
-
-## PostgreSQL jsonb_object() function examples
-
-Let’s explore some examples of using the `jsonb_object()` function.
-
-### 1\) Basic PostgreSQL jsonb_object function examples
-
-The following example uses the `jsonb_object()` function to create a JSON object from a text array:
-
-```sql
-SELECT
-  jsonb_object('{"name","John", "age", 22}');
-```
-
-Output:
-
-```text
-         jsonb_object
--------------------------------
- {"age": "22", "name": "John"}
-(1 row)
-```
-
-Alternatively, you can use a two\-dimensional arrays to create the JSON object:
-
-```sql
-SELECT
-  jsonb_object(
-    '{{"name","age"},{"John", 22}}'
-  );
-```
-
-Output:
-
-```text
-         jsonb_object
--------------------------------
- {"John": "22", "name": "age"}
-(1 row)
-```
-
-Additionally, you can use two arrays including `keys` and `values` to create the JSON object:
-
-```sql
-SELECT
-  jsonb_object(
-    '{"name","age"}', '{"John", 22}'
-  );
-```
-
-Output:
-
-```text
-         jsonb_object
--------------------------------
- {"age": "22", "name": "John"}
-(1 row)
-```
-
-### 2\) Using the jsonb_object() function with table data
-
-We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database).
-
-![](/postgresqltutorial/film.png)The following example uses the `jsonb_object` function to create an object from the `title` and `release_year` from the `film` table:
-
-```sql
-SELECT
-  jsonb_object(
-    array[title], array[release_year]::text[]
-  )
-FROM
-  film
-ORDER BY
-  title;
-```
-
-Output:
-
-```text
-         jsonb_object
-------------------------------
- {"Academy Dinosaur": "2006"}
- {"Ace Goldfinger": "2006"}
- {"Adaptation Holes": "2006"}
- {"Affair Prejudice": "2006"}
- {"African Egg": "2006"}
-...
-```
-
-## Summary
-
-- Use the PostgreSQL `jsonb_object()` function to create a JSON object from a text array.
-
-
-# row_to_json
-
----
-title: 'PostgreSQL row_to_json() Function'
-page_title: 'PostgreSQL row_to_json() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL row_to_json() function to convert an SQL composite value to a JSON object.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-row_to_json/'
-ogImage: '/postgresqltutorial/film.png'
-updatedOn: '2024-02-25T14:51:03+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_object() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_object'
-nextLink:
-  title: 'PostgreSQL JSON Path'
-  slug: 'postgresql-json-functions/postgresql-json-path'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `row_to_json()` function to convert an SQL composite value to a JSON object.
-
-## Introduction to the PostgreSQL row_to_json() function
-
-The `row_to_json()` function allows you to convert an SQL composite value into a JSON object.
-
-Here’s the syntax of the `row_to_json()` function:
-
-```sql
-row_to_json ( record [, boolean ] ) → json
-```
-
-In this syntax:
-
-- `record` is an SQL composite value that you want to convert into a JSON object.
-- `boolean` if true, the function will add a line feed between top\-level elements.
-
-The `row_to_json()` function will return a JSON object.
-
-## PostgreSQL row_to_json() function examples
-
-Let’s take some examples of using the `row_to_json()` function.
-
-### 1\) Basic row_to_json() function example
-
-The following example uses the `row_to_json()` function to convert a row into a JSON object:
-
-```sql
-SELECT row_to_json(row('John',20));
-```
-
-Output:
-
-```text
-      row_to_json
------------------------
- {"f1":"John","f2":20}
-(1 row)
-```
-
-In this example, we use the `row()` function to create a composite value made up of multiple columns.
-
-The `row_to_json()` function returns an object whose keys are automatically generated f1 and f2 with the values from the composite values.
-
-### 2\) Using the row_to_json() function with table data
-
-We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-![](/postgresqltutorial/film.png)The following example uses the `row_to_json()` function to convert the `title` and `length` of each film in the `film` table into a JSON object:
-
-```sql
-SELECT
-  row_to_json(t) film
-FROM
-  (
-    SELECT
-      title,
-      length
-    FROM
-      film
-    ORDER BY
-      title
-  ) t;
-```
-
-Output:
-
-```text
-                         film
-------------------------------------------------------
- {"title":"Academy Dinosaur","length":86}
- {"title":"Ace Goldfinger","length":48}
- {"title":"Adaptation Holes","length":50}
- {"title":"Affair Prejudice","length":117}
- {"title":"African Egg","length":130}
- {"title":"Agent Truman","length":169}
-...
-```
-
-How it works.
-
-- The subquery retrieves the `title` and `length` from the `film` table.
-- The outer query uses the `row_to_json()` to convert each row returned by the subquery into a JSON object.
-
-Note that you can use a [common table expression](../postgresql-tutorial/postgresql-cte) (`CTE`) instead of a subquery to achieve the same result:
-
-```sql
-WITH film_cte AS (
-  SELECT
-    title,
-    length
-  FROM
-    film
-  ORDER BY
-    title
-)
-SELECT
-  row_to_json(film_cte)
-FROM
-  film_cte;
-```
-
-## Summary
-
-- Use the `row_to_json()` function to convert an SQL composite value to a JSON object.
-
-
-# Searching JSON Data
-
-# jsonb_path_query
-
----
-title: 'PostgreSQL jsonb_path_query() Function'
-page_title: 'PostgreSQL jsonb_path_query() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_path_query() function to query JSONB data using JSON path expressions.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_query/'
-ogImage: ''
-updatedOn: '2024-02-23T13:41:27+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL JSON Path'
-  slug: 'postgresql-json-functions/postgresql-json-path'
-nextLink:
-  title: 'PostgreSQL jsonb_path_query_array() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_array'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_query()` function to query `JSONB` data using JSON path expressions.
-
-## Introduction to the PostgreSQL jsonb_path_query() function
-
-The `jsonb_path_query()` function allows you to query [JSONB](../postgresql-tutorial/postgresql-json) data based on a JSON path expression.
-
-Here’s the basic syntax of the `jsonb_path_query()` function:
-
-```sql
-jsonb_path_query(jsonb_data, path_expression)
-```
-
-In this syntax:
-
-- `jsonb_data` is the JSONB data that you want to query.
-- `path_expression` is a JSON path expression that locates values or elements in the JSONB data.
-
-The `jsonb_path_query()` function returns JSONB data that matches the specified JSON path expression.
-
-If the `path_expression` does not locate any element in the `jsonb_data`, the function returns `NULL`.
-
-## PostgreSQL jsonb_path_query() function example
-
-Let’s take some examples of using the `jsonb_path_query()` function.
-
-### Setting up a sample table
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) named `products`with a JSONB column names `attributes` to store product attributes:
-
-```sql
-CREATE TABLE products (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    attributes JSONB
+CREATE TABLE employees(
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(255) NOT NULL,
+   phones JSONB NOT NULL
 );
 ```
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `products` table:
-
-```sql
-INSERT INTO products (name, attributes)
-VALUES
-    ('Laptop', '{"brand": "Dell", "price": 1200, "specs": {"cpu": "Intel i7", "ram": "16GB"}}'),
-    ('Smartphone', '{"brand": "Samsung", "price": 800, "specs": {"os": "Android", "storage": "128GB"}}');
-```
-
-### 1\) A basic jsonb_path_query() function example
-
-The following example uses the `jsonb_path_query()` function to retrieve the brand and price of all products:
-
-```sql
-SELECT jsonb_path_query(attributes, '$.brand') AS brand,
-       jsonb_path_query(attributes, '$.price') AS price
-FROM products;
-```
-
-Output:
-
-```text
-   brand   | price
------------+-------
- "Dell"    | 1200
- "Samsung" | 800
-(2 rows)
-```
-
-### 2\) More complex JSON path example
-
-The following example uses the `jsonb_path_query()` function to query nested attributes such as retrieving the CPU specification of laptops:
-
-```sql
-SELECT jsonb_path_query(attributes, '$.specs.cpu') AS cpu
-FROM products;
-```
-
-Output:
-
-```text
-    cpu
-------------
- "Intel i7"
-(1 row)
-```
-
-## Summary
-
-- Use the `jsonb_path_query()` function to query JSONB data based on JSON path expressions.
-
-
-# jsonb_path_query_array
-
----
-title: 'PostgreSQL jsonb_path_query_array() Function'
-page_title: 'PostgreSQL jsonb_path_query_array() Function'
-page_description: 'Use the PostgreSQL jsonb_path_query_array() function to query JSONB data using a JSON path and return matched elements as a JSON array.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_query_array/'
-ogImage: ''
-updatedOn: '2024-02-24T02:02:31+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_path_query() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_path_query'
-nextLink:
-  title: 'PostgreSQL jsonb_path_query_first() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_first'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_query_array()` function to query JSONB data using a JSON path and return matched elements as a JSON array.
-
-## Introduction to PostgreSQL jsonb_path_query_array() function
-
-The `jsonb_path_query_array()` function allows you to query [JSONB](../postgresql-tutorial/postgresql-json) data using a [JSON path expression](postgresql-json-path).
-
-Here’s the basic syntax of the `jsonb_path_query_array()` function:
-
-```sql
-jsonb_path_query_array(jsonb_data, json_path)
-```
-
-In this syntax:
-
-- First, specify the `jsonb_data` that you want to query.
-- Second, provide a `json_path` that you want to match elements within the `jsonb_data`.
-
-The `jsonb_path_query_array()` function returns the matched elements as a JSON array.
-
-If the function does not find any matched element, it returns an empty array.
-
-If either argument is `NULL`, the function returns `NULL`.
-
-## PostgreSQL jsonb_path_query_array() function example
-
-Let’s explore some examples of using the `jsonb_path_query_array()` function
-
-### 1\) Basic PostgreSQL jsonb_path_query_array() function example
-
-The following example uses the `jsonb_path_query_array()` function to get the employee names as an array:
-
-```sql
-SELECT
-  jsonb_path_query_array(
-    '{"employees": [{"name": "Alice", "age": 25}, {"name": "Bob", "age": 30}]}',
-    '$.employees[*].name'
-  );
-```
-
-Output:
-
-```text
- jsonb_path_query_array
-------------------------
- ["Alice", "Bob"]
-(1 row)
-```
-
-In this example, the JSON path expression `$.employees[*].name` locates the value of the `name` key of all elements in the `employees` array.
-
-### 2\) Using jsonb_path_query_array() function with table data
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `employees`:
-
-```sql
-CREATE TABLE employees (
-    id SERIAL PRIMARY KEY,
-    data JSONB
-);
-```
-
-In the `employees` table, the `data` column has the type of `JSONB`.
 
 Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
 
 ```sql
-INSERT INTO employees (data) VALUES
-    ('{"name": "Alice", "age": 30, "pets": [{"type": "cat", "name": "Fluffy"}, {"type": "dog", "name": "Buddy"}]}'),
-    ('{"name": "Bob", "age": 35, "pets": [{"type": "dog", "name": "Max"}]}'),
-    ('{"name": "Charlie", "age": 40, "pets": [{"type": "rabbit", "name": "Snowball"}]}')
+INSERT INTO employees (name, phones)
+VALUES
+   ('John Doe', '["(408) 555-1111", "(408) 555-2222", "(408) 555-3333"]'),
+   ('Jane Smith', '["(408) 666-1111", "(408) 666-2222", "(408) 666-3333"]')
 RETURNING *;
 ```
 
 Output:
 
 ```text
- id |                                                    data
-
-----+-------------------------------------------------------------------------------------------------------------
-  1 | {"age": 30, "name": "Alice", "pets": [{"name": "Fluffy", "type": "cat"}, {"name": "Buddy", "type": "dog"}]}
-  2 | {"age": 35, "name": "Bob", "pets": [{"name": "Max", "type": "dog"}]}
-  3 | {"age": 40, "name": "Charlie", "pets": [{"name": "Snowball", "type": "rabbit"}]}
-(3 rows)
+ id |    name    |                         phones
+----+------------+--------------------------------------------------------
+  1 | John Doe   | ["(408) 555-1111", "(408) 555-2222", "(408) 555-3333"]
+  2 | Jane Smith | ["(408) 666-1111", "(408) 666-2222", "(408) 666-3333"]
+(2 rows)
 ```
 
-Third, use the `jsonb_path_query_array()` function to retrieve the pet names of employees as a JSON array:
+### 2\) Extracting the first array element example
+
+The following example uses the \-\> operator to retrieve the first phone number of an employee with the name John Doe:
 
 ```sql
-SELECT jsonb_path_query_array(data, '$.pets[*].name') AS employee_pet_names
-FROM employees;
+SELECT
+  name,
+  phones -> 0 phone
+FROM
+  employees
+WHERE
+  name = 'John Doe';
 ```
 
 Output:
 
 ```text
- employee_pet_names
+   name   |      phone
+----------+------------------
+ John Doe | "(408) 555-1111"
+(1 row)
+```
+
+In this example, we use the `->` operator with the index 0\. Therefore, the expression `phones -> 0` returns the first element in the `phones` array as a `JSONB` value.
+
+To extract the first phone number as a text string, you can use the \-\>\> operator:
+
+```sql
+SELECT
+  name,
+  phones ->> 0 phone
+FROM
+  employees
+WHERE
+  name = 'John Doe';
+```
+
+Output:
+
+```text
+   name   |     phone
+----------+----------------
+ John Doe | (408) 555-1111
+(1 row)
+```
+
+### 3\) Extracting the last array element example
+
+The following example uses the `->` operator to retrieve the first phone number of an employee with the name `Jane Smith`:
+
+```sql
+SELECT
+  name,
+  phones -> -1 phone
+FROM
+  employees
+WHERE
+  name = 'Jane Smith';
+```
+
+Output:
+
+```text
+    name    |      phone
+------------+------------------
+ Jane Smith | "(408) 666-3333"
+(1 row)
+```
+
+To extract the last phone number as a `JSONB` value, you can use the \-\>\> operator:
+
+```sql
+SELECT
+  name,
+  phones ->> -1 phone
+FROM
+  employees
+WHERE
+  name = 'Jane Smith';
+```
+
+Output:
+
+```text
+    name    |     phone
+------------+----------------
+ Jane Smith | (408) 666-3333
+(1 row)
+```
+
+### 4\) Extracting an element that does not exist
+
+The following example uses the `->` operator to retrieve the 4th phone number of an employee with the name `Jane Smith`:
+
+```sql
+SELECT
+  name,
+  phones -> 3 phone
+FROM
+  employees
+WHERE
+  name = 'Jane Smith';
+```
+
+Output:
+
+```text
+    name    | phone
+------------+-------
+ Jane Smith | null
+(1 row)
+```
+
+Since Jane Smith has 3 phone numbers only, the query returns `NULL`.
+
+## Extracting object value
+
+To extract a value of a JSON object by a key, you use the \-\> operator:
+
+```sql
+object -> 'key'
+```
+
+The \-\> operator returns the value of the ‘key’ as a JSONB value. If the key does not exist, the \-\> operator returns null.
+
+If you want to return the value as an SQL value, you can use the \-\>\> operator:
+
+```sql
+object ->> 'key'
+```
+
+## Extracting JSON object value example
+
+### 1\) Setting up a sample table
+
+First, create a new table called `requests`:
+
+```sql
+CREATE TABLE requests(
+   id SERIAL PRIMARY KEY,
+   employee_id INT NOT NULL,
+   request_date DATE NOT NULL,
+   data JSONB NOT NULL
+);
+```
+
+Second, insert some rows into the `requests` table:
+
+```
+INSERT INTO requests (request_date, employee_id, data)
+VALUES
+   ('2024-02-23',1, '{"current_position": "Software Engineer", "new_position": "Senior Software Engineer", "effective_date": "2024-03-01"}'),
+   ('2024-02-24',2, '{"current_position": "Data Analyst", "new_position": "Senior Data Analyst", "effective_date": "2024-03-15"}'),
+   ('2024-02-25',3, '{"current_position": "Marketing Manager", "new_position": "Senior Marketing Manager", "effective_date": "2024-04-01"}')
+RETURNING *;
+```
+
+Output:
+
+```text
+ id | employee_id | request_date |                                                         data
+----+-------------+--------------+-----------------------------------------------------------------------------------------------------------------------
+  1 |           1 | 2024-02-23   | {"new_position": "Senior Software Engineer", "effective_date": "2024-03-01", "current_position": "Software Engineer"}
+  2 |           2 | 2024-02-24   | {"new_position": "Senior Data Analyst", "effective_date": "2024-03-15", "current_position": "Data Analyst"}
+  3 |           3 | 2024-02-25   | {"new_position": "Senior Marketing Manager", "effective_date": "2024-04-01", "current_position": "Marketing Manager"}
+(3 rows)
+```
+
+### 2\) Extract a value from a JSON object
+
+The following example uses the `->` operator to extract the current position of the request of employee ID 1:
+
+```sql
+SELECT
+  data -> 'current_position' current_position
+FROM
+  requests
+WHERE
+  employee_id = 1;
+```
+
+Output:
+
+```text
+  current_position
 ---------------------
- ["Fluffy", "Buddy"]
- ["Max"]
- ["Snowball"]
-(3 rows)
-```
-
-### 3\) Handling missing paths
-
-If the specified path doesn’t exist in the `JSONB` data, the `jsonb_path_query_array()` function returns an empty array. For example:
-
-```sql
-SELECT jsonb_path_query_array(data, '$.address')
-FROM employees;
-```
-
-Output:
-
-```text
- jsonb_path_query_array
-------------------------
- []
- []
- []
-(3 rows)
-```
-
-In this example, the employee object doesn’t have an `address` key, so the result is an empty array.
-
-## Summary
-
-- Use the `jsonb_path_query_array()` function to query JSONB data using a JSON path and return matched elements as a JSON array.
-
-
-# jsonb_path_query_first
-
----
-title: 'PostgreSQL jsonb_path_query_first() Function'
-page_title: 'PostgreSQL jsonb_path_query_first() Function'
-page_description: 'Use the PostgreSQL jsonb_path_query_first() function to extract the first JSON value that matches a JSON path from a JSON document.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_query_first/'
-ogImage: ''
-updatedOn: '2024-02-24T02:56:19+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_path_query_array() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_array'
-nextLink:
-  title: 'PostgreSQL jsonb_path_exists() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_path_exists'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_query_first()` function to extract the first JSON value that matches a JSON path expression from a JSON document.
-
-## Introduction to the PostgreSQL jsonb_path_query_first() function
-
-The `jsonb_path_query_first()` function allows you to query data from a [JSONB document](../postgresql-tutorial/postgresql-json) based on a [JSON path](postgresql-json-path) expression and return the first match.
-
-Here’s the basic syntax of the `jsonb_path_query_first()` function:
-
-```sql
-jsonb_path_query_first(jsonb_data, json_path)
-```
-
-In this syntax:
-
-- First, specify a JSONB data from which you want to query data.
-- Second, provide a JSON path to match elements in the JSONB data.
-
-If the `jsonb_path_query_first()` function doesn’t find any match, it returns `NULL`.
-
-## PostgreSQL jsonb_path_query_first() function examples
-
-Let’s explore some examples of using the `jsonb_path_query_first()` function.
-
-### 1\) Basic jsonb_path_query_first() function example
-
-The following example uses the `jsonb_path_query_first()` function to get the first pet of a person:
-
-```sql
-SELECT jsonb_path_query_first(
-    '{"name": "Alice", "pets": ["Lucy","Bella"]}',
-    '$.pets[*]'
-) AS first_pet_name;
-```
-
-Output:
-
-```text
- first_pet_name
-----------------
- "Lucy"
+ "Software Engineer"
 (1 row)
 ```
 
-### 2\) Using the jsonb_path_query_first() function with table data
+The return value is a JSONB value.
 
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `person`:
-
-```sql
-CREATE TABLE person (
-    id SERIAL PRIMARY KEY,
-    data JSONB
-);
-```
-
-In the `person` table, the `data` column has the type of JSONB that stores employee information including name, age, and pets.
-
-Second, [insert data](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `person` table:
+To get the current position as a text string, you can use the `->>` operator:
 
 ```sql
-INSERT INTO person (data)
-VALUES
-    ('{"name": "Alice", "age": 30, "pets": [{"type": "cat", "name": "Fluffy"}, {"type": "dog", "name": "Buddy"}]}'),
-    ('{"name": "Bob", "age": 35, "pets": [{"type": "dog", "name": "Max"}]}'),
-    ('{"name": "Charlie", "age": 40, "pets": [{"type": "rabbit", "name": "Snowball"}]}')
-RETURNING *;
-```
-
-Third, retrieve the first pet name using the `jsonb_path_query_first()` function:
-
-```sql
-SELECT jsonb_path_query_first(data, '$.pets[*].name') AS first_pet_name
-FROM person;
+SELECT
+  data ->> 'current_position' current_position
+FROM
+  requests
+WHERE
+  employee_id = 1;
 ```
 
 Output:
 
 ```text
- first_pet_name
-----------------
- "Fluffy"
- "Max"
- "Snowball"
-(3 rows)
+ current_position
+-------------------
+ Software Engineer
+(1 row)
 ```
 
-### 3\) Handling missing paths
+### 2\) Extract a key that does not exist
 
-The following example attempts to find an element whose path does not exist:
+The following example attempts to extract a value of a non\-existing key from a JSON object:
 
-```sql
-SELECT jsonb_path_query_first(data, '$.email')
-FROM person;
+```
+SELECT
+  data ->> 'position' position
+FROM
+  requests
+WHERE
+  employee_id = 1;
 ```
 
 Output:
 
-```text
- jsonb_path_query_first
-------------------------
+```
+ position
+----------
  null
- null
- null
-(3 rows)
-```
-
-In this case, the person object doesn’t have an `email` key, therefore the result is `NULL`.
-
-## Summary
-
-- Use the `jsonb_path_query_first()` function to extract the first JSON value that matches a JSON path expression from a JSON document.
-
-
-# jsonb_path_exists
-
----
-title: 'PostgreSQL jsonb_path_exists() Function'
-page_title: 'PostgreSQL jsonb_path_exists() Function'
-page_description: 'You will learn how to use the PostgreSQL jsonb_path_exists() function to check if a JSON path returns any item for a specified JSON document.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_exists/'
-ogImage: ''
-updatedOn: '2024-02-23T14:26:51+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_path_query_first() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_first'
-nextLink:
-  title: 'PostgreSQL JSONB Operators'
-  slug: 'postgresql-json-functions/postgresql-jsonb-operators'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_exists()` function to check if a JSON path returns any item for a specified JSON document.
-
-## Introduction to the PostgreSQL jsonb_path_exists() function
-
-The `jsonb_path_exists()` function allows you to check if a JSON path matches any element in a JSON document.
-
-Here’s the syntax of the `jsonb_path_exists()` function:
-
-```sql
-jsonb_path_exists(jsonb_data, json_path)
-```
-
-In this syntax:
-
-- `jsonb_data` is a JSON document where you want to check for a JSON path.
-- `json_path` is the path that you want to check.
-
-The `jsonb_path_exists()` function returns true if the `json_path` returns any elements in the `jsonb_data` document or false otherwise.
-
-## PostgreSQL jsonb_path_exists() function example
-
-Let’s take some examples of using the `jsonb_path_exists()` function.
-
-### Setting up a sample table
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `products` that store product information:
-
-```sql
-CREATE TABLE products (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    attributes JSONB
-);
-```
-
-The `products` table has the `attributes` column whose data type is `JSONB`.
-
-Second, [insert rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `products` table:
-
-```sql
-INSERT INTO products (name, attributes)
-VALUES
-    ('Laptop', '{"brand": "Dell", "price": 1200, "specs": {"cpu": "Intel i7", "ram": "16GB"}}'),
-    ('Smartphone', '{"brand": "Samsung", "price": 800, "specs": {"os": "Android", "storage": "128GB"}}')
-RETURNING *;
-
-```
-
-Output:
-
-```text
- id |    name    |                                     attributes
-
-----+------------+------------------------------------------------------------------------------------
-  1 | Laptop     | {"brand": "Dell", "price": 1200, "specs": {"cpu": "Intel i7", "ram": "16GB"}}
-  2 | Smartphone | {"brand": "Samsung", "price": 800, "specs": {"os": "Android", "storage": "128GB"}}
-(2 rows)
-```
-
-### 1\) Basic jsonb_path_exists() function example
-
-The following example uses the `jsonb_path_exists()` function to check whether the CPU specification exists for any product:
-
-```sql
-SELECT name,
-       jsonb_path_exists(attributes, '$.specs.cpu') AS cpu_exists
-FROM products;
-```
-
-Output:
-
-```text
-    name    | cpu_exists
-------------+------------
- Laptop     | t
- Smartphone | f
-(2 rows)
-```
-
-### 2\) Using the jsonb_path_exists() function in the WHERE clause
-
-The following example uses the `jsonb_path_exists()` function with the [`jsonb_path_query()`](postgresql-jsonb_path_query) function to retrieve the `CPU` specification of any products that have `CPU` spec:
-
-```sql
-SELECT jsonb_path_query(attributes, '$.specs.cpu') AS cpu
-FROM products
-WHERE jsonb_path_exists(attributes, '$.specs.cpu');
-```
-
-Output:
-
-```text
-    cpu
-------------
- "Intel i7"
 (1 row)
 ```
 
 ## Summary
 
-- Use the `jsonb_path_exists()` function to check the existence of JSON Path expressions within JSONB data
+- Use the `json_array -> n` and `json_array ->> n` operator to extract a JSON array element as a `JSONB` value or as a text string specified by an index.
+- Use the `json_object -> 'key'` and `json_object ->> 'key'` operator to extract a value from an object specified by a key as a JSONB value and a text string.
 
-
-# Querying JSON Data
 
 # JSONB Operators
 
@@ -43452,320 +47695,1289 @@ iPhone 15 Pro  | 999.99
 ```
 
 
-# Extracting JSON Data
+# jsonb_agg
 
 ---
-title: 'PostgreSQL JSON Extract'
-page_title: 'PostgreSQL JSON Extract Operators: -> And ->>'
-page_description: 'You will learn how to use the operators -> and ->> to extract an element from a JSON array or a value of a key from a JSON object.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-json-extract/'
+title: 'PostgreSQL jsonb_agg() Function'
+page_title: 'PostgreSQL jsonb_agg() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_agg() function to aggregate values into a JSON array.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_agg/'
 ogImage: ''
-updatedOn: '2024-02-23T10:18:42+00:00'
+updatedOn: '2024-02-25T08:14:43+00:00'
 enableTableOfContents: true
 previousLink:
-  title: 'PostgreSQL jsonb_extract_path_text() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_extract_path_text'
+  title: 'PostgreSQL jsonb_to_record() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_to_record'
 nextLink:
-  title: 'PostgreSQL jsonb_insert() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_insert'
+  title: 'PostgreSQL jsonb_object_agg() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_object_agg'
 ---
 
-**Summary**: in this tutorial, you will learn how to use the operator `->` and `->>` to extract an element from a JSON array or a value of a key from a JSON object.
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_agg()` function to aggregate values into a JSON array.
 
-## Extracting elements from JSON arrays
+## Introduction to the PostgreSQL jsonb_agg() function
 
-To extract an element of a JSON array as a `JSONB` value, you use the `->` operator.
+The `jsonb_agg()` function is an [aggregate function](../postgresql-aggregate-functions) that allows you to aggregate values into a JSON array.
 
-Here’s the syntax for using the `->` operator:
+The `jsonb_agg()` function can be particularly useful when you want to create a JSON array from data of multiple rows.
 
-```phpsqlsql
-json_array -> n
+Here’s the syntax of the `jsonb_agg()` function:
+
+```sqlsql
+jsonb_agg(expression)
 ```
 
-In this syntax, `n` locates the nth element in a JSON array. n can be positive or negative. If the n is negative, the operator `->` returns the element from the end of the array.
+In this syntax:
 
-Note that the first element has an index of zero and the last element has an index of \-1\.
+- `expression`: is any valid expression that evaluates to a JSON value.
 
-If the nth element does not exist, the operator `->` returns `null`. To extract an array element as a text string, you can use the `->>` operator:
+The `jsonb_agg()` function returns a JSON array that consists of data from multiple rows.
 
-```sql
-json_array ->> n
-```
+## PostgreSQL jsonb_agg() function example
 
-## Extracting JSON array element examples
+Let’s explore some examples of using the `jsonb_agg()` function.
 
-Let’s explore some examples of using the `->` and `->>` operators.
+### 1\) Basic jsonb_agg() function example
 
-### 1\) Setting up a sample table
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `employees` to store employee data:
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `products`:
 
 ```sql
-CREATE TABLE employees(
-   id SERIAL PRIMARY KEY,
-   name VARCHAR(255) NOT NULL,
-   phones JSONB NOT NULL
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
 );
 ```
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `products` table:
+
+```sql
+INSERT INTO products (name, price)
+VALUES
+('Laptop', 1200.00),
+('Smartphone', 800.00),
+('Headphones', 100.00);
+```
+
+Third, use the `jsonb_agg()` function to aggregate product information into a JSON array:
+
+```sql
+SELECT
+  jsonb_agg(
+    jsonb_build_object('name', name, 'price', price)
+  ) AS products
+FROM
+  products;
+```
+
+Output:
+
+```text
+                                                         products
+--------------------------------------------------------------------------------------------------------------------------
+ [{"name": "Laptop", "price": 1200.00}, {"name": "Smartphone", "price": 800.00}, {"name": "Headphones", "price": 100.00}]
+(1 row)
+```
+
+### 2\) Using jsonb_agg() function with GROUP BY clause
+
+First, [create new tables](../postgresql-tutorial/postgresql-create-table) called `departments` and `employees`:
+
+```sql
+CREATE TABLE departments(
+   id SERIAL PRIMARY KEY,
+   department_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE employees(
+    id SERIAL PRIMARY KEY,
+    employee_name VARCHAR(255) NOT NULL,
+    department_id INT NOT NULL,
+    FOREIGN KEY (department_id)
+        REFERENCES departments(id) ON DELETE CASCADE
+);
+```
+
+Second, insert rows into `departments` and `employees` tables:
+
+```sql
+INSERT INTO departments (department_name)
+VALUES
+  ('Engineering'),
+  ('Sales')
+RETURNING *;
+
+INSERT INTO employees (employee_name, department_id)
+VALUES
+  ('John Doe', 1),
+  ('Jane Smith', 1),
+  ('Alice Johnson', 1),
+  ('Bob Brown', 2)
+RETURNING *;
+```
+
+The `departments` table:
+
+```text
+ id | department_name
+----+-----------------
+  1 | Engineering
+  2 | Sales
+(2 rows)
+```
+
+The `employees` table:
+
+```text
+ id | employee_name | department_id
+----+---------------+---------------
+  1 | John Doe      |             1
+  2 | Jane Smith    |             1
+  3 | Alice Johnson |             1
+  4 | Bob Brown     |             2
+(4 rows)
+```
+
+Third, use the `jsonb_agg()` function to retrieve departments and a list of employees for each department in the form of a JSON array:
+
+```sql
+SELECT
+  department_name,
+  jsonb_agg(employee_name) AS employees
+FROM
+  employees e
+  INNER JOIN departments d ON d.id = e.department_id
+GROUP BY
+  department_name;
+```
+
+Output:
+
+```text
+ department_name |                  employees
+-----------------+---------------------------------------------
+ Engineering     | ["John Doe", "Jane Smith", "Alice Johnson"]
+ Sales           | ["Bob Brown"]
+(2 rows)
+```
+
+### 3\) Using jsonb_agg() function with NULLs
+
+First, drop the departments and employees tables:
+
+```sql
+DROP TABLE employees;
+DROP TABLE departments;
+```
+
+Second, recreate the departments and employees tables:
+
+```sql
+CREATE TABLE departments(
+   id SERIAL PRIMARY KEY,
+   department_name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE employees(
+    id SERIAL PRIMARY KEY,
+    employee_name VARCHAR(255) NOT NULL,
+    department_id INT NOT NULL,
+    FOREIGN KEY (department_id)
+        REFERENCES departments(id) ON DELETE CASCADE
+);
+```
+
+Third, insert rows into the departments and employees tables:
+
+```sql
+INSERT INTO departments (department_name)
+VALUES
+  ('Engineering'),
+  ('Sales'),
+  ('IT')
+RETURNING *;
+
+INSERT INTO employees (employee_name, department_id)
+VALUES
+  ('John Doe', 1),
+  ('Jane Smith', 1),
+  ('Alice Johnson', 1),
+  ('Bob Brown', 2)
+RETURNING *;
+```
+
+Output:
+
+The `departments` table:
+
+```text
+ id | department_name
+----+-----------------
+  1 | Engineering
+  2 | Sales
+  3 | IT
+(3 rows)
+```
+
+The `employees` table:
+
+```
+ id | employee_name | department_id
+----+---------------+---------------
+  1 | John Doe      |             1
+  2 | Jane Smith    |             1
+  3 | Alice Johnson |             1
+  4 | Bob Brown     |             2
+(4 rows)
+
+```
+
+Third, use the `jsonb_agg()` function to retrieve departments and a list of employees for each department in the form of a JSON array:
+
+```
+SELECT
+  department_name,
+  jsonb_agg (employee_name) AS employees
+FROM
+  departments d
+  LEFT JOIN employees e ON d.id = e.department_id
+GROUP BY
+  department_name;
+```
+
+Output:
+
+```text
+ department_name |                  employees
+-----------------+---------------------------------------------
+ Engineering     | ["John Doe", "Jane Smith", "Alice Johnson"]
+ Sales           | ["Bob Brown"]
+ IT              | [null]
+(3 rows)
+```
+
+In this example, the IT department has no employees therefore `jsonb_agg()` function returns an array that contains a null value.
+
+To skip the null and make the JSON array an empty array, you can use the `jsonb_agg_strict()` function:
+
+```sql
+SELECT
+  department_name,
+  jsonb_agg_strict (employee_name) AS employees
+FROM
+  departments d
+  LEFT JOIN employees e ON d.id = e.department_id
+GROUP BY
+  department_name;
+```
+
+Output:
+
+```
+ department_name |                  employees
+-----------------+---------------------------------------------
+ Engineering     | ["John Doe", "Jane Smith", "Alice Johnson"]
+ Sales           | ["Bob Brown"]
+ IT              | []
+(3 rows)
+```
+
+The `jsonb_agg_strict()` function works like the `jsonb_agg()` except that it skips the null values.
+
+## Summary
+
+- Use the `jsonb_agg()` function to aggregate values into a JSON array.
+
+
+# jsonb_array_elements
+
+---
+title: 'PostgreSQL jsonb_array_elements() Function'
+page_title: 'PostgreSQL jsonb_array_elements() Function'
+page_description: 'How to use the PostgreSQL jsonb_array_elements() function to expand the top-level JSON array into a set of JSON values.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_array_elements/'
+ogImage: ''
+updatedOn: '2024-02-24T04:18:19+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_array_length() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_array_length'
+nextLink:
+  title: 'PostgreSQL jsonb_array_elements_text() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements_text'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_array_elements()` function to expand the top\-level JSON array into a set of JSON values.
+
+## Introduction to the PostgreSQL jsonb_array_elements() function
+
+The `jsonb_array_elements()` function allows you to expand the top\-level [JSON](../postgresql-tutorial/postgresql-json) array into a set of JSON values.
+
+Here’s the basic syntax of the `jsonb_array_elements()` function:
+
+```sql
+jsonb_array_elements(json_array)
+```
+
+In this syntax, you specify a JSON array with a JSONB type that you want to expand its elements.
+
+The `jsonb_array_elements()` function will expand the elements of the `json_array` into individual elements.
+
+If you pass a non\-array to the function, it’ll issue an error. If the `json_array` is `NULL`, the function returns an empty result set.
+
+## PostgreSQL jsonb_array_elements() function examples
+
+Let’s explore some examples of using the `jsonb_array_elements()` function.
+
+### 1\) Basic PostgreSQL jsonb_array_elements() function examples
+
+The following example uses the `jsonb_array_elements()` function to expand elements of a JSON array:
+
+```sql
+SELECT jsonb_array_elements('[1,2,3]');
+```
+
+Output:
+
+```text
+ jsonb_array_elements
+----------------------
+ 1
+ 2
+ 3
+(3 rows)
+```
+
+Note that the numbers 1, 2, 3 are the JSON values.
+
+The following example uses the `jsonb_array_elements()` function to expand an array of strings:
+
+```sql
+SELECT jsonb_array_elements('["red","green","blue"]');
+```
+
+Output:
+
+```text
+ jsonb_array_elements
+----------------------
+ "red"
+ "green"
+ "blue"
+(3 rows)
+```
+
+### 2\) Using the jsonb_array_elements() function with nested arrays example
+
+The following example uses the `jsonb_array_elements()` function to expand elements of an array that contains another array:
+
+```sql
+SELECT jsonb_array_elements('[1,2,3, [4,5], 6]');
+```
+
+Output:
+
+```text
+ jsonb_array_elements
+----------------------
+ 1
+ 2
+ 3
+ [4, 5]
+ 6
+(5 rows)
+```
+
+### 3\) Using the jsonb_array_elements() function with table data
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `employees`:
+
+```sql
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    skills JSONB
+);
+```
+
+The `skills` column has the JSONB type, which stores the skills of employees.
 
 Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
 
 ```sql
-INSERT INTO employees (name, phones)
+INSERT INTO employees (name, skills)
 VALUES
-   ('John Doe', '["(408) 555-1111", "(408) 555-2222", "(408) 555-3333"]'),
-   ('Jane Smith', '["(408) 666-1111", "(408) 666-2222", "(408) 666-3333"]')
-RETURNING *;
+('John Doe', '["Java", "Python", "SQL"]'),
+('Jane Smith', '["C++", "JavaScript", "HTML/CSS"]'),
+('Alice Johnson', '["Python", "Data Analysis", "Machine Learning"]'),
+('Bob Brown', '["Java", "SQL", "Spring Framework"]');
+```
+
+Third, retrieve all skills of employees:
+
+```sql
+SELECT jsonb_array_elements(skills) skills
+FROM employees;
 ```
 
 Output:
 
 ```text
- id |    name    |                         phones
-----+------------+--------------------------------------------------------
-  1 | John Doe   | ["(408) 555-1111", "(408) 555-2222", "(408) 555-3333"]
-  2 | Jane Smith | ["(408) 666-1111", "(408) 666-2222", "(408) 666-3333"]
-(2 rows)
+       skills
+--------------------
+ "Java"
+ "Python"
+ "SQL"
+ "C++"
+ "JavaScript"
+ "HTML/CSS"
+ "Python"
+ "Data Analysis"
+ "Machine Learning"
+ "Java"
+ "SQL"
+ "Spring Framework"
+(12 rows)
 ```
 
-### 2\) Extracting the first array element example
+It returns 12 skills.
 
-The following example uses the \-\> operator to retrieve the first phone number of an employee with the name John Doe:
+It’s possible to use the [`DISTINCT`](../postgresql-tutorial/postgresql-select-distinct) to get unique skills of all employees:
 
 ```sql
-SELECT
-  name,
-  phones -> 0 phone
-FROM
-  employees
-WHERE
-  name = 'John Doe';
+SELECT DISTINCT jsonb_array_elements(skills) skills
+FROM employees;
 ```
 
 Output:
 
 ```text
-   name   |      phone
-----------+------------------
- John Doe | "(408) 555-1111"
-(1 row)
-```
-
-In this example, we use the `->` operator with the index 0\. Therefore, the expression `phones -> 0` returns the first element in the `phones` array as a `JSONB` value.
-
-To extract the first phone number as a text string, you can use the \-\>\> operator:
-
-```sql
-SELECT
-  name,
-  phones ->> 0 phone
-FROM
-  employees
-WHERE
-  name = 'John Doe';
-```
-
-Output:
-
-```text
-   name   |     phone
-----------+----------------
- John Doe | (408) 555-1111
-(1 row)
-```
-
-### 3\) Extracting the last array element example
-
-The following example uses the `->` operator to retrieve the first phone number of an employee with the name `Jane Smith`:
-
-```sql
-SELECT
-  name,
-  phones -> -1 phone
-FROM
-  employees
-WHERE
-  name = 'Jane Smith';
-```
-
-Output:
-
-```text
-    name    |      phone
-------------+------------------
- Jane Smith | "(408) 666-3333"
-(1 row)
-```
-
-To extract the last phone number as a `JSONB` value, you can use the \-\>\> operator:
-
-```sql
-SELECT
-  name,
-  phones ->> -1 phone
-FROM
-  employees
-WHERE
-  name = 'Jane Smith';
-```
-
-Output:
-
-```text
-    name    |     phone
-------------+----------------
- Jane Smith | (408) 666-3333
-(1 row)
-```
-
-### 4\) Extracting an element that does not exist
-
-The following example uses the `->` operator to retrieve the 4th phone number of an employee with the name `Jane Smith`:
-
-```sql
-SELECT
-  name,
-  phones -> 3 phone
-FROM
-  employees
-WHERE
-  name = 'Jane Smith';
-```
-
-Output:
-
-```text
-    name    | phone
-------------+-------
- Jane Smith | null
-(1 row)
-```
-
-Since Jane Smith has 3 phone numbers only, the query returns `NULL`.
-
-## Extracting object value
-
-To extract a value of a JSON object by a key, you use the \-\> operator:
-
-```sql
-object -> 'key'
-```
-
-The \-\> operator returns the value of the ‘key’ as a JSONB value. If the key does not exist, the \-\> operator returns null.
-
-If you want to return the value as an SQL value, you can use the \-\>\> operator:
-
-```sql
-object ->> 'key'
-```
-
-## Extracting JSON object value example
-
-### 1\) Setting up a sample table
-
-First, create a new table called `requests`:
-
-```sql
-CREATE TABLE requests(
-   id SERIAL PRIMARY KEY,
-   employee_id INT NOT NULL,
-   request_date DATE NOT NULL,
-   data JSONB NOT NULL
-);
-```
-
-Second, insert some rows into the `requests` table:
-
-```
-INSERT INTO requests (request_date, employee_id, data)
-VALUES
-   ('2024-02-23',1, '{"current_position": "Software Engineer", "new_position": "Senior Software Engineer", "effective_date": "2024-03-01"}'),
-   ('2024-02-24',2, '{"current_position": "Data Analyst", "new_position": "Senior Data Analyst", "effective_date": "2024-03-15"}'),
-   ('2024-02-25',3, '{"current_position": "Marketing Manager", "new_position": "Senior Marketing Manager", "effective_date": "2024-04-01"}')
-RETURNING *;
-```
-
-Output:
-
-```text
- id | employee_id | request_date |                                                         data
-----+-------------+--------------+-----------------------------------------------------------------------------------------------------------------------
-  1 |           1 | 2024-02-23   | {"new_position": "Senior Software Engineer", "effective_date": "2024-03-01", "current_position": "Software Engineer"}
-  2 |           2 | 2024-02-24   | {"new_position": "Senior Data Analyst", "effective_date": "2024-03-15", "current_position": "Data Analyst"}
-  3 |           3 | 2024-02-25   | {"new_position": "Senior Marketing Manager", "effective_date": "2024-04-01", "current_position": "Marketing Manager"}
-(3 rows)
-```
-
-### 2\) Extract a value from a JSON object
-
-The following example uses the `->` operator to extract the current position of the request of employee ID 1:
-
-```sql
-SELECT
-  data -> 'current_position' current_position
-FROM
-  requests
-WHERE
-  employee_id = 1;
-```
-
-Output:
-
-```text
-  current_position
----------------------
- "Software Engineer"
-(1 row)
-```
-
-The return value is a JSONB value.
-
-To get the current position as a text string, you can use the `->>` operator:
-
-```sql
-SELECT
-  data ->> 'current_position' current_position
-FROM
-  requests
-WHERE
-  employee_id = 1;
-```
-
-Output:
-
-```text
- current_position
--------------------
- Software Engineer
-(1 row)
-```
-
-### 2\) Extract a key that does not exist
-
-The following example attempts to extract a value of a non\-existing key from a JSON object:
-
-```
-SELECT
-  data ->> 'position' position
-FROM
-  requests
-WHERE
-  employee_id = 1;
-```
-
-Output:
-
-```
- position
-----------
- null
-(1 row)
+       skills
+--------------------
+ "C++"
+ "Python"
+ "SQL"
+ "HTML/CSS"
+ "JavaScript"
+ "Java"
+ "Data Analysis"
+ "Spring Framework"
+ "Machine Learning"
+(9 rows)
 ```
 
 ## Summary
 
-- Use the `json_array -> n` and `json_array ->> n` operator to extract a JSON array element as a `JSONB` value or as a text string specified by an index.
-- Use the `json_object -> 'key'` and `json_object ->> 'key'` operator to extract a value from an object specified by a key as a JSONB value and a text string.
+- Use the `jsonb_array_elements()` function to expand elements of the top\-level JSON array.
+
+
+# jsonb_array_elements_text
+
+---
+title: 'PostgreSQL jsonb_array_elements_text() Function'
+page_title: 'PostgreSQL jsonb_array_elements_text() Function'
+page_description: 'How to use the PostgreSQL jsonb_array_elements_text() function to expand the elements of a top-level JSON array into a set of text values.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_array_elements_text/'
+ogImage: ''
+updatedOn: '2024-02-24T08:07:50+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_array_elements() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements'
+nextLink:
+  title: 'PostgreSQL jsonb_each() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_each'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_array_elements_text()` function to expand the elements of a top\-level JSON array into a set of text values.
+
+## Introduction to the PostgreSQL jsonb_array_elements_text() function
+
+The `jsonb_array_elements_text()` function allows you to expand the elements of a top\-level [JSON](../postgresql-tutorial/postgresql-json) array into a set of JSON values.
+
+The following shows the basic syntax of the `jsonb_array_elements_text()` function:
+
+```sql
+jsonb_array_elements_text(json_array)
+```
+
+In this syntax:
+
+- `json_array` is a JSON array with the `JSONB` type, which you want to expand the elements.
+
+The `jsonb_array_elements_text()` function will expand the elements in the `json_array` into individual text values.
+
+If you pass an object to the function, it’ll issue an error. In case the `json_array` is `NULL`, the function returns an empty result set.
+
+## PostgreSQL jsonb_array_elements_text() function examples
+
+Let’s take some examples of using the `jsonb_array_elements_text()` function.
+
+### 1\) Basic PostgreSQL jsonb_array_elements_text() function examples
+
+The following example uses the `jsonb_array_elements_text()` function to expand elements of a JSON array:
+
+```sql
+SELECT jsonb_array_elements_text('["orange","banana","watermelon"]');
+```
+
+Output:
+
+```text
+ jsonb_array_elements_text
+---------------------------
+ orange
+ banana
+ watermelon
+(3 rows)
+```
+
+The following example uses the `jsonb_array_elements_text()` function to expand an array of numbers:
+
+```sql
+SELECT jsonb_array_elements_text('[1,2,3]');
+```
+
+Output:
+
+```text
+ jsonb_array_elements_text
+---------------------------
+ 1
+ 2
+ 3
+(3 rows)
+```
+
+Note that 1, 2, and 3 are text values, not numbers. To convert them to numbers, you need to have an explicit cast.
+
+### 2\) Using the jsonb_array_elements_text() function with nested arrays example
+
+The following example uses the `jsonb_array_elements_text()` function to expand elements of an array that contains another array:
+
+```sql
+SELECT jsonb_array_elements_text('[1,2,3, [4,5], 6]');
+```
+
+Output:
+
+```text
+ jsonb_array_elements_text
+---------------------------
+ 1
+ 2
+ 3
+ [4, 5]
+ 6
+(5 rows)
+```
+
+### 3\) Using the jsonb_array_elements_text() function with table data
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `employees`:
+
+```sql
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    skills JSONB
+);
+```
+
+The `skills` column has the JSONB type, which stores the skills of employees.
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
+
+```sql
+INSERT INTO employees (name, skills)
+VALUES
+('John Doe', '["Java", "Python", "SQL"]'),
+('Jane Smith', '["C++", "JavaScript", "HTML/CSS"]'),
+('Alice Johnson', '["Python", "Data Analysis", "Machine Learning"]'),
+('Bob Brown', '["Java", "SQL", "Spring Framework"]');
+```
+
+Third, retrieve all skills of employees:
+
+```sql
+SELECT jsonb_array_elements_text(skills) skills
+FROM employees;
+```
+
+Output:
+
+```text
+      skills
+------------------
+ Java
+ Python
+ SQL
+ C++
+ JavaScript
+ HTML/CSS
+ Python
+ Data Analysis
+ Machine Learning
+ Java
+ SQL
+ Spring Framework
+(12 rows)
+```
+
+It returns 12 skills as text values.
+
+If you want to get unique skills, you can use the [`DISTINCT`](../postgresql-tutorial/postgresql-select-distinct) operator:
+
+```sql
+SELECT DISTINCT jsonb_array_elements_text(skills) skills
+FROM employees;
+```
+
+Output:
+
+```text
+      skills
+------------------
+ Data Analysis
+ C++
+ JavaScript
+ SQL
+ Python
+ Machine Learning
+ Spring Framework
+ HTML/CSS
+ Java
+(9 rows)
+```
+
+## Summary
+
+- Use the `jsonb_array_elements_text()` function to expand elements of the top\-level JSON array into a set of text values.
+
+
+# jsonb_array_length
+
+---
+title: 'PostgreSQL jsonb_array_length() Function'
+page_title: 'PostgreSQL jsonb_array_length() Function'
+page_description: 'You will learn how to use the PostgreSQL jsonb_array_length() function to get the number of elements in the top-level JSON array.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_array_length/'
+ogImage: ''
+updatedOn: '2024-02-24T03:50:01+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_strip_nulls() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_strip_nulls'
+nextLink:
+  title: 'PostgreSQL jsonb_array_elements() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_array_length()` function to get the number of elements in the top\-level JSON array.
+
+## Introduction to the PostgreSQL jsonb_array_length() function
+
+The `jsonb_array_length()` function returns the number of elements in the top\-level [JSON](../postgresql-tutorial/postgresql-json) array.
+
+Here’s the syntax of the `jsonb_array_length()` function:
+
+```sql
+jsonb_array_length(json_array)
+```
+
+In this syntax, you pass a JSON array with the type JSONB to the function. It’ll return the number of elements in the array.
+
+If the array is empty, the `jsonb_array_length()` function returns zero. If the argument is not an array, the function will issue an error. In case the `json_array` is `NULL`, the `jsonb_array_length()` function will return `NULL`.
+
+Note that the function will return the number of elements of the top\-level array only. If the array contains nested arrays, the function will not count the elements in the nested arrays but consider the nested arrays as individual elements.
+
+## PostgreSQL jsonb_array_length() function examples
+
+Let’s explore some examples of using the `jsonb_array_length()` function.
+
+### 1\) Basic PostgreSQL jsonb_array_length() function example
+
+The following example uses the `jsonb_array_length()` function to get the number of elements in a JSON array:
+
+```sql
+SELECT jsonb_array_length('[1,2,3]');
+```
+
+Output:
+
+```text
+ jsonb_array_length
+--------------------
+                  3
+(1 row)
+```
+
+The function returns 3 because the JSON array \[1,2,3] contains three elements.
+
+### 2\) Using the jsonb_array_length() function with nested arrays
+
+The following example uses the `jsonb_array_length()` function with an array that contains another array:
+
+```sql
+SELECT jsonb_array_length('[1,2,3, [4,5], 6]');
+```
+
+Output:
+
+```text
+ jsonb_array_length
+--------------------
+                  5
+(1 row)
+```
+
+In this example, the function returns 5 because the top\-level array contains 5 elements: 1, 2, 3, an array \[4,5], and 6\.
+
+### 3\) Using the jsonb_array_length() function with table data
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `person`:
+
+```sql
+CREATE TABLE person (
+    id SERIAL PRIMARY KEY,
+    info JSONB
+);
+```
+
+In this `person` table, the `info` column has the type `JSONB` that contains the person’s information including name, age, and pets.
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `person` table:
+
+```sql
+INSERT INTO person (info)
+VALUES
+    ('{"name": "Alice", "age": 30, "pets": [{"type": "cat", "name": "Fluffy"}, {"type": "dog", "name": "Buddy"}]}'),
+    ('{"name": "Bob", "age": 35, "pets": [{"type": "dog", "name": "Max"}]}'),
+    ('{"name": "Charlie", "age": 40, "pets": [{"type": "rabbit", "name": "Snowball"}]}')
+RETURNING *;
+```
+
+Third, retrieve the person names with their number of pets from the `info` column of the `person` table:
+
+```sql
+SELECT
+  jsonb_path_query(info, '$.name') name,
+  jsonb_array_length(
+    jsonb_path_query(info, '$.pets')
+  ) pet_count
+FROM
+  person;
+```
+
+Output:
+
+```text
+   name    | pet_count
+-----------+-----------
+ "Alice"   |         2
+ "Bob"     |         1
+ "Charlie" |         1
+(3 rows)
+```
+
+In this example:
+
+- The `jsonb_path_query`(info, ‘$.name’) returns the name of the person.
+- The `jsonb_path_query`(info, ‘$.pets’) returns the `pets` array, and `jsonb_array_length()` returns the number of elements in the `pets` array.
+
+## Summary
+
+- Use the `jsonb_array_length()` function to get the number of elements in the top\-level JSON array.
+
+
+# jsonb_build_array
+
+---
+title: 'PostgreSQL jsonb_build_array() Function'
+page_title: 'PostgreSQL jsonb_build_array() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_build_array() function to create a JSON array.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_build_array/'
+ogImage: '/postgresqltutorial/film.png'
+updatedOn: '2024-02-23T07:45:10+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL to_jsonb() Function'
+  slug: 'postgresql-json-functions/postgresql-to_jsonb'
+nextLink:
+  title: 'PostgreSQL jsonb_build_object() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_build_object'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_build_array()` function to create a JSON array.
+
+## Introduction to the PostgreSQL jsonb_build_array() function
+
+The `jsonb_build_array()` function allows you to construct a JSONB array from a variadic list of arguments.
+
+Here’s the basic syntax of the `jsonb_build_array()` function:
+
+```sql
+jsonb_build_array ( VARIADIC "any" ) → jsonb
+```
+
+In this syntax, you provide a list of arguments that you want to convert to elements of a JSON array.
+
+The `jsonb_build_array()` will convert each argument using the [`to_jsonb()`](postgresql-to_jsonb) function.
+
+## PostgreSQL jsonb_build_array() function examples
+
+Let’s take some examples of using the `jsonb_build_array()` function.
+
+### 1\) Basic PostgreSQL jsonb_build_array() function example
+
+The following example uses the `jsonb_build_array()` function to create a JSON array from a list of values:
+
+```sql
+SELECT jsonb_build_array(10, null, 'Hi', true) result;
+```
+
+Output:
+
+```text
+         result
+------------------------
+ [10, null, "Hi", true]
+(1 row)
+```
+
+### 2\) Using PostgreSQL jsonb_build_array() function with table data
+
+We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![](/postgresqltutorial/film.png)The following example uses the `jsonb_build_array()` function to convert the title and length of each film into elements of a JSON array:
+
+```sql
+SELECT
+  jsonb_build_array(title, length)
+FROM
+  film
+ORDER BY
+  title;
+```
+
+Output:
+
+```text
+          jsonb_build_array
+--------------------------------------
+ ["Academy Dinosaur", 86]
+ ["Ace Goldfinger", 48]
+ ["Adaptation Holes", 50]
+ ["Affair Prejudice", 117]
+...
+```
+
+## Summary
+
+- Use the PostgreSQL `jsonb_build_array()` function to create a `JSONB` array from a variadic list of arguments.
+
+
+# jsonb_build_object
+
+---
+title: 'PostgreSQL jsonb_build_object() Function'
+page_title: 'PostgreSQL jsonb_build_object() Function'
+page_description: 'You will learn how to use the PostgreSQL jsonb_build_object() function to create a JSON object based on a variadic argument list.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_build_object/'
+ogImage: ''
+updatedOn: '2024-02-23T08:02:53+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_build_array() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_build_array'
+nextLink:
+  title: 'PostgreSQL jsonb_object() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_object'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_build_object()` function to create a JSON object based on a variadic argument list.
+
+## Introduction to the PostgreSQL jsonb_build_object() function
+
+The `jsonb_build_object()` function allows you to build an object out of a variadic argument list.
+
+Here’s the basic syntax of the `jsonb_build_object()` function:
+
+```sql
+jsonb_build_object ( VARIADIC "any" ) → jsonb
+```
+
+In this syntax, you pass a list of alternative keys and values. The list must have an even number of elements or you’ll get an error.
+
+The function will coerce the key to text and value to a JSON value using the `to_jsonb()` function.
+
+The `jsonb_build_object()` function returns a JSON object with the specified key and values.
+
+## PostgreSQL jsonb_build_object() function examples
+
+Let’s explore some examples of using the PostgreSQL `jsonb_build_object()` function.
+
+### 1\) Basic jsonb_build_object() function example
+
+The following example uses the `jsonb_build_object()` function to build an object out of the alternating keys and values:
+
+```sql
+SELECT
+  jsonb_build_object(
+    'title', 'Academy Dinosaur', 'length',
+    86
+  );
+```
+
+Output:
+
+```text
+             jsonb_build_object
+---------------------------------------------
+ {"title": "Academy Dinosaur", "length": 86}
+(1 row)
+```
+
+### 2\) Using jsonb_build_object() function with table data example
+
+The following example uses the `jsonb_build_object()` function to create a JSON object based on the title and length of films in the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+```sql
+SELECT
+  jsonb_build_object('title', title, 'length', length)
+FROM
+  film
+ORDER BY
+  length DESC;
+```
+
+Output:
+
+```text
+                   jsonb_build_object
+---------------------------------------------------------
+ {"title": "Muscle Bright", "length": 185}
+ {"title": "Control Anthem", "length": 185}
+ {"title": "Sweet Brotherhood", "length": 185}
+...
+```
+
+### 3\) Using the jsonb_build_object() function with an odd number of values
+
+The following example attempts to use the `jsonb_build_object()` function with an odd number of values:
+
+```sql
+SELECT
+  jsonb_build_object(
+    'title', 'Theory Mermaid', 'length'
+  );
+```
+
+It returns the following error:
+
+```sql
+ERROR:  argument list must have even number of elements
+HINT:  The arguments of jsonb_build_object() must consist of alternating keys and values.
+```
+
+## Summary
+
+- Use the PostgreSQL `jsonb_build_object()` function to build a JSON object out of a variadic argument list.
+
+
+# jsonb_each
+
+---
+title: 'PostgreSQL jsonb_each() Function'
+page_title: 'PostgreSQL jsonb_each() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_each() function to expand a JSON object into a set of key/value pairs.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_each/'
+ogImage: ''
+updatedOn: '2024-02-24T08:46:16+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_array_elements_text() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements_text'
+nextLink:
+  title: 'PostgreSQL jsonb_each_text() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_each_text'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_each()` function to expand a JSON object into a set of key/value pairs.
+
+## Introduction to the PostgreSQL jsonb_each() function
+
+The `jsonb_each()` function allows you to expand a top\-level [JSON](../postgresql-tutorial/postgresql-json) object of a JSONB value into a set of key/value pairs. The keys are text and values are JSON values.
+
+Here’s the syntax of the `jsonb_each()` function:
+
+```sql
+jsonb_each(json_object)
+```
+
+In this syntax:
+
+- `json_object` is the JSON object that you want to expand the key/value pairs.
+
+The function returns a set of records where each record consists of two fields key of type `text` and value of the `JSONB`.
+
+If the `json_object` is not a JSON object, the function will issue an error. In case the `json_object` is null, the function returns an empty set.
+
+## PostgreSQL jsonb_each() function examples
+
+Let’s explore some examples of using the `jsonb_each()` function.
+
+### 1\) Basic PostgreSQL jsonb_each() function example
+
+The following example uses the `jsonb_each` function to expand the key/value pair of a JSON object:
+
+```sql
+SELECT
+  *
+FROM
+  jsonb_each(
+    '{"name": "John", "age": 30, "city": "New York"}'
+  );
+```
+
+Output:
+
+```text
+ key  |   value
+------+------------
+ age  | 30
+ city | "New York"
+ name | "John"
+(3 rows)
+```
+
+If you want to retrieve a particular key, you can filter the key in the `WHERE` clause.
+
+For example, the following statement returns the name and age of the object:
+
+```sql
+SELECT
+  *
+FROM
+  jsonb_each(
+    '{"name": "John", "age": 30, "city": "New York"}'
+  )
+WHERE
+  key in ('name', 'age');
+```
+
+Output:
+
+```text
+ key  | value
+------+--------
+ age  | 30
+ name | "John"
+(2 rows)
+```
+
+### 2\) Using the jsonb_each() function with table data
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `links`:
+
+```sql
+CREATE TABLE links (
+    id SERIAL PRIMARY KEY,
+    href TEXT NOT NULL,
+    attributes JSONB
+);
+```
+
+In the `links` table, the `attributes` column has the type of `JSONB` that stores various attributes of a link.
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `links` table:
+
+```sql
+INSERT INTO links (href, attributes)
+VALUES
+    ('https://example.com', '{"rel": "stylesheet", "type": "text/css", "media": "screen"}'),
+    ('https://example.org', '{"rel": "icon", "type": "image/x-icon"}'),
+    ('https://example.net', '{"rel": "alternate", "type": "application/rss+xml", "title": "RSS Feed"}');
+```
+
+Third, expand the key/value pairs of the objects in `attributes` column into a set of key/value pairs using the `jsonb_each()` function:
+
+```sql
+SELECT
+  href,
+  key,
+  value
+FROM
+  links,
+  jsonb_each(attributes);
+```
+
+Output:
+
+```text
+        href         |  key  |         value
+---------------------+-------+-----------------------
+ https://example.com | rel   | "stylesheet"
+ https://example.com | type  | "text/css"
+ https://example.com | media | "screen"
+ https://example.org | rel   | "icon"
+ https://example.org | type  | "image/x-icon"
+ https://example.net | rel   | "alternate"
+ https://example.net | type  | "application/rss+xml"
+ https://example.net | title | "RSS Feed"
+(8 rows)
+```
+
+## Summary
+
+- Use the `jsonb_each()` function to expand a JSON object into a set of key/value pairs.
+
+
+# jsonb_each_text
+
+---
+title: 'PostgreSQL jsonb_each_text() Function'
+page_title: 'PostgreSQL jsonb_each_text() Function'
+page_description: 'You will learn how to use the PostgreSQL jsonb_each_text() function to expand a JSON object into a set of key/value pairs of type text.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_each_text/'
+ogImage: ''
+updatedOn: '2024-02-24T09:02:58+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_each() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_each'
+nextLink:
+  title: 'PostgreSQL jsonb_object_keys() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_object_keys'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_each_text()` function to expand a JSON object into a set of key/value pairs of type text.
+
+## Introduction to the PostgreSQL jsonb_each_text() function
+
+The `jsonb_each_text()` function allows you to expand a top\-level [JSON](../postgresql-tutorial/postgresql-json) object into a set of key/value pairs. Both keys and values are text strings.
+
+The following shows the basic syntax of the `jsonb_each_text()` function:
+
+```sql
+jsonb_each_text(json_object)
+```
+
+In this syntax:
+
+- `json_object` is the JSON object that you want to expand the key/value pairs.
+
+The function returns a set of records where each record consists of two fields key and value, both have the type `text`.
+
+If the `json_object` is null, the function returns an empty set. in case the `json_object` is not a JSON object, the function will issue an error.
+
+## PostgreSQL jsonb_each_text() function examples
+
+Let’s take some examples of using the `jsonb_each_text()` function.
+
+### 1\) Basic PostgreSQL jsonb_each_text() function example
+
+The following example uses the `jsonb_each_text` function to expand the key/value pair of a JSON object:
+
+```sql
+SELECT
+  *
+FROM
+  jsonb_each_text(
+    '{"name": "Jane", "age": 22, "city": "San Francisco"}'
+  );
+```
+
+Output:
+
+```text
+ key  |     value
+------+---------------
+ age  | 22
+ city | San Francisco
+ name | Jane
+(3 rows)
+```
+
+Notice that all values in the value column are text strings including the value 22\.
+
+To retrieve a particular key/value pair, you can filter keys in the `WHERE` clause. For example, the following statement returns the name and city of the object:
+
+```sql
+SELECT
+  *
+FROM
+  jsonb_each_text(
+    '{"name": "Jane", "age": 22, "city": "San Francisco"}'
+  )
+WHERE key IN ('name','city');
+```
+
+Output:
+
+```text
+ key  |     value
+------+---------------
+ city | San Francisco
+ name | Jane
+(2 rows)
+```
+
+### 2\) Using the jsonb_each_text() function with table data
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `links`:
+
+```sql
+CREATE TABLE links (
+    id SERIAL PRIMARY KEY,
+    href TEXT NOT NULL,
+    attributes JSONB
+);
+```
+
+In the `links` table, the `attributes` column has the type of `JSONB` that stores various attributes of a link.
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `links` table:
+
+```sql
+INSERT INTO links (href, attributes)
+VALUES
+    ('https://example.com', '{"rel": "stylesheet", "type": "text/css", "media": "screen"}'),
+    ('https://example.org', '{"rel": "icon", "type": "image/x-icon"}'),
+    ('https://example.net', '{"rel": "alternate", "type": "application/rss+xml", "title": "RSS Feed"}');
+```
+
+Third, expand the key/value pairs of the objects in `attributes` column into a set of key/value pairs using the `jsonb_each_text()` function:
+
+```sql
+SELECT
+  href,
+  key,
+  value
+FROM
+  links,
+  jsonb_each_text(attributes);
+```
+
+Output:
+
+```text
+        href         |  key  |        value
+---------------------+-------+---------------------
+ https://example.com | rel   | stylesheet
+ https://example.com | type  | text/css
+ https://example.com | media | screen
+ https://example.org | rel   | icon
+ https://example.org | type  | image/x-icon
+ https://example.net | rel   | alternate
+ https://example.net | type  | application/rss+xml
+ https://example.net | title | RSS Feed
+(8 rows)
+```
+
+## Summary
+
+- Use the `jsonb_each_text()` function to expand a JSON object into a set of key/value pairs of type `text`.
 
 
 # jsonb_extract_path
@@ -44080,8 +49292,6 @@ Output:
 - Use the `jsonb_extract_path_text()` function to extract JSON subobject as text at the specified path.
 
 
-# Modifying JSON Data
-
 # jsonb_insert
 
 ---
@@ -44385,6 +49595,1174 @@ Output:
 ## Summary
 
 - Use the `jsonb_insert()` function to insert a new value into a JSON document of the type JSONB.
+
+
+# jsonb_object
+
+---
+title: 'PostgreSQL jsonb_object() Function'
+page_title: 'PostgreSQL jsonb_object() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_object() function to create a JSON object from a text array.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_object/'
+ogImage: '/postgresqltutorial/film.png'
+updatedOn: '2024-02-25T13:23:04+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_build_object() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_build_object'
+nextLink:
+  title: 'PostgreSQL row_to_json() Function'
+  slug: 'postgresql-json-functions/postgresql-row_to_json'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_object()` function to create a JSON object from a text array.
+
+## Introduction to the PostgreSQL jsonb_object() function
+
+The `jsonb_object()` function allows you to build a JSON object from a [text](../postgresql-tutorial/postgresql-char-varchar-text) [array](../postgresql-tutorial/postgresql-array).
+
+Here’s the syntax of the `jsonb_object()` function:
+
+```sql
+jsonb_object(text[]) → jsonb
+```
+
+In this syntax, `text[]` array can be:
+
+- A one\-dimensional array that contains an even number of elements. The elements are the alternating key/value pairs.
+- A two\-dimensional array. Each inner array has exactly two elements representing the key/value pair.
+
+The `jsonb_object()` function returns a JSON object constructed from the text array with the type of JSONB.
+
+The `jsonb_object()` function has another syntax that takes keys and values pairwise from separate text arrays:
+
+```sql
+jsonb_object ( keys text[], values text[] ) → jsonb
+```
+
+In this syntax, the keys and values arrays in this syntax have the same number of elements. The `keys` array contains the keys of the JSON object whereas the `values` array contains the corresponding values of the `keys`.
+
+## PostgreSQL jsonb_object() function examples
+
+Let’s explore some examples of using the `jsonb_object()` function.
+
+### 1\) Basic PostgreSQL jsonb_object function examples
+
+The following example uses the `jsonb_object()` function to create a JSON object from a text array:
+
+```sql
+SELECT
+  jsonb_object('{"name","John", "age", 22}');
+```
+
+Output:
+
+```text
+         jsonb_object
+-------------------------------
+ {"age": "22", "name": "John"}
+(1 row)
+```
+
+Alternatively, you can use a two\-dimensional arrays to create the JSON object:
+
+```sql
+SELECT
+  jsonb_object(
+    '{{"name","age"},{"John", 22}}'
+  );
+```
+
+Output:
+
+```text
+         jsonb_object
+-------------------------------
+ {"John": "22", "name": "age"}
+(1 row)
+```
+
+Additionally, you can use two arrays including `keys` and `values` to create the JSON object:
+
+```sql
+SELECT
+  jsonb_object(
+    '{"name","age"}', '{"John", 22}'
+  );
+```
+
+Output:
+
+```text
+         jsonb_object
+-------------------------------
+ {"age": "22", "name": "John"}
+(1 row)
+```
+
+### 2\) Using the jsonb_object() function with table data
+
+We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database).
+
+![](/postgresqltutorial/film.png)The following example uses the `jsonb_object` function to create an object from the `title` and `release_year` from the `film` table:
+
+```sql
+SELECT
+  jsonb_object(
+    array[title], array[release_year]::text[]
+  )
+FROM
+  film
+ORDER BY
+  title;
+```
+
+Output:
+
+```text
+         jsonb_object
+------------------------------
+ {"Academy Dinosaur": "2006"}
+ {"Ace Goldfinger": "2006"}
+ {"Adaptation Holes": "2006"}
+ {"Affair Prejudice": "2006"}
+ {"African Egg": "2006"}
+...
+```
+
+## Summary
+
+- Use the PostgreSQL `jsonb_object()` function to create a JSON object from a text array.
+
+
+# jsonb_object_agg
+
+---
+title: 'PostgreSQL jsonb_object_agg() Function'
+page_title: 'PostgreSQL jsonb_object_agg() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_object_agg() function to aggregate key/value pairs into a JSON object.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_object_agg/'
+ogImage: ''
+updatedOn: '2024-02-25T09:00:30+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_agg() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_agg'
+nextLink:
+  title: 'PostgreSQL jsonb_typeof() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_typeof'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_object_agg()` function to aggregate key/value pairs into a JSON object.
+
+## Introduction to the PostgreSQL jsonb_object_agg() function
+
+The PostgreSQL `jsonb_object_agg()` function is an [aggregate function](../postgresql-aggregate-functions) that allows you to collect key/value pairs into a [JSON](../postgresql-tutorial/postgresql-json) object.
+
+The `jsonb_object_agg()` can be useful when you want to aggregate data from multiple rows into a single JSON object or construct complex JSON output.
+
+Here’s the syntax of the `jsonb_object_agg()` function:
+
+```sql
+jsonb_object_agg(key, value)
+```
+
+In this syntax:
+
+- `key` represents the key for the JSON object. The key must not be null.
+- `value` represents the value for the corresponding key.
+
+The `jsonb_object_agg()` returns a JSON object that consists of key/value pairs.
+
+## PostgreSQL jsonb_object_agg() function examples
+
+Let’s explore some examples of using the PostgreSQL `jsonb_object_agg()` function.
+
+### 1\) Basic PostgreSQL jsonb_object_agg() function example
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `departments`:
+
+```sql
+CREATE TABLE departments(
+    id SERIAL PRIMARY KEY,
+    department_name VARCHAR(255) NOT NULL
+);
+```
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `departments` table:
+
+```sql
+INSERT INTO departments(department_name)
+VALUES
+   ('Sales'),
+   ('Marketing')
+RETURNING *;
+```
+
+Third, use the `jsonb_object_agg()` function to create an object whose key is the department name and value is the id:
+
+```sql
+SELECT
+  jsonb_object_agg(department_name, id) departments
+FROM
+  departments;
+```
+
+Output:
+
+```text
+         departments
+------------------------------
+ {"Sales": 1, "Marketing": 2}
+(1 row)
+```
+
+### 2\) Using the jsonb_object_agg() function with GROUP BY clause
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `employees`:
+
+```sql
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    salary DECIMAL(10, 2),
+    department_id INT NOT NULL,
+    FOREIGN KEY(department_id)
+       REFERENCES departments(id) ON DELETE CASCADE
+);
+```
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
+
+```sql
+INSERT INTO employees (name, salary, department_id)
+VALUES
+  ('John Doe', 60000, 1),
+  ('Jane Smith', 65000, 1),
+  ('Alice Johnson', 55000, 2),
+  ('Bob Williams', 70000, 2),
+  ('Alex Miller', NULL , 2)
+RETURNING *;
+```
+
+Output:
+
+```text
+ id |     name      |  salary  | department_id
+----+---------------+----------+---------------
+  1 | John Doe      | 60000.00 |             1
+  2 | Jane Smith    | 65000.00 |             1
+  3 | Alice Johnson | 55000.00 |             2
+  4 | Bob Williams  | 70000.00 |             2
+  5 | Alex Miller   |     null |             2
+(5 rows)
+```
+
+Third, use the `jsonb_object_agg()` function to get the department name and a JSON object that contains employee details of the department including employee name and salary:
+
+```sql
+SELECT
+  department_name,
+  jsonb_pretty(
+    jsonb_object_agg(e.name, e.salary)
+  ) AS employee_details
+FROM
+  departments d
+  INNER JOIN employees e ON e.department_id = d.id
+GROUP BY
+  department_name;
+```
+
+Output:
+
+```text
+ department_name |       employee_details
+-----------------+-------------------------------
+ Marketing       | {                            +
+                 |     "Alex Miller": null,     +
+                 |     "Bob Williams": 70000.00,+
+                 |     "Alice Johnson": 55000.00+
+                 | }
+ Sales           | {                            +
+                 |     "John Doe": 60000.00,    +
+                 |     "Jane Smith": 65000.00   +
+                 | }
+(2 rows)
+```
+
+Note that we use the `jsonb_pretty()` function to format JSON.
+
+Alex Miller has not had a salary yet so his salary is null. The `jsonb_object_agg()` also collects the null into the JSON object.
+
+To skip nulls, you can use the `jsonb_object_agg_strict()` function as follows:
+
+```sql
+SELECT
+  department_name,
+  jsonb_pretty(
+    jsonb_object_agg_strict(e.name, e.salary)
+  ) AS employee_details
+FROM
+  departments d
+  INNER JOIN employees e ON e.department_id = d.id
+GROUP BY
+  department_name;
+```
+
+Output:
+
+```text
+ department_name |       employee_details
+-----------------+-------------------------------
+ Marketing       | {                            +
+                 |     "Bob Williams": 70000.00,+
+                 |     "Alice Johnson": 55000.00+
+                 | }
+ Sales           | {                            +
+                 |     "John Doe": 60000.00,    +
+                 |     "Jane Smith": 65000.00   +
+                 | }
+(2 rows)
+```
+
+The `jsonb_object_agg_strict()` function works like the `jsonb_object_agg()` function except that it skips null values.
+
+## Summary
+
+- Use the `jsonb_object_agg()` function to aggregate key/value pairs into a JSON object.
+- Use the `jsonb_object_agg()` function to aggregate key/value pairs into a JSON object and skip null values.
+
+
+# jsonb_object_keys
+
+---
+title: 'PostgreSQL jsonb_object_keys() Function'
+page_title: 'PostgreSQL jsonb_object_keys() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_object_keys() function to extract the keys from a JSON object.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_object_keys/'
+ogImage: ''
+updatedOn: '2024-02-24T09:28:45+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_each_text() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_each_text'
+nextLink:
+  title: 'PostgreSQL jsonb_to_record() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_to_record'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_object_keys()` function to extract the keys from a JSON object.
+
+## Introduction to the PostgreSQL jsonb_object_keys() function
+
+The `jsonb_object_keys()` function allows you to extract the keys of a [JSON](../postgresql-tutorial/postgresql-json) object into a set of text values.
+
+Here’s the basic syntax of the `jsonb_object_keys()` function:
+
+```phpsqlsql
+jsonb_object_keys(json_object)
+```
+
+In this syntax:
+
+- `json_object` is the JSON object of type JSONB that you want to extract the keys.
+
+The `jsonb_object_keys()` function returns a set of text values representing the keys in the `json_object`.
+
+If the `json_object` is not a JSON object, the `jsonb_object_keys()` function will issue an error.
+
+If the `json_object` is `NULL`, the function will return an empty set.
+
+## PostgreSQL jsonb_object_keys() function examples
+
+Let’s take some examples of using the `jsonb_object_keys()` function.
+
+### 1\) Basic the jsonb_object_keys() function examples
+
+The following example uses the `jsonb_object_keys()` function to extract the keys of a JSON object as a set of text values:
+
+```sql
+SELECT
+  jsonb_object_keys(
+    '{"name": "Joe", "age": 18, "city": "New York"}'
+  );
+```
+
+Output:
+
+```text
+ jsonb_object_keys
+-------------------
+ age
+ city
+ name
+(3 rows)
+```
+
+### 2\) Using the PostgreSQL jsonb_object_keys() function with table data
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `person`:
+
+```sql
+CREATE TABLE person (
+    id SERIAL PRIMARY KEY,
+    info JSONB
+);
+```
+
+In the `person` table, the `info` column has the type JSONB that stores various information about each person.
+
+Second, [insert rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `person` table:
+
+```sql
+INSERT INTO person (info)
+VALUES
+    ('{"name": "John", "age": 30, "city": "New York"}'),
+    ('{"name": "Alice", "city": "Los Angeles"}'),
+    ('{"name": "Bob", "age": 35 }');
+```
+
+Third, get the keys of the objects in the `info` column:
+
+```sql
+SELECT jsonb_object_keys(info)
+FROM person;
+```
+
+Output:
+
+```text
+ jsonb_object_keys
+-------------------
+ age
+ city
+ name
+ city
+ name
+ age
+ name
+(7 rows)
+```
+
+To get unique keys from all the stored JSON objects in the info column, you can use the `DISTINCT` operator:
+
+```sql
+SELECT DISTINCT jsonb_object_keys(info)
+FROM person;
+```
+
+Output:
+
+```text
+ jsonb_object_keys
+-------------------
+ age
+ city
+ name
+(3 rows)
+```
+
+### 3\) Dynamically accessing keys
+
+The following example shows how to dynamically access values corresponding to each key retrieved using `jsonb_object_keys()`:
+
+```
+SELECT
+    id,
+    key,
+    info->key AS value
+FROM
+    person,
+    jsonb_object_keys(info) AS key;
+
+```
+
+Output:
+
+```
+ id | key  |     value
+----+------+---------------
+  1 | age  | 30
+  1 | city | "New York"
+  1 | name | "John"
+  2 | city | "Los Angeles"
+  2 | name | "Alice"
+  3 | age  | 35
+  3 | name | "Bob"
+(7 rows)
+```
+
+In this example, the query returns each key along with its corresponding value from the `info` column of the `person` table.
+
+## Summary
+
+- Use the `jsonb_object_keys()` function to extract the keys from a JSON object.
+
+
+# jsonb_path_exists
+
+---
+title: 'PostgreSQL jsonb_path_exists() Function'
+page_title: 'PostgreSQL jsonb_path_exists() Function'
+page_description: 'You will learn how to use the PostgreSQL jsonb_path_exists() function to check if a JSON path returns any item for a specified JSON document.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_exists/'
+ogImage: ''
+updatedOn: '2024-02-23T14:26:51+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_path_query_first() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_first'
+nextLink:
+  title: 'PostgreSQL JSONB Operators'
+  slug: 'postgresql-json-functions/postgresql-jsonb-operators'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_exists()` function to check if a JSON path returns any item for a specified JSON document.
+
+## Introduction to the PostgreSQL jsonb_path_exists() function
+
+The `jsonb_path_exists()` function allows you to check if a JSON path matches any element in a JSON document.
+
+Here’s the syntax of the `jsonb_path_exists()` function:
+
+```sql
+jsonb_path_exists(jsonb_data, json_path)
+```
+
+In this syntax:
+
+- `jsonb_data` is a JSON document where you want to check for a JSON path.
+- `json_path` is the path that you want to check.
+
+The `jsonb_path_exists()` function returns true if the `json_path` returns any elements in the `jsonb_data` document or false otherwise.
+
+## PostgreSQL jsonb_path_exists() function example
+
+Let’s take some examples of using the `jsonb_path_exists()` function.
+
+### Setting up a sample table
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `products` that store product information:
+
+```sql
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    attributes JSONB
+);
+```
+
+The `products` table has the `attributes` column whose data type is `JSONB`.
+
+Second, [insert rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `products` table:
+
+```sql
+INSERT INTO products (name, attributes)
+VALUES
+    ('Laptop', '{"brand": "Dell", "price": 1200, "specs": {"cpu": "Intel i7", "ram": "16GB"}}'),
+    ('Smartphone', '{"brand": "Samsung", "price": 800, "specs": {"os": "Android", "storage": "128GB"}}')
+RETURNING *;
+
+```
+
+Output:
+
+```text
+ id |    name    |                                     attributes
+
+----+------------+------------------------------------------------------------------------------------
+  1 | Laptop     | {"brand": "Dell", "price": 1200, "specs": {"cpu": "Intel i7", "ram": "16GB"}}
+  2 | Smartphone | {"brand": "Samsung", "price": 800, "specs": {"os": "Android", "storage": "128GB"}}
+(2 rows)
+```
+
+### 1\) Basic jsonb_path_exists() function example
+
+The following example uses the `jsonb_path_exists()` function to check whether the CPU specification exists for any product:
+
+```sql
+SELECT name,
+       jsonb_path_exists(attributes, '$.specs.cpu') AS cpu_exists
+FROM products;
+```
+
+Output:
+
+```text
+    name    | cpu_exists
+------------+------------
+ Laptop     | t
+ Smartphone | f
+(2 rows)
+```
+
+### 2\) Using the jsonb_path_exists() function in the WHERE clause
+
+The following example uses the `jsonb_path_exists()` function with the [`jsonb_path_query()`](postgresql-jsonb_path_query) function to retrieve the `CPU` specification of any products that have `CPU` spec:
+
+```sql
+SELECT jsonb_path_query(attributes, '$.specs.cpu') AS cpu
+FROM products
+WHERE jsonb_path_exists(attributes, '$.specs.cpu');
+```
+
+Output:
+
+```text
+    cpu
+------------
+ "Intel i7"
+(1 row)
+```
+
+## Summary
+
+- Use the `jsonb_path_exists()` function to check the existence of JSON Path expressions within JSONB data
+
+
+# jsonb_path_query
+
+---
+title: 'PostgreSQL jsonb_path_query() Function'
+page_title: 'PostgreSQL jsonb_path_query() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_path_query() function to query JSONB data using JSON path expressions.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_query/'
+ogImage: ''
+updatedOn: '2024-02-23T13:41:27+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL JSON Path'
+  slug: 'postgresql-json-functions/postgresql-json-path'
+nextLink:
+  title: 'PostgreSQL jsonb_path_query_array() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_array'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_query()` function to query `JSONB` data using JSON path expressions.
+
+## Introduction to the PostgreSQL jsonb_path_query() function
+
+The `jsonb_path_query()` function allows you to query [JSONB](../postgresql-tutorial/postgresql-json) data based on a JSON path expression.
+
+Here’s the basic syntax of the `jsonb_path_query()` function:
+
+```sql
+jsonb_path_query(jsonb_data, path_expression)
+```
+
+In this syntax:
+
+- `jsonb_data` is the JSONB data that you want to query.
+- `path_expression` is a JSON path expression that locates values or elements in the JSONB data.
+
+The `jsonb_path_query()` function returns JSONB data that matches the specified JSON path expression.
+
+If the `path_expression` does not locate any element in the `jsonb_data`, the function returns `NULL`.
+
+## PostgreSQL jsonb_path_query() function example
+
+Let’s take some examples of using the `jsonb_path_query()` function.
+
+### Setting up a sample table
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) named `products`with a JSONB column names `attributes` to store product attributes:
+
+```sql
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    attributes JSONB
+);
+```
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `products` table:
+
+```sql
+INSERT INTO products (name, attributes)
+VALUES
+    ('Laptop', '{"brand": "Dell", "price": 1200, "specs": {"cpu": "Intel i7", "ram": "16GB"}}'),
+    ('Smartphone', '{"brand": "Samsung", "price": 800, "specs": {"os": "Android", "storage": "128GB"}}');
+```
+
+### 1\) A basic jsonb_path_query() function example
+
+The following example uses the `jsonb_path_query()` function to retrieve the brand and price of all products:
+
+```sql
+SELECT jsonb_path_query(attributes, '$.brand') AS brand,
+       jsonb_path_query(attributes, '$.price') AS price
+FROM products;
+```
+
+Output:
+
+```text
+   brand   | price
+-----------+-------
+ "Dell"    | 1200
+ "Samsung" | 800
+(2 rows)
+```
+
+### 2\) More complex JSON path example
+
+The following example uses the `jsonb_path_query()` function to query nested attributes such as retrieving the CPU specification of laptops:
+
+```sql
+SELECT jsonb_path_query(attributes, '$.specs.cpu') AS cpu
+FROM products;
+```
+
+Output:
+
+```text
+    cpu
+------------
+ "Intel i7"
+(1 row)
+```
+
+## Summary
+
+- Use the `jsonb_path_query()` function to query JSONB data based on JSON path expressions.
+
+
+# jsonb_path_query_array
+
+---
+title: 'PostgreSQL jsonb_path_query_array() Function'
+page_title: 'PostgreSQL jsonb_path_query_array() Function'
+page_description: 'Use the PostgreSQL jsonb_path_query_array() function to query JSONB data using a JSON path and return matched elements as a JSON array.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_query_array/'
+ogImage: ''
+updatedOn: '2024-02-24T02:02:31+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_path_query() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_path_query'
+nextLink:
+  title: 'PostgreSQL jsonb_path_query_first() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_first'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_query_array()` function to query JSONB data using a JSON path and return matched elements as a JSON array.
+
+## Introduction to PostgreSQL jsonb_path_query_array() function
+
+The `jsonb_path_query_array()` function allows you to query [JSONB](../postgresql-tutorial/postgresql-json) data using a [JSON path expression](postgresql-json-path).
+
+Here’s the basic syntax of the `jsonb_path_query_array()` function:
+
+```sql
+jsonb_path_query_array(jsonb_data, json_path)
+```
+
+In this syntax:
+
+- First, specify the `jsonb_data` that you want to query.
+- Second, provide a `json_path` that you want to match elements within the `jsonb_data`.
+
+The `jsonb_path_query_array()` function returns the matched elements as a JSON array.
+
+If the function does not find any matched element, it returns an empty array.
+
+If either argument is `NULL`, the function returns `NULL`.
+
+## PostgreSQL jsonb_path_query_array() function example
+
+Let’s explore some examples of using the `jsonb_path_query_array()` function
+
+### 1\) Basic PostgreSQL jsonb_path_query_array() function example
+
+The following example uses the `jsonb_path_query_array()` function to get the employee names as an array:
+
+```sql
+SELECT
+  jsonb_path_query_array(
+    '{"employees": [{"name": "Alice", "age": 25}, {"name": "Bob", "age": 30}]}',
+    '$.employees[*].name'
+  );
+```
+
+Output:
+
+```text
+ jsonb_path_query_array
+------------------------
+ ["Alice", "Bob"]
+(1 row)
+```
+
+In this example, the JSON path expression `$.employees[*].name` locates the value of the `name` key of all elements in the `employees` array.
+
+### 2\) Using jsonb_path_query_array() function with table data
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `employees`:
+
+```sql
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    data JSONB
+);
+```
+
+In the `employees` table, the `data` column has the type of `JSONB`.
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
+
+```sql
+INSERT INTO employees (data) VALUES
+    ('{"name": "Alice", "age": 30, "pets": [{"type": "cat", "name": "Fluffy"}, {"type": "dog", "name": "Buddy"}]}'),
+    ('{"name": "Bob", "age": 35, "pets": [{"type": "dog", "name": "Max"}]}'),
+    ('{"name": "Charlie", "age": 40, "pets": [{"type": "rabbit", "name": "Snowball"}]}')
+RETURNING *;
+```
+
+Output:
+
+```text
+ id |                                                    data
+
+----+-------------------------------------------------------------------------------------------------------------
+  1 | {"age": 30, "name": "Alice", "pets": [{"name": "Fluffy", "type": "cat"}, {"name": "Buddy", "type": "dog"}]}
+  2 | {"age": 35, "name": "Bob", "pets": [{"name": "Max", "type": "dog"}]}
+  3 | {"age": 40, "name": "Charlie", "pets": [{"name": "Snowball", "type": "rabbit"}]}
+(3 rows)
+```
+
+Third, use the `jsonb_path_query_array()` function to retrieve the pet names of employees as a JSON array:
+
+```sql
+SELECT jsonb_path_query_array(data, '$.pets[*].name') AS employee_pet_names
+FROM employees;
+```
+
+Output:
+
+```text
+ employee_pet_names
+---------------------
+ ["Fluffy", "Buddy"]
+ ["Max"]
+ ["Snowball"]
+(3 rows)
+```
+
+### 3\) Handling missing paths
+
+If the specified path doesn’t exist in the `JSONB` data, the `jsonb_path_query_array()` function returns an empty array. For example:
+
+```sql
+SELECT jsonb_path_query_array(data, '$.address')
+FROM employees;
+```
+
+Output:
+
+```text
+ jsonb_path_query_array
+------------------------
+ []
+ []
+ []
+(3 rows)
+```
+
+In this example, the employee object doesn’t have an `address` key, so the result is an empty array.
+
+## Summary
+
+- Use the `jsonb_path_query_array()` function to query JSONB data using a JSON path and return matched elements as a JSON array.
+
+
+# jsonb_path_query_first
+
+---
+title: 'PostgreSQL jsonb_path_query_first() Function'
+page_title: 'PostgreSQL jsonb_path_query_first() Function'
+page_description: 'Use the PostgreSQL jsonb_path_query_first() function to extract the first JSON value that matches a JSON path from a JSON document.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_path_query_first/'
+ogImage: ''
+updatedOn: '2024-02-24T02:56:19+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_path_query_array() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_path_query_array'
+nextLink:
+  title: 'PostgreSQL jsonb_path_exists() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_path_exists'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_path_query_first()` function to extract the first JSON value that matches a JSON path expression from a JSON document.
+
+## Introduction to the PostgreSQL jsonb_path_query_first() function
+
+The `jsonb_path_query_first()` function allows you to query data from a [JSONB document](../postgresql-tutorial/postgresql-json) based on a [JSON path](postgresql-json-path) expression and return the first match.
+
+Here’s the basic syntax of the `jsonb_path_query_first()` function:
+
+```sql
+jsonb_path_query_first(jsonb_data, json_path)
+```
+
+In this syntax:
+
+- First, specify a JSONB data from which you want to query data.
+- Second, provide a JSON path to match elements in the JSONB data.
+
+If the `jsonb_path_query_first()` function doesn’t find any match, it returns `NULL`.
+
+## PostgreSQL jsonb_path_query_first() function examples
+
+Let’s explore some examples of using the `jsonb_path_query_first()` function.
+
+### 1\) Basic jsonb_path_query_first() function example
+
+The following example uses the `jsonb_path_query_first()` function to get the first pet of a person:
+
+```sql
+SELECT jsonb_path_query_first(
+    '{"name": "Alice", "pets": ["Lucy","Bella"]}',
+    '$.pets[*]'
+) AS first_pet_name;
+```
+
+Output:
+
+```text
+ first_pet_name
+----------------
+ "Lucy"
+(1 row)
+```
+
+### 2\) Using the jsonb_path_query_first() function with table data
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `person`:
+
+```sql
+CREATE TABLE person (
+    id SERIAL PRIMARY KEY,
+    data JSONB
+);
+```
+
+In the `person` table, the `data` column has the type of JSONB that stores employee information including name, age, and pets.
+
+Second, [insert data](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `person` table:
+
+```sql
+INSERT INTO person (data)
+VALUES
+    ('{"name": "Alice", "age": 30, "pets": [{"type": "cat", "name": "Fluffy"}, {"type": "dog", "name": "Buddy"}]}'),
+    ('{"name": "Bob", "age": 35, "pets": [{"type": "dog", "name": "Max"}]}'),
+    ('{"name": "Charlie", "age": 40, "pets": [{"type": "rabbit", "name": "Snowball"}]}')
+RETURNING *;
+```
+
+Third, retrieve the first pet name using the `jsonb_path_query_first()` function:
+
+```sql
+SELECT jsonb_path_query_first(data, '$.pets[*].name') AS first_pet_name
+FROM person;
+```
+
+Output:
+
+```text
+ first_pet_name
+----------------
+ "Fluffy"
+ "Max"
+ "Snowball"
+(3 rows)
+```
+
+### 3\) Handling missing paths
+
+The following example attempts to find an element whose path does not exist:
+
+```sql
+SELECT jsonb_path_query_first(data, '$.email')
+FROM person;
+```
+
+Output:
+
+```text
+ jsonb_path_query_first
+------------------------
+ null
+ null
+ null
+(3 rows)
+```
+
+In this case, the person object doesn’t have an `email` key, therefore the result is `NULL`.
+
+## Summary
+
+- Use the `jsonb_path_query_first()` function to extract the first JSON value that matches a JSON path expression from a JSON document.
+
+
+# jsonb_pretty
+
+---
+title: 'PostgreSQL jsonb_pretty() Function'
+page_title: 'PostgreSQL jsonb_pretty() Function'
+page_description: 'You will learn how to use the PostgreSQL jsonb_pretty() function to convert a JSON value to a human-readable, indented format.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_pretty/'
+ogImage: ''
+updatedOn: '2024-02-24T11:42:42+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL jsonb_typeof() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_typeof'
+nextLink:
+  title: 'PostgreSQL jsonb_populate_record() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_populate_record'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_pretty()` function to convert a JSON value to a human\-readable, indented format.
+
+## Introduction to the PostgreSQL jsonb_pretty() function
+
+The `jsonb_pretty()` function allows you to convert a given [JSONB](../postgresql-tutorial/postgresql-json) value to a human\-readable, indented format.
+
+Here’s the basic syntax of the `jsonb_pretty()` function:
+
+```jsonsql
+jsonb_pretty(jsonb_value)
+```
+
+In this syntax:
+
+- `jsonb_value` is a JSONB value that you want to convert.
+
+The `jsonb_pretty()` function returns a text that is the human\-readable and indented format of the input JSONB value.
+
+## PostgreSQL jsonb_pretty() function examples
+
+Let’s explore some examples of using the `jsonb_pretty()` function.
+
+### 1\) Basic PostgreSQL jsonb_pretty() function example
+
+The following example uses the `jsonb_pretty()` function to format a JSONB value:
+
+```sql
+SELECT
+  jsonb_pretty(
+    '{"id": 1, "name": {"first": "John", "last": "Doe"}, "age": 30}'
+  );
+```
+
+Output:
+
+```text
+      jsonb_pretty
+-------------------------
+ {                      +
+     "id": 1,           +
+     "age": 30,         +
+     "name": {          +
+         "last": "Doe", +
+         "first": "John"+
+     }                  +
+ }
+(1 row)
+```
+
+### 2\) Using PostgreSQL jsonb_pretty() function with table data
+
+First, create a new table called recipes:
+
+```json
+CREATE TABLE recipes (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    details JSONB
+);
+```
+
+Second, insert some rows into the recipes table:
+
+```sql
+INSERT INTO recipes (name, details)
+VALUES
+    (
+        'Spaghetti Carbonara',
+        '{"preparation_time": "30 minutes",
+          "ingredients": ["spaghetti", "eggs", "bacon", "parmesan cheese", "black pepper"],
+          "difficulty": "Medium"}'
+    ),
+    (
+        'Chicken Tikka Masala',
+        '{"preparation_time": "45 minutes",
+          "ingredients": ["chicken", "tomatoes", "onions", "yogurt", "spices"],
+          "difficulty": "Medium-High"}'
+    ),
+    (
+        'Vegetable Stir Fry',
+        '{"preparation_time": "20 minutes",
+          "ingredients": ["mixed vegetables", "soy sauce", "garlic", "ginger", "sesame oil"],
+          "difficulty": "Easy"}'
+    );
+```
+
+Third, format the JSONB data in the details column:
+
+```sql
+SELECT
+  name,
+  jsonb_pretty(details)
+FROM
+  recipes;
+```
+
+Output:
+
+```
+         name         |             jsonb_pretty
+----------------------+--------------------------------------
+ Spaghetti Carbonara  | {                                   +
+                      |     "difficulty": "Medium",         +
+                      |     "ingredients": [                +
+                      |         "spaghetti",                +
+                      |         "eggs",                     +
+                      |         "bacon",                    +
+                      |         "parmesan cheese",          +
+                      |         "black pepper"              +
+                      |     ],                              +
+                      |     "preparation_time": "30 minutes"+
+                      | }
+ Chicken Tikka Masala | {                                   +
+                      |     "difficulty": "Medium-High",    +
+                      |     "ingredients": [                +
+                      |         "chicken",                  +
+                      |         "tomatoes",                 +
+                      |         "onions",                   +
+                      |         "yogurt",                   +
+                      |         "spices"                    +
+                      |     ],                              +
+                      |     "preparation_time": "45 minutes"+
+                      | }
+ Vegetable Stir Fry   | {                                   +
+                      |     "difficulty": "Easy",           +
+                      |     "ingredients": [                +
+                      |         "mixed vegetables",         +
+                      |         "soy sauce",                +
+                      |         "garlic",                   +
+                      |         "ginger",                   +
+                      |         "sesame oil"                +
+                      |     ],                              +
+                      |     "preparation_time": "20 minutes"+
+                      | }
+(3 rows)
+```
+
+## Summary
+
+- Use the `jsonb_pretty()` function to convert a JSON value to pretty\-printed, indented text.
 
 
 # jsonb_set
@@ -44822,972 +51200,6 @@ The output indicates that the `ram` field and the entire `extras` object, as wel
 - Use the `jsonb_strip_nulls()` function to recursively delete all object fields that have null values.
 
 
-# Working with JSON Arrays
-
-# jsonb_array_length
-
----
-title: 'PostgreSQL jsonb_array_length() Function'
-page_title: 'PostgreSQL jsonb_array_length() Function'
-page_description: 'You will learn how to use the PostgreSQL jsonb_array_length() function to get the number of elements in the top-level JSON array.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_array_length/'
-ogImage: ''
-updatedOn: '2024-02-24T03:50:01+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_strip_nulls() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_strip_nulls'
-nextLink:
-  title: 'PostgreSQL jsonb_array_elements() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_array_length()` function to get the number of elements in the top\-level JSON array.
-
-## Introduction to the PostgreSQL jsonb_array_length() function
-
-The `jsonb_array_length()` function returns the number of elements in the top\-level [JSON](../postgresql-tutorial/postgresql-json) array.
-
-Here’s the syntax of the `jsonb_array_length()` function:
-
-```sql
-jsonb_array_length(json_array)
-```
-
-In this syntax, you pass a JSON array with the type JSONB to the function. It’ll return the number of elements in the array.
-
-If the array is empty, the `jsonb_array_length()` function returns zero. If the argument is not an array, the function will issue an error. In case the `json_array` is `NULL`, the `jsonb_array_length()` function will return `NULL`.
-
-Note that the function will return the number of elements of the top\-level array only. If the array contains nested arrays, the function will not count the elements in the nested arrays but consider the nested arrays as individual elements.
-
-## PostgreSQL jsonb_array_length() function examples
-
-Let’s explore some examples of using the `jsonb_array_length()` function.
-
-### 1\) Basic PostgreSQL jsonb_array_length() function example
-
-The following example uses the `jsonb_array_length()` function to get the number of elements in a JSON array:
-
-```sql
-SELECT jsonb_array_length('[1,2,3]');
-```
-
-Output:
-
-```text
- jsonb_array_length
---------------------
-                  3
-(1 row)
-```
-
-The function returns 3 because the JSON array \[1,2,3] contains three elements.
-
-### 2\) Using the jsonb_array_length() function with nested arrays
-
-The following example uses the `jsonb_array_length()` function with an array that contains another array:
-
-```sql
-SELECT jsonb_array_length('[1,2,3, [4,5], 6]');
-```
-
-Output:
-
-```text
- jsonb_array_length
---------------------
-                  5
-(1 row)
-```
-
-In this example, the function returns 5 because the top\-level array contains 5 elements: 1, 2, 3, an array \[4,5], and 6\.
-
-### 3\) Using the jsonb_array_length() function with table data
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `person`:
-
-```sql
-CREATE TABLE person (
-    id SERIAL PRIMARY KEY,
-    info JSONB
-);
-```
-
-In this `person` table, the `info` column has the type `JSONB` that contains the person’s information including name, age, and pets.
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `person` table:
-
-```sql
-INSERT INTO person (info)
-VALUES
-    ('{"name": "Alice", "age": 30, "pets": [{"type": "cat", "name": "Fluffy"}, {"type": "dog", "name": "Buddy"}]}'),
-    ('{"name": "Bob", "age": 35, "pets": [{"type": "dog", "name": "Max"}]}'),
-    ('{"name": "Charlie", "age": 40, "pets": [{"type": "rabbit", "name": "Snowball"}]}')
-RETURNING *;
-```
-
-Third, retrieve the person names with their number of pets from the `info` column of the `person` table:
-
-```sql
-SELECT
-  jsonb_path_query(info, '$.name') name,
-  jsonb_array_length(
-    jsonb_path_query(info, '$.pets')
-  ) pet_count
-FROM
-  person;
-```
-
-Output:
-
-```text
-   name    | pet_count
------------+-----------
- "Alice"   |         2
- "Bob"     |         1
- "Charlie" |         1
-(3 rows)
-```
-
-In this example:
-
-- The `jsonb_path_query`(info, ‘$.name’) returns the name of the person.
-- The `jsonb_path_query`(info, ‘$.pets’) returns the `pets` array, and `jsonb_array_length()` returns the number of elements in the `pets` array.
-
-## Summary
-
-- Use the `jsonb_array_length()` function to get the number of elements in the top\-level JSON array.
-
-
-# jsonb_array_elements
-
----
-title: 'PostgreSQL jsonb_array_elements() Function'
-page_title: 'PostgreSQL jsonb_array_elements() Function'
-page_description: 'How to use the PostgreSQL jsonb_array_elements() function to expand the top-level JSON array into a set of JSON values.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_array_elements/'
-ogImage: ''
-updatedOn: '2024-02-24T04:18:19+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_array_length() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_array_length'
-nextLink:
-  title: 'PostgreSQL jsonb_array_elements_text() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements_text'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_array_elements()` function to expand the top\-level JSON array into a set of JSON values.
-
-## Introduction to the PostgreSQL jsonb_array_elements() function
-
-The `jsonb_array_elements()` function allows you to expand the top\-level [JSON](../postgresql-tutorial/postgresql-json) array into a set of JSON values.
-
-Here’s the basic syntax of the `jsonb_array_elements()` function:
-
-```sql
-jsonb_array_elements(json_array)
-```
-
-In this syntax, you specify a JSON array with a JSONB type that you want to expand its elements.
-
-The `jsonb_array_elements()` function will expand the elements of the `json_array` into individual elements.
-
-If you pass a non\-array to the function, it’ll issue an error. If the `json_array` is `NULL`, the function returns an empty result set.
-
-## PostgreSQL jsonb_array_elements() function examples
-
-Let’s explore some examples of using the `jsonb_array_elements()` function.
-
-### 1\) Basic PostgreSQL jsonb_array_elements() function examples
-
-The following example uses the `jsonb_array_elements()` function to expand elements of a JSON array:
-
-```sql
-SELECT jsonb_array_elements('[1,2,3]');
-```
-
-Output:
-
-```text
- jsonb_array_elements
-----------------------
- 1
- 2
- 3
-(3 rows)
-```
-
-Note that the numbers 1, 2, 3 are the JSON values.
-
-The following example uses the `jsonb_array_elements()` function to expand an array of strings:
-
-```sql
-SELECT jsonb_array_elements('["red","green","blue"]');
-```
-
-Output:
-
-```text
- jsonb_array_elements
-----------------------
- "red"
- "green"
- "blue"
-(3 rows)
-```
-
-### 2\) Using the jsonb_array_elements() function with nested arrays example
-
-The following example uses the `jsonb_array_elements()` function to expand elements of an array that contains another array:
-
-```sql
-SELECT jsonb_array_elements('[1,2,3, [4,5], 6]');
-```
-
-Output:
-
-```text
- jsonb_array_elements
-----------------------
- 1
- 2
- 3
- [4, 5]
- 6
-(5 rows)
-```
-
-### 3\) Using the jsonb_array_elements() function with table data
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `employees`:
-
-```sql
-CREATE TABLE employees (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    skills JSONB
-);
-```
-
-The `skills` column has the JSONB type, which stores the skills of employees.
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
-
-```sql
-INSERT INTO employees (name, skills)
-VALUES
-('John Doe', '["Java", "Python", "SQL"]'),
-('Jane Smith', '["C++", "JavaScript", "HTML/CSS"]'),
-('Alice Johnson', '["Python", "Data Analysis", "Machine Learning"]'),
-('Bob Brown', '["Java", "SQL", "Spring Framework"]');
-```
-
-Third, retrieve all skills of employees:
-
-```sql
-SELECT jsonb_array_elements(skills) skills
-FROM employees;
-```
-
-Output:
-
-```text
-       skills
---------------------
- "Java"
- "Python"
- "SQL"
- "C++"
- "JavaScript"
- "HTML/CSS"
- "Python"
- "Data Analysis"
- "Machine Learning"
- "Java"
- "SQL"
- "Spring Framework"
-(12 rows)
-```
-
-It returns 12 skills.
-
-It’s possible to use the [`DISTINCT`](../postgresql-tutorial/postgresql-select-distinct) to get unique skills of all employees:
-
-```sql
-SELECT DISTINCT jsonb_array_elements(skills) skills
-FROM employees;
-```
-
-Output:
-
-```text
-       skills
---------------------
- "C++"
- "Python"
- "SQL"
- "HTML/CSS"
- "JavaScript"
- "Java"
- "Data Analysis"
- "Spring Framework"
- "Machine Learning"
-(9 rows)
-```
-
-## Summary
-
-- Use the `jsonb_array_elements()` function to expand elements of the top\-level JSON array.
-
-
-# jsonb_array_elements_text
-
----
-title: 'PostgreSQL jsonb_array_elements_text() Function'
-page_title: 'PostgreSQL jsonb_array_elements_text() Function'
-page_description: 'How to use the PostgreSQL jsonb_array_elements_text() function to expand the elements of a top-level JSON array into a set of text values.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_array_elements_text/'
-ogImage: ''
-updatedOn: '2024-02-24T08:07:50+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_array_elements() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements'
-nextLink:
-  title: 'PostgreSQL jsonb_each() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_each'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_array_elements_text()` function to expand the elements of a top\-level JSON array into a set of text values.
-
-## Introduction to the PostgreSQL jsonb_array_elements_text() function
-
-The `jsonb_array_elements_text()` function allows you to expand the elements of a top\-level [JSON](../postgresql-tutorial/postgresql-json) array into a set of JSON values.
-
-The following shows the basic syntax of the `jsonb_array_elements_text()` function:
-
-```sql
-jsonb_array_elements_text(json_array)
-```
-
-In this syntax:
-
-- `json_array` is a JSON array with the `JSONB` type, which you want to expand the elements.
-
-The `jsonb_array_elements_text()` function will expand the elements in the `json_array` into individual text values.
-
-If you pass an object to the function, it’ll issue an error. In case the `json_array` is `NULL`, the function returns an empty result set.
-
-## PostgreSQL jsonb_array_elements_text() function examples
-
-Let’s take some examples of using the `jsonb_array_elements_text()` function.
-
-### 1\) Basic PostgreSQL jsonb_array_elements_text() function examples
-
-The following example uses the `jsonb_array_elements_text()` function to expand elements of a JSON array:
-
-```sql
-SELECT jsonb_array_elements_text('["orange","banana","watermelon"]');
-```
-
-Output:
-
-```text
- jsonb_array_elements_text
----------------------------
- orange
- banana
- watermelon
-(3 rows)
-```
-
-The following example uses the `jsonb_array_elements_text()` function to expand an array of numbers:
-
-```sql
-SELECT jsonb_array_elements_text('[1,2,3]');
-```
-
-Output:
-
-```text
- jsonb_array_elements_text
----------------------------
- 1
- 2
- 3
-(3 rows)
-```
-
-Note that 1, 2, and 3 are text values, not numbers. To convert them to numbers, you need to have an explicit cast.
-
-### 2\) Using the jsonb_array_elements_text() function with nested arrays example
-
-The following example uses the `jsonb_array_elements_text()` function to expand elements of an array that contains another array:
-
-```sql
-SELECT jsonb_array_elements_text('[1,2,3, [4,5], 6]');
-```
-
-Output:
-
-```text
- jsonb_array_elements_text
----------------------------
- 1
- 2
- 3
- [4, 5]
- 6
-(5 rows)
-```
-
-### 3\) Using the jsonb_array_elements_text() function with table data
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `employees`:
-
-```sql
-CREATE TABLE employees (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    skills JSONB
-);
-```
-
-The `skills` column has the JSONB type, which stores the skills of employees.
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
-
-```sql
-INSERT INTO employees (name, skills)
-VALUES
-('John Doe', '["Java", "Python", "SQL"]'),
-('Jane Smith', '["C++", "JavaScript", "HTML/CSS"]'),
-('Alice Johnson', '["Python", "Data Analysis", "Machine Learning"]'),
-('Bob Brown', '["Java", "SQL", "Spring Framework"]');
-```
-
-Third, retrieve all skills of employees:
-
-```sql
-SELECT jsonb_array_elements_text(skills) skills
-FROM employees;
-```
-
-Output:
-
-```text
-      skills
-------------------
- Java
- Python
- SQL
- C++
- JavaScript
- HTML/CSS
- Python
- Data Analysis
- Machine Learning
- Java
- SQL
- Spring Framework
-(12 rows)
-```
-
-It returns 12 skills as text values.
-
-If you want to get unique skills, you can use the [`DISTINCT`](../postgresql-tutorial/postgresql-select-distinct) operator:
-
-```sql
-SELECT DISTINCT jsonb_array_elements_text(skills) skills
-FROM employees;
-```
-
-Output:
-
-```text
-      skills
-------------------
- Data Analysis
- C++
- JavaScript
- SQL
- Python
- Machine Learning
- Spring Framework
- HTML/CSS
- Java
-(9 rows)
-```
-
-## Summary
-
-- Use the `jsonb_array_elements_text()` function to expand elements of the top\-level JSON array into a set of text values.
-
-
-# Working with JSON Objects
-
-# jsonb_each_text
-
----
-title: 'PostgreSQL jsonb_each_text() Function'
-page_title: 'PostgreSQL jsonb_each_text() Function'
-page_description: 'You will learn how to use the PostgreSQL jsonb_each_text() function to expand a JSON object into a set of key/value pairs of type text.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_each_text/'
-ogImage: ''
-updatedOn: '2024-02-24T09:02:58+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_each() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_each'
-nextLink:
-  title: 'PostgreSQL jsonb_object_keys() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_object_keys'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_each_text()` function to expand a JSON object into a set of key/value pairs of type text.
-
-## Introduction to the PostgreSQL jsonb_each_text() function
-
-The `jsonb_each_text()` function allows you to expand a top\-level [JSON](../postgresql-tutorial/postgresql-json) object into a set of key/value pairs. Both keys and values are text strings.
-
-The following shows the basic syntax of the `jsonb_each_text()` function:
-
-```sql
-jsonb_each_text(json_object)
-```
-
-In this syntax:
-
-- `json_object` is the JSON object that you want to expand the key/value pairs.
-
-The function returns a set of records where each record consists of two fields key and value, both have the type `text`.
-
-If the `json_object` is null, the function returns an empty set. in case the `json_object` is not a JSON object, the function will issue an error.
-
-## PostgreSQL jsonb_each_text() function examples
-
-Let’s take some examples of using the `jsonb_each_text()` function.
-
-### 1\) Basic PostgreSQL jsonb_each_text() function example
-
-The following example uses the `jsonb_each_text` function to expand the key/value pair of a JSON object:
-
-```sql
-SELECT
-  *
-FROM
-  jsonb_each_text(
-    '{"name": "Jane", "age": 22, "city": "San Francisco"}'
-  );
-```
-
-Output:
-
-```text
- key  |     value
-------+---------------
- age  | 22
- city | San Francisco
- name | Jane
-(3 rows)
-```
-
-Notice that all values in the value column are text strings including the value 22\.
-
-To retrieve a particular key/value pair, you can filter keys in the `WHERE` clause. For example, the following statement returns the name and city of the object:
-
-```sql
-SELECT
-  *
-FROM
-  jsonb_each_text(
-    '{"name": "Jane", "age": 22, "city": "San Francisco"}'
-  )
-WHERE key IN ('name','city');
-```
-
-Output:
-
-```text
- key  |     value
-------+---------------
- city | San Francisco
- name | Jane
-(2 rows)
-```
-
-### 2\) Using the jsonb_each_text() function with table data
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `links`:
-
-```sql
-CREATE TABLE links (
-    id SERIAL PRIMARY KEY,
-    href TEXT NOT NULL,
-    attributes JSONB
-);
-```
-
-In the `links` table, the `attributes` column has the type of `JSONB` that stores various attributes of a link.
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `links` table:
-
-```sql
-INSERT INTO links (href, attributes)
-VALUES
-    ('https://example.com', '{"rel": "stylesheet", "type": "text/css", "media": "screen"}'),
-    ('https://example.org', '{"rel": "icon", "type": "image/x-icon"}'),
-    ('https://example.net', '{"rel": "alternate", "type": "application/rss+xml", "title": "RSS Feed"}');
-```
-
-Third, expand the key/value pairs of the objects in `attributes` column into a set of key/value pairs using the `jsonb_each_text()` function:
-
-```sql
-SELECT
-  href,
-  key,
-  value
-FROM
-  links,
-  jsonb_each_text(attributes);
-```
-
-Output:
-
-```text
-        href         |  key  |        value
----------------------+-------+---------------------
- https://example.com | rel   | stylesheet
- https://example.com | type  | text/css
- https://example.com | media | screen
- https://example.org | rel   | icon
- https://example.org | type  | image/x-icon
- https://example.net | rel   | alternate
- https://example.net | type  | application/rss+xml
- https://example.net | title | RSS Feed
-(8 rows)
-```
-
-## Summary
-
-- Use the `jsonb_each_text()` function to expand a JSON object into a set of key/value pairs of type `text`.
-
-
-# jsonb_each
-
----
-title: 'PostgreSQL jsonb_each() Function'
-page_title: 'PostgreSQL jsonb_each() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_each() function to expand a JSON object into a set of key/value pairs.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_each/'
-ogImage: ''
-updatedOn: '2024-02-24T08:46:16+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_array_elements_text() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_array_elements_text'
-nextLink:
-  title: 'PostgreSQL jsonb_each_text() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_each_text'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_each()` function to expand a JSON object into a set of key/value pairs.
-
-## Introduction to the PostgreSQL jsonb_each() function
-
-The `jsonb_each()` function allows you to expand a top\-level [JSON](../postgresql-tutorial/postgresql-json) object of a JSONB value into a set of key/value pairs. The keys are text and values are JSON values.
-
-Here’s the syntax of the `jsonb_each()` function:
-
-```sql
-jsonb_each(json_object)
-```
-
-In this syntax:
-
-- `json_object` is the JSON object that you want to expand the key/value pairs.
-
-The function returns a set of records where each record consists of two fields key of type `text` and value of the `JSONB`.
-
-If the `json_object` is not a JSON object, the function will issue an error. In case the `json_object` is null, the function returns an empty set.
-
-## PostgreSQL jsonb_each() function examples
-
-Let’s explore some examples of using the `jsonb_each()` function.
-
-### 1\) Basic PostgreSQL jsonb_each() function example
-
-The following example uses the `jsonb_each` function to expand the key/value pair of a JSON object:
-
-```sql
-SELECT
-  *
-FROM
-  jsonb_each(
-    '{"name": "John", "age": 30, "city": "New York"}'
-  );
-```
-
-Output:
-
-```text
- key  |   value
-------+------------
- age  | 30
- city | "New York"
- name | "John"
-(3 rows)
-```
-
-If you want to retrieve a particular key, you can filter the key in the `WHERE` clause.
-
-For example, the following statement returns the name and age of the object:
-
-```sql
-SELECT
-  *
-FROM
-  jsonb_each(
-    '{"name": "John", "age": 30, "city": "New York"}'
-  )
-WHERE
-  key in ('name', 'age');
-```
-
-Output:
-
-```text
- key  | value
-------+--------
- age  | 30
- name | "John"
-(2 rows)
-```
-
-### 2\) Using the jsonb_each() function with table data
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `links`:
-
-```sql
-CREATE TABLE links (
-    id SERIAL PRIMARY KEY,
-    href TEXT NOT NULL,
-    attributes JSONB
-);
-```
-
-In the `links` table, the `attributes` column has the type of `JSONB` that stores various attributes of a link.
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `links` table:
-
-```sql
-INSERT INTO links (href, attributes)
-VALUES
-    ('https://example.com', '{"rel": "stylesheet", "type": "text/css", "media": "screen"}'),
-    ('https://example.org', '{"rel": "icon", "type": "image/x-icon"}'),
-    ('https://example.net', '{"rel": "alternate", "type": "application/rss+xml", "title": "RSS Feed"}');
-```
-
-Third, expand the key/value pairs of the objects in `attributes` column into a set of key/value pairs using the `jsonb_each()` function:
-
-```sql
-SELECT
-  href,
-  key,
-  value
-FROM
-  links,
-  jsonb_each(attributes);
-```
-
-Output:
-
-```text
-        href         |  key  |         value
----------------------+-------+-----------------------
- https://example.com | rel   | "stylesheet"
- https://example.com | type  | "text/css"
- https://example.com | media | "screen"
- https://example.org | rel   | "icon"
- https://example.org | type  | "image/x-icon"
- https://example.net | rel   | "alternate"
- https://example.net | type  | "application/rss+xml"
- https://example.net | title | "RSS Feed"
-(8 rows)
-```
-
-## Summary
-
-- Use the `jsonb_each()` function to expand a JSON object into a set of key/value pairs.
-
-
-# jsonb_object_keys
-
----
-title: 'PostgreSQL jsonb_object_keys() Function'
-page_title: 'PostgreSQL jsonb_object_keys() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_object_keys() function to extract the keys from a JSON object.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_object_keys/'
-ogImage: ''
-updatedOn: '2024-02-24T09:28:45+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_each_text() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_each_text'
-nextLink:
-  title: 'PostgreSQL jsonb_to_record() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_to_record'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_object_keys()` function to extract the keys from a JSON object.
-
-## Introduction to the PostgreSQL jsonb_object_keys() function
-
-The `jsonb_object_keys()` function allows you to extract the keys of a [JSON](../postgresql-tutorial/postgresql-json) object into a set of text values.
-
-Here’s the basic syntax of the `jsonb_object_keys()` function:
-
-```phpsqlsql
-jsonb_object_keys(json_object)
-```
-
-In this syntax:
-
-- `json_object` is the JSON object of type JSONB that you want to extract the keys.
-
-The `jsonb_object_keys()` function returns a set of text values representing the keys in the `json_object`.
-
-If the `json_object` is not a JSON object, the `jsonb_object_keys()` function will issue an error.
-
-If the `json_object` is `NULL`, the function will return an empty set.
-
-## PostgreSQL jsonb_object_keys() function examples
-
-Let’s take some examples of using the `jsonb_object_keys()` function.
-
-### 1\) Basic the jsonb_object_keys() function examples
-
-The following example uses the `jsonb_object_keys()` function to extract the keys of a JSON object as a set of text values:
-
-```sql
-SELECT
-  jsonb_object_keys(
-    '{"name": "Joe", "age": 18, "city": "New York"}'
-  );
-```
-
-Output:
-
-```text
- jsonb_object_keys
--------------------
- age
- city
- name
-(3 rows)
-```
-
-### 2\) Using the PostgreSQL jsonb_object_keys() function with table data
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `person`:
-
-```sql
-CREATE TABLE person (
-    id SERIAL PRIMARY KEY,
-    info JSONB
-);
-```
-
-In the `person` table, the `info` column has the type JSONB that stores various information about each person.
-
-Second, [insert rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `person` table:
-
-```sql
-INSERT INTO person (info)
-VALUES
-    ('{"name": "John", "age": 30, "city": "New York"}'),
-    ('{"name": "Alice", "city": "Los Angeles"}'),
-    ('{"name": "Bob", "age": 35 }');
-```
-
-Third, get the keys of the objects in the `info` column:
-
-```sql
-SELECT jsonb_object_keys(info)
-FROM person;
-```
-
-Output:
-
-```text
- jsonb_object_keys
--------------------
- age
- city
- name
- city
- name
- age
- name
-(7 rows)
-```
-
-To get unique keys from all the stored JSON objects in the info column, you can use the `DISTINCT` operator:
-
-```sql
-SELECT DISTINCT jsonb_object_keys(info)
-FROM person;
-```
-
-Output:
-
-```text
- jsonb_object_keys
--------------------
- age
- city
- name
-(3 rows)
-```
-
-### 3\) Dynamically accessing keys
-
-The following example shows how to dynamically access values corresponding to each key retrieved using `jsonb_object_keys()`:
-
-```
-SELECT
-    id,
-    key,
-    info->key AS value
-FROM
-    person,
-    jsonb_object_keys(info) AS key;
-
-```
-
-Output:
-
-```
- id | key  |     value
-----+------+---------------
-  1 | age  | 30
-  1 | city | "New York"
-  1 | name | "John"
-  2 | city | "Los Angeles"
-  2 | name | "Alice"
-  3 | age  | 35
-  3 | name | "Bob"
-(7 rows)
-```
-
-In this example, the query returns each key along with its corresponding value from the `info` column of the `person` table.
-
-## Summary
-
-- Use the `jsonb_object_keys()` function to extract the keys from a JSON object.
-
-
 # jsonb_to_record
 
 ---
@@ -45906,502 +51318,6 @@ Output:
 
 - Use the `jsonb_to_record()` function to convert a JSON object into a PostgreSQL record type.
 
-
-# Aggregating JSON Data
-
-# jsonb_agg
-
----
-title: 'PostgreSQL jsonb_agg() Function'
-page_title: 'PostgreSQL jsonb_agg() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_agg() function to aggregate values into a JSON array.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_agg/'
-ogImage: ''
-updatedOn: '2024-02-25T08:14:43+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_to_record() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_to_record'
-nextLink:
-  title: 'PostgreSQL jsonb_object_agg() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_object_agg'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_agg()` function to aggregate values into a JSON array.
-
-## Introduction to the PostgreSQL jsonb_agg() function
-
-The `jsonb_agg()` function is an [aggregate function](../postgresql-aggregate-functions) that allows you to aggregate values into a JSON array.
-
-The `jsonb_agg()` function can be particularly useful when you want to create a JSON array from data of multiple rows.
-
-Here’s the syntax of the `jsonb_agg()` function:
-
-```sqlsql
-jsonb_agg(expression)
-```
-
-In this syntax:
-
-- `expression`: is any valid expression that evaluates to a JSON value.
-
-The `jsonb_agg()` function returns a JSON array that consists of data from multiple rows.
-
-## PostgreSQL jsonb_agg() function example
-
-Let’s explore some examples of using the `jsonb_agg()` function.
-
-### 1\) Basic jsonb_agg() function example
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `products`:
-
-```sql
-CREATE TABLE products (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL
-);
-```
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `products` table:
-
-```sql
-INSERT INTO products (name, price)
-VALUES
-('Laptop', 1200.00),
-('Smartphone', 800.00),
-('Headphones', 100.00);
-```
-
-Third, use the `jsonb_agg()` function to aggregate product information into a JSON array:
-
-```sql
-SELECT
-  jsonb_agg(
-    jsonb_build_object('name', name, 'price', price)
-  ) AS products
-FROM
-  products;
-```
-
-Output:
-
-```text
-                                                         products
---------------------------------------------------------------------------------------------------------------------------
- [{"name": "Laptop", "price": 1200.00}, {"name": "Smartphone", "price": 800.00}, {"name": "Headphones", "price": 100.00}]
-(1 row)
-```
-
-### 2\) Using jsonb_agg() function with GROUP BY clause
-
-First, [create new tables](../postgresql-tutorial/postgresql-create-table) called `departments` and `employees`:
-
-```sql
-CREATE TABLE departments(
-   id SERIAL PRIMARY KEY,
-   department_name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE employees(
-    id SERIAL PRIMARY KEY,
-    employee_name VARCHAR(255) NOT NULL,
-    department_id INT NOT NULL,
-    FOREIGN KEY (department_id)
-        REFERENCES departments(id) ON DELETE CASCADE
-);
-```
-
-Second, insert rows into `departments` and `employees` tables:
-
-```sql
-INSERT INTO departments (department_name)
-VALUES
-  ('Engineering'),
-  ('Sales')
-RETURNING *;
-
-INSERT INTO employees (employee_name, department_id)
-VALUES
-  ('John Doe', 1),
-  ('Jane Smith', 1),
-  ('Alice Johnson', 1),
-  ('Bob Brown', 2)
-RETURNING *;
-```
-
-The `departments` table:
-
-```text
- id | department_name
-----+-----------------
-  1 | Engineering
-  2 | Sales
-(2 rows)
-```
-
-The `employees` table:
-
-```text
- id | employee_name | department_id
-----+---------------+---------------
-  1 | John Doe      |             1
-  2 | Jane Smith    |             1
-  3 | Alice Johnson |             1
-  4 | Bob Brown     |             2
-(4 rows)
-```
-
-Third, use the `jsonb_agg()` function to retrieve departments and a list of employees for each department in the form of a JSON array:
-
-```sql
-SELECT
-  department_name,
-  jsonb_agg(employee_name) AS employees
-FROM
-  employees e
-  INNER JOIN departments d ON d.id = e.department_id
-GROUP BY
-  department_name;
-```
-
-Output:
-
-```text
- department_name |                  employees
------------------+---------------------------------------------
- Engineering     | ["John Doe", "Jane Smith", "Alice Johnson"]
- Sales           | ["Bob Brown"]
-(2 rows)
-```
-
-### 3\) Using jsonb_agg() function with NULLs
-
-First, drop the departments and employees tables:
-
-```sql
-DROP TABLE employees;
-DROP TABLE departments;
-```
-
-Second, recreate the departments and employees tables:
-
-```sql
-CREATE TABLE departments(
-   id SERIAL PRIMARY KEY,
-   department_name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE employees(
-    id SERIAL PRIMARY KEY,
-    employee_name VARCHAR(255) NOT NULL,
-    department_id INT NOT NULL,
-    FOREIGN KEY (department_id)
-        REFERENCES departments(id) ON DELETE CASCADE
-);
-```
-
-Third, insert rows into the departments and employees tables:
-
-```sql
-INSERT INTO departments (department_name)
-VALUES
-  ('Engineering'),
-  ('Sales'),
-  ('IT')
-RETURNING *;
-
-INSERT INTO employees (employee_name, department_id)
-VALUES
-  ('John Doe', 1),
-  ('Jane Smith', 1),
-  ('Alice Johnson', 1),
-  ('Bob Brown', 2)
-RETURNING *;
-```
-
-Output:
-
-The `departments` table:
-
-```text
- id | department_name
-----+-----------------
-  1 | Engineering
-  2 | Sales
-  3 | IT
-(3 rows)
-```
-
-The `employees` table:
-
-```
- id | employee_name | department_id
-----+---------------+---------------
-  1 | John Doe      |             1
-  2 | Jane Smith    |             1
-  3 | Alice Johnson |             1
-  4 | Bob Brown     |             2
-(4 rows)
-
-```
-
-Third, use the `jsonb_agg()` function to retrieve departments and a list of employees for each department in the form of a JSON array:
-
-```
-SELECT
-  department_name,
-  jsonb_agg (employee_name) AS employees
-FROM
-  departments d
-  LEFT JOIN employees e ON d.id = e.department_id
-GROUP BY
-  department_name;
-```
-
-Output:
-
-```text
- department_name |                  employees
------------------+---------------------------------------------
- Engineering     | ["John Doe", "Jane Smith", "Alice Johnson"]
- Sales           | ["Bob Brown"]
- IT              | [null]
-(3 rows)
-```
-
-In this example, the IT department has no employees therefore `jsonb_agg()` function returns an array that contains a null value.
-
-To skip the null and make the JSON array an empty array, you can use the `jsonb_agg_strict()` function:
-
-```sql
-SELECT
-  department_name,
-  jsonb_agg_strict (employee_name) AS employees
-FROM
-  departments d
-  LEFT JOIN employees e ON d.id = e.department_id
-GROUP BY
-  department_name;
-```
-
-Output:
-
-```
- department_name |                  employees
------------------+---------------------------------------------
- Engineering     | ["John Doe", "Jane Smith", "Alice Johnson"]
- Sales           | ["Bob Brown"]
- IT              | []
-(3 rows)
-```
-
-The `jsonb_agg_strict()` function works like the `jsonb_agg()` except that it skips the null values.
-
-## Summary
-
-- Use the `jsonb_agg()` function to aggregate values into a JSON array.
-
-
-# jsonb_object_agg
-
----
-title: 'PostgreSQL jsonb_object_agg() Function'
-page_title: 'PostgreSQL jsonb_object_agg() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL jsonb_object_agg() function to aggregate key/value pairs into a JSON object.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_object_agg/'
-ogImage: ''
-updatedOn: '2024-02-25T09:00:30+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL jsonb_agg() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_agg'
-nextLink:
-  title: 'PostgreSQL jsonb_typeof() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_typeof'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_object_agg()` function to aggregate key/value pairs into a JSON object.
-
-## Introduction to the PostgreSQL jsonb_object_agg() function
-
-The PostgreSQL `jsonb_object_agg()` function is an [aggregate function](../postgresql-aggregate-functions) that allows you to collect key/value pairs into a [JSON](../postgresql-tutorial/postgresql-json) object.
-
-The `jsonb_object_agg()` can be useful when you want to aggregate data from multiple rows into a single JSON object or construct complex JSON output.
-
-Here’s the syntax of the `jsonb_object_agg()` function:
-
-```sql
-jsonb_object_agg(key, value)
-```
-
-In this syntax:
-
-- `key` represents the key for the JSON object. The key must not be null.
-- `value` represents the value for the corresponding key.
-
-The `jsonb_object_agg()` returns a JSON object that consists of key/value pairs.
-
-## PostgreSQL jsonb_object_agg() function examples
-
-Let’s explore some examples of using the PostgreSQL `jsonb_object_agg()` function.
-
-### 1\) Basic PostgreSQL jsonb_object_agg() function example
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `departments`:
-
-```sql
-CREATE TABLE departments(
-    id SERIAL PRIMARY KEY,
-    department_name VARCHAR(255) NOT NULL
-);
-```
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `departments` table:
-
-```sql
-INSERT INTO departments(department_name)
-VALUES
-   ('Sales'),
-   ('Marketing')
-RETURNING *;
-```
-
-Third, use the `jsonb_object_agg()` function to create an object whose key is the department name and value is the id:
-
-```sql
-SELECT
-  jsonb_object_agg(department_name, id) departments
-FROM
-  departments;
-```
-
-Output:
-
-```text
-         departments
-------------------------------
- {"Sales": 1, "Marketing": 2}
-(1 row)
-```
-
-### 2\) Using the jsonb_object_agg() function with GROUP BY clause
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `employees`:
-
-```sql
-CREATE TABLE employees (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    salary DECIMAL(10, 2),
-    department_id INT NOT NULL,
-    FOREIGN KEY(department_id)
-       REFERENCES departments(id) ON DELETE CASCADE
-);
-```
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `employees` table:
-
-```sql
-INSERT INTO employees (name, salary, department_id)
-VALUES
-  ('John Doe', 60000, 1),
-  ('Jane Smith', 65000, 1),
-  ('Alice Johnson', 55000, 2),
-  ('Bob Williams', 70000, 2),
-  ('Alex Miller', NULL , 2)
-RETURNING *;
-```
-
-Output:
-
-```text
- id |     name      |  salary  | department_id
-----+---------------+----------+---------------
-  1 | John Doe      | 60000.00 |             1
-  2 | Jane Smith    | 65000.00 |             1
-  3 | Alice Johnson | 55000.00 |             2
-  4 | Bob Williams  | 70000.00 |             2
-  5 | Alex Miller   |     null |             2
-(5 rows)
-```
-
-Third, use the `jsonb_object_agg()` function to get the department name and a JSON object that contains employee details of the department including employee name and salary:
-
-```sql
-SELECT
-  department_name,
-  jsonb_pretty(
-    jsonb_object_agg(e.name, e.salary)
-  ) AS employee_details
-FROM
-  departments d
-  INNER JOIN employees e ON e.department_id = d.id
-GROUP BY
-  department_name;
-```
-
-Output:
-
-```text
- department_name |       employee_details
------------------+-------------------------------
- Marketing       | {                            +
-                 |     "Alex Miller": null,     +
-                 |     "Bob Williams": 70000.00,+
-                 |     "Alice Johnson": 55000.00+
-                 | }
- Sales           | {                            +
-                 |     "John Doe": 60000.00,    +
-                 |     "Jane Smith": 65000.00   +
-                 | }
-(2 rows)
-```
-
-Note that we use the `jsonb_pretty()` function to format JSON.
-
-Alex Miller has not had a salary yet so his salary is null. The `jsonb_object_agg()` also collects the null into the JSON object.
-
-To skip nulls, you can use the `jsonb_object_agg_strict()` function as follows:
-
-```sql
-SELECT
-  department_name,
-  jsonb_pretty(
-    jsonb_object_agg_strict(e.name, e.salary)
-  ) AS employee_details
-FROM
-  departments d
-  INNER JOIN employees e ON e.department_id = d.id
-GROUP BY
-  department_name;
-```
-
-Output:
-
-```text
- department_name |       employee_details
------------------+-------------------------------
- Marketing       | {                            +
-                 |     "Bob Williams": 70000.00,+
-                 |     "Alice Johnson": 55000.00+
-                 | }
- Sales           | {                            +
-                 |     "John Doe": 60000.00,    +
-                 |     "Jane Smith": 65000.00   +
-                 | }
-(2 rows)
-```
-
-The `jsonb_object_agg_strict()` function works like the `jsonb_object_agg()` function except that it skips null values.
-
-## Summary
-
-- Use the `jsonb_object_agg()` function to aggregate key/value pairs into a JSON object.
-- Use the `jsonb_object_agg()` function to aggregate key/value pairs into a JSON object and skip null values.
-
-
-# JSON Utility Functions
 
 # jsonb_typeof
 
@@ -46526,164 +51442,314 @@ Output:
 - Use the `jsonb_typeof()` function to return the type of the top\-level JSON value as a text string.
 
 
-# jsonb_pretty
+# row_to_json
 
 ---
-title: 'PostgreSQL jsonb_pretty() Function'
-page_title: 'PostgreSQL jsonb_pretty() Function'
-page_description: 'You will learn how to use the PostgreSQL jsonb_pretty() function to convert a JSON value to a human-readable, indented format.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-jsonb_pretty/'
-ogImage: ''
-updatedOn: '2024-02-24T11:42:42+00:00'
+title: 'PostgreSQL row_to_json() Function'
+page_title: 'PostgreSQL row_to_json() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL row_to_json() function to convert an SQL composite value to a JSON object.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-row_to_json/'
+ogImage: '/postgresqltutorial/film.png'
+updatedOn: '2024-02-25T14:51:03+00:00'
 enableTableOfContents: true
 previousLink:
-  title: 'PostgreSQL jsonb_typeof() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_typeof'
+  title: 'PostgreSQL jsonb_object() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_object'
 nextLink:
-  title: 'PostgreSQL jsonb_populate_record() Function'
-  slug: 'postgresql-json-functions/postgresql-jsonb_populate_record'
+  title: 'PostgreSQL JSON Path'
+  slug: 'postgresql-json-functions/postgresql-json-path'
 ---
 
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `jsonb_pretty()` function to convert a JSON value to a human\-readable, indented format.
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `row_to_json()` function to convert an SQL composite value to a JSON object.
 
-## Introduction to the PostgreSQL jsonb_pretty() function
+## Introduction to the PostgreSQL row_to_json() function
 
-The `jsonb_pretty()` function allows you to convert a given [JSONB](../postgresql-tutorial/postgresql-json) value to a human\-readable, indented format.
+The `row_to_json()` function allows you to convert an SQL composite value into a JSON object.
 
-Here’s the basic syntax of the `jsonb_pretty()` function:
+Here’s the syntax of the `row_to_json()` function:
 
-```jsonsql
-jsonb_pretty(jsonb_value)
+```sql
+row_to_json ( record [, boolean ] ) → json
 ```
 
 In this syntax:
 
-- `jsonb_value` is a JSONB value that you want to convert.
+- `record` is an SQL composite value that you want to convert into a JSON object.
+- `boolean` if true, the function will add a line feed between top\-level elements.
 
-The `jsonb_pretty()` function returns a text that is the human\-readable and indented format of the input JSONB value.
+The `row_to_json()` function will return a JSON object.
 
-## PostgreSQL jsonb_pretty() function examples
+## PostgreSQL row_to_json() function examples
 
-Let’s explore some examples of using the `jsonb_pretty()` function.
+Let’s take some examples of using the `row_to_json()` function.
 
-### 1\) Basic PostgreSQL jsonb_pretty() function example
+### 1\) Basic row_to_json() function example
 
-The following example uses the `jsonb_pretty()` function to format a JSONB value:
+The following example uses the `row_to_json()` function to convert a row into a JSON object:
+
+```sql
+SELECT row_to_json(row('John',20));
+```
+
+Output:
+
+```text
+      row_to_json
+-----------------------
+ {"f1":"John","f2":20}
+(1 row)
+```
+
+In this example, we use the `row()` function to create a composite value made up of multiple columns.
+
+The `row_to_json()` function returns an object whose keys are automatically generated f1 and f2 with the values from the composite values.
+
+### 2\) Using the row_to_json() function with table data
+
+We’ll use the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![](/postgresqltutorial/film.png)The following example uses the `row_to_json()` function to convert the `title` and `length` of each film in the `film` table into a JSON object:
 
 ```sql
 SELECT
-  jsonb_pretty(
-    '{"id": 1, "name": {"first": "John", "last": "Doe"}, "age": 30}'
+  row_to_json(t) film
+FROM
+  (
+    SELECT
+      title,
+      length
+    FROM
+      film
+    ORDER BY
+      title
+  ) t;
+```
+
+Output:
+
+```text
+                         film
+------------------------------------------------------
+ {"title":"Academy Dinosaur","length":86}
+ {"title":"Ace Goldfinger","length":48}
+ {"title":"Adaptation Holes","length":50}
+ {"title":"Affair Prejudice","length":117}
+ {"title":"African Egg","length":130}
+ {"title":"Agent Truman","length":169}
+...
+```
+
+How it works.
+
+- The subquery retrieves the `title` and `length` from the `film` table.
+- The outer query uses the `row_to_json()` to convert each row returned by the subquery into a JSON object.
+
+Note that you can use a [common table expression](../postgresql-tutorial/postgresql-cte) (`CTE`) instead of a subquery to achieve the same result:
+
+```sql
+WITH film_cte AS (
+  SELECT
+    title,
+    length
+  FROM
+    film
+  ORDER BY
+    title
+)
+SELECT
+  row_to_json(film_cte)
+FROM
+  film_cte;
+```
+
+## Summary
+
+- Use the `row_to_json()` function to convert an SQL composite value to a JSON object.
+
+
+# to_jsonb
+
+---
+title: 'PostgreSQL to_jsonb() Function'
+page_title: 'PostgreSQL to_jsonb() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL to_jsonb() function to convert an SQL value to a value of JSONB type.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-json-functions/postgresql-to_jsonb/'
+ogImage: ''
+updatedOn: '2024-02-25T02:38:36+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL JSON Functions'
+  slug: 'postgresql-json-functions/'
+nextLink:
+  title: 'PostgreSQL jsonb_build_array() Function'
+  slug: 'postgresql-json-functions/postgresql-jsonb_build_array'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `to_jsonb()` function to convert an SQL value to a value of `JSONB` type.
+
+## Introduction to the PostgreSQL to_jsonb() function
+
+The `to_jsonb()` function allows you to convert an SQL value to a `JSONB` value.
+
+Here’s the syntax of the `to_jsonb()` function:
+
+```sqlsql
+to_jsonb ( value ) → jsonb
+```
+
+In this syntax, you specify an SQL value that you want to convert to a `JSONB` value.
+
+The `to_jsonb()` function returns a value converted to a `JSONB` value. If the value is an array or a composite value, the function will convert to arrays or objects in JSON.
+
+## PostgreSQL to_jsonb() function examples
+
+Let’s explore some examples of using the `to_jsonb()` function.
+
+### 1\) Converting a text string to a JSONB value
+
+The following example uses the `to_jsonb()` function to convert a text string into a `JSONB` value:
+
+```sql
+SELECT to_jsonb('Hello'::text);
+```
+
+Output:
+
+```text
+ to_jsonb
+----------
+ "Hello"
+(1 row)
+```
+
+The “Hello” is a `JSONB` value.
+
+To verify it, you can pass the result of the `to_jsonb()` function to the `jsonb_typeof()` function.
+
+The `jsonb_typeof()` function returns the type of a top\-level JSON value as a text string.
+
+For example:
+
+```sql
+SELECT
+  JSONB_TYPEOF(
+    to_jsonb('Hello' :: text)
   );
 ```
 
 Output:
 
 ```text
-      jsonb_pretty
--------------------------
- {                      +
-     "id": 1,           +
-     "age": 30,         +
-     "name": {          +
-         "last": "Doe", +
-         "first": "John"+
-     }                  +
- }
+ jsonb_typeof
+--------------
+ string
 (1 row)
 ```
 
-### 2\) Using PostgreSQL jsonb_pretty() function with table data
+### 2\) Converting numbers to a JSONB values
 
-First, create a new table called recipes:
-
-```json
-CREATE TABLE recipes (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    details JSONB
-);
-```
-
-Second, insert some rows into the recipes table:
-
-```sql
-INSERT INTO recipes (name, details)
-VALUES
-    (
-        'Spaghetti Carbonara',
-        '{"preparation_time": "30 minutes",
-          "ingredients": ["spaghetti", "eggs", "bacon", "parmesan cheese", "black pepper"],
-          "difficulty": "Medium"}'
-    ),
-    (
-        'Chicken Tikka Masala',
-        '{"preparation_time": "45 minutes",
-          "ingredients": ["chicken", "tomatoes", "onions", "yogurt", "spices"],
-          "difficulty": "Medium-High"}'
-    ),
-    (
-        'Vegetable Stir Fry',
-        '{"preparation_time": "20 minutes",
-          "ingredients": ["mixed vegetables", "soy sauce", "garlic", "ginger", "sesame oil"],
-          "difficulty": "Easy"}'
-    );
-```
-
-Third, format the JSONB data in the details column:
+The following example uses the `to_jsonb()` function to convert numbers to `JSONB` values:
 
 ```sql
 SELECT
-  name,
-  jsonb_pretty(details)
+  to_jsonb(10 :: int),
+  to_jsonb(9.99 :: numeric);
+```
+
+Output:
+
+```text
+ to_jsonb | to_jsonb
+----------+----------
+ 10       | 9.99
+(1 row)
+```
+
+### 3\) Converting bool values to a JSONB values
+
+The following example uses the `to_jsonb()` function to convert boolean values to `JSONB` values:
+
+```sql
+SELECT
+  to_jsonb(true :: bool),
+  to_jsonb(false :: bool);
+```
+
+Output:
+
+```text
+ to_jsonb | to_jsonb
+----------+----------
+ true     | false
+(1 row)
+```
+
+### 4\) Converting NULL to a JSONB value
+
+The following example uses the `to_jsonb()` function to convert `NULL` to a `JSONB` value:
+
+```sql
+SELECT
+  to_jsonb(NULL::text);
+```
+
+Output:
+
+```text
+ to_jsonb
+----------
+ null
+(1 row)
+```
+
+### 5\) Converting a PostgreSQL array into a JSON array
+
+The following example uses the `to_jsonb()` function to convert an array in PostgreSQL to a JSON array with the `JSONB` type:
+
+```sql
+SELECT
+  to_jsonb(
+    ARRAY[ 'red', 'green', 'blue' ]
+  ) AS jsonb_array;
+```
+
+Output:
+
+```text
+       jsonb_array
+--------------------------
+ ["red", "green", "blue"]
+(1 row)
+```
+
+### 6\) Using the to_jsonb() function with table data
+
+We’ll use the `to_jsonb()` function to convert data in the `film` table from the [sample database](../postgresql-getting-started/postgresql-sample-database) to `JSONB` values:
+
+```
+SELECT
+  to_jsonb(title),
+  to_jsonb(length)
 FROM
-  recipes;
+  film
+ORDER BY
+  title;
 ```
 
 Output:
 
 ```
-         name         |             jsonb_pretty
-----------------------+--------------------------------------
- Spaghetti Carbonara  | {                                   +
-                      |     "difficulty": "Medium",         +
-                      |     "ingredients": [                +
-                      |         "spaghetti",                +
-                      |         "eggs",                     +
-                      |         "bacon",                    +
-                      |         "parmesan cheese",          +
-                      |         "black pepper"              +
-                      |     ],                              +
-                      |     "preparation_time": "30 minutes"+
-                      | }
- Chicken Tikka Masala | {                                   +
-                      |     "difficulty": "Medium-High",    +
-                      |     "ingredients": [                +
-                      |         "chicken",                  +
-                      |         "tomatoes",                 +
-                      |         "onions",                   +
-                      |         "yogurt",                   +
-                      |         "spices"                    +
-                      |     ],                              +
-                      |     "preparation_time": "45 minutes"+
-                      | }
- Vegetable Stir Fry   | {                                   +
-                      |     "difficulty": "Easy",           +
-                      |     "ingredients": [                +
-                      |         "mixed vegetables",         +
-                      |         "soy sauce",                +
-                      |         "garlic",                   +
-                      |         "ginger",                   +
-                      |         "sesame oil"                +
-                      |     ],                              +
-                      |     "preparation_time": "20 minutes"+
-                      | }
-(3 rows)
+           to_jsonb            | to_jsonb
+-------------------------------+----------
+ "Academy Dinosaur"            | 86
+ "Ace Goldfinger"              | 48
+ "Adaptation Holes"            | 50
+...
 ```
 
 ## Summary
 
-- Use the `jsonb_pretty()` function to convert a JSON value to pretty\-printed, indented text.
+- Use the PostgreSQL `to_jsonb()` function to convert an SQL value to a `JSONB` value.
 
 
 # Math Functions
@@ -46736,8 +51802,6 @@ This page provides the most commonly used PostgreSQL Math functions that help yo
 | [WIDTH_BUCKET](postgresql-math-functions/postgresql-width_bucket) | Assign a numeric value to a bucket in an equiwidth histogram.                                   | WIDTH_BUCKET(1,1,10,5\) | 1        |
 | [RANDOM](postgresql-math-functions/postgresql-random)             | Generate a random number between 0 and 1                                                        | RANDOM()                | 0\.9684  |
 
-
-# PostgreSQL Math Functions
 
 # ABS
 
@@ -46838,94 +51902,6 @@ It returned 15 as expected.
 ```
 
 In this tutorial, you have learned how to use the PostgreSQL `ABS()` function to calculate the absolute value of a number.
-
-
-# CEIL
-
----
-title: 'PostgreSQL CEIL() Function'
-page_title: 'PostgreSQL CEIL() Function'
-page_description: 'Show you how to use the PostgreSQL CEIL() function to round a number up to the nearest integer, which is greater than or equal to the number.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-ceil/'
-ogImage: '/postgresqltutorial/customer-and-payment-tables.png'
-updatedOn: '2024-02-16T14:25:43+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL ABS() Function'
-  slug: 'postgresql-math-functions/postgresql-abs'
-nextLink:
-  title: 'PostgreSQL CBRT() Function'
-  slug: 'postgresql-math-functions/postgresql-cbrt'
----
-
-The PostgreSQL `CEIL()` function returns a number rounded up to the next whole number.
-
-## Syntax
-
-The following illustrates the syntax of the `CEIL()` function:
-
-```css
-CEIL(numeric_expression)
-```
-
-## Arguments
-
-The `CEIL()` function requires one argument:
-
-**1\) `numeric_expression`**
-
-The `numeric_expression` is a number (or an expression that evaluates to a number) that is rounded up.
-
-## Return Value
-
-The `CEIL()` function returns a value whose data type is the same as the input argument.
-
-## Examples
-
-The following statement illustrates how to use the `CEIL()` function to round a number up to the nearest integer:
-
-```
-SELECT
-    CEIL( 200.25 );
-```
-
-The result is:
-
-```
- ceil
-------
-  201
-(1 row)
-```
-
-Let’s take the `customer` and `payment` tables in the [sample database](../postgresql-getting-started/postgresql-sample-database) for the demonstration.
-
-![customer and payment tables](/postgresqltutorial/customer-and-payment-tables.png)The following example calculates the ceiling of amounts paid by customers for rentals:
-
-```
-SELECT
-    first_name,
-    last_name,
-    CEIL(SUM( amount )) amt
-FROM
-    payment
-INNER JOIN customer
-        USING(customer_id)
-GROUP BY
-    customer_id
-ORDER BY
-    amt DESC;
-```
-
-The following picture illustrates the result:
-
-![PostgreSQL CEIL function example](/postgresqltutorial/PostgreSQL-CEIL-function-example.png)
-
-## Remarks
-
-To round a number down to the nearest whole number, you use the [`FLOOR()`](postgresql-floor) function.
-
-In this tutorial, you have learned how to use the PostgreSQL `CEIL()` function to round a number up to the nearest integer, greater than or equal to the number.
 
 
 # CBRT
@@ -47093,6 +52069,94 @@ Output:
 ## Summary
 
 - Use the `CBRT()` function to calculate the cube root of a number.
+
+
+# CEIL
+
+---
+title: 'PostgreSQL CEIL() Function'
+page_title: 'PostgreSQL CEIL() Function'
+page_description: 'Show you how to use the PostgreSQL CEIL() function to round a number up to the nearest integer, which is greater than or equal to the number.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-ceil/'
+ogImage: '/postgresqltutorial/customer-and-payment-tables.png'
+updatedOn: '2024-02-16T14:25:43+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL ABS() Function'
+  slug: 'postgresql-math-functions/postgresql-abs'
+nextLink:
+  title: 'PostgreSQL CBRT() Function'
+  slug: 'postgresql-math-functions/postgresql-cbrt'
+---
+
+The PostgreSQL `CEIL()` function returns a number rounded up to the next whole number.
+
+## Syntax
+
+The following illustrates the syntax of the `CEIL()` function:
+
+```css
+CEIL(numeric_expression)
+```
+
+## Arguments
+
+The `CEIL()` function requires one argument:
+
+**1\) `numeric_expression`**
+
+The `numeric_expression` is a number (or an expression that evaluates to a number) that is rounded up.
+
+## Return Value
+
+The `CEIL()` function returns a value whose data type is the same as the input argument.
+
+## Examples
+
+The following statement illustrates how to use the `CEIL()` function to round a number up to the nearest integer:
+
+```
+SELECT
+    CEIL( 200.25 );
+```
+
+The result is:
+
+```
+ ceil
+------
+  201
+(1 row)
+```
+
+Let’s take the `customer` and `payment` tables in the [sample database](../postgresql-getting-started/postgresql-sample-database) for the demonstration.
+
+![customer and payment tables](/postgresqltutorial/customer-and-payment-tables.png)The following example calculates the ceiling of amounts paid by customers for rentals:
+
+```
+SELECT
+    first_name,
+    last_name,
+    CEIL(SUM( amount )) amt
+FROM
+    payment
+INNER JOIN customer
+        USING(customer_id)
+GROUP BY
+    customer_id
+ORDER BY
+    amt DESC;
+```
+
+The following picture illustrates the result:
+
+![PostgreSQL CEIL function example](/postgresqltutorial/PostgreSQL-CEIL-function-example.png)
+
+## Remarks
+
+To round a number down to the nearest whole number, you use the [`FLOOR()`](postgresql-floor) function.
+
+In this tutorial, you have learned how to use the PostgreSQL `CEIL()` function to round a number up to the nearest integer, greater than or equal to the number.
 
 
 # DEGREES
@@ -47577,6 +52641,125 @@ To round a number up to the nearest whole number, you use the [`CEIL()`](postgr
 In this tutorial, you have learned how to use the PostgreSQL `FLOOR()` function to round a number down to the nearest integer, which is less than or equal to the number.
 
 
+# LN
+
+---
+title: 'PostgreSQL LN() Function'
+page_title: 'PostgreSQL LN() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL LN() function to calculate the natural logarithm of a number.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-ln/'
+ogImage: ''
+updatedOn: '2024-04-18T04:23:16+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL MOD() Function'
+  slug: 'postgresql-math-functions/postgresql-mod'
+nextLink:
+  title: 'PostgreSQL LOG() Function'
+  slug: 'postgresql-math-functions/postgresql-log'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LN()` function to calculate the natural logarithm of a number.
+
+## Introduction to the PostgreSQL LN() function
+
+The natural logarithm is a function that represents the logarithm to base e, where e is Euler’s number, which is approximately equal to `2.71828`.
+
+In Math, the natural logarithm of a x is denoted as ln(x).
+
+If ln(x) \= y, then ey \= x.
+
+In PostgreSQL, you use the `LN()` function to calculate the natural logarithm of a number.
+
+Here’s the syntax of the `LN()` function:
+
+```sql
+LN(n)
+```
+
+In this syntax:
+
+- `n` is a number with the type numeric or double precision. It can be a literal number, an expression, or a table column. `n` cannot be zero.
+
+The `LN()` function returns the natural logarithm of `n` with the type corresponding to the type of `n`. It returns `NULL` if n is `NULL`.
+
+If n is a string, the `LN()` function will convert it to a type numeric or double precision value. If the conversion fails, the `LN()` function raises an error.
+
+The `LN()` function is the inverse of the [`EXP()`](postgresql-exp) function that returns the exponential value of a number.
+
+## PostgreSQL LN() function examples
+
+Let’s take some examples of using the `LN()` function.
+
+### 1\) Basic PostgreSQL LN() function examples
+
+The following example uses the `LN()` function to return the natural logarithm of 10:
+
+```sql
+SELECT LN(10) result;
+```
+
+Output:
+
+```text
+      result
+-------------------
+ 2.302585092994046
+```
+
+The following statement uses the `LN()` function to return the natural logarithm of e:
+
+```sql
+SELECT LN(EXP(1)) result;
+```
+
+Output:
+
+```text
+ result
+--------
+      1
+```
+
+In this example, the `EXP`(1\) function returns e1, which is e. Then, the `LN()` function returns the natural logarithm of e, which returns 1\.
+
+### 2\) Using the LN() function with text
+
+The following example uses the `LN()` function to calculate the natural logarithm of a numeric string ’10’
+
+```sql
+SELECT LN('10') result;
+```
+
+Output:
+
+```text
+      result
+-------------------
+ 2.302585092994046
+```
+
+In this example, the `LN()` function converts the string ’10’ to a number before calculating the natural logarithm.
+
+The following example attempts to calculate the natural logarithm of the string ’10x’:
+
+```sql
+SELECT LN('10x') result;
+```
+
+The function raises an error because it cannot convert the string ’10x’ to a number:
+
+```sql
+ERROR:  invalid input syntax for type double precision: "10x"
+LINE 1: SELECT LN('10x') result;
+                  ^
+```
+
+## Summary
+
+- Use the `LN()` function to calculate the natural logarithm of a number.
+
+
 # MOD
 
 ---
@@ -47705,123 +52888,147 @@ Output:
 - Use the PostgreSQL `MOD()` function to find the remainder after dividing one number by another.
 
 
-# LN
+# PI
 
 ---
-title: 'PostgreSQL LN() Function'
-page_title: 'PostgreSQL LN() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL LN() function to calculate the natural logarithm of a number.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-ln/'
+title: 'PostgreSQL PI() Function'
+page_title: 'PostgreSQL PI() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL PI() function to return the pi value.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-pi-function/'
 ogImage: ''
-updatedOn: '2024-04-18T04:23:16+00:00'
+updatedOn: '2024-04-18T03:47:36+00:00'
 enableTableOfContents: true
 previousLink:
-  title: 'PostgreSQL MOD() Function'
-  slug: 'postgresql-math-functions/postgresql-mod'
+  title: 'PostgreSQL POWER() Function'
+  slug: 'postgresql-math-functions/postgresql-power'
 nextLink:
-  title: 'PostgreSQL LOG() Function'
-  slug: 'postgresql-math-functions/postgresql-log'
+  title: 'PostgreSQL RADIANS() Function'
+  slug: 'postgresql-math-functions/postgresql-radians'
 ---
 
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LN()` function to calculate the natural logarithm of a number.
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `PI()` function to return the pi value.
 
-## Introduction to the PostgreSQL LN() function
+## Introduction to the PostgreSQL PI() function
 
-The natural logarithm is a function that represents the logarithm to base e, where e is Euler’s number, which is approximately equal to `2.71828`.
+In PostgreSQL, the `PI()` function returns the value of pi denoted by the Greek letter (π), which is approximately equal to `3.14`
 
-In Math, the natural logarithm of a x is denoted as ln(x).
-
-If ln(x) \= y, then ey \= x.
-
-In PostgreSQL, you use the `LN()` function to calculate the natural logarithm of a number.
-
-Here’s the syntax of the `LN()` function:
+Here’s the syntax of the `PI()` function:
 
 ```sql
-LN(n)
+PI()
 ```
 
-In this syntax:
+The `PI`() function takes no arguments and returns the constant value of `PI`, which is `3.141592653589793`.
 
-- `n` is a number with the type numeric or double precision. It can be a literal number, an expression, or a table column. `n` cannot be zero.
+## PostgreSQL PI() function examples
 
-The `LN()` function returns the natural logarithm of `n` with the type corresponding to the type of `n`. It returns `NULL` if n is `NULL`.
+Let’s take some examples of using the `PI()` function examples.
 
-If n is a string, the `LN()` function will convert it to a type numeric or double precision value. If the conversion fails, the `LN()` function raises an error.
+### 1\) Basic PI() function examples
 
-The `LN()` function is the inverse of the [`EXP()`](postgresql-exp) function that returns the exponential value of a number.
-
-## PostgreSQL LN() function examples
-
-Let’s take some examples of using the `LN()` function.
-
-### 1\) Basic PostgreSQL LN() function examples
-
-The following example uses the `LN()` function to return the natural logarithm of 10:
+The following statement uses the `PI()` function to return the constant `PI` value:
 
 ```sql
-SELECT LN(10) result;
+SELECT PI();
 ```
 
 Output:
 
 ```text
-      result
+        pi
 -------------------
- 2.302585092994046
+ 3.141592653589793
 ```
 
-The following statement uses the `LN()` function to return the natural logarithm of e:
+The following example uses the `PI()` function to calculate the area of a circle with a radius of 10:
 
 ```sql
-SELECT LN(EXP(1)) result;
+SELECT PI() * 10 * 10 area;
 ```
 
 Output:
 
 ```text
- result
---------
-      1
-```
-
-In this example, the `EXP`(1\) function returns e1, which is e. Then, the `LN()` function returns the natural logarithm of e, which returns 1\.
-
-### 2\) Using the LN() function with text
-
-The following example uses the `LN()` function to calculate the natural logarithm of a numeric string ’10’
-
-```sql
-SELECT LN('10') result;
-```
-
-Output:
-
-```text
-      result
+       area
 -------------------
- 2.302585092994046
+ 314.1592653589793
+(1 row)
 ```
 
-In this example, the `LN()` function converts the string ’10’ to a number before calculating the natural logarithm.
+### 2\) Using the PI() function with table data
 
-The following example attempts to calculate the natural logarithm of the string ’10x’:
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `circles` that stores the radiuses of circles:
 
 ```sql
-SELECT LN('10x') result;
+CREATE TABLE circles(
+   id INT GENERATED ALWAYS AS IDENTITY,
+   radius DEC(19,2) NOT NULL,
+   PRIMARY KEY(id)
+);
 ```
 
-The function raises an error because it cannot convert the string ’10x’ to a number:
+Second, [insert rows](../postgresql-tutorial/postgresql-insert) into the `circles` table:
 
 ```sql
-ERROR:  invalid input syntax for type double precision: "10x"
-LINE 1: SELECT LN('10x') result;
-                  ^
+INSERT INTO circles(radius)
+VALUES(10), (20), (25)
+RETURNING *;
+```
+
+Output:
+
+```text
+ id | radius
+----+--------
+  1 |  10.00
+  2 |  20.00
+  3 |  25.00
+(3 rows)
+```
+
+Third, calculate the areas of circles using the `PI()` function:
+
+```sql
+SELECT id, radius, PI() * radius * radius area
+FROM circles;
+```
+
+Output:
+
+```text
+ id | radius |        area
+----+--------+--------------------
+  1 |  10.00 |  314.1592653589793
+  2 |  20.00 | 1256.6370614359173
+  3 |  25.00 | 1963.4954084936207
+(3 rows)
+```
+
+To make the area more readable, you can use the [`ROUND()`](postgresql-round) function:
+
+```sql
+SELECT
+  id,
+  RADIUS,
+  ROUND((PI() * RADIUS * RADIUS)::NUMERIC, 2) AREA
+FROM
+  circles;
+```
+
+Output:
+
+```text
+ id | radius |  area
+----+--------+---------
+  1 |  10.00 |  314.16
+  2 |  20.00 | 1256.64
+  3 |  25.00 | 1963.50
+(3 rows)
 ```
 
 ## Summary
 
-- Use the `LN()` function to calculate the natural logarithm of a number.
+- Use the `PI()` function to return the pi value.
 
 
 # POWER
@@ -48003,6 +53210,126 @@ To calculate the compound interest of each investment:
 - Use the PostgreSQL `POWER()` function to raise a number to a specific power.
 
 
+# RADIANS
+
+---
+title: 'PostgreSQL RADIANS() Function'
+page_title: 'PostgreSQL RADIANS() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL RADIANS() function to convert degrees to radians.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-radians/'
+ogImage: ''
+updatedOn: '2024-02-18T04:15:55+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL PI() Function'
+  slug: 'postgresql-math-functions/postgresql-pi-function'
+nextLink:
+  title: 'PostgreSQL RANDOM() Function'
+  slug: 'postgresql-math-functions/postgresql-random'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `RADIANS()` function to convert degrees to radians.
+
+## Introduction to the PostgreSQL RADIANS() function
+
+The `RADIANS()` function converts degrees to radians.
+
+Here’s the basic syntax of the `RADIANS()` function:
+
+```sql
+RADIANS(degrees_value)
+```
+
+In this syntax, the `degrees_value` is a value in degrees that you want to convert to radians. The function returns the `degrees_value` converted to radians.
+
+If the `degrees_value` is `NULL`, the function returns `NULL`.
+
+## PostgreSQL RADIANS() function examples
+
+Let’s explore some examples of using the `RADIANS()` function.
+
+### 1\) Basic RADIANS() function example
+
+The following example uses the `RADIANS()` function to convert 180 degrees to its equivalent in radians, resulting in `PI` value:
+
+```sql
+SELECT RADIANS(180);
+```
+
+Output:
+
+```text
+      radians
+-------------------
+ 3.141592653589793
+(1 row)
+```
+
+### 2\) Using the RADIANS() function with table data
+
+We’ll show you how to use the `RADIANS` with data in a table.
+
+First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `angles` to store angle data in radians:
+
+```sql
+CREATE TABLE angles (
+    id SERIAL PRIMARY KEY,
+    angle_degrees NUMERIC
+);
+```
+
+Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `angles` table:
+
+```sql
+INSERT INTO angles (angle_degrees)
+VALUES
+    (45),
+    (60),
+    (90),
+    (NULL)
+RETURNING *;
+```
+
+Output:
+
+```text
+ id | angle_degrees
+----+---------------
+  1 |            45
+  2 |            60
+  3 |            90
+  4 |          null
+(4 rows)
+```
+
+Third, use the `RADIANS()` function to convert the values in the `angle_degrees` column to radians:
+
+```sql
+SELECT
+    id,
+    angle_degrees,
+    RADIANS(angle_degrees) AS angle_radians
+FROM
+    angles;
+```
+
+Output:
+
+```text
+ id | angle_degrees |   angle_radians
+----+---------------+--------------------
+  1 |            45 | 0.7853981633974483
+  2 |            60 | 1.0471975511965976
+  3 |            90 | 1.5707963267948966
+  4 |          null |               null
+(4 rows)
+```
+
+## Summary
+
+- Use the PostgreSQL `RADIANS()` function to convert degrees to radians.
+
+
 # RANDOM
 
 ---
@@ -48137,126 +53464,6 @@ SELECT SETSEED(0.5), RANDOM();
 ## Summary
 
 - Use the `RANDOM()` function to generate a random number between 0 and 1\.
-
-
-# RADIANS
-
----
-title: 'PostgreSQL RADIANS() Function'
-page_title: 'PostgreSQL RADIANS() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL RADIANS() function to convert degrees to radians.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-radians/'
-ogImage: ''
-updatedOn: '2024-02-18T04:15:55+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL PI() Function'
-  slug: 'postgresql-math-functions/postgresql-pi-function'
-nextLink:
-  title: 'PostgreSQL RANDOM() Function'
-  slug: 'postgresql-math-functions/postgresql-random'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `RADIANS()` function to convert degrees to radians.
-
-## Introduction to the PostgreSQL RADIANS() function
-
-The `RADIANS()` function converts degrees to radians.
-
-Here’s the basic syntax of the `RADIANS()` function:
-
-```sql
-RADIANS(degrees_value)
-```
-
-In this syntax, the `degrees_value` is a value in degrees that you want to convert to radians. The function returns the `degrees_value` converted to radians.
-
-If the `degrees_value` is `NULL`, the function returns `NULL`.
-
-## PostgreSQL RADIANS() function examples
-
-Let’s explore some examples of using the `RADIANS()` function.
-
-### 1\) Basic RADIANS() function example
-
-The following example uses the `RADIANS()` function to convert 180 degrees to its equivalent in radians, resulting in `PI` value:
-
-```sql
-SELECT RADIANS(180);
-```
-
-Output:
-
-```text
-      radians
--------------------
- 3.141592653589793
-(1 row)
-```
-
-### 2\) Using the RADIANS() function with table data
-
-We’ll show you how to use the `RADIANS` with data in a table.
-
-First, [create a new table](../postgresql-tutorial/postgresql-create-table) called `angles` to store angle data in radians:
-
-```sql
-CREATE TABLE angles (
-    id SERIAL PRIMARY KEY,
-    angle_degrees NUMERIC
-);
-```
-
-Second, [insert some rows](../postgresql-tutorial/postgresql-insert-multiple-rows) into the `angles` table:
-
-```sql
-INSERT INTO angles (angle_degrees)
-VALUES
-    (45),
-    (60),
-    (90),
-    (NULL)
-RETURNING *;
-```
-
-Output:
-
-```text
- id | angle_degrees
-----+---------------
-  1 |            45
-  2 |            60
-  3 |            90
-  4 |          null
-(4 rows)
-```
-
-Third, use the `RADIANS()` function to convert the values in the `angle_degrees` column to radians:
-
-```sql
-SELECT
-    id,
-    angle_degrees,
-    RADIANS(angle_degrees) AS angle_radians
-FROM
-    angles;
-```
-
-Output:
-
-```text
- id | angle_degrees |   angle_radians
-----+---------------+--------------------
-  1 |            45 | 0.7853981633974483
-  2 |            60 | 1.0471975511965976
-  3 |            90 | 1.5707963267948966
-  4 |          null |               null
-(4 rows)
-```
-
-## Summary
-
-- Use the PostgreSQL `RADIANS()` function to convert degrees to radians.
 
 
 # ROUND
@@ -48439,147 +53646,143 @@ In this example, we used the `ROUND()` function to round the result to an intege
 - Use the PostgreSQL `ROUND()` function to round a number to its nearest integer or a number of specified decimal places.
 
 
-# PI
+# SCALE
 
 ---
-title: 'PostgreSQL PI() Function'
-page_title: 'PostgreSQL PI() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL PI() function to return the pi value.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-pi-function/'
+title: 'PostgreSQL SCALE() Function'
+page_title: 'PostgreSQL SCALE() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL SCALE() function to retrieve the scale of a number.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-scale/'
 ogImage: ''
-updatedOn: '2024-04-18T03:47:36+00:00'
+updatedOn: '2024-02-17T07:51:05+00:00'
 enableTableOfContents: true
 previousLink:
-  title: 'PostgreSQL POWER() Function'
-  slug: 'postgresql-math-functions/postgresql-power'
+  title: 'PostgreSQL SQRT() Function'
+  slug: 'postgresql-math-functions/postgresql-sqrt'
 nextLink:
-  title: 'PostgreSQL RADIANS() Function'
-  slug: 'postgresql-math-functions/postgresql-radians'
+  title: 'PostgreSQL SIGN() Function'
+  slug: 'postgresql-math-functions/postgresql-sign'
 ---
 
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `PI()` function to return the pi value.
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `SCALE()` function to retrieve the scale of a number.
 
-## Introduction to the PostgreSQL PI() function
+## Introduction to the PostgreSQL SCALE() function
 
-In PostgreSQL, the `PI()` function returns the value of pi denoted by the Greek letter (π), which is approximately equal to `3.14`
+The scale of a number is the count of decimal digits in its fractional part. For example, the scale of `1.234` is 3 because it has three digits after the decimal point.
 
-Here’s the syntax of the `PI()` function:
+The `SCALE()` function allows you to determine the scale of a number.
+
+Here’s the basic syntax of the `SCALE()` function:
 
 ```sql
-PI()
+SCALE(numeric_value)
 ```
 
-The `PI`() function takes no arguments and returns the constant value of `PI`, which is `3.141592653589793`.
+The `SCALE()` function returns an integer representing the scale of the `numeric_value`. It returns `NULL` if the `numeric_value` is `NULL`.
 
-## PostgreSQL PI() function examples
+## PostgreSQL SCALE() function examples
 
-Let’s take some examples of using the `PI()` function examples.
+Let’s explore some examples of using the PostgreSQL `SCALE()` function.
 
-### 1\) Basic PI() function examples
+### 1\) Basic SCALE() function example
 
-The following statement uses the `PI()` function to return the constant `PI` value:
+The following example uses the `SCALE()` function to determine the scale of the number `3.141592653589793`:
 
 ```sql
-SELECT PI();
+SELECT SCALE(3.141592653589793);
 ```
 
 Output:
 
 ```text
-        pi
--------------------
- 3.141592653589793
-```
-
-The following example uses the `PI()` function to calculate the area of a circle with a radius of 10:
-
-```sql
-SELECT PI() * 10 * 10 area;
-```
-
-Output:
-
-```text
-       area
--------------------
- 314.1592653589793
+ scale
+-------
+    15
 (1 row)
 ```
 
-### 2\) Using the PI() function with table data
+It returns 15 indicating that there are 15 digits after the decimal point.
 
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `circles` that stores the radiuses of circles:
+### 2\) Using the SCALE() table to examine table data
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `product_prices` to store product prices with various scales:
 
 ```sql
-CREATE TABLE circles(
-   id INT GENERATED ALWAYS AS IDENTITY,
-   radius DEC(19,2) NOT NULL,
-   PRIMARY KEY(id)
+CREATE TABLE product_prices (
+    product_id SERIAL PRIMARY KEY,
+    product_name VARCHAR(100) NOT NULL,
+    price NUMERIC NOT NULL
 );
 ```
 
-Second, [insert rows](../postgresql-tutorial/postgresql-insert) into the `circles` table:
+Second, [insert some data](../postgresql-tutorial/postgresql-insert-multiple-rows) into the table:
 
 ```sql
-INSERT INTO circles(radius)
-VALUES(10), (20), (25)
+INSERT INTO product_prices (product_name, price)
+VALUES
+    ('T-Shirt', 10.123),
+    ('Jeans', 20.5678),
+    ('Sneakers', 30.45),
+    ('Backpack', 40.12345),
+    ('Watch', 50.6789),
+    ('Sunglasses', 60.1),
+    ('Headphones', 70.23456),
+    ('Smartphone', 80.123),
+    ('Laptop', 90.5),
+    ('Camera', 100.1234)
 RETURNING *;
 ```
 
 Output:
 
 ```text
- id | radius
-----+--------
-  1 |  10.00
-  2 |  20.00
-  3 |  25.00
-(3 rows)
+ product_id | product_name |  price
+------------+--------------+----------
+          1 | T-Shirt      |   10.123
+          2 | Jeans        |  20.5678
+          3 | Sneakers     |    30.45
+          4 | Backpack     | 40.12345
+          5 | Watch        |  50.6789
+          6 | Sunglasses   |     60.1
+          7 | Headphones   | 70.23456
+          8 | Smartphone   |   80.123
+          9 | Laptop       |     90.5
+         10 | Camera       | 100.1234
+(10 rows)
 ```
 
-Third, calculate the areas of circles using the `PI()` function:
-
-```sql
-SELECT id, radius, PI() * radius * radius area
-FROM circles;
-```
-
-Output:
-
-```text
- id | radius |        area
-----+--------+--------------------
-  1 |  10.00 |  314.1592653589793
-  2 |  20.00 | 1256.6370614359173
-  3 |  25.00 | 1963.4954084936207
-(3 rows)
-```
-
-To make the area more readable, you can use the [`ROUND()`](postgresql-round) function:
+Third, group the product prices by scales using the `SCALE()` function:
 
 ```sql
 SELECT
-  id,
-  RADIUS,
-  ROUND((PI() * RADIUS * RADIUS)::NUMERIC, 2) AREA
+  scale(price) AS price_scale,
+  COUNT(*) AS count_of_products
 FROM
-  circles;
+  product_prices
+GROUP BY
+  price_scale
+ORDER BY
+  price_scale;
 ```
 
 Output:
 
 ```text
- id | radius |  area
-----+--------+---------
-  1 |  10.00 |  314.16
-  2 |  20.00 | 1256.64
-  3 |  25.00 | 1963.50
-(3 rows)
+ price_scale | count_of_products
+-------------+-------------------
+           1 |                 2
+           2 |                 1
+           3 |                 2
+           4 |                 3
+           5 |                 2
+(5 rows)
 ```
+
+By understanding the scales of prices, you can identify the diverse decimal precisions and take appropriate action to standardize them.
 
 ## Summary
 
-- Use the `PI()` function to return the pi value.
+- Use the `SCALE()` function to retrieve the scale of a number.
 
 
 # SIGN
@@ -48745,145 +53948,6 @@ FROM
 - Use the `SIGN()` function to determine the sign of a number.
 
 
-# SCALE
-
----
-title: 'PostgreSQL SCALE() Function'
-page_title: 'PostgreSQL SCALE() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL SCALE() function to retrieve the scale of a number.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-scale/'
-ogImage: ''
-updatedOn: '2024-02-17T07:51:05+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL SQRT() Function'
-  slug: 'postgresql-math-functions/postgresql-sqrt'
-nextLink:
-  title: 'PostgreSQL SIGN() Function'
-  slug: 'postgresql-math-functions/postgresql-sign'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `SCALE()` function to retrieve the scale of a number.
-
-## Introduction to the PostgreSQL SCALE() function
-
-The scale of a number is the count of decimal digits in its fractional part. For example, the scale of `1.234` is 3 because it has three digits after the decimal point.
-
-The `SCALE()` function allows you to determine the scale of a number.
-
-Here’s the basic syntax of the `SCALE()` function:
-
-```sql
-SCALE(numeric_value)
-```
-
-The `SCALE()` function returns an integer representing the scale of the `numeric_value`. It returns `NULL` if the `numeric_value` is `NULL`.
-
-## PostgreSQL SCALE() function examples
-
-Let’s explore some examples of using the PostgreSQL `SCALE()` function.
-
-### 1\) Basic SCALE() function example
-
-The following example uses the `SCALE()` function to determine the scale of the number `3.141592653589793`:
-
-```sql
-SELECT SCALE(3.141592653589793);
-```
-
-Output:
-
-```text
- scale
--------
-    15
-(1 row)
-```
-
-It returns 15 indicating that there are 15 digits after the decimal point.
-
-### 2\) Using the SCALE() table to examine table data
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `product_prices` to store product prices with various scales:
-
-```sql
-CREATE TABLE product_prices (
-    product_id SERIAL PRIMARY KEY,
-    product_name VARCHAR(100) NOT NULL,
-    price NUMERIC NOT NULL
-);
-```
-
-Second, [insert some data](../postgresql-tutorial/postgresql-insert-multiple-rows) into the table:
-
-```sql
-INSERT INTO product_prices (product_name, price)
-VALUES
-    ('T-Shirt', 10.123),
-    ('Jeans', 20.5678),
-    ('Sneakers', 30.45),
-    ('Backpack', 40.12345),
-    ('Watch', 50.6789),
-    ('Sunglasses', 60.1),
-    ('Headphones', 70.23456),
-    ('Smartphone', 80.123),
-    ('Laptop', 90.5),
-    ('Camera', 100.1234)
-RETURNING *;
-```
-
-Output:
-
-```text
- product_id | product_name |  price
-------------+--------------+----------
-          1 | T-Shirt      |   10.123
-          2 | Jeans        |  20.5678
-          3 | Sneakers     |    30.45
-          4 | Backpack     | 40.12345
-          5 | Watch        |  50.6789
-          6 | Sunglasses   |     60.1
-          7 | Headphones   | 70.23456
-          8 | Smartphone   |   80.123
-          9 | Laptop       |     90.5
-         10 | Camera       | 100.1234
-(10 rows)
-```
-
-Third, group the product prices by scales using the `SCALE()` function:
-
-```sql
-SELECT
-  scale(price) AS price_scale,
-  COUNT(*) AS count_of_products
-FROM
-  product_prices
-GROUP BY
-  price_scale
-ORDER BY
-  price_scale;
-```
-
-Output:
-
-```text
- price_scale | count_of_products
--------------+-------------------
-           1 |                 2
-           2 |                 1
-           3 |                 2
-           4 |                 3
-           5 |                 2
-(5 rows)
-```
-
-By understanding the scales of prices, you can identify the diverse decimal precisions and take appropriate action to standardize them.
-
-## Summary
-
-- Use the `SCALE()` function to retrieve the scale of a number.
-
-
 # SQRT
 
 ---
@@ -48999,135 +54063,6 @@ Output:
 ## Summary
 
 - Use the PostgreSQL `SQRT()` function to calculate the square root of a number.
-
-
-# TRUNC
-
----
-title: 'PostgreSQL TRUNC() Function'
-page_title: 'PostgreSQL TRUNC() Function: Truncating Numbers'
-page_description: 'This tutorial shows you how to use the PostgreSQL TRUNC() function to truncate numbers to the specified decimal places.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-trunc/'
-ogImage: '/postgresqltutorial/film-film_category-category-tables.png'
-updatedOn: '2024-02-16T14:26:33+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL SIGN() Function'
-  slug: 'postgresql-math-functions/postgresql-sign'
-nextLink:
-  title: 'PostgreSQL TRIM_SCALE() Function'
-  slug: 'postgresql-math-functions/postgresql-trim_scale'
----
-
-The PostgreSQL `TRUNC()` function returns a number truncated to a whole number or truncated to the specified decimal places.
-
-## Syntax
-
-The following illustrates the syntax of the PostgreSQL `TRUNC()` function:
-
-```css
-TRUNC(number [, precision])
-```
-
-## Arguments
-
-The `TRUNC()` function accepts two arguments.
-
-**1\) `number`**
-
-The `number` argument is a numeric value to be truncated
-
-**2\) `precision`**
-
-The `precision` argument is an integer that indicates the number of decimal places.
-
-If the `precision` argument is a positive integer, the `TRUNC()` function truncates digits to the right of the decimal point.
-
-In case the `precision` is a negative integer, the `TRUNC()` function replaces digits to the left of the decimal point.
-
-The precision argument is optional. If you don’t specify it, it defaults to zero (0\). In other words, the `number` is truncated to a whole number.
-
-## Return value
-
-The PostgreSQL `TRUNC()` function returns the same [numeric data type](../postgresql-tutorial/postgresql-numeric) as the first argument if the second argument is not specified. Otherwise, the function returns a numeric value if both arguments are used.
-
-## Examples
-
-### 1\) Truncate to a whole number example
-
-The following example uses the `TRUNC()` function to truncate a number to an integer:
-
-```css
-SELECT
-    TRUNC(10.6);
-```
-
-The result is:
-
-```css
-10
-```
-
-### 2\) Truncate to the specified decimal place
-
-The following statement truncates a number to 2 decimal places:
-
-```
- SELECT
-    TRUNC(
-        1.234,
-        2
-    );
-```
-
-Here is the result:
-
-```css
-1.23
-```
-
-### 3\) Truncate numbers with a negative second argument example
-
-Consider the following example:
-
-```css
-SELECT
-    TRUNC(150.45,-2)
-```
-
-The second argument is \-2, therefore, the `TRUNC()` function replaced the digits to the left of the decimal point that resulting in:
-
-```
-100
-```
-
-### 4\) Truncate numbers returned by a query
-
-See the following `film`, `film_category`, and `category` tables in the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-![film film_category category tables](/postgresqltutorial/film-film_category-category-tables.png)The following statement calculates the average rental rate by film category:
-
-```
-SELECT
-    NAME,
-    TRUNC(AVG( rental_rate ),2)
-FROM
-    film
-INNER JOIN film_category
-        USING(film_id)
-INNER JOIN category
-        USING(category_id)
-GROUP BY
-    NAME
-ORDER BY NAME;
-```
-
-In this example, we used the `TRUNC()` function to truncate the average rentals to two decimal places.
-
-The following picture illustrates the result:
-
-![PostgreSQL TRUNC example](/postgresqltutorial/PostgreSQL-TRUNC-example.png)
-In this tutorial, you have learned how to use the PostgreSQL `TRUNC()` function to truncate numbers.
 
 
 # TRIM_SCALE
@@ -49258,6 +54193,135 @@ Output:
 ## Summary
 
 - Use the `TRIM_SCALE()` function to reduce the scale of a number scale by removing trailing zeroes.
+
+
+# TRUNC
+
+---
+title: 'PostgreSQL TRUNC() Function'
+page_title: 'PostgreSQL TRUNC() Function: Truncating Numbers'
+page_description: 'This tutorial shows you how to use the PostgreSQL TRUNC() function to truncate numbers to the specified decimal places.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-math-functions/postgresql-trunc/'
+ogImage: '/postgresqltutorial/film-film_category-category-tables.png'
+updatedOn: '2024-02-16T14:26:33+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL SIGN() Function'
+  slug: 'postgresql-math-functions/postgresql-sign'
+nextLink:
+  title: 'PostgreSQL TRIM_SCALE() Function'
+  slug: 'postgresql-math-functions/postgresql-trim_scale'
+---
+
+The PostgreSQL `TRUNC()` function returns a number truncated to a whole number or truncated to the specified decimal places.
+
+## Syntax
+
+The following illustrates the syntax of the PostgreSQL `TRUNC()` function:
+
+```css
+TRUNC(number [, precision])
+```
+
+## Arguments
+
+The `TRUNC()` function accepts two arguments.
+
+**1\) `number`**
+
+The `number` argument is a numeric value to be truncated
+
+**2\) `precision`**
+
+The `precision` argument is an integer that indicates the number of decimal places.
+
+If the `precision` argument is a positive integer, the `TRUNC()` function truncates digits to the right of the decimal point.
+
+In case the `precision` is a negative integer, the `TRUNC()` function replaces digits to the left of the decimal point.
+
+The precision argument is optional. If you don’t specify it, it defaults to zero (0\). In other words, the `number` is truncated to a whole number.
+
+## Return value
+
+The PostgreSQL `TRUNC()` function returns the same [numeric data type](../postgresql-tutorial/postgresql-numeric) as the first argument if the second argument is not specified. Otherwise, the function returns a numeric value if both arguments are used.
+
+## Examples
+
+### 1\) Truncate to a whole number example
+
+The following example uses the `TRUNC()` function to truncate a number to an integer:
+
+```css
+SELECT
+    TRUNC(10.6);
+```
+
+The result is:
+
+```css
+10
+```
+
+### 2\) Truncate to the specified decimal place
+
+The following statement truncates a number to 2 decimal places:
+
+```
+ SELECT
+    TRUNC(
+        1.234,
+        2
+    );
+```
+
+Here is the result:
+
+```css
+1.23
+```
+
+### 3\) Truncate numbers with a negative second argument example
+
+Consider the following example:
+
+```css
+SELECT
+    TRUNC(150.45,-2)
+```
+
+The second argument is \-2, therefore, the `TRUNC()` function replaced the digits to the left of the decimal point that resulting in:
+
+```
+100
+```
+
+### 4\) Truncate numbers returned by a query
+
+See the following `film`, `film_category`, and `category` tables in the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![film film_category category tables](/postgresqltutorial/film-film_category-category-tables.png)The following statement calculates the average rental rate by film category:
+
+```
+SELECT
+    NAME,
+    TRUNC(AVG( rental_rate ),2)
+FROM
+    film
+INNER JOIN film_category
+        USING(film_id)
+INNER JOIN category
+        USING(category_id)
+GROUP BY
+    NAME
+ORDER BY NAME;
+```
+
+In this example, we used the `TRUNC()` function to truncate the average rentals to two decimal places.
+
+The following picture illustrates the result:
+
+![PostgreSQL TRUNC example](/postgresqltutorial/PostgreSQL-TRUNC-example.png)
+In this tutorial, you have learned how to use the PostgreSQL `TRUNC()` function to truncate numbers.
 
 
 # WIDTH_BUCKET
@@ -49525,8 +54589,6 @@ This page provides the most commonly used PostgreSQL string functions that allow
 | [UPPER](postgresql-string-functions/postgresql-upper)                   | Convert a string to uppercase                                                                            | UPPER(‘hI tHERE’)                                    | ‘HI THERE’         |
 
 
-# PostgreSQL String functions
-
 # ASCII
 
 ---
@@ -49606,6 +54668,79 @@ The following example illustrates how to use the `ASCII()` function to get the U
 To get the ASCII code value or Unicode code point of an integer, you use the [`CHR()`](postgresql-chr) function.
 
 In this tutorial, you have learned how to use the PostgreSQL `ASCII()` function to get the ASCII code or Unicode code point of a character.
+
+
+# CHR
+
+---
+title: 'PostgreSQL CHR() Function'
+page_title: 'PostgreSQL CHR: Get Character Based on ASCII or Unicode Code Point'
+page_description: 'This tutorial shows you how to use the PostgreSQL CHR() function to get the character based on its ASCII value or Unicode code point.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-chr/'
+ogImage: '/postgresqltutorial/PostgreSQL-CHR-ASCII-example.png'
+updatedOn: '2024-01-29T01:38:05+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL ASCII() Function'
+  slug: 'postgresql-string-functions/postgresql-ascii'
+nextLink:
+  title: 'PostgreSQL INITCAP() Function'
+  slug: 'postgresql-string-functions/postgresql-letter-case-functions'
+---
+
+The PostgreSQL `CHR()` function converts an integer ASCII code to a character or a Unicode code point to a UTF8 character.
+
+## Syntax
+
+The following shows the syntax of the `CHR()` function:
+
+```
+CHR(num)
+```
+
+## Arguments
+
+The `CHR()` function requires one argument:
+
+**1\) `num`**
+
+The num argument is an integer that is converted to the corresponding ASCII code.
+
+It could be a Unicode code point which is converted to a UTF8 character.
+
+## Return Value
+
+The `CHR()` function returns a character that corresponds the ASCII code value or Unicode code point.
+
+## Examples
+
+The following example shows how to use the `CHR()` function to get the characters whose ASCII code value is 65 and 97:
+
+```
+SELECT
+    CHR(65),
+    CHR(97);
+```
+
+The query returns character A for 65 and a for 97:
+
+![PostgreSQL CHR - ASCII example](/postgresqltutorial/PostgreSQL-CHR-ASCII-example.png)
+Here is an example of getting the UTF8 character based on the Unicode code point 937:
+
+```
+SELECT
+    CHR(937);
+```
+
+The output for the Unicode code point 937 is Ω, which is what we expected.
+
+![PostgreSQL CHR - Unicode example](/postgresqltutorial/PostgreSQL-CHR-Unicode-example.png)
+
+## Remarks
+
+To get the ASCII code or UTF\-8 character of an integer, you use the [`ASCII()`](postgresql-ascii) function.
+
+In this tutorial, you have learned how to use the PostgreSQL `CHR()` function to get the character based on its ASCII value or Unicode code point.
 
 
 # CONCAT
@@ -49795,79 +54930,6 @@ The output indicates that the `CONCAT()` function ignores `NULL`.
 ## Summary
 
 - Use the PostgreSQL `CONCAT()` function to concatenate two or more strings into one.
-
-
-# CHR
-
----
-title: 'PostgreSQL CHR() Function'
-page_title: 'PostgreSQL CHR: Get Character Based on ASCII or Unicode Code Point'
-page_description: 'This tutorial shows you how to use the PostgreSQL CHR() function to get the character based on its ASCII value or Unicode code point.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-chr/'
-ogImage: '/postgresqltutorial/PostgreSQL-CHR-ASCII-example.png'
-updatedOn: '2024-01-29T01:38:05+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL ASCII() Function'
-  slug: 'postgresql-string-functions/postgresql-ascii'
-nextLink:
-  title: 'PostgreSQL INITCAP() Function'
-  slug: 'postgresql-string-functions/postgresql-letter-case-functions'
----
-
-The PostgreSQL `CHR()` function converts an integer ASCII code to a character or a Unicode code point to a UTF8 character.
-
-## Syntax
-
-The following shows the syntax of the `CHR()` function:
-
-```
-CHR(num)
-```
-
-## Arguments
-
-The `CHR()` function requires one argument:
-
-**1\) `num`**
-
-The num argument is an integer that is converted to the corresponding ASCII code.
-
-It could be a Unicode code point which is converted to a UTF8 character.
-
-## Return Value
-
-The `CHR()` function returns a character that corresponds the ASCII code value or Unicode code point.
-
-## Examples
-
-The following example shows how to use the `CHR()` function to get the characters whose ASCII code value is 65 and 97:
-
-```
-SELECT
-    CHR(65),
-    CHR(97);
-```
-
-The query returns character A for 65 and a for 97:
-
-![PostgreSQL CHR - ASCII example](/postgresqltutorial/PostgreSQL-CHR-ASCII-example.png)
-Here is an example of getting the UTF8 character based on the Unicode code point 937:
-
-```
-SELECT
-    CHR(937);
-```
-
-The output for the Unicode code point 937 is Ω, which is what we expected.
-
-![PostgreSQL CHR - Unicode example](/postgresqltutorial/PostgreSQL-CHR-Unicode-example.png)
-
-## Remarks
-
-To get the ASCII code or UTF\-8 character of an integer, you use the [`ASCII()`](postgresql-ascii) function.
-
-In this tutorial, you have learned how to use the PostgreSQL `CHR()` function to get the character based on its ASCII value or Unicode code point.
 
 
 # FORMAT
@@ -50306,6 +55368,119 @@ Output:
 - Use the PostgreSQL `LENGTH()` function to get the number of characters of a string.
 
 
+# LOWER
+
+---
+title: 'PostgreSQL LOWER() Function'
+page_title: 'PostgreSQL LOWER() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL LOWER() function to convert the string to all lower case.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-lower/'
+ogImage: '/postgresqltutorial/customer.png'
+updatedOn: '2024-01-28T09:51:45+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL LTRIM() Function'
+  slug: 'postgresql-string-functions/postgresql-ltrim'
+nextLink:
+  title: 'PostgreSQL UPPER() Function'
+  slug: 'postgresql-string-functions/postgresql-upper'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LOWER()` function to convert the string to all lowercase.
+
+## Introduction to the PostgreSQL LOWER() function
+
+The `LOWER()` function converts a string to lowercase based on the rules of the database’s locale.
+
+Here’s the syntax of the `LOWER()` function:
+
+```sql
+LOWER(text)
+```
+
+In this syntax, text is the input string that you want to convert. Its type can be `CHAR`, [`VARCHAR`](../postgresql-tutorial/postgresql-char-varchar-text), or `TEXT`.
+
+The `LOWER()` function returns a new string with all letters converted to lowercase.
+
+If the text is `NULL`, the `LOWER()` function returns `NULL`.
+
+## PostgreSQL LOWER() function examples
+
+Let’s explore some examples of using the `LOWER()` function.
+
+### 1\) Basic PostgreSQL LOWER() function example
+
+The following example uses the `LOWER()` function to convert the string PostgreSQL to lowercase:
+
+```sql
+SELECT LOWER('PostgreSQL');
+```
+
+Output:
+
+```text
+   lower
+------------
+ postgresql
+(1 row)
+```
+
+### 2\) Using PostgreSQL LOWER() function with table data
+
+We’ll use the `customer` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![PostgreSQL LOWER() Function - Sample Table ](/postgresqltutorial/customer.png)The following example uses the `LOWER()` function to convert the first names of customers to lowercase:
+
+```sql
+SELECT
+  LOWER(first_name)
+FROM
+  customer
+ORDER BY
+  first_name;
+```
+
+Output:
+
+```text
+    lower
+-------------
+ aaron
+ adam
+ adrian
+ agnes
+ alan
+...
+```
+
+### 3\) Using PostgreSQL LOWER() function in the WHERE clause
+
+The following example uses the `LOWER()` function in the [`WHERE`](../postgresql-tutorial/postgresql-where) clause to find customers by last names, comparing them with the input string in lowercase:
+
+```sql
+SELECT
+  first_name,
+  last_name
+FROM
+  customer
+WHERE
+  LOWER(last_name) = 'barnett';
+```
+
+Output:
+
+```text
+ first_name | last_name
+------------+-----------
+ Carole     | Barnett
+(1 row)
+```
+
+## Summary
+
+- Use the `LOWER()` function to return a new string with all the characters of the input string converted to lowercase.
+
+
 # LPAD
 
 ---
@@ -50452,119 +55627,6 @@ In this example,
 ## Summary
 
 - Use the PostgreSQL `LPAD()` function to pad characters on the left of a string to a certain length.
-
-
-# LOWER
-
----
-title: 'PostgreSQL LOWER() Function'
-page_title: 'PostgreSQL LOWER() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL LOWER() function to convert the string to all lower case.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-lower/'
-ogImage: '/postgresqltutorial/customer.png'
-updatedOn: '2024-01-28T09:51:45+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL LTRIM() Function'
-  slug: 'postgresql-string-functions/postgresql-ltrim'
-nextLink:
-  title: 'PostgreSQL UPPER() Function'
-  slug: 'postgresql-string-functions/postgresql-upper'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `LOWER()` function to convert the string to all lowercase.
-
-## Introduction to the PostgreSQL LOWER() function
-
-The `LOWER()` function converts a string to lowercase based on the rules of the database’s locale.
-
-Here’s the syntax of the `LOWER()` function:
-
-```sql
-LOWER(text)
-```
-
-In this syntax, text is the input string that you want to convert. Its type can be `CHAR`, [`VARCHAR`](../postgresql-tutorial/postgresql-char-varchar-text), or `TEXT`.
-
-The `LOWER()` function returns a new string with all letters converted to lowercase.
-
-If the text is `NULL`, the `LOWER()` function returns `NULL`.
-
-## PostgreSQL LOWER() function examples
-
-Let’s explore some examples of using the `LOWER()` function.
-
-### 1\) Basic PostgreSQL LOWER() function example
-
-The following example uses the `LOWER()` function to convert the string PostgreSQL to lowercase:
-
-```sql
-SELECT LOWER('PostgreSQL');
-```
-
-Output:
-
-```text
-   lower
-------------
- postgresql
-(1 row)
-```
-
-### 2\) Using PostgreSQL LOWER() function with table data
-
-We’ll use the `customer` table from the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-![PostgreSQL LOWER() Function - Sample Table ](/postgresqltutorial/customer.png)The following example uses the `LOWER()` function to convert the first names of customers to lowercase:
-
-```sql
-SELECT
-  LOWER(first_name)
-FROM
-  customer
-ORDER BY
-  first_name;
-```
-
-Output:
-
-```text
-    lower
--------------
- aaron
- adam
- adrian
- agnes
- alan
-...
-```
-
-### 3\) Using PostgreSQL LOWER() function in the WHERE clause
-
-The following example uses the `LOWER()` function in the [`WHERE`](../postgresql-tutorial/postgresql-where) clause to find customers by last names, comparing them with the input string in lowercase:
-
-```sql
-SELECT
-  first_name,
-  last_name
-FROM
-  customer
-WHERE
-  LOWER(last_name) = 'barnett';
-```
-
-Output:
-
-```text
- first_name | last_name
-------------+-----------
- Carole     | Barnett
-(1 row)
-```
-
-## Summary
-
-- Use the `LOWER()` function to return a new string with all the characters of the input string converted to lowercase.
 
 
 # LTRIM
@@ -51179,130 +56241,6 @@ In this example, we use the `REGEXP_REPLACE()` function to match two or more con
 - Use the PostgreSQL `REGEXP_REPLACE()` function to replace substrings that match a regular expression with a new substring.
 
 
-# RIGHT
-
----
-title: 'PostgreSQL RIGHT() Function'
-page_title: 'PostgreSQL RIGHT() Function'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL RIGHT() function to get the n right-most characters in a string.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-right/'
-ogImage: '/postgresqltutorial/customer.png'
-updatedOn: '2024-01-29T01:48:10+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL LEFT() Function'
-  slug: 'postgresql-string-functions/postgresql-left'
-nextLink:
-  title: 'PostgreSQL LPAD() Function'
-  slug: 'postgresql-string-functions/postgresql-lpad'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `RIGHT()` function to return the last `n` characters in a string.
-
-## Introduction to the PostgreSQL RIGHT() function
-
-The `RIGHT()` function allows you to retrieve the last n characters of a string.
-
-Here’s the basic syntax of the `RIGHT()` function:
-
-```sqlsql
-RIGHT(string, n)
-```
-
-The PostgreSQL `RIGHT()` function requires two arguments:
-
-- `string` is a string from which a number of the rightmost characters are returned.
-- **`n`** is a positive integer that specifies the number of the rightmost characters in the string that should be returned.
-
-The `RIGHT()` function returns the last `n` characters in a string. If `n` is negative, the `RIGHT()` function returns all characters in the string but first `|n|` (absolute) characters.
-
-If you want to return the `n` first characters of a string, you can use the [`LEFT()`](postgresql-left) function.
-
-## PostgreSQL RIGHT() function examples
-
-Let’s take some examples of using the PostgreSQL `RIGHT()` function.
-
-### 1\) Basic PostgreSQL RIGHT() function example
-
-The following statement uses the `RIGHT()` function to get the last character in the string `'XYZ'`:
-
-```sql
-SELECT RIGHT('XYZ', 1);
-```
-
-Here is the result:
-
-```text
- right
--------
- Z
-(1 row)
-
-```
-
-To get the last two characters, you pass the value `2` as the second argument as follows:
-
-```
-SELECT RIGHT('XYZ', 2);
-```
-
-Output:
-
-```text
- right
--------
- YZ
-(1 row)
-```
-
-The following statement illustrates how to use a negative integer as the second argument:
-
-```
-SELECT RIGHT('XYZ', - 1);
-```
-
-In this example, the `RIGHT()` function returns all characters except for the first character.
-
-```text
- right
--------
- YZ
-(1 row)
-```
-
-### 2\) Using the RIGHT() function with table data example
-
-See the following `customer` table in the [sample database](../postgresql-getting-started/postgresql-sample-database):
-
-![customer table](/postgresqltutorial/customer.png)The following statement uses the `RIGHT()` function in [`WHERE`](../postgresql-tutorial/postgresql-where) clause to get all customers whose last names end with `'son'`:
-
-```
-SELECT
-  last_name
-FROM
-  customer
-WHERE
-  RIGHT(last_name, 3) = 'son';
-```
-
-Output:
-
-```
-  last_name
--------------
- Johnson
- Wilson
- Anderson
- Jackson
- Thompson
-...
-```
-
-## Summary
-
-- Use the PostgreSQL `RIGHT()` function to get the n rightmost characters in a string.
-
-
 # REPLACE
 
 ---
@@ -51448,6 +56386,130 @@ The output indicates that the `http` in the `url` column were replaced by the `h
 ## Summary
 
 - Use the PostgreSQL `REPLACE()` function to replace all occurrences of a substring in a string with another a new substring.
+
+
+# RIGHT
+
+---
+title: 'PostgreSQL RIGHT() Function'
+page_title: 'PostgreSQL RIGHT() Function'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL RIGHT() function to get the n right-most characters in a string.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-right/'
+ogImage: '/postgresqltutorial/customer.png'
+updatedOn: '2024-01-29T01:48:10+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL LEFT() Function'
+  slug: 'postgresql-string-functions/postgresql-left'
+nextLink:
+  title: 'PostgreSQL LPAD() Function'
+  slug: 'postgresql-string-functions/postgresql-lpad'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `RIGHT()` function to return the last `n` characters in a string.
+
+## Introduction to the PostgreSQL RIGHT() function
+
+The `RIGHT()` function allows you to retrieve the last n characters of a string.
+
+Here’s the basic syntax of the `RIGHT()` function:
+
+```sqlsql
+RIGHT(string, n)
+```
+
+The PostgreSQL `RIGHT()` function requires two arguments:
+
+- `string` is a string from which a number of the rightmost characters are returned.
+- **`n`** is a positive integer that specifies the number of the rightmost characters in the string that should be returned.
+
+The `RIGHT()` function returns the last `n` characters in a string. If `n` is negative, the `RIGHT()` function returns all characters in the string but first `|n|` (absolute) characters.
+
+If you want to return the `n` first characters of a string, you can use the [`LEFT()`](postgresql-left) function.
+
+## PostgreSQL RIGHT() function examples
+
+Let’s take some examples of using the PostgreSQL `RIGHT()` function.
+
+### 1\) Basic PostgreSQL RIGHT() function example
+
+The following statement uses the `RIGHT()` function to get the last character in the string `'XYZ'`:
+
+```sql
+SELECT RIGHT('XYZ', 1);
+```
+
+Here is the result:
+
+```text
+ right
+-------
+ Z
+(1 row)
+
+```
+
+To get the last two characters, you pass the value `2` as the second argument as follows:
+
+```
+SELECT RIGHT('XYZ', 2);
+```
+
+Output:
+
+```text
+ right
+-------
+ YZ
+(1 row)
+```
+
+The following statement illustrates how to use a negative integer as the second argument:
+
+```
+SELECT RIGHT('XYZ', - 1);
+```
+
+In this example, the `RIGHT()` function returns all characters except for the first character.
+
+```text
+ right
+-------
+ YZ
+(1 row)
+```
+
+### 2\) Using the RIGHT() function with table data example
+
+See the following `customer` table in the [sample database](../postgresql-getting-started/postgresql-sample-database):
+
+![customer table](/postgresqltutorial/customer.png)The following statement uses the `RIGHT()` function in [`WHERE`](../postgresql-tutorial/postgresql-where) clause to get all customers whose last names end with `'son'`:
+
+```
+SELECT
+  last_name
+FROM
+  customer
+WHERE
+  RIGHT(last_name, 3) = 'son';
+```
+
+Output:
+
+```
+  last_name
+-------------
+ Johnson
+ Wilson
+ Anderson
+ Jackson
+ Thompson
+...
+```
+
+## Summary
+
+- Use the PostgreSQL `RIGHT()` function to get the n rightmost characters in a string.
 
 
 # RTRIM
@@ -51924,303 +56986,6 @@ Output:
 - Use the PostgreSQL `SUBSTRING()` functions to extract a substring from a string.
 
 
-# TRANSLATE
-
----
-title: 'PostgreSQL TRANSLATE() Function'
-page_title: 'PostgreSQL TRANSLATE() Function'
-page_description: 'How to use the PostgreSQL TRANSLATE() function to perform several single-character, one-to-one translation in one operation.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-translate/'
-ogImage: ''
-updatedOn: '2024-01-29T01:41:25+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL CONCAT_WS() Function'
-  slug: 'postgresql-string-functions/postgresql-concat_ws'
-nextLink:
-  title: 'PostgreSQL TO_CHAR() Function'
-  slug: 'postgresql-string-functions/postgresql-to_char'
----
-
-The PostgreSQL `TRANSLATE()` function performs several single\-character, one\-to\-one translations in one operation.
-
-## Syntax
-
-The following illustrates the syntax of the PostgreSQL `TRANSLATE()` function:
-
-```sql
-TRANSLATE(string, from, to)
-```
-
-## Arguments
-
-The PostgreSQL `TRANSLATE()` function accepts three arguments:
-
-**1\) `string`**  
- is a string subjected to translation.
-
-**2\) `from`**  
- is a set of characters in the first argument (`string`) that should be replaced.
-
-**3\) `to`**  
- is a set of characters that replaces the `from` in the string.
-
-Notice that if `from` is longer than `to`, the `TRANSLATE()` function removes the occurrences of the extra characters in `from`.
-
-## Return value
-
-The PostgreSQL `TRANSLATE()` function returns a string with the characters in the one set of characters replaced by another set of characters.
-
-## Examples
-
-Let’s see some examples of using the `TRANSLATE()` function to understand how it works.
-
-### 1\) Basic TRANSLATE() function example
-
-See the following statement:
-
-```sql
-SELECT TRANSLATE('12345', '134', 'ax')
-```
-
-In this example:
-
-- The character `'1'` in string `'12345'` is substituted by character `'a'`, The character `'3'` in the string `'12345'` is substituted by the character `'x'`.
-- Because the string `'134'` has more characters than the string `'ax'`, the `TRANSLATE()` function removes the extra character in the string `'134'`, which is `'4'`, from the string `'12345'`.
-
-The following illustrates the result:
-
-```text
- translate
------------
- a2x5
-(1 row)
-```
-
-### 2\) Single character replacement
-
-The following example shows how to use the `TRANSLATE()` function to replace comma (,) with a semi\-colon (;) in a comma\-separated values list.
-
-```
-SELECT TRANSLATE('apple,orange,banana', ',', ';');
-```
-
-Here is the output:
-
-```text
-  translate
----------------------
- apple;orange;banana
-(1 row)
-```
-
-### 3\) Encrypting and decrypting a message
-
-The following example shows how to use the `TRANSLATE()` function to encrypt a message:
-
-```
-SELECT TRANSLATE('a secret message',
-                 'abcdefghijklmnopqrstuvxyz',
-                 '0123456789acwrvyuiopkjhbq');
-```
-
-Here is the output:
-
-```text
-    translate
-------------------
- 0 o42i4p w4oo064
-(1 row)
-```
-
-You can also decrypt the message `'0 o42i4p w4oo064'` using the function:
-
-```
-SELECT TRANSLATE('0 o42i4p w4oo064',
-                     '0123456789acwrvyuiopkjhbq',
-                     'abcdefghijklmnopqrstuvxyz');
-```
-
-Hence the output is:
-
-```
-    translate
-------------------
- a secret message
-(1 row)
-```
-
-In this tutorial, you have learned how to use the PostgreSQL `TRANSLATE()` function to substitute characters in a set with another, one\-to\-one, in a single operation.
-
-
-# TRIM
-
----
-title: 'PostgreSQL TRIM() Function'
-page_title: 'PostgreSQL TRIM() Function'
-page_description: 'Use the PostgreSQL TRIM() function to remove the specified characters from the leading, trailing, or both leading and trailing of a string.'
-prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-trim-function/'
-ogImage: ''
-updatedOn: '2024-01-27T14:01:40+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL LENGTH() Function'
-  slug: 'postgresql-string-functions/postgresql-length-function'
-nextLink:
-  title: 'PostgreSQL LTRIM() Function'
-  slug: 'postgresql-string-functions/postgresql-ltrim'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `TRIM()` function to remove specified prefixes or suffixes (or both) from a string.
-
-## Introduction to PostgreSQL TRIM() function
-
-The `TRIM()` function allows you to remove specified prefixes or suffixes (or both) from a string.
-
-Here’s the basic syntax of the `TRIM()` function:
-
-```css
-TRIM([LEADING | TRAILING | BOTH] trim_character
-FROM source_string)
-
-```
-
-In this syntax:
-
-- `source_string`: Specify the string that you want to remove specified characters.
-- `trim_character`: Specify the trim characters.
-- `LEADING`: This option instructs the function to remove the leading occurrences of the specified trim character.
-- `TRAILING`: This option instructs the function to remove trailing occurrences of the specified trim character.
-- `BOTH`: This option instructs the function to remove both leading and trailing occurrences of the specified trim character.
-
-The `TRIM()` function can be very useful when you want to clean up strings.
-
-To remove specific characters from the beginning of a string, you use the [LTRIM()](postgresql-ltrim) function. To remove specific characters from the end of a string, you can use the [RTRIM()](postgresql-rtrim) function.
-
-## PostgreSQL TRIM() function examples
-
-Let’s explore some examples of using the `TRIM()` function.
-
-### 1\) Basic PostgreSQL TRIM() function example
-
-The following example uses the `TRIM()` function to remove leading and trailing spaces from the string `' PostgreSQL '`:
-
-```php
-SELECT TRIM('   PostgreSQL   ') AS trimmed_string;
-
-```
-
-Output:
-
-```php
- trimmed_string
-----------------
- PostgreSQL
-(1 row)
-```
-
-The output is a string without leading and trailing spaces.
-
-### 2\) Using the PostgreSQL TRIM() function to remove specific characters
-
-The following example uses the `TRIM()` function to remove leading and trailing hash symbols (`#`) from the string `'##PostgreSQL##'`:
-
-```
-SELECT TRIM('#' FROM '##PostgreSQL##') AS trimmed_string;
-
-```
-
-Output:
-
-```php
- trimmed_string
-----------------
- PostgreSQL
-(1 row)
-```
-
-### 3\) Using the TRIM() function to remove specific characters by specifying the trim location
-
-The following example uses the PostgreSQL `TRIM()` function to remove leading, trailing, and both leading and trailing zeros from the string `'0000123450'`:
-
-```
-SELECT TRIM(LEADING '0' FROM '000123450') AS trimmed_string_leading,
-       TRIM(TRAILING '0' FROM '000123450') AS trimmed_string_trailing,
-       TRIM(BOTH '0' FROM '000123450') AS trimmed_string_both;
-
-```
-
-Output:
-
-```php
- trimmed_string_leading | trimmed_string_trailing | trimmed_string_both
-------------------------+-------------------------+---------------------
- 123450                 | 00012345                | 12345
-(1 row)
-```
-
-### 4\) Using the TRIM() function with table data
-
-First, [create a table](../postgresql-tutorial/postgresql-create-table) called `todo` and [insert](../postgresql-tutorial/postgresql-insert) some sample data:
-
-```
-CREATE TABLE todo(
-  id SERIAL PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  completed BOOL NOT NULL DEFAULT false
-);
-
-INSERT INTO todo(title)
-VALUES
-  ('   Learn PostgreSQL   '),
-  ('Build an App   ')
-RETURNING *;
-```
-
-Output:
-
-```
- id |         title          | completed
-----+------------------------+-----------
-  1 |    Learn PostgreSQL    | f
-  2 | Build an App           | f
-(2 rows)
-```
-
-Second, remove the leading and trailing spaces from the `title` column using the `TRIM()` function:
-
-```
-UPDATE todo
-SET title = TRIM(title);
-```
-
-Output:
-
-```
-UPDATE 2
-```
-
-Third, verify the updates:
-
-```
-SELECT * FROM todo;
-```
-
-Output:
-
-```
- id |      title       | completed
-----+------------------+-----------
-  1 | Learn PostgreSQL | f
-  2 | Build an App     | f
-(2 rows)
-```
-
-## Summary
-
-- Use the PostgreSQL `TRIM()` function to remove a specified leading, trailing, or both leading and trailing characters from a string.
-
-
 # TO_CHAR
 
 ---
@@ -52650,6 +57415,303 @@ The `TO_NUMBER()` function issues an error in this case.
 ## Summary
 
 - Use the PostgreSQL `TO_NUMBER()` function to convert a string to a numeric value.
+
+
+# TRANSLATE
+
+---
+title: 'PostgreSQL TRANSLATE() Function'
+page_title: 'PostgreSQL TRANSLATE() Function'
+page_description: 'How to use the PostgreSQL TRANSLATE() function to perform several single-character, one-to-one translation in one operation.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-translate/'
+ogImage: ''
+updatedOn: '2024-01-29T01:41:25+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL CONCAT_WS() Function'
+  slug: 'postgresql-string-functions/postgresql-concat_ws'
+nextLink:
+  title: 'PostgreSQL TO_CHAR() Function'
+  slug: 'postgresql-string-functions/postgresql-to_char'
+---
+
+The PostgreSQL `TRANSLATE()` function performs several single\-character, one\-to\-one translations in one operation.
+
+## Syntax
+
+The following illustrates the syntax of the PostgreSQL `TRANSLATE()` function:
+
+```sql
+TRANSLATE(string, from, to)
+```
+
+## Arguments
+
+The PostgreSQL `TRANSLATE()` function accepts three arguments:
+
+**1\) `string`**  
+ is a string subjected to translation.
+
+**2\) `from`**  
+ is a set of characters in the first argument (`string`) that should be replaced.
+
+**3\) `to`**  
+ is a set of characters that replaces the `from` in the string.
+
+Notice that if `from` is longer than `to`, the `TRANSLATE()` function removes the occurrences of the extra characters in `from`.
+
+## Return value
+
+The PostgreSQL `TRANSLATE()` function returns a string with the characters in the one set of characters replaced by another set of characters.
+
+## Examples
+
+Let’s see some examples of using the `TRANSLATE()` function to understand how it works.
+
+### 1\) Basic TRANSLATE() function example
+
+See the following statement:
+
+```sql
+SELECT TRANSLATE('12345', '134', 'ax')
+```
+
+In this example:
+
+- The character `'1'` in string `'12345'` is substituted by character `'a'`, The character `'3'` in the string `'12345'` is substituted by the character `'x'`.
+- Because the string `'134'` has more characters than the string `'ax'`, the `TRANSLATE()` function removes the extra character in the string `'134'`, which is `'4'`, from the string `'12345'`.
+
+The following illustrates the result:
+
+```text
+ translate
+-----------
+ a2x5
+(1 row)
+```
+
+### 2\) Single character replacement
+
+The following example shows how to use the `TRANSLATE()` function to replace comma (,) with a semi\-colon (;) in a comma\-separated values list.
+
+```
+SELECT TRANSLATE('apple,orange,banana', ',', ';');
+```
+
+Here is the output:
+
+```text
+  translate
+---------------------
+ apple;orange;banana
+(1 row)
+```
+
+### 3\) Encrypting and decrypting a message
+
+The following example shows how to use the `TRANSLATE()` function to encrypt a message:
+
+```
+SELECT TRANSLATE('a secret message',
+                 'abcdefghijklmnopqrstuvxyz',
+                 '0123456789acwrvyuiopkjhbq');
+```
+
+Here is the output:
+
+```text
+    translate
+------------------
+ 0 o42i4p w4oo064
+(1 row)
+```
+
+You can also decrypt the message `'0 o42i4p w4oo064'` using the function:
+
+```
+SELECT TRANSLATE('0 o42i4p w4oo064',
+                     '0123456789acwrvyuiopkjhbq',
+                     'abcdefghijklmnopqrstuvxyz');
+```
+
+Hence the output is:
+
+```
+    translate
+------------------
+ a secret message
+(1 row)
+```
+
+In this tutorial, you have learned how to use the PostgreSQL `TRANSLATE()` function to substitute characters in a set with another, one\-to\-one, in a single operation.
+
+
+# TRIM
+
+---
+title: 'PostgreSQL TRIM() Function'
+page_title: 'PostgreSQL TRIM() Function'
+page_description: 'Use the PostgreSQL TRIM() function to remove the specified characters from the leading, trailing, or both leading and trailing of a string.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-string-functions/postgresql-trim-function/'
+ogImage: ''
+updatedOn: '2024-01-27T14:01:40+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL LENGTH() Function'
+  slug: 'postgresql-string-functions/postgresql-length-function'
+nextLink:
+  title: 'PostgreSQL LTRIM() Function'
+  slug: 'postgresql-string-functions/postgresql-ltrim'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `TRIM()` function to remove specified prefixes or suffixes (or both) from a string.
+
+## Introduction to PostgreSQL TRIM() function
+
+The `TRIM()` function allows you to remove specified prefixes or suffixes (or both) from a string.
+
+Here’s the basic syntax of the `TRIM()` function:
+
+```css
+TRIM([LEADING | TRAILING | BOTH] trim_character
+FROM source_string)
+
+```
+
+In this syntax:
+
+- `source_string`: Specify the string that you want to remove specified characters.
+- `trim_character`: Specify the trim characters.
+- `LEADING`: This option instructs the function to remove the leading occurrences of the specified trim character.
+- `TRAILING`: This option instructs the function to remove trailing occurrences of the specified trim character.
+- `BOTH`: This option instructs the function to remove both leading and trailing occurrences of the specified trim character.
+
+The `TRIM()` function can be very useful when you want to clean up strings.
+
+To remove specific characters from the beginning of a string, you use the [LTRIM()](postgresql-ltrim) function. To remove specific characters from the end of a string, you can use the [RTRIM()](postgresql-rtrim) function.
+
+## PostgreSQL TRIM() function examples
+
+Let’s explore some examples of using the `TRIM()` function.
+
+### 1\) Basic PostgreSQL TRIM() function example
+
+The following example uses the `TRIM()` function to remove leading and trailing spaces from the string `' PostgreSQL '`:
+
+```php
+SELECT TRIM('   PostgreSQL   ') AS trimmed_string;
+
+```
+
+Output:
+
+```php
+ trimmed_string
+----------------
+ PostgreSQL
+(1 row)
+```
+
+The output is a string without leading and trailing spaces.
+
+### 2\) Using the PostgreSQL TRIM() function to remove specific characters
+
+The following example uses the `TRIM()` function to remove leading and trailing hash symbols (`#`) from the string `'##PostgreSQL##'`:
+
+```
+SELECT TRIM('#' FROM '##PostgreSQL##') AS trimmed_string;
+
+```
+
+Output:
+
+```php
+ trimmed_string
+----------------
+ PostgreSQL
+(1 row)
+```
+
+### 3\) Using the TRIM() function to remove specific characters by specifying the trim location
+
+The following example uses the PostgreSQL `TRIM()` function to remove leading, trailing, and both leading and trailing zeros from the string `'0000123450'`:
+
+```
+SELECT TRIM(LEADING '0' FROM '000123450') AS trimmed_string_leading,
+       TRIM(TRAILING '0' FROM '000123450') AS trimmed_string_trailing,
+       TRIM(BOTH '0' FROM '000123450') AS trimmed_string_both;
+
+```
+
+Output:
+
+```php
+ trimmed_string_leading | trimmed_string_trailing | trimmed_string_both
+------------------------+-------------------------+---------------------
+ 123450                 | 00012345                | 12345
+(1 row)
+```
+
+### 4\) Using the TRIM() function with table data
+
+First, [create a table](../postgresql-tutorial/postgresql-create-table) called `todo` and [insert](../postgresql-tutorial/postgresql-insert) some sample data:
+
+```
+CREATE TABLE todo(
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  completed BOOL NOT NULL DEFAULT false
+);
+
+INSERT INTO todo(title)
+VALUES
+  ('   Learn PostgreSQL   '),
+  ('Build an App   ')
+RETURNING *;
+```
+
+Output:
+
+```
+ id |         title          | completed
+----+------------------------+-----------
+  1 |    Learn PostgreSQL    | f
+  2 | Build an App           | f
+(2 rows)
+```
+
+Second, remove the leading and trailing spaces from the `title` column using the `TRIM()` function:
+
+```
+UPDATE todo
+SET title = TRIM(title);
+```
+
+Output:
+
+```
+UPDATE 2
+```
+
+Third, verify the updates:
+
+```
+SELECT * FROM todo;
+```
+
+Output:
+
+```
+ id |      title       | completed
+----+------------------+-----------
+  1 | Learn PostgreSQL | f
+  2 | Build an App     | f
+(2 rows)
+```
+
+## Summary
+
+- Use the PostgreSQL `TRIM()` function to remove a specified leading, trailing, or both leading and trailing characters from a string.
 
 
 # UPPER
@@ -53151,8 +58213,6 @@ INNER JOIN product_groups USING (group_id);
 ![PostgreSQL Window Function - LEAD function](/postgresqltutorial/PostgreSQL-Window-Function-LEAD-function.png)
 In this tutorial, we have introduced you to the PostgreSQL window functions and shown you some examples of using them to query data.
 
-
-# PostgreSQL Window Functions
 
 # CUME_DIST
 
@@ -54121,126 +59181,6 @@ In this example:
 In this tutorial, you have learned how to use the PostgreSQL `LEAD()` function to access a row at a specific physical offset which follows the current row.
 
 
-# NTILE
-
----
-title: 'PostgreSQL NTILE Function'
-page_title: 'PostgreSQL NTILE Function By Practical Examples'
-page_description: 'In this tutorial, you will learn how to use the PostgreSQL NTILE() function to divide ordered rows in the partition into a specified number of ranked buckets.'
-prev_url: 'index.html'
-ogImage: '/postgresqltutorial/sales_stats-table.png'
-updatedOn: '2020-04-11T10:53:00+00:00'
-enableTableOfContents: true
-previousLink:
-  title: 'PostgreSQL LEAD Function'
-  slug: 'postgresql-window-function/postgresql-lead-function'
-nextLink:
-  title: 'PostgreSQL NTH_VALUE Function'
-  slug: 'postgresql-window-function/postgresql-nth_value-function'
----
-
-**Summary**: in this tutorial, you will learn how to use the PostgreSQL `NTILE()` function to divide ordered rows in the partition into a specified number of ranked buckets.
-
-## Introduction to PostgreSQL NTILE() function
-
-The PostgreSQL `NTILE()` function allows you to divide ordered rows in the partition into a specified number of ranked groups as equal size as possible. These ranked groups are called buckets.
-
-The `NTILE()` function assigns each group a bucket number starting from 1\. For each row in a group, the `NTILE()` function assigns a bucket number representing the group to which the row belongs.
-
-The syntax of the `NTILE()` function is as follows:
-
-```sql
-NTILE(buckets) OVER (
-    [PARTITION BY partition_expression, ... ]
-    [ORDER BY sort_expression [ASC | DESC], ...]
-)
-
-```
-
-Let’s examine the syntax in detail:
-
-### buckets
-
-The `buckets` represents the number of ranked groups. It can be a number or an expression that evaluates to a positive integer value (greater than 0\) for each partition. The `buckets` must not be nullable.
-
-### PARTITION BY
-
-The `PARTITION BY` clause distributes rows into partitions to which the function is applied.
-
-The `PARTITION BY` clause is optional. If you skip it, the function treats the whole result set as a single partition.
-
-### ORDER BY
-
-The `ORDER BY` clause sorts rows in each partition to which the function is applied.
-
-The `ORDER BY` clause is optional. However, you should always use the `ORDER BY` clause to get an expected result.
-
-Note that if the number of rows is not divisible by the `buckets`, the `NTILE()` function returns groups of two sizes with the difference by one. The bigger groups always come before the smaller groups in the order specified by the `ORDER BY` clause.
-
-## PostgreSQL NTILE() function examples
-
-Let’s take some examples of using the `NTILE()` function.
-
-We’ll use the `sales_stats` table created in the [`CUME_DIST()`](postgresql-cume_dist-function) function tutorial to demonstrate the `NTILE()` function.
-
-```sql
-SELECT
-	year,
-	name,
-	amount
-FROM
-	actual_sales
-ORDER BY
-	year, name;
-```
-
-![sales_stats table](/postgresqltutorial/sales_stats-table.png)
-
-### 1\) Using PostgreSQL NTILE() function over a result set example
-
-This example uses the `NTILE()` function to distribute rows into 3 buckets:
-
-```sql
-SELECT
-	name,
-	amount,
-	NTILE(3) OVER(
-		ORDER BY amount
-	)
-FROM
-	sales_stats
-WHERE
-	year = 2019;
-
-```
-
-Here is the output:
-
-![PostgreSQL NTILE Function Over a Result Set Example](/postgresqltutorial/PostgreSQL-NTILE-Function-Over-a-Result-Set-Example.png)
-
-### 2\) Using PostgreSQL NTILE() function over a partition example
-
-This example uses the `NTILE()` function to divide rows in the `sales_stats` table into two partitions and 3 buckets for each:
-
-```sql
-SELECT
-	name,
-	amount,
-	NTILE(3) OVER(
-		PARTITION BY year
-		ORDER BY amount
-	)
-FROM
-	sales_stats;
-
-```
-
-Here is the result set:
-
-![PostgreSQL NTILE Function Over a Partition Example](/postgresqltutorial/PostgreSQL-NTILE-Function-Over-a-Partition-Example.png)
-In this tutorial, you have learned how to use the PostgreSQL `NTILE()` function to distribute ordered rows within a partition into a specified number of ranked groups.
-
-
 # NTH_VALUE
 
 ---
@@ -54369,6 +59309,126 @@ In this example,
 - And the `NTH_VALUE()` function returns the product name of the 2nd row of each product group.
 
 Now, you should how to use the PostgreSQL `NTH_VALUE()` function to get a value from the nth row of a result set.
+
+
+# NTILE
+
+---
+title: 'PostgreSQL NTILE Function'
+page_title: 'PostgreSQL NTILE Function By Practical Examples'
+page_description: 'In this tutorial, you will learn how to use the PostgreSQL NTILE() function to divide ordered rows in the partition into a specified number of ranked buckets.'
+prev_url: 'index.html'
+ogImage: '/postgresqltutorial/sales_stats-table.png'
+updatedOn: '2020-04-11T10:53:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL LEAD Function'
+  slug: 'postgresql-window-function/postgresql-lead-function'
+nextLink:
+  title: 'PostgreSQL NTH_VALUE Function'
+  slug: 'postgresql-window-function/postgresql-nth_value-function'
+---
+
+**Summary**: in this tutorial, you will learn how to use the PostgreSQL `NTILE()` function to divide ordered rows in the partition into a specified number of ranked buckets.
+
+## Introduction to PostgreSQL NTILE() function
+
+The PostgreSQL `NTILE()` function allows you to divide ordered rows in the partition into a specified number of ranked groups as equal size as possible. These ranked groups are called buckets.
+
+The `NTILE()` function assigns each group a bucket number starting from 1\. For each row in a group, the `NTILE()` function assigns a bucket number representing the group to which the row belongs.
+
+The syntax of the `NTILE()` function is as follows:
+
+```sql
+NTILE(buckets) OVER (
+    [PARTITION BY partition_expression, ... ]
+    [ORDER BY sort_expression [ASC | DESC], ...]
+)
+
+```
+
+Let’s examine the syntax in detail:
+
+### buckets
+
+The `buckets` represents the number of ranked groups. It can be a number or an expression that evaluates to a positive integer value (greater than 0\) for each partition. The `buckets` must not be nullable.
+
+### PARTITION BY
+
+The `PARTITION BY` clause distributes rows into partitions to which the function is applied.
+
+The `PARTITION BY` clause is optional. If you skip it, the function treats the whole result set as a single partition.
+
+### ORDER BY
+
+The `ORDER BY` clause sorts rows in each partition to which the function is applied.
+
+The `ORDER BY` clause is optional. However, you should always use the `ORDER BY` clause to get an expected result.
+
+Note that if the number of rows is not divisible by the `buckets`, the `NTILE()` function returns groups of two sizes with the difference by one. The bigger groups always come before the smaller groups in the order specified by the `ORDER BY` clause.
+
+## PostgreSQL NTILE() function examples
+
+Let’s take some examples of using the `NTILE()` function.
+
+We’ll use the `sales_stats` table created in the [`CUME_DIST()`](postgresql-cume_dist-function) function tutorial to demonstrate the `NTILE()` function.
+
+```sql
+SELECT
+	year,
+	name,
+	amount
+FROM
+	actual_sales
+ORDER BY
+	year, name;
+```
+
+![sales_stats table](/postgresqltutorial/sales_stats-table.png)
+
+### 1\) Using PostgreSQL NTILE() function over a result set example
+
+This example uses the `NTILE()` function to distribute rows into 3 buckets:
+
+```sql
+SELECT
+	name,
+	amount,
+	NTILE(3) OVER(
+		ORDER BY amount
+	)
+FROM
+	sales_stats
+WHERE
+	year = 2019;
+
+```
+
+Here is the output:
+
+![PostgreSQL NTILE Function Over a Result Set Example](/postgresqltutorial/PostgreSQL-NTILE-Function-Over-a-Result-Set-Example.png)
+
+### 2\) Using PostgreSQL NTILE() function over a partition example
+
+This example uses the `NTILE()` function to divide rows in the `sales_stats` table into two partitions and 3 buckets for each:
+
+```sql
+SELECT
+	name,
+	amount,
+	NTILE(3) OVER(
+		PARTITION BY year
+		ORDER BY amount
+	)
+FROM
+	sales_stats;
+
+```
+
+Here is the result set:
+
+![PostgreSQL NTILE Function Over a Partition Example](/postgresqltutorial/PostgreSQL-NTILE-Function-Over-a-Partition-Example.png)
+In this tutorial, you have learned how to use the PostgreSQL `NTILE()` function to distribute ordered rows within a partition into a specified number of ranked groups.
 
 
 # PERCENT_RANK
@@ -54881,6 +59941,38 @@ WHERE
 
 
 # API
+
+---
+title: 'PostgreSQL API'
+page_title: 'PostgreSQL API'
+page_description: 'Learn how to connect to PostgreSQL from various programming languages including C#, Java, Python, and PHP using their respective database drivers and APIs.'
+prev_url: 'https://www.postgresqltutorial.com/postgresql-api/'
+ogImage: ''
+updatedOn: '2025-09-06T10:00:00+00:00'
+enableTableOfContents: true
+previousLink:
+  title: 'PostgreSQL Functions'
+  slug: 'postgresql-functions'
+nextLink:
+  title: 'PostgreSQL C#: Connecting to PostgreSQL Database'
+  slug: 'postgresql-csharp/postgresql-csharp-connect'
+---
+
+The **PostgreSQL API** section covers how to interact with PostgreSQL databases from various programming languages. Each language has its own database driver and API that provides a standardized way to connect to, query, and manipulate data in PostgreSQL databases.
+
+Whether you're building web applications, desktop software, or data processing scripts, these tutorials will help you integrate PostgreSQL seamlessly into your development workflow.
+
+## Section 1. Programming Language Integrations
+
+PostgreSQL provides robust support for multiple programming languages through various database drivers and APIs. Each integration offers unique features and follows language-specific best practices.
+
+- [PostgreSQL C#](postgresql-csharp) – learn how to interact with PostgreSQL from C# applications using ADO.NET and the Npgsql .NET Data Provider, covering database connections, CRUD operations, transactions, and stored procedures.
+- [PostgreSQL JDBC](postgresql-jdbc) – connect to PostgreSQL from Java applications using the PostgreSQL JDBC driver, covering the complete Java database connectivity workflow from setup to advanced operations.
+- [PostgreSQL PHP](postgresql-php) – access PostgreSQL databases from PHP applications using PDO (PHP Data Objects), covering web development scenarios and best practices for PHP-PostgreSQL integration.
+- [PostgreSQL Python](postgresql-python) – work with PostgreSQL from Python applications using the psycopg2 database adapter, covering everything from basic connections to advanced features like asynchronous operations and custom type handling.
+
+Each section provides step-by-step tutorials with practical examples that you can run and modify for your own projects.
+
 
 # PostgreSQL C#
 

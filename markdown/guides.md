@@ -9664,6 +9664,182 @@ This guide should have helped you get started with Azure Static Web Apps and Neo
 <NeedHelp />
 
 
+# Getting started with Neon and Better Stack
+
+---
+title: Getting started with Neon and Better Stack
+subtitle: Send Neon metrics and Postgres logs to Better Stack using the OpenTelemetry integration
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-08-13T00:00:00.000Z'
+updatedOn: '2025-08-13T00:00:00.000Z'
+---
+
+[Better Stack](https://betterstack.com/) is an observability platform that unifies logging, monitoring, and alerting into a single dashboard. [Neon's OpenTelemetry (OTEL) integration](/docs/guides/opentelemetry) allows you to send your project's metrics and Postgres logs directly to Better Stack, giving you a centralized view of your database's performance and activity.
+
+This guide will walk you through setting up the integration between Neon and Better Stack. You'll learn how to:
+
+- Create and configure an OpenTelemetry source in Better Stack.
+- Set up the OpenTelemetry integration in your Neon project.
+- Verify that your Neon metrics and logs are successfully flowing into Better Stack.
+
+By the end, you'll have a complete observability pipeline from your Neon database to your Better Stack dashboard.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **Neon account and project:** If you don't have one, sign up at [Neon](https://console.neon.tech/signup). Your Neon project must be on the **Scale** or **Business** plan to use the OpenTelemetry integration.
+- **Better Stack account:** A free Better Stack account. You can sign up at [Better Stack](https://betterstack.com/users/sign-up).
+
+<Steps>
+
+## Set up a Better Stack source
+
+First, you need to create a data source in Better Stack that will receive logs and metrics from Neon.
+
+1.  Log in to your [Better Stack account](https://telemetry.betterstack.com/).
+2.  In the left-hand navigation, go to **Telemetry** > **Sources**. Click the **Connect source** button.
+
+    ![Better Stack sources page](/docs/guides/betterstack-sources-page.png)
+
+3.  On the **Connect source** page:
+    - Under **Basic information**, provide a **Name** for your source (e.g., `neon`) and select your preferred **Data region**.
+    - Under **Platform**, scroll down to the **Logs + Metrics** section and select **OpenTelemetry**.
+    - Click **Create source** at the bottom of the page.
+
+    ![Configuring the OpenTelemetry source in Better Stack](/docs/guides/betterstack-otel-config.png)
+
+4.  After the source is created, you will be redirected to the source's overview page. This page contains the credentials Neon needs to send data.
+
+    ![Better Stack source created page with Source token and Ingesting host](/docs/guides/betterstack-otel-source-created.png)
+
+    > Copy the **Source token** and **Ingesting host** URL. You will need these in the next step to configure Neon.
+
+## Configure the Neon OpenTelemetry integration
+
+Now, you will use the credentials from Better Stack to configure the integration in your Neon project.
+
+1.  Navigate to the [Neon Console](https://console.neon.tech) and select your project.
+2.  From the sidebar, go to the **Integrations** page.
+3.  Find the **OpenTelemetry** card and click **Add**.
+
+    ![Neon Integrations page with OpenTelemetry card](/docs/guides/neon-add-otel.png)
+
+4.  A sidebar form will open. Fill in the configuration details using the information you copied from Better Stack:
+    - **Telemetry to export:** Check both **Metrics** and **Postgres logs** to send all available data.
+    - **Connection:** Select **HTTP**.
+    - **Endpoint:** Paste the **Ingesting host** URL from Better Stack. It should look like `https://xxxx.betterstackdata.com`.
+      <Admonition type="important">
+      Better Stack provides the Ingesting host without the `https://` prefix, so make sure to manually add `https://` at the beginning of the URL when configuring the endpoint.
+      </Admonition>
+    - **Authentication:** Select **Bearer**.
+    - **Bearer Token:** Paste the **Source token** you copied from Better Stack.
+    - **Resource attributes:** It's good practice to add a `service.name` attribute to identify your data source within Better Stack. For example, set the key to `service.name` and the value to `neon`.
+    - Click **Save**.
+
+    <Admonition type="note" title="Data Scope">
+    The Neon OpenTelemetry integration sends data for all computes in your Neon project. For example, if you have multiple branches, each with an attached compute, metrics and logs will be collected and sent for each one.
+    </Admonition>
+
+    ![Configuring the Neon OpenTelemetry integration with Better Stack credentials](/docs/guides/neon-otel-config.png)
+
+    > The integration is now active and will begin sending data from your Neon project's computes to Better Stack.
+
+## Verify the data flow in Better Stack
+
+To confirm that your integration is working:
+
+1. Go back to your Better Stack dashboard.
+2. Select the source you created for Neon (e.g., `neon`).
+3. Click **Logs** to open the **Live tail** view and monitor incoming logs in real time.
+
+You should see data from your Neon project appearing here, indicating a successful connection.
+
+<Admonition type="note">
+It may take a few minutes for the first logs to appear after you enable the integration.
+</Admonition>
+
+You should see Postgres logs from your Neon compute streaming into the Live tail view. This confirms that the integration is working correctly.
+
+![Live tail view in Better Stack showing logs from Neon](/docs/guides/betterstack-live-tail.png)
+
+<Admonition type="info" title="Compute Activity">
+Neon computes only send logs and metrics when they are active. If you have the [Scale to Zero](/docs/manage/endpoints#scale-to-zero) feature enabled and a compute is suspended due to inactivity, no telemetry data will be sent. If you notice gaps in your data, check your compute's status on the **Branches** page in the Neon console.
+</Admonition>
+
+## Visualizing Neon Metrics with Dashboards
+
+While the **Live tail** view is perfect for real-time log inspection, Better Stack's **Dashboards** are the best way to visualize your Neon metrics, track trends over time, and get a high-level overview of your database's health.
+
+### Clean up default dashboards
+
+When you first navigate to the **Dashboards** page in Better Stack, you may see two pre-created dashboards: `OpenTelemetry collector` and `OpenTelemetry Tracing`.
+
+![Better Stack dashboards page showing default dashboards.](/docs/guides/betterstack-default-dashboards.png)
+
+These default dashboards are designed for a generic OpenTelemetry collector setup and are **not compatible** with the metrics sent by Neon. They will appear empty or show errors because they are looking for metrics that don't exist in Neon's data stream.
+
+### Delete default dashboards
+
+To avoid confusion, it is strongly recommended to delete these two default dashboards. Click on each dashboard, find the three-dot menu (...) in the top-right corner, and select **Remove**.
+
+### Create a custom Neon dashboard
+
+Create a new dashboard from scratch to visualize your Neon metrics.
+
+1.  From the **Dashboards** page, click the **Create dashboard** button.
+2.  Select **Blank dashboard** and click **Add dashboard**.
+3.  Give your new dashboard a descriptive name, such as `Neon Project Metrics`, and click **Save**.
+
+### Create your first chart
+
+Add a chart to visualize a specific metric.
+
+1.  On your blank dashboard, click the **+ Create chart** button.
+2.  The first step is to connect the chart to your data. At the top, click the **source** button and choose your `neon` source.
+3.  The chart builder will appear. Use the **Drag & drop** query builder:
+    - The **X-axis** is already set to `time`, which is what you'll want for time-series data.
+    - Delete the default Y-axis metric.
+    - In the **Y-axis**, select the metric you want to visualize. From the list of available metrics, drag a metric like `neon_connection_counts` into the Y-axis box.
+      ![Neon connection counts chart creation](/docs/guides/betterstack-neon-connection-counts-creation.png)
+    - Click **Run query** to see the chart populated with data.
+4.  You can customize the chart's appearance using the panel on the right. Once you're happy, click **Save** in the top-right corner to add the chart to your dashboard.
+
+To view the metric on your dashboard, simply locate the chart you created and observe the visualized data in real time.
+
+![Neon connection counts chart](/docs/guides/betterstack-neon-connection-counts.png)
+
+### Explore available Neon metrics
+
+Neon exports a rich set of metrics that you can use to build your dashboards. These include both Neon-specific metrics and general compute host metrics.
+
+For example, you can build charts to visualize:
+
+- `neon_connection_counts`: To monitor the number of active and idle database connections.
+- `neon_db_total_size`: To monitor the total size of all databases in your project, in bytes.
+- `host_cpu_seconds_total`: To track the number of CPU seconds accumulated in different operating modes (user, system, idle, etc.)
+
+For a comprehensive list of all metrics you can use in your dashboards, see the [Neon Metrics and Logs Reference](/docs/reference/metrics-logs).
+
+</Steps>
+
+## Summary
+
+Congratulations! You have successfully configured Neon to send metrics and Postgres logs to Better Stack using the OpenTelemetry integration. You now have a powerful, centralized observability setup that provides real-time insights into your database's health and activity.
+
+By leveraging this integration, you can build dashboards, set up alerts, and troubleshoot issues more effectively, all from within the Better Stack platform.
+
+## Resources
+
+- [Neon OpenTelemetry Integration](/docs/guides/opentelemetry)
+- [Neon Metrics and logs reference](/docs/reference/metrics-logs)
+- [Better Stack Logs Documentation](https://betterstack.com/docs/logs/start/)
+- [OpenTelemetry Protocol (OTLP) Specification](https://opentelemetry.io/docs/specs/otlp/)
+
+<NeedHelp/>
+
+
 # Caching Layer in Postgres
 
 ---
@@ -10717,6 +10893,246 @@ In this guide, you learned how to build a RAG Chatbot using LlamaIndex, Astro, a
 <NeedHelp />
 
 
+# Get started with Claude Code and Neon Postgres MCP Server
+
+---
+title: 'Get started with Claude Code and Neon Postgres MCP Server'
+subtitle: 'Interact with Neon APIs using Claude Code through natural language'
+author: pedro-figueiredo
+enableTableOfContents: true
+createdAt: '2025-08-27T00:00:00.000Z'
+updatedOn: '2025-08-27T00:00:00.000Z'
+---
+
+Imagine adjusting your database schema simply by describing the change in plain English. This is possible by combining [Claude Code](https://docs.anthropic.com/en/docs/claude-code) with the [Neon MCP Server](https://github.com/neondatabase/mcp-server-neon).
+
+This guide demonstrates how to use Claude Code's command-line interface and Neon's MCP server to perform database migrations in your Neon project.
+
+<Admonition type="important" title="Neon MCP Server Security Considerations">
+The Neon MCP Server grants powerful database management capabilities through natural language requests. **Always review and authorize actions requested by the LLM before execution.** Ensure that only authorized users and applications have access to the Neon MCP Server.
+
+The Neon MCP Server is intended for local development and IDE integrations only. **We do not recommend using the Neon MCP Server in production environments.** It can execute powerful operations that may lead to accidental or unauthorized changes.
+
+For more information, see [MCP security guidance](/docs/ai/neon-mcp-server#mcp-security-guidance).
+</Admonition>
+
+## Key components
+
+Let's break down the key components in this setup:
+
+- **Claude Code**: Claude Code is Anthropic's official CLI tool that supports Model Context Protocol (MCP) for interfacing with external tools (APIs, databases, etc.)
+
+- **Neon MCP Server**: Neon's MCP server acts as a bridge between MCP clients like Claude Code and [Neon's API](https://api-docs.neon.tech/reference/getting-started-with-neon-api), letting you work with Neon databases using natural language commands.
+
+- **Model Context Protocol (MCP)**: MCP is a lightweight communication standard that allows Claude Code and Neon MCP Server to work together.
+
+## Setting up Neon MCP Server in Claude Code
+
+You have two options for connecting Claude Code to the Neon MCP Server:
+
+1. **Remote MCP Server (Preview):** Connect to Neon's managed MCP server using OAuth for authentication. This method is more convenient as it eliminates the need to manage API keys in Claude Code. Additionally, you will automatically receive the latest features and improvements as soon as they are released.
+
+2. **Local MCP Server:** Run the Neon MCP server locally on your machine, authenticating with a Neon API key.
+
+### Prerequisites
+
+Before you begin, ensure you have the following:
+
+1. **Claude Code:** Ensure you have Claude Code installed. Visit [docs.anthropic.com/en/docs/claude-code](https://docs.anthropic.com/en/docs/claude-code) for installation instructions.
+2. **Neon API Key (for Local MCP server):** After signing up, get your Neon API Key from the [Neon console](https://console.neon.tech/app/settings/api-keys). This API key is needed to authenticate your application with Neon. For instructions, see [Manage API keys](/docs/manage/api-keys).
+
+   <Admonition type="important" title="Neon API Key Security">
+   Keep your Neon API key secure, and never share it publicly. It provides access to your Neon projects.
+   </Admonition>
+
+3. **Node.js (>= v18) and npm:** Ensure Node.js (version 18 or later) and npm are installed. Download them from [nodejs.org](https://nodejs.org).
+
+### Option 1: Setting up the Remote Hosted Neon MCP Server
+
+<Admonition type="note">
+By default, the Remote MCP Server connects to your personal Neon account. To connect to an organization's account, you must authenticate with an API key. For more information, see [API key-based authentication](/docs/ai/neon-mcp-server#api-key-based-authentication).
+</Admonition>
+
+This method uses Neon's managed server and OAuth authentication.
+
+1. Open your terminal.
+2. Add the Neon MCP server to Claude Code with the following command:
+   ```sh
+   claude mcp add --transport http neon https://mcp.neon.tech/mcp
+   ```
+3. Start a new session of `claude` to trigger the OAuth authentication flow:
+   ```sh
+   claude
+   ```
+4. You can also trigger authentication with `/mcp` within Claude Code.
+
+<Admonition type="tip">
+
+If you prefer to authenticate using a Neon API key, provide the `Authorization` header to the `mcp add` command:
+
+```sh
+claude mcp add --transport http neon https://mcp.neon.tech/mcp \
+    --header "Authorization: Bearer <YOUR_NEON_API_KEY>"
+```
+
+Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained from the [prerequisites](#prerequisites) section.
+
+</Admonition>
+
+<Admonition type="note">
+The remote hosted MCP server is in preview due to the [new OAuth MCP specification](https://spec.modelcontextprotocol.io/specification/2025-03-26/basic/authorization/), expect potential changes as we continue to refine the OAuth integration.
+</Admonition>
+
+### Option 2: Setting up the Local Neon MCP Server
+
+This method runs the Neon MCP server locally on your machine, using a Neon API key for authentication.
+
+1. Open your terminal.
+2. Add the Neon MCP server to Claude Code with the following command, replacing `<YOUR_NEON_API_KEY>` with your actual Neon API key:
+
+   ```sh
+   claude mcp add neon -- npx -y @neondatabase/mcp-server-neon start "<YOUR_NEON_API_KEY>"
+   ```
+
+   > Replace `<YOUR_NEON_API_KEY>` with your actual Neon API key which you obtained from the [prerequisites](#prerequisites) section.
+
+3. Start a new Claude Code session with the `claude` command and start using the Neon MCP server:
+   ```sh
+   claude
+   ```
+
+You've now configured the Neon MCP Server in Claude Code and can manage your Neon Postgres databases using AI.
+
+### Verification
+
+Now that you have the Neon MCP server set up either remotely or locally, you can verify the connection and test the available tools.
+
+1. Start Claude Code:
+
+   ```sh
+   claude
+   ```
+
+2. Type `/mcp` to see the available MCP servers and tools.
+
+3. Try out a Neon MCP Server tool by typing a query like `List my Neon projects` to see your projects and verify the connection.
+
+<MCPTools />
+
+These actions enable any MCP client like Claude Code to interact with various functionalities of the **Neon platform via the Neon API.** Certain tools, especially database migration ones, are tailored for AI agent and LLM usage, leveraging Neon's branching for safe preview and commit.
+
+## Development Workflow: Adding a Column with Claude Code and Neon MCP
+
+Let's walk through a typical development scenario: Quickly adding a column for prototyping using natural language within Claude Code. The following chat log demonstrates a real interaction with Claude Code and the Neon MCP server.
+
+**Scenario:** During development, you decide to track timestamps for entries in your `playing_with_neon` table. You want to quickly add a `created_at` column.
+
+<Admonition type="tip" title="Security Reminder">
+For your security, review the tool's purpose before permitting the operation to proceed. Remember that LLMs can sometimes produce unexpected results, so careful monitoring is always recommended.
+</Admonition>
+
+Here's the conversation log between the user and Claude Code:
+
+```text shouldWrap
+User: In my neon project id: round-salad-44063611 list all the tables
+Claude Code: I'll help you list all the tables in your Neon project. I'll use the default database name 'neondb' since none was specified.
+> Called MCP Tool (get_database_tables)
+> I found one table in your database:
+> playing_with_neon (in the public schema)
+> Would you like to see more details about this table's structure or perform any other operations with it?
+
+User: Can you show me first 5 rows?
+Claude Code: I'll query the first 5 rows from the playing_with_neon table.
+> Called MCP Tool (run_sql)
+> Here are the first 5 rows from the table. The table has three columns:
+> id (sequential numbers)
+> name (string values)
+> value (decimal numbers)
+> Would you like to perform any other operations with this data?
+
+User: can you add a created_at column?
+Claude Code: I'll help you add a created_at column to the playing_with_neon table. I'll set it up with a timestamp data type and set it to automatically record the creation time of new rows.
+> Called MCP Tool (prepare_database_migration)
+> Let me verify the change in the temporary branch to make sure it was applied correctly.
+> Called MCP Tool (run_sql)
+> I've added the created_at column to the playing_with_neon table in a temporary branch. Would you like to commit this migration to the production branch?
+> Migration Details:
+> Migration ID: a65babcd-d1cc-401f-89b5-762570570102
+> Temporary Branch Name: br-silent-cherry-a1eqrl6i
+> Temporary Branch ID: br-silent-cherry-a1eqrl6i
+> Migration Result: Success
+> Please let me know if you'd like to proceed with applying this change to the production branch.
+
+User: yeah do it
+Claude Code: I'll complete the migration and apply the changes to the production branch.
+> Called MCP Tool (complete_database_migration)
+> The migration has been successfully completed! The created_at column has been added to your table in the production branch, and the temporary branch has been cleaned up.
+```
+
+**Key takeaways:**
+
+- **Natural language interaction:** You can use simple, conversational English to interact with your database.
+- **Step-by-step guidance:** Claude Code confirms each step and provides details like branch names and migration IDs.
+- **MCP Tools in Action:** The underlying MCP tools (`get_database_tables`, `run_sql`, `prepare_database_migration`, `complete_database_migration`) illustrate the automated process.
+- **Branching for safety:** The agent automatically creates a temporary branch for schema changes. The user will be prompted to confirm the migration before applying it to the production branch.
+
+You can verify the changes in your Neon Console or by querying the database directly.
+
+<Admonition type="note">
+While the Neon MCP server allows you to utilize all of Neon's functionalities, you can also use a [generic Postgres MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/postgres) to connect to Neon.
+</Admonition>
+
+## Bonus: Creating a project and branch
+
+Beyond schema changes, you can also manage your Neon projects and branches directly within Claude Code using natural language commands. This can be useful for quickly setting up a new development or test environment.
+
+### Creating a new project
+
+Let's say you want to create a new Neon project named "my-new-project". You can simply tell Claude Code:
+
+```text shouldWrap
+User: Create a Neon project named "my-new-project"
+Claude Code: I'll help you create a new Neon project with the specified name.
+> Called MCP Tool (create_project)
+> Great! I've created a new Neon project for you with the name "my-new-project". Here are the important details:
+> Project ID: orange-dawn-33739962
+> Default branch: main
+> Default database: neondb
+> The project is ready to use. You can start creating tables and working with your database right away.
+```
+
+Claude Code will then use the `create_project` MCP tool to initiate the project creation. It will provide you with a project ID and name.
+
+### Creating a New Branch
+
+Once you have a project, you can easily create new branches for development or experimentation. For example, to create a branch named "feature-x" in your "my-new-project" project:
+
+```text shouldWrap
+User: Create a branch named "feature-x"
+Claude Code: Perfect! I've created a new branch named "feature-x". Here are the details:
+> Branch ID: br-cold-mountain-a523ka2w
+> Branch name: feature-x
+> Parent branch ID: br-odd-pine-a5y53krm
+> The branch has been created successfully and is ready for use.
+```
+
+Claude Code will use the `create_branch` MCP tool to create the branch and provide you with the branch name and ID. Notice how we don't need to specify the project ID, as Claude Code remembers the active project context.
+
+## Conclusion
+
+Claude Code combined with the Neon MCP Server, whether using the **Remote Hosted (Preview)** option or the **Local Server** setup, lets you use natural language to interact with your database and take advantage of Neon's branching capabilities for fast iteration. This approach is ideal for quickly testing database ideas and making schema changes during development.
+
+## Resources
+
+- [MCP Protocol](https://modelcontextprotocol.org)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code)
+- [Neon Docs](/docs)
+- [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
+- [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
+
+<NeedHelp/>
+
+
 # Get started with Cline and Neon Postgres MCP Server
 
 ---
@@ -10993,6 +11409,822 @@ Cline with Neon MCP Server lets you use natural language to interact with your d
 - [Neon Docs](/docs)
 - [Neon API Keys](/docs/manage/api-keys#creating-api-keys)
 - [Neon MCP server GitHub](https://github.com/neondatabase/mcp-server-neon)
+
+<NeedHelp/>
+
+
+# The Complete Supabase to Neon Database & Auth Migration Guide
+
+---
+title: The Complete Supabase to Neon Database & Auth Migration Guide
+subtitle: A comprehensive guide to migrating your Postgres database, user accounts, and RLS policies from Supabase to Neon
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-09-03T00:00:00.000Z'
+updatedOn: '2025-09-03T00:00:00.000Z'
+---
+
+This guide walks you through migrating your Postgres database, user accounts, and Row-Level Security (RLS) policies from Supabase to Neon. It addresses key differences between the platforms, including the reassignment of `user_id` values during the auth migration, and provides steps to remap IDs, restore data integrity, and update your application code.
+
+### Prerequisites
+
+Before you begin, ensure you have the following:
+
+- An active Supabase project.
+- A Neon project. For setup instructions, see [Create a project](/docs/manage/projects#create-a-project).
+- The PostgreSQL `psql` and `pg_dump` command-line utilities installed locally.
+- A Node.js environment (for running the user import script).
+
+<Steps>
+
+## Part 1: Data and Authentication migration
+
+This part covers the migration of your user accounts and public schema data, followed by remapping user IDs to restore data integrity.
+
+### Step 1: Migrate user accounts from Supabase to Neon Auth
+
+If your project does not use Supabase Auth, you can skip this section.
+
+Supabase Auth is the authentication system used by Supabase. It manages user accounts, passwords, and session tokens.
+
+#### 1.1: Export users and password hashes from Supabase
+
+Connect to your Supabase project using the SQL Editor in the dashboard and run the following SQL function. This function retrieves all user emails and their encrypted **bcrypt** password hashes.
+
+```sql
+CREATE OR REPLACE FUNCTION ufn_get_user_emails_and_passwords()
+RETURNS table (email text, encrypted_password character varying(255)) AS
+$$
+BEGIN
+RETURN QUERY
+   SELECT DISTINCT ON (i.email)
+       i.email,
+       u.encrypted_password
+   FROM auth.users u
+   JOIN auth.identities i ON u.id = i.user_id;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Execute the function
+SELECT * FROM ufn_get_user_emails_and_passwords();
+```
+
+After running the query, export the results as a CSV file and save it locally as `user_data.csv`.
+
+#### 1.2: Set up Neon Auth and Data API
+
+In your Neon project dashboard:
+
+1. Navigate to the **Data API** page from the sidebar.
+2. Select **Neon Auth** as the authentication provider.
+3. Follow the on-screen instructions to set up **Neon Auth** with the **Neon Data API**.
+4. Navigate to the **Neon Auth** section from the sidebar.
+5. In the **Configuration** tab, copy your **Project ID** and **Stack Secret Server Key** from the **Environment Variables** section.
+
+#### 1.3: Import Users into Neon Auth
+
+Now, we'll use a Node.js script to import the users from your `user_data.csv` file into Neon Auth.
+
+First, create a new project directory and install the necessary packages:
+
+```bash
+npm init -y
+npm install csv-parse
+```
+
+Copy the `user_data.csv` file to this directory.
+
+Next, create a file named `migrate_users.ts` and add the following script.
+
+> Replace the `YOUR_PROJECT_ID` and `YOUR_SERVER_KEY` placeholders in the `CONFIG` object with your actual Project ID and Server Key, which you copied from the Neon dashboard.
+
+```typescript
+import fs from 'fs';
+import { parse } from 'csv-parse/sync';
+
+const CONFIG = {
+  csvFilePath: './user_data.csv',
+  apiUrl: 'https://api.stack-auth.com/api/v1/users',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-Stack-Project-Id': 'YOUR_PROJECT_ID', // Update with your actual keys
+    'X-Stack-Secret-Server-Key': 'YOUR_SERVER_KEY', // Update with your actual keys
+    'X-Stack-Access-Type': 'server',
+  },
+  // Delay between requests in ms (to avoid rate limiting)
+  requestDelay: 500,
+};
+
+const sleep = (ms: number | undefined) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function migrateUsers() {
+  try {
+    console.log(`Reading CSV file from ${CONFIG.csvFilePath}...`);
+    let fileContent = fs.readFileSync(CONFIG.csvFilePath, 'utf8');
+
+    if (fileContent.charCodeAt(0) === 0xfeff) {
+      console.log('Removing UTF-8 BOM from CSV file...');
+      fileContent = fileContent.slice(1);
+    }
+
+    type UserRecord = { email: string; encrypted_password?: string };
+    const records: UserRecord[] = parse(fileContent, {
+      columns: true,
+      skip_empty_lines: true,
+      trim: true,
+      bom: true,
+    });
+
+    console.log(`Found ${records.length} users to migrate.`);
+
+    let successCount = 0;
+    let failureCount = 0;
+
+    for (const [index, user] of records.entries()) {
+      try {
+        // Extract email and password from CSV record
+        const { email, encrypted_password } = user;
+
+        if (!email) {
+          console.error(`Row ${index + 1}: Missing email`);
+          failureCount++;
+          continue;
+        }
+
+        const payload: {
+          primary_email: string;
+          primary_email_verified: boolean;
+          primary_email_auth_enabled: boolean;
+          password_hash?: string;
+        } = {
+          primary_email: email,
+          primary_email_verified: true,
+          primary_email_auth_enabled: true,
+        };
+
+        // Include the password_hash in the payload if encrypted_password is provided and not the string "null"
+        // (CSV exports represent null values as "null" for OAuth users)
+        if (encrypted_password && encrypted_password !== 'null') {
+          payload.password_hash = encrypted_password;
+        } else {
+          console.warn(`Row ${index + 1}: No password hash for ${email}`);
+        }
+
+        // Send the request to create the user
+        console.log(`[${index + 1}/${records.length}] Creating user: ${email}...`);
+
+        const response = await fetch(CONFIG.apiUrl, {
+          method: 'POST',
+          headers: CONFIG.headers,
+          body: JSON.stringify(payload),
+        });
+
+        const responseData = await response.json();
+
+        if (!response.ok) {
+          console.error(`Failed to create user ${email}: ${JSON.stringify(responseData)}`);
+          failureCount++;
+        } else {
+          console.log(`Successfully created user: ${email}`);
+          successCount++;
+        }
+
+        // Add delay between requests to avoid rate limiting
+        await sleep(CONFIG.requestDelay);
+      } catch (error) {
+        console.error(
+          `Error processing row ${index + 1}:`,
+          error instanceof Error ? error.message : String(error)
+        );
+        failureCount++;
+      }
+    }
+
+    console.log('\n===== Migration Summary =====');
+    console.log(`Total users: ${records.length}`);
+    console.log(`Successfully migrated: ${successCount}`);
+    console.log(`Failed: ${failureCount}`);
+  } catch (error) {
+    console.error('Migration failed:', error);
+  }
+}
+
+migrateUsers()
+  .then(() => {
+    console.log('====== Migration process completed. ======');
+  })
+  .catch((err) => {
+    console.error('Fatal error:', err);
+  });
+```
+
+Before running the script, **update the `CONFIG` section** with your Neon Auth Project ID, Server Key, and the correct path to your `user_data.csv` file.
+
+Execute the script from your terminal:
+
+```bash
+npx ts-node migrate_users.ts
+```
+
+Upon completion, all your users will be migrated into Neon Auth.
+
+<Admonition type="important" title="User IDs Have Changed">
+It's important to note that this migration process has assigned **new, unique `user_id`** values to all your users within Neon Auth. In the next steps, we will fix the broken references in your database that result from this change.
+</Admonition>
+
+### Step 2: Export the Supabase Public Schema
+
+Use `pg_dump` to export the schema and data from your `public` Supabase schema.
+
+> If your database includes schemas other than `public`, adjust the `--schema` flag accordingly (e.g., `--schema=public --schema=other_schema`).
+
+```shell shouldWrap
+pg_dump -v -d "SUPABASE_CONNECTION_STRING" --schema=public --no-acl -f supabase_dump.sql
+```
+
+- `-d "..."`: Your full Supabase database connection string.
+- `--schema=public`: Dumps only the `public` schema.
+- `--no-acl`: Excludes access control lists (`GRANT`/`REVOKE`). We will re-apply these manually.
+- `-f ...`: Specifies the output file name.
+
+### Step 3: Pre-process the SQL Dump File
+
+This is a crucial manual step. Open `supabase_dump.sql`, make the following changes, and save it as `supabase_dump.sql`.
+
+#### 3.1. Update RLS policies
+
+Supabase and Neon Auth use different functions to identify the current user. You must replace all instances of `auth.uid()` with `auth.user_id()`.
+
+- **Search for:** `auth.uid()`
+- **Replace with:** `auth.user_id()`
+
+**Example:**
+
+```sql
+-- BEFORE (Supabase Policy)
+CREATE POLICY "Users can access their own todos" ON public.todos FOR SELECT USING ((auth.uid() = user_id));
+
+-- AFTER (Neon-compatible Policy)
+CREATE POLICY "Users can access their own todos" ON public.todos FOR SELECT USING ((auth.user_id() = user_id));
+```
+
+#### 3.2. Temporarily remove foreign key constraints
+
+Your tables may include foreign key constraints that reference the `auth.users` table. These constraints will fail during the import process because Neon does not have an `auth.users` table.
+
+To handle this:
+
+1. Search your `supabase_dump.sql` file for all `ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY` statements that reference `auth.users`. You can use your text editor's search function for `auth.users`.
+2. **Cut** these statements from the file and paste them into a separate temporary text file named `foreign_keys.sql`. You will reapply them in Step 6.
+
+### Step 4: Import the modified data into Neon
+
+Use `psql` to import the edited schema and data into your Neon database.
+
+```shell shouldWrap
+psql -d "NEON_CONNECTION_STRING" -f supabase_dump.sql
+```
+
+Your tables, data, and RLS policies are now in Neon, but the `user_id` columns still contain old Supabase IDs.
+
+### Step 5: Create a User ID mapping table
+
+To fix the user references, we'll create a temporary table in Neon that maps old Supabase `user_id` values to emails. This command dumps the original `auth.users` data from Supabase, retargets the `INSERT` statements to a new `public.temp_users` table, and pipes it directly into Neon.
+
+```shell shouldWrap
+pg_dump -t auth.users --data-only --column-inserts "SUPABASE_CONNECTION_STRING" \
+| sed 's/INSERT INTO auth.users/INSERT INTO public.temp_users/g' \
+| psql "NEON_CONNECTION_STRING"
+```
+
+You now have a `public.temp_users` table in Neon containing the original Supabase `id` and `email` for each user.
+
+### Step 6: Update foreign keys and re-establish relations
+
+Now, we perform the remapping. For each table that contains a `user_id`, run a script to replace the old IDs with the new ones by joining through the user email address.
+
+<Admonition type="tip" title="Which Constraints to Reapply">
+Refer to your `foreign_keys.sql` file to identify which constraints need to be reapplied and to which tables.
+</Admonition>
+
+**Example script for a `todos` table:** (Repeat this process for every relevant table)
+
+```sql
+-- 1. Update the user_id column with the new ID from Neon Auth.
+UPDATE
+  public.todos AS t
+SET
+  user_id = ns.id::uuid -- Cast to UUID
+FROM
+  public.temp_users AS tu
+JOIN
+  neon_auth.users_sync AS ns
+  ON tu.email = ns.email
+WHERE
+  t.user_id = tu.id;
+
+-- 2. Adjust the column type to match Neon Auth's 'text' user ID type.
+ALTER TABLE public.todos ALTER COLUMN user_id TYPE text;
+
+-- 3. Re-add the foreign key constraint, pointing to the new Neon Auth user table.
+ALTER TABLE public.todos
+ADD CONSTRAINT todos_user_id_fkey -- Use your original constraint name
+FOREIGN KEY (user_id) REFERENCES neon_auth.users_sync(id) ON DELETE CASCADE;
+```
+
+Once all tables have been updated, your data integrity will be fully restored. You can now safely remove the temporary table by executing the following SQL command:
+
+```sql
+DROP TABLE public.temp_users;
+```
+
+## Part 2: Finalize: Row level security
+
+> If your Supabase project does not utilize Row-Level Security (RLS), you can safely skip this section.
+
+The next step is to configure table permissions in Neon so your RLS policies behave correctly. The primary difference is the name of the anonymous role.
+
+<Admonition type="important" title="Role Name Change: `anon` to `anonymous`">
+Supabase uses the role `anon` for unauthenticated users. Neon uses the standard Postgres role `anonymous`. The `authenticated` role name is the same on both platforms.
+</Admonition>
+
+Apply the following general permissions to enable access for both roles. Your RLS policies will then enforce the fine-grained control.
+
+```sql
+-- Grant permissions for existing tables
+GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO authenticated;
+GRANT SELECT, UPDATE, INSERT, DELETE ON ALL TABLES IN SCHEMA public TO anonymous;
+
+-- Ensure permissions for future tables
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, UPDATE, INSERT, DELETE ON TABLES TO authenticated;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, UPDATE, INSERT, DELETE ON TABLES TO anonymous;
+
+-- Grant usage on the schema
+GRANT USAGE ON SCHEMA public TO authenticated;
+GRANT USAGE ON SCHEMA public TO anonymous;
+```
+
+#### Migrating specific permissions
+
+To achieve an exact 1:1 migration of permissions, extract the current permissions from Supabase using the following command:
+
+```shell
+pg_dump --schema-only -d "SUPABASE_CONNECTION_STRING" --schema=public | grep -E "^(GRANT|REVOKE)" > permissions.sql
+```
+
+This command generates a `permissions.sql` file containing only the `GRANT` and `REVOKE` statements from your Supabase public schema.
+
+If the `permissions.sql` file looks like this example:
+
+```sql
+GRANT USAGE ON SCHEMA public TO postgres;
+GRANT USAGE ON SCHEMA public TO anon;
+GRANT USAGE ON SCHEMA public TO authenticated;
+GRANT USAGE ON SCHEMA public TO service_role;
+GRANT ALL ON TABLE public.todos TO anon;
+GRANT ALL ON TABLE public.todos TO authenticated;
+GRANT ALL ON TABLE public.todos TO service_role;
+```
+
+Edit it as follows:
+
+- Replace `anon` with `anonymous` (e.g., `GRANT USAGE ON SCHEMA public TO anonymous;`).
+- Remove roles specific to Supabase, such as `service_role` and `postgres` (if not needed in Neon).
+- After editing, apply the modified permissions to your Neon database using `psql`:
+
+After edits it should look like this:
+
+```sql
+GRANT USAGE ON SCHEMA public TO anonymous;
+GRANT USAGE ON SCHEMA public TO authenticated;
+GRANT ALL ON TABLE public.todos TO anonymous;
+GRANT ALL ON TABLE public.todos TO authenticated;
+```
+
+```shell
+psql -d "NEON_CONNECTION_STRING" -f permissions.sql
+```
+
+## Part 3: Migrating your application code (Next.js example)
+
+After migrating your database and user accounts, the final step is to update your application code to work with Neon Auth and the Neon Data API. This section guides you through refactoring a Next.js application from using Supabase's client libraries (`@supabase/ssr`, `@supabase/supabase-js`) to using Neon Auth's SDK (`@stackframe/stack`) and the standard `postgrest-js` library for data access.
+
+The primary change in this migration is moving from Supabase's single, integrated client library to a composable stack:
+
+1.  **Authentication:** You will replace Supabase Auth functions (`supabase.auth.getUser()`, custom middleware, and callback routes) with Neon Auth's SDK. Neon Auth handles session management and provides simple hooks (`useUser`) and server-side helpers (`stackServerApp.getUser()`) to access user data.
+2.  **Data Access:** You will replace the data access portion of the Supabase client (`supabase.from(...)`) with a dedicated PostgREST client (`postgrest-js`). The Neon Data API is PostgREST-compliant, meaning **your query syntax (e.g., `.select()`, `.insert()`, `.eq()`) will remain almost identical.** The main difference is how you initialize the client and authenticate requests using a JWT from Neon Auth.
+
+### Step 1: Update project dependencies
+
+First, remove the Supabase packages and install the PostgREST client library.
+
+```bash
+# Remove Supabase libraries
+npm uninstall @supabase/ssr @supabase/supabase-js
+
+# Install PostgREST library
+npm install @supabase/postgrest-js@1.19.4
+```
+
+### Step 2: Initialize Neon Auth in your project
+
+Neon Auth (powered by [Stack Auth](https://stack-auth.com), an open-source auth solution) provides a setup command to configure your Next.js application automatically. This command will scaffold necessary files, such as auth handlers and provider components.
+
+Run the following command in your project's root directory:
+
+```bash
+npx @stackframe/init-stack@latest --no-browser
+```
+
+This command will perform the following actions:
+
+- **Create Auth Handlers:** Adds a catch-all route at `app/handler/[...stack]/page.tsx`. This single file handles all authentication UI flows (sign-up, sign-in, password reset, OAuth callbacks) provided by Neon Auth.
+- **Update Layout:** Wraps your root layout (`app/layout.tsx`) in a `<StackProvider>` to make authentication state available throughout your app.
+- **Create Server Configuration:** Adds a `stack.tsx` file for server-side initialization of the auth SDK.
+
+### Step 3: Configure data access client for Neon Data API
+
+Unlike the integrated Supabase client, you need to configure the PostgREST client to use the access token (JWT) generated by Neon Auth for authenticated requests.
+
+1.  **Create an Access token provider:** This provider uses a React Context to make the current user's access token available to components that perform data fetching.
+
+    _Create file `access-token-context.tsx`:_
+
+    ```typescript
+    import { createContext } from 'react';
+    export const AccessTokenContext = createContext<string | null>(null);
+    ```
+
+    _Create file `access-token-provider.tsx`:_
+
+    ```typescript
+    "use client";
+
+    import { AccessTokenContext } from "@/access-token-context";
+    import { useUser } from "@stackframe/stack";
+    import { useEffect, useState } from "react";
+
+    export function AccessTokenProvider({ children }: { children: React.ReactNode }) {
+        const user = useUser();
+        const [accessToken, setAccessToken] = useState<string | null>(null);
+        const [isLoading, setIsLoading] = useState(true);
+
+        useEffect(() => {
+            const fetchAccessToken = async () => {
+                if (user) {
+                    setAccessToken((await user.getAuthJson()).accessToken);
+                }
+                setIsLoading(false);
+            };
+
+            fetchAccessToken();
+            // Refresh the token periodically before it expires
+            const intervalId = setInterval(fetchAccessToken, 1000 * 60);
+
+            return () => clearInterval(intervalId);
+        }, [user]);
+
+        if (isLoading) {
+            return null;
+        }
+
+        return (
+            <AccessTokenContext.Provider value={accessToken}>
+                {children}
+            </AccessTokenContext.Provider>
+        );
+    }
+    ```
+
+2.  **Update root layout:** Wrap your application with the `AccessTokenProvider` inside the existing `<StackProvider>`.
+
+    _File: `app/layout.tsx`_
+
+    ```tsx {4-5,14-15,17} shouldWrap
+    import type { Metadata } from 'next';
+    import { StackProvider, StackTheme } from '@stackframe/stack';
+    import { stackServerApp } from '../stack'; // Created by init command
+    import { AccessTokenProvider } from '@/access-token-provider';
+    import { Suspense } from 'react';
+    import './globals.css';
+
+    export default function RootLayout({ children }: { children: React.ReactNode }) {
+      return (
+        <html lang="en">
+          <body>
+            <StackProvider app={stackServerApp}>
+              <StackTheme>
+                <Suspense fallback={<div>Loading...</div>}>
+                  <AccessTokenProvider>{children}</AccessTokenProvider>
+                </Suspense>
+              </StackTheme>
+            </StackProvider>
+          </body>
+        </html>
+      );
+    }
+    ```
+
+3.  **Create PostgREST client hook:** Create a custom hook `usePostgrest` that initializes the PostgREST client and automatically injects the access token into the request headers.
+
+    _Create file `lib/postgrest.ts`:_
+
+    ```typescript
+    import { AccessTokenContext } from '@/access-token-context';
+    import { PostgrestClient } from '@supabase/postgrest-js';
+    import { useContext } from 'react';
+
+    // Add your Neon Data API endpoint to your .env.local file
+    // NEXT_PUBLIC_DATA_API_URL=https://<project-id>.dpl.myneon.app
+    const dataApiUrl = process.env.NEXT_PUBLIC_DATA_API_URL!;
+
+    const postgrestWithHeaders = (headers: Record<string, string>) => {
+      return new PostgrestClient(dataApiUrl, {
+        fetch: async (...args) => {
+          const [url, options = {}] = args;
+          return fetch(url, {
+            ...options,
+            headers: {
+              ...options.headers,
+              ...headers,
+            },
+          });
+        },
+      });
+    };
+
+    export function usePostgrest() {
+      const accessToken = useContext(AccessTokenContext);
+      return postgrestWithHeaders({
+        Authorization: `Bearer ${accessToken}`,
+      });
+    }
+    ```
+
+### Step 4: Refactor application code
+
+Now, replace Supabase-specific logic with Neon Auth and PostgREST calls.
+
+#### 4.1. Protecting routes (Server-Side)
+
+Replace `supabase.auth.getUser()` with `stackServerApp.getUser()` to protect pages and server actions.
+
+<CodeTabs labels={["Before (Supabase)", "After (Neon Auth)"]}>
+
+```typescript shouldWrap
+// File: app/protected/page.tsx (Supabase)
+
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+
+export default async function PrivatePage() {
+    const supabase = await createClient()
+
+    const { data, error } = await supabase.auth.getUser()
+    if (error || !data?.user) {
+        redirect('/login')
+    }
+
+    return <p>Hello {data.user.email}</p>
+}
+```
+
+```typescript shouldWrap
+// File: app/protected/page.tsx (Neon Auth)
+
+import { redirect } from 'next/navigation'
+import { stackServerApp } from "@/stack";
+
+export default async function PrivatePage() {
+    const user = await stackServerApp.getUser();
+
+    if (!user || !user.id) {
+        redirect('/handler/login') // Redirect to Neon Auth's built-in login page
+    }
+
+    return <p>Hello {user.primaryEmail}</p>
+}
+```
+
+</CodeTabs>
+
+#### 4.2. Data fetching and mutations (client-side)
+
+Replace the `supabase` client instance with the new `usePostgrest()` hook for data operations. Notice how the query syntax remains unchanged.
+
+<CodeTabs labels={["Before (Supabase)", "After (Neon Auth + PostgREST)"]}>
+
+```typescript shouldWrap
+// File: components/TodoApp.tsx (Supabase)
+
+import { createClient } from '@/lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
+
+// ... inside component
+const supabase = createClient();
+const userId = user.id;
+
+async function loadTodos() {
+  const { data, error } = await supabase
+    .from('todos')
+    .select('*')
+    .order('inserted_at', { ascending: false });
+  // ... update state
+}
+
+async function addTodo(e: React.FormEvent) {
+  // ... logic
+  const { data, error } = await supabase
+    .from('todos')
+    .insert([{ title, user_id: userId }])
+    .select()
+    .single();
+  // ... update state
+}
+
+async function signout() {
+  await supabase.auth.signOut();
+}
+```
+
+```typescript shouldWrap
+// File: components/TodoApp.tsx (Neon Auth + PostgREST)
+
+import { usePostgrest } from '@/lib/postgrest';
+import type { CurrentUser } from '@stackframe/stack';
+
+// ... inside component
+const postgrest = usePostgrest(); // Use the new hook
+const userId = user.id;
+
+async function loadTodos() {
+  const { data, error } = await postgrest // Client instance changed
+    .from('todos') // Query syntax is identical
+    .select('*')
+    .order('inserted_at', { ascending: false });
+  // ... update state
+}
+
+async function addTodo(e: React.FormEvent) {
+  // ... logic
+  const { data, error } = await postgrest // Client instance changed
+    .from('todos') // Query syntax is identical
+    .insert([{ title, user_id: userId }])
+    .select()
+    .single();
+  // ... update state
+}
+
+async function signout() {
+  await user.signOut(); // Use Neon Auth user object method
+}
+```
+
+</CodeTabs>
+
+#### 4.3. Client-side authentication state
+
+Replace Supabase session handling (`getSession`, `onAuthStateChange`) with the `useUser` hook from Neon Auth for a simpler, more modern React approach.
+
+<CodeTabs labels={["Before (Supabase)", "After (Neon Auth)"]}>
+
+```typescript shouldWrap
+// File: app/page.tsx (Supabase)
+
+"use client";
+import { useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
+
+export default function Page() {
+  const [session, setSession] = useState<Session | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => setSession(session)
+    );
+    return () => subscription?.unsubscribe();
+  }, []);
+
+  if (!session) {
+      return <a href="/login">Sign up or sign in</a>;
+  }
+  return <TodoApp user={session.user} />;
+}
+```
+
+```typescript shouldWrap
+// File: app/page.tsx (Neon Auth)
+
+"use-client";
+import { useUser } from '@stackframe/stack';
+import Link from 'next/link';
+
+export default function Page() {
+  const user = useUser(); // Replaces all session management logic
+
+  if (!user) {
+    return (
+      <Link href="/handler/login">Sign up or sign in</Link>
+    );
+  }
+  return <TodoApp user={user} />;
+}
+```
+
+</CodeTabs>
+
+    <Admonition type="info" title="Neon Auth Hooks">
+      The Neon Auth SDK for Next.js offers a comprehensive set of hooks to manage authentication and user data throughout your application. It provides distinct tools tailored for different rendering environments, such as the `useUser` hook for Client Components and the `stackServerApp` object for server-side logic.
+
+    To explore the full API, including hooks for more advanced features like handling teams and permissions, refer to the [Neon Auth: Next.js SDK Overview](/docs/neon-auth/sdk/nextjs/overview).
+    </Admonition>
+
+### Step 5: Clean up deprecated Supabase files
+
+After refactoring, you can safely remove the Supabase-specific helper files and custom authentication routes, as Neon Auth's SDK handles these functionalities automatically.
+
+Delete the following files and directories:
+
+- `lib/supabase/client.ts`
+- `lib/supabase/server.ts`
+- `lib/supabase/middleware.ts` (and remove middleware configuration from `middleware.ts`)
+- `app/login/` (directory)
+- `app/auth/callback/` (directory)
+- `app/auth/confirm/` (directory)
+
+Your application code is now fully migrated to Neon Auth and the Neon Data API.
+
+For a detailed example of the code migration process, refer to this example pull request: [Supabase to Neon Todo App Migration](https://github.com/neondatabase-labs/supabase-to-neon-todo-app/pull/3/files).
+
+The repository includes two branches: [supabase](https://github.com/neondatabase-labs/supabase-to-neon-todo-app/tree/supabase) and [neon](https://github.com/neondatabase-labs/supabase-to-neon-todo-app/tree/neon) showcasing the before and after states of a sample todo application. This demonstrates the transition from Supabase Auth, Row-Level Security (RLS), and the Supabase Postgres Data API to Neon Auth, RLS, and the Neon PostgREST Data API.
+
+## Part 4: Upgrading your development workflow with Database Branching
+
+If you used Supabase's branching feature for preview environments, you'll feel right at home with Neon. In fact, you'll be working with the original, more powerful version of the concept: **Neon was the first postgres database provider to introduce instant, serverless copy-on-write database branching.**
+
+While the goal is similar, creating isolated environments for development and testing the implementation and capabilities are fundamentally different. Migrating to Neon offers a significant upgrade to your CI/CD and development workflows.
+
+### The Neon Advantage: True Copy-on-Write Branching
+
+The most significant difference is how branches are created. Supabase branches are **data-less by default**, meaning they create a new, empty database environment that you must then populate using seed scripts.
+
+Neon branches are **instant, copy-on-write clones of your entire database, including the data.**
+
+<Admonition type="info" title="What This Means For Your Workflow">
+With Neon, creating a new branch for a pull request takes milliseconds and gives you a fully-functional, isolated copy of your production database. This completely eliminates the need to write and maintain complex seed scripts for every preview environment. You can test new features and schema migrations against real-world data, safely and instantly.
+</Admonition>
+
+This approach provides several key benefits:
+
+- **Test with production-like data:** Safely test schema changes and queries against a full replica of your production data.
+- **Zero setup time:** Eliminate the time and effort spent hydrating databases for preview deployments.
+- **Cost-efficient:** Because branches are copy-on-write, you only store the changes (the delta) from the parent branch, making it incredibly storage-efficient.
+
+### Branching workflows and tooling
+
+Neon provides a complete toolkit for managing branches, allowing you to integrate this powerful feature into any part of your workflow.
+
+- **Neon Console:** Create, manage, and inspect branches visually through the dashboard. Perfect for quick manual operations or getting started. Learn more: [Manage branches](/docs/manage/branches)
+- **Neon CLI:** Programmatically manage branches from your terminal. Ideal for local development, scripting, and automation. Learn more: [Branching with the Neon CLI](/docs/guides/branching-neon-cli)
+- **Neon API:** The most powerful option for full programmatic control. Integrate branching directly into your custom tools, scripts, and platforms. Learn more: [Branching with the Neon API](/docs/guides/branching-neon-api)
+
+### Automating with CI/CD (Vercel & GitHub Actions)
+
+For most developers the primary use case for branching is creating preview environments for pull requests. Neon excels here with zero-config integrations and powerful, composable actions.
+
+- **Vercel Integration:** The simplest way to get started. The [Neon Vercel Integration](/docs/guides/neon-managed-vercel-integration) automatically creates a new database branch for every preview deployment. It injects the correct connection string as an environment variable, giving you a fully isolated database environment for each PR with no configuration required.
+
+- **GitHub Actions:** For more granular control over your CI/CD pipeline, Neon offers a suite of official GitHub Actions. These allow you to automate your entire branching lifecycle directly from your workflows. You can:
+  - [**Create a branch**](https://github.com/marketplace/actions/neon-create-branch-github-action) when a pull request is opened.
+  - [**Reset a branch**](https://github.com/marketplace/actions/neon-database-reset-branch-action) to the latest state of `main` to refresh it with new data.
+  - [**Perform a schema diff**](https://github.com/marketplace/actions/neon-schema-diff-github-action) and post the results as a comment on the pull request.
+  - [**Delete the branch**](https://github.com/marketplace/actions/neon-database-delete-branch) automatically when the pull request is merged or closed.
+    > Checkout [The Neon GitHub integration](/docs/guides/neon-github-integration) for a detailed walkthrough.
+
+## Conclusion
+
+Congratulations! You've successfully migrated your Supabase database, users, and Row-Level Security (RLS) policies to Neon. Data integrity is intact, security policies are fully operational, and users can sign in using their original passwords with no resets required.
+
+If your users were authenticated via OAuth providers like GitHub or Google in Supabase, you can seamlessly continue using these in Neon Auth without any issues. Note that Neon Auth currently supports OAuth for Microsoft, Google, and GitHub. For more details on setting up OAuth in production, refer to the [Neon Auth best practices documentation](https://neon.com/docs/neon-auth/best-practices#production-oauth-setup).
+
+</Steps>
+
+## Resources
+
+- [pg_dump](https://www.postgresql.org/docs/current/app-pgdump.html)
+- [Migrating data to Neon](/docs/import/migrate-from-postgres)
+- [Migrate from Supabase](/docs/import/migrate-from-supabase)
+- [Getting started with Neon Data API](/docs/data-api/get-started)
+- [Neon Auth](/docs/neon-auth/overview)
+- [Neon RLS](/docs/guides/neon-rls)
+- [Getting started with Neon Auth and Next.js](/guides/neon-auth-nextjs)
+- [A Simple 3-Step Process to Migrate from Supabase Auth to Neon Auth](/blog/supabase-auth-neon-auth)
+- [Ship software faster using Neon branches as ephemeral environments](/branching)
 
 <NeedHelp/>
 
@@ -13301,136 +14533,137 @@ Congratulations! You have successfully integrated Convex with Neon Postgres and 
 <NeedHelp/>
 
 
-# Building Full Stack apps in minutes with Create.xyz
+# Building Full Stack apps in minutes with Anything
 
 ---
-title: Building Full Stack apps in minutes with Create.xyz
-subtitle: Go from Text prompt to Full-Stack Database backed applications in minutes with Create.xyz
+title: Building Full Stack apps in minutes with Anything
+subtitle: Go from Text prompt to Full-Stack Database backed applications in minutes with Anything
 author: dhanush-reddy
 enableTableOfContents: true
 createdAt: '2025-03-12T00:00:00.000Z'
 updatedOn: '2025-03-12T00:00:00.000Z'
 ---
 
-The landscape of application development is rapidly changing, with AI-powered tools empowering even non technical users to build faster and more intuitively than ever before. Imagine describing your app idea in a simple conversation and watching it materialize in seconds, complete with a fully functional database. This is now possible with [Create](https://create.xyz), a text-to-app builder that works with out-of-the-box support for 50+ integrations such as Stripe, ElevenLabs, Google Maps, Stable Diffusion, OpenAI, and more.
+The landscape of application development is rapidly changing, with AI-powered tools empowering even non technical users to build faster and more intuitively than ever before. Imagine describing your app idea in a simple conversation and watching it materialize in seconds, complete with a fully functional database. This is now possible with [Anything](https://www.createanything.com) (formerly [Create](https://create.xyz)), a text-to-app builder that works with out-of-the-box support for 50+ integrations such as Stripe, ElevenLabs, Google Maps, Stable Diffusion, OpenAI, and more.
 
-This guide will introduce you to Create and demonstrate how you can use it to make building database-backed applications incredibly easy and fast. We'll walk through creating a simple AI Image Generator, showcasing how you can go from a text prompt to a functional, full-stack application.
+This guide will introduce you to Anything and demonstrate how you can use it to make building database-backed applications incredibly easy and fast. We'll walk through creating a simple AI Image Generator, showcasing how you can go from a text prompt to a functional, full-stack application.
 
-## Create & Neon
+## Anything & Neon
 
-Create leverages Neon as the database backend for its AI-powered app development platform. This integration delivers a fully managed database solution, which is fundamental to Create's rapid app development experience. By abstracting away database complexities, Create users can concentrate solely on their application's functionality and design.
+Anything leverages Neon as the database backend for its AI-powered app development platform. This integration delivers a fully managed database solution, which is fundamental to Anything's rapid app development experience. By abstracting away database complexities, Anything users can concentrate solely on their application's functionality and design.
 
-This experience is immediately apparent during app creation. Neon's instant database provisioning lets users bypass database setup and and focus on developing their application. Neon operates invisibly in the background. To learn more about how Create.xyz uses Neon, see [From Idea to Full Stack App in One Conversation with Create](/blog/from-idea-to-full-stack-app-in-one-conversation-with-create).
+This experience is immediately apparent during app creation. Neon's instant database provisioning lets users bypass database setup and and focus on developing their application. Neon operates invisibly in the background. To learn more about how Anything uses Neon, see [From Idea to Full Stack App in One Conversation with Anything](/blog/from-idea-to-full-stack-app-in-one-conversation-with-create).
 
 ## Prerequisites
 
-Before you start, ensure you have a **Create Account**. You can sign up for a free account at [create.xyz](https://create.xyz/). The free plan is sufficient to follow this guide.
-
-<Admonition type="important" title="Vibe Coding Ahead 😎">
-Follow this guide only if you're ready to experience the future of app development through AI-powered tools. You'll be amazed at how quickly you can build a full-stack application with Create and Neon that really works!
-</Admonition>
+Before you start, ensure you have an **Anything Account**. You can sign up for a free account at [createanything.com](https://createanything.com/). The free plan is sufficient to follow this guide.
 
 ## Building an AI Image Generator app
 
-This app will allow users to generate images using Stable Diffusion, view them in a gallery, and track download counts for each image. We'll leverage Create's AI capabilities to build this app in minutes without writing a single line of code.
+This app will allow users to generate images using Stable Diffusion, view them in a gallery, and track download counts for each image. We'll leverage Anything's AI capabilities to build this app in minutes without writing a single line of code.
 
 ### Start a new project
 
-1. Navigate to the [Create.xyz](https://create.xyz) website and log in to your account.
+1. Navigate to the [Anything](https://createanything.com) website and log in to your account.
 2. Click on "New Project" to begin. You'll be presented with the builder interface.
 
    ![Start a New Project](/docs/guides/create_xyz_new_project.png)
 
 ### Describe your app
 
-In the chat window, describe your app idea. For example, you can say, "Create a Stable Diffusion powered image generator. It should also show the past image generations."
+In the chat window, describe your app idea. For example, you can say, "Create a Stable Diffusion powered image generator. Ensure that image generation history is saved in a database, allowing users to view their past generations."
 
 ![Describe Your App](/docs/guides/create_xyz_describe_app.png)
 
-Create will immediately begin building your app based on your description. You'll see the AI agent working in real-time within the chat window, assembling all the necessary components and code for your application.
+Anything will immediately begin building your app based on your description. You'll see the AI agent working in real-time within the chat window, assembling all the necessary components and code for your application.
 
-![Creating Your App](/docs/guides/create_xyz_inital_app.png)
+![Creating Your App](/docs/guides/create_xyz_initial_app.png)
 
-You can see that Create has provisioned a database for storing image URLs needed for your gallery feature. You can examine the database schema directly in the chat window by clicking on the SQL statements to view the structure.
-
-![Database Schema](/docs/guides/create_xyz_database_schema.png)
+You can see that as requested, Anything has created a database for image generation history.
 
 You can verify the app's functionality by generating an image. Simply type your desired image description in the text field and click 'Generate.' You'll see your newly created image appear and automatically be added to the gallery display
 
 ![Testing the App](/docs/guides/create_xyz_test_app_working.png)
 
-Now that you've confirmed your app is functioning correctly, let's enhance it by adding a download counter feature that tracks the popularity of each generated image.
-
 <Admonition type="note">
-If the app doesn't work as expected, provide specific details in the chat window to help Create understand the issue. For example, you can say, "The image generation is working, but the gallery is not displaying the images."
+If the app doesn't work as expected, provide specific details in the chat window to help Anything understand the issue. For example, you can say, "The image generation is working, but the gallery is not displaying the images."
 </Admonition>
+
+### Database Schema
+
+You can easily review your app's database schema directly from the Anything Dashboard at any point. Simply navigate to the **"Databases"** tab, then select your project's database to explore its schema, tables, columns, and relationships. This visual overview helps you understand how your app's data is structured.
+
+![Database Schema](/docs/guides/create_xyz_database_schema.png)
 
 ### Continuous Iteration
 
-You may want to add new features or refine existing ones as you iterate on your app. Create makes it easy to enhance your app by simply describing the new features you want to add. Let's add a download counter feature to track the number of downloads for each generated image.
+You may want to add new features or refine existing ones as you iterate on your app. Anything makes it easy to enhance your app by simply describing the new features you want to add. Let's add a download counter feature to track the number of downloads for each generated image.
 
-In the chat window, you can say: "Allow users to download images and track the number of downloads for each image". Create will start adding the necessary components to your app to support this feature.
+In the chat window, you can say: "Allow users to download images and track the number of downloads for each image". Anything will start adding the necessary components to your app to support this feature.
 
-![Adding a New Feature](/docs/guides/create_xyz_add_new_feature.jpeg)
+![Adding a New Feature](/docs/guides/create_xyz_add_new_feature.png)
 
-You'll see that Create has added a 'download count' column to your database. You can view the updated schema to see the change.
-
-![Updated Database Schema](/docs/guides/create_xyz_updated_database_schema.png)
+You can view the database schema to understand how the new download count feature is integrated. Anything might have added a new table or column to track downloads.
 
 To test the new feature, download an image. Click the 'Download' button on any image in the gallery. You'll see the download count increase for that image.
 
 ![Final App with Download Feature](/docs/guides/create_xyz_final_app.png)
 
-You've successfully built an AI Image Generator with download tracking! Now, you can customize it further. Enhance the UI, add features like user authentication, or integrate services such as Stripe to charge $1 per generated image. Just say, 'Add Stripe so users pay $1 per image,' to get started.
+You've successfully built an AI Image Generator with download tracking! You can now customize it further by enhancing the UI, adding features like user authentication, or integrating services such as Stripe to charge $1 per generated image. To add user authentication, say something like: 'The app should allow users to sign in and sign up. Image generation should only be available to signed-in users.'
 
-![Adding Stripe Integration](/docs/guides/create_xyz_add_stripe.png)
+Anything will add the necessary components to your app to support user authentication.
 
-<Admonition type="note">
-You will need to connect your Stripe account to Create to enable the Stripe integration. Follow the onboarding steps to connect your Stripe account and complete the integration.
+![Adding User Authentication](/docs/guides/create_xyz_add_user_auth.png)
+
+<Admonition type="note" title="Configuring Authentication Providers for User Accounts">
+User accounts are built-in and fully supported in Anything. If you want to let users sign in with Google, Facebook, or other providers, simply visit your project's **Auth Providers** section in the Project Settings. There, you can enable additional sign-in options with just a few clicks. Learn more in the [Anything Docs: User Accounts](https://www.createanything.com/docs/builder/user-accounts).
+
+![User Accounts](/docs/guides/create_xyz_user_accounts.png)
 </Admonition>
 
-![Final App with Stripe Integration](/docs/guides/create_xyz_final_app_with_stripe.png)
+Your app should now require users to sign in before generating images. You can test this by trying to generate an image without being signed in.
 
-Finally, you can deploy the app by clicking on the "Publish" button.
+![Testing User Authentication](/docs/guides/create_xyz_test_user_auth.png)
+
+Finally, you can deploy the app by clicking on the "Publish" button. You can also publish your app to the Apple iOS Store (mobile app support is currently in beta.) For more details, see the [Anything Docs: Mobile Apps](https://www.createanything.com/docs/builder/mobile).
 
 ![Publishing the App](/docs/guides/create_xyz_publish_app.png)
 
 <Admonition type="note" title="Version history for restoring a past version of your app">
 
-Create.xyz offers a robust version history. This feature enables instant restoration to any past version of your, in case you need to rewind.
+Anything offers a robust version history. This feature enables instant restoration to any past version of your app, in case you need to rewind.
 
 To restore a past version:
 
-1. **Browse Chat History:** Find the desired version in your chat conversation.
-2. **One-Click Restore:** Click on that version.
-3. **Publish:** Click 'Publish' to deploy the restored version.
+1. **Browse Version History:** Click on the down arrow next to the "Anything" logo in the top left corner.
 
-![Restore Past Version](/docs/guides/create_xyz_restore_project.png)
+   ![Restore Past Version](/docs/guides/create_xyz_restore_project.png)
 
-Create.xyz instantly switches your app back to that earlier state.
+2. **Restore:** Click on the desired version from the list to restore it.
+
+Anything instantly switches your app back to that earlier state.
 </Admonition>
 
-## Tips for building apps with Create
+## Tips for building apps with Anything
 
-To make the most of Create and build apps efficiently, consider the following tips:
+To make the most of Anything and build apps efficiently, consider the following tips:
 
 - **Prompting Best Practices**:
   - **Context is key**: Start prompts with clear context. For example describe the app's purpose and main features. For example say, "I want to add a new feature to allow users to download images."
   - **Iterate in small steps**: Break down complex changes. For a whole new page, start by describing the header, then the body, then the footer in separate prompts. This gives you more control.
-  - **Show, Don't just tell**: Use images! Paste screenshots or drag and drop images into the chat to show Create exactly what you want the style or layout to be wherever possible.
+  - **Show, Don't just tell**: Use images! Paste screenshots or drag and drop images into the chat to show Anything exactly what you want the style or layout to be wherever possible.
   - **Pinpoint errors**: Be specific when things go wrong. Instead of saying "it's broken", paste error messages or describe exactly what you expected to happen vs. what did happen.
 
-- **Leverage Create's integrations**:
-  - **Explore the Integration library**: Create has many integrations ready to use. Type `/` in the chat to see them. Integrations include AI models, UI libraries, and services like Stripe.
+- **Leverage Anything's integrations**:
+  - **Explore the Integration library**: Anything has many integrations ready to use. Type `/` in the chat to see them. Integrations include AI models, UI libraries, and services like Stripe.
   - **Choose the right AI model**: Experiment with different AI models for different tasks. For example, use Stable Diffusion for image generation, OpenAI/Claude for text generation etc.
 
 ## Resources
 
-- [Create.xyz](https://create.xyz)
-- [Create.xyz Docs](https://docs.create.xyz)
-- [From Idea to Full Stack App in One Conversation with Create](/blog/from-idea-to-full-stack-app-in-one-conversation-with-create)
-- [Create.xyz Templates](https://www.create.xyz/templates)
-- [Create.xyz Community](https://www.create.xyz/community)
+- [Anything](https://createanything.com)
+- [Anything Docs](https://www.createanything.com/docs/welcome)
+- [From Idea to Full Stack App in One Conversation with Anything](/blog/from-idea-to-full-stack-app-in-one-conversation-with-create)
+- [Anything Templates](https://www.createanything.com/templates)
 
 <NeedHelp />
 
@@ -15942,6 +17175,405 @@ You can find the source code for the application described in this guide on GitH
 </DetailIconCards>
 
 <NeedHelp />
+
+
+# Automated E2E Testing with Neon Branching and Playwright
+
+---
+title: Automated E2E Testing with Neon Branching and Playwright
+subtitle: Learn how to use GitHub Actions to create isolated database branches for running Playwright tests against your schema changes
+enableTableOfContents: true
+author: dhanush-reddy
+createdAt: '2025-09-03T00:00:00.000Z'
+---
+
+End-to-end (E2E) testing is crucial for ensuring application quality, but it becomes complex when database changes are involved. Running tests that depend on a specific schema against a shared staging environment can lead to flaky results and development bottlenecks.
+
+Database branching solves this problem by creating isolated database environments for each feature branch, perfectly mirroring your code branching strategy. This guide demonstrates how to combine the power of Neon's instant database branching with Playwright and GitHub Actions to create a fully automated E2E testing pipeline.
+
+You will build a Next.js Todo application and configure a workflow that, for every pull request:
+
+- Creates a new, isolated database branch.
+- Applies schema migrations to that branch.
+- Builds and runs the application against the new branch.
+- Executes a full suite of Playwright tests.
+- Posts a schema diff summary directly in the pull request.
+- Cleans up resources and applies migrations to the production database upon merging.
+
+By the end of this guide, you'll have a CI/CD pipeline where database-dependent E2E tests are run safely and reliably for every change, giving you the confidence to ship features faster. This concept can be extended to any E2E testing framework, not just Playwright.
+
+## Prerequisites
+
+- A [Neon account](https://console.neon.tech)
+- A [GitHub account](https://github.com/)
+- Node.js installed on your machine
+
+## Setting up your Neon database
+
+1.  Create a new Neon project from the [Neon Console](https://console.neon.tech). For instructions, see [Create a project](/docs/manage/projects#create-a-project).
+2.  Navigate to the **Connection Details** page and copy your database connection string. You will need this later.
+
+    Your connection string will look something like this:
+
+    ```text
+    postgres://[user]:[password]@[neon_hostname]/[dbname]?sslmode=require&channel_binding=require
+    ```
+
+## Set up the project
+
+This guide uses Playwright with Next.js, but the concepts can be easily adapted to other frameworks by following the Playwright-specific steps.
+
+Clone the [Neon Playwright Example](https://github.com/neondatabase-labs/neon-playwright-example) repository. You will use this as a starting point for your tests. The repository contains a simple Todo app built with Next.js and TypeScript using Drizzle ORM. It has Playwright tests set up.
+
+1. Run the following commands to clone the repository and install dependencies:
+
+   ```bash
+   git clone https://github.com/dhanushreddy291/neon-playwright-example
+   cd neon-playwright-example
+   npm install
+   cp .env.example .env
+   ```
+
+2. Populate the `.env` file with your Neon database connection details.
+
+3. Apply the necessary migrations to your database:
+
+   ```bash
+   npm run db:migrate
+   ```
+
+4. Check the todo app works by running:
+
+   ```bash
+   npm run dev
+   ```
+
+   Open [localhost:3000](http://localhost:3000) in your browser to see the app. Verify the basic functionality of the todo app.
+
+5. Check that the Playwright tests work by running:
+
+   ```bash
+   npm run test:e2e -- --headed
+   ```
+
+   You should see Chromium, Firefox, and WebKit browsers launching and running your tests.
+
+6. Push your code to a new GitHub repository.
+
+   ```bash
+   rm -rf .git
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git branch -M main
+   git remote add origin <YOUR_GITHUB_REPO_URL>
+   git push -u origin main
+   ```
+
+   Now that you have your code pushed to GitHub, you can set up the Neon GitHub integration.
+
+## Set up the Neon GitHub integration
+
+The [Neon GitHub integration](/docs/guides/neon-github-integration) securely connects your Neon project to your repository. It automatically creates a `NEON_API_KEY` secret and a `NEON_PROJECT_ID` variable in your repository, which are required for your GitHub Actions workflow.
+
+1.  In the Neon Console, navigate to the **Integrations** page for your project.
+2.  Locate the **GitHub** card and click **Add**.
+    ![GitHub App card](/docs/guides/github_card.png)
+3.  On the **GitHub** drawer, click **Install GitHub App**.
+4.  If you have more than one GitHub account, select the account where you want to install the GitHub app.
+5.  Select the GitHub repository to connect to your Neon project, and click **Connect**.
+6.  **Add Production Database Secret**:
+    - Navigate to your GitHub repository's **Settings** > **Secrets and variables** > **Actions**.
+    - Create a new repository secret called `DATABASE_URL`.
+    - Paste the connection string for your primary `main` branch (copied from the Neon Console).
+    - Note that the `NEON_API_KEY` secret and `NEON_PROJECT_ID` variable should already be available from the GitHub integration setup.
+
+    <Admonition type="note">
+    It's important to understand the roles of your GitHub secrets. The `NEON_API_KEY` (created by the integration) is used to manage your Neon project, like creating and deleting branches. The `DATABASE_URL` secret you just created points exclusively to your primary production database. The workflow uses this only after a PR is successfully merged to apply migrations, ensuring a safe separation from the ephemeral preview databases used during testing.
+    </Admonition>
+
+## Understanding the workflow
+
+Open the `.github/workflows/playwright.yml` file in your repository.
+This workflow automates the entire testing lifecycle for each pull request.
+
+```yaml
+name: Playwright Tests
+on:
+  pull_request:
+    branches: [main]
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+# Ensures only the latest commit runs, preventing race conditions in concurrent PR updates
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  setup:
+    name: Setup
+    timeout-minutes: 1
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.branch_name.outputs.current_branch }}
+    steps:
+      - name: Get branch name
+        id: branch_name
+        uses: tj-actions/branch-names@v8
+
+  create_neon_branch_and_run_tests:
+    name: Create Neon Branch and Run Tests
+    needs: setup
+    permissions:
+      contents: read
+      pull-requests: write
+    if: |
+      github.event_name == 'pull_request' && (
+      github.event.action == 'synchronize' || github.event.action == 'opened' || github.event.action == 'reopened')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Neon Branch
+        id: create_neon_branch
+        uses: neondatabase/create-branch-action@v6
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch_name: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+          role: neondb_owner
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Generate drizzle migrations
+        run: npm run db:generate
+
+      - name: Apply drizzle migrations
+        run: npm run db:migrate
+        env:
+          DATABASE_URL: '${{ steps.create_neon_branch.outputs.db_url_pooled }}'
+
+      - name: Build Next.js app
+        run: npm run build
+        env:
+          NODE_ENV: production
+          DATABASE_URL: '${{ steps.create_neon_branch.outputs.db_url_pooled }}'
+
+      - name: Start Next.js app
+        run: npm start &
+        env:
+          NODE_ENV: production
+          DATABASE_URL: '${{ steps.create_neon_branch.outputs.db_url_pooled }}'
+
+      - name: Wait for app to be ready
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 1; done'
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Post Schema Diff Comment to PR
+        uses: neondatabase/schema-diff-action@v1
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          compare_branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+  delete_neon_branch:
+    name: Delete Neon Branch and Apply Migrations on Production branch
+    needs: setup
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete Neon Branch
+        uses: neondatabase/delete-branch-action@v3
+        with:
+          project_id: ${{ vars.NEON_PROJECT_ID }}
+          branch: preview/pr-${{ github.event.number }}-${{ needs.setup.outputs.branch }}
+          api_key: ${{ secrets.NEON_API_KEY }}
+
+      - name: Checkout
+        if: github.event.pull_request.merged == true
+        uses: actions/checkout@v4
+
+      - name: Apply migrations to production
+        if: github.event.pull_request.merged == true
+        run: |
+          npm install
+          npm run db:generate
+          npm run db:migrate
+        env:
+          DATABASE_URL: '${{ secrets.DATABASE_URL }}'
+```
+
+<Admonition type="note" title="Note">
+To set up GitHub Actions correctly, go to your repository's GitHub Actions settings, navigate to **Actions** > **General**, and set **Workflow permissions** to **Read and write permissions**.
+</Admonition>
+
+<Admonition type="tip">
+The step outputs from the `create_neon_branch` action will only be available within the same job (`create_neon_branch_and_run_tests`). Therefore, write all test code, migrations, and related steps in that job itself. The outputs are marked as secrets. If you need separate jobs, refer to [GitHub's documentation on workflow commands](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#workflow) for patterns on how to handle this.
+</Admonition>
+
+The workflow consists of three jobs:
+
+- **Setup job**: Retrieves the current branch name for naming the Neon database branch.
+- **Create branch & test job**: Creates a Neon database branch and runs Playwright tests whenever a pull request is opened or updated.
+- **Cleanup job**: Cleans up resources after the pull request is closed.
+
+### Create branch & test job
+
+This job runs when a pull request is opened, reopened, or synchronized:
+
+1. **Branch creation**:
+   - Uses Neon's [`create-branch-action`](https://github.com/marketplace/actions/neon-create-branch-github-action) to create a new database branch
+   - Names the branch using the pattern `preview/pr-{number}-{branch_name}`
+   - Inherits the schema and data from the parent branch
+
+2. **Migration handling**:
+   - Installs project dependencies
+   - Generates migration files using Drizzle
+   - Applies migrations to the newly created branch
+   - Uses the branch-specific `DATABASE_URL` for migration operations
+
+3. **Application build and start**:
+   - Builds the Next.js application in production mode
+   - Starts the application, connecting it to the new database branch
+
+4. **Playwright test execution**:
+   - Installs Playwright browsers
+   - Runs the full suite of Playwright tests against the live application
+   - Uploads the Playwright report as an artifact for later review
+
+5. **Schema diff generation**:
+   - Uses Neon's [`schema-diff-action`](https://github.com/marketplace/actions/neon-schema-diff-github-action)
+   - Compares the schema of the new branch with the parent branch
+   - Automatically posts the differences as a comment on the pull request
+   - Helps reviewers understand database changes at a glance
+
+### Cleanup job
+
+1. **Production migration**:
+   - If the PR is merged, applies migrations to the production database
+   - Uses the main `DATABASE_URL` stored in repository secrets
+   - Ensures production database stays in sync with merged changes
+
+2. **Cleanup**:
+   - Removes the preview branch using Neon's [`delete-branch-action`](https://github.com/marketplace/actions/neon-database-delete-branch)
+
+## Test the workflow
+
+You can test the entire pipeline by making a schema change, updating the UI, and adding a new Playwright test to validate it.
+
+1.  Create a new feature branch in your local repository:
+
+    ```bash
+    git checkout -b feature/add-created-at
+    ```
+
+2.  Modify the database schema in `app/db/schema.ts` to include a `created_at` timestamp:
+
+    ```typescript {1,7}
+    import { pgTable, text, bigint, boolean, timestamp } from 'drizzle-orm/pg-core';
+
+    export const todos = pgTable('todos', {
+      id: bigint('id', { mode: 'bigint' }).primaryKey().generatedByDefaultAsIdentity(),
+      task: text('task').notNull(),
+      isComplete: boolean('is_complete').notNull().default(false),
+      createdAt: timestamp('created_at').notNull().defaultNow(),
+    });
+    ```
+
+3.  Update the UI component in `app/todos.tsx` to display the new timestamp:
+
+    ```tsx {6,13}
+    // app/todos.tsx
+    type Todo = {
+      id: bigint;
+      task: string;
+      isComplete: boolean;
+      createdAt: Date;
+    };
+
+    // ... inside the TodoList component's map function
+    <li key={todo.id.toString()} className="flex items-center justify-between border-b py-2">
+      <div>
+        <span className={todo.isComplete ? 'text-gray-400 line-through' : ''}>{todo.task}</span>
+        <p className="text-gray-500 text-xs">Created: {todo.createdAt.toLocaleDateString()}</p>
+      </div>
+
+      <div className="flex gap-2">{/* ... forms for toggle and delete */}</div>
+    </li>;
+    ```
+
+4.  Add a new Playwright test in `tests/todos.spec.ts` to verify that the timestamp is displayed:
+
+    ```typescript
+    // tests/todos.spec.ts
+    // ... inside the "Todo App" describe block
+    test('should display created at timestamp for a new todo', async ({ page }) => {
+      const todoText = 'Check the timestamp';
+      await page.locator('input[name="task"]').fill(todoText);
+      await page.locator('button:has-text("Add")').click();
+
+      // Check that the todo text is visible
+      await expect(page.locator(`text=${todoText}`)).toBeVisible();
+
+      // Check that the "Created:" text is visible
+      const expectedDate = new Date().toLocaleDateString();
+      await expect(page.locator(`text=Created: ${expectedDate}`)).toBeVisible();
+    });
+    ```
+
+5.  Commit your changes and push the branch to GitHub:
+
+    ```bash
+    git add .
+    git commit -m "feat: add and display created_at timestamp for todos"
+    git push origin feature/add-created-at
+    ```
+
+6.  Open a pull request on GitHub.
+
+Once the PR is opened, the GitHub Actions workflow will trigger. You can watch as it creates a new database branch, runs migrations, starts your app, and successfully runs the Playwright tests including the new one you just added. The workflow will post a schema diff comment on the PR, and once merged, it will apply the changes to your production database and clean up the preview branch.
+
+## Source code
+
+You can find the complete source code for this example on GitHub.
+
+<DetailIconCards>
+<a href="https://github.com/neondatabase-labs/neon-playwright-example" description="Get started with automated E2E testing using Neon, Playwright, and GitHub Actions" icon="github">Neon Branching with E2E Playwright tests example</a>
+</DetailIconCards>
+
+## Conclusion
+
+You have seen how to create isolated database branches for running Playwright tests, ensuring reliable and consistent E2E testing. This approach can be easily adapted to any other E2E testing framework, such as Cypress or Selenium, by modifying the test execution steps in the GitHub Actions workflow while keeping the Neon branching logic intact.
+
+## Resources
+
+- [Neon Database Branching](/branching)
+- [Neon GitHub Integration](/guides/neon-github-integration)
+- [Playwright Documentation](https://playwright.dev/docs/intro)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
+<NeedHelp/>
 
 
 # Getting started with ElectricSQL and Neon
@@ -37663,16 +39295,16 @@ Note that Driver Adapters are still in preview for Prisma. Please refer to the [
 3. **Configure the connection**
 
    ```typescript
-   import { neon, neonConfig, Pool } from '@neondatabase/serverless';
+   import { neonConfig } from '@neondatabase/serverless';
    import { PrismaNeon, PrismaNeonHTTP } from '@prisma/adapter-neon';
    import { PrismaClient } from '@prisma/client';
    import ws from 'ws';
 
-   let connectionString = process.env.DATABASE_URL;
+   let connectionString =
+     process.env.DATABASE_URL || 'postgres://postgres:postgres@db.localtest.me:5432/main';
 
    // Configuring Neon for local development
    if (process.env.NODE_ENV === 'development') {
-     connectionString = 'postgres://postgres:postgres@db.localtest.me:5432/main';
      neonConfig.fetchEndpoint = (host) => {
        const [protocol, port] = host === 'db.localtest.me' ? ['http', 4444] : ['https', 443];
        return `${protocol}://${host}:${port}/sql`;
@@ -37683,15 +39315,12 @@ Note that Driver Adapters are still in preview for Prisma. Please refer to the [
    }
    neonConfig.webSocketConstructor = ws;
 
-   const sql = neon(connectionString);
-   const pool = new Pool({ connectionString });
-
    // Prisma supports both HTTP and WebSocket clients. Choose the one that fits your needs:
 
    // HTTP Client:
    // - Ideal for stateless operations and quick queries
    // - Lower overhead for single queries
-   const adapterHttp = new PrismaNeonHTTP(sql);
+   const adapterHttp = new PrismaNeonHTTP(connectionString!, {});
    export const prismaClientHttp = new PrismaClient({ adapter: adapterHttp });
 
    // WebSocket Client:
@@ -37699,7 +39328,7 @@ Note that Driver Adapters are still in preview for Prisma. Please refer to the [
    // - Maintains a persistent connection
    // - More efficient for multiple sequential queries
    // - Better for high-frequency database operations
-   const adapterWs = new PrismaNeon(pool);
+   const adapterWs = new PrismaNeon({ connectionString });
    export const prismaClientWs = new PrismaClient({ adapter: adapterWs });
    ```
 
@@ -38964,6 +40593,599 @@ Here, you can see the input message, the AI Agent's response, and the tool (**Po
 <NeedHelp/>
 
 
+# Getting started with Neon Auth and Next.js
+
+---
+title: Getting started with Neon Auth and Next.js
+subtitle: Build a Next.js todo app using Neon Auth and Drizzle ORM
+author: dhanush-reddy
+enableTableOfContents: true
+createdAt: '2025-08-11T00:00:00.000Z'
+updatedOn: '2025-08-11T00:00:00.000Z'
+---
+
+[Neon Auth](/docs/neon-auth/overview) integrates user authentication directly with your Neon Postgres database, solving a common development challenge: keeping user data synchronized between systems. Instead of building and maintaining custom sync logic or webhook handlers, Neon Auth automatically populates and updates a `neon_auth.users_sync` table in your database in real-time. This allows you to treat user profiles as regular database rows, ready for immediate use in SQL joins and application logic.
+
+This guide will walk you through building a simple todo application using Next.js, Neon Auth, and Drizzle ORM. You'll learn how to:
+
+- Set up a Next.js project and enable Neon Auth.
+- Integrate Neon Auth to add sign-up, sign-in, and sign-out functionality.
+- Use Drizzle ORM to interact with the `neon_auth.users_sync` table.
+- Create protected server actions using Neon Auth.
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **Node.js:** Version `18` or later installed on your machine. You can download it from [nodejs.org](https://nodejs.org/).
+- **Neon account:** A free Neon account. If you don't have one, sign up at [Neon](https://console.neon.tech/signup).
+
+<Steps>
+
+## Set up the Next.js project
+
+To get started, create a new Next.js project. Open your terminal and run the following command:
+
+```bash
+npx create-next-app@latest neon-auth-todo --typescript --tailwind --use-npm --eslint --app --no-src-dir --import-alias "@/*" --no-turbopack
+cd neon-auth-todo
+```
+
+This command sets up a new Next.js project with TypeScript, Tailwind CSS, and ESLint configured.
+
+Open the project in your favorite code editor (e.g., VSCode, Cursor, Windsurf).
+
+## Create a Neon project and enable Neon Auth
+
+You'll need to create a Neon project and enable Neon Auth.
+
+1.  **Create a Neon project:** Navigate to [pg.new](https://pg.new) to create a new Neon project. Give your project a name, such as `neon-auth-todo`.
+
+2.  **Enable Neon Auth:**
+    - In your project's dashboard, go to the **Auth** page from the sidebar.
+    - Click **Enable Neon Auth**. This will provision the necessary infrastructure for authentication and user management.
+
+    ![Neon Console - Enable Neon Auth button](/docs/guides/enable-neon-auth.png)
+
+3.  **Get environment variables:**
+    - After enabling Neon Auth, navigate to the **Configuration** tab on the Auth page.
+    - Select **Next.js** as your framework.
+    - You will see the required environment variables. Copy the entire block, which includes your Neon Auth keys and the database connection string.
+
+    ![Neon Console - Neon Auth configuration keys for Next.js](/docs/guides/neon-auth-example-config-keys.png)
+
+## Integrate Neon Auth into your app
+
+Now, you will integrate Neon Auth into your Next.js application.
+
+1.  **Run the Neon Auth setup command:**
+    In your project's root directory, run the following command to initialize the Neon Auth setup:
+
+    ```bash
+    npx @stackframe/init-stack@latest --no-browser
+    ```
+
+    > Enter "Y" when prompted to proceed with the installation.
+
+    You should see output similar to this:
+
+    ```
+    npx @stackframe/init-stack@latest --no-browser
+    Need to install the following packages:
+    @stackframe/init-stack@2.8.28
+    Ok to proceed? (y) y
+
+
+          ██████
+      ██████████████
+    ████████████████████
+    ████████████████████                WELCOME TO
+    █████████████████        ╔═╗╔╦╗╔═╗╔═╗╦╔═  ┌─┐┬ ┬┌┬┐┬ ┬
+    █████████████            ╚═╗ ║ ╠═╣║  ╠╩╗  ├─┤│ │ │ ├─┤
+    █████████████   ████     ╚═╝ ╩ ╩ ╩╚═╝╩ ╩  ┴ ┴└─┘ ┴ ┴ ┴
+       █████████████████
+          ██████      ██
+    ████            ████
+      █████    █████
+          ██████
+
+
+    ? Found a Next.js project at /home/user/neon-auth-todo/neon-auth-todo — ready to install Stack Auth? Yes
+
+    Installing dependencies...
+
+    npm warn ERESOLVE overriding peer dependency
+
+    added 194 packages, and audited 531 packages in 60s
+
+    166 packages are looking for funding
+      run `npm fund` for details
+
+    2 low severity vulnerabilities
+
+    To address all issues, run:
+      npm audit fix
+
+    Run `npm audit` for details.
+    √ Command npm install @stackframe/stack succeeded
+
+    Writing files...
+
+    √ Done writing files
+
+    Installation succeeded!
+
+    Commands executed:
+      npm install @stackframe/stack
+
+    Files written:
+      app/layout.tsx
+      .env.local
+      stack.tsx
+      app/handler/[...stack]/page.tsx
+      app/loading.tsx
+
+    ===============================================
+
+    Successfully installed Stack! 🚀🚀🚀
+    ```
+
+2.  **Configure environment variables:**
+    Paste the environment variables you copied from the Neon Auth configuration into the `.env.local` file.
+
+    ```env
+    # Neon Auth environment variables for Next.js
+    NEXT_PUBLIC_STACK_PROJECT_ID=YOUR_NEON_AUTH_PROJECT_ID
+    NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=YOUR_NEON_AUTH_PUBLISHABLE_KEY
+    STACK_SECRET_SERVER_KEY=YOUR_NEON_AUTH_SECRET_KEY
+
+    # Your Neon connection string
+    DATABASE_URL=YOUR_NEON_CONNECTION_STRING
+    ```
+
+## Set up Drizzle ORM
+
+For database interactions, you will use Drizzle ORM.
+
+1.  **Install Drizzle ORM:**
+
+    ```bash
+    npm install drizzle-orm @neondatabase/serverless
+    npm install -D drizzle-kit dotenv
+    ```
+
+2.  **Create Drizzle config:**
+    Create a file named `drizzle.config.ts` in your project root and add the following configuration:
+
+    ```typescript
+    import { defineConfig } from 'drizzle-kit';
+    import { config } from 'dotenv';
+
+    config({ path: './.env.local' });
+
+    export default defineConfig({
+      dialect: 'postgresql',
+      schema: './app/db/schema.ts',
+      out: './drizzle',
+      dbCredentials: {
+        url: process.env.DATABASE_URL!,
+      },
+    });
+    ```
+
+    This config tells Drizzle Kit where to find your database schema and where to output migration files.
+
+## Define the application schema
+
+Drizzle ORM provides a built-in helper function to work with Neon Auth's `users_sync` table. Instead of manually defining the schema or pulling it from the database, you can use the `usersSync` helper from `drizzle-orm/neon`.
+
+The most important part of this schema is creating a direct link between a todo and the user who owns it. You will achieve this by establishing a foreign key relationship from your `todos` table to the `users_sync` table.
+
+This schema defines the `todos` table with the following columns:
+
+- **`id`**: A unique, auto-incrementing identifier for each todo.
+- **`ownerId`**: A text column that stores the user's ID. This column is configured with a foreign key that `references` the `id` in the `neon_auth.users_sync` table, ensuring data integrity.
+- **`task`**: The text content of the todo item.
+- **`isComplete`**: A boolean flag to track the todo's status.
+- **`insertedAt`**: A timestamp automatically set when a todo is created.
+
+### Create the schema file
+
+Create a `db` directory inside the `app` folder, then add a file named `schema.ts` within it:
+
+```plaintext
+app/
+  db/
+    schema.ts
+```
+
+Add the following code to `app/db/schema.ts`:
+
+```typescript
+import { pgTable, text, timestamp, bigint, boolean } from 'drizzle-orm/pg-core';
+import { usersSync } from 'drizzle-orm/neon';
+
+export const todos = pgTable('todos', {
+  id: bigint('id', { mode: 'bigint' }).primaryKey().generatedByDefaultAsIdentity(),
+  ownerId: text('owner_id')
+    .notNull()
+    .references(() => usersSync.id),
+  task: text('task').notNull(),
+  isComplete: boolean('is_complete').notNull().default(false),
+  insertedAt: timestamp('inserted_at', { withTimezone: true }).defaultNow().notNull(),
+});
+```
+
+The `usersSync` helper from `drizzle-orm/neon` automatically provides the correct schema definition for the `neon_auth.users_sync` table, eliminating the need for manual schema introspection.
+
+### Generate and apply migrations
+
+Now, generate the SQL migration file to create the `todos` table.
+
+```bash
+npx drizzle-kit generate
+```
+
+This creates a new SQL file in the `drizzle` directory. Apply this migration to your Neon database by running:
+
+```bash
+npx drizzle-kit migrate
+```
+
+Your `todos` table now exists in your Neon database. You can verify this in the **Tables** section of your Neon project console.
+
+![Neon Auth todos table](/docs/guides/neon-auth-todos-table.png)
+
+## Create the database client
+
+Create a file at `app/db/index.ts` to instantiate the Drizzle client.
+
+```typescript
+import { neon } from '@neondatabase/serverless';
+import { drizzle } from 'drizzle-orm/neon-http';
+
+const sql = neon(process.env.DATABASE_URL!);
+export const db = drizzle(sql);
+```
+
+## Build the application UI
+
+You will create a simple user interface for your todo app using React components.
+
+1.  **Create the Header Component:**
+    This component will display sign-in/sign-up links or user information and a sign-out button. Create `app/header.tsx`:
+
+    ```tsx
+    'use client';
+
+    import Link from 'next/link';
+    import { useStackApp, useUser } from '@stackframe/stack';
+
+    export function Header() {
+      const user = useUser();
+      const app = useStackApp();
+
+      return (
+        <header className="dark:bg-gray-900 fixed left-0 top-0 z-50 w-full bg-white shadow-md">
+          <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-3">
+            <div className="text-gray-800 dark:text-gray-100 text-xl font-bold tracking-tight">
+              My Todo App
+            </div>
+            <nav>
+              {user ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Hello{' '}
+                    <span className="dark:text-gray-100 font-medium">{user.primaryEmail}</span>
+                  </span>
+                  <Link
+                    href={app.urls.signOut}
+                    className="text-red-500 dark:text-red-400 text-sm hover:underline"
+                  >
+                    Sign Out
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center gap-4">
+                  <Link
+                    href={app.urls.signIn}
+                    className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+                  >
+                    Sign In
+                  </Link>
+                  <span className="text-gray-400 dark:text-gray-500">|</span>
+                  <Link
+                    href={app.urls.signUp}
+                    className="text-green-600 dark:text-green-400 text-sm hover:underline"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </nav>
+          </div>
+        </header>
+      );
+    }
+    ```
+
+    The `useUser()` hook provides the current user's state, while `useStackApp()` provides access to utility URLs like `signIn` and `signOut`.
+
+    <Admonition type="info" title="Neon Auth Hooks">
+      The Neon Auth SDK for Next.js offers a comprehensive set of hooks to manage authentication and user data throughout your application. It provides distinct tools tailored for different rendering environments, such as the `useUser` hook for Client Components and the `stackServerApp` object for server-side logic.
+
+    To explore the full API, including hooks for more advanced features like handling teams and permissions, refer to the [Neon Auth: Next.js SDK Overview](/docs/neon-auth/sdk/nextjs/overview).
+    </Admonition>
+
+2.  **Create the Todo components:**
+
+    For all CRUD operations, you'll use server actions to securely handle form submissions and update the database directly from your Next.js components. The implementation details of these server actions will be covered later in the guide.
+
+    Create a new file `app/todos.tsx` to define the form for adding todos and the list to display them.
+
+    ```tsx
+    import { addTodo, toggleTodo, deleteTodo } from '@/app/actions/todoActions';
+    import { stackServerApp } from '@/stack';
+    import { revalidatePath } from 'next/cache';
+
+    type Todo = {
+      id: bigint;
+      task: string;
+      isComplete: boolean;
+    };
+
+    export async function TodoForm() {
+      const user = await stackServerApp.getUser();
+
+      if (!user) {
+        return (
+          <p className="text-gray-500 mt-4 text-center">Please log in to manage your todos.</p>
+        );
+      }
+
+      return (
+        <form
+          action={async (formData) => {
+            'use server';
+            await addTodo(formData.get('task') as string);
+            revalidatePath('/');
+          }}
+          className="flex gap-2"
+        >
+          <input
+            type="text"
+            name="task"
+            placeholder="New todo"
+            className="flex-1 rounded-md border px-2 py-1"
+            required
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 rounded-md px-3 py-1 text-white"
+          >
+            Add
+          </button>
+        </form>
+      );
+    }
+
+    export function TodoList({ todos }: { todos: Todo[] }) {
+      if (todos.length === 0) {
+        return <p className="text-gray-500 mt-8 text-center">No todos yet. Add one above!</p>;
+      }
+
+      return (
+        <ul className="mt-4 space-y-2">
+          {todos.map((todo) => (
+            <li
+              key={todo.id.toString()}
+              className="flex items-center justify-between border-b py-2"
+            >
+              <span className={todo.isComplete ? 'text-gray-400 line-through' : ''}>
+                {todo.task}
+              </span>
+              <div className="flex gap-2">
+                <form
+                  action={async () => {
+                    'use server';
+                    await toggleTodo(todo.id, !todo.isComplete);
+                    revalidatePath('/');
+                  }}
+                >
+                  <button type="submit" className="text-green-500 hover:text-green-700 text-sm">
+                    {todo.isComplete ? 'Undo' : 'Done'}
+                  </button>
+                </form>
+                <form
+                  action={async () => {
+                    'use server';
+                    await deleteTodo(todo.id);
+                    revalidatePath('/');
+                  }}
+                >
+                  <button type="submit" className="text-red-500 hover:text-red-700 text-sm">
+                    Delete
+                  </button>
+                </form>
+              </div>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    ```
+
+    The above code defines two main components for managing todos: `TodoForm` and `TodoList`.
+    - `TodoForm` is a form for adding new todos. It checks if the user is logged in and, if so, allows them to submit a new todo item. On submission, it calls the `addTodo` server action and refreshes the page to show the updated list.
+
+    - `TodoList` displays the current user's todos. Each todo item has buttons to mark it as complete/incomplete or delete it. These actions are handled by the `toggleTodo` and `deleteTodo` server actions, respectively. The UI updates automatically after each action, and if there are no todos, a message prompts the user to add one.
+
+3.  **Create the main page:**
+    Replace the content of `app/page.tsx` with the following code. This will be the main page that displays the todo list and the form to add new todos.
+
+    ```tsx
+    import { getTodos } from '@/app/actions/todoActions';
+    import { stackServerApp } from '@/stack';
+    import { Header } from './header';
+    import { TodoForm, TodoList } from './todos';
+
+    export default async function HomePage() {
+      const todos = await getTodos();
+
+      return (
+        <main className="mx-auto max-w-lg p-6 pt-24">
+          <Header />
+          <h1 className="mb-4 text-2xl font-bold">My Todos</h1>
+          <TodoForm />
+          <TodoList todos={todos} />
+        </main>
+      );
+    }
+    ```
+
+## Implement server actions
+
+To manage todos, you need to create server actions that will handle the database operations. These actions will be responsible for adding, retrieving, updating, and deleting todos.
+
+Create a new file `app/actions/todoActions.ts`:
+
+```typescript
+'use server';
+
+import { db } from '@/app/db';
+import { todos } from '@/app/db/schema';
+import { stackServerApp } from '@/stack';
+import { eq, desc, and } from 'drizzle-orm';
+
+export async function addTodo(task: string) {
+  const user = await stackServerApp.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  await db.insert(todos).values({
+    task,
+    ownerId: user.id,
+  });
+}
+
+export async function getTodos() {
+  const user = await stackServerApp.getUser();
+  if (!user) return [];
+
+  return db.select().from(todos).where(eq(todos.ownerId, user.id)).orderBy(desc(todos.insertedAt));
+}
+
+export async function toggleTodo(id: bigint, isComplete: boolean) {
+  const user = await stackServerApp.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  await db
+    .update(todos)
+    .set({ isComplete })
+    .where(and(eq(todos.id, id), eq(todos.ownerId, user.id)));
+}
+
+export async function deleteTodo(id: bigint) {
+  const user = await stackServerApp.getUser();
+  if (!user) throw new Error('Not authenticated');
+
+  await db.delete(todos).where(and(eq(todos.id, id), eq(todos.ownerId, user.id)));
+}
+```
+
+In each action, `stackServerApp.getUser()` retrieves the currently logged-in user. If no user is found, the action either fails or returns an empty state. This ensures that all database operations are securely tied to the authenticated user's ID.
+
+## Run and test the application
+
+You are now ready to run your application.
+
+1.  **Start the development server:**
+
+    ```bash
+    npm run dev
+    ```
+
+2.  **Test the app:**
+    - Open your browser to `http://localhost:3000`.
+    - You will see the header with "Sign In" and "Sign Up" links.
+    - Click **Sign Up** to create a new account. You'll be redirected to the signup page.
+      ![Neon Auth todo app signup page](/docs/guides/neon-auth-todo-app-signup.png)
+
+      > Sign up using one of the available OAuth providers (e.g., Google, GitHub) or with your email address.
+
+    - After signing up, you'll be redirected back to the app, now logged in.
+    - Add, complete, and delete a few todos to test the full functionality.
+
+![Neon Auth Todo App Demo](/docs/guides/neon-auth-todo-app-demo.png)
+
+</Steps>
+
+## Using Neon Auth in production
+
+Before deploying your application to a live environment, you must complete the following security configurations. These steps are crucial to ensure your application is secure and provides a trusted experience for your users.
+
+### Configure production OAuth credentials
+
+The default OAuth providers (e.g., Google, GitHub) use shared, demo credentials. These are strictly for development and testing purposes. **Do not use them in production.**
+
+For a live application, you must create and configure your own OAuth credentials for each provider. This ensures your application is secure and displays your own branding on the provider's consent screen, creating a trusted experience for your users.
+
+> **For detailed instructions, see: [Neon Auth: Production OAuth setup](/docs/neon-auth/best-practices#production-oauth-setup)**
+
+### Restrict redirect domains
+
+To prevent malicious actors from hijacking your authentication flows, you must explicitly whitelist the domains your application will use for authentication redirects (e.g., your main website, admin panels).
+
+When a user signs in, Neon Auth will only redirect them to a domain on this approved list. Any attempts to redirect to an unlisted domain will be blocked, protecting your users from phishing attacks and other security threats.
+
+> **For detailed steps, see: [Neon Auth best practices: Restricting redirect domains](/docs/neon-auth/best-practices#restricting-redirect-domains)**
+
+### Set up a custom email server
+
+By default, Neon Auth sends transactional emails (like email verification and password resets) from a shared server using the `noreply@stackframe.co` address. For a production application, this can appear unprofessional and may cause emails to be filtered as spam.
+
+To ensure a trusted user experience and improve email deliverability, you should configure Neon Auth to send emails from your own domain using a custom SMTP server.
+
+> **For instructions, see: [Neon Auth best practices: Email server setup](/docs/neon-auth/best-practices#email-server)**
+
+### Claim your project for Advanced configuration
+
+Neon Auth is powered by [Stack Auth](https://stack-auth.com/), providing a managed authentication experience directly within the Neon Console. While most features can be used out of the box, you may need more advanced control for certain production use cases.
+
+For advanced configurations or to add OAuth providers beyond the defaults (Github and Google), you can claim your project. Claiming moves the project's management from Neon to your direct control within the Stack Auth dashboard.
+
+You should consider claiming your project if you need to:
+
+- **Add new OAuth providers** (e.g., Spotify, Discord, Apple etc) and manage their unique client IDs/secrets.
+- **Enable production mode** to enforce stricter security settings required for a live application.
+- **Manage multiple environments** (e.g., development, staging, production) directly within the Stack Auth interface.
+
+> **For more information, see: [Claiming a Neon Auth project](/docs/neon-auth/claim-project)**
+
+## Advanced features
+
+You've now built a basic application with Neon Auth. This is just the beginning. Neon Auth also provides more advanced capabilities for complex applications:
+
+- **[Teams and organizations](/docs/neon-auth/concepts/orgs-and-teams):** Group users into teams to manage access and permissions for B2B applications or collaborative projects.
+- **[App/User RBAC permissions](/docs/neon-auth/concepts/permissions):** Implement fine-grained Role-Based Access Control (RBAC) with both team-specific and global (project-level) permissions.
+- **[Custom user data](/docs/neon-auth/concepts/custom-user-data):** Store additional information on user objects using different metadata fields (`clientMetadata`, `serverMetadata`, `clientReadOnlyMetadata`) to control data visibility and mutability between the client and server.
+
+## Summary
+
+Congratulations! You've successfully built a full-stack, secure todo application with Next.js and Neon Auth. You learned how to seamlessly integrate authentication, leverage the automatic user data sync with `neon_auth.users_sync`, and protect server-side logic using a unified auth and database solution.
+
+Neon Auth handles the complexity of user management and data synchronization, allowing you to focus on building your application's core features.
+
+## Resources
+
+- [Neon Auth Overview](/docs/neon-auth/overview)
+- [How Neon Auth works](/docs/neon-auth/how-it-works)
+- [Neon Auth Best Practices & FAQ](/docs/neon-auth/best-practices)
+- [Neon Auth: Next.js SDK Overview](/docs/neon-auth/sdk/nextjs/overview)
+- [Neon Auth Components](/docs/neon-auth/components/components)
+
+<NeedHelp/>
+
+
 # Get started with Neon Serverless Postgres on Azure
 
 ---
@@ -39212,7 +41434,10 @@ By the end of this guide, you'll have a system where database changes are as sea
 
 ## Configure the database schema
 
+This guide demonstrates database schema definition using Drizzle ORM. The underlying principles can be easily adapted to your preferred ORM, such as Prisma, TypeORM, or Sequelize.
+
 1. Create `app/db/schema.ts`:
+   The following code defines the database schema for a simple Todo application:
 
    ```typescript
    import { integer, text, boolean, pgTable } from 'drizzle-orm/pg-core';
@@ -39291,6 +41516,7 @@ on:
       - synchronize
       - closed
 
+# Ensures only the latest commit runs, preventing race conditions in concurrent PR updates
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
@@ -39310,9 +41536,6 @@ jobs:
 
   create_neon_branch:
     name: Create Neon Branch
-    outputs:
-      db_url: ${{ steps.create_neon_branch_encode.outputs.db_url }}
-      db_url_with_pooler: ${{ steps.create_neon_branch_encode.outputs.db_url_with_pooler }}
     needs: setup
     if: |
       github.event_name == 'pull_request' && (
@@ -39384,6 +41607,12 @@ To set up GitHub Actions correctly:
 
 </Admonition>
 
+<Admonition type="tip">
+The step outputs from the `create_neon_branch` action will only be available within the same job (`create_neon_branch`). Therefore, write all test code, migrations, and related steps in that job itself. The outputs are marked as secrets. If you need separate jobs, refer to [GitHub's documentation on workflow commands](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands#workflow) for patterns on how to handle this.
+</Admonition>
+
+It's important to understand the roles of your GitHub secrets. The `NEON_API_KEY` (created by the integration) is used to manage your Neon project, like creating and deleting branches. The `DATABASE_URL` secret you just created points exclusively to your primary production database. The workflow uses this only after a PR is successfully merged to apply migrations, ensuring a safe separation from the ephemeral preview databases used during testing.
+
 ## Understanding the workflow
 
 The GitHub Actions workflow automates database branching and schema management for pull requests. Here's a breakdown of the workflow:
@@ -39393,7 +41622,7 @@ The GitHub Actions workflow automates database branching and schema management f
 This job runs when a pull request is opened, reopened, or synchronized:
 
 1. **Branch Creation**:
-   - Uses Neon's `create-branch-action` to create a new database branch
+   - Uses Neon's [`create-branch-action`](https://github.com/marketplace/actions/neon-create-branch-github-action) to create a new database branch
    - Names the branch using the pattern `preview/pr-{number}-{branch_name}`
    - Inherits the schema and data from the parent branch
 
@@ -39404,7 +41633,7 @@ This job runs when a pull request is opened, reopened, or synchronized:
    - Uses the branch-specific `DATABASE_URL` for migration operations
 
 3. **Schema Diff Generation**:
-   - Uses Neon's `schema-diff-action`
+   - Uses Neon's [`schema-diff-action`](https://github.com/marketplace/actions/neon-schema-diff-github-action)
    - Compares the schema of the new branch with the parent branch
    - Automatically posts the differences as a comment on the pull request
    - Helps reviewers understand database changes at a glance
@@ -39419,7 +41648,7 @@ This job executes when a pull request is closed (either merged or rejected):
    - Ensures production database stays in sync with merged changes
 
 2. **Cleanup**:
-   - Removes the preview branch using Neon's `delete-branch-action`
+   - Removes the preview branch using Neon's [`delete-branch-action`](https://github.com/marketplace/actions/neon-database-delete-branch)
 
 ## Flow Summary
 
@@ -39694,6 +41923,633 @@ And that’s it. By default, Neon Local handles creating and deleting a branch w
 Neon Local simplifies the management of temporary database environments, making it easier to work with isolated instances for testing or short-term use. While it’s **not** a fully "local" database, it streamlines the workflow, especially for CI/CD pipelines where short-lived environments are needed to run tests but don’t need to stick around.
 
 Neon Local is still in its early stages, with several improvements on the way. But for now, it could be exactly what you need to streamline your workflows. Give it a try today and [share your feedback with us](https://github.com/neondatabase-labs/neon_local).
+
+
+# Getting started with Neon Local and Neon Local Connect
+
+---
+title: Getting started with Neon Local and Neon Local Connect
+subtitle: Learn how to set up and use Neon Local and Neon Local Connect for seamless local development with Neon
+author: 'dhanush-reddy'
+enableTableOfContents: true
+createdAt: '2025-08-17T00:00:00.000Z'
+updatedOn: '2025-08-17T00:00:00.000Z'
+---
+
+One of Neon's most powerful features is database branching, the ability to instantly create isolated, copy-on-write clones of your database for any task. Just as you create a Git branch for every new feature or bug fix, you can create a parallel database branch. This eliminates environment drift, prevents developers from overwriting each other's work on shared staging databases, and ensures every development environment is a perfect, isolated replica of production.
+
+But how do you bring this cloud-native power into your local development workflow seamlessly? Constantly switching connection strings for each branch is tedious and error-prone. This is the problem that **Neon Local** and the **Neon Local Connect** VS Code extension solve. They act as a smart local proxy to your Neon database in the cloud. Your application connects to a single, static `localhost` address, while the tools handle all the complexity of routing and branch management behind the scenes.
+
+This guide will walk you through setting up and using both Neon Local and Neon Local Connect to create a powerful, modern development workflow. You'll learn how to:
+
+- Install and configure the Neon Local Connect extension in VS Code.
+- Utilize the built-in Schema Viewer, SQL Editor, and Table Editor.
+- Connect your local application to a Neon database using a single, static `localhost` connection string.
+- Manage database branches (create, switch, reset) directly from your IDE.
+- Use Neon Local with Docker Compose for CI/CD or non-VS Code environments.
+
+<Admonition type="note" title="Neon Local vs. a Local Postgres Instance">
+This guide focuses on **Neon Local**, a **local proxy** for your **cloud-hosted Neon Postgres database**. It enables you to use Neon's powerful branching features with a convenient `localhost` connection, allowing you to seamlessly switch between branches, create new branches, and manage them directly from your IDE.
+
+This is different from [Local Development with Neon](/guides/local-development-with-neon) guide, which shows you how to run a completely separate, **local instance of Postgres** for fully offline development.
+
+For most modern workflows that leverage Neon's features, the proxy-based approach in this guide is recommended.
+</Admonition>
+
+## Prerequisites
+
+Before you begin, ensure you have the following:
+
+- **Neon account:** A free Neon account. If you don't have one, sign up at [Neon](https://console.neon.tech/signup).
+- **VS Code:** Or any compatible editor based on VS Code, such as Cursor or Windsurf.
+- **Docker:** Docker Desktop must be installed and running on your machine. You can download it from [docker.com](https://www.docker.com/products/docker-desktop/).
+- **Node.js:** Version `18` or later to run the example application.
+
+## Neon Local Connect
+
+The easiest way to get started is with the Neon Local Connect VS Code extension. It manages the underlying Docker container for you, providing a full control panel for your Neon database within your editor.
+
+### Install the extension
+
+First, install the extension from the Visual Studio Marketplace or OpenVSX.
+
+1.  Open your editor and navigate to the **Extensions** view (`Ctrl+Shift+X` or `Cmd+Shift+X`).
+2.  Search for "Neon Local Connect".
+3.  Click **Install**.
+    ![Neon Local Connect Extension](/docs/local/extension-in-vs-code.png)
+
+You can also install it directly from the marketplace:
+
+<DetailIconCards>
+
+<a href="https://marketplace.visualstudio.com/items?itemName=databricks.neon-local-connect" description="For VS Code & compatible editors" icon="vscode">VS Code Marketplace</a>
+
+<a href="https://open-vsx.org/extension/databricks/neon-local-connect" description="For Cursor, Windsurf etc." icon="download">OpenVSX Marketplace</a>
+
+</DetailIconCards>
+
+### Connect to your Neon account
+
+Once installed, a new Neon icon will appear in your Activity Bar.
+
+1.  Click the Neon icon to open the Neon Local Connect panel.
+2.  Click **Sign in with Neon**. This will open a browser window to authenticate your Neon account using OAuth.
+    ![Sign in with your Neon account](/docs/local/sign-in.png)
+3.  Authorize the application to connect to your Neon account.
+    ![Neon OAuth authorization in browser](/docs/local/authorize.png)
+
+### Connect to a Database branch
+
+After authenticating, the extension fetches your Neon projects and branches.
+
+1.  Select your **Organization** and **Project**.
+2.  Choose the **Branch** you want to work on (e.g., `development`). You can connect to an **existing branch** or an **ephemeral branch** that is created on connection and destroyed on disconnection.
+    <Admonition type="note" title="Using ephemeral branches">
+    For using ephemeral branches, you need to authenticate using a Neon API key. This is recommended to ensure that temporary branches are automatically cleaned up when your session ends. To get started, see [Creating API keys](/docs/manage/api-keys). In the Neon Local Connect panel, click **Import API Key** to add your key.
+    </Admonition>
+3.  Click **Connect**.
+
+The extension will now start a Neon Local Docker container in the background and establish a proxy connection to your selected branch. Once connected, the panel will display a static, local connection string.
+
+The connection string will always be the same, regardless of which branch you connect to:
+`postgres://neon:npg@localhost:5432/<database_name>`
+
+### Extension features
+
+Neon Local Connect turns your IDE into a powerful database management tool, eliminating the need to switch contexts.
+
+#### Database schema view
+
+Once connected, a **Database Schema** view appears in the sidebar. This tree view lets you explore your entire database structure: databases, schemas, tables, columns, and relationships (PKs, FKs). Right-click any table for quick actions like **Query Table**, **View Table Data**, **Truncate**, or **Drop**.
+
+![Database Schema View](/docs/local/database_schema_view.png)
+
+#### Built-in SQL editor
+
+Execute queries directly in your IDE. Right-click a table and select "Query Table" to open a pre-filled `SELECT *` query, or open a blank editor from the command palette.
+
+- **View results** in a filterable, sortable table.
+- **Export data** to CSV/JSON.
+- **See performance stats** and detailed error messages.
+
+  ![SQL Editor in your IDE](/docs/local/sql_editor_view.png)
+
+#### Table data management
+
+For quick edits, right-click a table and select "View Table Data" to open a spreadsheet-like interface.
+
+- **Edit rows** by clicking the pen (edit) icon next to any row (requires a primary key).
+- **Insert and delete rows** with dedicated buttons.
+- **Paginate** through large datasets.
+- Changes are applied to your database immediately.
+
+  ![Table Data Editor](/docs/local/table_data_view.png)
+
+#### Branch management from the panel
+
+The Neon Local Connect panel also provides easy branch management:
+
+- **Create a new branch:** Click the "Branch" dropdown, select "Create new branch...", give it a name, and choose a parent.
+- **Switch branches:** Simply select a different branch from the dropdown. Your `localhost` connection will now point to the new branch no code changes needed.
+- **Reset a branch:** Revert a branch to its parent's state to discard changes and get a clean slate. To reset a branch, right click the branch in **Database schema view** and select "Reset from Parent Branch".
+  ![Reset Branch](/docs/local/reset.png)
+
+### Connect your application
+
+Add the static connection string from the extension panel to your project's `.env.local` file.
+
+```ini
+DATABASE_URL="postgres://neon:npg@localhost:5432/<database_name>"
+```
+
+> Replace `<database_name>` with your actual database name
+
+Your app now connects to `localhost:5432`, and Neon Local securely routes traffic to the active cloud branch.
+
+Follow the [Typical development workflow](#typical-development-workflow) section for understanding how to leverage Neon Local effectively.
+
+## Neon Local
+
+For non-VS Code users or CI/CD integration, you can use Neon Local directly. This gives you the same power, controlled in a programmatic way.
+
+Neon Local is a Docker-based proxy that connects to your Neon database, allowing you to run a local instance of your cloud database. It provides a static connection string (`localhost:5432`) that routes to the active branch, making it easy to switch branches without changing your code.
+
+### Docker compose configuration
+
+Here is a `docker-compose.yml` that defines your `app` and the `db` (Neon Local) service.
+
+```yaml
+services:
+  app:
+    build: .
+    ports:
+      - '${PORT}:${PORT}'
+    environment:
+      - DATABASE_URL="postgres://neon:npg@db:5432/${DB_NAME}?sslmode=no-verify"
+    depends_on:
+      - db
+
+  db:
+    image: neondatabase/neon_local:latest
+    ports:
+      - '5432:5432'
+    environment:
+      - NEON_API_KEY=${NEON_API_KEY}
+      - NEON_PROJECT_ID=${NEON_PROJECT_ID}
+      # Choose one of the following:
+      - BRANCH_ID=${BRANCH_ID} # For existing branches
+      # - PARENT_BRANCH_ID=${PARENT_BRANCH_ID} # For ephemeral branches
+```
+
+#### Key environment variables
+
+| Variable           | Description                                                                               | Required | Default                  |
+| ------------------ | ----------------------------------------------------------------------------------------- | -------- | ------------------------ |
+| `NEON_API_KEY`     | Your Neon API key.                                                                        | Yes      | N/A                      |
+| `NEON_PROJECT_ID`  | Your Neon project ID.                                                                     | Yes      | N/A                      |
+| `BRANCH_ID`        | Connects to a specific existing branch. Mutually exclusive with `PARENT_BRANCH_ID`.       | No       | N/A                      |
+| `PARENT_BRANCH_ID` | Creates an ephemeral branch from a parent. If omitted, uses the project's default branch. | No       | Project's default branch |
+| `DELETE_BRANCH`    | Set to `false` to prevent branches from being deleted when the container stops.           | No       | `true`                   |
+
+If you need to use the `docker run` command instead of Docker Compose, you can checkout [Neon Local Docs](/docs/local/neon-local) for more information.
+
+### Advanced configuration
+
+#### Persistent branches per Git Branch
+
+For a workflow where a database branch's lifecycle matches a Git branch, you can configure Neon Local to persist its state.
+
+Add `volumes` to your `db` service in `docker-compose.yml`:
+
+```yaml
+db:
+  image: neondatabase/neon_local:latest
+  ports:
+    - '5432:5432'
+  environment:
+    NEON_API_KEY: ${NEON_API_KEY}
+    NEON_PROJECT_ID: ${NEON_PROJECT_ID}
+    DELETE_BRANCH: false
+  volumes:
+    - ./.neon_local/:/tmp/.neon_local
+    - ./.git/HEAD:/tmp/.git/HEAD:ro,consistent
+```
+
+This configuration uses your current Git branch name to manage a persistent database branch.
+
+<Admonition type="note">
+This will create a `.neon_local` directory in your project to store metadata. Be sure to add `.neon_local/` to your `.gitignore` to avoid committing database information.
+</Admonition>
+
+<Admonition type="note" title="Git integration using Docker on Mac">
+If using Docker Desktop for Mac, ensure that your VM settings use **gRPC FUSE** instead of **VirtioFS**. There is currently a known bug with VirtioFS that prevents proper branch detection and live updates inside containers.
+  ![Docker Desktop are set to gRPC FUSE](/docs/local/neon-local-docker-settings.jpg)
+</Admonition>
+
+## Typical development workflow
+
+Neon's branching is designed to integrate seamlessly with modern, Git-based development workflows. By pairing each Git branch with a corresponding database branch, you can ensure complete isolation, prevent conflicts, and maintain a clean production database.
+
+Here’s a practical look at how to use Neon Local in your daily tasks.
+
+#### The scenario: Starting a new task
+
+You've just been assigned a ticket to build a new user profile page. The first step is always to create a new Git branch to isolate your code changes.
+
+```bash
+git checkout main
+git pull
+git checkout -b feature/new-user-profile
+```
+
+Now that your code is isolated, you need to isolate your database. You have two primary options depending on the scope of your task.
+
+#### Option 1: Long-lived feature
+
+**When to use it:** This is the standard approach for most feature work, bug fixes that require review, or any task that will span multiple sessions or involve collaboration. You create a persistent database branch that mirrors the lifecycle of your Git branch.
+
+<Tabs labels={["Using Neon Local Connect", "Using Neon Local (CLI)"]}>
+<TabItem>
+
+With the VS Code extension, creating a persistent branch is trivial:
+
+1.  In the Neon Local Connect panel, click the **Branch** dropdown menu.
+2.  Select **Create new branch...**.
+3.  Enter a name for your branch. It's good practice to match your Git branch name, like `feature/new-user-profile`.
+4.  Choose a parent branch to copy data and schema from (e.g., `production` or `development`).
+5.  The extension will instantly create the branch and connect you to it. Your `localhost` connection now points to this new, isolated environment.
+
+</TabItem>
+<TabItem>
+
+When using the CLI, you create the branch in the Neon Console and then configure Neon Local to connect to it.
+
+1.  Navigate to your project in the **[Neon Console](https://console.neon.tech/)**.
+2.  Go to the **Branches** tab and click **New Branch**.
+3.  Name the branch (`feature/new-user-profile`) and select a parent.
+4.  Once created, copy the **Branch ID** from the branch details.
+5.  In your `docker-compose.yml`, ensure the `db` service is configured to use this specific `BRANCH_ID`.
+
+    ```yaml
+    services:
+      db:
+        # ... other settings
+        environment:
+          - NEON_API_KEY=${NEON_API_KEY}
+          - NEON_PROJECT_ID=${NEON_PROJECT_ID}
+          - BRANCH_ID=<your_copied_branch_id> # Connect to the specific branch
+    ```
+
+6.  Run `docker compose up` to start the proxy connected to your new feature branch.
+
+</TabItem>
+</Tabs>
+
+#### Option 2: Quick experiment or test
+
+**When to use it:** Perfect for quick bug fixes, running a single test suite, or experimenting with a schema change that you might throw away. An ephemeral branch is created on-the-fly and automatically deleted when you're done.
+
+<Tabs labels={["Using Neon Local Connect", "Using Neon Local (CLI)"]}>
+<TabItem>
+
+1.  In the Neon Local Connect panel, click the **Connection Type** dropdown menu.
+2.  Instead of selecting "Connect to Neon Branch", choose **Connect to ephemeral Neon branch** option.
+3.  Under **Branch**, select a parent branch (e.g., `production`) to base the ephemeral branch on.
+4.  Click **Connect**.
+
+The extension creates a temporary branch for your session. When you click **Disconnect**, the branch and all its changes are automatically deleted from your Neon project, leaving no trace.
+
+<Admonition type="note">
+For using ephemeral branches, you need to authenticate using a Neon API key. To get started, see [Creating API keys](/docs/manage/api-keys).
+</Admonition>
+
+</TabItem>
+<TabItem>
+
+With the CLI, you create an ephemeral branch by specifying a `PARENT_BRANCH_ID` instead of a `BRANCH_ID`.
+
+1.  In the **[Neon Console](https://console.neon.tech/)**, find the **Branch ID** of the branch you want to use as a parent (e.g., your `production` or `development` branch).
+2.  In your `docker-compose.yml`, configure the `db` service to use this parent ID.
+
+    ```yaml
+    services:
+      db:
+        # ... other settings
+        environment:
+          - NEON_API_KEY=${NEON_API_KEY}
+          - NEON_PROJECT_ID=${NEON_PROJECT_ID}
+          - PARENT_BRANCH_ID=<your_parent_branch_id> # Create ephemeral branch from this parent
+    ```
+
+3.  Run `docker compose up`. Neon Local will create a new, temporary branch from this parent.
+4.  When you're finished, run `docker compose down`. The ephemeral branch will be automatically deleted from your Neon project.
+
+</TabItem>
+</Tabs>
+
+## Connecting your application conditionally
+
+Your application code needs to seamlessly switch between connecting to Neon Local for development and your live Neon database for production. The standard way to manage this is by using the `NODE_ENV` environment variable.
+
+The core logic is straightforward: when `process.env.NODE_ENV` is set to `'development'`, your application should use the static `localhost` connection string provided by Neon Local. For any other environment (such as `'production'` on platforms like Vercel, AWS, or other cloud providers), your app should use the actual Neon database URL, typically stored in your deployment environment's configuration or secrets on your cloud provider.
+
+The implementation details vary slightly depending on the database driver or ORM you are using.
+
+<Tabs labels={["@neondatabase/serverless", "Drizzle ORM", "Prisma", "Other drivers"]}>
+<TabItem>
+
+The Neon serverless driver is designed to communicate with a Neon database over HTTP/WebSocket. To redirect this traffic to your local Neon Local proxy, you must override its default behavior in your development environment.
+
+This is done by reconfiguring `neonConfig` to point to `localhost`.
+
+1. Install Dependencies
+
+   <CodeTabs labels={["npm", "yarn", "pnpm"]}>
+
+   ```bash
+   npm install @neondatabase/serverless ws
+   ```
+
+   ```bash
+   yarn add @neondatabase/serverless ws
+   ```
+
+   ```bash
+   pnpm add @neondatabase/serverless ws
+   ```
+
+   </CodeTabs>
+
+2. **Configure the connection**
+
+   ```typescript
+   import { neon, neonConfig, Pool } from '@neondatabase/serverless';
+   import ws from 'ws';
+
+   let connectionString =
+     process.env.DATABASE_URL || 'postgres://neon:npg@localhost:5432/<database_name>';
+
+   if (process.env.NODE_ENV === 'development') {
+     // Point the serverless driver to the local proxy
+     neonConfig.fetchEndpoint = 'http://localhost:5432/sql';
+     neonConfig.poolQueryViaFetch = true;
+   }
+
+   // Use the WebSocket constructor for Node.js
+   neonConfig.webSocketConstructor = ws;
+
+   // Neon supports both HTTP and WebSocket clients. Choose the one that fits your needs:
+
+   // HTTP Client (sql)
+   // - Best for serverless functions and Lambda environments
+   // - Ideal for stateless operations and quick queries
+   // - Lower overhead for single queries
+   // - Better for applications with sporadic database access
+   export const sql = neon(connectionString);
+
+   // WebSocket Client (pool)
+   // - Best for long-running applications (like servers)
+   // - Maintains a persistent connection
+   // - More efficient for multiple sequential queries
+   // - Better for high-frequency database operations
+   export const pool = new Pool({ connectionString });
+   ```
+
+</TabItem>
+<TabItem>
+
+> If you’re using `drizzle-orm` with the standard Postgres wire protocol (not the Neon serverless adapter), refer to the **Other drivers** section.
+
+Using Drizzle with Neon’s serverless adapters requires a similar setup to the one used for the Neon serverless driver directly: configure `neonConfig` to point to your local Neon Local proxy.
+
+1. Install Dependencies
+
+   <CodeTabs labels={["npm", "yarn", "pnpm"]}>
+
+   ```bash
+   npm install drizzle-orm @neondatabase/serverless ws
+   ```
+
+   ```bash
+   yarn add drizzle-orm @neondatabase/serverless ws
+   ```
+
+   ```bash
+   pnpm add drizzle-orm @neondatabase/serverless ws
+   ```
+
+   </CodeTabs>
+
+2. **Configure the connection**
+
+   ```typescript
+   import { neon, neonConfig, Pool } from '@neondatabase/serverless';
+   import { drizzle as drizzleWs } from 'drizzle-orm/neon-serverless';
+   import { drizzle as drizzleHttp } from 'drizzle-orm/neon-http';
+   import ws from 'ws';
+
+   let connectionString =
+     process.env.DATABASE_URL || 'postgres://neon:npg@localhost:5432/<database_name>';
+
+   if (process.env.NODE_ENV === 'development') {
+     // Point the serverless driver to the local proxy
+     neonConfig.fetchEndpoint = 'http://localhost:5432/sql';
+     neonConfig.poolQueryViaFetch = true;
+   }
+
+   // Use the WebSocket constructor for Node.js
+   neonConfig.webSocketConstructor = ws;
+
+   const sql = neon(connectionString);
+   const pool = new Pool({ connectionString });
+
+   // Drizzle supports both HTTP and WebSocket clients. Choose the one that fits your needs:
+
+   // HTTP Client:
+   // - Best for serverless functions and Lambda environments
+   // - Ideal for stateless operations and quick queries
+   // - Lower overhead for single queries
+   // - Better for applications with sporadic database access
+   export const drizzleClientHttp = drizzleHttp({ client: sql });
+
+   // WebSocket Client:
+   // - Best for long-running applications (like servers)
+   // - Maintains a persistent connection
+   // - More efficient for multiple sequential queries
+   // - Better for high-frequency database operations
+   export const drizzleClientWs = drizzleWs({ client: pool });
+   ```
+
+</TabItem>
+<TabItem>
+
+> If you are using `prisma` with the standard Postgres wire protocol (not the Neon serverless adapter), refer to the **Other drivers** section.
+
+Using Prisma with Neon’s serverless adapters requires a similar setup to the one used for the Neon serverless driver directly: configure `neonConfig` to point to your local Neon Local proxy.
+
+1. Install Dependencies
+
+   <CodeTabs labels={["npm", "yarn", "pnpm"]}>
+
+   ```bash
+   npm install @prisma/client @prisma/adapter-neon @neondatabase/serverless ws
+   ```
+
+   ```bash
+   yarn add @prisma/client @prisma/adapter-neon @neondatabase/serverless ws
+   ```
+
+   ```bash
+   pnpm add @prisma/client @prisma/adapter-neon @neondatabase/serverless ws
+   ```
+
+   </CodeTabs>
+
+2. **Enable the Preview Flag**
+
+   To use the Neon serverless driver with Prisma, enable the preview flag in your `schema.prisma` file.
+
+   ```prisma
+   // schema.prisma
+   generator client {
+     provider        = "prisma-client-js"
+     previewFeatures = ["driverAdapters"]
+   }
+   ```
+
+3. **Configure the connection**
+
+   ```typescript
+   import { neonConfig } from '@neondatabase/serverless';
+   import { PrismaNeon, PrismaNeonHTTP } from '@prisma/adapter-neon';
+   import { PrismaClient } from './generated/prisma/client.js';
+   import ws from 'ws';
+
+   const connectionString =
+     process.env.DATABASE_URL || 'postgres://neon:npg@localhost:5432/<database_name>';
+
+   if (process.env.NODE_ENV === 'development') {
+     // Point the serverless driver to the local proxy
+     neonConfig.fetchEndpoint = 'http://localhost:5432/sql';
+     neonConfig.poolQueryViaFetch = true;
+   }
+
+   // Use the WebSocket constructor for Node.js
+   neonConfig.webSocketConstructor = ws;
+
+   // Prisma supports both HTTP and WebSocket clients. Choose the one that fits your needs:
+   // HTTP Client:
+   // - Ideal for stateless operations and quick queries
+   // - Lower overhead for single queries
+   const adapterHttp = new PrismaNeonHTTP(connectionString, {});
+   export const prismaClientHttp = new PrismaClient({ adapter: adapterHttp });
+
+   // WebSocket Client:
+   // - Best for long-running applications (like servers)
+   // - Maintains a persistent connection
+   // - More efficient for multiple sequential queries
+   // - Better for high-frequency database operations
+   const adapterWs = new PrismaNeon({ connectionString });
+   export const prismaClientWs = new PrismaClient({ adapter: adapterWs });
+   ```
+
+</TabItem>
+
+<TabItem>
+
+Standard PostgreSQL drivers like `node-postgres` (`pg`) do not require major changes because they communicate over the standard Postgres wire protocol. Neon Local exposes a standard Postgres endpoint on `localhost:5432`.
+
+The only change needed is to switch the connection string and adjust the SSL setting. SSL is required for production connections to Neon but is not needed for the local proxy.
+
+```typescript
+import { Client, Pool } from 'pg';
+
+const connectionString =
+  process.env.DATABASE_URL || 'postgres://neon:npg@localhost:5432/<database_name>';
+let sslConfig;
+
+if (process.env.NODE_ENV === 'development') {
+  sslConfig = { rejectUnauthorized: false };
+}
+
+const pool = new Pool({
+  connectionString,
+  ssl: sslConfig,
+});
+
+const client = new Client({
+  connectionString,
+  ssl: sslConfig,
+});
+
+export { pool, client };
+```
+
+For **Drizzle ORM** using the standard Postgres driver is straightforward. You simply configure the connection string and SSL settings based on your environment:
+
+```typescript
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+let connectionString =
+  process.env.DATABASE_URL || 'postgres://neon:npg@localhost:5432/<database_name>';
+let sslConfig;
+
+if (process.env.NODE_ENV === 'development') {
+  sslConfig = { rejectUnauthorized: false };
+}
+
+export const drizzleClient = drizzle({
+  connection: {
+    connectionString,
+    ssl: sslConfig,
+  },
+});
+```
+
+For **Prisma** with the standard Postgres driver you again only need to set the database URL appropriately for your environment. Prisma will handle the rest:
+
+```typescript
+import { PrismaClient } from './generated/prisma/client.js';
+
+const prismaClient = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL || 'postgres://neon:npg@localhost:5432/<database_name>',
+    },
+  },
+});
+```
+
+- In any case, use the local Neon Local connection string for development and your production Neon connection string in deployed environments.
+- Conditionally disabling SSL for local development ensures compatibility with the Neon Local proxy, while production connections remain secure.
+
+</TabItem>
+</Tabs>
+
+<Admonition type="note" title="Other languages and drivers">
+The `neonConfig` setup is **exclusive to the `@neondatabase/serverless` driver** and its wrappers (Drizzle, Prisma adapter) in Node.js environments.
+
+For applications written in other languages (like Python, Go, Ruby, Java, etc.) that use standard PostgreSQL drivers, you can follow the same pattern as the `node-postgres (pg)` example:
+
+1.  Read the database connection string from an environment variable.
+2.  In your local development environment, set this variable to `postgres://neon:npg@localhost:5432/<database_name>`.
+3.  In production, set it to your real Neon connection string.
+4.  You may need to conditionally disable SSL for the local connection.
+
+No other code modifications are necessary.
+</Admonition>
+
+## Summary
+
+You've now learned how to integrate Neon local and Neon Local Connect into your workflow. With Neon Local Connect, you get a full-featured database IDE that makes managing branches as easy as managing Git branches. For more advanced or automated setups, Neon Local with Docker provides the same powerful capabilities for any environment, ensuring you always have clean, isolated, and production-like databases for development and testing.
+
+## Resources
+
+- [Neon Local Documentation](/docs/local/neon-local)
+- [Neon Local Connect extension guide](/docs/local/neon-local-vscode)
+- [Example application using Neon Local](https://github.com/neondatabase-labs/neon-local-example-react-express-application)
+
+<NeedHelp/>
 
 
 # How to Use Neon MCP Server with GitHub Copilot in VS Code

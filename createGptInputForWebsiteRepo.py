@@ -79,7 +79,7 @@ def combine_markdown_files(input_directory, output_file):
     print(f"Combined markdown saved to: {output_file}")
 
 def main():
-    with open('../website/content/docs/sidebar.yaml', 'r') as file:
+    with open('../website/content/docs/navigation.yaml', 'r') as file:
         sidebar = yaml.safe_load(file)
 
     combined_markdown = process_items(sidebar, '../website/content/docs')
@@ -90,7 +90,7 @@ def main():
 
     # add new postgresql tutorial
     # content/postgresql/sidebar.yaml
-    with open('../website/content/postgresql/sidebar.yaml', 'r') as file:
+    with open('../website/content/postgresql/navigation.yaml', 'r') as file:
         sidebar = yaml.safe_load(file)
 
     combined_markdown = process_items(sidebar, '../website/content/postgresql')
